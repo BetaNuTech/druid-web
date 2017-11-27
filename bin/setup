@@ -22,14 +22,17 @@ chdir APP_ROOT do
   system('bin/yarn')
 
 
-  puts "\n== Copying sample files =="
-  unless File.exist?('config/database.yml')
-    puts "  * config/database.yml"
-    cp 'config/database.yml.example', 'config/database.yml'
-  end
-  unless File.exist?('.env')
-    puts "  * .env"
-    cp '.env.example', '.env'
+
+  ### ADD CONFIGURATION FILES HERE
+  sample_files = ['config/database.yml', '.env', '.pryrc']
+  puts "\n== Copying sample files (please customize as needed) =="
+  sample_files.each do |f|
+    if File.exist?(f)
+      puts " * #{f} already exists"
+    else
+      puts "  * #{f} copied"
+      cp "#{f}.example", f
+    end
   end
 
   puts "\n== Preparing database =="
