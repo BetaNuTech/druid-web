@@ -1,37 +1,119 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-fixed-top">
   <div class="container">
+
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+
+      <button type="button" class="navbar-toggle collapsed"
+        data-toggle="collapse" data-target="#navbar"
+        aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+
       <a class="navbar-brand" href="/"> <span class="glyphicon glyphicon-tree-deciduous" /> </a>
-        <a class="navbar-brand" href="/"> Druid </a>
-      </div>
-      <div id="navbar" class="collapse navbar-collapse ">
-        <ul class="nav navbar-nav col-md-4">
-          <li class="active"><a href="#">Home</a></li>
-          <li>
-            <div class="btn-group">
-              <button type="button" class="btn btn-primary" "dropdown">Leads</button>
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span class="caret" />
-                <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a href="#"><span class="glyphicon glyphicon-star"></span> My Leads</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#"><span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads</a></li>
-                  <li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Active Leads</a></li>
-                  <li><a href="#"><span class="glyphicon glyphicon-check"></span> Closed Leads</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#"><span class="glyphicon glyphicon-pencil"></span> Create Lead</a></li>
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+        <a class="navbar-brand" href="/"> Druid LM</a>
+    </div>
+
+    <div id="navbar" class="collapse navbar-collapse ">
+      <ul class="nav navbar-nav">
+        <li> <!-- Leads -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-flag"></span> Leads</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#"><span class="glyphicon glyphicon-star"></span> My Leads</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#"><span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-flag"></span> Active Leads</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-check"></span> Closed Leads</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#"><span class="glyphicon glyphicon-pencil"></span> Create Lead</a></li>
+            </ul>
+          </div>
+        </li> <!-- Leads -->
+
+        <li> <!-- Messaging -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span> Messaging</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#"><span class="glyphicon glyphicon-star"></span> Unresponded Emails</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Recent Emails</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-send"></span> Create Email</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-th"></span> Email Templates</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#"><span class="glyphicon glyphicon-calendar"></span> Reminders</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-bell"></span> Create Reminder</a></li>
+              <li role="separator" class="divider"></li>
+            </ul>
+          </div>
+        </li> <!-- Messaging -->
+
+        <li> <!-- Reports -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-stats"></span> Reports</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#"><span class="glyphicon glyphicon-picture"></span> Report 1</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> Report 2</a></li>
+            </ul>
+          </div>
+        </li> <!-- Properties -->
+
+        <li> <!-- Properties -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-home"></span> Properties</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#"><span class="glyphicon glyphicon-home"></span> Properties</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-user"></span> Residents</a></li>
+            </ul>
+          </div>
+        </li> <!-- Properties -->
+
+        <li> <!-- System -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-wrench"></span> System</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-download-alt"></span> Lead Sources</a></li>
+            </ul>
+          </div>
+        </li> <!-- System -->
+
+        <li> <!-- Account -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-off"></span> Logout</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#"><span class="glyphicon glyphicon-user"></span> My Account</a></li>
+            </ul>
+          </div>
+        </li> <!-- Properties -->
+
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>
