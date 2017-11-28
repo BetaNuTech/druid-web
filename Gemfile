@@ -18,13 +18,13 @@ gem 'uglifier', '~> 3.2'
 gem 'turbolinks', '~> 5.0'
 gem 'jbuilder', '~> 2.7'
 gem 'dotenv', '~> 2.2', '>= 2.1.1'
-gem 'foreman', "~> 0.63"
+gem 'foreman', "~> 0.84"
 gem 'pessimize', "~> 0.3"
 gem 'delayed_job_active_record', "~> 4.1"
 gem 'awesome_print', "~> 1.8"
 gem 'pry-rails', "~> 0.3"
 gem 'pry-coolline', "~> 0.2"
-gem 'pry-doc', "~> 0.10"
+gem 'pry-doc', "~> 0.11"
 gem 'pry-stack_explorer', "~> 0.4"
 gem 'pry-byebug', "~> 3.5"
 
@@ -36,6 +36,7 @@ group :development, :test do
   gem 'factory_bot', '~> 4.8', '>= 4.8.2'
   gem 'rspec-rails', "~> 3.7"
   gem 'simplecov', "~> 0.15"
+  gem 'guard-rspec', "~> 4.7", require: false
 end
 
 group :development do
