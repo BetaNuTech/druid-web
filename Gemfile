@@ -34,6 +34,8 @@ group :development, :test do
   gem 'selenium-webdriver', "~> 3.7"
   gem 'bundler-audit', '~> 0.6'
   gem 'factory_bot', '~> 4.8', '>= 4.8.2'
+  gem 'rspec-rails', "~> 3.7"
+  gem 'simplecov', "~> 0.15"
 end
 
 group :development do
