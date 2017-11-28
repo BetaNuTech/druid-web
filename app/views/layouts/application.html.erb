@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="Druid Lead Management for BlueStone Properties">
     <title>DruidWeb</title>
     <%= csrf_meta_tags %>
 
@@ -9,6 +13,7 @@
   </head>
 
   <body>
+    <%= render partial: 'shared/navbar' %>
     <%= yield %>
   </body>
 </html>
