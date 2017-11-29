@@ -14,8 +14,8 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'simplecov'
-SimpleCov.start 'rails'
+require 'support/simplecov'
+require 'support/factory_bot'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

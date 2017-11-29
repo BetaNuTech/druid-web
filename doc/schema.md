@@ -2,7 +2,7 @@
 
 ## ActiveRecord Models
 
-* Leads
+* [Leads](#leads)
 * Lead Sources
 * Contacts
 
@@ -13,7 +13,7 @@ Sources, lead preferences, user assignment, and state.
 
 ```
 |---------------------+----------+-------+----------|
-| Table:              | leads    |       |          |
+| Table: leads        |          |       |          |
 |---------------------+----------+-------+----------|
 |---------------------+----------+-------+----------|
 | column name         | type     | notes | required |
@@ -37,7 +37,7 @@ Sources, lead preferences, user assignment, and state.
 |---------------------+----------+-------+----------|
 ```
 
-## Relationships
+## Lead Relationships
 
 ```
 has_many: :contacts
@@ -46,8 +46,9 @@ belongs_to: user
 has_one: :preference, class_name: 'LeadPreference'
 ```
 
-## Indexes
+## Lead Indexes
 
+TODO:
 * user_id, state
 * lead_source_id, state
 * state, first_comm, last_comm

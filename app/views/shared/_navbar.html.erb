@@ -20,28 +20,52 @@
       <ul class="nav navbar-nav">
         <li> <!-- Leads -->
           <div class="btn-group">
-            <button type="button" class="btn btn-success btn-nav-active"><span class="glyphicon glyphicon-flag"></span> Leads</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <%= link_to('Leads', leads_path, class: "btn btn-success btn-nav-active") %>
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu">
-              <li><a href="#"><span class="glyphicon glyphicon-star"></span> My Leads</a></li>
+              <li>
+                <%= link_to(leads_path) do %>
+                  <span class="glyphicon glyphicon-star"></span> My Leads
+                <% end %>
+              </li>
               <li role="separator" class="divider"></li>
-              <li><a href="#"><span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-flag"></span> Active Leads</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-check"></span> Closed Leads</a></li>
+              <li>
+                <%= link_to(leads_path) do %>
+                  <span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads
+                <% end %>
+              </li>
+              <li>
+                <%= link_to(leads_path) do %>
+                  <span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads
+                <% end %>
+              </li>
+              <li>
+                <%= link_to(leads_path) do %>
+                  <span class="glyphicon glyphicon-flag"></span> Active Leads
+                <% end %>
+              </li>
+              <li>
+                <%= link_to(leads_path) do %>
+                  <span class="glyphicon glyphicon-check"></span> Closed Leads
+                <% end %>
+              </li>
               <li role="separator" class="divider"></li>
-              <li><a href="#"><span class="glyphicon glyphicon-pencil"></span> Create Lead</a></li>
+              <li>
+                <%= link_to(new_lead_path) do %>
+                  <span class="glyphicon glyphicon-pencil"></span> Create Lead
+                <% end %>
+              </li>
             </ul>
           </div>
         </li> <!-- Leads -->
 
         <li> <!-- Messaging -->
           <div class="btn-group">
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span> Messaging</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</button>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
@@ -60,8 +84,8 @@
 
         <li> <!-- Reports -->
           <div class="btn-group">
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-stats"></span> Reports</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</button>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
@@ -74,8 +98,8 @@
 
         <li> <!-- Properties -->
           <div class="btn-group">
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-home"></span> Properties</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-home"></span> Properties</button>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
@@ -88,8 +112,8 @@
 
         <li> <!-- System -->
           <div class="btn-group">
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-wrench"></span> System</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-wrench"></span> System</button>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
@@ -105,7 +129,7 @@
         <li> <!-- Account -->
           <div class="btn-group">
             <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-off"></span> Logout</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>

@@ -1,0 +1,47 @@
+<%= form_with(model: lead, local: true) do |form| %>
+  <% if lead.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(lead.errors.count, "error") %> prohibited this lead from being saved:</h2>
+
+      <ul>
+      <% lead.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-2 form-group">
+        <%= form.label :title %>
+        <%= form.text_field :title, id: :lead_title, class: "form-control", maxlength: 10 %>
+    </div>
+    <div class="col-md-5 form-group">
+      <%= form.label :first_name %>
+      <%= form.text_field :first_name, id: :lead_first_name, class: "form-control" %>
+    </div>
+    <div class="col-md-5 form-group">
+      <%= form.label :last_name %>
+      <%= form.text_field :last_name, id: :lead_last_name, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :referral %>
+    <%= form.text_field :referral, id: :lead_referral, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :notes %>
+    <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 6 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label 'First Communication'  %><br/>
+    <%= form.date_select :first_comm, id: :lead_first_comm, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+<% end %>

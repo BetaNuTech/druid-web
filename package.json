@@ -9,6 +9,6 @@
   "description": "Druid Web App",
   "main": "index.js",
   "repository": "git@github.com:BetaNuTech/druid-web.git",
-  "author": "Patrick Morgan <patrick@patrick-morgan.net>",
-  "license": "Proprietary"
+  "author": "BlueStone Properties",
+  "license": "ProprietaryConfidential"
 }

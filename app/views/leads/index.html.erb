@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <p id="notice"><%= notice %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Leads</h1>
+    </div>
+    <div class="col-md-6 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New Lead', new_lead_path %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Referral</th>
+            <th>State</th>
+            <th>Notes</th>
+            <th>First/Last Contact</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @leads.each do |lead| %>
+            <tr>
+              <td></td>
+              <td>
+                <%= lead.title %>
+                <%= lead.first_name %>
+                <%= lead.last_name %>
+              </td>
+              <td><%= lead.referral %></td>
+              <td><%= lead.state %></td>
+              <td><%= lead.notes %></td>
+              <td>
+                <%= short_date(lead.first_comm) %> |
+                <%= short_date(lead.last_comm) || '-' %>
+              </td>
+              <td>
+                <%= link_to 'Show', lead %> |
+                <%= link_to 'Edit', edit_lead_path(lead) %> |
+                <%= link_to 'Destroy', lead, method: :delete, data: { confirm: 'Are you sure?' } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New Lead', new_lead_path %>
+    </div>
+  </div>
+</div>

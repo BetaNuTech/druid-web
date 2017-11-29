@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Edit Lead</h1>
+      <%= render 'form', lead: @lead %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= link_to 'Show', @lead %> |
+      <%= link_to 'Back', leads_path %>
+    </div>
+  </div>
+</div>

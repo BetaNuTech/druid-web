@@ -37,6 +37,7 @@ group :development, :test do
   gem 'rspec-rails', "~> 3.7"
   gem 'simplecov', "~> 0.15"
   gem 'guard-rspec', "~> 4.7", require: false
+  gem 'factory_bot_rails', "~> 4.8"
 end
 
 group :development do
@@ -44,4 +45,5 @@ group :development do
   gem 'listen', '~> 3.1', '< 3.2'
   gem 'spring', "~> 2.0"
   gem 'spring-watcher-listen', '~> 2.0'
+  gem 'annotate', "~> 2.7"
 end
