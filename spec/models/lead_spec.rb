@@ -38,4 +38,18 @@ RSpec.describe Lead, type: :model do
     lead.reload
     expect(lead.notes).to eq('Foo')
   end
+
+  it "can provide a full name including title, first_name, and last_name" do
+    lead = create(:lead)
+    expect(lead.name).to match(lead.first_name)
+    expect(lead.name).to match(lead.last_name)
+    expect(lead.name).to match(lead.title)
+  end
+
+  it "validates the presence of required attributes" do
+    required_attributes = [:first_name, :last_name]
+    lead = Lead.new
+    lead.save
+    expect(lead.errors.messages.keys.sort).to eq(required_attributes.sort)
+  end
 end

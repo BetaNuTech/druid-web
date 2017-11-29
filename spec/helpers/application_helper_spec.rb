@@ -10,6 +10,10 @@ require 'rails_helper'
 #     end
 #   end
 # end
-RSpec.describe LeadsHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+RSpec.describe ApplicationHelper, type: :helper do
+  it "should format a short date" do
+    d = DateTime.now
+    out = short_date d
+    expect(out).to match(d.strftime("%m-%d"))
+  end
 end
