@@ -27,6 +27,7 @@ gem 'pry-coolline', "~> 0.2"
 gem 'pry-doc', "~> 0.11"
 gem 'pry-stack_explorer', "~> 0.4"
 gem 'pry-byebug', "~> 3.5"
+gem 'webpacker'
 
 group :development, :test do
   gem 'byebug', "~> 9.1", platforms: [:mri, :mingw, :x64_mingw]

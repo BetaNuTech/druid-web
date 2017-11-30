@@ -21,3 +21,7 @@
 .pryrc
 .sass-cache
 coverage/
+/public/packs
+/public/packs-test
+/node_modules
+public/assets/
