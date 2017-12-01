@@ -1,6 +1,6 @@
 module LeadsHelper
-  def titles_for_select
-    options_for_select %w{Ms. Mrs. Mr. Mx. Dr.}
+  def titles_for_select(val)
+    options_for_select(%w{Ms. Mrs. Mr. Mx. Dr.}, val)
   end
 
   def display_preference_option(pref_attr)

@@ -18,7 +18,7 @@
       <div class="row">
         <div class="col-md-1 form-group">
           <%= form.label :title %><br/>
-          <%= form.select :title, titles_for_select, include_blank: true, id: :lead_title, class: 'form-control' %>
+          <%= form.select :title, titles_for_select(@lead.title), include_blank: true, id: :lead_title, class: 'form-control' %>
         </div>
         <div class="col-md-5 form-group">
           <%= form.label :first_name %>

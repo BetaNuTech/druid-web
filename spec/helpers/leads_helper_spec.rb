@@ -4,8 +4,10 @@ include ApplicationHelper
 RSpec.describe LeadsHelper, type: :helper do
   describe "titles_for_select" do
     it "should return an array of strings" do
-      out = titles_for_select
-      expect(out).to match('Mr.')
+      out = titles_for_select('Mr.')
+      expect(out).to match('selected="selected" value="Mr."')
+      expect(out).to match('value="Mr."')
+      expect(out).to match('value="Mrs."')
     end
   end
 
