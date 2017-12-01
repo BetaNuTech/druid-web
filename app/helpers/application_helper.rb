@@ -1,6 +1,6 @@
 module ApplicationHelper
   def short_date(datetime)
-    datetime.present? ? datetime.strftime('%m-%e') : nil
+    datetime.present? ? datetime.strftime('%m-%d') : nil
   end
 
   def glyph(type)

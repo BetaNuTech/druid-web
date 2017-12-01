@@ -15,10 +15,12 @@ class LeadsController < ApplicationController
   # GET /leads/new
   def new
     @lead = Lead.new
+    @lead.build_preference
   end
 
   # GET /leads/1/edit
   def edit
+    @lead.build_preference unless @lead.preference.present?
   end
 
   # POST /leads
@@ -69,6 +71,9 @@ class LeadsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def lead_params
-      params.require(:lead).permit(:lead_source_id, :lead_preferences_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm)
+      valid_lead_params = [:lead_source_id, :lead_preferences_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
+      valid_preference_params = [{preference_attributes: [:baths, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes]}]
+      params.require(:lead).permit(*(valid_lead_params + valid_preference_params))
     end
+
 end

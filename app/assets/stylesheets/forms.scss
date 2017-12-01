@@ -31,3 +31,10 @@ $error-color: #f2dede;
     list-style: square;
   }
 }
+
+.fieldset_content {
+  box-shadow: 5px 5px 5px #ccc;
+  padding: 1em 2em 0.5em 1em;
+  margin: 1em auto;
+  border: 1px 1px 1px 0 solid #ccc;
+}

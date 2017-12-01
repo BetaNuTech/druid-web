@@ -2,20 +2,19 @@
 #
 # Table name: leads
 #
-#  id                  :uuid             not null, primary key
-#  user_id             :uuid
-#  lead_source_id      :uuid
-#  lead_preferences_id :uuid
-#  title               :string
-#  first_name          :string
-#  last_name           :string
-#  referral            :string
-#  state               :string
-#  notes               :text
-#  first_comm          :datetime
-#  last_comm           :datetime
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
+#  id             :uuid             not null, primary key
+#  user_id        :uuid
+#  lead_source_id :uuid
+#  title          :string
+#  first_name     :string
+#  last_name      :string
+#  referral       :string
+#  state          :string
+#  notes          :text
+#  first_comm     :datetime
+#  last_comm      :datetime
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 
 require 'rails_helper'
@@ -51,5 +50,10 @@ RSpec.describe Lead, type: :model do
     lead = Lead.new
     lead.save
     expect(lead.errors.messages.keys.sort).to eq(required_attributes.sort)
+  end
+
+  it "has a preference" do
+    lead = create(:lead_with_preference)
+    expect(lead.preference).to be_a(LeadPreference)
   end
 end
