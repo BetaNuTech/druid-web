@@ -20,15 +20,15 @@
 
 FactoryBot.define do
   factory :lead_preference do
-    min_area 1
-    max_area 1
-    min_price "9.99"
-    max_price "9.99"
+    min_area 1000
+    max_area 2000
+    min_price 500.0
+    max_price 2000.0
     move_in "2017-12-01 10:42:48"
-    baths "9.99"
-    pets false
+    baths 1.5
+    pets true
     smoker false
     washerdryer false
-    notes "MyText"
+    notes "Lead notes"
   end
 end

@@ -18,14 +18,26 @@
 #
 
 class Lead < ApplicationRecord
-  validates :first_name,
-            :last_name,
-    presence: true
+
+  ### Associations
   has_one :preference,
     class_name: 'LeadPreference',
     dependent: :destroy
+  accepts_nested_attributes_for :preference
 
+  ### Validations
+  validates :first_name,
+            :last_name,
+    presence: true
+
+  ### Class Methods
+
+  ### Instance Methods
   def name
     [title, first_name, last_name].join(' ')
   end
+
+  private
+
+  ### Private Methods
 end

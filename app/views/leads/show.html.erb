@@ -6,7 +6,9 @@
       <p id="notice"><%= notice %></p>
     </div>
   </div>
+
   <div class="row">
+    <h2>Lead Information</h2>
     <div class="col-md-1">
       <p>
         <strong>Title:</strong><br/>
@@ -59,6 +61,76 @@
       </p>
     </div>
   </div>
+
+  <% if @lead.preference.present? %>
+    <h2>Preferences</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <p>
+          <strong>Minimum sq. ft.</strong>
+          <%= display_preference_option @lead.preference.min_area%>
+        </p>
+      </div>
+      <div class="col-md-4">
+        <p>
+          <strong>Maximum sq. ft.</strong>
+          <%= display_preference_option @lead.preference.max_area%>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <p>
+          <strong>Minimum Price $</strong>
+          <%= display_preference_option @lead.preference.min_price %>
+        </p>
+      </div>
+      <div class="col-md-4">
+        <p>
+          <strong>Maximum Price $</strong>
+          <%= display_preference_option @lead.preference.max_price %>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <p>
+          <strong>Desired Move-In</strong>
+          <%= display_preference_option(@lead.preference.move_in) %>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <p>
+          <strong>Bathrooms</strong>
+          <%= @lead.preference.baths || 'N/A' %>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Pets Allowed</strong>
+          <%= display_preference_option(@lead.preference.pets) %>
+        </p>
+        <p>
+          <strong>Smoking Allowed</strong>
+          <%= display_preference_option(@lead.preference.smoker) %>
+        </p>
+        <p>
+          <strong>Washer/Dryer Connection</strong>
+          <%= display_preference_option(@lead.preference.washerdryer) %>
+        </p>
+      </div>
+    </div>
+  <% else %>
+    <div class="row">
+      <div class="col-md-12">
+        <h2>No Preferences</h2>
+      </div>
+    </div>
+  <% end %>
 
   <div class="row">
     <div class="col-md-12">
