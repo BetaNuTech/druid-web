@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171129193814) do
+ActiveRecord::Schema.define(version: 20171201164248) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,10 +31,25 @@ ActiveRecord::Schema.define(version: 20171129193814) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "lead_preferences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id"
+    t.integer "min_area"
+    t.integer "max_area"
+    t.decimal "min_price"
+    t.decimal "max_price"
+    t.datetime "move_in"
+    t.decimal "baths"
+    t.boolean "pets"
+    t.boolean "smoker"
+    t.boolean "washerdryer"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "lead_source_id"
-    t.uuid "lead_preferences_id"
     t.string "title"
     t.string "first_name"
     t.string "last_name"
