@@ -5,3 +5,25 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+
+# Lead Sources
+puts " * Creating default Lead Sources"
+sources = {
+  "Druid": {
+    name: 'Druid',
+    slug: 'druid',
+    incoming: true,
+    active: true
+  }
+}
+sources.each_pair do |source_name, attrs|
+  print "   - '#{source_name}' (slug: #{attrs[:slug]}) "
+  source = LeadSource.new(attrs)
+  if source.save
+    puts "[OK]"
+  else
+    puts "[FAIL] (#{source.errors.to_a})"
+  end
+end
+
