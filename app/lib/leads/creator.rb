@@ -18,23 +18,39 @@ module Leads
       @parser = get_parser(@source)
     end
 
+    # Create lead from provided data using detected Source adapter
     def execute
       if @parser.nil?
-        @errors.add(:base, "Parser for Lead Source not found: #{@source_slug}")
-        @lead.validate
+        error_message =  "Parser for Lead Source not found: #{@source_slug}"
+        @errors.add(:base, error_message)
+        @lead.validate # and add errors
+        @lead.errors.add(:base, error_message)
         return @lead
       end
 
-      @lead = Lead.new(@parser.new(@data).parse)
+      parse_result = @parser.new(@data).parse
+
+      @lead = Lead.new(parse_result[:lead])
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
-      @lead.save
+
+      case parse_result[:status]
+        when :ok
+          @lead.save
+        else
+          @lead.validate
+          parse_result[:errors].each do |err|
+            @lead.errors.add(:base, err)
+          end
+      end
+
       @errors = @lead.errors
 
       return @lead
     end
 
     private
+
 
     def get_source(source_slug)
       return source_slug ?
