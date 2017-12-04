@@ -24,7 +24,6 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe LeadsController, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # Lead. As you add validations to Lead, be sure to
   # adjust the attributes here as well.
@@ -75,6 +74,10 @@ RSpec.describe LeadsController, type: :controller do
   end
 
   describe "POST #create" do
+    before do
+      create(:lead_source, slug: 'Druid')
+    end
+
     context "with valid params" do
       it "creates a new Lead" do
         expect {

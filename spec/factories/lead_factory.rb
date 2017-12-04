@@ -27,12 +27,6 @@ FactoryBot.define do
     notes 'This is a property lead'
     first_comm { DateTime.now }
     last_comm { DateTime.now }
-
-    factory :lead_with_preference do
-      after(:create) do |lead|
-        create(:lead_preference, lead: lead)
-      end
-    end
-
+    preference_attributes { FactoryBot.attributes_for(:lead_preference)}
   end
 end

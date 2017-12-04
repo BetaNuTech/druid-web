@@ -26,6 +26,7 @@ class Lead < ApplicationRecord
   accepts_nested_attributes_for :preference
   belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id',
     required: false
+  # TODO: Agent association
 
   ### Validations
   validates :first_name,

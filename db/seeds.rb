@@ -10,9 +10,9 @@
 # Lead Sources
 puts " * Creating default Lead Sources"
 sources = {
-  "Druid": {
-    name: 'Druid',
-    slug: 'druid',
+  "Druid WebApp": {
+    name: 'Druid WebApp',
+    slug: 'Druid',
     incoming: true,
     active: true
   }

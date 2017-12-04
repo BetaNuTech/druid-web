@@ -42,7 +42,7 @@ RSpec.describe LeadPreference, type: :model do
 
   it "must have a min_area smaller than max_area" do
     min, max = [100, 200]
-    lead = create(:lead_with_preference)
+    lead = create(:lead)
     pref = lead.preference
 
     validate_min_max = Proc.new { |pref, min,max,is_valid|
@@ -64,7 +64,7 @@ RSpec.describe LeadPreference, type: :model do
 
   it "must have a min_price smaller than max_price" do
     min, max = [100, 200]
-    lead = create(:lead_with_preference)
+    lead = create(:lead)
     pref = lead.preference
 
     validate_min_max = Proc.new { |pref, min,max,is_valid|

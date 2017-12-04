@@ -26,10 +26,12 @@ class LeadsController < ApplicationController
   # POST /leads
   # POST /leads.json
   def create
-    @lead = Lead.new(lead_params)
+    #@lead = Lead.new(lead_params)
+    lead_creator = Leads::Creator.new(data: lead_params, source: 'Druid')
+    @lead = lead_creator.execute
 
     respond_to do |format|
-      if @lead.save
+      if !lead_creator.errors.any?
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
       else
