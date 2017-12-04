@@ -20,7 +20,12 @@
 
 class LeadPreference < ApplicationRecord
   DEFAULT_UNIT_SYSTEM = :imperial
+
+  ### Associations
+
   belongs_to :lead
+
+  ### Validations
 
   validates :min_area,
     :max_area,
@@ -54,6 +59,8 @@ class LeadPreference < ApplicationRecord
     greater_than: ->(pref) { pref.min_price || pref.max_price - 1 }
   },
   allow_blank: true
+
+  ### Instance Methods
 
   def unit_system
     DEFAULT_UNIT_SYSTEM
