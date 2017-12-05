@@ -1,11 +1,14 @@
 module Leads
   module Adapters
     # List valid/enabled adapter classes Here
-    VALID = [ 'Druid' ]
+    ### IMPORTANT: Values in the VALID array correspond directly to
+    # the LeadSource record "slug"s
+    SUPPORTED = [ 'Druid' ]
+
 
     # Does the provided source match a valid Lead Adapter Source
-    def self.valid_source?(source)
-      VALID.include?(source)
+    def self.supported_source?(source)
+      SUPPORTED.include?(source)
     end
   end
 end

@@ -29,8 +29,9 @@ module Leads
       end
 
       parse_result = @parser.new(@data).parse
+      lead_attributes = parse_result[:lead]
 
-      @lead = Lead.new(parse_result[:lead])
+      @lead = Lead.new(lead_attributes)
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
 
@@ -60,16 +61,16 @@ module Leads
 
     # Lookup LeadSource from provided slug
     def lookup_source(source_slug)
-      LeadSource.where(slug: source_slug).active.first
+      LeadSource.active.where(slug: source_slug).first
     end
 
     def default_source
-      LeadSource.where(slug: 'Druid').active
+      LeadSource.active.where(slug: 'Druid')
     end
 
     def get_parser(source)
       return nil unless source
-      return Leads::Adapters.valid_source?(source.slug) ?
+      return Leads::Adapters.supported_source?(source.slug) ?
         Object.const_get("Leads::Adapters::#{source.slug}") :
         nil
     end

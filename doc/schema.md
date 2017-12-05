@@ -92,3 +92,37 @@ belongs_to: :lead
 
 TODO
 * lead_id
+
+# Lead Sources
+
+Lead Sources identify both the conceptual sources of Leads and drive application logic for processing raw Lead information. See `Leads::Creator` and `Leads::Adapters`
+
+
+```
+|-------------+------------------+-------+----------|
+| Table:      | lead_preferences |       |          |
+|-------------+------------------+-------+----------|
+|-------------+------------------+-------+----------|
+| column name | type             | notes | required |
+|-------------+------------------+-------+----------|
+| id          | uuid             | PK    | Y        |
+|-------------+------------------+-------+----------|
+| name        | string           |       | Y        |
+| slug        | string           |       | Y        |
+| active      | boolean          |       | Y        |
+|-------------+------------------+-------+----------|
+| created_at  | datetime         |       | Y        |
+| updated_at  | datetime         |       | Y        |
+|-------------+------------------+-------+----------|
+```
+
+## Relationships
+
+```
+has_many :leads
+```
+
+## Indexes
+
+TODO
+* active
