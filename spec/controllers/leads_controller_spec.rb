@@ -24,6 +24,8 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe LeadsController, type: :controller do
+  render_views
+
   # This should return the minimal set of attributes required to create a valid
   # Lead. As you add validations to Lead, be sure to
   # adjust the attributes here as well.
@@ -54,6 +56,13 @@ RSpec.describe LeadsController, type: :controller do
     it "returns a success response" do
       lead = Lead.create! valid_attributes
       get :show, params: {id: lead.to_param}, session: valid_session
+      expect(response).to be_success
+    end
+
+    it "can return JSON data" do
+      lead = create(:lead)
+      assert(lead.preference.present?)
+      get :show, params: {id: lead.to_param}, session: valid_session, format: :json
       expect(response).to be_success
     end
   end

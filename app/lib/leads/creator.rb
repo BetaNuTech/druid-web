@@ -8,7 +8,7 @@ module Leads
       :source,
       :source_slug
 
-    def initialize(data: params, source: 'Druid', agent: nil)
+    def initialize(data: params, source: nil, agent: nil)
       @lead = Lead.new
       @saved = false
       @data = data
@@ -65,7 +65,7 @@ module Leads
     end
 
     def default_source
-      LeadSource.active.where(slug: 'Druid')
+      LeadSource.active.where(slug: 'Druid').first
     end
 
     def get_parser(source)

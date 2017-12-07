@@ -20,6 +20,7 @@
 
 class LeadPreference < ApplicationRecord
   DEFAULT_UNIT_SYSTEM = :imperial
+  ALLOWED_PARAMS = [:baths, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes]
 
   ### Associations
 
