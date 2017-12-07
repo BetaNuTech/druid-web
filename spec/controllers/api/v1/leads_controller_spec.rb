@@ -5,12 +5,14 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
 
   let(:valid_attributes_for_druid) {
     base_attrs = attributes_for(:lead)
+    base_attrs[:source] = 'Druid'
     base_attrs
   }
 
   let(:invalid_attributes_for_druid) {
     base_attrs = attributes_for(:lead)
     base_attrs[:first_name] = nil
+    base_attrs[:source] = 'Druid'
     base_attrs
   }
 
@@ -23,7 +25,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
       context "with valid params" do
         it "creates a new Lead" do
           expect {
-            post :create, params: {lead: valid_attributes_for_druid, source: 'Druid'}, format: :json
+            post :create, params: valid_attributes_for_druid, format: :json
           }.to change(Lead, :count).by(1)
           new_lead = Lead.last
           response_json = JSON.parse(response.body)
@@ -36,7 +38,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
       context "with invalid params" do
         it "does not create a new lead" do
           expect {
-            post :create, params: {lead: invalid_attributes_for_druid, source: 'Druid'}, format: :json
+            post :create, params: invalid_attributes_for_druid, format: :json
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response_json["first_name"][0]).to eq("can't be blank")
