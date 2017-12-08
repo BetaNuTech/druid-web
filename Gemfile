@@ -50,8 +50,8 @@ group :development do
 
   # Profiler
   gem 'rack-mini-profiler', "~> 0.10", require: false
-  gem 'memory_profiler'
-  gem 'flamegraph'
-  gem 'stackprof'
-  gem 'fast_stack'
+  gem 'memory_profiler', "~> 0.9"
+  gem 'flamegraph', "~> 0.9"
+  gem 'stackprof', "~> 0.2"
+  gem 'fast_stack', "~> 0.2"
 end
