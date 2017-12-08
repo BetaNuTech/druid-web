@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <p id="notice"><%= notice %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Lead Sources</h1>
+    </div>
+    <div class="col-md-6 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New Lead Source', new_lead_source_path %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Incoming</th>
+            <th>Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @lead_sources.each do |lead_source| %>
+            <tr>
+              <td></td>
+              <td><%= lead_source.name %></td>
+              <td><%= lead_source.slug %></td>
+              <td><%= lead_source.incoming %></td>
+              <td><%= lead_source.active %></td>
+              <td>
+                <%= link_to 'Show', lead_source %> |
+                <%= link_to 'Edit', edit_lead_source_path(lead_source) %> |
+                <%= link_to 'Destroy', lead_source, method: :delete, data: { confirm: 'Are you sure?' } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New Lead Source', new_lead_source_path %>
+    </div>
+  </div>
+</div>

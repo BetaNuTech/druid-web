@@ -120,7 +120,11 @@
             <ul class="dropdown-menu">
               <li><a href="#"><span class="glyphicon glyphicon-user"></span> Manage Druid Users</a></li>
               <li><a href="#"><span class="glyphicon glyphicon-download-alt"></span> Lead Management Settings</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-download-alt"></span> Lead Sources</a></li>
+              <li>
+                <%= link_to(lead_sources_path) do %>
+                  <span class="glyphicon glyphicon-download-alt"></span> Lead Sources
+                <% end %>
+              </li>
               <li><a href="#"><span class="glyphicon glyphicon-download-alt"></span> System Configuration</a></li>
             </ul>
           </div>

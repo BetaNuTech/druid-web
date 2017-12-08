@@ -17,7 +17,7 @@ class LeadSource < ApplicationRecord
   has_many :leads
 
   # Validations
-  validates :name, :incoming, :slug, :active, :api_token,
+  validates :name, :slug, :api_token,
     presence: true
   validates :name, :slug, :api_token, uniqueness: true
 

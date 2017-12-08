@@ -1,0 +1,54 @@
+<%= form_with(model: lead_source, local: true) do |form| %>
+  <% if lead_source.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(lead_source.errors.count, "error") %> prohibited this lead source from being saved:</h2>
+
+      <ul>
+        <% lead_source.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+
+    </div>
+  <% end %>
+
+  <div class="fieldset_content">
+    <fieldset>
+      <legend>Lead Source Details</legend>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :name %><br/>
+          <%= form.text_field :name, id: :lead_source_name, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <%= form.label :slug %><br/>
+          <%= form.text_field :slug, id: :lead_source_slug, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2 form-group">
+          <div class="form-check-label">
+            <%= form.check_box :active, id: :lead_source_active, class: "form-check-input" %>
+            Active?
+          </div>
+        </div>
+        <div class="col-md-2 form-group">
+          <div class="form-check-label">
+            <%= form.check_box :incoming, id: :lead_source_incoming, class: "form-check-input" %>
+            Incoming?
+          </div>
+        </div>
+      </div>
+
+    </fieldset>
+  </div>
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+<% end %>

@@ -29,13 +29,14 @@ RSpec.describe LeadSource, type: :model do
   }
 
   it "has required fields" do
+    required_fields = [:name, :slug]
     l1 = LeadSource.new(valid_attributes)
     l1.validate
     assert(l1.valid?)
     l2 = LeadSource.new({})
     l2.validate
     refute(l2.valid?)
-    expect(l2.errors.keys.sort).to eq(valid_attributes.keys.sort)
+    expect(l2.errors.keys.sort).to eq(required_fields.sort)
   end
 
   it "has leads" do
