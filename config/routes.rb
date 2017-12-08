@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   end
 
   resources :leads
-  resources :lead_sources
+  resources :lead_sources do
+    post 'reset_token', on: :member
+  end
 
 
   root to: "home#index"

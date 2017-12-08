@@ -1,5 +1,5 @@
 class LeadSourcesController < ApplicationController
-  before_action :set_lead_source, only: [:show, :edit, :update, :destroy]
+  before_action :set_lead_source, only: [:show, :edit, :update, :destroy, :reset_token]
 
   def index
     @lead_sources = LeadSource.all.order("name asc")
@@ -11,6 +11,8 @@ class LeadSourcesController < ApplicationController
 
   def new
     @lead_source = LeadSource.new
+    @lead_source.active = true
+    @lead_source.incoming = true
   end
 
   def create
@@ -49,6 +51,15 @@ class LeadSourcesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to lead_sources_url, notice: 'Lead Source was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def reset_token
+    @lead_source.api_token = nil
+    @lead_source.save
+    respond_to do |format|
+      format.html { redirect_to @lead_source, notice: 'API Token has been reset'}
+      format.json { render :show, status: :ok }
     end
   end
 

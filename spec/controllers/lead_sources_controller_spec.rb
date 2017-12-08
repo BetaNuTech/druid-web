@@ -118,4 +118,17 @@ RSpec.describe LeadSourcesController, type: :controller do
     end
   end
 
+  describe "POST #reset_token" do
+    [:html, :json].each do |format|
+      it "should reset the api token via a #{format} request" do
+        lead_source = create(:lead_source)
+        expect{
+          post :reset_token, params: {id: lead_source.to_param}, format: format
+          lead_source.reload
+        }.to change(lead_source, :api_token)
+      end
+    end
+
+  end
+
 end
