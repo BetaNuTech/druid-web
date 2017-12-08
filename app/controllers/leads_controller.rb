@@ -26,10 +26,13 @@ class LeadsController < ApplicationController
   # POST /leads
   # POST /leads.json
   def create
-    @lead = Lead.new(lead_params)
+    #@lead = Lead.new(lead_params)
+    #lead_creator = Leads::Creator.new(data: lead_params, source: 'Druid', agent: nil)
+    lead_creator = Leads::Creator.new(data: lead_params, agent: nil)
+    @lead = lead_creator.execute
 
     respond_to do |format|
-      if @lead.save
+      if !@lead.errors.any?
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
       else
@@ -71,8 +74,8 @@ class LeadsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def lead_params
-      valid_lead_params = [:lead_source_id, :lead_preferences_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
-      valid_preference_params = [{preference_attributes: [:baths, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes]}]
+      valid_lead_params = Lead::ALLOWED_PARAMS
+      valid_preference_params = [{preference_attributes: LeadPreference::ALLOWED_PARAMS }]
       params.require(:lead).permit(*(valid_lead_params + valid_preference_params))
     end
 

@@ -18,12 +18,16 @@
 #
 
 class Lead < ApplicationRecord
+  ALLOWED_PARAMS = [:lead_source_id, :lead_preferences_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
 
   ### Associations
   has_one :preference,
     class_name: 'LeadPreference',
     dependent: :destroy
   accepts_nested_attributes_for :preference
+  belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id',
+    required: false
+  # TODO: Agent association
 
   ### Validations
   validates :first_name,
@@ -36,6 +40,7 @@ class Lead < ApplicationRecord
   def name
     [title, first_name, last_name].join(' ')
   end
+
 
   private
 

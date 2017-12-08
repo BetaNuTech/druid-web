@@ -53,7 +53,7 @@ RSpec.describe Lead, type: :model do
   end
 
   it "has a preference" do
-    lead = create(:lead_with_preference)
+    lead = create(:lead)
     expect(lead.preference).to be_a(LeadPreference)
   end
 end
