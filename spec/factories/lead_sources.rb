@@ -9,6 +9,7 @@
 #  active     :boolean
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  api_token  :string
 #
 
 FactoryBot.define do
@@ -17,5 +18,6 @@ FactoryBot.define do
     incoming true
     slug "test"
     active true
+    # api_token is auto-generated before validation
   end
 end
