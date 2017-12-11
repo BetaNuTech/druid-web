@@ -3,9 +3,21 @@ require 'rails_helper'
 RSpec.describe Api::V1::LeadsController, type: :controller do
   render_views
 
+  let(:source) {
+    create(:lead_source, slug: 'Druid')
+  }
+
   let(:valid_attributes_for_druid) {
     base_attrs = attributes_for(:lead)
     base_attrs[:source] = 'Druid'
+    base_attrs[:token] = source.api_token
+    base_attrs
+  }
+
+  let(:valid_attributes_for_druid_invalid_token) {
+    base_attrs = attributes_for(:lead)
+    base_attrs[:source] = 'Druid'
+    base_attrs[:token] = 'not valid'
     base_attrs
   }
 
@@ -19,7 +31,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
   describe "POST #create" do
     describe "using the Druid Adapter" do
       before do
-        create(:lead_source, slug: 'Druid')
+        source
       end
 
       context "with valid params" do
@@ -33,6 +45,15 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
           expect(response_json["preference"]["min_area"]).to eq(new_lead.preference.min_area)
         end
 
+        it "fails to create a new Lead with an invalid token" do
+          expect {
+            post :create, params: valid_attributes_for_druid_invalid_token, format: :json
+          }.to change(Lead, :count).by(0)
+          response_json = JSON.parse(response.body)
+          expect(response_json["errors"]).to_not be_nil
+          expect(response_json["errors"]["base"][0]).to match('Invalid Access Token')
+        end
+
       end
 
       context "with invalid params" do
@@ -41,7 +62,8 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
             post :create, params: invalid_attributes_for_druid, format: :json
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
-          expect(response_json["first_name"][0]).to eq("can't be blank")
+          expect(response_json["errors"]).to_not be_nil
+          expect(response_json["errors"]["first_name"][0]).to eq("can't be blank")
         end
       end
     end

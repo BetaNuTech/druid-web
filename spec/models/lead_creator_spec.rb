@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Lead, type: :model do
+
+  let(:source) {
+    create(:lead_source, slug: 'Druid')
+  }
+
   let(:valid_attributes) {
     {
       data: FactoryBot.attributes_for(:lead),
@@ -9,10 +14,37 @@ RSpec.describe Lead, type: :model do
     }
   }
 
+  let(:valid_attributes_with_valid_token) {
+    {
+      data: FactoryBot.attributes_for(:lead),
+      source: 'Druid',
+      validate_token: source.api_token,
+      agent: nil
+    }
+  }
+
+  let(:valid_attributes_with_invalid_token) {
+    {
+      data: FactoryBot.attributes_for(:lead),
+      source: 'Druid',
+      validate_token: 'bad_token',
+      agent: nil
+    }
+  }
+
   let(:invalid_lead_attributes) {
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
       source: 'Druid',
+      agent: nil
+    }
+  }
+
+  let(:invalid_lead_attributes_with_valid_token) {
+    {
+      data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
+      source: 'Druid',
+      validate_token: source.api_token,
       agent: nil
     }
   }
@@ -35,7 +67,7 @@ RSpec.describe Lead, type: :model do
   }
 
   before do
-    create(:lead_source, slug: 'Druid')
+    source
   end
 
   it "can be initialized with valid data and the Druid adapter" do
@@ -74,6 +106,39 @@ RSpec.describe Lead, type: :model do
     assert(lead.errors.any?)
     assert(creator.errors.any?)
     expect(creator.lead).to eq(lead)
+  end
+
+  describe "when initialized with a token" do
+    it "will create a lead with valid attributes and source if the token matches the source token" do
+      creator = Leads::Creator.new(**valid_attributes_with_valid_token)
+      expect(creator.source).to be_a(LeadSource)
+      expect(creator.parser).to eq(Leads::Adapters::Druid)
+      lead = creator.execute
+      refute(creator.errors.any?)
+      assert(lead.valid?)
+      expect(creator.lead).to eq(lead)
+      expect(Lead.last).to eq(lead)
+    end
+
+    it "will fail to create a lead with invalid attributes and valid source if the token matches the source token" do
+      creator = Leads::Creator.new(**invalid_lead_attributes_with_valid_token)
+      lead = creator.execute
+      assert(lead.errors.any?)
+      assert(creator.errors.any?)
+      expect(creator.lead).to eq(lead)
+    end
+
+    it "will fail to create a lead with valid attributes and valid source if the token doesn't match the source token" do
+      creator = Leads::Creator.new(**valid_attributes_with_invalid_token)
+      expect(creator.source).to be_a(LeadSource)
+      expect(creator.parser).to eq(Leads::Adapters::Druid)
+      lead = nil
+      expect {
+        lead = creator.execute
+      }.to_not change(Lead, :count)
+      assert(lead.errors.any?)
+      assert(creator.errors.any?)
+    end
   end
 end
 

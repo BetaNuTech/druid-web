@@ -6,24 +6,38 @@ module Leads
       :parser,
       :saved,
       :source,
-      :source_slug
+      :token
 
-    def initialize(data: params, source: nil, agent: nil)
+    def initialize(data:, source: nil, agent: nil, validate_token: nil)
       @lead = Lead.new
       @saved = false
-      @data = data
       @errors = ActiveModel::Errors.new(Lead)
+      @data = data
+      @token = token
       @source_slug = source
       @source = get_source(@source_slug)
       @parser = get_parser(@source)
+      @token = verify_token(@source, validate_token)
     end
 
     # Create lead from provided data using detected Source adapter
     def execute
+
+      # Validate Parser
       if @parser.nil?
         error_message =  "Parser for Lead Source not found: #{@source_slug}"
         @errors.add(:base, error_message)
-        @lead.validate # and add errors
+        @lead.errors.add(:base, error_message)
+        return @lead
+      end
+
+      # Validate Access Token for Lead Source
+      case @token.first
+      when :ok
+        # NOOP : everything OK
+      when :err
+        error_message =  "Invalid Access Token for Lead Source: #{@source_slug}"
+        @errors.add(:base, error_message)
         @lead.errors.add(:base, error_message)
         return @lead
       end
@@ -52,7 +66,19 @@ module Leads
 
     private
 
+    # Validate the source token
+    #
+    # Returns: [(:ok|:err), ("token value"|"error message")]
+    def verify_token(source, token)
+      if token.present?
+        return (source.present? && source.api_token == token) ?
+          [:ok, token] : [:err, 'Invalid Token']
+      else
+        return [:ok, nil]
+      end
+    end
 
+    # Lookup Source by slug or default
     def get_source(source_slug)
       return source_slug ?
         lookup_source(source_slug) :
@@ -64,10 +90,12 @@ module Leads
       LeadSource.active.where(slug: source_slug).first
     end
 
+    # The default source is 'Druid'
     def default_source
       LeadSource.active.where(slug: 'Druid').first
     end
 
+    # Get Parser Class named like the Source slug
     def get_parser(source)
       return nil unless source
       return Leads::Adapters.supported_source?(source.slug) ?
