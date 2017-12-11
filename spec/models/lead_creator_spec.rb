@@ -10,6 +10,7 @@ RSpec.describe Lead, type: :model do
     {
       data: FactoryBot.attributes_for(:lead),
       source: 'Druid',
+      validate_token: source.api_token,
       agent: nil
     }
   }
@@ -36,6 +37,7 @@ RSpec.describe Lead, type: :model do
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
       source: 'Druid',
+      validate_token: source.api_token,
       agent: nil
     }
   }
@@ -54,6 +56,7 @@ RSpec.describe Lead, type: :model do
       data: FactoryBot.attributes_for(:lead).
         merge(preference_attributes: {max_area: 100, min_area: 1000}),
       source: 'Druid',
+      validate_token: source.api_token,
       agent: nil
     }
   }
@@ -62,6 +65,7 @@ RSpec.describe Lead, type: :model do
     {
       data: FactoryBot.attributes_for(:lead),
       source: 'Foobar',
+      validate_token: 'invalid token',
       agent: nil
     }
   }

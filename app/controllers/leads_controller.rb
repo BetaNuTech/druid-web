@@ -26,9 +26,9 @@ class LeadsController < ApplicationController
   # POST /leads
   # POST /leads.json
   def create
-    #@lead = Lead.new(lead_params)
-    #lead_creator = Leads::Creator.new(data: lead_params, source: 'Druid', agent: nil)
-    lead_creator = Leads::Creator.new(data: lead_params, agent: nil)
+    source = LeadSource.active.where(slug: 'Druid').first
+    #TODO assign current_user to agent
+    lead_creator = Leads::Creator.new(data: lead_params, agent: nil, source: source.slug, validate_token: source.api_token)
     @lead = lead_creator.execute
 
     respond_to do |format|

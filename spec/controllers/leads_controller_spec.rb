@@ -26,6 +26,10 @@ require 'rails_helper'
 RSpec.describe LeadsController, type: :controller do
   render_views
 
+  let(:source) {
+    create(:lead_source, slug: 'Druid')
+  }
+
   # This should return the minimal set of attributes required to create a valid
   # Lead. As you add validations to Lead, be sure to
   # adjust the attributes here as well.
@@ -43,6 +47,7 @@ RSpec.describe LeadsController, type: :controller do
   # in order to pass any filters (e.g. authentication) defined in
   # LeadsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
+
 
   describe "GET #index" do
     it "returns a success response" do
@@ -84,7 +89,7 @@ RSpec.describe LeadsController, type: :controller do
 
   describe "POST #create" do
     before do
-      create(:lead_source, slug: 'Druid')
+      source
     end
 
     context "with valid params" do

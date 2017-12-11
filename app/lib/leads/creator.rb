@@ -8,7 +8,7 @@ module Leads
       :source,
       :token
 
-    def initialize(data:, source: nil, agent: nil, validate_token: nil)
+    def initialize(data:, source: nil, agent: nil, validate_token: )
       @lead = Lead.new
       @saved = false
       @errors = ActiveModel::Errors.new(Lead)
@@ -70,12 +70,8 @@ module Leads
     #
     # Returns: [(:ok|:err), ("token value"|"error message")]
     def verify_token(source, token)
-      if token.present?
-        return (source.present? && source.api_token == token) ?
-          [:ok, token] : [:err, 'Invalid Token']
-      else
-        return [:ok, nil]
-      end
+      return (token.present? && source.present? && source.api_token == token) ?
+        [:ok, token] : [:err, 'Invalid Token']
     end
 
     # Lookup Source by slug or default

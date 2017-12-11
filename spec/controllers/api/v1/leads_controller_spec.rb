@@ -25,6 +25,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
     base_attrs = attributes_for(:lead)
     base_attrs[:first_name] = nil
     base_attrs[:source] = 'Druid'
+    base_attrs[:token] = source.api_token
     base_attrs
   }
 
