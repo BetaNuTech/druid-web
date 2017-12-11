@@ -11,5 +11,20 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe LeadSourcesHelper, type: :helper do
-  #pending "add some examples to (or delete) #{__FILE__}"
+
+  describe "select_supported_parsers" do
+
+    it "should return select options as HTML" do
+      out = select_supported_parsers(nil)
+      expect(out).to match("option")
+    end
+
+    it "should only return supported parsers" do
+      out = select_supported_parsers(nil)
+      Leads::Adapters::SUPPORTED.each do |adapter|
+        expect(out).to match(adapter)
+      end
+    end
+
+  end
 end
