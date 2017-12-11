@@ -18,10 +18,10 @@
       <table class="table">
         <thead>
           <tr>
-            <th></th>
+            <th>State</th>
+            <th>Source</th>
             <th>Name</th>
             <th>Referral</th>
-            <th>State</th>
             <th>Notes</th>
             <th>First/Last Contact</th>
             <th>Actions</th>
@@ -31,14 +31,14 @@
         <tbody>
           <% @leads.each do |lead| %>
             <tr>
-              <td></td>
+              <td><%= lead.state || '-' %></td>
+              <td><%= lead.source.try(:name) || '-' %></td>
               <td>
                 <%= lead.title %>
                 <%= lead.first_name %>
                 <%= lead.last_name %>
               </td>
               <td><%= lead.referral %></td>
-              <td><%= lead.state %></td>
               <td><%= lead.notes %></td>
               <td>
                 <%= short_date(lead.first_comm) %> |

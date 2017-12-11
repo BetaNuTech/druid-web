@@ -55,13 +55,6 @@ RSpec.describe LeadSource, type: :model do
     refute(lead2.valid?)
   end
 
-  it "has a unique slug" do
-    lead1 = create(:lead_source, valid_attributes)
-    assert(lead1.valid?)
-    lead2 = build(:lead_source, valid_attributes.merge(name: 'zzz'))
-    refute(lead2.valid?)
-  end
-
   it "automatically generates an api token on create" do
     lead1 = create(:lead_source, api_token: nil)
     lead2 = create(:lead_source, name: 'source2', slug: 'source2', api_token: nil)

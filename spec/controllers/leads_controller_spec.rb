@@ -27,7 +27,7 @@ RSpec.describe LeadsController, type: :controller do
   render_views
 
   let(:source) {
-    create(:lead_source, slug: 'Druid')
+    create(:lead_source, slug: LeadSource::DEFAULT_SLUG)
   }
 
   # This should return the minimal set of attributes required to create a valid
@@ -47,6 +47,10 @@ RSpec.describe LeadsController, type: :controller do
   # in order to pass any filters (e.g. authentication) defined in
   # LeadsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
+
+  before do
+    source
+  end
 
 
   describe "GET #index" do

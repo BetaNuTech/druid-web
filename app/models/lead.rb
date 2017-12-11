@@ -18,7 +18,7 @@
 #
 
 class Lead < ApplicationRecord
-  ALLOWED_PARAMS = [:lead_source_id, :lead_preferences_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
+  ALLOWED_PARAMS = [:lead_source_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
 
   ### Associations
   has_one :preference,

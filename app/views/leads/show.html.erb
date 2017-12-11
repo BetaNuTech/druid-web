@@ -7,8 +7,21 @@
     </div>
   </div>
 
+  <h2>Lead Information</h2>
+
   <div class="row">
-    <h2>Lead Information</h2>
+    <div class="col-md-4">
+      <p>
+        <strong>Source:</strong><br/>
+        <% if @lead.source.present? %>
+          <%= link_to(@lead.source.name, lead_source_path(@lead.source) ) %>
+        <% else %>
+          Unknown
+        <% end %>
+      </p>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-md-1">
       <p>
         <strong>Title:</strong><br/>

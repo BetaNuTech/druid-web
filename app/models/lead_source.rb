@@ -13,13 +13,17 @@
 #
 
 class LeadSource < ApplicationRecord
+
+  # A LeadSource 'slug' also identifies the parser
+  DEFAULT_SLUG = 'Druid'
+
   # Associations
   has_many :leads
 
   # Validations
   validates :name, :slug, :api_token,
     presence: true
-  validates :name, :slug, :api_token, uniqueness: true
+  validates :name, :api_token, uniqueness: true
 
   # Scopes
   scope :active, -> { where(active: true) }
@@ -28,6 +32,10 @@ class LeadSource < ApplicationRecord
   before_validation :assign_api_token
 
   # Class Methods
+  
+  def self.default
+    self.active.where(slug: DEFAULT_SLUG).first
+  end
 
   # Instance Methods
 

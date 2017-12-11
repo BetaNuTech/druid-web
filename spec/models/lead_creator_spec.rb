@@ -3,13 +3,13 @@ require 'rails_helper'
 RSpec.describe Lead, type: :model do
 
   let(:source) {
-    create(:lead_source, slug: 'Druid')
+    create(:lead_source, slug: LeadSource::DEFAULT_SLUG)
   }
 
   let(:valid_attributes) {
     {
       data: FactoryBot.attributes_for(:lead),
-      source: 'Druid',
+      source: source.slug,
       validate_token: source.api_token,
       agent: nil
     }
@@ -18,7 +18,7 @@ RSpec.describe Lead, type: :model do
   let(:valid_attributes_with_valid_token) {
     {
       data: FactoryBot.attributes_for(:lead),
-      source: 'Druid',
+      source: source.slug,
       validate_token: source.api_token,
       agent: nil
     }
@@ -27,7 +27,7 @@ RSpec.describe Lead, type: :model do
   let(:valid_attributes_with_invalid_token) {
     {
       data: FactoryBot.attributes_for(:lead),
-      source: 'Druid',
+      source: source.slug,
       validate_token: 'bad_token',
       agent: nil
     }
@@ -36,7 +36,7 @@ RSpec.describe Lead, type: :model do
   let(:invalid_lead_attributes) {
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
-      source: 'Druid',
+      source: source.slug,
       validate_token: source.api_token,
       agent: nil
     }
@@ -45,7 +45,7 @@ RSpec.describe Lead, type: :model do
   let(:invalid_lead_attributes_with_valid_token) {
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
-      source: 'Druid',
+      source: source.slug,
       validate_token: source.api_token,
       agent: nil
     }
@@ -55,7 +55,7 @@ RSpec.describe Lead, type: :model do
     {
       data: FactoryBot.attributes_for(:lead).
         merge(preference_attributes: {max_area: 100, min_area: 1000}),
-      source: 'Druid',
+      source: source.slug,
       validate_token: source.api_token,
       agent: nil
     }

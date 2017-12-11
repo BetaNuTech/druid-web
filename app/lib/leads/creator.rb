@@ -88,7 +88,7 @@ module Leads
 
     # The default source is 'Druid'
     def default_source
-      LeadSource.active.where(slug: 'Druid').first
+      LeadSource.default
     end
 
     # Get Parser Class named like the Source slug

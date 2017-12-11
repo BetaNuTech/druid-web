@@ -42,4 +42,19 @@ RSpec.describe LeadsHelper, type: :helper do
       expect(display_preference_option(false)).to eq('No preference')
     end
   end
+
+  describe "sources_for_select" do
+    let(:sources) {
+      [
+        create(:lead_source, slug: LeadSource::DEFAULT_SLUG, name: 'Druid WebApp'),
+        create(:lead_source, slug: 'Other', name: 'Other Source'),
+      ]
+    }
+
+    it "should return form options as HTML for selecting a lead source" do
+      option1, option2 = sources
+      out = sources_for_select(option2.id)
+      expect(out).to match("<option selected=\"selected\" value=\"#{option2.id}\">#{option2.name}</option>")
+    end
+  end
 end

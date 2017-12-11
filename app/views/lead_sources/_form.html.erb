@@ -25,8 +25,8 @@
 
       <div class="row">
         <div class="col-md-4 form-group">
-          <%= form.label :slug %><br/>
-          <%= form.text_field :slug, id: :lead_source_slug, class: "form-control" %>
+          <%= form.label 'Slug/Adapter' %><br/>
+          <%= form.select :slug, select_supported_parsers(@lead_source.slug),{}, {id: :lead_source_slug, class: "form-control"} %>
         </div>
       </div>
 

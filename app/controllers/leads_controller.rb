@@ -26,9 +26,9 @@ class LeadsController < ApplicationController
   # POST /leads
   # POST /leads.json
   def create
-    source = LeadSource.active.where(slug: 'Druid').first
+    set_lead_source
     #TODO assign current_user to agent
-    lead_creator = Leads::Creator.new(data: lead_params, agent: nil, source: source.slug, validate_token: source.api_token)
+    lead_creator = Leads::Creator.new(data: lead_params, agent: nil, source: @lead_source.slug, validate_token: @lead_source.api_token)
     @lead = lead_creator.execute
 
     respond_to do |format|
@@ -36,6 +36,7 @@ class LeadsController < ApplicationController
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
       else
+        @lead.build_preference unless @lead.preference.present?
         format.html { render :new }
         format.json { render json: @lead.errors, status: :unprocessable_entity }
       end
@@ -70,6 +71,15 @@ class LeadsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_lead
       @lead = Lead.find(params[:id])
+    end
+
+    def set_lead_source
+      lead_source_id = lead_params[:lead_source_id]
+      if lead_source_id.present?
+        @lead_source = LeadSource.active.find(lead_source_id)
+      else
+        @lead_source = LeadSource.default
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
