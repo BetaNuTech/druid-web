@@ -20,8 +20,10 @@
       <ul class="nav navbar-nav">
         <li> <!-- Leads -->
           <div class="btn-group">
-            <%= link_to('Leads', leads_path, class: "btn btn-success btn-nav-active") %>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+            <%= link_to(leads_path, class: "btn #{nav_active_class(leads_path)}") do %>
+              <span class="glyphicon glyphicon-flag"></span> Leads
+            <% end %>
+            <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(leads_path) %>" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
@@ -64,7 +66,7 @@
 
         <li> <!-- Messaging -->
           <div class="btn-group">
-            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</button>
+            <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</a>
             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
@@ -84,7 +86,7 @@
 
         <li> <!-- Reports -->
           <div class="btn-group">
-            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</button>
+            <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</a>
             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
@@ -98,13 +100,19 @@
 
         <li> <!-- Properties -->
           <div class="btn-group">
-            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-home"></span> Properties</button>
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+            <%= link_to(properties_path, class: "btn #{nav_active_class(properties_path)}") do %>
+              <span class="glyphicon glyphicon-home"></span> Properties
+            <% end %>
+            <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(properties_path)%>" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu">
-              <li><a href="#"><span class="glyphicon glyphicon-home"></span> Properties</a></li>
+              <li>
+                <%= link_to(properties_path) do %>
+                  <span class="glyphicon glyphicon-home"></span> Properties
+                <% end %>
+              </li>
               <li><a href="#"><span class="glyphicon glyphicon-user"></span> Residents</a></li>
             </ul>
           </div>
@@ -112,7 +120,7 @@
 
         <li> <!-- System -->
           <div class="btn-group">
-            <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-wrench"></span> System</button>
+            <a  href="#" class="btn btn-info"><span class="glyphicon glyphicon-wrench"></span> System</a>
             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
@@ -132,8 +140,8 @@
 
         <li> <!-- Account -->
           <div class="btn-group">
-            <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-off"></span> Logout</button>
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-off"></span> Logout</a>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>

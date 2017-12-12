@@ -1,0 +1,153 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+
+      <div class="row">
+        <div class="col-md-6">
+          <h1>Property: <%= @property.name %></h1>
+          <p id="notice"><%= notice %></p>
+        </div>
+      </div>
+
+      <h2>Property Information</h2>
+
+      <div class="row">
+        <div class="col-md-4">
+          <p>
+            <strong>Name:</strong>
+            <%= @property.name %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Address1:</strong>
+            <%= @property.address1 %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Address2:</strong>
+            <%= @property.address2 %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Address3:</strong>
+            <%= @property.address3 %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <p>
+            <strong>City:</strong>
+            <%= @property.city %>
+          </p>
+        </div>
+        <div class="col-md-2">
+          <p>
+            <strong>State:</strong>
+            <%= @property.state %>
+          </p>
+        </div>
+        <div class="col-md-2">
+          <p>
+            <strong>Zip:</strong>
+            <%= @property.zip %>
+          </p>
+        </div>
+        <div class="col-md-2">
+          <p>
+            <strong>Country:</strong>
+            <%= @property.country %>
+          </p>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6">
+
+          <p>
+            <strong>Organization:</strong>
+            <%= @property.organization %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Contact name:</strong>
+            <%= @property.contact_name %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <p>
+            <strong>Phone:</strong>
+            <%= @property.phone %>
+          </p>
+        </div>
+        <div class="col-md-4">
+          <p>
+            <strong>Fax:</strong>
+            <%= @property.fax %>
+          </p>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6">
+
+          <p>
+            <strong>Email:</strong>
+            <%= @property.email %>
+          </p>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6">
+
+          <p>
+            <strong>Units:</strong>
+            <%= @property.units %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+
+          <p>
+            <strong>Notes:</strong>
+            <%= @property.notes %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+
+          <%= link_to 'Edit', edit_property_path(@property) %> |
+          <%= link_to 'Back', properties_path %>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
