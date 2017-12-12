@@ -11,5 +11,7 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe PropertiesHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "is empty" do
+    assert(true)
+  end
 end

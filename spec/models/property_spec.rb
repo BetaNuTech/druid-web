@@ -25,5 +25,21 @@
 require 'rails_helper'
 
 RSpec.describe Property, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:valid_attributes) {
+    attributes_for(:property)
+  }
+
+  let(:invalid_attributes) {
+    attributes_for(:property, name: nil)
+  }
+
+  describe "validations" do
+    it "requires a name" do
+      property = Property.new(valid_attributes)
+      assert(property.valid?)
+
+      property.name = nil
+      refute(property.valid?)
+    end
+  end
 end
