@@ -85,6 +85,18 @@ RSpec.describe Lead, type: :model do
     expect(Lead.last).to eq(lead)
   end
 
+  it "can create a lead with a default source" do
+    attrs = valid_attributes
+    attrs.delete(:source)
+    creator = Leads::Creator.new(**valid_attributes)
+    expect(creator.source).to be_a(LeadSource)
+    lead = creator.execute
+    refute(creator.errors.any?)
+    assert(lead.valid?)
+    expect(creator.lead).to eq(lead)
+    expect(Lead.last).to eq(lead)
+  end
+
   it "can be initialized with an invalid source" do
     creator = Leads::Creator.new(**invalid_source_attributes)
     expect(creator.source).to be_nil

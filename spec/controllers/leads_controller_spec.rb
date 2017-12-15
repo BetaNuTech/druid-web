@@ -107,6 +107,14 @@ RSpec.describe LeadsController, type: :controller do
         post :create, params: {lead: valid_attributes}, session: valid_session
         expect(response).to redirect_to(Lead.last)
       end
+
+      context "specifying a source id" do
+        it "creates a lead with the source" do
+        post :create, params: {lead: valid_attributes.merge(lead_source_id: source.id) }, session: valid_session
+        expect(response).to redirect_to(Lead.last)
+        expect(Lead.last.source).to eq(source)
+        end
+      end
     end
 
     context "with invalid params" do
