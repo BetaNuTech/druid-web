@@ -18,11 +18,11 @@
       <div class="row">
         <div class="col-md-6 form-group">
           <%= form.label 'Property'%><br/>
-          <%= form.select :property_id, properties_for_select(@lead.property_id), {}, { class: "form-control" } %>
+          <%= form.select :property_id, properties_for_select(@lead.property_id), { include_blank: true }, { class: "form-control" } %>
         </div>
         <div class="col-md-6 form-group">
           <%= form.label 'Lead Source'%><br/>
-          <%= form.select :lead_source_id, sources_for_select(@lead.lead_source_id), {}, { class: "form-control" } %>
+          <%= form.select :lead_source_id, sources_for_select(@lead.lead_source_id), { include_blank: true }, { class: "form-control" } %>
         </div>
       </div>
 
