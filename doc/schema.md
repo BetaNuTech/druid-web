@@ -126,3 +126,45 @@ has_many :leads
 
 TODO
 * active
+
+# Properties
+
+Properties correspond to the properties that Leads are interested in.
+
+```
+|--------------+------------+-------+----------|
+| Table:       | properties |       |          |
+|--------------+------------+-------+----------|
+|--------------+------------+-------+----------|
+| column name  | type       | notes | required |
+|--------------+------------+-------+----------|
+| id           | uuid       | PK    | Y        |
+|--------------+------------+-------+----------|
+| name         | string     |       | Y        |
+| address1     | string     |       | N        |
+| address2     | string     |       | N        |
+| address3     | string     |       | N        |
+| city         | string     |       | N        |
+| state        | string     |       | N        |
+| zip          | string     |       | N        |
+| country      | string     |       | N        |
+| organization | string     |       | N        |
+| contact_name | string     |       | N        |
+| phone        | string     |       | N        |
+| fax          | string     |       | N        |
+| email        | string     |       | N        |
+| units        | integer    |       | N        |
+| notes        | text       |       | N        |
+|--------------+------------+-------+----------|
+| created_at   | datetime   |       | Y        |
+| updated_at   | datetime   |       | Y        |
+|--------------+------------+-------+----------|
+```
+
+## Relationships
+
+has_many :leads
+
+## Indexes
+
+TODO
