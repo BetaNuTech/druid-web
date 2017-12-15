@@ -51,6 +51,31 @@ Pry configuration can be found in `.pryrc`
 
 # Testing
 
+The following libraries/tools are used for testing:
+
+* RSpec
+* FactoryBot
+* Guard
+* Minicov
+
+## Running Tests
+
+We suggest running `bundle exec guard` in a dedicated console window/tab.
+Guard automatically runs tests when files are added/updated.
+
+Run `bundle exec rspec` to run the entire test suite. When Rspec has completed
+running the tests, a test coverage report is automatically created in `coverage/index.html`
+
+## Writing Tests
+
+Be sure to create and update FactoryBot factories whenever a database model is created or updated.
+
+## Annotations
+
+Run `bundle exec annotate` to annotate models, tests. and factories with
+model/table fields at the beginning of the file.  These annotations can be a
+huge help during development and testing to understand the database schema.
+
 TODO
 
 # Services
@@ -66,6 +91,11 @@ We are using the GitFlow branch management model. See:
 
 ## Deployment
 
-TODO
+The application is hosted on Heroku. Push to Heroku and run database migrations as needed.
 
+Staging Deployment Example:
 
+```
+git push heroku-staging staging:master && \
+  heroku run rake db:migrate --app heroku-staging
+```
