@@ -40,5 +40,6 @@ FactoryBot.define do
     email "MyString"
     units 1
     notes "MyText"
+    active true
   end
 end

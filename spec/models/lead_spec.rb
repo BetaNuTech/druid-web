@@ -57,4 +57,11 @@ RSpec.describe Lead, type: :model do
     lead = create(:lead)
     expect(lead.preference).to be_a(LeadPreference)
   end
+
+  it "belongs to a property" do
+    property = create(:property)
+    lead = create(:lead, property_id: property.id)
+
+    expect(lead.property).to eq(property)
+  end
 end
