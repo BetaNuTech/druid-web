@@ -20,6 +20,7 @@
 #  notes        :text
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  active       :boolean          default(TRUE)
 #
 
 FactoryBot.define do

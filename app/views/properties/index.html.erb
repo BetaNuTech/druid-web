@@ -28,7 +28,7 @@
 
         <tbody>
           <% @properties.each do |property| %>
-            <tr>
+            <tr class="<%= property_active_table_row_class(property) %>">
               <td class="first-column"><%= property.name %></td>
               <td><%= property.organization %></td>
               <td>
@@ -41,7 +41,7 @@
                 <p class="glyph-indent">
                   <span style="display: block; float: left;"><%= glyph(:address) %></span>
                   <span style="display: block; margin-left: 1.5em;">
-                    <%=raw [h(property.address1), h(property.address2), h(property.address3)].join('<br/>') %></br>
+                  <%= property_address_block(property) %>
                   </span>
                 </p>
               </td>

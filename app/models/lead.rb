@@ -15,18 +15,20 @@
 #  last_comm      :datetime
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  property_id    :uuid
 #
 
 class Lead < ApplicationRecord
-  ALLOWED_PARAMS = [:lead_source_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
 
   ### Associations
   has_one :preference,
     class_name: 'LeadPreference',
     dependent: :destroy
   accepts_nested_attributes_for :preference
-  belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id',
-    required: false
+  belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id', required: false
+  belongs_to :property, required: false
+
   # TODO: Agent association
 
   ### Validations

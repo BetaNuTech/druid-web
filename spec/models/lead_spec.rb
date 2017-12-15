@@ -15,6 +15,7 @@
 #  last_comm      :datetime
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  property_id    :uuid
 #
 
 require 'rails_helper'

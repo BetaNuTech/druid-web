@@ -1,3 +1,15 @@
 // Place all the styles related to the Properties controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$active-row: #fff;
+$inactive-row: #ccc;
+
+tr.property-table-row-active {
+  background: $active-row;
+}
+
+tr.property-table-row-inactive td {
+  font-style: italic;
+  color: $inactive-row;
+}

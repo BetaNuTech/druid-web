@@ -19,6 +19,7 @@
         <thead>
           <tr>
             <th>State</th>
+            <th>Property</th>
             <th>Source</th>
             <th>Name</th>
             <th>Referral</th>
@@ -32,6 +33,7 @@
           <% @leads.each do |lead| %>
             <tr>
               <td><%= lead.state || '-' %></td>
+              <td><%= lead.property.try(:name) || '-' %></td>
               <td><%= lead.source.try(:name) || '-' %></td>
               <td>
                 <%= lead.title %>

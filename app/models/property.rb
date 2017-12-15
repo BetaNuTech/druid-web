@@ -20,8 +20,18 @@
 #  notes        :text
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  active       :boolean          default(TRUE)
 #
 
 class Property < ApplicationRecord
+  ALLOWED_PARAMS = [:name, :address1, :address2, :address3, :city, :state, :zip, :country, :organization, :contact_name, :phone, :fax, :email, :units, :notes, :active]
+
+  ## Associations
+  has_many :leads
+
+  ### Validations
   validates :name, presence: true, uniqueness: true
+
+  ## Scopes
+  scope :active, -> { where(active: true) }
 end

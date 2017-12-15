@@ -16,9 +16,17 @@
       <legend>Property Information</legend>
 
       <div class="form-group">
+        <div class="form-check-label">
+          <%= form.check_box :active, class: 'form-check-input' %>
+          Active?
+        </div>
+      </div>
+
+      <div class="form-group">
         <%= form.label :name %>
         <%= form.text_field :name, id: :property_name, class: "form-control"  %>
       </div>
+
 
       <div class="form-group">
         <%= form.label :organization %>
