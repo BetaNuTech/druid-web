@@ -28,10 +28,27 @@ class Property < ApplicationRecord
 
   ## Associations
   has_many :leads
+  has_many :listings,
+    class_name: 'PropertyListing',
+    dependent: :destroy
+  accepts_nested_attributes_for :listings, reject_if: proc{|attributes| attributes['code'].blank? && attributes['description'].blank? }
 
   ### Validations
   validates :name, presence: true, uniqueness: true
 
   ## Scopes
   scope :active, -> { where(active: true) }
+
+  # Return array of all possible PropertyListings for this property.
+  def present_and_possible_listings
+    return ( listings + missing_listings ).sort_by{|l| l.source.name}
+  end
+
+  # Return an array of PropertyListings which are not present for
+  # this property
+  def missing_listings
+    LeadSource.where.not(id: [listings.map(&:source_id)]).map do |source|
+      PropertyListing.new(property_id: self.id, source_id: source.id, active: false)
+    end
+  end
 end

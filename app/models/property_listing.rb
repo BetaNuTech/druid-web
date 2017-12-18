@@ -13,9 +13,12 @@
 #
 
 class PropertyListing < ApplicationRecord
+  ALLOWED_PARAMS = [:id, :property_id, :source_id, :code, :description, :active]
+
   ## Associations
   belongs_to :property
   belongs_to :source, class_name: 'LeadSource'
+  has_many :leads, through: :property
 
   ## Validations
   validates :code, presence: true, uniqueness: true

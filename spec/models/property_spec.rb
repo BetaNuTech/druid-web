@@ -64,7 +64,7 @@ RSpec.describe Property, type: :model do
   end
 
   describe "associations" do
-    context "leads" do
+    describe "leads" do
       let(:lead1) {
         create(:lead, property_id: active_property.id)
       }
@@ -83,6 +83,48 @@ RSpec.describe Property, type: :model do
         expect(active_property.leads.count).to eq(2)
         expect(inactive_property.leads.count).to eq(0)
       end
+    end
+
+    describe "listings" do
+      let(:listing1) {
+        create(:property_listing, property: active_property, code: 'listing1', active: true)
+      }
+
+      let(:listing2) {
+        create(:property_listing, property: active_property, code: 'listing2', active: false)
+      }
+
+      before do
+        listing1; listing2
+      end
+
+      it "has many listings" do
+        active_property.reload
+        expect(active_property.listings.count).to eq(2)
+        expect(active_property.listings.active.count).to eq(1)
+      end
+
+      it "returns missing_listings" do
+        expect(active_property.missing_listings.size).to eq(0)
+
+        listing2.destroy
+        active_property.reload
+        expect(active_property.missing_listings.size).to eq(1)
+      end
+
+      it "returns all possible listings" do
+        ppl = active_property.present_and_possible_listings
+        expect(ppl.size).to eq(2)
+        assert(ppl.map{|pl| pl.is_a? PropertyListing}.all?)
+        refute(ppl.map(&:new_record?).any?)
+
+        listing2.destroy
+        active_property.reload
+        ppl = active_property.present_and_possible_listings
+        assert(ppl.map(&:new_record?).any?)
+      end
+
+
     end
   end
 end

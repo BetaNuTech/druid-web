@@ -69,6 +69,8 @@ class PropertiesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def property_params
-      params.require(:property).permit(*Property::ALLOWED_PARAMS)
+      valid_property_params = Property::ALLOWED_PARAMS
+      valid_listing_params = [{listings_attributes: PropertyListing::ALLOWED_PARAMS}]
+      params.require(:property).permit(*( valid_property_params + valid_listing_params ))
     end
 end

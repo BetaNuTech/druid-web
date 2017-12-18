@@ -1,0 +1,25 @@
+<%# The collection argument to fields_for ensures that all PropertyListings are
+  present, even those that have not yet been associated %>
+
+<%= form.fields_for :listings, form.object.present_and_possible_listings do |listing_form| %>
+  <%= listing_form.hidden_field :id %>
+  <%= listing_form.hidden_field :property_id %>
+  <%= listing_form.hidden_field :source_id %>
+  <div class="row">
+    <div class="col-md-2 form-group property-listing-form-source-name">
+      <span><%= listing_form.object.source.name %></span>
+    </div>
+    <div class="col-md-3 form-group">
+      <%= listing_form.text_field :code, placeholder: 'Listing Code or ID', class: 'form-control' %>
+    </div>
+    <div class="col-md-3 form-group">
+      <%= listing_form.text_field :description, placeholder: 'Description', class: 'form-control' %>
+    </div>
+    <div class="col-md-3 form-group">
+      <div class="form-check-label">
+      <%= listing_form.check_box :active, placeholder: 'Description', class: 'form-check-input' %>
+      Active?
+      </div>
+    </div>
+  </div>
+<% end %>
