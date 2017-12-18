@@ -25,21 +25,21 @@
 
 FactoryBot.define do
   factory :property do
-    name "MyString"
-    address1 "MyString"
-    address2 "MyString"
-    address3 "MyString"
-    city "MyString"
-    state "MyString"
-    zip "MyString"
-    country "MyString"
-    organization "MyString"
-    contact_name "MyString"
-    phone "MyString"
-    fax "MyString"
-    email "MyString"
-    units 1
-    notes "MyText"
+    name { Faker::Company.name }
+    address1 { Faker::Address.street_address }
+    address2 { Faker::Address.secondary_address }
+    address3 { Faker::Address.building_number }
+    city { Faker::Address.city }
+    state { Faker::Address.state }
+    zip { Faker::Address.postcode }
+    country { "USA" }
+    organization { Faker::Company.name }
+    contact_name { Faker::Name.name }
+    phone { Faker::PhoneNumber.phone_number }
+    fax { Faker::PhoneNumber.phone_number }
+    email { Faker::Internet.email }
+    units { Faker::Number.number(3) }
+    notes { Faker::Lorem.sentence }
     active true
   end
 end

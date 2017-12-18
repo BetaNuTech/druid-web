@@ -14,10 +14,9 @@
 
 FactoryBot.define do
   factory :lead_source do
-    name "test"
+    name { Faker::Company.name }
     incoming true
-    slug "test"
+    slug { Faker::Company.ein }
     active true
-    # api_token is auto-generated before validation
   end
 end

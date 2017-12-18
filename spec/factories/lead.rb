@@ -20,12 +20,12 @@
 
 FactoryBot.define do
   factory :lead do
-    title 'Ms.'
-    first_name 'Jane'
-    last_name 'Doe'
+    title { Faker::Name.prefix }
+    first_name { Faker::Name.first_name }
+    last_name{ Faker::Name.last_name }
     referral 'Newspaper'
     state 'active'
-    notes 'This is a property lead'
+    notes { Faker::Lorem.sentence }
     first_comm { DateTime.now }
     last_comm { DateTime.now }
     preference_attributes { FactoryBot.attributes_for(:lead_preference)}

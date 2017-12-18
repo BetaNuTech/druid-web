@@ -33,11 +33,11 @@ group :development, :test do
   gem 'capybara', '~> 2.16'
   gem 'selenium-webdriver', "~> 3.7"
   gem 'bundler-audit', '~> 0.6'
-  gem 'factory_bot', '~> 4.8', '>= 4.8.2'
   gem 'rspec-rails', "~> 3.7"
   gem 'simplecov', "~> 0.15"
   gem 'guard-rspec', "~> 4.7", require: false
-  gem 'factory_bot_rails', "~> 4.8"
+  gem 'factory_bot_rails', "~> 4.8", require: false
+  gem 'faker', "~> 1.7"
 end
 
 group :development do
