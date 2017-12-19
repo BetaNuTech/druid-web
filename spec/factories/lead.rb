@@ -16,6 +16,10 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  property_id    :uuid
+#  phone1         :string
+#  phone2         :string
+#  fax            :string
+#  email          :string
 #
 
 FactoryBot.define do
@@ -28,6 +32,10 @@ FactoryBot.define do
     notes { Faker::Lorem.sentence }
     first_comm { DateTime.now }
     last_comm { DateTime.now }
+    phone1 { Faker::PhoneNumber.phone_number }
+    phone2 { Faker::PhoneNumber.phone_number }
+    fax { Faker::PhoneNumber.phone_number }
+    email { Faker::Internet.email }
     preference_attributes { FactoryBot.attributes_for(:lead_preference)}
   end
 end
