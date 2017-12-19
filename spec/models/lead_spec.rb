@@ -16,6 +16,10 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  property_id    :uuid
+#  phone1         :string
+#  phone2         :string
+#  fax            :string
+#  email          :string
 #
 
 require 'rails_helper'
@@ -47,7 +51,7 @@ RSpec.describe Lead, type: :model do
   end
 
   it "validates the presence of required attributes" do
-    required_attributes = [:first_name, :last_name]
+    required_attributes = [:first_name, :last_name, :phone1, :email]
     lead = Lead.new
     lead.save
     expect(lead.errors.messages.keys.sort).to eq(required_attributes.sort)

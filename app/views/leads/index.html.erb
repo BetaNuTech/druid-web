@@ -19,9 +19,9 @@
         <thead>
           <tr>
             <th>State</th>
-            <th>Property</th>
-            <th>Source</th>
+            <th>Property <br/>(Source)</th>
             <th>Name</th>
+            <th>Contact</th>
             <th>Referral</th>
             <th>Notes</th>
             <th>First/Last Contact</th>
@@ -33,12 +33,28 @@
           <% @leads.each do |lead| %>
             <tr>
               <td><%= lead.state || '-' %></td>
-              <td><%= lead.property.try(:name) || '-' %></td>
-              <td><%= lead.source.try(:name) || '-' %></td>
+              <td>
+                <%= lead.property.try(:name) || 'None' %><br/>
+                (<%= lead.source.try(:name) || 'None' %>)
+              </td>
               <td>
                 <%= lead.title %>
                 <%= lead.first_name %>
                 <%= lead.last_name %>
+              </td>
+              <td>
+                <% if lead.phone1.present? %>
+                  <%= glyph(:phone) %> <%= lead.phone1 || '-' %><br/>
+                <% end %>
+                <% if lead.phone2.present? %>
+                  <%= glyph(:phone) %> <%= lead.phone2 || '-' %><br/>
+                <% end %>
+                <% if lead.email.present? %>
+                  <%= glyph(:email) %> <%= lead.email || '-' %><br/>
+                <% end %>
+                <% if lead.fax.present? %>
+                  <%= glyph(:fax) %> <%= lead.fax || '-' %><br/>
+                <% end %>
               </td>
               <td><%= lead.referral %></td>
               <td><%= lead.notes %></td>

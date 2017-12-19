@@ -16,10 +16,14 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  property_id    :uuid
+#  phone1         :string
+#  phone2         :string
+#  fax            :string
+#  email          :string
 #
 
 class Lead < ApplicationRecord
-  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm]
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :email, :fax]
 
   ### Associations
   has_one :preference,
@@ -35,6 +39,8 @@ class Lead < ApplicationRecord
   validates :first_name,
             :last_name,
     presence: true
+	validates :phone1, presence: true, unless: ->(lead){ lead.phone2.present? || lead.email.present? }
+	validates :email, presence: true, unless: ->(lead){ lead.phone1.present? || lead.phone2.present? }
 
   ### Class Methods
 

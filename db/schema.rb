@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171215214223) do
+ActiveRecord::Schema.define(version: 20171219204743) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,10 @@ ActiveRecord::Schema.define(version: 20171215214223) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "property_id"
+    t.string "phone1"
+    t.string "phone2"
+    t.string "fax"
+    t.string "email"
   end
 
   create_table "properties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

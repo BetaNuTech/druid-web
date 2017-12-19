@@ -41,23 +41,49 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <%= form.label :referral %>
-        <%= form.text_field :referral, id: :lead_referral, class: "form-control" %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :notes %>
-        <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 6 %>
+      <div class="row">
+        <div class="col-md-3 form-group">
+          <%= form.label :phone1 %>
+          <%= form.text_field :phone1, class: "form-control" %>
+        </div>
+        <div class="col-md-3 form-group">
+          <%= form.label :phone2 %>
+          <%= form.text_field :phone2, class: "form-control" %>
+        </div>
+        <div class="col-md-3 form-group">
+          <%= form.label :fax %>
+          <%= form.text_field :fax, class: "form-control" %>
+        </div>
       </div>
 
       <div class="row">
         <div class="col-md-6 form-group">
+          <%= form.label :email %>
+          <%= form.text_field :email, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :referral %>
+          <%= form.text_field :referral, id: :lead_referral, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :notes %>
+          <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 6 %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 form-group">
           <%= form.label 'First Communication'  %><br/>
           <%= form.date_select :first_comm, {}, { id: :lead_first_comm, class: "form-control form-control-date-select" } %>
         </div>
 
-        <div class="col-md-6 form-group">
+        <div class="col-md-3 form-group">
           <%= form.label 'Last Communication'  %><br/>
           <%= form.date_select :last_comm, {}, { id: :lead_last_comm, class: "form-control form-control-date-select" } %>
         </div>
