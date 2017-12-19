@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171215180555) do
+ActiveRecord::Schema.define(version: 20171215214223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,18 @@ ActiveRecord::Schema.define(version: 20171215180555) do
     t.datetime "updated_at", null: false
     t.boolean "active", default: true
     t.index ["active"], name: "index_properties_on_active"
+  end
+
+  create_table "property_listings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "code"
+    t.string "description"
+    t.uuid "property_id"
+    t.uuid "source_id"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active", "code"], name: "index_property_listings_on_active_and_code"
+    t.index ["property_id", "source_id", "active"], name: "index_property_listings_on_property_id_and_source_id_and_active"
   end
 
 end

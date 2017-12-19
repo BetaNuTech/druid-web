@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Lead, type: :model do
 
-  let(:source) {
-    create(:lead_source, slug: LeadSource::DEFAULT_SLUG)
-  }
+  let(:source) { create(:lead_source, slug: LeadSource::DEFAULT_SLUG) }
+  let(:property) { create(:property) }
+  let(:listing) { create(:property_listing, source_id: source.id, property_id: property.id) }
 
   let(:valid_attributes) {
     {
@@ -22,6 +22,14 @@ RSpec.describe Lead, type: :model do
       validate_token: source.api_token,
       agent: nil
     }
+  }
+
+  let(:valid_attributes_with_valid_property) {
+    # valid_attributes_with_valid_token with property_id present
+    # in the [:data] Hash of attributes
+    valid_attributes_with_valid_token.
+      merge(data: valid_attributes_with_valid_token[:data].
+                    merge({ property_id: listing.code }))
   }
 
   let(:valid_attributes_with_invalid_token) {
@@ -71,7 +79,7 @@ RSpec.describe Lead, type: :model do
   }
 
   before do
-    source
+    listing
   end
 
   it "can be initialized with valid data and the Druid adapter" do
@@ -154,6 +162,18 @@ RSpec.describe Lead, type: :model do
       }.to_not change(Lead, :count)
       assert(lead.errors.any?)
       assert(creator.errors.any?)
+    end
+
+    it "will have the property set if the property param is provided" do
+      creator = Leads::Creator.new(**valid_attributes_with_valid_token)
+      lead = creator.execute
+    end
+
+    it "will create a lead associated with the provided listing property code" do
+      creator = Leads::Creator.new(**valid_attributes_with_valid_property)
+      lead = creator.execute
+      assert(lead.valid?)
+      expect(lead.property).to eq(property)
     end
   end
 end

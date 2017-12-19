@@ -65,76 +65,7 @@
     </fieldset>
   </div>
 
-  <%= form.fields_for :preference do |preference_form| %>
-    <div class="fieldset_content">
-      <fieldset>
-        <legend>Preferences</legend>
-
-        <div class="row">
-          <div class="col-md-3 form-group">
-            <%= preference_form.label 'Minimum sqft.'%><br/>
-            <%= preference_form.text_field :min_area, class: 'form-control' %>
-          </div>
-          <div class="col-md-3 form-group">
-            <%= preference_form.label 'Maximum sqft.'%><br/>
-            <%= preference_form.text_field :max_area, class: 'form-control' %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-3 form-group">
-            <%= preference_form.label 'Minimum Price'%>
-            <div class="input-group">
-              <div class="input-group-addon">$</div>
-              <%= preference_form.text_field :min_price, class: 'form-control' %>
-            </div>
-          </div>
-          <div class="col-md-3 form-group">
-            <%= preference_form.label 'Maximum Price'%>
-            <div class="input-group">
-              <div class="input-group-addon">$</div>
-              <%= preference_form.text_field :max_price, class: 'form-control' %>
-            </div>
-          </div>
-        </div>
-
-        <div class="row form-group">
-          <div class="col-md-2">
-            <%= preference_form.label 'Bathrooms'%><br/>
-            <%= preference_form.number_field :baths, step: 0.5, class: 'form-control' %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6 form-group">
-            <%= preference_form.label 'Move In Date' %><br/>
-            <%= preference_form.date_select :move_in, {}, { class: 'form-control form-control-date-select' } %>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <h4>Amenities</h4>
-          <div class="form-check-label">
-            <%= preference_form.check_box :pets, class: 'form-check-input' %>
-            Pets Allowed?
-          </div>
-          <div class="form-check-label">
-            <%= preference_form.check_box :smoker, class: 'form-check-input' %>
-            Smoking Allowed?
-          </div>
-          <div class="form-check-label">
-            <%= preference_form.check_box :washerdryer, class: 'form-check-input' %>
-            Washer/Dryer Connection?
-          </div>
-        </div>
-
-        <div class="form-group">
-          <%= preference_form.label 'Notes' %><br/>
-          <%= preference_form.text_area :notes, class: 'form-control', rows: 6 %>
-        </div>
-      </fieldset>
-    </div>
-  <% end %>
+  <%= render partial: 'preference_form', locals: { form: form } %>
 
   <div class="form-group">
     <button type="submit" class="btn btn-primary">Submit</button>

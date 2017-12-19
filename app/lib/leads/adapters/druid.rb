@@ -6,23 +6,24 @@ module Leads
       LEAD_SOURCE_SLUG = 'Druid'
 
       def initialize(params)
+        @property_code = get_property_code(params)
         @data = filter_params(params)
       end
 
-      # Return parsed data and meta-information as a hash.
-      # This includes at least the following keys: :status, :lead, :errors
-      #
-      # Ex: {status: :ok, lead: { .. lead attributes .. }, errors: []}
-      #
-      # Ex: {status: :error, lead: { .. lead attributes }, errors: ['one', 'two', 'three']}
+      # Return parsed data and meta-information as a Leads::Creator::Result
       def parse
         lead = Lead.new(@data)
         lead.validate
         status = lead.valid? ? :ok : :invalid
-        return { status: status, lead: @data, errors: lead.errors }
+        result = Leads::Creator::Result.new( status: status, lead: @data, errors: lead.errors, property_code: @property_code)
+        return result
       end
 
       private
+
+      def get_property_code(params)
+        return params[:property_id]
+      end
 
       # Filter for whitelisted params
       #

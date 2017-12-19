@@ -12,46 +12,66 @@
   <% end %>
 
   <div class="fieldset_content">
-    <fieldset>
-      <legend>Property Information</legend>
 
-      <div class="form-group">
-        <div class="form-check-label">
-          <%= form.check_box :active, class: 'form-check-input' %>
-          Active?
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <%= form.label :name %>
+          <%= form.text_field :name, id: :property_name, class: "form-control"  %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :organization %>
+          <%= form.text_field :organization, id: :property_organization, class: "form-control" %>
+        </div>
+
+        <div class="row">
+          <div class="col-md-2 form-group">
+            <%= form.label :units %>
+            <%= form.number_field :units, id: :property_units, class: "form-control" %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :notes %>
+          <%= form.text_area :notes, id: :property_notes, class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check-label">
+            <%= form.check_box :active, class: 'form-check-input' %>
+            Property is Active?
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <%= form.label :name %>
-        <%= form.text_field :name, id: :property_name, class: "form-control"  %>
-      </div>
+    </div>
 
+    <fieldset>
+      <legend>Contact Information</legend>
+      <div class="row">
+        <div class="col-md-8">
 
-      <div class="form-group">
-        <%= form.label :organization %>
-        <%= form.text_field :organization, id: :property_organization, class: "form-control" %>
-      </div>
+          <div class="form-group">
+            <%= form.label :contact_name %>
+            <%= form.text_field :contact_name, id: :property_contact_name, class: "form-control" %>
+          </div>
 
-      <div class="form-group">
-        <%= form.label :contact_name %>
-        <%= form.text_field :contact_name, id: :property_contact_name, class: "form-control" %>
-      </div>
+          <div class="form-group">
+            <%= form.label :address1 %>
+            <%= form.text_field :address1, id: :property_address1, class: "form-control" %>
+          </div>
 
+          <div class="form-group">
+            <%= form.label :address2 %>
+            <%= form.text_field :address2, id: :property_address2, class: "form-control" %>
+          </div>
 
-      <div class="form-group">
-        <%= form.label :address1 %>
-        <%= form.text_field :address1, id: :property_address1, class: "form-control" %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :address2 %>
-        <%= form.text_field :address2, id: :property_address2, class: "form-control" %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :address3 %>
-        <%= form.text_field :address3, id: :property_address3, class: "form-control" %>
+          <div class="form-group">
+            <%= form.label :address3 %>
+            <%= form.text_field :address3, id: :property_address3, class: "form-control" %>
+          </div>
+        </div>
       </div>
 
       <div class="row">
@@ -87,28 +107,18 @@
           <%= form.label :fax %>
           <%= form.text_field :fax, id: :property_fax, class: "form-control", type: :phone %>
         </div>
-      </div>
-
-
-      <div class="row">
         <div class="col-md-4 form-group">
           <%= form.label :email %>
           <%= form.text_field :email, id: :property_email, class: "form-control" %>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-2 form-group">
-          <%= form.label :units %>
-          <%= form.number_field :units, id: :property_units, class: "form-control" %>
-        </div>
-      </div>
 
-      <div class="form-group">
-        <%= form.label :notes %>
-        <%= form.text_area :notes, id: :property_notes, class: "form-control" %>
-      </div>
+    </fieldset>
 
+    <fieldset>
+      <legend>Listing IDs/Codes</legend>
+      <%= render partial: 'property_listing_form', locals: {form: form} %>
     </fieldset>
   </div>
   <div class="form-group">

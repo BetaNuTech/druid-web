@@ -159,12 +159,35 @@
       </div>
 
       <div class="row">
+        <h2>Listings</h2>
+
+        <% @property.listings.each do |listing| %>
+          <h3><%= listing.source.name %></h3>
+          <p>
+            <strong>ID/Code:</strong>
+            <%= listing.code %>
+          </p>
+          <p>
+            <strong>Description</strong>
+            <%= listing.description %>
+          </p>
+          <p>
+            <strong>Active?:</strong>
+            <%= listing.active %>
+          </p>
+        <% end %>
+      </div>
+
+      <div class="row">
         <div class="col-md-6">
 
           <%= link_to 'Edit', edit_property_path(@property) %> |
           <%= link_to 'Back', properties_path %>
         </div>
       </div>
-    </div>  
+
+
+    </div>
   </div>
+
 </div>
