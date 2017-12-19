@@ -1,5 +1,17 @@
 module Leads
   class Creator
+
+    class Result
+      attr_reader :status, :lead, :errors, :property_code
+
+      def initialize(status:, lead:, errors:, property_code:)
+        @status = status
+        @lead = lead
+        @errors= errors
+        @property_code = property_code
+      end
+    end
+
     attr_reader :data,
       :errors,
       :lead,
@@ -43,18 +55,22 @@ module Leads
       end
 
       parse_result = @parser.new(@data).parse
-      lead_attributes = parse_result[:lead]
+      lead_attributes = parse_result.lead
+      property_code = parse_result.property_code
 
       @lead = Lead.new(lead_attributes)
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
 
-      case parse_result[:status]
+      case parse_result.status
         when :ok
+          if property_code.present?
+            @lead.property_id = Property.find_by_code_and_source(code: property_code, source: @lead.source.slug).try(:id)
+          end
           @lead.save
         else
           @lead.validate
-          parse_result[:errors].each do |err|
+          parse_result.errors.each do |err|
             @lead.errors.add(:base, err)
           end
       end

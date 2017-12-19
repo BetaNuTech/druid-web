@@ -19,6 +19,7 @@ class LeadSource < ApplicationRecord
 
   # Associations
   has_many :leads
+  has_many :listings, class_name: 'PropertyListing', foreign_key: 'source_id'
 
   # Validations
   validates :name, :slug, :api_token,
@@ -32,7 +33,7 @@ class LeadSource < ApplicationRecord
   before_validation :assign_api_token
 
   # Class Methods
-  
+
   def self.default
     self.active.where(slug: DEFAULT_SLUG).first
   end

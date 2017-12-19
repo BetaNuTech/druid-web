@@ -126,5 +126,49 @@ RSpec.describe Property, type: :model do
 
 
     end
+
+    describe "class methods" do
+      describe "find_by_code_and_source" do
+        let(:property1) { create(:property) }
+        let(:property2) { create(:property) }
+        let(:property3) { create(:property) }
+        let(:listing1) { create(:property_listing, property: property1) }
+        let(:listing2) { create(:property_listing, property: property1) }
+        let(:listing3) { create(:property_listing, property: property2) }
+
+        before do
+          property1; property2
+        end
+
+        it "can be found if the code is the property id" do
+          expect(Property.find_by_code_and_source(code: property1.id)).to eq(property1)
+        end
+
+        it "can be found if the code is a property listing code" do
+          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(property1)
+          expect(Property.find_by_code_and_source(code: listing2.code, source: listing2.source.slug)).to eq(property1)
+        end
+
+        it "returns nil if it can't be found by id or property listing code" do
+          expect(Property.find_by_code_and_source(code: listing2.code, source: 'foobar')).to eq(nil)
+        end
+
+        it "returns nil if the source is inactive" do
+          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(property1)
+          source = listing1.source
+          source.active = false
+          source.save!
+          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(nil)
+        end
+
+        it "returns nil if the listing is inactive" do
+          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(property1)
+          listing1.active = false
+          listing1.save!
+          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(nil)
+        end
+
+      end
+    end
   end
 end
