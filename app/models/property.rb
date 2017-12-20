@@ -67,4 +67,9 @@ class Property < ApplicationRecord
       PropertyListing.new(property_id: self.id, source_id: source.id, active: false)
     end
   end
+
+  def listing_code(source)
+    return nil unless source.present?
+    self.listings.where(source_id: source.id).first.try(:code)
+  end
 end

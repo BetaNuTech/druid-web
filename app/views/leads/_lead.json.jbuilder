@@ -2,4 +2,11 @@ json.extract! lead, :id, :title, :first_name, :last_name, :referral, :state, :no
 json.preference do
   json.partial! 'leads/preference', locals: {preference: lead.preference}
 end
+json.property do
+  if lead.property.present?
+    json.partial! 'leads/property', locals: {property: lead.property, source: lead.source}
+  else
+    json.nil!
+  end
+end
 json.url lead_url(id: lead.id, format: :json)
