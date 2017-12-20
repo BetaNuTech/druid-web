@@ -156,6 +156,12 @@
     <div class="row">
       <div class="col-md-4">
         <p>
+          <strong>Bedrooms</strong>
+          <%= @lead.preference.beds || 'N/A' %>
+        </p>
+      </div>
+      <div class="col-md-4">
+        <p>
           <strong>Bathrooms</strong>
           <%= @lead.preference.baths || 'N/A' %>
         </p>
