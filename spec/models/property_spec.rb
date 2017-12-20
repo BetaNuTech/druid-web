@@ -124,6 +124,11 @@ RSpec.describe Property, type: :model do
         assert(ppl.map(&:new_record?).any?)
       end
 
+      it "returns the code for a listing" do
+        expect(active_property.listing_code(listing1.source)).to eq(listing1.code)
+        expect(active_property.listing_code(listing2.source)).to eq(listing2.code)
+        expect(active_property.listing_code(nil)).to eq(nil)
+      end
 
     end
 

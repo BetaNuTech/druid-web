@@ -16,11 +16,12 @@
 #  notes       :text
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  beds        :integer
 #
 
 class LeadPreference < ApplicationRecord
   DEFAULT_UNIT_SYSTEM = :imperial
-  ALLOWED_PARAMS = [:baths, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes]
+  ALLOWED_PARAMS = [:baths, :beds, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes]
 
   ### Associations
 

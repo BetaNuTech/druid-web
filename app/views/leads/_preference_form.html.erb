@@ -33,6 +33,10 @@
 
         <div class="row form-group">
           <div class="col-md-2">
+            <%= preference_form.label 'Bedrooms'%><br/>
+            <%= preference_form.number_field :beds, step: 1 , class: 'form-control' %>
+          </div>
+          <div class="col-md-2">
             <%= preference_form.label 'Bathrooms'%><br/>
             <%= preference_form.number_field :baths, step: 0.5, class: 'form-control' %>
           </div>

@@ -16,6 +16,7 @@
 #  notes       :text
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  beds        :integer
 #
 
 require 'rails_helper'
