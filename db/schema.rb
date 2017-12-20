@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171220214311) do
+ActiveRecord::Schema.define(version: 20171220225135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20171220214311) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "api_token"
+    t.index ["active", "api_token"], name: "index_lead_sources_on_active_and_api_token"
   end
 
   create_table "leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
