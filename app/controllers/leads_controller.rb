@@ -1,4 +1,6 @@
 class LeadsController < ApplicationController
+  http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
+
   before_action :set_lead, only: [:show, :edit, :update, :destroy]
 
   # GET /leads
