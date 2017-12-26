@@ -20,6 +20,7 @@ class LeadSource < ApplicationRecord
   # Associations
   has_many :leads
   has_many :listings, class_name: 'PropertyListing', foreign_key: 'source_id'
+  has_many :properties, through: :listings
 
   # Validations
   validates :name, :slug, :api_token,
@@ -39,6 +40,10 @@ class LeadSource < ApplicationRecord
   end
 
   # Instance Methods
+
+  def listings_by_property_name
+    listings.includes("property").order("properties.name ASC")
+  end
 
   # Private Methods
 
