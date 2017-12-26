@@ -1,0 +1,47 @@
+#!/bin/bash
+
+deploy_env=$1
+date_str=$(date +%Y%m%d)
+staging_remote=heroku-staging
+prod_remote=heroku
+staging_app=druid-staging
+production_app=druid
+
+case $deploy_env in
+staging)
+  echo "*** Deploying to Staging"
+  tag="staging-$date_str"
+  echo "  - Creating tag $tag"
+  git tag -f $tag
+  git push --tags -f
+  echo "  - Pushing code to Staging"
+  git push $staging_remote $tag:master
+  echo "  - Running Migrations"
+  heroku run rake db:migrate --app $staging_app
+  ;;
+prod)
+  echo "** Deploying to Production"
+  tag="prod-$date_str"
+  echo "  - Creating tag $tag"
+  git tag -f $tag
+  git push --tags -f
+  echo "  - Pushing code to Production"
+  git push $prod_remote $tag:master
+  echo "  - Running Migrations"
+  heroku run rake db:migrate --app $production_app
+  ;;
+production)
+  echo "Production"
+  echo "Production"
+  tag="prod-$date_str"
+  git tag -f $tag
+  git push --tags
+  git push $prod_remote $tag:master
+  ;;
+*)
+  echo "*** Environment unknown or not provided. Cowardly exiting."
+  echo "Usage: bin/deploy (staging|prod|production)"
+  exit
+  ;;
+esac
+
