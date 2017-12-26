@@ -39,9 +39,21 @@
       <p>
         <strong>API Token</strong>
         <%= @lead_source.api_token %>
-        <%= link_to('Reset', reset_token_lead_source_path(@lead_source), class: "btn btn-info btn-xs", method: :post)%>
+        <%= link_to('Reset', reset_token_lead_source_path(@lead_source), class: "btn btn-info btn-xs", method: :post, data: {confirm: 'Are you sure you want to reset this API token? This action cannot be undone and the old token cannot be recovered.'} )%>
       </p>
+    </div>
+  </div>
 
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Properties (<%= @lead_source.properties.count %>)</h4>
+      <ul>
+        <% @lead_source.listings_by_property_name.each do |listing| %>
+          <li>
+            <%= link_to(listing.property.name, property_path(listing.property)) %> [ID: <%= listing.code %>]
+          </li>
+        <% end %>
+      </ul>
     </div>
   </div>
 

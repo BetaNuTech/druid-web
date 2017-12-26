@@ -61,4 +61,27 @@ RSpec.describe LeadSource, type: :model do
     expect(lead1.api_token).to_not be_nil
     expect(lead1.api_token).not_to eq(lead2.api_token)
   end
+
+  describe "listings" do
+    let(:property1) { create(:property, name: 'Foobar')}
+    let(:property2) { create(:property, name: 'Quux')}
+    let(:property3) { create(:property, name: 'Acme')}
+    let(:lead_source) { create(:lead_source)}
+    let(:listings) {
+      [
+        create(:property_listing, property: property1, source: lead_source),
+        create(:property_listing, property: property2, source: lead_source),
+        create(:property_listing, property: property3, source: lead_source),
+      ]
+    }
+
+    before do
+      listings
+    end
+
+    it "returns listings by property name" do
+      expected_property_names = Property.all.map(&:name).sort
+      expect(lead_source.listings_by_property_name.map{|l| l.property.name}).to eq(expected_property_names)
+    end
+  end
 end

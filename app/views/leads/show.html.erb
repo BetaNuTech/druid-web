@@ -94,7 +94,7 @@
   <div class="row">
     <div class="col-md-12">
       <p>
-        <strong>Notes:</strong><br/>
+        <strong>Agent Notes:</strong><br/>
         <%= @lead.notes %>
       </p>
     </div>
@@ -180,6 +180,10 @@
         <p>
           <strong>Washer/Dryer Connection</strong>
           <%= display_preference_option(@lead.preference.washerdryer) %>
+        </p>
+        <p>
+          <strong>Notes from Lead:</strong>
+          <%= @lead.preference.notes %>
         </p>
       </div>
     </div>
