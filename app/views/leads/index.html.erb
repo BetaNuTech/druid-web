@@ -19,9 +19,8 @@
         <thead>
           <tr>
             <th>State</th>
-            <th>Property <br/>(Source)</th>
+            <th>Property/Source</th>
             <th>Name/Contact</th>
-            <th>Referral</th>
             <th>Notes</th>
             <th>First/Last Contact</th>
             <th>Actions</th>
@@ -34,12 +33,15 @@
               <td><%= lead.state || '-' %></td>
               <td>
                 <% if lead.property.present? %>
-                  <%= link_to(lead.property.name, property_path(lead.property)) %>
+                  <strong>Property:</strong> <%= link_to(lead.property.name, property_path(lead.property)) %>
                 <% end %>
                 <% if lead.source.present? %>
                   <br/>
-                  (<%= link_to(lead.source.name, lead_source_path(lead.source)) %>)
+                  <strong>Source:</strong> <%= link_to(lead.source.name, lead_source_path(lead.source)) %>
                 <% end %>
+                <p>
+                  <strong>Referral:</strong> <%= lead.referral %>
+                </p>
               </td>
               <td>
                 <%= lead.title %>
@@ -58,16 +60,22 @@
                   <%= glyph(:fax) %> <%= lead.fax || '-' %><br/>
                 <% end %>
               </td>
-              <td><%= lead.referral %></td>
-              <td><%= lead.notes %></td>
+              <td>
+                <p>
+                  <strong>Agent:</strong> <%= lead.notes || 'None' %>
+                </p>
+                <p>
+                  <strong>Lead:</strong> <%= lead.preference.try(:notes) || 'None' %>
+                </p>
+              </td>
               <td>
                 <%= short_date(lead.first_comm) %> |
                 <%= short_date(lead.last_comm) || '-' %>
               </td>
               <td>
-                <%= link_to 'Show', lead %> |
-                <%= link_to 'Edit', edit_lead_path(lead) %> |
-                <%= link_to 'Destroy', lead, method: :delete, data: { confirm: 'Are you sure?' } %>
+                <%= link_to lead do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_lead_path(lead) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to lead, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
               </td>
             </tr>
           <% end %>
