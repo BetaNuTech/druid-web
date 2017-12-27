@@ -1,0 +1,400 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Druid Lead Management App",
+    "description": "Lead API for data source: '<%= @source.name %>'",
+    "version": "<%= DruidWeb::VERSION %>",
+    "contact": {
+      "email": "patrick@bluestone-prop.com"
+    },
+    "license": {
+      "name": "Proprietary and Closed Source",
+      "url": ""
+    }
+  },
+  "host": "<%= request.host_with_port %>",
+  "servers": [
+    {
+      "url": "https://druid-staging.herokuapp.com/api/v1/"
+    }
+  ],
+  "basePath": "/api/v1/",
+  "tags": [
+    {
+      "name": "lead",
+      "description": "Incoming lead information"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/leads.json": {
+      "post": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "Post a Lead to Druid",
+        "description": "POST HTML form data containing Lead data. Include a ?token= param in the URL for authentication. Conforms to the specification at https://hotpads.com/pages/partners/leadCallback.htm",
+        "operationId": "addLead",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "description": "Authentication Token provided by Bluestone",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "listingId",
+            "description": "your listing id in the feed",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "name",
+            "description": "name of the inquirer",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "email",
+            "description": "email id of the inquirer",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "phone",
+            "description": "phone number of the inquirer",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "movingDate",
+            "description": "YYYYMMDD",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "numBedroomsSought",
+            "description": "0,1,2,3 etc. where 0=studio",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "numBathroomsSought",
+            "description": "1,2,3 etc.",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "message",
+            "description": "message",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "listingStreet",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "listingUnit",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "listingCity",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "listingPostalCode",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "listingState",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "listingContactEmail",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "neighborhoods",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "propertyTypesDesired",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "leaseLengthMonths",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "introduction",
+            "description": "introduction message about the inquirer",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "smoker",
+            "description": "boolean: true or false",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "parkingTypeDesired",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "incomeYearly",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "creditScoreRangeJson",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "movingFromCity",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "movingFromState",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "moveInTimeframe",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "reasonForMoving",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "employmentStatus",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "jobTitle",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "employer",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "employmentStartDate",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "employmentDetailsJson",
+            "description": "(NOT USED)",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "petDetailsJson",
+            "description": "pet details",
+            "required": false
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/responses/LeadResponse"
+            },
+            "examples": {
+              "application/json": {
+                "$ref": "#/responses/LeadResponse"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "Get Leads created by this source",
+        "description": "GET leads.json with a ?token= parameter for authentication and an optional ?limit= parameter to limit results to the last XXX Leads created by this source",
+        "operationId": "getLeads",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "description": "Authentication Token provided by Bluestone",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of records to return",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/responses/LeadsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "$ref": "#/responses/LeadsResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": [ ],
+  "definitions": { },
+  "responses": {
+    "LeadResponse": {
+      "id": "6ddcb08b-bf5a-42eb-9617-e836521089bf",
+      "title": "",
+      "first_name": "Yoda",
+      "last_name": "Yodason",
+      "referral": "Darth Sidious",
+      "state": null,
+      "notes": "",
+      "first_comm": null,
+      "last_comm": null,
+      "phone1": "NA",
+      "phone2": "",
+      "fax": "",
+      "email": "yoda@dagobah.force",
+      "created_at": "2018-01-02T17:53:20.514Z",
+      "updated_at": "2018-01-02T17:53:20.514Z",
+      "preference": {
+        "min_area": 50,
+        "max_area": 51,
+        "min_price": "100.0",
+        "max_price": "200.0",
+        "move_in": "2017-12-22T00:00:00.000Z",
+        "baths": null,
+        "beds": 0,
+        "smoker": false,
+        "washerdryer": false,
+        "notes": "do you take Republic Credits?"
+      },
+      "property": {
+        "id": "203c343b-f546-4d31-b1e2-246cb6393e5d",
+        "name": "Test Property",
+        "source": "Druid WebApp",
+        "remoteid": "XXX"
+      },
+      "url": "http://localhost:3000/leads/6ddcb08b-bf5a-42eb-9617-e836521089bf.json"
+    },
+    "LeadsResponse": [
+      {
+        "id": "6ddcb08b-bf5a-42eb-9617-e836521089bf",
+        "title": "Mr.",
+        "first_name": "Yoda",
+        "last_name": "Yodason",
+        "referral": "Darth Sidious",
+        "state": null,
+        "notes": "",
+        "first_comm": null,
+        "last_comm": null,
+        "phone1": "NA",
+        "phone2": "",
+        "fax": "",
+        "email": "yoda@dagobah.force",
+        "created_at": "2018-01-02T17:53:20.514Z",
+        "updated_at": "2018-01-02T17:53:20.514Z",
+        "preference": {
+          "min_area": 50,
+          "max_area": 51,
+          "min_price": "100.0",
+          "max_price": "200.0",
+          "move_in": "2017-12-22T00:00:00.000Z",
+          "baths": null,
+          "beds": 0,
+          "smoker": false,
+          "washerdryer": false,
+          "notes": "do you take Republic Credits?"
+        },
+        "property": {
+          "id": "203c343b-f546-4d31-b1e2-246cb6393e5d",
+          "name": "Test Property",
+          "source": "Druid WebApp",
+          "remoteid": "XXX"
+        },
+        "url": "http://localhost:3000/leads/6ddcb08b-bf5a-42eb-9617-e836521089bf.json"
+      }
+    ]
+  },
+  "externalDocs": null
+}

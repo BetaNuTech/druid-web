@@ -45,6 +45,15 @@
   </div>
 
   <div class="row">
+    <div class="col-md-12">
+      <p>
+        <strong>API Docs:</strong>
+        <%= link_to(api_v1_docs_path(token: @lead_source.api_token), api_v1_docs_path(token: @lead_source.api_token), target: :blank) %>
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
     <div class="col-md-6">
       <h4>Properties (<%= @lead_source.properties.count %>)</h4>
       <ul>

@@ -39,6 +39,10 @@ class LeadSource < ApplicationRecord
     self.active.where(slug: DEFAULT_SLUG).first
   end
 
+  def self.from_token(token)
+    self.active.where(api_token: token).first
+  end
+
   # Instance Methods
 
   def listings_by_property_name
