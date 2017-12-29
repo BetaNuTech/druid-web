@@ -64,6 +64,7 @@ module Leads
         when :ok
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
+          property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
         else
           @lead.validate
           parse_result.errors.each do |err|
@@ -79,17 +80,23 @@ module Leads
     private
 
     def assign_property(lead:, property_code: )
-      err_message = "API LEAD CREATOR COULD NOT IDENTIFY PROPERTY (code: '#{property_code || '(None)'}')"
       if property_code.present?
         if (property = Property.find_by_code_and_source(code: property_code, source_id: @lead.source.id)).present?
           @lead.property_id = property.id
           err_message = nil
         end
       end
-      if err_message.present?
-        @lead.notes = "%s %s %s" % [@lead.notes, "///", err_message]
-      end
       return lead
+    end
+
+    # Log error if Lead property is not assigned
+    def property_assignment_warning(lead:, property_code:)
+      unless lead.property.present?
+        err_message = "API WARNING: LEAD CREATOR COULD NOT IDENTIFY PROPERTY '#{property_code || '(None)'}' FROM SOURCE #{lead.source.try(:name)} FOR LEAD #{lead.id}"
+        @lead.notes = "%s %s %s" % [@lead.notes, "///", err_message]
+        @lead.save
+        Rails.logger.warn err_message
+      end
     end
 
     # Validate the source token
