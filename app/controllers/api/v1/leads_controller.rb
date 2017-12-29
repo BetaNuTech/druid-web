@@ -14,9 +14,8 @@ module Api
       # POST /api/v1/leads
       def create
         lead_data = params
-        lead_source = params[:source]
         token = params[:token]
-        lead_creator = Leads::Creator.new(data: lead_data, source: lead_source, agent: nil, validate_token: token)
+        lead_creator = Leads::Creator.new(data: lead_data, agent: nil, token: token)
         @lead = lead_creator.execute
         if @lead.valid?
           render :create, status: :created, format: :json

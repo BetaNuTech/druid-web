@@ -17,6 +17,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  beds        :integer
+#  raw_data    :text
 #
 
 FactoryBot.define do

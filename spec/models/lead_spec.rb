@@ -51,7 +51,7 @@ RSpec.describe Lead, type: :model do
   end
 
   it "validates the presence of required attributes" do
-    required_attributes = [:first_name, :last_name, :phone1, :email]
+    required_attributes = [:first_name, :phone1, :email]
     lead = Lead.new
     lead.save
     expect(lead.errors.messages.keys.sort).to eq(required_attributes.sort)

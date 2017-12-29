@@ -9,8 +9,7 @@ RSpec.describe Lead, type: :model do
   let(:valid_attributes) {
     {
       data: FactoryBot.attributes_for(:lead),
-      source: source.slug,
-      validate_token: source.api_token,
+      token: source.api_token,
       agent: nil
     }
   }
@@ -18,8 +17,7 @@ RSpec.describe Lead, type: :model do
   let(:valid_attributes_with_valid_token) {
     {
       data: FactoryBot.attributes_for(:lead),
-      source: source.slug,
-      validate_token: source.api_token,
+      token: source.api_token,
       agent: nil
     }
   }
@@ -35,8 +33,7 @@ RSpec.describe Lead, type: :model do
   let(:valid_attributes_with_invalid_token) {
     {
       data: FactoryBot.attributes_for(:lead),
-      source: source.slug,
-      validate_token: 'bad_token',
+      token: 'bad_token',
       agent: nil
     }
   }
@@ -44,8 +41,7 @@ RSpec.describe Lead, type: :model do
   let(:invalid_lead_attributes) {
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
-      source: source.slug,
-      validate_token: source.api_token,
+      token: source.api_token,
       agent: nil
     }
   }
@@ -53,8 +49,7 @@ RSpec.describe Lead, type: :model do
   let(:invalid_lead_attributes_with_valid_token) {
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
-      source: source.slug,
-      validate_token: source.api_token,
+      token: source.api_token,
       agent: nil
     }
   }
@@ -63,8 +58,7 @@ RSpec.describe Lead, type: :model do
     {
       data: FactoryBot.attributes_for(:lead).
         merge(preference_attributes: {max_area: 100, min_area: 1000}),
-      source: source.slug,
-      validate_token: source.api_token,
+      token: source.api_token,
       agent: nil
     }
   }
@@ -72,8 +66,15 @@ RSpec.describe Lead, type: :model do
   let(:invalid_source_attributes) {
     {
       data: FactoryBot.attributes_for(:lead),
-      source: 'Foobar',
-      validate_token: 'invalid token',
+      token: 'invalid token',
+      agent: nil
+    }
+  }
+
+  let(:missing_token_attributes) {
+    {
+      data: FactoryBot.attributes_for(:lead),
+      token: nil,
       agent: nil
     }
   }
@@ -111,7 +112,31 @@ RSpec.describe Lead, type: :model do
     expect(creator.parser).to be_nil
     expect{creator.execute}.to_not change{Lead.count}
     assert(creator.execute.errors.any?)
-    expect(creator.errors.messages[:base].first).to match('Lead Source not found')
+    expect(creator.errors.messages[:base].first).to match('Invalid Access Token')
+    expect(creator.lead).to be_a(Lead)
+    assert(creator.lead.errors.any?)
+  end
+
+  it "can be initialized with a missing token" do
+    creator = Leads::Creator.new(**invalid_source_attributes)
+    expect(creator.source).to be_nil
+    expect(creator.parser).to be_nil
+    expect{creator.execute}.to_not change{Lead.count}
+    assert(creator.execute.errors.any?)
+    expect(creator.errors.messages[:base].first).to match('Invalid Access Token')
+    expect(creator.lead).to be_a(Lead)
+    assert(creator.lead.errors.any?)
+  end
+
+  it "can be initialized with an invalid source parser" do
+    source.slug = 'Foobar'
+    source.save!
+    creator = Leads::Creator.new(**valid_attributes)
+    expect(creator.source).to eq(source)
+    expect(creator.parser).to be_nil
+    expect{creator.execute}.to_not change{Lead.count}
+    assert(creator.execute.errors.any?)
+    expect(creator.errors.messages[:base].first).to match('Parser for Lead Source not found')
     expect(creator.lead).to be_a(Lead)
     assert(creator.lead.errors.any?)
   end

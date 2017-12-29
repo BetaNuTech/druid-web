@@ -9,14 +9,12 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
 
   let(:valid_attributes_for_druid) {
     base_attrs = attributes_for(:lead)
-    base_attrs[:source] = source.slug
     base_attrs[:token] = source.api_token
     base_attrs
   }
 
   let(:valid_attributes_for_druid_invalid_token) {
     base_attrs = attributes_for(:lead)
-    base_attrs[:source] = source.slug
     base_attrs[:token] = 'not valid'
     base_attrs
   }
@@ -24,7 +22,6 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
   let(:invalid_attributes_for_druid) {
     base_attrs = attributes_for(:lead)
     base_attrs[:first_name] = nil
-    base_attrs[:source] = source.slug
     base_attrs[:token] = source.api_token
     base_attrs
   }
