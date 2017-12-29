@@ -21,7 +21,7 @@ class PropertyListing < ApplicationRecord
   has_many :leads, through: :property
 
   ## Validations
-  validates :code, presence: true, uniqueness: true
+  validates :code, presence: true, uniqueness: {scope: :source_id}
   validates :source_id, uniqueness: { scope: :property_id }
 
   ## Scopes

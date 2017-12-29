@@ -27,6 +27,8 @@ RSpec.describe PropertyListing, type: :model do
     describe "code" do
       let(:code1) { 'code1' }
       let(:code2) { 'code2' }
+      let(:source1) { create(:lead_source)}
+      let(:source2) { create(:lead_source)}
 
       it "is required" do
         listing = PropertyListing.new(valid_attributes)
@@ -38,13 +40,19 @@ RSpec.describe PropertyListing, type: :model do
       end
 
       it "must be unique" do
-        listing1 = create(:property_listing, code: code1)
-        listing2 = build(:property_listing, code: code1)
+        # Can't create two listings with same code from same source
+        listing1 = create(:property_listing, code: code1, source: source1)
+        listing2 = build(:property_listing, code: code1, source: source1)
         listing2.validate
         refute(listing2.valid?)
-
         listing2.code = code2
         assert(listing2.valid?)
+
+        # Can create a listing with an existing code from  a different source
+        listing3 = build(:property_listing, code: code1, source: source2)
+        listing3.validate
+        assert(listing3.valid?)
+
       end
     end
 

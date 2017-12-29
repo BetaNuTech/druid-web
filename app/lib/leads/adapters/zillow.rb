@@ -73,7 +73,7 @@ module Leads
           preference_attributes: {
 						baths: data[:numBathroomsSought],
 						beds: data[:numBedroomsSought],
-						notes: ( data[:introduction] || '' ) + ( data[:message] || '' ),
+						notes: ( data[:introduction] || '' ) + "; " + ( data[:message] || '' ),
 						smoker: data[:smoker],
             raw_data: data.to_json,
             pets: !(JSON.parse(data[:petDetailsJson] || '')).empty?
