@@ -150,27 +150,27 @@ RSpec.describe Property, type: :model do
         end
 
         it "can be found if the code is a property listing code" do
-          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(property1)
-          expect(Property.find_by_code_and_source(code: listing2.code, source: listing2.source.slug)).to eq(property1)
+          expect(Property.find_by_code_and_source(code: listing1.code, source_id: listing1.source.id)).to eq(property1)
+          expect(Property.find_by_code_and_source(code: listing2.code, source_id: listing2.source.id)).to eq(property1)
         end
 
         it "returns nil if it can't be found by id or property listing code" do
-          expect(Property.find_by_code_and_source(code: listing2.code, source: 'foobar')).to eq(nil)
+          expect(Property.find_by_code_and_source(code: listing2.code, source_id: nil)).to eq(nil)
         end
 
         it "returns nil if the source is inactive" do
-          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(property1)
+          expect(Property.find_by_code_and_source(code: listing1.code, source_id: listing1.source.id)).to eq(property1)
           source = listing1.source
           source.active = false
           source.save!
-          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(nil)
+          expect(Property.find_by_code_and_source(code: listing1.code, source_id: listing1.source.id)).to eq(nil)
         end
 
         it "returns nil if the listing is inactive" do
-          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(property1)
+          expect(Property.find_by_code_and_source(code: listing1.code, source_id: listing1.source.id)).to eq(property1)
           listing1.active = false
           listing1.save!
-          expect(Property.find_by_code_and_source(code: listing1.code, source: listing1.source.slug)).to eq(nil)
+          expect(Property.find_by_code_and_source(code: listing1.code, source_id: listing1.source.id)).to eq(nil)
         end
 
       end

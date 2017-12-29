@@ -154,8 +154,8 @@ RSpec.describe Lead, type: :model do
 
     it "will fail to create a lead with valid attributes and valid source if the token doesn't match the source token" do
       creator = Leads::Creator.new(**valid_attributes_with_invalid_token)
-      expect(creator.source).to be_a(LeadSource)
-      expect(creator.parser).to eq(Leads::Adapters::Druid)
+      expect(creator.source).to be_nil
+      expect(creator.parser).to be_nil
       lead = nil
       expect {
         lead = creator.execute

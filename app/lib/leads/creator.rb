@@ -25,9 +25,9 @@ module Leads
       @saved = false
       @errors = ActiveModel::Errors.new(Lead)
       @data = data
-      @token = token
+      @token = validate_token
       @source_slug = source
-      @source = get_source(@source_slug)
+      @source = get_source(validate_token)
       @parser = get_parser(@source)
       @token = verify_token(@source, validate_token)
     end
@@ -55,18 +55,14 @@ module Leads
       end
 
       parse_result = @parser.new(@data).parse
-      lead_attributes = parse_result.lead
-      property_code = parse_result.property_code
 
-      @lead = Lead.new(lead_attributes)
+      @lead = Lead.new(parse_result.lead)
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
 
       case parse_result.status
         when :ok
-          if property_code.present?
-            @lead.property_id = Property.find_by_code_and_source(code: property_code, source: @lead.source.slug).try(:id)
-          end
+          @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
         else
           @lead.validate
@@ -82,6 +78,20 @@ module Leads
 
     private
 
+    def assign_property(lead:, property_code: )
+      err_message = "API LEAD CREATOR COULD NOT IDENTIFY PROPERTY (code: '#{property_code || '(None)'}')"
+      if property_code.present?
+        if (property = Property.find_by_code_and_source(code: property_code, source_id: @lead.source.id)).present?
+          @lead.property_id = property.id
+          err_message = nil
+        end
+      end
+      if err_message.present?
+        @lead.notes = "%s %s %s" % [@lead.notes, "///", err_message]
+      end
+      return lead
+    end
+
     # Validate the source token
     #
     # Returns: [(:ok|:err), ("token value"|"error message")]
@@ -91,15 +101,15 @@ module Leads
     end
 
     # Lookup Source by slug or default
-    def get_source(source_slug)
-      return source_slug ?
-        lookup_source(source_slug) :
+    def get_source(token)
+      return token ?
+        lookup_source(token) :
         default_source
     end
 
     # Lookup LeadSource from provided slug
-    def lookup_source(source_slug)
-      LeadSource.active.where(slug: source_slug).first
+    def lookup_source(token)
+      LeadSource.active.where(api_token: token).first
     end
 
     # The default source is 'Druid'
