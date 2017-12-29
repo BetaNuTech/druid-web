@@ -29,16 +29,13 @@ class Lead < ApplicationRecord
   has_one :preference,
     class_name: 'LeadPreference',
     dependent: :destroy
-  accepts_nested_attributes_for :preference
   belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id', required: false
   belongs_to :property, required: false
-
   # TODO: Agent association
+  accepts_nested_attributes_for :preference
 
   ### Validations
-  validates :first_name,
-            :last_name,
-    presence: true
+  validates :first_name, presence: true
 	validates :phone1, presence: true, unless: ->(lead){ lead.phone2.present? || lead.email.present? }
 	validates :email, presence: true, unless: ->(lead){ lead.phone1.present? || lead.phone2.present? }
 

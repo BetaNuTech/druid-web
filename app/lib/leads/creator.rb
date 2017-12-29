@@ -20,35 +20,30 @@ module Leads
       :source,
       :token
 
-    def initialize(data:, source: nil, agent: nil, validate_token: )
+    def initialize(data:, agent: nil, token: )
       @lead = Lead.new
       @saved = false
       @errors = ActiveModel::Errors.new(Lead)
       @data = data
-      @token = validate_token
-      @source_slug = source
-      @source = get_source(validate_token)
+      @token = token
+      @source = get_source(@token)
       @parser = get_parser(@source)
-      @token = verify_token(@source, validate_token)
     end
 
     # Create lead from provided data using detected Source adapter
     def execute
 
-      # Validate Parser
-      if @parser.nil?
-        error_message =  "Parser for Lead Source not found: #{@source_slug}"
+      # Validate Access Token for Lead Source
+      unless ( @source.present? && @token.present? )
+        error_message =  "Invalid Access Token '#{@token}'}"
         @errors.add(:base, error_message)
         @lead.errors.add(:base, error_message)
         return @lead
       end
 
-      # Validate Access Token for Lead Source
-      case @token.first
-      when :ok
-        # NOOP : everything OK
-      when :err
-        error_message =  "Invalid Access Token for Lead Source: #{@source_slug}"
+      # Validate Parser
+      if @parser.nil?
+        error_message =  "Parser for Lead Source not found: #{@source.try(:name) || 'UNKNOWN'}"
         @errors.add(:base, error_message)
         @lead.errors.add(:base, error_message)
         return @lead
@@ -99,29 +94,9 @@ module Leads
       end
     end
 
-    # Validate the source token
-    #
-    # Returns: [(:ok|:err), ("token value"|"error message")]
-    def verify_token(source, token)
-      return (token.present? && source.present? && source.api_token == token) ?
-        [:ok, token] : [:err, 'Invalid Token']
-    end
-
     # Lookup Source by slug or default
     def get_source(token)
-      return token ?
-        lookup_source(token) :
-        default_source
-    end
-
-    # Lookup LeadSource from provided slug
-    def lookup_source(token)
-      LeadSource.active.where(api_token: token).first
-    end
-
-    # The default source is 'Druid'
-    def default_source
-      LeadSource.default
+      return LeadSource.active.where(api_token: token).first
     end
 
     # Get Parser Class named like the Source slug

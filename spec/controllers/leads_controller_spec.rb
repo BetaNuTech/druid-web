@@ -39,7 +39,7 @@ RSpec.describe LeadsController, type: :controller do
 
   let(:invalid_attributes) {
     attrs = attributes_for(:lead)
-    attrs[:last_name] = nil
+    attrs[:first_name] = nil
     attrs
   }
 

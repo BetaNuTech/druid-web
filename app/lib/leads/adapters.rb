@@ -3,7 +3,7 @@ module Leads
     # List valid/enabled adapter classes Here
     ### IMPORTANT: Values in the VALID array correspond directly to
     # the LeadSource record "slug"s
-    SUPPORTED = [ 'Druid' ]
+    SUPPORTED = [ 'Druid', 'Zillow' ]
 
 
     # Does the provided source match a valid Lead Adapter Source
