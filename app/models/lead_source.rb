@@ -19,7 +19,7 @@ class LeadSource < ApplicationRecord
 
   # Associations
   has_many :leads
-  has_many :listings, class_name: 'PropertyListing', foreign_key: 'source_id'
+  has_many :listings, class_name: 'PropertyListing', foreign_key: 'source_id', dependent: :destroy
   has_many :properties, through: :listings
 
   # Validations

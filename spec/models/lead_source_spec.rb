@@ -83,5 +83,9 @@ RSpec.describe LeadSource, type: :model do
       expected_property_names = Property.all.map(&:name).sort
       expect(lead_source.listings_by_property_name.map{|l| l.property.name}).to eq(expected_property_names)
     end
+
+    it "deletes all listings when deleted" do
+      expect{lead_source.destroy}.to change{PropertyListing.count}.by(-3)
+    end
   end
 end

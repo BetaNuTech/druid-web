@@ -57,7 +57,7 @@ class Property < ApplicationRecord
 
   # Return array of all possible PropertyListings for this property.
   def present_and_possible_listings
-    return ( listings + missing_listings ).sort_by{|l| l.source.name}
+    return ( listings + missing_listings ).sort_by{|l| l.source.try(:name) || ''}
   end
 
   # Return an array of PropertyListings which are not present for

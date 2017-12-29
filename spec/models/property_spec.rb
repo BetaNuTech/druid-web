@@ -124,6 +124,13 @@ RSpec.describe Property, type: :model do
         assert(ppl.map(&:new_record?).any?)
       end
 
+      it "handles deleted sources when listing possible listings (inconsistent db state)" do
+        listing = active_property.listings.last
+        source = listing.source
+        source.destroy
+        ppl = active_property.present_and_possible_listings
+      end
+
       it "returns the code for a listing" do
         expect(active_property.listing_code(listing1.source)).to eq(listing1.code)
         expect(active_property.listing_code(listing2.source)).to eq(listing2.code)
@@ -172,6 +179,7 @@ RSpec.describe Property, type: :model do
           listing1.save!
           expect(Property.find_by_code_and_source(code: listing1.code, source_id: listing1.source.id)).to eq(nil)
         end
+
 
       end
     end
