@@ -4,12 +4,10 @@ class ApiController < ApplicationController
   private
 
   def validate_token
+    @source = false
     if api_token.present?
-      @source = LeadSource.active.where(api_token: api_token).first
-    else
-      @source = false
+      @source = LeadSource.from_token(api_token)
     end
-
     if @source.present?
       return true
     else
