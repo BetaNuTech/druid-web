@@ -60,7 +60,12 @@
         ],
         "responses": {
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "$ref": "#/responses/InvalidLeadResponse"
+              }
+            }
           },
           "500": {
             "description": "Server Error"
@@ -215,6 +220,13 @@
     }
   },
   "responses": {
+    "InvalidLeadResponse": {
+      "errors": {
+          "email": [
+              "can't be blank"
+          ]
+      }
+    },
     "LeadResponse": {
       "id": "6ddcb08b-bf5a-42eb-9617-e836521089bf",
       "title": "",
