@@ -27,6 +27,7 @@ gem 'pry-doc', "~> 0.11"
 gem 'pry-stack_explorer', "~> 0.4"
 gem 'pry-byebug', "~> 3.5"
 gem 'webpacker', "~> 3.0"
+gem 'devise', "~> 4.3"
 
 group :development, :test do
   gem 'byebug', "~> 9.1", platforms: [:mri, :mingw, :x64_mingw]
