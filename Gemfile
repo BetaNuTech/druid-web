@@ -48,6 +48,8 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0'
   gem 'annotate', "~> 2.7"
   gem 'pessimize', "~> 0.3"
+  gem 'letter_opener', "~> 1.4"
+  gem 'letter_opener_web', "~> 1.3"
 
   # Profiler
   gem 'rack-mini-profiler', "~> 0.10", require: false

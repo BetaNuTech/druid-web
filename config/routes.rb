@@ -1,7 +1,17 @@
 Rails.application.routes.draw do
+  root to: "home#index"
+
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
+
   devise_for :users
+
   resources :properties
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  resources :leads
+  resources :lead_sources do
+    post 'reset_token', on: :member
+  end
 
   namespace :api do
     namespace :v1 do
@@ -11,10 +21,4 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :leads
-  resources :lead_sources do
-    post 'reset_token', on: :member
-  end
-
-  root to: "home#index"
 end
