@@ -281,6 +281,7 @@ GEM
     unicode_utils (1.4.0)
     warden (1.2.7)
       rack (>= 1.0)
+    warden-rspec-rails (0.2.0)
     web-console (3.5.1)
       actionview (>= 5.0)
       activemodel (>= 5.0)
@@ -339,6 +340,7 @@ DEPENDENCIES
   stackprof (~> 0.2)
   turbolinks (~> 5.0)
   uglifier (~> 3.2)
+  warden-rspec-rails
   web-console (~> 3.5)
   webpacker (~> 3.0)
 

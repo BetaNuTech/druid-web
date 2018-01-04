@@ -25,3 +25,4 @@ coverage/
 /public/packs-test
 /node_modules
 public/assets/
+spec/examples.txt

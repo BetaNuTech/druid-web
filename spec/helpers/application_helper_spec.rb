@@ -22,6 +22,8 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "should return default values" do
+      ENV.delete('HTTP_AUTH_NAME')
+      ENV.delete('HTTP_AUTH_PASSWORD')
       creds = ApplicationController.http_auth_credentials
       expect(creds[:name]).to_not be_empty
       expect(creds[:password]).to_not be_empty

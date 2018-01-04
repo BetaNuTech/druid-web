@@ -27,5 +27,9 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  it "can be created" do
+    user = build(:user)
+    assert(user.save)
+  end
 end
