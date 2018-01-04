@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
-  devise_for :users
+  devise_for :users, controllers: { sessions: 'users/sessions' }
 
   resources :properties
   resources :leads

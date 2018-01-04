@@ -1,4 +1,12 @@
 <div id="notifications" class="container">
-  <p class="notice"><%= notice %></p>
-  <p class="alert"><%= alert %></p>
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <% if notice.present? %>
+        <p class="notice bg-warning"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="alert bg-danger"><%= alert %></p>
+      <% end %>
+    </div>
+  </div>
 </div>

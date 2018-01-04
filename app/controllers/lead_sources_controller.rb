@@ -1,5 +1,6 @@
 class LeadSourcesController < ApplicationController
-  http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
+  #http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
+  before_action :authenticate_user!
   before_action :set_lead_source, only: [:show, :edit, :update, :destroy, :reset_token]
 
   def index
