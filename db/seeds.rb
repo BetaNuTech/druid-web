@@ -40,6 +40,7 @@ else
   admin_password = 'ChangeMeNow'
   admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password)
   if admin.save
+    admin.confirm
     puts "(password: '#{admin_password}') [OK]"
   else
     puts "[FAIL] (#{admin.errors.to_a})"
