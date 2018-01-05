@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <p id="notice" class="bg-warning"><%= notice %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Users</h1>
+    </div>
+    <div class="col-md-6 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New User', new_user_path %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td><%= user.email %></td>
+              <td>
+                <%= link_to user do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_user_path(user) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to user, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New User', new_user_path %>
+    </div>
+  </div>
+</div>

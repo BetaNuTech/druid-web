@@ -9,11 +9,12 @@ Rails.application.routes.draw do
                                     passwords: 'users/passwords' }
 
   authenticated do
-    root to: "home#dashboard"
+    root to: "home#dashboard", as: :authenticated_root
   end
+  root to: redirect('/users/sign_in')
+  #root to: "home#index"
 
-  root to: "home#index"
-
+  resources :users
   resources :properties
   resources :leads
   resources :lead_sources do

@@ -26,4 +26,6 @@
 
 class User < ApplicationRecord
   devise :database_authenticatable, :lockable, :timeoutable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
+
+  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation]
 end

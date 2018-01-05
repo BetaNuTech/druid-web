@@ -127,7 +127,11 @@
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="#"><span class="glyphicon glyphicon-user"></span> Manage Druid Users</a></li>
+                  <li>
+                    <%= link_to(users_path) do %>
+                      <span class="glyphicon glyphicon-user"></span>Manage Druid Users
+                    <% end %>
+                  </li>
                   <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
                   <li>
                     <%= link_to(lead_sources_path) do %>
