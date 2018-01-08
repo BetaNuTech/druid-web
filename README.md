@@ -16,7 +16,7 @@ This code is proprietary and distribution is strictly prohibited.
 
 # Development
 
-## Bootstrapping 
+## Bootstrapping
 
 * Run `bin/setup`
 
@@ -30,7 +30,7 @@ This code is proprietary and distribution is strictly prohibited.
 
 Any configuration that is used in production should use environment variables instead of config files.
 Config files in this application should be created VERY SPARINGLY and NEVER include secrets. The purpose of
-these default configuration files 
+these default configuration files
 
 Whenever a new config file MUST be created, be sure to:
   * create a `.example` file
@@ -98,4 +98,16 @@ Staging Deployment Example:
 ```
 git push heroku-staging staging:master && \
   heroku run rake db:migrate --app heroku-staging
+```
+
+## Users
+
+User login and authentication is powered by Devise. Run the `db:seed` task or create a new user via the console.  For example:
+
+```
+new_user = User.create(email: 'newuser@example.com',
+                       password: 'ChangeMe123',
+                       password_confirmation: 'ChangeMe123')
+# Confirm the user via the email link or via the confirm method
+new_user.confirm
 ```
