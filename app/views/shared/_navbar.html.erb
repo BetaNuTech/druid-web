@@ -155,7 +155,11 @@
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="#"><span class="glyphicon glyphicon-user"></span> My Account</a></li>
+                  <li>
+                    <%= link_to(edit_user_path(current_user)) do %>
+                      <span class="glyphicon glyphicon-user"></span> My Account
+                    <% end %>
+                  </li>
                 </ul>
               <% else %>
                 <%= link_to(new_user_session_path, class: "btn btn-info") do %>
