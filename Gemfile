@@ -31,15 +31,19 @@ gem 'devise', "~> 4.3"
 
 group :development, :test do
   gem 'byebug', "~> 9.1", platforms: [:mri, :mingw, :x64_mingw]
-  gem 'capybara', '~> 2.16'
-  gem 'selenium-webdriver', "~> 3.7"
   gem 'bundler-audit', '~> 0.6'
-  gem 'rspec-rails', "~> 3.7"
-  gem 'simplecov', "~> 0.15"
-  gem 'guard-rspec', "~> 4.7", require: false
+end
+
+group :test do
+  gem "warden-rspec-rails", "~> 0.2"
+  gem 'capybara', '~> 2.16'
   gem 'factory_bot_rails', "~> 4.8", require: false
   gem 'faker', "~> 1.7"
-  gem "warden-rspec-rails"
+  gem 'guard-rspec', "~> 4.7", require: false
+  gem 'rails-controller-testing', "~> 1.0"
+  gem 'rspec-rails', "~> 3.7"
+  gem 'selenium-webdriver', "~> 3.7"
+  gem 'simplecov', "~> 0.15"
 end
 
 group :development do
