@@ -29,3 +29,20 @@ sources.each_pair do |source_name, attrs|
   end
 end
 
+# Users
+puts " * Creating Users"
+## Admin user
+admin_email = 'admin@example.com'
+print "   - #{admin_email} "
+if User.where(email: admin_email).present?
+  puts "[OK]"
+else
+  admin_password = 'ChangeMeNow'
+  admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password)
+  if admin.save
+    admin.confirm
+    puts "(password: '#{admin_password}') [OK]"
+  else
+    puts "[FAIL] (#{admin.errors.to_a})"
+  end
+end

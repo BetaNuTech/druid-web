@@ -1,6 +1,25 @@
 Rails.application.routes.draw do
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
+
+  devise_for :users, controllers: { sessions: 'users/sessions',
+                                    confirmations: 'users/confirmations',
+                                    unlocks: 'users/unlocks',
+                                    passwords: 'users/passwords' }
+
+  authenticated do
+    root to: "home#dashboard", as: :authenticated_root
+  end
+  root to: redirect('/users/sign_in')
+  #root to: "home#index"
+
+  resources :users
   resources :properties
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  resources :leads
+  resources :lead_sources do
+    post 'reset_token', on: :member
+  end
 
   namespace :api do
     namespace :v1 do
@@ -10,10 +29,4 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :leads
-  resources :lead_sources do
-    post 'reset_token', on: :member
-  end
-
-  root to: "home#index"
 end

@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <% if @user === current_user %>
+        <h1>My Account</h1>
+      <% else %>
+        <h1>Edit User</h1>
+      <% end %>
+      <%= render 'form', user: @user %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= link_to 'Show', @user %> |
+      <%= link_to 'Back', users_path %>
+    </div>
+  </div>
+</div>

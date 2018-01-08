@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe LeadSourcesController, type: :controller do
+  include_context "users"
   render_views
 
   let(:valid_attributes) {
@@ -14,13 +15,17 @@ RSpec.describe LeadSourcesController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
+    include_examples "authenticated action", {params: {}, name: 'index'}
+
     [:html, :json].each do |format|
       it "as #{format}: returns a success response when no records are present" do
+        sign_in unroled_user
         get :index, params: {}, session: valid_session, format: format
         expect(response).to be_success
       end
 
       it "as #{format}: returns a success response when records are present" do
+        sign_in unroled_user
         create(:lead_source)
         get :index, params: {}, session: valid_session, format: format
         expect(response).to be_success
@@ -29,14 +34,20 @@ RSpec.describe LeadSourcesController, type: :controller do
   end
 
   describe "GET #new" do
+    include_examples "authenticated action", {params: {}, name: 'new'}
+
     it "returns a success response" do
+      sign_in unroled_user
       get :new, params: {}, session: valid_session
       expect(response).to be_success
     end
   end
 
   describe "GET #edit" do
+    include_examples "authenticated action", {params: {}, name: 'new'}
+
     it "returns a success response" do
+      sign_in unroled_user
       lead_source = create(:lead_source)
       get :edit, params: { id: lead_source.to_param}, session: valid_session
       expect(response).to be_success
@@ -46,11 +57,14 @@ RSpec.describe LeadSourcesController, type: :controller do
   describe "POST #create" do
     context "with valid params" do
       it "creates a new lead source" do
+        sign_in unroled_user
         expect{
           post :create, params: {lead_source: valid_attributes}, session: valid_session
         }.to change(LeadSource, :count).by(1)
       end
+
       it "redirects to the created lead" do
+        sign_in unroled_user
         post :create, params: {lead_source: valid_attributes}, session: valid_session
         expect(response).to redirect_to(LeadSource.last)
       end
@@ -58,11 +72,14 @@ RSpec.describe LeadSourcesController, type: :controller do
 
     context "with invalid params" do
       it "does not create a new lead source" do
+        sign_in unroled_user
         expect{
           post :create, params: {lead_source: invalid_attributes}, session: valid_session
         }.to change(LeadSource, :count).by(0)
       end
+
       it "returns a success response (i.e. to display the 'new' template)" do
+        sign_in unroled_user
         post :create, params: {lead_source: invalid_attributes}, session: valid_session
         expect(response).to be_success
       end
@@ -81,6 +98,7 @@ RSpec.describe LeadSourcesController, type: :controller do
 
     context "with valid params" do
       it "updates the requested lead source" do
+        sign_in unroled_user
         lead_source = create(:lead_source)
         put :update, params: {id: lead_source.to_param, lead_source: new_attributes}, session: valid_session
         lead_source.reload
@@ -88,6 +106,7 @@ RSpec.describe LeadSourcesController, type: :controller do
       end
 
       it "redirects to the lead source" do
+        sign_in unroled_user
         lead_source = create(:lead_source)
         put :update, params: {id: lead_source.to_param, lead_source: new_attributes}, session: valid_session
         expect(response).to redirect_to(lead_source)
@@ -96,6 +115,7 @@ RSpec.describe LeadSourcesController, type: :controller do
 
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'edit' template)" do
+        sign_in unroled_user
         lead_source = create(:lead_source)
         put :update, params: {id: lead_source.to_param, lead_source: invalid_attributes}, session: valid_session
         expect(response).to be_success
@@ -105,6 +125,7 @@ RSpec.describe LeadSourcesController, type: :controller do
 
   describe "DELETE #destroy" do
     it "destroys the requested lead_source" do
+      sign_in unroled_user
       lead_source = create(:lead_source)
       expect {
         delete :destroy, params: {id: lead_source.to_param}, session: valid_session
@@ -112,6 +133,7 @@ RSpec.describe LeadSourcesController, type: :controller do
     end
 
     it "redirects to the lead_sources list" do
+      sign_in unroled_user
       lead_source = create(:lead_source)
       delete :destroy, params: {id: lead_source.to_param}, session: valid_session
       expect(response).to redirect_to(lead_sources_url)
@@ -121,6 +143,7 @@ RSpec.describe LeadSourcesController, type: :controller do
   describe "POST #reset_token" do
     [:html, :json].each do |format|
       it "should reset the api token via a #{format} request" do
+        sign_in unroled_user
         lead_source = create(:lead_source)
         expect{
           post :reset_token, params: {id: lead_source.to_param}, format: format

@@ -14,144 +14,161 @@
 
       <a class="navbar-brand" href="/"> <span class="glyphicon glyphicon-tree-deciduous" /> </a>
         <a class="navbar-brand" href="/"> Druid LM</a>
-    </div>
+      </div>
 
-    <div id="navbar" class="collapse navbar-collapse ">
-      <ul class="nav navbar-nav">
-        <li> <!-- Leads -->
-          <div class="btn-group">
-            <%= link_to(leads_path, class: "btn #{nav_active_class(leads_path)}") do %>
-              <span class="glyphicon glyphicon-flag"></span> Leads
-            <% end %>
-            <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(leads_path) %>" data-toggle="dropdown">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <%= link_to(leads_path) do %>
-                  <span class="glyphicon glyphicon-star"></span> My Leads
+      <div id="navbar" class="collapse navbar-collapse ">
+        <ul class="nav navbar-nav">
+          <% if current_user.present? %>
+            <li> <!-- Leads -->
+              <div class="btn-group">
+                <%= link_to(leads_path, class: "btn #{nav_active_class(leads_path)}") do %>
+                  <span class="glyphicon glyphicon-flag"></span> Leads
                 <% end %>
-              </li>
-              <li role="separator" class="divider"></li>
-              <li>
-                <%= link_to(leads_path) do %>
-                  <span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads
-                <% end %>
-              </li>
-              <li>
-                <%= link_to(leads_path) do %>
-                  <span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads
-                <% end %>
-              </li>
-              <li>
-                <%= link_to(leads_path) do %>
-                  <span class="glyphicon glyphicon-flag"></span> Active Leads
-                <% end %>
-              </li>
-              <li>
-                <%= link_to(leads_path) do %>
-                  <span class="glyphicon glyphicon-check"></span> Closed Leads
-                <% end %>
-              </li>
-              <li role="separator" class="divider"></li>
-              <li>
-                <%= link_to(new_lead_path) do %>
-                  <span class="glyphicon glyphicon-pencil"></span> Create Lead
-                <% end %>
-              </li>
-            </ul>
-          </div>
-        </li> <!-- Leads -->
+                <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(leads_path) %>" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(leads_path) do %>
+                      <span class="glyphicon glyphicon-star"></span> My Leads
+                    <% end %>
+                  </li>
+                  <li role="separator" class="divider"></li>
+                  <li>
+                    <%= link_to(leads_path) do %>
+                      <span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(leads_path) do %>
+                      <span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(leads_path) do %>
+                      <span class="glyphicon glyphicon-flag"></span> Active Leads
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(leads_path) do %>
+                      <span class="glyphicon glyphicon-check"></span> Closed Leads
+                    <% end %>
+                  </li>
+                  <li role="separator" class="divider"></li>
+                  <li>
+                    <%= link_to(new_lead_path) do %>
+                      <span class="glyphicon glyphicon-pencil"></span> Create Lead
+                    <% end %>
+                  </li>
+                </ul>
+              </div>
+            </li> <!-- Leads -->
 
-        <li> <!-- Messaging -->
-          <div class="btn-group">
-            <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</a>
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a href="#"><span class="glyphicon glyphicon-star"></span> Unresponded Emails</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Recent Emails</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-send"></span> Create Email</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-th"></span> Email Templates</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#"><span class="glyphicon glyphicon-calendar"></span> Reminders</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-bell"></span> Create Reminder</a></li>
-              <li role="separator" class="divider"></li>
-            </ul>
-          </div>
-        </li> <!-- Messaging -->
+            <li> <!-- Messaging -->
+              <div class="btn-group">
+                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</a>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="#"><span class="glyphicon glyphicon-star"></span> Unresponded Emails</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Recent Emails</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-send"></span> Create Email</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-th"></span> Email Templates</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-calendar"></span> Reminders</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-bell"></span> Create Reminder</a></li>
+                  <li role="separator" class="divider"></li>
+                </ul>
+              </div>
+            </li> <!-- Messaging -->
 
-        <li> <!-- Reports -->
-          <div class="btn-group">
-            <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</a>
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a href="#"><span class="glyphicon glyphicon-picture"></span> Report 1</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> Report 2</a></li>
-            </ul>
-          </div>
-        </li> <!-- Properties -->
+            <li> <!-- Reports -->
+              <div class="btn-group">
+                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</a>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="#"><span class="glyphicon glyphicon-picture"></span> Report 1</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> Report 2</a></li>
+                </ul>
+              </div>
+            </li> <!-- Properties -->
 
-        <li> <!-- Properties -->
-          <div class="btn-group">
-            <%= link_to(properties_path, class: "btn #{nav_active_class(properties_path)}") do %>
-              <span class="glyphicon glyphicon-home"></span> Properties
-            <% end %>
-            <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(properties_path)%>" data-toggle="dropdown">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <%= link_to(properties_path) do %>
+            <li> <!-- Properties -->
+              <div class="btn-group">
+                <%= link_to(properties_path, class: "btn #{nav_active_class(properties_path)}") do %>
                   <span class="glyphicon glyphicon-home"></span> Properties
                 <% end %>
-              </li>
-              <li><a href="#"><span class="glyphicon glyphicon-user"></span> Residents</a></li>
-            </ul>
-          </div>
-        </li> <!-- Properties -->
+                <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(properties_path)%>" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(properties_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Properties
+                    <% end %>
+                  </li>
+                  <li><a href="#"><span class="glyphicon glyphicon-user"></span> Residents</a></li>
+                </ul>
+              </div>
+            </li> <!-- Properties -->
 
-        <li> <!-- System -->
-          <div class="btn-group">
-            <a  href="#" class="btn btn-info"><span class="glyphicon glyphicon-wrench"></span> System</a>
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a href="#"><span class="glyphicon glyphicon-user"></span> Manage Druid Users</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
-              <li>
-                <%= link_to(lead_sources_path) do %>
-                  <span class="glyphicon glyphicon-download-alt"></span> Lead Sources
+            <li> <!-- System -->
+              <div class="btn-group">
+                <a  href="#" class="btn btn-info"><span class="glyphicon glyphicon-wrench"></span> System</a>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(users_path) do %>
+                      <span class="glyphicon glyphicon-user"></span>Manage Druid Users
+                    <% end %>
+                  </li>
+                  <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
+                  <li>
+                    <%= link_to(lead_sources_path) do %>
+                      <span class="glyphicon glyphicon-download-alt"></span> Lead Sources
+                    <% end %>
+                  </li>
+                  <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> System Configuration</a></li>
+                </ul>
+              </div>
+            </li> <!-- System -->
+
+          <% end %>
+          <li> <!-- Account -->
+            <div class="btn-group">
+              <% if current_user.present? %>
+                <%= link_to(destroy_user_session_path, method: :delete, class: "btn btn-info") do %>
+                  <span class="glyphicon glyphicon-off"></span> Logout
                 <% end %>
-              </li>
-              <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> System Configuration</a></li>
-            </ul>
-          </div>
-        </li> <!-- System -->
-
-        <li> <!-- Account -->
-          <div class="btn-group">
-            <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-off"></span> Logout</a>
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a href="#"><span class="glyphicon glyphicon-user"></span> My Account</a></li>
-            </ul>
-          </div>
-        </li> <!-- Properties -->
-
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div>
-</nav>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(edit_user_path(current_user)) do %>
+                      <span class="glyphicon glyphicon-user"></span> My Account
+                    <% end %>
+                  </li>
+                </ul>
+              <% else %>
+                <%= link_to(new_user_session_path, class: "btn btn-info") do %>
+                  <span class="glyphicon glyphicon-off"></span> Login
+                <% end %>
+              <% end %>
+            </div>
+          </li> <!-- Properties -->
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
