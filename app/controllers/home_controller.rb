@@ -4,9 +4,9 @@ class HomeController < ApplicationController
 
   HTTP_AUTH=true
 
-  def index
-    @page_title = "Druid Home"
-  end
+  #def index
+    #@page_title = "Druid Home"
+  #end
 
   def dashboard
     @page_title = "Druid Dashboard"
