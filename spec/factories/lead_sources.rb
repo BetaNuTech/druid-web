@@ -18,5 +18,19 @@ FactoryBot.define do
     incoming true
     slug { Faker::Company.ein }
     active true
+
+    factory :druid_source do
+      name 'Druid WebApp'
+      incoming true
+      slug 'druid'
+      active 'true'
+    end
+
+    factory :zillow_source do
+      name 'Zillow'
+      incoming true
+      slug 'zillow'
+      active true
+    end
   end
 end
