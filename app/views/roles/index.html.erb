@@ -1,0 +1,45 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Roles</h1>
+    </div>
+    <div class="col-md-6 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New Role', new_role_path %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @roles.each do |role| %>
+            <tr>
+              <td><strong><%= role.name %></strong></td>
+              <td><%= role.slug %></td>
+              <td><%= role.description %></td>
+              <td>
+                <%= link_to role do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_role_path(role) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to role, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create New Role', new_role_path %>
+    </div>
+  </div>
+</div>

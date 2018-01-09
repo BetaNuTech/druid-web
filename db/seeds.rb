@@ -3,6 +3,24 @@
 #
 
 ##
+# Roles
+roles = {
+  administrator: "highest level role",
+  operator: "system administrator",
+  agent: "Agent role"
+}
+puts " * Creating Roles"
+roles.each do |name, description|
+  print "   - '#{name}' (slug: #{name}) "
+  role = Role.new(name: name, slug: name, description: description)
+  if role.save
+    puts "[OK]".green
+  else
+    puts "[FAIL] (#{role.errors.to_a})".red
+  end
+end
+
+##
 # Lead Sources
 puts " * Creating default Lead Sources"
 sources = {
@@ -23,9 +41,9 @@ sources.each_pair do |source_name, attrs|
   print "   - '#{source_name}' (slug: #{attrs[:slug]}) "
   source = LeadSource.new(attrs)
   if source.save
-    puts "[OK]"
+    puts "[OK]".green
   else
-    puts "[FAIL] (#{source.errors.to_a})"
+    puts "[FAIL] (#{source.errors.to_a})".red
   end
 end
 
@@ -34,15 +52,11 @@ puts " * Creating Users"
 ## Admin user
 admin_email = 'admin@example.com'
 print "   - #{admin_email} "
-if User.where(email: admin_email).present?
-  puts "[OK]"
+admin_password = 'ChangeMeNow'
+admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password)
+if admin.save
+  admin.confirm
+  puts "(password: '#{admin_password}') [OK]".green
 else
-  admin_password = 'ChangeMeNow'
-  admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password)
-  if admin.save
-    admin.confirm
-    puts "(password: '#{admin_password}') [OK]"
-  else
-    puts "[FAIL] (#{admin.errors.to_a})"
-  end
+  puts "[FAIL] (#{admin.errors.to_a})".red
 end
