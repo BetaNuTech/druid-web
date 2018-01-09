@@ -41,6 +41,18 @@
     </fieldset>
   </div>
 
+  <div class="fieldset_content">
+    <fieldset>
+      <legend>Role and Access</legend>
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <%= form.label "Role" %>
+          <%= form.select :role_id, roles_for_select(user: @user, editor: current_user, value: @user.role_id),{}, { class: "form-control" }%>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
   <div class="form-group">
     <button type="submit" class="btn btn-primary">Submit</button>
   </div>

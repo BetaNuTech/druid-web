@@ -12,7 +12,7 @@ roles = {
 puts " * Creating Roles"
 roles.each do |name, description|
   print "   - '#{name}' (slug: #{name}) "
-  role = Role.new(name: name, slug: name, description: description)
+  role = Role.new(name: name.capitalize, slug: name, description: description)
   if role.save
     puts "[OK]".green
   else

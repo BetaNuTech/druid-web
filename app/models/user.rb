@@ -22,10 +22,14 @@
 #  locked_at              :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  role_id                :uuid
 #
 
 class User < ApplicationRecord
   devise :database_authenticatable, :lockable, :timeoutable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
-  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation]
+  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id]
+
+  # Associations
+  belongs_to :role, required: false
 end
