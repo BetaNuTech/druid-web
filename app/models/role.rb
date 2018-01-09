@@ -11,6 +11,40 @@
 #
 
 class Role < ApplicationRecord
+  include Comparable
+
   validates :name, :slug,
     presence: true, uniqueness: true
+
+  HIERARCHY = [
+    :administrator,
+    :operator,
+    :agent
+  ]
+
+  # Class Methods
+  #
+
+  def self.administrator
+    self.where(slug: 'administrator').first
+  end
+
+  def self.agent
+    self.where(slug: 'agent').first
+  end
+
+  def self.operator
+    self.where(slug: 'operator').first
+  end
+
+  # Instance Methods
+  #
+
+  def <=>(other)
+    return 1 if other.nil?
+    return 1 if HIERARCHY.index(other.slug&.to_sym).nil?
+    return -1 if HIERARCHY.index(slug.to_sym).nil?
+    return HIERARCHY.index(other.slug.to_sym) <=> HIERARCHY.index(slug.to_sym)
+  end
+
 end

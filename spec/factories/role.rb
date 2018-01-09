@@ -17,10 +17,16 @@ FactoryBot.define do
       description 'operator role'
     end
 
-    factory :agent do
+    factory :agent_role do
       name 'agent'
       slug 'agent'
       description 'agent role'
+    end
+
+    factory :other_role do
+      name 'other'
+      slug 'other'
+      description 'other role'
     end
   end
 end
