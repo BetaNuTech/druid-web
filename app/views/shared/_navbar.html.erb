@@ -129,15 +129,20 @@
                 <ul class="dropdown-menu">
                   <li>
                     <%= link_to(users_path) do %>
-                      <span class="glyphicon glyphicon-user"></span>Manage Druid Users
+                      <span class="glyphicon glyphicon-user"></span> Manage Druid Users
                     <% end %>
                   </li>
-                  <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
+                  <li>
+                    <%= link_to(roles_path) do %>
+                      <span class="glyphicon glyphicon-cog"></span> Manage User Roles
+                    <% end %>
+                  </li>
                   <li>
                     <%= link_to(lead_sources_path) do %>
                       <span class="glyphicon glyphicon-download-alt"></span> Lead Sources
                     <% end %>
                   </li>
+                  <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
                   <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> System Configuration</a></li>
                 </ul>
               </div>

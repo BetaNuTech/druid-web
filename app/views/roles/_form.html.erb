@@ -11,22 +11,31 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name, id: :role_name %>
+  <div class="fieldset_content">
+    <fieldset>
+      <legend>Role Information</legend>
+      <div class="row">
+        <div class="col-md-8 form-group">
+          <%= form.label :name %>
+          <%= form.text_field :name, id: :role_name, class: "form-control" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 form-group">
+          <%= form.label :slug %>
+          <%= form.text_field :slug, id: :role_slug, class: "form-control" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 form-group">
+          <%= form.label :description %>
+          <%= form.text_area :description, id: :role_description, class: "form-control" %>
+        </div>
+      </div>
+    </fieldset>
   </div>
 
-  <div class="field">
-    <%= form.label :slug %>
-    <%= form.text_field :slug, id: :role_slug %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description, id: :role_description %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 <% end %>
