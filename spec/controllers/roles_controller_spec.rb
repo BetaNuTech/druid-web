@@ -19,53 +19,104 @@ RSpec.describe RolesController, type: :controller do
   describe "GET #index" do
     include_examples "authenticated action", {params: {}, name: 'index'}
 
-    it "returns a successful response" do
-      sign_in unroled_user
-      create(:role)
-      get :index, params: {}
-      expect(response).to be_success
+    describe "as an administrator" do
+      it "returns a successful response" do
+        sign_in administrator
+        create(:role)
+        get :index, params: {}
+        expect(response).to be_success
+      end
+
+      it "can return JSON data" do
+        sign_in administrator
+        get :index, params: {}, format: :json
+        expect(response).to be_success
+      end
     end
 
-    it "can return JSON data" do
-      sign_in unroled_user
-      get :index, params: {}, format: :json
-      expect(response).to be_success
+    describe "as an operator" do
+      it "denies access" do
+        sign_in operator
+        create(:role)
+        get :index, params: {}
+        expect(response).to be_redirect
+      end
+    end
+
+    describe "as an agent" do
+      it "denies access" do
+        sign_in agent
+        create(:role)
+        get :index, params: {}
+        expect(response).to be_redirect
+      end
     end
   end
 
   describe "GET #show" do
     include_examples "authenticated action", {params: {id: 0 }, name: 'show'}
 
-    it "returns a successful response" do
-      sign_in unroled_user
-      get :show, params: {id: role.id}
-      expect(response).to be_success
+    describe "as an administrator" do
+      it "returns a successful response" do
+        sign_in administrator
+        get :show, params: {id: role.id}
+        expect(response).to be_success
+      end
+
+      it "can return JSON data" do
+        sign_in administrator
+        get :show, params: {id: role.id}, format: :json
+        expect(response).to be_success
+      end
     end
 
-    it "can return JSON data" do
-      sign_in unroled_user
-      get :show, params: {id: role.id}, format: :json
-      expect(response).to be_success
+    describe "as an operator" do
+      it "denies access" do
+        sign_in operator
+        get :show, params: {id: role.id}
+        expect(response).to be_redirect
+      end
     end
+
   end
 
   describe "GET #new" do
     include_examples "authenticated action", {params: {}, name: 'new'}
 
-    it "returns a successful response" do
-      sign_in unroled_user
-      get :new, params: {}
-      expect(response).to be_success
+    describe "as an administrator" do
+      it "returns a successful response" do
+        sign_in administrator
+        get :new, params: {}
+        expect(response).to be_success
+      end
+    end
+
+    describe "as an operator" do
+      it "denies access" do
+        sign_in operator
+        get :new, params: {}
+        expect(response).to be_redirect
+      end
     end
   end
 
   describe "GET #edit" do
     include_examples "authenticated action", {params: {id: 0}, name: 'edit'}
 
-    it "returns a successful response" do
-      sign_in unroled_user
-      get :edit, params: {id: role.id}
-      expect(response).to be_success
+    describe "as an administrator" do
+      it "returns a successful response" do
+        sign_in administrator
+        get :edit, params: {id: role.id}
+        expect(response).to be_success
+      end
+    end
+
+    describe "as an operator" do
+      it "returns a successful response" do
+        sign_in operator
+        get :edit, params: {id: role.id}
+        expect(response).to be_redirect
+      end
     end
   end
 
@@ -86,35 +137,50 @@ RSpec.describe RolesController, type: :controller do
     end
 
     describe "with an authenticated user" do
-      describe "with valid attributes" do
-        it "should create the record" do
-          sign_in unroled_user
-          expect {
+
+      describe "as an administrator" do
+        describe "with valid attributes" do
+          it "should create the record" do
+            sign_in administrator
+            expect {
+              post :create, params: {role: valid_attributes}
+            }.to change{Role.count}.by(1)
+          end
+
+          it "should redirect to #show" do
+            sign_in administrator
             post :create, params: {role: valid_attributes}
-          }.to change{Role.count}.by(1)
+            expect(response).to redirect_to(role_path(Role.order("created_at asc").last))
+          end
         end
 
-        it "should redirect to #show" do
-          sign_in unroled_user
-          post :create, params: {role: valid_attributes}
-          expect(response).to redirect_to(role_path(Role.last))
-        end
-      end
+        describe "with invalid attributes" do
+          it "should not create a record" do
+            sign_in administrator
+            expect {
+              post :create, params: {role: invalid_attributes}
+            }.to change{Role.count}.by(0)
+          end
 
-      describe "with invalid attributes" do
-        it "should not create a record" do
-          sign_in unroled_user
-          expect {
+          it "should re-render the page" do
+            sign_in administrator
             post :create, params: {role: invalid_attributes}
-          }.to change{Role.count}.by(0)
-        end
-
-        it "should re-render the page" do
-          sign_in unroled_user
-          post :create, params: {role: invalid_attributes}
-          expect(response).to be_success
+            expect(response).to be_success
+          end
         end
       end
+
+      describe "as an operator" do
+        describe "with valid attributes" do
+          it "should not create the record" do
+            sign_in operator
+            expect {
+              post :create, params: {role: valid_attributes}
+            }.to change{Role.count}.by(0)
+          end
+        end
+      end
+
     end
 
   end
@@ -138,39 +204,66 @@ RSpec.describe RolesController, type: :controller do
     end
 
     describe "with an authenticated user" do
-      describe "with invalid attributes" do
-        it "should not update the record" do
-          role
-          sign_in unroled_user
-          expect {
+      describe "as an administrator" do
+        describe "with invalid attributes" do
+          it "should not update the record" do
+            role
+            sign_in administrator
+            expect {
+              put :update, params: {id: role.id, role: {name: ''}}
+            }.to_not change{role.name}
+          end
+
+          it "should re-render the form" do
+            role
+            sign_in administrator
             put :update, params: {id: role.id, role: {name: ''}}
-          }.to_not change{role.name}
+            expect(response).to be_success
+          end
         end
 
-        it "should re-render the form" do
-          role
-          sign_in unroled_user
-          put :update, params: {id: role.id, role: {name: ''}}
-          expect(response).to be_success
+        describe "with valid attributes" do
+          it "should update the record" do
+            role
+            sign_in administrator
+            expect {
+              put :update, params: {id: role.id, role: {name: new_name}}
+              role.reload
+            }.to change{role.name}
+          end
+
+          it "should redirect to #show" do
+            role
+            sign_in administrator
+            put :update, params: {id: role.id, role: {name: new_name}}
+            expect(response).to redirect_to(role_path(role))
+          end
         end
       end
 
-      describe "with valid attributes" do
-        it "should update the record" do
+      describe "as an operator" do
+        describe "with valid attributes" do
+          it "should not update the record" do
+            role
+            sign_in operator
+            expect {
+              put :update, params: {id: role.id, role: {name: new_name}}
+              role.reload
+            }.to_not change{role.name}
+          end
+        end
+      end
+
+      describe "as an agent" do
+        it "should not update the record" do
           role
-          sign_in unroled_user
+          sign_in agent
           expect {
             put :update, params: {id: role.id, role: {name: new_name}}
             role.reload
-          }.to change{role.name}
+          }.to_not change{role.name}
         end
 
-        it "should redirect to #show" do
-          role
-          sign_in unroled_user
-          put :update, params: {id: role.id, role: {name: new_name}}
-          expect(response).to redirect_to(role_path(role))
-        end
       end
     end
   end
@@ -189,21 +282,31 @@ RSpec.describe RolesController, type: :controller do
     end
 
     describe "with an authenticated user" do
-      it "should delete the record" do
-        sign_in unroled_user
-        expect{
-          delete :destroy, params: {id: role.id}
-        }.to change{Role.count}.by(-1)
+      describe "as an administrator" do
+        it "should delete the record" do
+          sign_in administrator
+          expect{
+            delete :destroy, params: {id: role.id}
+          }.to change{Role.count}.by(-1)
 
+        end
+
+        it "should redirect to #index" do
+          sign_in administrator
+          delete :destroy, params: {id: role.id}
+          expect(response).to redirect_to(roles_path)
+        end
       end
 
-      it "should redirect to #index" do
-        sign_in unroled_user
-        delete :destroy, params: {id: role.id}
-        expect(response).to redirect_to(roles_path)
+      describe "as an operator" do
+        it "should not delete the record" do
+          sign_in operator
+          expect{
+            delete :destroy, params: {id: role.id}
+          }.to change{Role.count}.by(0)
+        end
       end
     end
-
   end
 
 end

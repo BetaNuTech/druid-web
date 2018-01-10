@@ -13,6 +13,8 @@
 class Role < ApplicationRecord
   include Comparable
 
+  ALLOWED_PARAMS = [:id, :name, :slug, :description]
+
   validates :name, :slug,
     presence: true, uniqueness: true
 
