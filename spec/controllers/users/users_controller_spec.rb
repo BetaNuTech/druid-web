@@ -161,6 +161,19 @@ RSpec.describe UsersController, type: :controller do
       }
     }
 
+    describe "as an administrator" do
+      describe "with valid params" do
+        it "updates the requested user" do
+          sign_in administrator
+          user = User.create! valid_attributes
+          old_pw = user.encrypted_password
+          put :update, params: {id: user.to_param, user: new_attributes}
+          user.reload
+          expect(user.encrypted_password).to_not eq(old_pw)
+        end
+      end
+    end
+
     describe "as an operator" do
       describe "with valid params" do
 

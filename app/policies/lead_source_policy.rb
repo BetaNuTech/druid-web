@@ -1,4 +1,4 @@
-class UserPolicy < ApplicationPolicy
+class LeadSourcePolicy < ApplicationPolicy
 
   def index?
     user.administrator? || user.operator?
@@ -13,7 +13,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
-    user === record || user.administrator? || (user.operator? && !record.administrator?)
+    user.administrator? || user.operator?
   end
 
   def update?
@@ -28,14 +28,18 @@ class UserPolicy < ApplicationPolicy
     edit?
   end
 
+  def reset_token?
+    edit?
+  end
+
   def allowed_params
     case user
     when ->(u) { u.administrator? }
-      User::ALLOWED_PARAMS
+      LeadSource::ALLOWED_PARAMS
     when ->(u) { u.operator? }
-      User::ALLOWED_PARAMS
+      LeadSource::ALLOWED_PARAMS
     when ->(u) { u.agent? }
-      User::ALLOWED_PARAMS - [:role_id]
+      []
     end
   end
 
