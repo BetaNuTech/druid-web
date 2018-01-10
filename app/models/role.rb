@@ -47,4 +47,16 @@ class Role < ApplicationRecord
     return HIERARCHY.index(other.slug.to_sym) <=> HIERARCHY.index(slug.to_sym)
   end
 
+  def administrator?
+    slug == 'administrator'
+  end
+
+  def operator?
+    slug == 'operator'
+  end
+
+  def agent?
+    slug == 'agent'
+  end
+
 end

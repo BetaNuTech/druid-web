@@ -28,9 +28,31 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  include_context "users"
 
   it "can be created" do
     user = build(:user)
     assert(user.save)
   end
+
+  describe "role" do
+    it "can be an administrator" do
+      assert administrator.administrator?
+      refute administrator.agent?
+      refute agent.administrator?
+    end
+
+    it "can be an operator" do
+      assert operator.operator?
+      refute agent.operator?
+    end
+
+    it "can be an agent" do
+      assert agent.agent?
+      refute agent.operator?
+      refute agent.administrator?
+    end
+  end
+
+
 end

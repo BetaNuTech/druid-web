@@ -23,106 +23,233 @@ RSpec.describe UsersController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    it "returns a success response" do
-      sign_in unroled_user
-      user = User.create! valid_attributes
-      get :index, params: {}
-      expect(response).to be_success
+    describe "as an administrator" do
+      it "returns a success response" do
+        sign_in administrator
+        user = User.create! valid_attributes
+        get :index, params: {}
+        expect(response).to be_success
+        expect(response).to render_template("users/index")
+      end
+    end
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        user = User.create! valid_attributes
+        get :index, params: {}
+        expect(response).to be_success
+        expect(response).to render_template("users/index")
+      end
+    end
+    describe "as an agent" do
+      it "denies access" do
+        sign_in agent
+        user = User.create! valid_attributes
+        get :index, params: {}
+        expect(response).to be_redirect
+        expect(response).to_not render_template("users/index")
+      end
     end
   end
 
   describe "GET #show" do
-    it "returns a success response" do
-      sign_in unroled_user
-      user = User.create! valid_attributes
-      get :show, params: {id: user.to_param}
-      expect(response).to be_success
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        user = User.create! valid_attributes
+        get :show, params: {id: user.to_param}
+        expect(response).to be_success
+        expect(response).to render_template("users/show")
+      end
+    end
+    describe "as an agent" do
+      it "denies access" do
+        sign_in agent
+        user = User.create! valid_attributes
+        get :show, params: {id: user.to_param}
+        expect(response).to_not render_template("users/show")
+        expect(response).to be_redirect
+      end
+    end
+    describe "as the user" do
+      it "returns a success response" do
+        sign_in agent
+        user = agent
+        get :show, params: {id: user.to_param}
+        expect(response).to be_success
+      end
     end
   end
 
   describe "GET #new" do
-    it "returns a success response" do
-      sign_in unroled_user
-      get :new, params: {}
-      expect(response).to be_success
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        get :new, params: {}
+        expect(response).to be_success
+      end
+    end
+    describe "as an agent" do
+      it "denies access" do
+        sign_in agent
+        get :new, params: {}
+        expect(response).to be_redirect
+      end
     end
   end
 
   describe "GET #edit" do
-    it "returns a success response" do
-      sign_in unroled_user
-      user = User.create! valid_attributes
-      get :edit, params: {id: user.to_param}
-      expect(response).to be_success
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        user = User.create! valid_attributes
+        get :edit, params: {id: user.to_param}
+        expect(response).to be_success
+      end
+    end
+    describe "as an agent" do
+      it "denies access" do
+        sign_in agent
+        user = User.create! valid_attributes
+        get :edit, params: {id: user.to_param}
+        expect(response).to be_redirect
+      end
     end
   end
 
   describe "POST #create" do
-    context "with valid params" do
-      it "creates a new User" do
-        sign_in unroled_user
-        expect {
-          post :create, params: {user: valid_attributes}
-        }.to change(User, :count).by(1)
-      end
+    describe "as an operator" do
+      describe "with valid params" do
+        it "creates a new User" do
+          sign_in operator
+          expect {
+            post :create, params: {user: valid_attributes}
+          }.to change(User, :count).by(1)
+        end
 
-      it "redirects to the created user" do
-        sign_in unroled_user
-        post :create, params: {user: valid_attributes}
-        new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
-        expect(response).to redirect_to(new_user)
+        it "redirects to the created user" do
+          sign_in operator
+          post :create, params: {user: valid_attributes}
+          new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
+          expect(response).to redirect_to(new_user)
+        end
+      end
+      describe "with invalid params" do
+        it "returns a success response (i.e. to display the 'new' template)" do
+          sign_in operator
+          post :create, params: {user: invalid_attributes}
+          expect(response).to be_success
+        end
       end
     end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
-        sign_in unroled_user
-        post :create, params: {user: invalid_attributes}
-        expect(response).to be_success
+    describe "as an agent" do
+      it "does not create a user" do
+        sign_in agent
+        expect {
+          post :create, params: {user: valid_attributes}
+        }.to change(User, :count).by(0)
       end
     end
   end
 
   describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        pw = 'Foobar123.'
-        {
-          password: pw,
-          password_confirmation: pw
-        }
+    let(:new_attributes) {
+      pw = 'Foobar123.'
+      {
+        password: pw,
+        password_confirmation: pw
       }
+    }
 
-      it "updates the requested user" do
-        sign_in unroled_user
-        user = User.create! valid_attributes
-        old_pw = user.encrypted_password
-        put :update, params: {id: user.to_param, user: new_attributes}
-        user.reload
-        expect(user.encrypted_password).to_not eq(old_pw)
+    describe "as an operator" do
+      describe "with valid params" do
+
+        it "updates the requested user" do
+          sign_in operator
+          user = User.create! valid_attributes
+          old_pw = user.encrypted_password
+          put :update, params: {id: user.to_param, user: new_attributes}
+          user.reload
+          expect(user.encrypted_password).to_not eq(old_pw)
+        end
+
+        it "redirects to the user" do
+          sign_in operator
+          user = User.create! valid_attributes
+          put :update, params: {id: user.to_param, user: valid_attributes}
+          expect(response).to redirect_to(user)
+        end
+
+        it "can change the user role" do
+          sign_in operator
+          user = User.create! valid_attributes
+          user.role = agent_role
+          user.save!
+          old_role = user.role_id
+          put :update, params: {id: user.to_param, user: {role_id: operator_role.id}}
+          user.reload
+        end
+
+        it "cannot promote role to administrator" do
+          sign_in operator
+          user = User.create! valid_attributes
+          user.role = agent_role
+          user.save!
+          old_role = user.role_id
+          put :update, params: {id: user.to_param, user: {role_id: administrator_role.id}}
+          user.reload
+          expect(user.role_id).to eq(old_role)
+          expect(user.role_id).to_not eq(administrator_role.id)
+        end
       end
 
-      it "redirects to the user" do
-        sign_in unroled_user
-        user = User.create! valid_attributes
-        put :update, params: {id: user.to_param, user: valid_attributes}
-        expect(response).to redirect_to(user)
+      describe "with invalid params" do
+        it "returns a success response (i.e. to display the 'edit' template)" do
+          sign_in operator
+          user = User.create! valid_attributes
+          put :update, params: {id: user.to_param, user: invalid_attributes}
+          expect(response).to be_success
+        end
       end
+
     end
 
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-        sign_in unroled_user
-        user = User.create! valid_attributes
-        put :update, params: {id: user.to_param, user: invalid_attributes}
-        expect(response).to be_success
+    describe "as an agent" do
+      describe "updating other record" do
+        it "does not update the requested user" do
+          sign_in agent
+          user = User.create! valid_attributes
+          old_pw = user.encrypted_password
+          put :update, params: {id: user.to_param, user: new_attributes}
+          user.reload
+          expect(user.encrypted_password).to eq(old_pw)
+        end
+      end
+      describe "updating own record" do
+        it "updates the user" do
+          sign_in agent
+          user = agent
+          old_pw = user.encrypted_password
+          put :update, params: {id: user.to_param, user: new_attributes}
+          user.reload
+          expect(user.encrypted_password).to_not eq(old_pw)
+        end
+
+        it "will not update the role" do
+          sign_in agent
+          user = agent
+          old_role = user.role_id
+          put :update, params: {id: user.to_param, user: {role_id: administrator_role.id}}
+          user.reload
+          expect(user.role_id).to eq(old_role)
+        end
       end
     end
   end
 
   describe "DELETE #destroy" do
     it "destroys the requested user" do
-      sign_in unroled_user
+      sign_in operator
       user = User.create! valid_attributes
       expect {
         delete :destroy, params: {id: user.to_param}
@@ -130,7 +257,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it "redirects to the users list" do
-      sign_in unroled_user
+      sign_in operator
       user = User.create! valid_attributes
       delete :destroy, params: {id: user.to_param}
       expect(response).to redirect_to(users_url)
