@@ -2,31 +2,37 @@ class PropertiesController < ApplicationController
   #http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
   before_action :authenticate_user!
   before_action :set_property, only: [:show, :edit, :update, :destroy]
+  after_action :verify_authorized
 
   # GET /properties
   # GET /properties.json
   def index
+    authorize Property
     @properties = Property.order("name ASC")
   end
 
   # GET /properties/1
   # GET /properties/1.json
   def show
+    authorize @property
   end
 
   # GET /properties/new
   def new
     @property = Property.new
+    authorize @property
   end
 
   # GET /properties/1/edit
   def edit
+    authorize @property
   end
 
   # POST /properties
   # POST /properties.json
   def create
     @property = Property.new(property_params)
+    authorize @property
 
     respond_to do |format|
       if @property.save
@@ -42,6 +48,7 @@ class PropertiesController < ApplicationController
   # PATCH/PUT /properties/1
   # PATCH/PUT /properties/1.json
   def update
+    authorize @property
     respond_to do |format|
       if @property.update(property_params)
         format.html { redirect_to @property, notice: 'Property was successfully updated.' }
@@ -56,6 +63,7 @@ class PropertiesController < ApplicationController
   # DELETE /properties/1
   # DELETE /properties/1.json
   def destroy
+    authorize @property
     @property.destroy
     respond_to do |format|
       format.html { redirect_to properties_url, notice: 'Property was successfully destroyed.' }
@@ -71,8 +79,7 @@ class PropertiesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def property_params
-      valid_property_params = Property::ALLOWED_PARAMS
-      valid_listing_params = [{listings_attributes: PropertyListing::ALLOWED_PARAMS}]
-      params.require(:property).permit(*( valid_property_params + valid_listing_params ))
+      valid_property_params = policy(Property).allowed_params
+      params.require(:property).permit(*valid_property_params)
     end
 end
