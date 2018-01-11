@@ -13,6 +13,7 @@
 #
 
 class LeadSource < ApplicationRecord
+  ALLOWED_PARAMS = [:name, :incoming, :slug, :active]
 
   # A LeadSource 'slug' also identifies the parser
   DEFAULT_SLUG = 'Druid'

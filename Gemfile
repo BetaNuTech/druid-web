@@ -28,7 +28,8 @@ gem 'pry-stack_explorer', "~> 0.4"
 gem 'pry-byebug', "~> 3.5"
 gem 'webpacker', "~> 3.0"
 gem 'devise', "~> 4.3"
-gem 'colorize'
+gem 'colorize', "~> 0.8"
+gem 'pundit', "~> 1.1"
 
 group :development, :test do
   gem 'byebug', "~> 9.1", platforms: [:mri, :mingw, :x64_mingw]

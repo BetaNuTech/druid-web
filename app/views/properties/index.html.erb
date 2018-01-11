@@ -8,10 +8,12 @@
     <div class="col-md-6">
       <h1>Properties</h1>
     </div>
+    <% if policy(Property).new? %>
     <div class="col-md-6 text-right">
       <%= glyph(:create) %>
       <%= link_to 'Create New Property', new_property_path %>
     </div>
+    <% end %>
   </div>
   <div class="row">
     <div class="col-md-12">
@@ -58,10 +60,12 @@
 
     </div>
   </div>
+  <% if policy(Property).new? %>
   <div class="row">
     <div class="col-md-12 text-right">
       <%= glyph(:create) %>
       <%= link_to 'Create New Property', new_property_path %>
     </div>
   </div>
+  <% end %>
 </div>

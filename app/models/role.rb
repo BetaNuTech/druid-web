@@ -13,6 +13,8 @@
 class Role < ApplicationRecord
   include Comparable
 
+  ALLOWED_PARAMS = [:id, :name, :slug, :description]
+
   validates :name, :slug,
     presence: true, uniqueness: true
 
@@ -45,6 +47,26 @@ class Role < ApplicationRecord
     return 1 if HIERARCHY.index(other.slug&.to_sym).nil?
     return -1 if HIERARCHY.index(slug.to_sym).nil?
     return HIERARCHY.index(other.slug.to_sym) <=> HIERARCHY.index(slug.to_sym)
+  end
+
+  def administrator?
+    slug == 'administrator'
+  end
+
+  def operator?
+    slug == 'operator'
+  end
+
+  def agent?
+    slug == 'agent'
+  end
+
+  def admin?
+    administrator? || operator?
+  end
+
+  def user?
+    agent?
   end
 
 end
