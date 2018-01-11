@@ -100,7 +100,15 @@ git push heroku-staging staging:master && \
   heroku run rake db:migrate --app heroku-staging
 ```
 
+### Deployment Helper
+
+The `bin/deploy` script handles creation of a git tag, deployment of the application to Heroku, and running of migrations on Heroku
+
+For example: `bin/deploy staging` will use the current branch, create a staging-YYYYMMDD tag, push the tag to origin, push the code to the `heroku-staging` origin, then run migrations on the staging application.
+
 ## Users
+
+The `User` model corresponds to User identities in Druid.
 
 User login and authentication is powered by Devise. Run the `db:seed` task or create a new user via the console.  For example:
 
@@ -111,3 +119,29 @@ new_user = User.create(email: 'newuser@example.com',
 # Confirm the user via the email link or via the confirm method
 new_user.confirm
 ```
+
+## Authentication, etc.
+
+The User model is backed by the `devise` gem. Providing numerous capabilities:
+
+  * Authentication
+  * Account email address confirmation
+  * Password Reset
+  * Automatic account locking after multiple failed authentication attempts
+  * Account unlocking
+
+### Roles
+
+A user may belong to one of three Roles:
+
+  * Administrator: fully privilileged users
+  * Operator: site operators
+  * Agent: sales agents with limit management access
+
+### UI
+
+Admins (Role is `administrator` or `operator`) may manage users via a Web UI.
+
+
+
+
