@@ -115,12 +115,15 @@
                       <span class="glyphicon glyphicon-home"></span> Manage Properties
                     <% end %>
                   </li>
+                  <% if current_user.admin? %>
                   <li><a href="#"><span class="glyphicon glyphicon-user"></span> Manage Property Residents</a></li>
+                  <% end %>
                 </ul>
               </div>
             </li> <!-- Properties -->
             <% end %>
 
+            <% if current_user.admin? %>
             <li> <!-- System -->
               <div class="btn-group">
                 <a  href="#" class="btn btn-info"><span class="glyphicon glyphicon-wrench"></span> System</a>
@@ -150,11 +153,14 @@
                     <% end %>
                   </li>
                   <% end %>
+                  <% if current_user.admin? %>
                   <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
                   <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> System Configuration</a></li>
+                  <% end %>
                 </ul>
               </div>
             </li> <!-- System -->
+          <% end %>
 
           <% end %>
           <li> <!-- Account -->
