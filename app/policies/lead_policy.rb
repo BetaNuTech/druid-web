@@ -3,7 +3,7 @@ class LeadPolicy < ApplicationPolicy
   # All users can view and modify Leads
 
   def index?
-    user.administrator? || user.operator? || user.agent?
+    user.admin? || user.user?
   end
 
   def show?
@@ -34,9 +34,7 @@ class LeadPolicy < ApplicationPolicy
     reject_params = []
 
     case user
-    when ->(u) { u.administrator? }
-      # NOOP: Full permissions
-    when ->(u) { u.operator? }
+    when ->(u) { u.admin? }
       # NOOP: Full permissions
     when ->(u) { u.agent? }
       # Only limit params on instantiated Leads

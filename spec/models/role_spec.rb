@@ -86,4 +86,29 @@ RSpec.describe Role, type: :model do
     end
   end
 
+  describe "identification" do
+    it "should return whether the Role is administrator" do
+      assert administrator_role.administrator?
+      refute operator_role.administrator?
+    end
+    it "should return whether the Role is operator" do
+      assert operator_role.operator?
+      refute agent_role.operator?
+    end
+    it "should return whether the Role is agent" do
+      assert agent_role.agent?
+      refute agent_role.operator?
+    end
+    it "should return whether the Role is a type of administrator" do
+      assert operator_role.admin?
+      assert administrator_role.admin?
+      refute agent_role.admin?
+    end
+    it "should return whether the Role is a unprivileged user" do
+      refute operator_role.user?
+      refute administrator_role.user?
+      assert agent_role.user?
+    end
+  end
+
 end

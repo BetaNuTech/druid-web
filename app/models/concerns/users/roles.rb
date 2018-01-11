@@ -17,6 +17,14 @@ module Users
         role.try(:agent?)
       end
 
+      def admin?
+        role.try(:admin?)
+      end
+
+      def user?
+        role.try(:user?)
+      end
+
     end
   end
 end

@@ -1,7 +1,7 @@
 class LeadSourcePolicy < ApplicationPolicy
 
   def index?
-    user.administrator? || user.operator?
+    user.admin?
   end
 
   def new?
@@ -13,7 +13,7 @@ class LeadSourcePolicy < ApplicationPolicy
   end
 
   def edit?
-    user.administrator? || user.operator?
+    user.admin?
   end
 
   def update?

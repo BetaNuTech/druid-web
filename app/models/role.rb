@@ -61,4 +61,12 @@ class Role < ApplicationRecord
     slug == 'agent'
   end
 
+  def admin?
+    administrator? || operator?
+  end
+
+  def user?
+    agent?
+  end
+
 end

@@ -52,6 +52,18 @@ RSpec.describe User, type: :model do
       refute agent.operator?
       refute agent.administrator?
     end
+
+    it "can be a type of administrator" do
+      assert administrator.admin?
+      assert operator.admin?
+      refute agent.admin?
+    end
+
+    it "can be an unprivileged user" do
+      refute administrator.user?
+      refute operator.user?
+      assert agent.user?
+    end
   end
 
 
