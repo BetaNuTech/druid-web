@@ -34,12 +34,35 @@ RSpec.describe LeadsController, type: :controller do
   describe "GET #index" do
     include_examples "authenticated action", {params: {}, name: 'index'}
 
-    it "returns a success response" do
-      sign_in unroled_user
-      lead = Lead.create! valid_attributes
-      get :index, params: {}
-      expect(response).to be_success
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        lead = Lead.create! valid_attributes
+        get :index, params: {}
+        expect(response).to be_success
+      end
+
     end
+
+    describe "as an agent" do
+      it "returns a success response" do
+        sign_in agent
+        lead = Lead.create! valid_attributes
+        get :index, params: {}
+        expect(response).to be_success
+      end
+
+    end
+
+    describe "as an unroled user" do
+      it "access is rejected" do
+        sign_in unroled_user
+        lead = Lead.create! valid_attributes
+        get :index, params: {}
+        expect(response).to be_redirect
+      end
+    end
+
   end
 
   describe "GET #show" do
@@ -47,38 +70,105 @@ RSpec.describe LeadsController, type: :controller do
 
     include_examples "authenticated action", {params: {id: 0 }, name: 'show'}
 
-    it "returns a success response" do
-      sign_in unroled_user
-      get :show, params: {id: lead.to_param}
-      expect(response).to be_success
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        get :show, params: {id: lead.to_param}
+        expect(response).to be_success
+      end
+
+      it "can return JSON data" do
+        sign_in operator
+        assert(lead.preference.present?)
+        get :show, params: {id: lead.to_param}, format: :json
+        expect(response).to be_success
+      end
     end
 
-    it "can return JSON data" do
-      sign_in unroled_user
-      assert(lead.preference.present?)
-      get :show, params: {id: lead.to_param}, format: :json
-      expect(response).to be_success
+    describe "as an agent" do
+      it "returns a success response" do
+        sign_in agent
+        get :show, params: {id: lead.to_param}
+        expect(response).to be_success
+      end
+
+      it "can return JSON data" do
+        sign_in agent
+        assert(lead.preference.present?)
+        get :show, params: {id: lead.to_param}, format: :json
+        expect(response).to be_success
+      end
     end
+
+    describe "as an unroled user" do
+      it "denies access" do
+        sign_in unroled_user
+        get :show, params: {id: lead.to_param}
+        expect(response).to be_redirect
+      end
+    end
+
   end
 
   describe "GET #new" do
     include_examples "authenticated action", {params: {id: 0 }, name: 'new'}
 
-    it "returns a success response" do
-      sign_in unroled_user
-      get :new, params: {}, session: valid_session
-      expect(response).to be_success
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        get :new, params: {}, session: valid_session
+        expect(response).to be_success
+      end
     end
+
+    describe "as an agent" do
+      it "returns a success response" do
+        sign_in agent
+        get :new, params: {}, session: valid_session
+        expect(response).to be_success
+      end
+    end
+
+    describe "as an unroled user" do
+      it "denies access" do
+        sign_in unroled_user
+        get :new, params: {}, session: valid_session
+        expect(response).to be_redirect
+      end
+    end
+
   end
 
   describe "GET #edit" do
     include_examples "authenticated action", {params: {id: 0 }, name: 'edit'}
-    it "returns a success response" do
-      sign_in unroled_user
-      lead = Lead.create! valid_attributes
-      get :edit, params: {id: lead.to_param}, session: valid_session
-      expect(response).to be_success
+
+    describe "as an operator" do
+      it "returns a success response" do
+        sign_in operator
+        lead = Lead.create! valid_attributes
+        get :edit, params: {id: lead.to_param}, session: valid_session
+        expect(response).to be_success
+      end
     end
+
+    describe "as an agent" do
+      it "returns a success response" do
+        sign_in agent
+        lead = Lead.create! valid_attributes
+        get :edit, params: {id: lead.to_param}, session: valid_session
+        expect(response).to be_success
+      end
+    end
+
+    describe "as an unroled user" do
+      it "denies access" do
+        sign_in unroled_user
+        lead = Lead.create! valid_attributes
+        get :edit, params: {id: lead.to_param}, session: valid_session
+        expect(response).to be_redirect
+      end
+    end
+
   end
 
   describe "POST #create" do
@@ -88,71 +178,143 @@ RSpec.describe LeadsController, type: :controller do
       source
     end
 
-    context "with valid params" do
-      it "creates a new Lead" do
-      sign_in unroled_user
-        expect {
-          post :create, params: {lead: valid_attributes}, session: valid_session
-        }.to change(Lead, :count).by(1)
-      end
-
-      it "redirects to the created lead" do
-      sign_in unroled_user
-        post :create, params: {lead: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(Lead.last)
-      end
-
-      context "specifying a source id" do
-        it "creates a lead with the source" do
-      sign_in unroled_user
-        post :create, params: {lead: valid_attributes.merge(lead_source_id: source.id) }, session: valid_session
-        expect(response).to redirect_to(Lead.last)
-        expect(Lead.last.source).to eq(source)
+    describe "as an operator" do
+      context "with valid params" do
+        it "creates a new Lead" do
+          sign_in operator
+          expect {
+            post :create, params: {lead: valid_attributes}, session: valid_session
+          }.to change(Lead, :count).by(1)
         end
       end
     end
 
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
-      sign_in unroled_user
-        post :create, params: {lead: invalid_attributes}, session: valid_session
-        expect(response).to be_success
+    describe "as an unroled user" do
+      context "with valid params" do
+        it "denies access and does not create a new Lead" do
+          sign_in unroled_user
+          expect {
+            post :create, params: {lead: valid_attributes}, session: valid_session
+          }.to change(Lead, :count).by(0)
+        end
       end
     end
+
+    describe "as an agent" do
+      context "with valid params" do
+        it "creates a new Lead" do
+          sign_in agent
+          expect {
+            post :create, params: {lead: valid_attributes}, session: valid_session
+          }.to change(Lead, :count).by(1)
+        end
+
+        it "redirects to the created lead" do
+          sign_in agent
+          post :create, params: {lead: valid_attributes}, session: valid_session
+          expect(response).to redirect_to(Lead.last)
+        end
+
+        context "specifying a source id" do
+          it "creates a lead with the source" do
+            sign_in agent
+            post :create, params: {lead: valid_attributes.merge(lead_source_id: source.id) }, session: valid_session
+            expect(response).to redirect_to(Lead.last)
+            expect(Lead.last.source).to eq(source)
+          end
+        end
+      end
+
+      context "with invalid params" do
+        it "returns a success response (i.e. to display the 'new' template)" do
+          sign_in agent
+          post :create, params: {lead: invalid_attributes}, session: valid_session
+          expect(response).to be_success
+        end
+      end
+    end
+
   end
 
   describe "PUT #update" do
     include_examples "authenticated action", {params: {id: 0 }, name: 'update'}
 
-    context "with valid params" do
-      let(:new_attributes) {
-        attributes_for(:lead).merge(notes: 'Foobar')
-      }
+    let(:new_attributes) { attributes_for(:lead).merge(notes: 'Foobar') }
 
-      it "updates the requested lead" do
-      sign_in unroled_user
+    describe "as an agent" do
+      context "with valid params" do
+        it "updates the requested lead" do
+          sign_in agent
+          lead = Lead.create! valid_attributes
+          put :update, params: {id: lead.to_param, lead: new_attributes}, session: valid_session
+          lead.reload
+          expect(lead.notes).to eq(new_attributes[:notes])
+        end
+
+        it "redirects to the lead" do
+          sign_in agent
+          lead = Lead.create! valid_attributes
+          put :update, params: {id: lead.to_param, lead: valid_attributes}, session: valid_session
+          expect(response).to redirect_to(lead)
+        end
+      end
+
+      context "with invalid params" do
+        it "returns a success response (i.e. to display the 'edit' template)" do
+          sign_in agent
+          lead = Lead.create! valid_attributes
+          put :update, params: {id: lead.to_param, lead: invalid_attributes}
+          expect(response).to be_success
+        end
+      end
+
+      it "allows Lead owner to reassign the Lead to another User" do
+        sign_in agent
         lead = Lead.create! valid_attributes
-        put :update, params: {id: lead.to_param, lead: new_attributes}, session: valid_session
+        lead.user = agent
+        lead.save!
+        put :update, params: {id: lead.to_param, lead: {user_id: operator.id}}
         lead.reload
-        expect(lead.notes).to eq(new_attributes[:notes])
+        expect(lead.user).to eq(operator)
       end
 
-      it "redirects to the lead" do
-      sign_in unroled_user
+      it "disallows Lead owner from claiming the Lead from another User" do
+        sign_in agent
         lead = Lead.create! valid_attributes
-        put :update, params: {id: lead.to_param, lead: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(lead)
+        lead.user = operator
+        lead.save!
+        put :update, params: {id: lead.to_param, lead: {user_id: agent.id}}
+        lead.reload
+        expect(lead.user).to eq(operator)
+      end
+
+    end
+
+    describe "as an operator" do
+      context "with valid params" do
+        it "updates the requested lead" do
+          sign_in operator
+          lead = Lead.create! valid_attributes
+          put :update, params: {id: lead.to_param, lead: new_attributes}, session: valid_session
+          lead.reload
+          expect(lead.notes).to eq(new_attributes[:notes])
+        end
       end
     end
 
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-      sign_in unroled_user
-        lead = Lead.create! valid_attributes
-        put :update, params: {id: lead.to_param, lead: invalid_attributes}, session: valid_session
-        expect(response).to be_success
+    describe "as an unroled user" do
+      context "with valid params" do
+        it "does not update the requested lead" do
+          sign_in unroled_user
+          lead = Lead.create! valid_attributes
+          put :update, params: {id: lead.to_param, lead: new_attributes}, session: valid_session
+          lead.reload
+          expect(lead.notes).to_not eq(new_attributes[:notes])
+        end
       end
+
     end
+
   end
 
   describe "DELETE #destroy" do
@@ -162,19 +324,41 @@ RSpec.describe LeadsController, type: :controller do
       expect(response).to redirect_to(new_user_session_path)
     end
 
-    it "destroys the requested lead" do
-      sign_in unroled_user
-      lead = Lead.create! valid_attributes
-      expect {
-        delete :destroy, params: {id: lead.to_param}, session: valid_session
-      }.to change(Lead, :count).by(-1)
+    describe "as an operator" do
+      it "destroys the requested lead" do
+        sign_in operator
+        lead = Lead.create! valid_attributes
+        expect {
+          delete :destroy, params: {id: lead.to_param}, session: valid_session
+        }.to change(Lead, :count).by(-1)
+      end
     end
 
-    it "redirects to the leads list" do
-      sign_in unroled_user
-      lead = Lead.create! valid_attributes
-      delete :destroy, params: {id: lead.to_param}, session: valid_session
-      expect(response).to redirect_to(leads_url)
+    describe "as an agent" do
+      it "destroys the requested lead" do
+        sign_in agent
+        lead = Lead.create! valid_attributes
+        expect {
+          delete :destroy, params: {id: lead.to_param}, session: valid_session
+        }.to change(Lead, :count).by(-1)
+      end
+
+      it "redirects to the leads list" do
+        sign_in agent
+        lead = Lead.create! valid_attributes
+        delete :destroy, params: {id: lead.to_param}, session: valid_session
+        expect(response).to redirect_to(leads_url)
+      end
+    end
+
+    describe "as an unroled user" do
+      it "does not destroy the requested lead" do
+        sign_in unroled_user
+        lead = Lead.create! valid_attributes
+        expect {
+          delete :destroy, params: {id: lead.to_param}, session: valid_session
+        }.to change(Lead, :count).by(0)
+      end
     end
   end
 

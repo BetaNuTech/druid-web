@@ -1,34 +1,39 @@
 class LeadsController < ApplicationController
   #http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
   before_action :authenticate_user!
-
   before_action :set_lead, only: [:show, :edit, :update, :destroy]
+  after_action :verify_authorized
 
   # GET /leads
   # GET /leads.json
   def index
+    authorize Lead
     @leads = Lead.all
   end
 
   # GET /leads/1
   # GET /leads/1.json
   def show
+    authorize @lead
   end
 
   # GET /leads/new
   def new
     @lead = Lead.new
+    authorize @lead
     @lead.build_preference
   end
 
   # GET /leads/1/edit
   def edit
+    authorize @lead
     @lead.build_preference unless @lead.preference.present?
   end
 
   # POST /leads
   # POST /leads.json
   def create
+    authorize Lead
     set_lead_source
     #TODO assign current_user to agent
     lead_creator = Leads::Creator.new(data: lead_params, agent: nil, token: @lead_source.api_token)
@@ -49,6 +54,7 @@ class LeadsController < ApplicationController
   # PATCH/PUT /leads/1
   # PATCH/PUT /leads/1.json
   def update
+    authorize @lead
     respond_to do |format|
       if @lead.update(lead_params)
         format.html { redirect_to @lead, notice: 'Lead was successfully updated.' }
@@ -63,6 +69,7 @@ class LeadsController < ApplicationController
   # DELETE /leads/1
   # DELETE /leads/1.json
   def destroy
+    authorize @lead
     @lead.destroy
     respond_to do |format|
       format.html { redirect_to leads_url, notice: 'Lead was successfully destroyed.' }
@@ -87,9 +94,8 @@ class LeadsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def lead_params
-      valid_lead_params = Lead::ALLOWED_PARAMS
-      valid_preference_params = [{preference_attributes: LeadPreference::ALLOWED_PARAMS }]
-      params.require(:lead).permit(*(valid_lead_params + valid_preference_params))
+      allowed_params = policy(@lead||Lead).allowed_params
+      params.require(:lead).permit(*allowed_params)
     end
 
 end
