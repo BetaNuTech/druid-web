@@ -28,6 +28,8 @@
 class User < ApplicationRecord
   ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id]
   devise :database_authenticatable, :lockable, :timeoutable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
+
+  include Users::Devise
   include Users::Roles
 
   # Associations
