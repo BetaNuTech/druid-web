@@ -61,7 +61,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "druid-web_#{Rails.env}"
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: ENV.fetch("APPLICATION_HOST", "druid-staging.herokuapp.com") }
+  config.action_mailer.default_url_options = { host: ENV.fetch("APPLICATION_HOST", "druid-staging.herokuapp.com"), protocol: 'https' }
 
 
   # Ignore bad email addresses and do not raise email delivery errors.
