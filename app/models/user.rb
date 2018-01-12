@@ -26,20 +26,22 @@
 #
 
 class User < ApplicationRecord
+
+  ### Class Concerns/Extensions
+  include Users::Roles
+  include Users::Devise
+  audited
+
+  ### Constants
   ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id]
   devise :database_authenticatable, :lockable, :timeoutable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
-  include Users::Devise
-  include Users::Roles
+  ### Associations
 
-  audited
+  ### Validations
 
-  # Associations
+  ### Class Methods
 
-  # Validations
-
-  # Class Methods
-
-  # Instance Methods
+  ### Instance Methods
 
 end

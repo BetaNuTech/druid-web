@@ -23,19 +23,22 @@
 #
 
 class Lead < ApplicationRecord
-  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :email, :fax, :user_id]
+
+  ### Class Concerns/Extensions
+  include Leads::StateMachine
   audited
+
+  ### Constants
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :email, :fax, :user_id]
 
   ### Associations
   has_one :preference,
     class_name: 'LeadPreference',
     dependent: :destroy
+  accepts_nested_attributes_for :preference
   belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id', required: false
   belongs_to :property, required: false
   belongs_to :user, required: false
-
-  ### Nested Attributes
-  accepts_nested_attributes_for :preference
 
   ### Validations
   validates :first_name, presence: true
@@ -49,8 +52,6 @@ class Lead < ApplicationRecord
     [title, first_name, last_name].join(' ')
   end
 
-
   private
 
-  ### Private Methods
 end
