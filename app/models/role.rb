@@ -15,6 +15,8 @@ class Role < ApplicationRecord
 
   ALLOWED_PARAMS = [:id, :name, :slug, :description]
 
+  audited
+
   validates :name, :slug,
     presence: true, uniqueness: true
 

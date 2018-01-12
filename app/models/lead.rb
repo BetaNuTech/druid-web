@@ -24,6 +24,7 @@
 
 class Lead < ApplicationRecord
   ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :email, :fax, :user_id]
+  audited
 
   ### Associations
   has_one :preference,

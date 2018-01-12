@@ -18,6 +18,8 @@ class LeadSource < ApplicationRecord
   # A LeadSource 'slug' also identifies the parser
   DEFAULT_SLUG = 'Druid'
 
+  audited
+
   # Associations
   has_many :leads
   has_many :listings, class_name: 'PropertyListing', foreign_key: 'source_id', dependent: :destroy
