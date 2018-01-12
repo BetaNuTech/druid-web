@@ -14,6 +14,7 @@
 
 class PropertyListing < ApplicationRecord
   ALLOWED_PARAMS = [:id, :property_id, :source_id, :code, :description, :active]
+  audited
 
   ## Associations
   belongs_to :property

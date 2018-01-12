@@ -32,6 +32,8 @@ class User < ApplicationRecord
   include Users::Devise
   include Users::Roles
 
+  audited
+
   # Associations
 
   # Validations

@@ -44,6 +44,8 @@ GEM
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 13.0)
     arel (8.0.0)
+    audited (4.5.0)
+      activerecord (>= 4.0, < 5.2)
     awesome_print (1.8.0)
     bcrypt (3.1.11)
     bindex (0.5.0)
@@ -310,6 +312,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate (~> 2.7)
+  audited (~> 4.5)
   awesome_print (~> 1.8)
   bundler-audit (~> 0.6)
   byebug (~> 9.1)
@@ -355,7 +358,7 @@ DEPENDENCIES
   webpacker (~> 3.0)
 
 RUBY VERSION
-   ruby 2.4.1p111
+   ruby 2.4.3p205
 
 BUNDLED WITH
-   1.14.6
+   1.16.1
