@@ -25,6 +25,8 @@
 require 'rails_helper'
 
 RSpec.describe Lead, type: :model do
+  include_context "users"
+
   it "can be initialized" do
     lead = build(:lead)
   end
@@ -84,6 +86,15 @@ RSpec.describe Lead, type: :model do
       assert lead.claimed?
     end
 
+    it "optionally sets the user when claimed" do
+      assert lead.open?
+      lead.aasm.fire(:claim, agent)
+      assert lead.save
+      lead.reload
+      assert lead.claimed?
+      expect(lead.user).to eq(agent)
+    end
+
     it "transitions from claimed to converted" do
       assert lead.open?
       lead.claim!
@@ -102,6 +113,16 @@ RSpec.describe Lead, type: :model do
       assert lead.open?
     end
 
+    it "clears user when requalified to open" do
+      lead.state = 'disqualified'
+      lead.user = agent
+      lead.save!
+      expect(lead.user).to eq(agent)
+      lead.requalify!
+      lead.reload
+      assert lead.user.nil?
+    end
+
     it "lists valid events" do
       expect(lead.permitted_state_events).to eq([:claim, :convert, :disqualify])
       lead.claim!
@@ -114,6 +135,36 @@ RSpec.describe Lead, type: :model do
       expect(lead.permitted_states).to eq([:claimed, :converted, :disqualified])
       lead.claim!
       expect(lead.permitted_states).to eq([:open, :converted, :disqualified])
+    end
+
+    describe "trigger_event" do
+
+      it "should claim the lead with a user" do
+        assert lead.open?
+        refute lead.user.present?
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        assert lead.claimed?
+        expect(lead.user).to eq(agent)
+      end
+
+      it "should trigger disqualified" do
+        assert lead.open?
+        lead.trigger_event(event_name: 'disqualify')
+        lead.reload
+        assert lead.disqualified?
+      end
+
+      it "should clear the user if abandoned" do
+        assert lead.open?
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        expect(lead.user).to eq(agent)
+        lead.trigger_event(event_name: 'abandon')
+        lead.reload
+        expect(lead.user).to be_nil
+        assert lead.open?
+      end
     end
 
   end

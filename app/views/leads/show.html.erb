@@ -1,5 +1,4 @@
-
-<div class="container">
+<div class="container" id="lead_<%= @lead.id %>">
   <div class="row">
     <div class="col-md-6">
       <h1>Lead: <%= @lead.name %></h1>
@@ -8,6 +7,12 @@
   </div>
 
   <h2>Lead Information</h2>
+
+  <div class="row">
+    <div class="col-md-12">
+      <%= render partial: "state_toggle", locals: {lead: @lead} %>
+    </div>
+  </div>
 
   <div class="row">
     <div class="col-md-4">

@@ -13,11 +13,13 @@ module Leads
         state :disqualified
 
         event :claim do
-          transitions from: :open, to: :claimed
+          transitions from: :open, to: :claimed,
+            after: ->(*args) { event_set_user(*args)}
         end
 
         event :abandon do
-          transitions from: :claimed, to: :open
+          transitions from: :claimed, to: :open,
+            after: ->(*args) { event_clear_user(user) }
         end
 
         event :convert do
@@ -29,9 +31,28 @@ module Leads
         end
 
         event :requalify do
-          transitions from: :disqualified, to: :open
+          transitions from: :disqualified, to: :open,
+            after: ->(*args) { event_clear_user }
         end
 
+      end
+
+      def event_set_user(claimant=nil)
+        self.user = claimant if claimant.present?
+      end
+
+      def event_clear_user(claimant=nil)
+        self.user = nil
+      end
+
+      def trigger_event(event_name:, user: false)
+        event = event_name.to_sym
+        if permitted_state_events.include?(event.to_sym)
+          self.aasm.fire(event, user)
+          return self.save
+        else
+          return false
+        end
       end
 
       def permitted_state_events

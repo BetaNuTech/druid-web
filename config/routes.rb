@@ -17,7 +17,11 @@ Rails.application.routes.draw do
 
   resources :users
   resources :properties
-  resources :leads
+  resources :leads do
+    member do
+      post 'trigger_state_event', to: "leads#trigger_state_event"
+    end
+  end
   resources :lead_sources do
     post 'reset_token', on: :member
   end

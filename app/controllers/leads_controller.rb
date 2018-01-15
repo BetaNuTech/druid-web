@@ -1,7 +1,8 @@
 class LeadsController < ApplicationController
-  #http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
+  include LeadsHelper
+
   before_action :authenticate_user!
-  before_action :set_lead, only: [:show, :edit, :update, :destroy]
+  before_action :set_lead, only: [:show, :edit, :update, :destroy, :trigger_state_event]
   after_action :verify_authorized
 
   # GET /leads
@@ -74,6 +75,15 @@ class LeadsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to leads_url, notice: 'Lead was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def trigger_state_event
+    authorize @lead
+    @success = trigger_lead_state_event(lead: @lead, event_name: params[:eventid])
+    respond_to do |format|
+      format.js
+      format.json { render :show, status: :ok, location: @lead }
     end
   end
 

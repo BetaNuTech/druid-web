@@ -44,4 +44,8 @@ class User < ApplicationRecord
 
   ### Instance Methods
 
+  def name
+    email
+  end
+
 end

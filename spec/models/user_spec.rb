@@ -35,6 +35,12 @@ RSpec.describe User, type: :model do
     assert(user.save)
   end
 
+  it "has a name" do
+    user = create(:user)
+    expect(user.name).to_not be_nil
+    expect(user.name).to eq(user.email)
+  end
+
   describe "role" do
     it "can be an administrator" do
       assert administrator.administrator?
