@@ -165,6 +165,11 @@ RSpec.describe Lead, type: :model do
         expect(lead.user).to be_nil
         assert lead.open?
       end
+
+      it "should do nothing if the specified event is invalid/unavailable" do
+        lead.disqualify!
+        refute lead.trigger_event(event_name: 'open', user: agent)
+      end
     end
 
   end
