@@ -15,10 +15,10 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <table class="table">
+      <table id="leads-table" class="table">
         <thead>
           <tr>
-            <th>State</th>
+            <th class="lead-state" >State</th>
             <th>Property/Source</th>
             <th>Name/Contact</th>
             <th>Notes</th>
@@ -28,57 +28,7 @@
         </thead>
 
         <tbody>
-          <% @leads.each do |lead| %>
-            <tr>
-              <td><%= lead.state || '-' %></td>
-              <td>
-                <% if lead.property.present? %>
-                  <strong>Property:</strong> <%= link_to(lead.property.name, property_path(lead.property)) %>
-                <% end %>
-                <% if lead.source.present? %>
-                  <br/>
-                  <strong>Source:</strong> <%= link_to(lead.source.name, lead_source_path(lead.source)) %>
-                <% end %>
-                <p>
-                  <strong>Referral:</strong> <%= lead.referral %>
-                </p>
-              </td>
-              <td>
-                <%= lead.title %>
-                <%= lead.first_name %>
-                <%= lead.last_name %><br/>
-                <% if lead.phone1.present? %>
-                  <%= glyph(:phone) %> <%= lead.phone1 || '-' %><br/>
-                <% end %>
-                <% if lead.phone2.present? %>
-                  <%= glyph(:phone) %> <%= lead.phone2 || '-' %><br/>
-                <% end %>
-                <% if lead.email.present? %>
-                  <%= glyph(:email) %> <%= lead.email || '-' %><br/>
-                <% end %>
-                <% if lead.fax.present? %>
-                  <%= glyph(:fax) %> <%= lead.fax || '-' %><br/>
-                <% end %>
-              </td>
-              <td>
-                <p>
-                  <strong>Agent:</strong> <%= lead.notes || 'None' %>
-                </p>
-                <p>
-                  <strong>Lead:</strong> <%= lead.preference.try(:notes) || 'None' %>
-                </p>
-              </td>
-              <td>
-                <%= short_date(lead.first_comm) %> |
-                <%= short_date(lead.last_comm) || '-' %>
-              </td>
-              <td>
-                <%= link_to lead do %><%= glyph(:show) %><% end %>&nbsp;
-                <%= link_to edit_lead_path(lead) do %><%= glyph(:edit) %><% end %>&nbsp;
-                <%= link_to lead, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
-              </td>
-            </tr>
-          <% end %>
+          <%= render partial: "lead", collection: @leads %>
         </tbody>
       </table>
       <br>

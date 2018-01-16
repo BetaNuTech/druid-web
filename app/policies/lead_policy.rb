@@ -30,6 +30,30 @@ class LeadPolicy < ApplicationPolicy
     index?
   end
 
+  def trigger_state_event?
+    edit?
+  end
+
+  # Allow event to be issued if valid,
+  #  current_user is admin, no user is associated with lead,
+  #  or current_user owns lead
+  def allow_state_event_by_user?(event_name)
+    event = event_name.to_sym
+    record.permitted_state_events.include?(event) &&
+      (user.admin? || !record.user.present? || same_user? )
+  end
+
+  # Return an array of state events that the User can issue
+  # to the Record
+  def permitted_state_events
+    record.permitted_state_events.
+      select{|e| allow_state_event_by_user?(e) }
+  end
+
+  def same_user?
+    record.user === user
+  end
+
   def allowed_params
     reject_params = []
 

@@ -362,4 +362,35 @@ RSpec.describe LeadsController, type: :controller do
     end
   end
 
+  describe "POST #trigger_state_event" do
+    let(:lead) { create(:lead) }
+
+    it "should deny access if unauthorized" do
+      # POST without any authentication
+      post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
+      expect(response.status).to eq(401)
+
+      # POST as an unroled/unauthorized user
+      sign_in unroled_user
+      post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
+      expect(response).to be_redirect
+    end
+
+    it "should trigger event if the event is valid" do
+      sign_in agent
+      post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
+      expect(response).to be_success
+      lead.reload
+      assert lead.claimed?
+      expect(lead.user).to eq(agent)
+    end
+
+    it "should gracefully handle an invalid event" do
+      sign_in agent
+      post :trigger_state_event, params: { id: lead.to_param, eventid: 'invalid'}, format: :js
+      expect(response).to be_success
+    end
+
+  end
+
 end
