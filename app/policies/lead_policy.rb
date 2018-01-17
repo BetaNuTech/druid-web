@@ -68,7 +68,7 @@ class LeadPolicy < ApplicationPolicy
 
         # Allow Lead owner to reassign Lead to another User
         #  but disallow claiming another Agent's Lead
-        if record.user.present? && !( record.user === user )
+        unless change_user?
           reject_params << :user_id
         end
       end
@@ -77,5 +77,9 @@ class LeadPolicy < ApplicationPolicy
     valid_lead_params = Lead::ALLOWED_PARAMS - reject_params
     valid_preference_params = [{preference_attributes: LeadPreference::ALLOWED_PARAMS }]
     return (valid_lead_params + valid_preference_params)
+  end
+
+  def change_user?
+    user.admin? || same_user?
   end
 end
