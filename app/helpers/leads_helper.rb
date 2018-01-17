@@ -37,4 +37,8 @@ module LeadsHelper
   def users_for_select(lead)
     options_from_collection_for_select(User.all, 'id', 'name', lead.user_id)
   end
+
+  def priorities_for_select(lead)
+    options_for_select(Lead.priorities.to_a.map{|p| [p[0].capitalize, p[0]]}, lead.priority)
+  end
 end

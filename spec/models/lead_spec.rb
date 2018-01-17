@@ -20,6 +20,7 @@
 #  phone2         :string
 #  fax            :string
 #  email          :string
+#  priority       :integer          default(0)
 #
 
 require 'rails_helper'
@@ -69,6 +70,19 @@ RSpec.describe Lead, type: :model do
     lead = create(:lead, property_id: property.id)
 
     expect(lead.property).to eq(property)
+  end
+
+  describe "priorities" do
+    let(:lead) { create(:lead) }
+
+    it "should have priorities" do
+      expect(Lead.priorities.keys).to eq(%w{zero low medium high urgent})
+    end
+
+    it "should have a priority value" do
+      lead.priority_high!
+      expect(lead.priority_value).to eq(3)
+    end
   end
 
   describe "state machine" do
@@ -135,6 +149,28 @@ RSpec.describe Lead, type: :model do
       expect(lead.permitted_states).to eq([:claimed, :converted, :disqualified])
       lead.claim!
       expect(lead.permitted_states).to eq([:open, :converted, :disqualified])
+    end
+
+    describe "priorities" do
+      it "should set priorty to zero when disqualified" do
+        lead.priority_low!
+        expect(lead.priority).to eq("low")
+        lead.disqualify!
+        expect(lead.priority).to eq("zero")
+      end
+
+      it "should set priorty to zero when converted" do
+        lead.priority_low!
+        expect(lead.priority).to eq("low")
+        lead.convert!
+        expect(lead.priority).to eq("zero")
+      end
+
+      it "should set priority to low when requalified" do
+        lead.disqualify!
+        lead.requalify!
+        expect(lead.priority).to eq("low")
+      end
     end
 
     describe "trigger_event" do

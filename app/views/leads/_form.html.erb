@@ -16,6 +16,13 @@
       <legend>Assignment</legend>
 
       <div class="row">
+        <div class="col-md-4">
+          <%= form.label "Priority" %>
+          <%= form.select :priority, priorities_for_select(lead), {}, {class: "form-control"} %>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-4 form-group">
           <h3><%= lead.state.try(:capitalize) %></h3>
         </div>
@@ -26,6 +33,7 @@
                 { class: "form-control", disabled: !policy(lead).change_user? } %>
         </div>
       </div>
+
     </fieldset>
   </div>
 
