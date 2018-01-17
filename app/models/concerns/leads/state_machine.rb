@@ -19,20 +19,22 @@ module Leads
 
         event :abandon do
           transitions from: :claimed, to: :open,
-            after: ->(*args) { event_clear_user(user) }
+            after: ->(*args) { event_clear_user(*args) }
         end
 
         event :convert do
-          transitions from: [ :open, :claimed ], to: :converted
+          transitions from: [ :open, :claimed ], to: :converted,
+            after: ->(*args) { set_priority_zero }
         end
 
         event :disqualify do
-          transitions from: [ :open, :claimed, :converted ], to: :disqualified
+          transitions from: [ :open, :claimed, :converted ], to: :disqualified,
+            after: ->(*args) { set_priority_zero }
         end
 
         event :requalify do
           transitions from: :disqualified, to: :open,
-            after: ->(*args) { event_clear_user }
+            after: ->(*args) { event_clear_user; set_priority_low }
         end
 
       end
@@ -43,6 +45,14 @@ module Leads
 
       def event_clear_user(claimant=nil)
         self.user = nil
+      end
+
+      def set_priority_zero
+        self.priority = "zero"
+      end
+
+      def set_priority_low
+        self.priority = "low"
       end
 
       def trigger_event(event_name:, user: false)

@@ -20,6 +20,7 @@
 #  phone2         :string
 #  fax            :string
 #  email          :string
+#  priority       :integer          default(0)
 #
 
 class Lead < ApplicationRecord
@@ -29,7 +30,10 @@ class Lead < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :email, :fax, :user_id]
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :email, :fax, :user_id, :priority]
+
+  ### Enums
+  enum priority: { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, _prefix: :priority
 
   ### Associations
   has_one :preference,
@@ -50,6 +54,10 @@ class Lead < ApplicationRecord
   ### Instance Methods
   def name
     [title, first_name, last_name].join(' ')
+  end
+
+  def priority_value
+    self.class.priorities[self.priority]
   end
 
   private

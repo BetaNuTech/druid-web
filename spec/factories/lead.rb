@@ -37,5 +37,6 @@ FactoryBot.define do
     fax { Faker::PhoneNumber.phone_number }
     email { Faker::Internet.email }
     preference_attributes { FactoryBot.attributes_for(:lead_preference)}
+    priority { "low" }
   end
 end

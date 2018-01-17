@@ -1,6 +1,7 @@
 <tr id="lead_<%= lead.id %>">
   <td>
     <%= state_toggle(lead) %>
+    <strong>Priority:</strong> <%= lead.priority.capitalize %>
   </td>
   <td>
     <% if lead.property.present? %>

@@ -61,13 +61,12 @@ class LeadPolicy < ApplicationPolicy
     when ->(u) { u.admin? }
       # NOOP: Full permissions
     when ->(u) { u.agent? }
-      # Only limit params on instantiated Leads
+      # Only limit params on existing Leads
       if record.is_a?(Lead)
         # Disallow reassignment of lead source
         reject_params << :lead_source_id
 
-        # Allow Lead owner to reassign Lead to another User
-        #  but disallow claiming another Agent's Lead
+        # Guard changing users
         unless change_user?
           reject_params << :user_id
         end
@@ -79,6 +78,8 @@ class LeadPolicy < ApplicationPolicy
     return (valid_lead_params + valid_preference_params)
   end
 
+  # Allow admin or Lead owner to reassign Lead to another User
+  #  but disallow claiming another Agent's Lead
   def change_user?
     user.admin? || same_user?
   end
