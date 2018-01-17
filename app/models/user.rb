@@ -37,6 +37,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :lockable, :timeoutable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
   ### Associations
+  has_many :property_agents, dependent: :destroy
+  accepts_nested_attributes_for :property_agents
+  has_many :properties, through: :property_agents
 
   ### Validations
 

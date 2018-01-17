@@ -20,7 +20,7 @@
 #  phone2         :string
 #  fax            :string
 #  email          :string
-#  priority       :integer          default(0)
+#  priority       :integer          default("low")
 #
 
 require 'rails_helper'

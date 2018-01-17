@@ -33,6 +33,7 @@ class Property < ApplicationRecord
     class_name: 'PropertyListing',
     dependent: :destroy
   accepts_nested_attributes_for :listings, reject_if: proc{|attributes| attributes['code'].blank? && attributes['description'].blank? }
+  has_many :property_agents, dependent: :destroy
 
   ### Validations
   validates :name, presence: true, uniqueness: true

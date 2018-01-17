@@ -41,6 +41,22 @@ RSpec.describe User, type: :model do
     expect(user.name).to eq(user.email)
   end
 
+  describe "associations" do
+    describe "property agents" do
+      let(:property_agent) { create(:property_agent) }
+
+      it "has many property agents" do
+        user = property_agent.user
+        expect(user.property_agents.count).to eq(1)
+      end
+
+      it "has many properties" do
+        user = property_agent.user
+        expect(user.properties.count).to eq(1)
+      end
+    end
+  end
+
   describe "role" do
     it "can be an administrator" do
       assert administrator.administrator?
