@@ -13,6 +13,24 @@
 
   <div class="fieldset_content">
     <fieldset>
+      <legend>Assignment</legend>
+
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <h3><%= lead.state.try(:capitalize) %></h3>
+        </div>
+        <div class="col-md-6 form-group">
+          <%= form.label "Agent" %>
+          <%= form.select :user_id, users_for_select(lead),
+                { include_blank: true },
+                { class: "form-control", disabled: !policy(lead).change_user? } %>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="fieldset_content">
+    <fieldset>
       <legend>Lead Information</legend>
 
       <div class="row">

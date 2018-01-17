@@ -33,4 +33,8 @@ module LeadsHelper
     end
     return success
   end
+
+  def users_for_select(lead)
+    options_from_collection_for_select(User.all, 'id', 'name', lead.user_id)
+  end
 end
