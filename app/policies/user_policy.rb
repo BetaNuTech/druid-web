@@ -34,7 +34,7 @@ class UserPolicy < ApplicationPolicy
 
   def allowed_params
     valid_user_params = User::ALLOWED_PARAMS
-    valid_property_agent_params = [ { property_agent_attributes: PropertyAgent::ALLOWED_PARAMS } ]
+    valid_property_agent_params = [ { property_agents_attributes: PropertyAgent::ALLOWED_PARAMS } ]
     case user
     when ->(u) { u.administrator? }
       # NOOP all valid fields allowed
