@@ -190,7 +190,7 @@ RSpec.describe UsersController, type: :controller do
           sign_in operator
           user = User.create! valid_attributes
           put :update, params: {id: user.to_param, user: valid_attributes}
-          expect(response).to redirect_to(user)
+          expect(response).to redirect_to(edit_user_path(user))
         end
 
         it "can change the user role" do

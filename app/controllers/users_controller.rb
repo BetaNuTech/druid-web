@@ -25,6 +25,7 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     authorize @user
+    @user.property_agents  += [@user.property_agents.build]
   end
 
   # POST /users
@@ -50,7 +51,7 @@ class UsersController < ApplicationController
     authorize @user
     respond_to do |format|
       if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
+        format.html { redirect_to edit_user_path(@user), notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
         format.html { render :edit }

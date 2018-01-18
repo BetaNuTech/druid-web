@@ -28,15 +28,28 @@ class UserPolicy < ApplicationPolicy
     edit?
   end
 
+  def assign_to_property?
+    user.admin?
+  end
+
   def allowed_params
+    valid_user_params = User::ALLOWED_PARAMS
+    valid_property_agent_params = [ { property_agents_attributes: PropertyAgent::ALLOWED_PARAMS } ]
     case user
     when ->(u) { u.administrator? }
-      User::ALLOWED_PARAMS
+      # NOOP all valid fields allowed
     when ->(u) { u.operator? }
-      User::ALLOWED_PARAMS
+      # NOOP all valid fields allowed
     when ->(u) { u.agent? }
-      User::ALLOWED_PARAMS - [:role_id]
+      valid_user_params = valid_user_params - [:role_id]
+      valid_property_agent_params = []
+    else
+      valid_user_params = []
+      valid_property_agent_params = []
     end
+
+    return(valid_user_params + valid_property_agent_params )
+
   end
 
 end

@@ -30,6 +30,7 @@ class User < ApplicationRecord
   ### Class Concerns/Extensions
   include Users::Roles
   include Users::Devise
+  include Users::PropertyAgents
   audited
 
   ### Constants

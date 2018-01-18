@@ -29,15 +29,26 @@ class PropertyPolicy < ApplicationPolicy
   end
 
   def allowed_params
+    valid_property_params = Property::ALLOWED_PARAMS
     valid_listing_params = [{listings_attributes: PropertyListing::ALLOWED_PARAMS}]
+    valid_property_agent_params = [ { property_agent_attributes: PropertyAgent::ALLOWED_PARAMS } ]
     case user
     when ->(u) { u.administrator? }
-      Property::ALLOWED_PARAMS + valid_listing_params
+      # NOOP all valid fields allowed
     when ->(u) { u.operator? }
-      Property::ALLOWED_PARAMS + valid_listing_params
+      # NOOP all valid fields allowed
     when ->(u) { u.agent? }
-      []
+      valid_property_params = []
+      valid_listing_params = []
+      valid_property_agent_params = []
+    else
+      valid_property_params = []
+      valid_listing_params = []
+      valid_property_agent_params = []
     end
+
+    return(valid_property_params + valid_listing_params + valid_property_agent_params)
+
   end
 
 end
