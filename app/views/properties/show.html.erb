@@ -192,6 +192,21 @@
       </div>
 
       <div class="row">
+        <div class="col-md-12">
+          <h2>Agents</h2>
+          <% if @property.agents.empty? %>
+            <p>None</p>
+          <% end %>
+
+          <ul>
+            <% @property.agents.each do |agent| %>
+              <li><%= link_to(agent.name, user_path(agent)) %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-6">
 
           <%= link_to 'Edit', edit_property_path(@property) %> |

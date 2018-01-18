@@ -1,6 +1,11 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
+      <h2><%= @user.name %></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
       <p>
         <strong>Email:</strong>
         <%= @user.email %>
@@ -51,6 +56,21 @@
         <strong>Locked:</strong>
         <%= @user.locked_at ? @user.locked_at : 'No' %>
       </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Properties</h3>
+      <% if @user.properties.empty? %>
+        <p>
+          None
+        </p>
+      <% end %>
+      <ul>
+        <% @user.properties.each do |property| %>
+          <li><%= link_to(property.name, property_path(property)) %></li>
+        <% end %>
+      </ul>
     </div>
   </div>
   <div class="row">
