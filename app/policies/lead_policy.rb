@@ -62,7 +62,7 @@ class LeadPolicy < ApplicationPolicy
       # NOOP: Full permissions
     when ->(u) { u.agent? }
       # Only limit params on existing Leads
-      if record.is_a?(Lead)
+      if record.is_a?(Lead) && !record.new_record?
         # Disallow reassignment of lead source
         reject_params << :lead_source_id
 
