@@ -21,6 +21,13 @@
 #  fax            :string
 #  email          :string
 #  priority       :integer          default("low")
+#  phone1_type    :string
+#  phone2_type    :string
+#  phone1_tod     :string
+#  phone2_tod     :string
+#  dob            :datetime
+#  id_number      :string
+#  id_state       :string
 #
 
 require 'rails_helper'
