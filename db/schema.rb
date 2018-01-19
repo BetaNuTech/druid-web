@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180117201310) do
+ActiveRecord::Schema.define(version: 20180119161906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,13 @@ ActiveRecord::Schema.define(version: 20180117201310) do
     t.string "fax"
     t.string "email"
     t.integer "priority", default: 1
+    t.string "phone1_type"
+    t.string "phone2_type"
+    t.string "phone1_tod"
+    t.string "phone2_tod"
+    t.datetime "dob"
+    t.string "id_number"
+    t.string "id_state"
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["state"], name: "index_leads_on_state"
   end

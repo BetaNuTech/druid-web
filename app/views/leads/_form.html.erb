@@ -23,7 +23,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-4 form-group">
+        <div class="col-md-2 form-group">
           <h3><%= lead.state.try(:capitalize) %></h3>
         </div>
         <div class="col-md-6 form-group">
@@ -68,14 +68,43 @@
       </div>
 
       <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :email %>
+          <%= form.text_field :email, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-3 form-group">
           <%= form.label :phone1 %>
           <%= form.text_field :phone1, class: "form-control" %>
         </div>
         <div class="col-md-3 form-group">
+          <%= form.label :phone1_type %>
+          <%= form.select :phone1_type, options_for_select(Lead::PHONE_TYPES), {include_blank: true}, { class: "form-control" } %>
+        </div>
+        <div class="col-md-3 form-group">
+          <%= form.label :phone1_tod, "Best Time to Call" %>
+          <%= form.select :phone1_tod, options_for_select(Lead::PHONE_TOD), {}, { class: "form-control" } %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 form-group">
           <%= form.label :phone2 %>
           <%= form.text_field :phone2, class: "form-control" %>
         </div>
+        <div class="col-md-3 form-group">
+          <%= form.label :phone2_type %>
+          <%= form.select :phone2_type, options_for_select(Lead::PHONE_TYPES), {include_blank: true}, { class: "form-control" } %>
+        </div>
+        <div class="col-md-3 form-group">
+          <%= form.label :phone2_tod, "Best Time to Call" %>
+          <%= form.select :phone2_tod, options_for_select(Lead::PHONE_TOD), {include_blank: true}, { class: "form-control" } %>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-3 form-group">
           <%= form.label :fax %>
           <%= form.text_field :fax, class: "form-control" %>
@@ -83,9 +112,24 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :email %>
-          <%= form.text_field :email, class: "form-control" %>
+        <div class="col-md-6">
+          <%= form.label :dob, "Date of Birth" %>
+          <%= form.date_select :dob,
+              { include_blank: true,
+                start_year: (Date.current.year - 110),
+                end_year: (Date.current.year - 16)},
+              { class: "form-control form-control-date-select" } %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <%= form.label :id_number, "DL/ID Number" %>
+          <%= form.text_field :id_number, class: "form-control" %>
+        </div>
+        <div class="col-md-2 form-group">
+          <%= form.label :id_state, "DL/ID State" %>
+          <%= form.select :id_state, options_for_select(Lead::US_STATES), {include_blank: true}, { class: "form-control" } %>
         </div>
       </div>
 
@@ -97,7 +141,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6 form-group">
+        <div class="col-md-12 form-group">
           <%= form.label :notes, 'Agent Notes' %>
           <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 6 %>
         </div>
