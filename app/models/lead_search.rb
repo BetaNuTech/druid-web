@@ -15,80 +15,123 @@ class LeadSearch
       desc: "#{LEAD_TABLE}.last_name DESC, #{LEAD_TABLE}.first_name DESC" }
   }
 
-  attr_reader :options
+  attr_reader :options, :skope
 
   def initialize(options={}, skope=Lead)
     @default_skope = skope
     @options = options
+    @skope = @default_skope
+    @filter_applied = false
   end
 
   def collection
-    filter_applied = false
-    skope = @default_skope
+    self.
+      filter_by_state.
+      filter_by_priority.
+      filter_by_user.
+      filter_by_property.
+      filter_by_first_name.
+      filter_by_last_name.
+      filter_by_id_number.
+      finalize.
+      sort.
+      paginate
+  end
 
-    # Filter by State
-    if @options[:states].present?
-      skope = skope.
-        where(state: @options[:states])
-      filter_applied = true
+  def filter_by_state(states=nil)
+    states ||= @options[:states]
+    if states.present?
+      @skope = @skope.
+        where(state: states)
+      @filter_applied = true
     end
+    return self
+  end
 
-    # Filter by Priority
-    if @options[:priorities].present?
-      priority_list = @options[:priorities].compact.map(&:to_sym)
-      skope = skope.
+  def filter_by_priority(priorities=nil)
+    priorities ||= @options[:priorities]
+    if priorities.present?
+      priority_list = priorities.compact.map(&:to_sym)
+      @skope = @skope.
         where(priority: priority_list)
-      filter_applied = true
+      @filter_applied = true
     end
+    return self
+  end
 
-    # Filter by User/Agent
-    if @options[:user_ids].present?
-      skope = skope.
+  def filter_by_user(user_ids=nil)
+    user_ids ||= @options[:user_ids]
+    if user_ids.present?
+      @skope = @skope.
         includes(:user).
-        where(users: {id: @options[:user_ids]})
-      filter_applied = true
+        where(users: {id: user_ids})
+      @filter_applied = true
     end
+    return self
+  end
 
-    # Filter by Property
-    if @options[:property_ids].present?
-      skope = skope.
+  def filter_by_property(property_ids=nil)
+    property_ids ||= @options[:property_ids]
+    if property_ids.present?
+      @skope = @skope.
         includes(:property).
-        where(properties: {id: @options[:property_ids]})
-      filter_applied = true
+        where(properties: {id: property_ids})
+      @filter_applied = true
     end
+    return self
+  end
 
-    # Filter by First Name
-    if @options[:first_name].present?
-      skope = skope.
-        where("#{LEAD_TABLE}.first_name ILIKE ?", "%#{@options[:first_name]}%")
-      filter_applied = true
+  def filter_by_first_name(first_name=nil)
+    first_name ||= @options[:first_name]
+    if first_name.present?
+      @skope = @skope.
+        where("#{LEAD_TABLE}.first_name ILIKE ?", "%#{first_name}%")
+      @filter_applied = true
     end
+    return self
+  end
 
-    # Filter by Last Name
-    if @options[:last_name].present?
-      skope = skope.
-        where("#{LEAD_TABLE}.last_name ILIKE ?", "%#{@options[:last_name]}%")
-      filter_applied = true
+  def filter_by_last_name(last_name=nil)
+    last_name ||= @options[:last_name]
+    if last_name.present?
+      @skope = @skope.
+        where("#{LEAD_TABLE}.last_name ILIKE ?", "%#{last_name}%")
+      @filter_applied = true
     end
+    return self
+  end
 
-    # Filter by ID number
-    if @options[:id_number].present?
-      skope = skope.
-        where(id_number: @options[:id_number])
-      filter_applied = true
+  def filter_by_id_number(id_number=nil)
+    id_number ||= @options[:id_number]
+    if id_number.present?
+      @skope = @skope.
+        where(id_number: id_number)
+      @filter_applied = true
     end
+    return self
+  end
 
-    # Paginate
-    skope = skope.limit(query_limit).offset(query_offset)
+  def paginate
+    @skope = @skope.limit(query_limit).offset(query_offset)
+  end
 
-    if filter_applied
-      ids = ids_from(skope)
-      skope = skope.where(id: ids)
-    else
-      skope = @default_skope
+  def sort
+    @skope = @skope.order(query_sort)
+    return self
+  end
+
+  def finalize
+    if @filter_applied
+      ids = ids_from(@skope)
+      @skope = @skope.where(id: ids)
     end
+    return self
+  end
 
-    return skope.order(query_sort)
+  private
+
+  def query_sort
+    SORT_OPTIONS.fetch(query_sort_by).fetch(query_sort_dir)
   end
 
   def query_limit
@@ -113,9 +156,6 @@ class LeadSearch
     SORT_OPTIONS[query_sort_by].keys.include?(sort_dir) ? sort_dir : DEFAULT_SORT[1]
   end
 
-  def query_sort
-    SORT_OPTIONS.fetch(query_sort_by).fetch(query_sort_dir)
-  end
 
   def ids_from(skope)
     skope.select("#{LEAD_TABLE}.id").map(&:id)

@@ -107,7 +107,6 @@ RSpec.describe LeadSearch do
     describe "order" do
       it "is sorted by priority" do
         search = LeadSearch.new({sort_by: 'priority', sort_dir: 'desc'})
-        expect(search.query_sort).to eq("leads.priority DESC")
         expect(search.collection.to_a.map(&:id)).to eq([lead3, lead2, lead1].map(&:id))
         search = LeadSearch.new({sort_by: 'priority', sort_dir: 'asc'})
         expect(search.collection.to_a).to eq([lead1, lead2, lead3])
@@ -115,13 +114,11 @@ RSpec.describe LeadSearch do
 
       it "is sorted by most recent" do
         search = LeadSearch.new({sort_by: 'recent', sort_dir: 'desc'})
-        expect(search.query_sort).to eq("leads.created_at DESC")
         expect(search.collection.to_a).to eq([lead3, lead2, lead1])
       end
 
       it "is sorted by lead name" do
         search = LeadSearch.new({sort_by: 'lead_name', sort_dir: 'asc'})
-        expect(search.query_sort).to eq("leads.last_name ASC, leads.first_name ASC")
         expect(search.collection.map(&:last_name)).to eq([lead1, lead2, lead3].map(&:last_name).sort)
       end
 
