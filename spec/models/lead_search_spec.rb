@@ -180,6 +180,20 @@ RSpec.describe LeadSearch do
         expect(opts[:states]).to eq(['open'])
         expect(opts[:page]).to eq(search.total_pages)
       end
+
+      it "returns the current_page" do
+        current_page = 2
+        search = LeadSearch.new({per_page: 3, page: current_page, states: ['open']})
+        expect(search.current_page).to eq(current_page)
+      end
+
+      it "should return page_options" do
+        current_page = 2
+        new_page = 4
+        search = LeadSearch.new({per_page: 3, page: current_page, states: ['open']})
+        opts = search.page_options(new_page)
+        expect(opts[:page]).to eq(new_page)
+      end
     end
 
   end
