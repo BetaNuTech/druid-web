@@ -2,7 +2,7 @@ class LeadSearch
   ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :last_name, :first_name, :id_number, :page, :per_page, :sort_by, :sort_dir ]
   LEAD_TABLE = Lead.table_name
   DEFAULT_SORT = [:recent, :asc]
-  DEFAULT_PER_PAGE = 20
+  DEFAULT_PER_PAGE = 10
   SORT_OPTIONS = {
     priority: {
       asc: "#{LEAD_TABLE}.priority ASC",
@@ -19,7 +19,8 @@ class LeadSearch
 
   def initialize(options={}, skope=Lead)
     @default_skope = skope
-    @options = options || {}
+    @options = (options || {})
+    @options = @options.to_unsafe_h unless @options.is_a?(Hash)
     @skope = @default_skope
     @filter_applied = false
   end
@@ -45,6 +46,10 @@ class LeadSearch
     self.query_skope.paginate
   end
 
+  def current_page
+    return query_page
+  end
+
   def record_count
     self.collection.count
   end
@@ -53,28 +58,34 @@ class LeadSearch
     (record_count / query_limit).ceil
   end
 
+  def page_options(page)
+    opts = @options.dup
+    opts[:page] = page.to_i
+    return opts
+  end
+
   def next_page_options
-    opts = @options
-    next_page = (opts[:page] || 0) + 1
+    opts = @options.dup
+    next_page = (opts[:page] || 0).to_i + 1
     opts[:page] = [next_page, total_pages].min
     return opts
   end
 
   def previous_page_options
-    opts = @options
-    previous_page = [1, ( (opts[:page] || 0) - 1 ) ].max
+    opts = @options.dup
+    previous_page = [1, ( (opts[:page] || 0).to_i - 1 ) ].max
     opts[:page] = previous_page
     return opts
   end
 
   def first_page_options
-    opts = @options
+    opts = @options.dup
     opts[:page] = 1
     return opts
   end
 
   def last_page_options
-    opts = @options
+    opts = @options.dup
     opts[:page] = total_pages
     return opts
   end
@@ -153,7 +164,7 @@ class LeadSearch
   end
 
   def paginate
-    @skope = @skope.limit(query_limit).offset(query_offset)
+    @skope.limit(query_limit).offset(query_offset)
   end
 
   def sort
@@ -184,7 +195,7 @@ class LeadSearch
   end
 
   def query_page
-    ( @options[:page] || 1 ).to_i
+    [ ( @options[:page] || 1 ).to_i, 1 ].max
   end
 
   def query_sort_by
