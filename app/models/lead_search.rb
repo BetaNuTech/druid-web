@@ -19,12 +19,16 @@ class LeadSearch
 
   def initialize(options={}, skope=Lead)
     @default_skope = skope
-    @options = options
+    @options = options || {}
     @skope = @default_skope
     @filter_applied = false
   end
 
   def collection
+    query_skope.skope
+  end
+
+  def query_skope
     self.
       filter_by_state.
       filter_by_priority.
@@ -34,8 +38,45 @@ class LeadSearch
       filter_by_last_name.
       filter_by_id_number.
       finalize.
-      sort.
-      paginate
+      sort
+  end
+
+  def paginated
+    self.query_skope.paginate
+  end
+
+  def record_count
+    self.collection.count
+  end
+
+  def total_pages
+    (record_count / query_limit).ceil
+  end
+
+  def next_page_options
+    opts = @options
+    next_page = (opts[:page] || 0) + 1
+    opts[:page] = [next_page, total_pages].min
+    return opts
+  end
+
+  def previous_page_options
+    opts = @options
+    previous_page = [1, ( (opts[:page] || 0) - 1 ) ].max
+    opts[:page] = previous_page
+    return opts
+  end
+
+  def first_page_options
+    opts = @options
+    opts[:page] = 1
+    return opts
+  end
+
+  def last_page_options
+    opts = @options
+    opts[:page] = total_pages
+    return opts
   end
 
   def filter_by_state(states=nil)
@@ -155,7 +196,6 @@ class LeadSearch
     sort_dir = (@options[:sort_dir] || :none).to_sym
     SORT_OPTIONS[query_sort_by].keys.include?(sort_dir) ? sort_dir : DEFAULT_SORT[1]
   end
-
 
   def ids_from(skope)
     skope.select("#{LEAD_TABLE}.id").map(&:id)

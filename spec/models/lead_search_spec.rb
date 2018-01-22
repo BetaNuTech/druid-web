@@ -124,6 +124,64 @@ RSpec.describe LeadSearch do
 
     end
 
+    describe "pagination" do
+
+      before do
+        10.times{ create(:lead)}
+      end
+
+      it "returns record_count" do
+        search = LeadSearch.new({per_page: 3, page: 1})
+        expect(search.record_count).to eq(Lead.count)
+      end
+
+      it "returns total_pages" do
+        search = LeadSearch.new({per_page: 3, page: 1})
+        expect(search.total_pages).to eq(4)
+      end
+
+      it "returns next_page_options" do
+        current_page = 2
+        search = LeadSearch.new({per_page: 3, page: current_page, states: ['open']})
+        opts = search.next_page_options
+        expect(opts[:states]).to eq(['open'])
+        expect(opts[:page]).to eq(current_page + 1)
+
+        # Next page of last page is last page
+        search = LeadSearch.new({per_page: 3, page: 4, states: ['open']})
+        opts = search.next_page_options
+        expect(opts[:page]).to eq(search.total_pages)
+      end
+
+      it "returns previous_page_options" do
+        current_page = 2
+        search = LeadSearch.new({per_page: 3, page: current_page, states: ['open']})
+        opts = search.previous_page_options
+        expect(opts[:states]).to eq(['open'])
+        expect(opts[:page]).to eq(current_page - 1)
+
+        # Previous page of page 1 is 1
+        search = LeadSearch.new({per_page: 3, page: 1, states: ['open']})
+        expect(opts[:page]).to eq(1)
+      end
+
+      it "returns first_page_options" do
+        current_page = 2
+        search = LeadSearch.new({per_page: 3, page: current_page, states: ['open']})
+        opts = search.first_page_options
+        expect(opts[:states]).to eq(['open'])
+        expect(opts[:page]).to eq(1)
+      end
+
+      it "returns last_page_options" do
+        current_page = 2
+        search = LeadSearch.new({per_page: 3, page: current_page, states: ['open']})
+        opts = search.last_page_options
+        expect(opts[:states]).to eq(['open'])
+        expect(opts[:page]).to eq(search.total_pages)
+      end
+    end
+
   end
 
 end

@@ -30,28 +30,28 @@
                 </button>
                 <ul class="dropdown-menu">
                   <li>
-                    <%= link_to(leads_path) do %>
+                    <%= link_to(leads_path(lead_search: {user_ids: [current_user.id]})) do %>
                       <span class="glyphicon glyphicon-star"></span> My Leads
                     <% end %>
                   </li>
                   <li role="separator" class="divider"></li>
                   <li>
-                    <%= link_to(leads_path) do %>
+                    <%= link_to(leads_path(lead_search: {priorities: [ 'urgent' ]})) do %>
                       <span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads
                     <% end %>
                   </li>
                   <li>
-                    <%= link_to(leads_path) do %>
+                    <%= link_to(leads_path(lead_search: {states: ['open']})) do %>
                       <span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads
                     <% end %>
                   </li>
                   <li>
-                    <%= link_to(leads_path) do %>
-                      <span class="glyphicon glyphicon-flag"></span> Active Leads
+                    <%= link_to(leads_path(lead_search: {states: ['claimed']})) do %>
+                      <span class="glyphicon glyphicon-flag"></span> Claimed Leads
                     <% end %>
                   </li>
                   <li>
-                    <%= link_to(leads_path) do %>
+                    <%= link_to(leads_path(lead_search: {states: ['converted']})) do %>
                       <span class="glyphicon glyphicon-check"></span> Closed Leads
                     <% end %>
                   </li>
