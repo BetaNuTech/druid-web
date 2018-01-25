@@ -43,6 +43,48 @@
 
   <div class="fieldset_content">
     <fieldset>
+      <legend>Profile</legend>
+      <%= form.fields_for :profile do |profile_form| %>
+        <div class="row">
+           <div class="col-md-2 form-group">
+             <%= profile_form.label "Prefix" %>
+             <%= profile_form.text_field :name_prefix, {class: "form-control"} %>
+           </div>
+           <div class="col-md-4 form-group">
+             <%= profile_form.label "First Name" %>
+             <%= profile_form.text_field :first_name, {class: "form-control"} %>
+           </div>
+           <div class="col-md-4 form-group">
+             <%= profile_form.label "Last Name" %>
+             <%= profile_form.text_field :last_name, {class: "form-control"} %>
+           </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 form-group">
+            <%= profile_form.label :office_phone %>
+            <%= profile_form.text_field :office_phone, {type: "tel", class: "form-control" } %>
+          </div>
+          <div class="col-md-3 form-group">
+            <%= profile_form.label :cell_phone %>
+            <%= profile_form.text_field :cell_phone, {type: "tel", class: "form-control" } %>
+          </div>
+          <div class="col-md-3 form-group">
+            <%= profile_form.label :fax %>
+            <%= profile_form.text_field :fax, {type: "tel", class: "form-control" } %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <%= profile_form.label :notes %>
+            <%= profile_form.text_area :notes, {class: "form-control"} %>
+          </div>
+        </div>
+      <% end %>
+    </fieldset>
+  </div>
+
+  <div class="fieldset_content">
+    <fieldset>
       <legend>Role and Access</legend>
       <div class="row">
         <div class="col-md-4 form-group">
@@ -80,5 +122,5 @@
 <% end %>
 
 <script type="text/javascript">
-  
+
 </script>

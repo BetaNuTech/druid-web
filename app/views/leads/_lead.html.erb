@@ -1,24 +1,15 @@
-<tr id="lead_<%= lead.id %>">
+<tr id="lead_<%= lead.id %>" class="lead-table-row">
   <td>
     <%= state_toggle(lead) %>
     <strong>Priority:</strong> <%= lead.priority.capitalize %>
   </td>
-  <td>
-    <% if lead.property.present? %>
-      <strong>Property:</strong> <%= link_to(lead.property.name, property_path(lead.property)) %>
-    <% end %>
-    <% if lead.source.present? %>
-      <br/>
-      <strong>Source:</strong> <%= link_to(lead.source.name, lead_source_path(lead.source)) %>
-    <% end %>
-    <p>
-      <strong>Referral:</strong> <%= lead.referral %>
-    </p>
-  </td>
-  <td>
-    <%= lead.title %>
-    <%= lead.first_name %>
-    <%= lead.last_name %><br/>
+  <td class="nowrap">
+    <h3>
+      <%= lead.title %>
+      <%= lead.first_name %>
+      <%= lead.last_name %>
+    </h3>
+
     <% if lead.phone1.present? %>
       <%= glyph(:phone) %> <%= lead.phone1 || '-' %><br/>
     <% end %>
@@ -31,6 +22,18 @@
     <% if lead.fax.present? %>
       <%= glyph(:fax) %> <%= lead.fax || '-' %><br/>
     <% end %>
+  </td>
+  <td class="nowrap">
+    <% if lead.property.present? %>
+      <strong>Property:</strong> <%= link_to(lead.property.name, property_path(lead.property)) %>
+    <% end %>
+    <% if lead.source.present? %>
+      <br/>
+      <strong>Source:</strong> <%= link_to(lead.source.name, lead_source_path(lead.source)) %>
+    <% end %>
+    <p>
+      <strong>Referral:</strong> <%= lead.referral %>
+    </p>
   </td>
   <td>
     <p>

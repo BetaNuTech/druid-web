@@ -29,13 +29,13 @@ class User < ApplicationRecord
 
   ### Class Concerns/Extensions
   include Users::Roles
+  include Users::Profile
   include Users::Devise
   include Users::PropertyAgents
   audited
 
   ### Constants
   ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id]
-  devise :database_authenticatable, :lockable, :timeoutable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
   ### Associations
 
@@ -46,7 +46,11 @@ class User < ApplicationRecord
   ### Instance Methods
 
   def name
-    email
+    if first_name.nil? && last_name.nil?
+      email
+    else
+      [name_prefix, first_name, last_name].compact.join(' ')
+    end
   end
 
 end
