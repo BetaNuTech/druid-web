@@ -38,6 +38,9 @@ RSpec.describe User, type: :model do
   it "has a name" do
     user = create(:user)
     expect(user.name).to_not be_nil
+    expect(user.name).to match(user.first_name)
+
+    user.profile = nil
     expect(user.name).to eq(user.email)
   end
 
@@ -53,6 +56,41 @@ RSpec.describe User, type: :model do
       it "has many properties" do
         user = property_agent.user
         expect(user.properties.count).to eq(1)
+      end
+    end
+
+    describe "profile" do
+      let(:user) { create(:user, profile: build(:user_profile)) }
+
+      it "is automatically created" do
+        user = create(:user)
+        user.reload
+        expect(user.profile).to be_a(UserProfile)
+        expect(user.profile.user_id).to eq(user.id)
+      end
+
+      describe "is delegated" do
+        it "user.name_prefix" do
+          refute user.name_prefix.nil?
+        end
+        it "user.first_name" do
+          refute user.first_name.nil?
+        end
+        it "user.last_name" do
+          refute user.last_name.nil?
+        end
+        it "user.office_phone" do
+          refute user.office_phone.nil?
+        end
+        it "user.cell_phone" do
+          refute user.cell_phone.nil?
+        end
+        it "user.fax" do
+          refute user.fax.nil?
+        end
+        it "user.notes" do
+          refute user.notes.nil?
+        end
       end
     end
   end

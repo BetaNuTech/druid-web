@@ -8,7 +8,9 @@ RSpec.describe UsersController, type: :controller do
   # User. As you add validations to User, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    attributes_for(:user)
+    attributes_for(:user).merge(
+      profile_attributes: attributes_for(:user_profile)
+    )
   }
 
   let(:invalid_attributes) {
@@ -133,6 +135,14 @@ RSpec.describe UsersController, type: :controller do
           new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
           expect(response).to redirect_to(new_user)
         end
+
+        it "assigns profile information" do
+          sign_in operator
+          post :create, params: {user: valid_attributes}
+          new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
+          expect(new_user.profile).to be_a(UserProfile)
+          expect(new_user.profile.first_name).to_not be_nil
+        end
       end
       describe "with invalid params" do
         it "returns a success response (i.e. to display the 'new' template)" do
@@ -233,9 +243,10 @@ RSpec.describe UsersController, type: :controller do
           sign_in agent
           user = User.create! valid_attributes
           old_pw = user.encrypted_password
-          put :update, params: {id: user.to_param, user: new_attributes}
-          user.reload
-          expect(user.encrypted_password).to eq(old_pw)
+          expect {
+            put :update, params: {id: user.to_param, user: new_attributes}
+            user.reload
+          }.to_not change{user.encrypted_password}
         end
       end
       describe "updating own record" do
@@ -243,18 +254,20 @@ RSpec.describe UsersController, type: :controller do
           sign_in agent
           user = agent
           old_pw = user.encrypted_password
-          put :update, params: {id: user.to_param, user: new_attributes}
-          user.reload
-          expect(user.encrypted_password).to_not eq(old_pw)
+          expect {
+            put :update, params: {id: user.to_param, user: new_attributes}
+            user.reload
+          }.to change{user.encrypted_password}
         end
 
         it "will not update the role" do
           sign_in agent
           user = agent
           old_role = user.role_id
-          put :update, params: {id: user.to_param, user: {role_id: administrator_role.id}}
-          user.reload
-          expect(user.role_id).to eq(old_role)
+          expect {
+            put :update, params: {id: user.to_param, user: {role_id: administrator_role.id}}
+            user.reload
+          }.to_not change{user.role_id}
         end
       end
     end

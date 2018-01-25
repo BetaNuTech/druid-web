@@ -34,6 +34,7 @@ class UserPolicy < ApplicationPolicy
 
   def allowed_params
     valid_user_params = User::ALLOWED_PARAMS
+    valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS } ]
     valid_property_agent_params = [ { property_agents_attributes: PropertyAgent::ALLOWED_PARAMS } ]
     case user
     when ->(u) { u.administrator? }
@@ -45,10 +46,11 @@ class UserPolicy < ApplicationPolicy
       valid_property_agent_params = []
     else
       valid_user_params = []
+      valid_user_profile_params = []
       valid_property_agent_params = []
     end
 
-    return(valid_user_params + valid_property_agent_params )
+    return(valid_user_params + valid_user_profile_params + valid_property_agent_params )
 
   end
 

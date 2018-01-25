@@ -18,7 +18,9 @@
       <table class="table">
         <thead>
           <tr>
+            <th>Name</th>
             <th>Email</th>
+            <th>Phone</th>
             <th>Role</th>
             <th>Actions</th>
           </tr>
@@ -27,7 +29,19 @@
         <tbody>
           <% @users.each do |user| %>
             <tr>
+              <td><%= user.name %></td>
               <td><%= user.email %></td>
+              <td>
+                <% if user.office_phone.present? %>
+                  <%= glyph(:phone) %> <strong>Office:</strong> <%= user.office_phone || '-' %><br/>
+                <% end %>
+                <% if user.cell_phone.present? %>
+                  <%= glyph(:phone) %> <strong>Cell:</strong> <%= user.cell_phone || '-' %><br/>
+                <% end %>
+                <% if user.fax.present? %>
+                  <%= glyph(:fax) %> <strong>Fax:</strong> <%= user.fax || '-' %><br/>
+                <% end %>
+              </td>
               <td><%= user.role.try(:name) || 'None' %></td>
               <td>
                 <%= link_to user do %><%= glyph(:show) %><% end %>&nbsp;
