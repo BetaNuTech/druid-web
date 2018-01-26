@@ -27,8 +27,8 @@ FactoryBot.define do
     title { Faker::Name.prefix }
     first_name { Faker::Name.first_name }
     last_name{ Faker::Name.last_name }
-    referral 'Newspaper'
-    state 'open'
+    referral {%w{newspaper walk-in call friend}[rand(4)]}
+    state { ::Lead.aasm.states.map(&:name)[rand(::Lead.aasm.states.count - 1)] }
     notes { Faker::Lorem.sentence }
     first_comm { DateTime.now }
     last_comm { DateTime.now }
@@ -44,6 +44,6 @@ FactoryBot.define do
     fax { Faker::PhoneNumber.phone_number }
     email { Faker::Internet.email }
     preference_attributes { FactoryBot.attributes_for(:lead_preference)}
-    priority { "low" }
+    priority { ["low", "medium", "high", "urgent"][rand(4)] }
   end
 end

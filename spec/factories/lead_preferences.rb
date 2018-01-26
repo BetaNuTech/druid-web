@@ -22,15 +22,15 @@
 
 FactoryBot.define do
   factory :lead_preference do
-    min_area 1000
-    max_area 2000
-    min_price 500.0
-    max_price 2000.0
-    move_in "2017-12-01 10:42:48"
-    baths 1.5
-    pets true
-    smoker false
-    washerdryer false
-    notes "Lead notes"
+    min_area 500
+    max_area { rand(1000) + 1001 }
+    min_price 1001.0
+    max_price { rand(1000) + 1002.0}
+    move_in { Faker::Date.forward(60) }
+    baths { [1, 1.5, 2, 2.5][rand(3) + 1]}
+    pets { Faker::Boolean.boolean }
+    smoker { Faker::Boolean.boolean }
+    washerdryer { Faker::Boolean.boolean }
+    notes {Faker::Lorem.paragraph}
   end
 end

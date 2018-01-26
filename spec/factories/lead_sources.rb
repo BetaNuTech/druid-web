@@ -16,20 +16,20 @@ FactoryBot.define do
   factory :lead_source do
     name { Faker::Company.name }
     incoming true
-    slug { Faker::Company.ein }
+    slug { ['Druid', 'Zillow'][rand(1)] }
     active true
 
     factory :druid_source do
       name 'Druid WebApp'
       incoming true
-      slug 'druid'
+      slug 'Druid'
       active 'true'
     end
 
     factory :zillow_source do
       name 'Zillow'
       incoming true
-      slug 'zillow'
+      slug 'Zillow'
       active true
     end
   end

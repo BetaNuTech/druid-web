@@ -12,7 +12,7 @@ RSpec.describe LeadsController, type: :controller do
   # Lead. As you add validations to Lead, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    attributes_for(:lead)
+    attributes_for(:lead).merge(state: 'open')
   }
 
   let(:invalid_attributes) {
@@ -363,7 +363,7 @@ RSpec.describe LeadsController, type: :controller do
   end
 
   describe "POST #trigger_state_event" do
-    let(:lead) { create(:lead) }
+    let(:lead) { create(:lead, state: 'open') }
 
     it "should deny access if unauthorized" do
       # POST without any authentication

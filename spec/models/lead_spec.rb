@@ -93,7 +93,7 @@ RSpec.describe Lead, type: :model do
   end
 
   describe "state machine" do
-    let(:lead) { create(:lead) }
+    let(:lead) { create(:lead, state: 'open') }
 
     it "has a default state of 'open'" do
       lead = Lead.new
