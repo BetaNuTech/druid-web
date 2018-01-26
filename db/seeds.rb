@@ -25,7 +25,7 @@ end
 puts " * Creating default Lead Sources"
 sources = {
   "druid webapp": {
-    name: 'druid webapp',
+    name: 'Druid Webapp',
     slug: 'Druid',
     incoming: true,
     active: true
@@ -56,6 +56,8 @@ admin_password = 'ChangeMeNow'
 admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password)
 if admin.save
   admin.confirm
+  admin.role = Role.administrator
+  admin.save!
   puts "(password: '#{admin_password}') [OK]".green
 else
   puts "[FAIL] (#{admin.errors.to_a})".red

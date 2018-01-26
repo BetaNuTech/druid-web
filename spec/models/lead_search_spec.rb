@@ -41,7 +41,7 @@ RSpec.describe LeadSearch do
 
     let(:lead1) {
       create(:lead,
-             state: 'claimed', priority: 'low', first_name: "AaaBBbCC", last_name: "DdEeFFGgJJ",
+             state: 'claimed', priority: 'medium', first_name: "AaaBBbCC", last_name: "DdEeFFGgJJ",
              user: agent,
              property: property1,
             )
@@ -49,8 +49,8 @@ RSpec.describe LeadSearch do
 
     let(:lead2) {
       create(:lead,
-             state: 'disqualified', priority: 'medium', id_number: "11223344",
-             property: property2
+             state: 'disqualified', priority: 'low', id_number: "11223344",
+             property: property2,
             )
     }
 
@@ -76,12 +76,12 @@ RSpec.describe LeadSearch do
 
     it "searches by state" do
       search = LeadSearch.new({states: ['claimed', 'disqualified']})
-      expect(search.collection.to_a).to eq([lead1, lead2])
+      expect(search.collection.to_a.sort).to eq([lead2, lead1].sort)
     end
 
     it "searches by priority" do
       search = LeadSearch.new({priorities: ['medium', 'high']})
-      expect(search.collection.to_a).to eq([lead2, lead3])
+      expect(search.collection.to_a.sort).to eq([lead1, lead3].sort)
     end
 
     it "searches by property" do
@@ -107,9 +107,9 @@ RSpec.describe LeadSearch do
     describe "order" do
       it "is sorted by priority" do
         search = LeadSearch.new({sort_by: 'priority', sort_dir: 'desc'})
-        expect(search.collection.to_a.map(&:id)).to eq([lead3, lead2, lead1].map(&:id))
+        expect(search.collection.to_a.map(&:id)).to eq([lead3, lead1, lead2].map(&:id))
         search = LeadSearch.new({sort_by: 'priority', sort_dir: 'asc'})
-        expect(search.collection.to_a).to eq([lead1, lead2, lead3])
+        expect(search.collection.to_a).to eq([lead2, lead1, lead3])
       end
 
       it "is sorted by most recent" do
@@ -127,7 +127,7 @@ RSpec.describe LeadSearch do
     describe "pagination" do
 
       before do
-        10.times{ create(:lead)}
+        10.times{ create(:lead, state: 'open')}
       end
 
       it "returns record_count" do

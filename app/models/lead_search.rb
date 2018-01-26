@@ -1,12 +1,12 @@
 class LeadSearch
   ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :last_name, :first_name, :id_number, :page, :per_page, :sort_by, :sort_dir ]
   LEAD_TABLE = Lead.table_name
-  DEFAULT_SORT = [:recent, :asc]
+  DEFAULT_SORT = [:priority, :desc]
   DEFAULT_PER_PAGE = 10
   SORT_OPTIONS = {
     priority: {
-      asc: "#{LEAD_TABLE}.priority ASC",
-      desc: "#{LEAD_TABLE}.priority DESC" },
+      asc: "#{LEAD_TABLE}.priority ASC, #{LEAD_TABLE}.created_at ASC",
+      desc: "#{LEAD_TABLE}.priority DESC, #{LEAD_TABLE}.created_at DESC" },
     recent: {
       asc: "#{LEAD_TABLE}.created_at ASC",
       desc: "#{LEAD_TABLE}.created_at DESC" },
@@ -175,7 +175,7 @@ class LeadSearch
   def finalize
     if @filter_applied
       ids = ids_from(@skope)
-      @skope = @skope.where(id: ids)
+      @skope = @default_skope.where(id: ids)
     end
     return self
   end
