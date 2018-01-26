@@ -210,6 +210,5 @@ class LeadSearch
 
   def ids_from(skope)
     skope.select("#{LEAD_TABLE}.id").map(&:id)
-    #skope.select("#{LEAD_TABLE}.id, #{LEAD_TABLE}.property_id, #{LEAD_TABLE}.lead_source_id").map(&:id)
   end
 end
