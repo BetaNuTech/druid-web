@@ -26,6 +26,7 @@ gem 'colorize', '~> 0.8'
 gem 'pundit', '~> 1.1'
 gem 'audited', '~> 4.5'
 gem 'aasm', '~> 4.12'
+gem 'pg_search', "~> 2.1"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.11'

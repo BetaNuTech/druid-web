@@ -215,5 +215,129 @@ RSpec.describe Lead, type: :model do
       end
     end
 
+    describe "full-text search" do
+      let(:lead1) { create(:lead,
+                           first_name: 'first_name_1', last_name: 'last_name_1',
+                           referral: 'referral_1', notes: 'notes_1',
+                           phone1: 'phone1_1', phone2: 'phone2_1', fax: 'fax_1',
+                           email: 'email_1', id_number: 'id_number_1'
+                          )}
+      let(:lead2) { create(:lead,
+                           first_name: 'first_name_2', last_name: 'last_name_2',
+                           referral: 'referral_2', notes: 'notes_2',
+                           phone1: 'phone1_2', phone2: 'phone2_2', fax: 'fax_2',
+                           email: 'email_2', id_number: 'id_number_2'
+                          )}
+      let(:lead3) { create(:lead,
+                           first_name: 'first_name_3', last_name: 'last_name_3',
+                           referral: 'referral_3', notes: 'notes_3',
+                           phone1: 'phone1_3', phone2: 'phone2_3', fax: 'fax_3',
+                           email: 'email_3', id_number: 'id_number_3'
+                          )}
+
+      before do
+        lead1; lead2; lead3
+      end
+
+      it "searches by first_name" do
+        results = Lead.search_for("first_name")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('first_name_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('first_name_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by last_name" do
+        results = Lead.search_for("last_name")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('last_name_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('last_name_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by referral" do
+        results = Lead.search_for("referral")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('referral_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('referral_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by notes" do
+        results = Lead.search_for("notes")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('notes_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('notes_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by phone1" do
+        results = Lead.search_for("phone1")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('phone1_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('phone1_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by notes" do
+        results = Lead.search_for("notes")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('notes_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('notes_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by fax" do
+        results = Lead.search_for("fax")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('fax_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('fax_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by email" do
+        results = Lead.search_for("email")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('email_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('email_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+
+      it "searches by id_number" do
+        results = Lead.search_for("id_number")
+        expect(results.count).to eq(3)
+        results = Lead.search_for('id_number_1')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead1.id)
+        results = Lead.search_for('id_number_2')
+        expect(results.count).to eq(1)
+        expect(results.first.id).to eq(lead2.id)
+      end
+    end
+
   end
 end
