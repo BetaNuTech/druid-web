@@ -104,6 +104,11 @@ RSpec.describe LeadSearch do
       expect(search.collection.to_a).to eq([lead2])
     end
 
+    it "searches with text" do
+      search = LeadSearch.new({text: "11223344"})
+      expect(search.collection.to_a).to eq([lead2])
+    end
+
     describe "order" do
       it "is sorted by priority" do
         search = LeadSearch.new({sort_by: 'priority', sort_dir: 'desc'})

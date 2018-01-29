@@ -1,5 +1,5 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :last_name, :first_name, :id_number, :page, :per_page, :sort_by, :sort_dir ]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir ]
   LEAD_TABLE = Lead.table_name
   DEFAULT_SORT = [:priority, :desc]
   DEFAULT_PER_PAGE = 10
@@ -23,6 +23,7 @@ class LeadSearch
     @options = @options.to_unsafe_h unless @options.is_a?(Hash)
     @skope = @default_skope
     @filter_applied = false
+    @perform_sort = true
   end
 
   def collection
@@ -30,7 +31,7 @@ class LeadSearch
   end
 
   def query_skope
-    self.
+    filtered_skope = self.
       filter_by_state.
       filter_by_priority.
       filter_by_user.
@@ -39,7 +40,13 @@ class LeadSearch
       filter_by_last_name.
       filter_by_id_number.
       finalize.
-      sort
+      search_by_text
+
+    if @perform_sort
+      return filtered_skope.sort
+    else
+      return filtered_skope
+    end
   end
 
   def paginated
@@ -159,6 +166,16 @@ class LeadSearch
       @skope = @skope.
         where(id_number: id_number)
       @filter_applied = true
+    end
+    return self
+  end
+
+  def search_by_text(text=nil)
+    text ||= @options[:text]
+    if text.present?
+      @skope = @skope.
+        search_for(text)
+      @perform_sort = false
     end
     return self
   end
