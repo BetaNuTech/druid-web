@@ -16,6 +16,7 @@ class LeadsController < ApplicationController
   def search
     authorize Lead
     @search = LeadSearch.new(params[:lead_search])
+    @webpack = "lead_search"
   end
 
   # GET /leads/1

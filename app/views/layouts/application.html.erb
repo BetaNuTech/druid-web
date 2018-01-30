@@ -10,12 +10,19 @@
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
 
-  <body>
-    <%= render partial: 'shared/navbar' %>
-    <%= render partial: 'shared/notifications' %>
-    <%= yield %>
-    <%= render partial: 'shared/footer' %>
-  </body>
-</html>
+
+    </head>
+
+    <body>
+      <%= render partial: 'shared/navbar' %>
+      <%= render partial: 'shared/notifications' %>
+      <%= yield %>
+      <%= render partial: 'shared/footer' %>
+
+      <% if defined?(@webpack) %>
+        <%= javascript_pack_tag @webpack %>
+        <%= stylesheet_pack_tag @webpack %>
+      <% end %>
+    </body>
+  </html>
