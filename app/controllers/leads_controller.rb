@@ -13,6 +13,11 @@ class LeadsController < ApplicationController
     @leads = @search.paginated
   end
 
+  def search
+    authorize Lead
+    @search = LeadSearch.new(params[:lead_search])
+  end
+
   # GET /leads/1
   # GET /leads/1.json
   def show

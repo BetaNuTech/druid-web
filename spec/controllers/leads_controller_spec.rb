@@ -85,6 +85,18 @@ RSpec.describe LeadsController, type: :controller do
 
   end
 
+  describe "GET #search" do
+    describe "as an agent" do
+      it "returns a success reponse" do
+        sign_in agent
+        get :search, params: {}
+        expect(response).to be_success
+        get :search, params: {}, format: :json
+        expect(response).to be_success
+      end
+    end
+  end
+
   describe "GET #show" do
     let(:lead) { Lead.create! valid_attributes }
 
