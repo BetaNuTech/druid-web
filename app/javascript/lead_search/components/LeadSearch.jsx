@@ -2,20 +2,20 @@ import React from 'react';
 import Style from './LeadSearch.scss';
 import LeadSearchSidebar from './LeadSearchSidebar.jsx';
 import LeadSearchFilter from './LeadSearchFilter.jsx';
+import LeadSearchLeads from './LeadSearchLeads.jsx';
 import axios from 'axios';
 
 class LeadSearch extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       api: window.location.origin + props.api,
       search: {search: {}, data: []}
-    };
-    this.updateSearchParams = this.updateSearchParams.bind(this);
+    }
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData()
   }
 
   fetchData(url) {
@@ -24,12 +24,13 @@ class LeadSearch extends React.Component {
         this.setState({ search: response.data })
       })
       .catch(error => {
+        // TODO: display error to user
         console.log(error)
       })
   }
 
-  updateSearchParams(params) {
-    this.fetchData(this.state.api + params);
+  updateSearchParams = (params) => {
+    this.fetchData(this.state.api + params)
   }
 
   render() {
@@ -46,11 +47,11 @@ class LeadSearch extends React.Component {
           <LeadSearchSidebar options={this.state.search.search}/>
         </div>
         <div className={Style.leads}>
-          Leads here
+          <LeadSearchLeads data={this.state.search.data}/>
         </div>
       </div>
     );
   }
 }
 
-export default LeadSearch;
+export default LeadSearch

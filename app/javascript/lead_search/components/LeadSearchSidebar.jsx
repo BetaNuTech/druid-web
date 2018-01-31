@@ -1,34 +1,32 @@
-import React from 'react';
-import Style from './LeadSearchSidebar.scss';
+import React from 'react'
+import Style from './LeadSearchSidebar.scss'
 
 class LeadSearchSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       options: props.options
-    };
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState( { options: nextProps.options });
+    this.setState( { options: nextProps.options })
   }
 
-  getAgents() {
-    const filters = this.state.options.Filters;
-    let agents = [];
+  getAgents = () => {
+    const filters = this.state.options.Filters
+    let agents = []
     if (filters != undefined && filters.Agents != undefined) {
+      agents = filters.Agents.values
     }
+    return agents
   }
 
   agentFilters() {
-    const filters = this.state.options.Filters;
-    if (filters != undefined && filters.Agents != undefined) {
-      return filters.Agents.values.map((agent) =>
-        <strong>Agent:</strong>
-      );
-    } else {
-      return "No Agent Filters";
-    }
+    let agents = this.getAgents()
+    return agents.map((agent) => {
+      <strong>Agent:</strong>
+    })
   }
 
   render() {
@@ -41,4 +39,4 @@ class LeadSearchSidebar extends React.Component {
   }
 }
 
-export default LeadSearchSidebar;
+export default LeadSearchSidebar

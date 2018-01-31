@@ -9,21 +9,27 @@ class LeadSearchFilter extends React.Component {
       search_params: ""
     }
     this.handleSearchStringUpdate = this.handleSearchStringUpdate.bind(this);
+    this.handleFilterSubmit = this.handleFilterSubmit.bind(this);
   }
 
   handleSearchStringUpdate(event) {
     this.setState({search_params: event.target.value});
+  }
+
+  handleFilterSubmit(event) {
     this.state.onUpdateSearchParams(this.state.search_params);
   }
 
   render() {
     return(
       <div className={Style.LeadSearchSidebar}>
-        Filters
+        <h1>Filters</h1>
         <p>
-          <input type="text" name="search_params" className="form-control"
+          <input type="text" name="lead_search_manual_params" className="form-control"
             value={this.state.search_params}
-            onChange={this.handleSearchStringUpdate} />
+            onChange={this.handleSearchStringUpdate}
+          />
+          <button type="submit" className="form-control btn-info" onClick={this.handleFilterSubmit}>Submit</button>
         </p>
       </div>
     );
