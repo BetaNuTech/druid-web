@@ -24,7 +24,7 @@ class LeadSearchLeads extends React.Component {
         <div className="ResultsTableHeader">
           {leads.length} Leads
         </div>
-        <div class="ResultsTable">
+        <div className="ResultsTable">
           {leads}
         </div>
       </div>

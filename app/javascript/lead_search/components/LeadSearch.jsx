@@ -40,13 +40,13 @@ class LeadSearch extends React.Component {
           <h1>Lead Search (React.js)</h1>
           <strong>API:</strong> {this.state.api}
         </div>
-        <div className={Style.filter}>
+        <div className={Style.LeadSearchFilter}>
           <LeadSearchFilter onUpdateSearchParams={this.updateSearchParams}/>
         </div>
-        <div className={Style.sidebar}>
+        <div className={Style.LeadSearchSidebar}>
           <LeadSearchSidebar options={this.state.search.search}/>
         </div>
-        <div className={Style.leads}>
+        <div className={Style.LeadSearchLeads}>
           <LeadSearchLeads data={this.state.search.data}/>
         </div>
       </div>

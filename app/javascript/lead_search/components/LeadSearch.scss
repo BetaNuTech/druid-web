@@ -4,33 +4,29 @@
   border: 1px solid black;
   grid-template-columns: 25% 75%;
   grid-template-rows: auto;
-  grid-template-areas: "header filter" "sidebar leads";
+  grid-template-areas: "LeadSearchHeader LeadSearchFilter" "LeadSearchSidebar LeadSearchLeads";
 }
 
-.header {
-  border: 1px solid black;
-  grid-area: header;
+.LeadSearchHeader {
+  grid-area: LeadSearchHeader;
   grid-column-start: 1;
   grid-column-end: 1;
   grid-row-start: 1;
   grid-row-end: 1;
 }
 
-.filter {
-  grid-area: filter;
-  border: 1px solid black;
+.LeadSearchFilter {
+  grid-area: LeadSearchFilter;
   grid-column-start: 2;
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 1;
 }
 
-.sidebar {
-  border: 1px solid black;
-  grid-area: sidebar;
+.LeadSearchSidebar {
+  grid-area: LeadSearchSidebar;
 }
 
-.leads {
-  border: 1px solid black;
-  grid-area: leads;
+.LeadSearchLeads {
+  grid-area: LeadSearchLeads;
 }

@@ -36,6 +36,12 @@
                   </li>
                   <li role="separator" class="divider"></li>
                   <li>
+                    <%= link_to(search_leads_path) do %>
+                      <span class="glyphicon glyphicon-search"></span> Search Leads
+                    <% end %>
+                  </li>
+                  <li role="separator" class="divider"></li>
+                  <li>
                     <%= link_to(leads_path(lead_search: {priorities: [ 'urgent' ]})) do %>
                       <span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads
                     <% end %>
