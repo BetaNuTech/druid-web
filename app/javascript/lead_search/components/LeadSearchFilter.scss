@@ -1,5 +1,27 @@
 .LeadSearchFilter {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:  "LeadSearchParamsInput LeadSearchParamsInput . "
+                        "LeadSearchFilterDropDown LeadSearchInput . ";
+  grid-row-gap: 10px;
+  grid-column-gap: 5px;
 }
+
+.LeadSearchParamsInput {
+  grid-area: LeadSearchParamsInput;
+
+  input {
+    width: 80%;
+    float: left;
+  }
+
+  button {
+    width: 20%;
+    float: right;
+  }
+}
+
 
 .FilterList {
 

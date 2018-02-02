@@ -9,7 +9,7 @@ class FilterDropdown extends React.Component {
           <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Filter <span className="caret"></span>
           </button>
-          <ul className="dropdown-menu">
+          <ul className="FilterList dropdown-menu">
             <li><a href="#">Filter1</a></li>
             <li><a href="#">Filter2</a></li>
             <li><a href="#">Filter3</a></li>

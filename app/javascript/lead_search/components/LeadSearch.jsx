@@ -29,8 +29,25 @@ class LeadSearch extends React.Component {
       })
   }
 
-  updateSearchParams = (params) => {
+  handleUpdateSearchParams = (params) => {
     this.fetchData(this.state.api + params)
+  }
+
+  handleUpdateSearchInput = (search_string) => {
+    let newSearchState = {
+      ...this.state.search,
+      search: {
+        ...this.state.search.search,
+        Filters: {
+          ...this.state.search.search.Filters,
+          Search: {
+            ...this.state.search.search.Filters.Search,
+            values: [{label: search_string, value: search_string}]
+          }
+        }
+      }
+    }
+    this.setState({search: newSearchState})
   }
 
   render() {
@@ -41,7 +58,11 @@ class LeadSearch extends React.Component {
           <strong>API:</strong> {this.state.api}
         </div>
         <div className={Style.LeadSearchFilter}>
-          <LeadSearchFilter onUpdateSearchParams={this.updateSearchParams}/>
+          <LeadSearchFilter
+            search={this.state.search.search}
+            onUpdateSearchParams={this.handleUpdateSearchParams}
+            onUpdateSearchInput={this.handleUpdateSearchInput}
+          />
         </div>
         <div className={Style.LeadSearchSidebar}>
           <LeadSearchSidebar options={this.state.search.search}/>
