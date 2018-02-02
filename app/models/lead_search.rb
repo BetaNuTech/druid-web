@@ -52,7 +52,7 @@ class LeadSearch
   def full_options
     opts = {
       "Filters" => {
-        "_index" => ["Agents", "Properties", "States", "First Name", "Last Name", "ID Number", "Search"],
+        "_index" => ["Agents", "Properties", "Priorities", "States", "First Name", "Last Name", "ID Number", "Search"],
         "Agents" => {
           param: "user_ids",
           values: User.where(id: @options[:user_ids]).map{|u| {label: u.name, value: u.id}}
@@ -87,6 +87,7 @@ class LeadSearch
         }
       },
       "Pagination" => {
+        "_index" => ["Page", "Per Page", "Sort By", "Sort Dir"],
         "Page" => {
           param: "page",
           values: [ {label: "Page", value: query_page} ]
@@ -280,12 +281,12 @@ class LeadSearch
   end
 
   def query_sort_by
-    sort_by = Array(@options[:sort_by] || :none).first.to_sym
+    sort_by = (Array(@options[:sort_by]).first || :none).to_sym
     SORT_OPTIONS.keys.include?(sort_by) ? sort_by : DEFAULT_SORT[0]
   end
 
   def query_sort_dir
-    sort_dir = (@options[:sort_dir] || :none).to_sym
+    sort_dir = (Array(@options[:sort_dir]).first || :none).to_sym
     SORT_OPTIONS[query_sort_by].keys.include?(sort_dir) ? sort_dir : DEFAULT_SORT[1]
   end
 

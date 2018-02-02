@@ -8,8 +8,11 @@ import axios from 'axios';
 class LeadSearch extends React.Component {
   constructor(props) {
     super(props)
+    let api = props.api
+    if (!RegExp('^http').test(api)) { api = window.location.origin + api  }
+    axios.defaults.baseURL = api
     this.state = {
-      api: window.location.origin + props.api,
+      api: api,
       search: {search: {}, data: []}
     }
   }
@@ -29,10 +32,6 @@ class LeadSearch extends React.Component {
       })
   }
 
-  handleUpdateSearchParams = (params) => {
-    this.fetchData(this.state.api + params)
-  }
-
   handleUpdateSearchInput = (search_string) => {
     let newSearchState = {
       ...this.state.search,
@@ -50,6 +49,35 @@ class LeadSearch extends React.Component {
     this.setState({search: newSearchState})
   }
 
+  handleSubmitSearch = () => {
+    this.fetchData(this.urlParamsFromSearch())
+  }
+
+  urlParamsFromSearch() {
+    let output = ''
+    let params = []
+    let filterParams = this.paramsFromSearchNode(this.state.search.search.Filters)
+    let paginationParams = this.paramsFromSearchNode(this.state.search.search.Pagination)
+    output = "?" + [...filterParams, ...paginationParams].join("&")
+    return output
+  }
+
+  paramsFromSearchNode(segment) {
+    const search_param = this.props.search_param
+    let params = []
+    segment._index.forEach(function(key) {
+        let param = segment[key]["param"]
+        segment[key]["values"].forEach(function(val) {
+          let value = val["value"]
+          if (value.length > 0) {
+            let safeVal = encodeURIComponent(value)
+            params.push(`${search_param}[${param}][]=${safeVal}`)
+          }
+        })
+      })
+    return params
+  }
+
   render() {
     return (
       <div className={Style.LeadSearch}>
@@ -60,8 +88,8 @@ class LeadSearch extends React.Component {
         <div className={Style.LeadSearchFilter}>
           <LeadSearchFilter
             search={this.state.search.search}
-            onUpdateSearchParams={this.handleUpdateSearchParams}
             onUpdateSearchInput={this.handleUpdateSearchInput}
+            onSubmitSearch={this.handleSubmitSearch}
           />
         </div>
         <div className={Style.LeadSearchSidebar}>

@@ -7,10 +7,9 @@ class LeadSearchFilter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      onUpdateSearchParams: props.onUpdateSearchParams,
       onUpdateSearchInput: props.onUpdateSearchInput,
-      search: props.search,
-      search_params: ""
+      onSubmitSearch: props.onSubmitSearch,
+      search: props.search
     }
   }
 
@@ -20,10 +19,6 @@ class LeadSearchFilter extends React.Component {
 
   handleSearchStringUpdate = (event) => {
     this.setState({search_params: event.target.value});
-  }
-
-  handleFilterSubmit = (event) => {
-    this.state.onUpdateSearchParams(this.state.search_params);
   }
 
   handleUpdateSearchInput = (search_string) => {
@@ -46,14 +41,8 @@ class LeadSearchFilter extends React.Component {
         <FilterDropdown />
         <SearchInput
           onUpdateSearchInput={this.handleUpdateSearchInput}
+          onSubmitSearch={this.state.onSubmitSearch}
           value={this.searchStringValue()} />
-        <div className={Style.LeadSearchParamsInput}>
-          <input type="text" name="lead_search_manual_params" className="form-control"
-            value={this.state.search_params}
-            onChange={this.handleSearchStringUpdate}
-          />
-          <button type="submit" className="form-control btn-info" onClick={this.handleFilterSubmit}>Submit</button>
-        </div>
       </div>
     )
   }
