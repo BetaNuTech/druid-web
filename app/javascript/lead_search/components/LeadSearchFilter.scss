@@ -1,27 +1,18 @@
 .LeadSearchFilter {
+  grid-area: LeadSearchFilter;
+  grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  align-self: end;
+
   display: grid;
   grid-template-columns: auto 1fr 1fr;
   grid-template-rows: auto;
-  grid-template-areas:  "LeadSearchParamsInput LeadSearchParamsInput . "
-                        "LeadSearchFilterDropDown LeadSearchInput . ";
+  grid-template-areas: "LeadSearchFilterDropDown LeadSearchInput . ";
   grid-row-gap: 10px;
   grid-column-gap: 5px;
 }
-
-.LeadSearchParamsInput {
-  grid-area: LeadSearchParamsInput;
-
-  input {
-    width: 80%;
-    float: left;
-  }
-
-  button {
-    width: 20%;
-    float: right;
-  }
-}
-
 
 .FilterList {
 

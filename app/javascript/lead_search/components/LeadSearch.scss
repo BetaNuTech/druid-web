@@ -4,7 +4,8 @@
   border: 1px solid black;
   grid-template-columns: 25% 75%;
   grid-template-rows: auto;
-  grid-template-areas: "LeadSearchHeader LeadSearchFilter" "LeadSearchSidebar LeadSearchLeads";
+  grid-template-areas: "LeadSearchHeader LeadSearchFilter"
+                       "LeadSearchSidebar LeadSearchLeads";
 }
 
 .LeadSearchHeader {
@@ -13,20 +14,4 @@
   grid-column-end: 1;
   grid-row-start: 1;
   grid-row-end: 1;
-}
-
-.LeadSearchFilter {
-  grid-area: LeadSearchFilter;
-  grid-column-start: 2;
-  grid-column-end: 2;
-  grid-row-start: 1;
-  grid-row-end: 1;
-}
-
-.LeadSearchSidebar {
-  grid-area: LeadSearchSidebar;
-}
-
-.LeadSearchLeads {
-  grid-area: LeadSearchLeads;
 }

@@ -19,8 +19,12 @@ class SearchInput extends React.Component {
 
   handleInputKeyPress = (event) => {
     if (event.key == 'Enter') {
-      this.state.onSubmitSearch()
+      this.handleSubmitSearch()
     }
+  }
+
+  handleSubmitSearch = () => {
+    this.state.onSubmitSearch()
   }
 
   componentWillReceiveProps(new_props) {
@@ -31,12 +35,14 @@ class SearchInput extends React.Component {
     return(
       <div className={Style.SearchInput}>
         <div className="input-group">
-          <span className="input-group-addon"><span className="glyphicon glyphicon-search"></span></span>
           <input type="text" className="form-control"
             onChange={this.handleUpdateSearchInput}
             onKeyPress={this.handleInputKeyPress}
             value={this.state.value}
           />
+          <span className="input-group-addon" onClick={this.handleSubmitSearch}>
+            <span className="glyphicon glyphicon-search"></span>
+          </span>
         </div>
       </div>
     )

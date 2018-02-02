@@ -82,22 +82,16 @@ class LeadSearch extends React.Component {
     return (
       <div className={Style.LeadSearch}>
         <div className={Style.header}>
-          <h1>Lead Search (React.js)</h1>
+          <h1>Leads</h1>
           <strong>API:</strong> {this.state.api}
         </div>
-        <div className={Style.LeadSearchFilter}>
-          <LeadSearchFilter
-            search={this.state.search.search}
-            onUpdateSearchInput={this.handleUpdateSearchInput}
-            onSubmitSearch={this.handleSubmitSearch}
-          />
-        </div>
-        <div className={Style.LeadSearchSidebar}>
-          <LeadSearchSidebar options={this.state.search.search}/>
-        </div>
-        <div className={Style.LeadSearchLeads}>
-          <LeadSearchLeads data={this.state.search.data}/>
-        </div>
+        <LeadSearchFilter
+          search={this.state.search.search}
+          onUpdateSearchInput={this.handleUpdateSearchInput}
+          onSubmitSearch={this.handleSubmitSearch}
+        />
+        <LeadSearchSidebar options={this.state.search.search}/>
+        <LeadSearchLeads data={this.state.search.data}/>
       </div>
     );
   }
