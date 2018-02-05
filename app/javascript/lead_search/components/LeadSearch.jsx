@@ -112,8 +112,12 @@ class LeadSearch extends React.Component {
           onSubmitSearch={this.handleSubmitSearch}
         />
         <LeadSearchSidebar options={this.state.search.search}/>
-        <LeadSearchLeads data={this.state.search.data}/>
-        <Pagination search={this.state.search.search} onGotoPage={this.handleGotoPage}/>
+        { this.state.search.data.length > 0 ?
+          <React.Fragment>
+            <LeadSearchLeads data={this.state.search.data}/>
+            <Pagination search={this.state.search.search} onGotoPage={this.handleGotoPage}/>
+          </React.Fragment>
+          : <h3>None Found</h3> }
       </div>
     );
   }

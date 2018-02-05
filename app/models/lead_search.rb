@@ -122,7 +122,7 @@ class LeadSearch
   end
 
   def total_pages
-    [ (record_count / query_limit).ceil, 1 ].max
+    [ ( (record_count / query_limit).ceil + 1 ), 1 ].max
   end
 
   def page_options(page)

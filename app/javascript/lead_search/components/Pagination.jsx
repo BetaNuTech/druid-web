@@ -22,7 +22,9 @@ class Pagination extends React.Component {
   handleClickPageNumber = (event) => {
     event.preventDefault()
     const page = event.target.dataset.pagenumber
-    this.props.onGotoPage(page)
+    if (page <= this.totalPages()) {
+      this.props.onGotoPage(page)
+    }
   }
 
   render() {
