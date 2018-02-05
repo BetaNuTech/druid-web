@@ -1,9 +1,10 @@
-import React from 'react';
-import Style from './LeadSearch.scss';
-import LeadSearchSidebar from './LeadSearchSidebar.jsx';
-import LeadSearchFilter from './LeadSearchFilter.jsx';
-import LeadSearchLeads from './LeadSearchLeads.jsx';
-import axios from 'axios';
+import React from 'react'
+import Style from './LeadSearch.scss'
+import LeadSearchSidebar from './LeadSearchSidebar.jsx'
+import LeadSearchFilter from './LeadSearchFilter.jsx'
+import LeadSearchLeads from './LeadSearchLeads.jsx'
+import Pagination from './Pagination.jsx'
+import axios from 'axios'
 
 class LeadSearch extends React.Component {
   constructor(props) {
@@ -17,8 +18,12 @@ class LeadSearch extends React.Component {
     }
   }
 
+  getInitialUrl() {
+    return( this.state.api + window.location.search )
+  }
+
   componentDidMount() {
-    this.fetchData()
+    this.fetchData(this.getInitialUrl())
   }
 
   fetchData(url) {
@@ -53,12 +58,28 @@ class LeadSearch extends React.Component {
     this.fetchData(this.urlParamsFromSearch())
   }
 
+  handleGotoPage = (page) => {
+    let newSearchState = {
+      ...this.state.search,
+      search: {
+        ...this.state.search.search,
+        Pagination: {
+          ...this.state.search.search.Pagination,
+          Page: {
+            ...this.state.search.search.Pagination.Page,
+            values: [{label: "Page", value: page}]
+          }
+        }
+      }
+    }
+    this.setState({search: newSearchState}, this.handleSubmitSearch)
+    window.scrollTo(0,0)
+  }
+
   urlParamsFromSearch() {
-    let output = ''
-    let params = []
     let filterParams = this.paramsFromSearchNode(this.state.search.search.Filters)
     let paginationParams = this.paramsFromSearchNode(this.state.search.search.Pagination)
-    output = "?" + [...filterParams, ...paginationParams].join("&")
+    let output = "?" + [...filterParams, ...paginationParams].join("&")
     return output
   }
 
@@ -83,7 +104,7 @@ class LeadSearch extends React.Component {
       <div className={Style.LeadSearch}>
         <div className={Style.header}>
           <h1>Lead Search</h1>
-          <strong>API:</strong> {this.state.api}
+          <a name="top"></a>
         </div>
         <LeadSearchFilter
           search={this.state.search.search}
@@ -92,6 +113,7 @@ class LeadSearch extends React.Component {
         />
         <LeadSearchSidebar options={this.state.search.search}/>
         <LeadSearchLeads data={this.state.search.data}/>
+        <Pagination search={this.state.search.search} onGotoPage={this.handleGotoPage}/>
       </div>
     );
   }

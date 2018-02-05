@@ -38,7 +38,7 @@ class LeadSearchFilter extends React.Component {
   render() {
     return(
       <div className={Style.LeadSearchFilter}>
-        <FilterDropdown />
+        { false && <FilterDropdown /> }
         <SearchInput
           onUpdateSearchInput={this.handleUpdateSearchInput}
           onSubmitSearch={this.state.onSubmitSearch}

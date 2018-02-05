@@ -88,6 +88,7 @@ class LeadSearch
       },
       "Pagination" => {
         "_index" => ["Page", "Per Page", "Sort By", "Sort Dir"],
+        "_total_pages" => total_pages,
         "Page" => {
           param: "page",
           values: [ {label: "Page", value: query_page} ]
@@ -121,7 +122,7 @@ class LeadSearch
   end
 
   def total_pages
-    (record_count / query_limit).ceil
+    [ (record_count / query_limit).ceil, 1 ].max
   end
 
   def page_options(page)
