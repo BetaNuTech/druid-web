@@ -1,7 +1,6 @@
 .LeadSearch {
   padding: 10px;
   display: grid;
-  border: 1px solid black;
   grid-template-columns: 25% 75%;
   grid-template-rows: auto;
   grid-template-areas: "LeadSearchHeader LeadSearchFilter"

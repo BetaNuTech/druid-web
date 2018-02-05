@@ -82,7 +82,7 @@ class LeadSearch extends React.Component {
     return (
       <div className={Style.LeadSearch}>
         <div className={Style.header}>
-          <h1>Leads</h1>
+          <h1>Lead Search</h1>
           <strong>API:</strong> {this.state.api}
         </div>
         <LeadSearchFilter

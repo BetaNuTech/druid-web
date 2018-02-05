@@ -1,9 +1,12 @@
 .LeadSearchLead {
   box-shadow: 3px 2px 3px gray;
   display: grid;
-  grid-template-columns: 10% 30% auto;
-  grid-template-areas: "LeadPriority LeadContact";
-  grid-gap: 20px;
+  grid-template-columns: 40% 30% 30%;
+  grid-template-areas: "LeadPriority LeadPriority LeadPriority"
+                       "LeadContact LeadProperty LeadPreferences"
+                       "LeadNotes LeadNotes LeadNotes";
+
+  grid-gap: 10px;
   margin: 1em;
   padding: 0.5em;
 }
@@ -14,6 +17,15 @@
 
 .priority{
   grid-area: LeadPriority;
+  width: 95%;
+
+  border-top: 1px solid black;
+  border-bottom: 2px solid black;
+
+  span {
+    padding: 0.5em;
+    font-weight: bold;
+  }
 }
 
 .contact {
@@ -24,4 +36,24 @@
   font-size: 1.4em;
 }
 
-.contact_info { }
+.contact_info {
+  grid-area: LeadContactInfo;
+}
+
+.property {
+  grid-area: LeadProperty;
+}
+
+.preferences {
+  grid-area: LeadPreferences;
+}
+
+.notes {
+  margin: 0.5em;
+  grid-area: LeadNotes;
+
+  .lead_notes {
+
+  }
+}
+

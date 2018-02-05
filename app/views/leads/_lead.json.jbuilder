@@ -17,3 +17,4 @@ json.user do
   end
 end
 json.url lead_url(id: lead.id, format: :json)
+json.web_url lead_url(id: lead.id, format: :html)
