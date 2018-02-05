@@ -56,7 +56,7 @@ class LeadSearchLead extends React.Component {
                 {this.props.data.property.source}
               </span><br/>
             </React.Fragment> :
-            <span>No Property</span>
+            <span>No Property<br/></span>
           }
           <span>
             <span className="glyphicon glyphicon-user" />&nbsp;
