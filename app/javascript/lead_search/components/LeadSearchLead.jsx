@@ -42,16 +42,22 @@ class LeadSearchLead extends React.Component {
           </span>
         </div>
         <div className={Style.property}>
-          <span>
-            <span className="glyphicon glyphicon-home" />&nbsp;
-            <a href={this.props.data.property.web_url} target="_blank">
-              {this.props.data.property.name}
-            </a>
-            </span><br/>
-          <span>
-            <span className="glyphicon glyphicon-download-alt" />&nbsp;
-            {this.props.data.property.source}
-          </span><br/>
+          {
+            this.props.data.property ?
+            <React.Fragment>
+              <span>
+                <span className="glyphicon glyphicon-home" />&nbsp;
+                <a href={this.props.data.property.web_url} target="_blank">
+                  {this.props.data.property.name}
+                </a>
+              </span><br/>
+              <span>
+                <span className="glyphicon glyphicon-download-alt" />&nbsp;
+                {this.props.data.property.source}
+              </span><br/>
+            </React.Fragment> :
+            <span>No Property</span>
+          }
           <span>
             <span className="glyphicon glyphicon-user" />&nbsp;
             {this.props.data.referral}
