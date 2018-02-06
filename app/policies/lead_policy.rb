@@ -6,6 +6,10 @@ class LeadPolicy < ApplicationPolicy
     user.admin? || user.user?
   end
 
+  def search?
+    index?
+  end
+
   def show?
     index?
   end

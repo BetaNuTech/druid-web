@@ -104,6 +104,29 @@ RSpec.describe LeadSearch do
       expect(search.collection.to_a).to eq([lead2])
     end
 
+    it "searches with text" do
+      search = LeadSearch.new({text: "11223344"})
+      expect(search.collection.to_a).to eq([lead2])
+    end
+
+    describe "options" do
+      it "are returned by full_options" do
+        property = create(:property)
+        user = create(:user)
+        search = LeadSearch.new({ user_ids: [User.first.id],
+                                  property_ids: [Property.first.id],
+                                  priorities: ["low"],
+                                  states: ["open"],
+                                  first_name: "foo",
+                                  last_name: "foo",
+                                  id_number: "11223344",
+                                  text: ["foo"]
+                                })
+        expect(search.full_options).to be_a(Hash)
+      end
+
+    end
+
     describe "order" do
       it "is sorted by priority" do
         search = LeadSearch.new({sort_by: 'priority', sort_dir: 'desc'})
@@ -137,7 +160,7 @@ RSpec.describe LeadSearch do
 
       it "returns total_pages" do
         search = LeadSearch.new({per_page: 3, page: 1})
-        expect(search.total_pages).to eq(4)
+        expect(search.total_pages).to eq(5)
       end
 
       it "returns next_page_options" do

@@ -34,13 +34,13 @@ class Lead < ApplicationRecord
 
   ### Class Concerns/Extensions
   include Leads::StateMachine
+  include Leads::Search
   audited
 
   ### Constants
   ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
-  US_STATES = [ ['AK', 'AK'], ['AL', 'AL'], ['AR', 'AR'], ['AZ', 'AZ'], ['CA', 'CA'], ['CO', 'CO'], ['CT', 'CT'], ['DC', 'DC'], ['DE', 'DE'], ['FL', 'FL'], ['GA', 'GA'], ['HI', 'HI'], ['IA', 'IA'], ['ID', 'ID'], ['IL', 'IL'], ['IN', 'IN'], ['KS', 'KS'], ['KY', 'KY'], ['LA', 'LA'], ['MA', 'MA'], ['MD', 'MD'], ['ME', 'ME'], ['MI', 'MI'], ['MN', 'MN'], ['MO', 'MO'], ['MS', 'MS'], ['MT', 'MT'], ['NC', 'NC'], ['ND', 'ND'], ['NE', 'NE'], ['NH', 'NH'], ['NJ', 'NJ'], ['NM', 'NM'], ['NV', 'NV'], ['NY', 'NY'], ['OH', 'OH'], ['OK', 'OK'], ['OR', 'OR'], ['PA', 'PA'], ['RI', 'RI'], ['SC', 'SC'], ['SD', 'SD'], ['TN', 'TN'], ['TX', 'TX'], ['UT', 'UT'], ['VA', 'VA'], ['VT', 'VT'], ['WA', 'WA'], ['WI', 'WI'], ['WV', 'WV'], ['WY', 'WY'] ]
 
   ### Enums
   enum priority: { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, _prefix: :priority

@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   resources :users
   resources :properties
   resources :leads do
+    collection do
+      get 'search', to: "leads#search"
+    end
     member do
       post 'trigger_state_event', to: "leads#trigger_state_event"
     end

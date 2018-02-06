@@ -1,0 +1,27 @@
+.LeadSearch {
+  padding: 10px;
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@media(min-width: 765px) {
+  .LeadSearch {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    grid-template-rows: auto;
+    grid-template-areas: "LeadSearchHeader LeadSearchFilter"
+    "LeadSearchSidebar LeadSearchLeads"
+    ". LeadPagination"
+    ;
+  }
+}
+
+.LeadSearchHeader {
+  grid-area: LeadSearchHeader;
+  grid-column-start: 1;
+  grid-column-end: 1;
+  grid-row-start: 1;
+  grid-row-end: 1;
+}

@@ -20,12 +20,13 @@ gem 'delayed_job_active_record', '~> 4.1'
 gem 'awesome_print', '~> 1.8'
 gem 'pry-rails', '~> 0.3'
 gem 'pry-coolline', '~> 0.2'
-gem 'webpacker', '~> 3.0'
+gem 'webpacker', "~> 3.2"
 gem 'devise', '~> 4.3'
 gem 'colorize', '~> 0.8'
 gem 'pundit', '~> 1.1'
 gem 'audited', '~> 4.5'
 gem 'aasm', '~> 4.12'
+gem 'pg_search', "~> 2.1"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.11'

@@ -63,6 +63,38 @@ RSpec.describe LeadsController, type: :controller do
       end
     end
 
+    describe "using search" do
+      let(:lead1) { create(:lead, first_name: "YYY LeadPerson")}
+      let(:lead2) { create(:lead, first_name: "ZZZ LeadPerson")}
+
+      describe "with a text query" do
+        it "searches against a full text field" do
+          lead1; lead2
+          sign_in agent
+          get :index, params: {lead_search: {text: "LeadPerson"}}
+          expect(response.body).to match("2 records found")
+          expect(response.body).to match(/YYY/)
+          expect(response.body).to match(/ZZZ/)
+          get :index, params: {lead_search: {text: "YYY"}}
+          expect(response.body).to match("1 record found")
+          expect(response.body).to match(/YYY/)
+          expect(response.body).to_not match(/ZZZ/)
+        end
+      end
+    end
+
+  end
+
+  describe "GET #search" do
+    describe "as an agent" do
+      it "returns a success reponse" do
+        sign_in agent
+        get :search, params: {}
+        expect(response).to be_success
+        get :search, params: {}, format: :json
+        expect(response).to be_success
+      end
+    end
   end
 
   describe "GET #show" do

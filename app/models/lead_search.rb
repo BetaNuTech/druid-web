@@ -1,5 +1,5 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :last_name, :first_name, :id_number, :page, :per_page, :sort_by, :sort_dir ]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir ]
   LEAD_TABLE = Lead.table_name
   DEFAULT_SORT = [:priority, :desc]
   DEFAULT_PER_PAGE = 10
@@ -23,6 +23,7 @@ class LeadSearch
     @options = @options.to_unsafe_h unless @options.is_a?(Hash)
     @skope = @default_skope
     @filter_applied = false
+    @perform_sort = true
   end
 
   def collection
@@ -30,7 +31,7 @@ class LeadSearch
   end
 
   def query_skope
-    self.
+    filtered_skope = self.
       filter_by_state.
       filter_by_priority.
       filter_by_user.
@@ -39,7 +40,73 @@ class LeadSearch
       filter_by_last_name.
       filter_by_id_number.
       finalize.
-      sort
+      search_by_text
+
+    if @perform_sort
+      return filtered_skope.sort
+    else
+      return filtered_skope
+    end
+  end
+
+  def full_options
+    opts = {
+      "Filters" => {
+        "_index" => ["Agents", "Properties", "Priorities", "States", "First Name", "Last Name", "ID Number", "Search"],
+        "Agents" => {
+          param: "user_ids",
+          values: User.where(id: @options[:user_ids]).map{|u| {label: u.name, value: u.id}}
+        },
+        "Properties" => {
+          param: "property_ids",
+          values: Property.where(id: @options[:property_ids]).map{|p| {label: p.name, value: p.id}}
+        },
+        "Priorities" => {
+          param: "priorities",
+          values: Array(@options[:priorities]).map{|p| {label: p.capitalize, value: p}}
+        },
+        "States" => {
+          param: "states",
+          values: Array(@options[:states]).map{|s| {label: s.capitalize, value: s}}
+        },
+        "First Name" => {
+          param: "first_name",
+          values: Array(@options[:first_name]).map{|v| {label: v, value: v} }
+        },
+        "Last Name" => {
+          param: "last_name",
+          values: Array(@options[:last_name]).map{|v| {label: v, value: v} }
+        },
+        "ID Number" => {
+          param: "id_number",
+          values: Array(@options[:id_number]).map{|v| {label: v, value: v} }
+        },
+        "Search" => {
+          param: "text",
+          values: Array(@options[:text]).map{|v| {label: v, value: v} }
+        }
+      },
+      "Pagination" => {
+        "_index" => ["Page", "Per Page", "Sort By", "Sort Dir"],
+        "_total_pages" => total_pages,
+        "Page" => {
+          param: "page",
+          values: [ {label: "Page", value: query_page} ]
+        },
+        "Per Page" => {
+          param: "per_page",
+          values: [{ label: "Per Page", value: query_limit }]
+        },
+        "Sort By" => {
+          param: "sort_by",
+          values: [ { label: "Sort By", value: query_sort_by }]
+        },
+        "Sort Dir" => {
+          param: "sort_dir",
+          values: [ { label: "Sort Direction", value: query_sort_dir }]
+        }
+      }
+    }
   end
 
   def paginated
@@ -55,7 +122,7 @@ class LeadSearch
   end
 
   def total_pages
-    (record_count / query_limit).ceil
+    [ ( (record_count / query_limit).ceil + 1 ), 1 ].max
   end
 
   def page_options(page)
@@ -135,6 +202,7 @@ class LeadSearch
 
   def filter_by_first_name(first_name=nil)
     first_name ||= @options[:first_name]
+    first_name = first_name.first if first_name.is_a?(Array)
     if first_name.present?
       @skope = @skope.
         where("#{LEAD_TABLE}.first_name ILIKE ?", "%#{first_name}%")
@@ -145,6 +213,7 @@ class LeadSearch
 
   def filter_by_last_name(last_name=nil)
     last_name ||= @options[:last_name]
+    last_name = last_name.last if last_name.is_a?(Array)
     if last_name.present?
       @skope = @skope.
         where("#{LEAD_TABLE}.last_name ILIKE ?", "%#{last_name}%")
@@ -155,10 +224,22 @@ class LeadSearch
 
   def filter_by_id_number(id_number=nil)
     id_number ||= @options[:id_number]
+    id_number = id_number.first if id_number.is_a?(Array)
     if id_number.present?
       @skope = @skope.
         where(id_number: id_number)
       @filter_applied = true
+    end
+    return self
+  end
+
+  def search_by_text(text=nil)
+    text ||= @options[:text]
+    text = text.first if text.is_a?(Array)
+    if text.present?
+      @skope = @skope.
+        search_for(text)
+      @perform_sort = false
     end
     return self
   end
@@ -187,7 +268,8 @@ class LeadSearch
   end
 
   def query_limit
-    ( @options[:per_page] || DEFAULT_PER_PAGE ).to_i
+    per_page = Array(@options[:per_page] || nil).first || DEFAULT_PER_PAGE
+    per_page.to_i
   end
 
   def query_offset
@@ -195,16 +277,17 @@ class LeadSearch
   end
 
   def query_page
-    [ ( @options[:page] || 1 ).to_i, 1 ].max
+    page_number = Array(@options[:page] || 1).first.to_i
+    [page_number, 1].max
   end
 
   def query_sort_by
-    sort_by = (@options[:sort_by] || :none).to_sym
+    sort_by = (Array(@options[:sort_by]).first || :none).to_sym
     SORT_OPTIONS.keys.include?(sort_by) ? sort_by : DEFAULT_SORT[0]
   end
 
   def query_sort_dir
-    sort_dir = (@options[:sort_dir] || :none).to_sym
+    sort_dir = (Array(@options[:sort_dir]).first || :none).to_sym
     SORT_OPTIONS[query_sort_by].keys.include?(sort_dir) ? sort_dir : DEFAULT_SORT[1]
   end
 
