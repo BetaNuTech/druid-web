@@ -160,7 +160,7 @@ RSpec.describe LeadSearch do
 
       it "returns total_pages" do
         search = LeadSearch.new({per_page: 3, page: 1})
-        expect(search.total_pages).to eq(4)
+        expect(search.total_pages).to eq(5)
       end
 
       it "returns next_page_options" do
