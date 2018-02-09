@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Id:</strong>
+  <%= @reason.id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @reason.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @reason.description %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @reason.active %>
+</p>
+
+<%= link_to 'Edit', edit_reason_path(@reason) %> |
+<%= link_to 'Back', reasons_path %>

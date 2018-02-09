@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Id:</strong>
+  <%= @lead_action.id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @lead_action.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @lead_action.description %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @lead_action.active %>
+</p>
+
+<%= link_to 'Edit', edit_lead_action_path(@lead_action) %> |
+<%= link_to 'Back', lead_actions_path %>

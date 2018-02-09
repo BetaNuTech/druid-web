@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Reasons</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Active</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @reasons.each do |reason| %>
+      <tr>
+        <td><%= reason.id %></td>
+        <td><%= reason.name %></td>
+        <td><%= reason.description %></td>
+        <td><%= reason.active %></td>
+        <td><%= link_to 'Show', reason %></td>
+        <td><%= link_to 'Edit', edit_reason_path(reason) %></td>
+        <td><%= link_to 'Destroy', reason, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Reason', new_reason_path %>
