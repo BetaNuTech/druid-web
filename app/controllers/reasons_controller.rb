@@ -1,30 +1,37 @@
 class ReasonsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_reason, only: [:show, :edit, :update, :destroy]
+  after_action :verify_authorized
 
   # GET /reasons
   # GET /reasons.json
   def index
+    authorize Reason
     @reasons = Reason.all
   end
 
   # GET /reasons/1
   # GET /reasons/1.json
   def show
+    authorize @reason
   end
 
   # GET /reasons/new
   def new
     @reason = Reason.new
+    authorize @reason
   end
 
   # GET /reasons/1/edit
   def edit
+    authorize @reason
   end
 
   # POST /reasons
   # POST /reasons.json
   def create
     @reason = Reason.new(reason_params)
+    authorize @reason
 
     respond_to do |format|
       if @reason.save
@@ -40,6 +47,7 @@ class ReasonsController < ApplicationController
   # PATCH/PUT /reasons/1
   # PATCH/PUT /reasons/1.json
   def update
+    authorize @reason
     respond_to do |format|
       if @reason.update(reason_params)
         format.html { redirect_to @reason, notice: 'Reason was successfully updated.' }
@@ -54,6 +62,7 @@ class ReasonsController < ApplicationController
   # DELETE /reasons/1
   # DELETE /reasons/1.json
   def destroy
+    authorize @reason
     @reason.destroy
     respond_to do |format|
       format.html { redirect_to reasons_url, notice: 'Reason was successfully destroyed.' }
@@ -69,6 +78,6 @@ class ReasonsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def reason_params
-      params.require(:reason).permit(:id, :name, :description, :active)
+      params.require(:reason).permit(policy(Reason).allowed_params)
     end
 end

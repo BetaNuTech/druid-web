@@ -1,5 +1,5 @@
 class Reason < ApplicationRecord
-  ALLOWED_PARAMS = [:id, :name, :description,:active]
+  ALLOWED_PARAMS = [:id, :name, :description, :active]
 
   validates :name,
     presence: true,
