@@ -87,6 +87,12 @@ RSpec.describe ReasonsController, type: :controller do
         get :new
         expect(response).to be_success
       end
+
+      it "should default to active" do
+        sign_in administrator
+        get :new
+        assert assigns(:reason).active
+      end
     end
   end
 

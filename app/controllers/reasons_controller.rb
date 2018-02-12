@@ -7,7 +7,7 @@ class ReasonsController < ApplicationController
   # GET /reasons.json
   def index
     authorize Reason
-    @reasons = Reason.all
+    @reasons = Reason.order("name ASC")
   end
 
   # GET /reasons/1
@@ -18,7 +18,7 @@ class ReasonsController < ApplicationController
 
   # GET /reasons/new
   def new
-    @reason = Reason.new
+    @reason = Reason.new(active: true)
     authorize @reason
   end
 
