@@ -170,6 +170,13 @@
                   <% if current_user.admin? %>
                   <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
                   <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> System Configuration</a></li>
+                  <% if policy(Reason).index? %>
+                  <li>
+                    <%= link_to(reasons_path) do %>
+                      <span class="glyphicon glyphicon-retweet"></span> Reasons
+                    <% end %>
+                  </li>
+                  <% end %>
                   <% end %>
                 </ul>
               </div>
