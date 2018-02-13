@@ -1,6 +1,14 @@
-<h1>Editing Reason</h1>
-
-<%= render 'form', reason: @reason %>
-
-<%= link_to 'Show', @reason %> |
-<%= link_to 'Back', reasons_path %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Edit Reason</h1>
+      <%= render 'form', reason: @reason %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= link_to 'Show', @reason %> |
+      <%= link_to 'Back', reasons_path  %>
+    </div>
+  </div>
+</div>
