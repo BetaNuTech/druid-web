@@ -53,6 +53,7 @@ class Lead < ApplicationRecord
   belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id', required: false
   belongs_to :property, required: false
   belongs_to :user, required: false
+  has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
 
   ### Validations
   validates :first_name, presence: true
