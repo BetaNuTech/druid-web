@@ -49,6 +49,7 @@ group :test do
 end
 
 group :development do
+  gem 'rubocop', "~> 0.52", require: false
   gem 'web-console', '~> 3.5'
   gem 'listen', '~> 3.1', '< 3.2'
   gem 'spring', '~> 2.0'
