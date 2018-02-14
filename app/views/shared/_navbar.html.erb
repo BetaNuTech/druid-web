@@ -79,6 +79,7 @@
               </div>
             </li> <!-- Leads -->
 
+            <% if false %>
             <li> <!-- Messaging -->
               <div class="btn-group">
                 <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</a>
@@ -98,7 +99,9 @@
                 </ul>
               </div>
             </li> <!-- Messaging -->
+          <% end %>
 
+            <% if false %>
             <li> <!-- Reports -->
               <div class="btn-group">
                 <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</a>
@@ -111,7 +114,8 @@
                   <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> Report 2</a></li>
                 </ul>
               </div>
-            </li> <!-- Properties -->
+            </li> <!-- Reports -->
+            <% end %>
 
             <% if policy(Property).index? %>
             <li> <!-- Properties -->
@@ -167,9 +171,19 @@
                     <% end %>
                   </li>
                   <% end %>
-                  <% if current_user.admin? %>
-                  <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Lead Management Settings</a></li>
-                  <li><a href="#"><span class="glyphicon glyphicon-wrench"></span> System Configuration</a></li>
+                  <% if policy(LeadAction).index? %>
+                  <li>
+                    <%= link_to(lead_actions_path) do %>
+                      <span class="glyphicon glyphicon-retweet"></span> Lead Actions
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <% if policy(Reason).index? %>
+                  <li>
+                    <%= link_to(reasons_path) do %>
+                      <span class="glyphicon glyphicon-retweet"></span> Reasons
+                    <% end %>
+                  </li>
                   <% end %>
                 </ul>
               </div>
