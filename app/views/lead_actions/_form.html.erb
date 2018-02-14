@@ -11,27 +11,28 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :id %>
-    <%= form.text_field :id, id: :lead_action_id %>
+  <div class="fieldset_content">
+    <div class="row">
+      <div class="form-group">
+        <%= form.label :name %>
+        <%= form.text_field :name, id: :lead_action_name, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <%= form.label :description %>
+        <%= form.text_field :description, id: :lead_action_description, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="form-check-label">
+      <%= form.check_box :active, class: 'form-check-input' %>
+      Lead Action is active?
+    </div>
   </div>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name, id: :lead_action_name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_field :description, id: :lead_action_description %>
-  </div>
-
-  <div class="field">
-    <%= form.label :active %>
-    <%= form.check_box :active, id: :lead_action_active %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 <% end %>

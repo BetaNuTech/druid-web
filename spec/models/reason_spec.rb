@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: reasons
+#
+#  id          :uuid             not null, primary key
+#  name        :string
+#  description :string
+#  active      :boolean
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe Reason, type: :model do
