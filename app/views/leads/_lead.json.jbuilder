@@ -11,10 +11,13 @@ json.property do
 end
 json.user do
   if lead.user.present?
-    json.extract! lead.user, :id, :name 
+    json.extract! lead.user, :id, :name
   else
     json.nil?
   end
+end
+json.comments do
+  json.array! lead.comments, partial: "notes/note", as: :note
 end
 json.url lead_url(id: lead.id, format: :json)
 json.web_url lead_url(id: lead.id, format: :html)

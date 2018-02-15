@@ -1,6 +1,8 @@
 import React from 'react'
 import Style from './LeadSearchLead.scss'
 import moment from 'moment'
+import LeadActions from './LeadActions.jsx'
+import LeadComments from './LeadComments.jsx'
 
 class LeadSearchLead extends React.Component {
 
@@ -42,6 +44,7 @@ class LeadSearchLead extends React.Component {
             </li>
           </ul>
         </div>
+        <LeadActions lead_id={this.props.data.id} />
         <div className={Style.contact} >
           <span className={Style.lead_name}>
             <a href={this.props.data.web_url} target="_blank">
@@ -109,6 +112,7 @@ class LeadSearchLead extends React.Component {
             </span>
           </p>
         </div>
+        <LeadComments lead_id={this.props.data.id} />
       </div>
     );
   }

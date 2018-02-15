@@ -1,0 +1,39 @@
+<% unless note.new_record? %>
+<div class="row">
+  <div class="col-md-8">
+
+    <div class="fieldset_content">
+      <div class="row">
+        <div class="col-md-6">
+          <strong>Date:</strong> 
+          <%= note.created_at %>
+        </div>
+        <div class="col-md-6">
+          <strong>User:</strong>
+          <%= note.user.try(:name) || 'None' %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <strong>Lead Action:</strong>
+          <%= note.lead_action.try(:name) || 'None' %>
+        </div>
+        <div class="col-md-6">
+          <strong>Reason:</strong>
+          <%= note.reason.try(:name) || 'None' %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <strong>Content:</strong>
+          <%= note.content || 'None'%>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<% end %>
