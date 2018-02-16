@@ -28,6 +28,12 @@
       </div>
       <div class="row">
         <div class="col-md-6 form-group">
+          <%= form.label :timezone %>
+          <%= form.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Pacific Time (US & Canada)" }, {class: "form-control"} %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
           <%= form.label :password %>
           <%= form.password_field :password, class: "form-control" %>
         </div>

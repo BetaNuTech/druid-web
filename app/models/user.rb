@@ -35,7 +35,7 @@ class User < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id]
+  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :timezone]
 
   ### Associations
 
