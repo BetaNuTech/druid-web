@@ -1,298 +1,127 @@
 <div class="container" id="lead_<%= @lead.id %>">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Lead: <%= @lead.name %></h1>
-      <p id="notice"><%= notice %></p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to 'Edit', edit_lead_path(@lead) %> |
-      <%= link_to 'Back', :back %>
-    </div>
-  </div>
-
-  <h2>Lead Information</h2>
-
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Priority:</strong>
-        <%= @lead.priority.capitalize %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <%= render partial: "state_toggle", locals: {lead: @lead} %>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-4">
-      <p>
-        <strong>Property:</strong><br/>
-        <% if @lead.property.present? %>
-          <%= link_to(@lead.property.name, property_path(@lead.property) ) %>
-        <% else %>
-          Unknown
-        <% end %>
-      </p>
-    </div>
-    <div class="col-md-4">
-      <p>
-        <strong>Source:</strong><br/>
-        <% if @lead.source.present? %>
-          <%= link_to(@lead.source.name, lead_source_path(@lead.source) ) %>
-        <% else %>
-          Unknown
-        <% end %>
-      </p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-1">
-      <p>
-        <strong>Title:</strong><br/>
-        <%= @lead.title %>
-      </p>
-    </div>
-    <div class="col-md-4">
-      <p>
-        <strong>First name:</strong><br/>
-        <%= @lead.first_name %>
-      </p>
+  <div class="Lead" >
+    <div class="priority">
+      <ul>
+        <li>
+          <strong>Priority:</strong>
+          &nbsp;
+          <span><%= @lead.priority %></span>
+        </li>
+        <li>
+          <strong>State:</strong>
+          &nbsp;
+          <span><%= @lead.state %></span>
+        </li>
+        <li>
+          <strong>Agent:</strong>
+          &nbsp;
+          <span><%= @lead.user ? @lead.user.name : "None" %></span>
+        </li>
+        <li>
+          <strong>FC:</strong>
+          &nbsp;
+          <span><%= @lead.first_comm.try(:strftime, "%m/%d/%y") %></span>
+        </li>
+        <li>
+          <strong>LC:</strong>
+          &nbsp;
+          <span><%= @lead.last_comm.try(:strftime, "%m/%d/%y") %></span>
+        </li>
+      </ul>
     </div>
 
-    <div class="col-md-4">
-      <p>
-        <strong>Last name:</strong><br/>
-        <%= @lead.last_name %>
-      </p>
+    <div class="controls row">
+      <div class="col-md-4">
+          <%= render partial: "state_toggle", locals: {lead: @lead} %>
+      </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Email:</strong><br/>
-        <%= @lead.email %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-2">
-      <p>
-        <strong>Phone1:</strong><br/>
-        <%= @lead.phone1 %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>Type:</strong><br/>
-        <%= @lead.phone1_type %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>Best Time To Call:</strong><br/>
-        <%= @lead.phone1_tod %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-2">
-      <p>
-        <strong>Phone2:</strong><br/>
-        <%= @lead.phone2 %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>Type:</strong><br/>
-        <%= @lead.phone2_type %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>Best Time To Call:</strong><br/>
-        <%= @lead.phone2_tod %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-4">
-      <p>
-        <strong>Fax:</strong><br/>
+    <div class="contact" >
+      <span class="lead_name">
+        <%= @lead.name %>
+      </span><br/>
+      <span class="contact_info" >
+        <span title="Primary Phone" class="glyphicon glyphicon-earphone" ></span>&nbsp;
+        <%= @lead.phone1 %><br/>
+        <span title="Secondary Phone" class="glyphicon glyphicon-earphone"></span>&nbsp;
+        <%= @lead.phone2 %><br/>
+        <span title="Email Address" class="glyphicon glyphicon-envelope"></span>&nbsp;
+        <%= @lead.email %><br/>
+        <span title="Fax Number" class="glyphicon glyphicon-file"></span>&nbsp;
         <%= @lead.fax %>
-      </p>
+      </span>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-3">
-      <p>
-        <strong>DOB:</strong>
-        <%= @lead.dob ? @lead.dob.to_date : '' %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-2">
-      <p>
-        <strong>DL/ID:</strong>
-        <%= @lead.id_number %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>DL/ID State:</strong>
-        <%= @lead.id_state %>
-      </p>
-    </div>
-  </div>
-
-
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Referral:</strong><br/>
+    <div class="property">
+      <% if @lead.property.present? %>
+        <span>
+          <span class="glyphicon glyphicon-home"></span>&nbsp;
+          <%= @lead.property.name %>
+        </span><br/>
+        <span>
+          <span class="glyphicon glyphicon-download-alt"></span>&nbsp;
+          <%= @lead.source.name %>
+        </span><br/>
+      <% else %>
+        <span>No Property<br/></span>
+      <% end %>
+      <span>
+        <span class="glyphicon glyphicon-user"></span>&nbsp;
         <%= @lead.referral %>
-      </p>
+      </span>
     </div>
+    <div class="preferences">
+      <span>
+        <strong>Move-In: </strong>
+        <%= @lead.preference.move_in %>
+      </span><br/>
+      <span>
+        <strong>Price: </strong>
+        $<%= @lead.preference.min_price %> - $<%= @lead.preference.max_price %>
+    </span><br/>
+    <span>
+      <strong>Unit Size: </strong>
+      <%= @lead.preference.min_area %> - <%= @lead.preference.max_area %>
+    </span><br/>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Agent Notes:</strong><br/>
+  <div class="notes">
+    <p class="lead_notes">
+      <strong>Lead Notes: </strong>
+      <span>
+        <%= @lead.preference.notes %>
+      </span>
+    </p>
+    <p class="lead_notes">
+      <strong>Agent Notes: </strong>
+      <span>
         <%= @lead.notes %>
-      </p>
-    </div>
+      </span>
+    </p>
   </div>
+  <div class="comments">
 
-  <div class="row">
-    <div class="col-md-4">
-      <p>
-        <strong>First Contact:</strong>
-        <%= short_date @lead.first_comm %>
-      </p>
-    </div>
-    <div class="col-md-4">
-      <p>
-        <strong>Last Contact:</strong>
-        <%= short_date @lead.last_comm %>
-      </p>
-    </div>
-  </div>
+    <h2>Comments</h2>
 
-  <% if @lead.preference.present? %>
-    <h2>Preferences</h2>
-    <div class="row">
-      <div class="col-md-4">
-        <p>
-          <strong>Minimum sq. ft.</strong>
-          <%= display_preference_option @lead.preference.min_area%>
-        </p>
-      </div>
-      <div class="col-md-4">
-        <p>
-          <strong>Maximum sq. ft.</strong>
-          <%= display_preference_option @lead.preference.max_area%>
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <p>
-          <strong>Minimum Price $</strong>
-          <%= display_preference_option @lead.preference.min_price %>
-        </p>
-      </div>
-      <div class="col-md-4">
-        <p>
-          <strong>Maximum Price $</strong>
-          <%= display_preference_option @lead.preference.max_price %>
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <p>
-          <strong>Desired Move-In</strong>
-          <%= display_preference_option(@lead.preference.move_in) %>
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <p>
-          <strong>Bedrooms</strong>
-          <%= @lead.preference.beds || 'N/A' %>
-        </p>
-      </div>
-      <div class="col-md-4">
-        <p>
-          <strong>Bathrooms</strong>
-          <%= @lead.preference.baths || 'N/A' %>
-        </p>
-      </div>
-    </div>
     <div class="row">
       <div class="col-md-12">
-        <p>
-          <strong>Pets Allowed</strong>
-          <%= display_preference_option(@lead.preference.pets) %>
-        </p>
-        <p>
-          <strong>Smoking Allowed</strong>
-          <%= display_preference_option(@lead.preference.smoker) %>
-        </p>
-        <p>
-          <strong>Washer/Dryer Connection</strong>
-          <%= display_preference_option(@lead.preference.washerdryer) %>
-        </p>
-        <p>
-          <strong>Notes from Lead:</strong>
-          <%= @lead.preference.notes %>
-        </p>
+        <%= render partial: "notes/form", locals: {note: @lead.comments.build} %>
       </div>
     </div>
-  <% else %>
+
     <div class="row">
       <div class="col-md-12">
-        <h2>No Preferences</h2>
+        <div id="comments">
+          <%= render partial: "notes/note", collection: @lead.comments  %>
+        </div>
       </div>
     </div>
-  <% end %>
 
-  <h2>Comments</h2>
-
-  <div class="row">
-    <div class="col-md-12">
-      <%= render partial: "notes/form", locals: {note: @lead.comments.build} %>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <div id="comments">
-        <%= render partial: "notes/note", collection: @lead.comments  %>
+    <div class="row">
+      <div class="col-md-12">
+        <%= link_to 'Edit', edit_lead_path(@lead) %> |
+        <%= link_to 'Back', :back %>
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to 'Edit', edit_lead_path(@lead) %> |
-      <%= link_to 'Back', :back %>
-    </div>
   </div>
 </div>
-
-
+</div>
