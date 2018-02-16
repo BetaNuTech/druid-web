@@ -1,15 +1,15 @@
 <% unless note.new_record? %>
-<div class="row">
-  <div class="col-md-8">
+  <div class="row" id="note_<%= note.id %>">
+  <div class="col-md-12">
 
     <div class="fieldset_content">
       <div class="row">
         <div class="col-md-6">
-          <strong>Date:</strong> 
+          <strong>Date:</strong>
           <%= note.created_at %>
         </div>
         <div class="col-md-6">
-          <strong>User:</strong>
+          <strong>Author:</strong>
           <%= note.user.try(:name) || 'None' %>
         </div>
       </div>
@@ -29,6 +29,12 @@
         <div class="col-md-12">
           <strong>Content:</strong>
           <%= note.content || 'None'%>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-1 col-md-offset-11">
+          <%= link_to(note, { method: :delete, remote: true, confirm: 'Are you sure?' }, {  } ) do %><%= glyph(:delete) %><% end %>
         </div>
       </div>
 
