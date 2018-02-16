@@ -32,11 +32,17 @@ class LeadSearch extends React.Component {
       .then(response => {
         this.setState({ search: response.data })
 				window.disableLoader()
+        this.updateUrl(url)
       })
       .catch(error => {
         // TODO: display error to user
         console.log(error)
       })
+  }
+
+  updateUrl(url) {
+    let new_url = url.replace("search.json","search")
+    history.pushState({}, "Search", new_url)
   }
 
   handleUpdateSearchInput = (search_string) => {
@@ -104,8 +110,8 @@ class LeadSearch extends React.Component {
   render() {
     return (
       <div className={Style.LeadSearch}>
-        <div className={Style.header}>
-          <h2>Lead Search</h2>
+        <div className={Style.Header}>
+          <h1>Leads</h1>
         </div>
         <LeadSearchFilter
           search={this.state.search.search}
@@ -120,7 +126,7 @@ class LeadSearch extends React.Component {
           : <h3>None Found</h3> }
           <Pagination search={this.state.search.search} onGotoPage={this.handleGotoPage}/>
       </div>
-    );
+    )
   }
 }
 

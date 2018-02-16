@@ -14,7 +14,7 @@ class LeadSearchSidebar extends React.Component {
   }
 
   getFilterData = (key) => {
-    let filters = this.state.options.Filters
+    const filters = this.state.options.Filters
     return (filters && filters[key]) ? filters[key].values  : []
   }
 
@@ -34,35 +34,38 @@ class LeadSearchSidebar extends React.Component {
   render() {
     return(
       <div className={Style.LeadSearchSidebar}>
-        <div className={Style.FilterList}>
-          <span className={Style.FilterListItem}>Search</span>
-          <ul>
-            {this.filterInfo("Search")}
-          </ul>
-        </div>
-        <div className={Style.FilterList}>
-          <span className={Style.FilterListItem}>Priority</span>
-          <ul>
-            {this.filterInfo("Priorities")}
-          </ul>
-        </div>
-        <div className={Style.FilterList}>
-          <span className={Style.FilterListItem}>Agent</span>
-          <ul>
-            {this.filterInfo("Agents")}
-          </ul>
-        </div>
-        <div className={Style.FilterList}>
-          <span className={Style.FilterListItem}>Property</span>
-          <ul>
-            {this.filterInfo("Properties")}
-          </ul>
-        </div>
-        <div className={Style.FilterList}>
-          <span className={Style.FilterListItem}>State</span>
-          <ul>
-            {this.filterInfo("States")}
-          </ul>
+        <div className={Style.FilterListContainer}>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Search</span>
+            <ul>
+              {this.filterInfo("Search")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Priority</span>
+            <ul>
+              {this.filterInfo("Priorities")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Agent</span>
+            <ul>
+              {this.filterInfo("Agents")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Property</span>
+            <ul>
+              {this.filterInfo("Properties")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>State</span>
+            <ul>
+              {this.filterInfo("States")}
+            </ul>
+          </div>
+          <div className="clearfix"></div>
         </div>
       </div>
     );

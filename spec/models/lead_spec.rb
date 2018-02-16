@@ -340,4 +340,18 @@ RSpec.describe Lead, type: :model do
     end
 
   end
+
+  describe "having comments" do
+    let(:lead) { create(:lead) }
+    let(:comment_attributes) { {content: 'foobar'} }
+
+    it "has many comments" do
+      expect {
+        lead.comments.build(comment_attributes).save!
+      }.to change{Note.count}.by(1)
+      lead.reload
+      expect(lead.comments.count).to eq(1)
+    end
+
+  end
 end
