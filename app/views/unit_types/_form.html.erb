@@ -11,17 +11,17 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name, id: :unit_type_name %>
+  <div class="fieldset_content">
+    <div class="row">
+      <div class="form-group">
+        <%= form.label :name %>
+        <%= form.text_field :name, id: :unit_type_name, class: "form-control" %>
+      </div>
+    </div>
+
   </div>
 
-  <div class="field">
-    <%= form.label :active %>
-    <%= form.check_box :active, id: :unit_type_active %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 <% end %>
