@@ -164,6 +164,7 @@
                     <% end %>
                   </li>
                   <% end %>
+                  <li role="separator" class="divider"></li>
                   <% if policy(LeadSource).index? %>
                   <li>
                     <%= link_to(lead_sources_path) do %>
@@ -178,6 +179,15 @@
                     <% end %>
                   </li>
                   <% end %>
+
+                  <% if policy(UnitType).index? %>
+                  <li>
+                    <%= link_to(unit_types_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Unit Types
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
                   <% if policy(Reason).index? %>
                   <li>
                     <%= link_to(reasons_path) do %>
