@@ -4,7 +4,7 @@ This is the Druid Web Application created by and for BlueStone Properties.
 
 # License
 
-Copyright 2017 BlueStone Properties
+Copyright 2017-2018 BlueStone Properties
 This code is proprietary and distribution is strictly prohibited.
 
 # Dependencies
