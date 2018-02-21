@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :unit_types
   resources :notes
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"

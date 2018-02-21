@@ -23,6 +23,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  role_id                :uuid
+#  timezone               :string           default("UTC")
 #
 
 require 'rails_helper'
