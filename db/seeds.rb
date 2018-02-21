@@ -62,3 +62,16 @@ if admin.save
 else
   puts "[FAIL] (#{admin.errors.to_a})".red
 end
+
+# Unit Types
+puts " * Creating Unit Types"
+unittypes = %w{Residential Commercial}
+unittypes.each do |ut_name|
+  print "   - #{ut_name} "
+  ut = UnitType.new(name: ut_name)
+  if ut.save
+    puts "[OK]".green
+  else
+    puts "[FAIL] (#{ut.errors.to_a})".red
+  end
+end
