@@ -1,28 +1,23 @@
 # == Schema Information
 #
-# Table name: unit_types
+# Table name: rental_types
 #
 #  id         :uuid             not null, primary key
 #  name       :string
-#  active     :boolean          default(TRUE)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 
-class UnitType < ApplicationRecord
+class RentalType < ApplicationRecord
   ### Class Concerns/Extensions
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :name, :active]
 
   ### Validations
-  validates :name,
-    presence: true,
-    uniqueness: {case_sensitive: false}
+  validates :name, uniqueness: {case_sensitive: false}, presence: true
 
-  ### Associations
-
-  ### Validations
+  ## Associations
+  # TODO: has_many :units
 
   ### Class Methods
 

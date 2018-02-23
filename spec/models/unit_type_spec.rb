@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: unit_types
+#
+#  id         :uuid             not null, primary key
+#  name       :string
+#  active     :boolean          default(TRUE)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe UnitType, type: :model do
