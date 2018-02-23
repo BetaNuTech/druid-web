@@ -13,14 +13,16 @@ class UnitType < ApplicationRecord
   ### Class Concerns/Extensions
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :name, :active]
+  ALLOWED_PARAMS = [:id, :name, :description, :property_id, :active]
 
   ### Validations
   validates :name,
     presence: true,
-    uniqueness: {case_sensitive: false}
+    uniqueness: {case_sensitive: false, scope: :property_id}
 
   ### Associations
+  belongs_to :property
+  delegate :name, to: :property, prefix: true
 
   ### Validations
 

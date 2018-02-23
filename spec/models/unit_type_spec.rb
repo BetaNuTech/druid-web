@@ -34,6 +34,9 @@ RSpec.describe UnitType, type: :model do
   end
 
   describe "validations" do
+    let(:property1) { create(:property) }
+    let(:property2) { create(:property) }
+
     it "must have a name" do
       new_unit_type.save!
       assert new_unit_type.valid?
@@ -44,10 +47,12 @@ RSpec.describe UnitType, type: :model do
     it "has a unique name" do
       name_lc = 'foobar'
       name_mc = 'Foobar'
-      unittype1 = create(:unit_type, name: name_lc)
-      unittype2 = build(:unit_type, name: name_mc)
+      unittype1 = create(:unit_type, name: name_lc, property: property1)
+      unittype2 = build(:unit_type, name: name_mc, property: property1)
       assert unittype1.valid?
       refute unittype2.valid?
+      unittype2.property = property2
+      assert unittype2.valid?
     end
   end
 

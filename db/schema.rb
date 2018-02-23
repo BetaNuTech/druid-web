@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180223195150) do
+ActiveRecord::Schema.define(version: 20180223203259) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,6 +202,9 @@ ActiveRecord::Schema.define(version: 20180223195150) do
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
+    t.uuid "property_id"
+    t.index ["property_id", "name"], name: "index_unit_types_on_property_id_and_name", unique: true
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

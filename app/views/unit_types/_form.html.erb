@@ -13,12 +13,29 @@
 
   <div class="fieldset_content">
     <div class="row">
-      <div class="form-group">
+      <div class="col-md-6 form-group">
+        <%= form.label :property %>
+        <%= form.select :property_id, select_property(unit_type.property_id), {include_blank: true}, {class: "form-control"} %>
+      </div>
+    </div>
+  </div>
+
+  <div class="fieldset_content">
+    <div class="row">
+      <div class="col-md-6 form-group">
         <%= form.label :name %>
         <%= form.text_field :name, id: :unit_type_name, class: "form-control" %>
       </div>
     </div>
+  </div>
 
+  <div class="fieldset_content">
+    <div class="row">
+      <div class="col-md-8 form-group">
+        <%= form.label :description %>
+        <%= form.text_area :description, id: :unit_type_description, class: "form-control" %>
+      </div>
+    </div>
   </div>
 
   <div class="form-group">

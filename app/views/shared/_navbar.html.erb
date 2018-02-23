@@ -1,3 +1,4 @@
+<% cache_if current_user.present?, current_user do %>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
 
@@ -230,3 +231,4 @@
     </div>
 
   </nav>
+<% end %>

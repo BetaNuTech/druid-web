@@ -1,6 +1,23 @@
 <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Unit Type: <%= @unit_type.name %></h1>
+      </div>
+    </div>
   <div class="row">
     <div class="col-md-10">
+      <div class="row">
+        <div class="col-md-12">
+          <p>
+            <strong>Property:</strong>
+            <% if @unit_type.property.present? %>
+              <%= link_to(@unit_type.property_name, property_path(@unit_type.property)) %>
+            <% else %>
+              'None'
+            <% end %>
+          </p>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-12">
           <p>
@@ -9,11 +26,19 @@
           </p>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-12">
+          <p>
+            <strong>Description:</strong>
+            <%= @unit_type.description %>
+          </p>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-md-4">
           <%= link_to 'Edit', edit_unit_type_path(@unit_type) %> |
-          <%= link_to 'Back', unit_types_path %>
+          <%= link_to 'Back', :back %>
         </div>
       </div>
 

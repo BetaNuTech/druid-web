@@ -83,6 +83,12 @@ RSpec.describe Property, type: :model do
         expect(active_property.leads.count).to eq(2)
         expect(inactive_property.leads.count).to eq(0)
       end
+
+      it "has many unit_types" do
+        ut = create(:unit_type, property: active_property)
+        active_property.reload
+        expect(active_property.unit_types.count).to eq(1)
+      end
     end
 
     describe "listings" do

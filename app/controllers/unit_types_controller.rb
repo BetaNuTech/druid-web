@@ -1,13 +1,14 @@
 class UnitTypesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_unit_type, only: [:show, :edit, :update, :destroy]
+  before_action :set_property, only: [:new]
   after_action :verify_authorized
 
   # GET /unit_types
   # GET /unit_types.json
   def index
     authorize UnitType
-    @unit_types = UnitType.all
+    @unit_types = UnitType.order(name: 'ASC')
   end
 
   # GET /unit_types/1
@@ -19,6 +20,7 @@ class UnitTypesController < ApplicationController
   # GET /unit_types/new
   def new
     @unit_type = UnitType.new
+    @unit_type.property = @property if @property.present?
     authorize @unit_type
   end
 
@@ -74,6 +76,10 @@ class UnitTypesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_unit_type
       @unit_type = UnitType.find(params[:id])
+    end
+
+    def set_property
+      @property = params[:property_id].present? ? Property.find(params[:property_id]) : nil
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

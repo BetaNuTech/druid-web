@@ -63,19 +63,6 @@ else
   puts "[FAIL] (#{admin.errors.to_a})".red
 end
 
-# Unit Types
-puts " * Creating Unit Types"
-unittypes = %w{Layout1 Layout2}
-unittypes.each do |ut_name|
-  print "   - #{ut_name} "
-  ut = UnitType.new(name: ut_name)
-  if ut.save
-    puts "[OK]".green
-  else
-    puts "[FAIL] (#{ut.errors.to_a})".red
-  end
-end
-
 # Rental Types
 puts " * Creating Rental Types"
 rental_types = %w{Residential Commercial}
