@@ -65,7 +65,7 @@ end
 
 # Unit Types
 puts " * Creating Unit Types"
-unittypes = %w{Residential Commercial}
+unittypes = %w{Layout1 Layout2}
 unittypes.each do |ut_name|
   print "   - #{ut_name} "
   ut = UnitType.new(name: ut_name)
@@ -73,5 +73,18 @@ unittypes.each do |ut_name|
     puts "[OK]".green
   else
     puts "[FAIL] (#{ut.errors.to_a})".red
+  end
+end
+
+# Rental Types
+puts " * Creating Rental Types"
+rental_types = %w{Residential Commercial}
+rental_types.each do |rt_name|
+  print "   - #{rt_name} "
+  rt = RentalType.new(name: rt_name)
+  if rt.save
+    puts "[OK]".green
+  else
+    puts "[FAIL] (#{rt.errors.to_a})".red
   end
 end
