@@ -275,7 +275,7 @@ RSpec.describe UnitTypesController, type: :controller do
     let(:invalid_updated_attributes) {
       # Attributes with a duplicate name
       old_unit_type = create(:unit_type)
-      {name: old_unit_type.name}
+      {name: old_unit_type.name, property_id: old_unit_type.property.id}
     }
 
     describe "as an unauthenticated user" do
@@ -338,7 +338,6 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should handle invalid attributes" do
         expect{
           put :update, params: {id: unit_type.id, unit_type: invalid_updated_attributes}
-          expect(response).to be_success
           unit_type.reload
         }.to_not change{unit_type.name}
       end
