@@ -137,6 +137,14 @@
                   <% if current_user.admin? %>
                   <li><a href="#"><span class="glyphicon glyphicon-user"></span> Manage Property Residents</a></li>
                   <% end %>
+                  <li role="separator" class="divider"></li>
+                  <% if policy(UnitType).index? %>
+                  <li>
+                    <%= link_to(unit_types_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Unit Types
+                    <% end %>
+                  </li>
+                  <% end %>
                 </ul>
               </div>
             </li> <!-- Properties -->
@@ -181,13 +189,6 @@
                   </li>
                   <% end %>
 
-                  <% if policy(UnitType).index? %>
-                  <li>
-                    <%= link_to(unit_types_path) do %>
-                      <span class="glyphicon glyphicon-home"></span> Unit Types
-                    <% end %>
-                  </li>
-                  <% end %>
                   <li role="separator" class="divider"></li>
                   <% if policy(Reason).index? %>
                   <li>

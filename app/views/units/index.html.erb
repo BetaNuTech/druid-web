@@ -1,0 +1,51 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Units</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Unit type</th>
+      <th>Rental type</th>
+      <th>Unit</th>
+      <th>Floor</th>
+      <th>Sqft</th>
+      <th>Bedrooms</th>
+      <th>Address1</th>
+      <th>Address2</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Zipcode</th>
+      <th>Country</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @units.each do |unit| %>
+      <tr>
+        <td><%= unit.property_id %></td>
+        <td><%= unit.unit_type_id %></td>
+        <td><%= unit.rental_type_id %></td>
+        <td><%= unit.unit %></td>
+        <td><%= unit.floor %></td>
+        <td><%= unit.sqft %></td>
+        <td><%= unit.bedrooms %></td>
+        <td><%= unit.address1 %></td>
+        <td><%= unit.address2 %></td>
+        <td><%= unit.city %></td>
+        <td><%= unit.state %></td>
+        <td><%= unit.zipcode %></td>
+        <td><%= unit.country %></td>
+        <td><%= link_to 'Show', unit %></td>
+        <td><%= link_to 'Edit', edit_unit_path(unit) %></td>
+        <td><%= link_to 'Destroy', unit, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Unit', new_unit_path %>

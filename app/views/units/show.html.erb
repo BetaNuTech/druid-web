@@ -1,0 +1,69 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Property:</strong>
+  <%= @unit.property_id %>
+</p>
+
+<p>
+  <strong>Unit type:</strong>
+  <%= @unit.unit_type_id %>
+</p>
+
+<p>
+  <strong>Rental type:</strong>
+  <%= @unit.rental_type_id %>
+</p>
+
+<p>
+  <strong>Unit:</strong>
+  <%= @unit.unit %>
+</p>
+
+<p>
+  <strong>Floor:</strong>
+  <%= @unit.floor %>
+</p>
+
+<p>
+  <strong>Sqft:</strong>
+  <%= @unit.sqft %>
+</p>
+
+<p>
+  <strong>Bedrooms:</strong>
+  <%= @unit.bedrooms %>
+</p>
+
+<p>
+  <strong>Address1:</strong>
+  <%= @unit.address1 %>
+</p>
+
+<p>
+  <strong>Address2:</strong>
+  <%= @unit.address2 %>
+</p>
+
+<p>
+  <strong>City:</strong>
+  <%= @unit.city %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @unit.state %>
+</p>
+
+<p>
+  <strong>Zipcode:</strong>
+  <%= @unit.zipcode %>
+</p>
+
+<p>
+  <strong>Country:</strong>
+  <%= @unit.country %>
+</p>
+
+<%= link_to 'Edit', edit_unit_path(@unit) %> |
+<%= link_to 'Back', units_path %>

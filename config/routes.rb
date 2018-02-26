@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :units
   resources :unit_types
   resources :notes
   if Rails.env.development?
