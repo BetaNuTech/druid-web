@@ -32,6 +32,9 @@ class Unit < ApplicationRecord
   belongs_to :property
   belongs_to :rental_type
   belongs_to :unit_type
+  delegate :name, to: :property, prefix: true
+  delegate :name, to: :unit_type, prefix: true
+  delegate :name, to: :rental_type, prefix: true
 
   ### Validations
   validates :unit,

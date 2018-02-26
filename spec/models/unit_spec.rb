@@ -70,6 +70,18 @@ RSpec.describe Unit, type: :model do
     it "has a unit_type" do
       expect(unit.unit_type).to be_a(UnitType)
     end
+
+    it "delegates name to property" do
+      expect(unit.property_name).to eq(unit.property.name)
+    end
+
+    it "delegates name to unit_type" do
+      expect(unit.unit_type_name).to eq(unit.unit_type.name)
+    end
+
+    it "delegates name to rental_type" do
+      expect(unit.rental_type_name).to eq(unit.rental_type.name)
+    end
   end
 
 end
