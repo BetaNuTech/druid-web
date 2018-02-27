@@ -8,6 +8,13 @@ RSpec.describe UnitTypesController, type: :controller do
   let(:invalid_attributes) {{name: nil}}
 
   describe "GET #index" do
+    let(:property) { create(:property) }
+    let(:unit_type) { create(:unit_type, property: property) }
+
+    before(:each) do
+      unit_type
+    end
+
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
         get :index
@@ -44,6 +51,13 @@ RSpec.describe UnitTypesController, type: :controller do
         sign_in administrator
         get :index
         expect(response).to be_success
+      end
+
+      it "should succeed with a property_id param" do
+        sign_in administrator
+        get :index, params: {property_id: property.id}
+        expect(response).to be_success
+        expect(assigns(:property)).to eq(property)
       end
     end
 

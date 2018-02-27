@@ -42,9 +42,9 @@
               <td><%= unit.bedrooms %></td>
               <td><%= unit.address1 %></td>
               <td>
-                <%= link_to unit do %><%= glyph(:show) %><% end %>&nbsp;
-                <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end %>&nbsp;
-                <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                <%= link_to unit do %><%= glyph(:show) %><% end if policy(unit).show? %>&nbsp;
+                <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end if policy(unit).edit? %>&nbsp;
+                <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit).destroy? %>
               </td>
             </tr>
           <% end %>

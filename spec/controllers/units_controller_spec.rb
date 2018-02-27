@@ -50,15 +50,15 @@ RSpec.describe UnitsController, type: :controller do
     describe "with a property" do
       it "should only return associated units" do
         sign_in administrator
+        Unit.destroy_all
         unit1 = create(:unit)
         property1 = unit1.property
         unit2 = create(:unit, property: property1)
         unit3 = create(:unit)
         property2 = unit3.property
         get :index, params: {property_id: property1.id}
+        expect(assigns(:property)).to eq(property1)
         expect(assigns(:units).count).to eq(2)
-        get :index, params: {property_id: property2.id}
-        expect(assigns(:units).count).to eq(1)
       end
     end
 
