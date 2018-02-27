@@ -26,14 +26,14 @@
             <th>Sqft</th>
             <th>Bedrooms</th>
             <th>Address</th>
-            <th colspan="3"></th>
+            <th></th>
           </tr>
         </thead>
 
         <tbody>
           <% @units.each do |unit| %>
             <tr>
-              <td><%= unit.property_name %></td>
+              <td><%= link_to(unit.property_name, property_path(unit.property)) %></td>
               <td><%= unit.unit_type_name %></td>
               <td><%= unit.rental_type_name %></td>
               <td><%= unit.unit %></td>
@@ -41,9 +41,11 @@
               <td><%= unit.sqft %></td>
               <td><%= unit.bedrooms %></td>
               <td><%= unit.address1 %></td>
-              <td><%= link_to 'Show', unit %></td>
-              <td><%= link_to 'Edit', edit_unit_path(unit) %></td>
-              <td><%= link_to 'Destroy', unit, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+              <td>
+                <%= link_to unit do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

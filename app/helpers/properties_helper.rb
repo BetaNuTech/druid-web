@@ -19,4 +19,8 @@ module PropertiesHelper
   def property_active_table_row_class(property)
     return property.active ? 'property-table-row-active' : 'property-table-row-inactive'
   end
+
+  def select_property(val)
+    options_for_select(Property.order(name: 'ASC').map{|p| [p.name, p.id]}, val)
+  end
 end

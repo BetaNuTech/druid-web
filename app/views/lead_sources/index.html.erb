@@ -31,9 +31,9 @@
               <td><%= lead_source.incoming %></td>
               <td><%= lead_source.active %></td>
               <td>
-                <%= link_to 'Show', lead_source %> |
-                <%= link_to 'Edit', edit_lead_source_path(lead_source) %> |
-                <%= link_to 'Destroy', lead_source, method: :delete, data: { confirm: 'Are you sure?' } %>
+                <%= link_to lead_source do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_lead_source_path(lead_source) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to lead_source, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
               </td>
             </tr>
           <% end %>

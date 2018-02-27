@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   resources :properties do
     resources :units
+    resources :unit_types
   end
 
   resources :leads do

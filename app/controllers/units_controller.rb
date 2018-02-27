@@ -1,7 +1,7 @@
 class UnitsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_property, only: [:index, :new, :show, :create, :edit, :update, :destroy]
   before_action :set_unit, only: [:show, :edit, :update, :destroy]
-  before_action :set_property, only: [:index, :show, :create, :edit, :update, :destroy]
   after_action :verify_authorized
 
   # GET /units
@@ -20,6 +20,7 @@ class UnitsController < ApplicationController
   # GET /units/new
   def new
     @unit = unit_scope.new
+    @unit.property = @property if @property.present?
     authorize @unit
   end
 
@@ -78,10 +79,11 @@ class UnitsController < ApplicationController
     end
 
     def set_property
-      @property = Property.where(id: params[:property_id]).first
+      @property ||= Property.where(id: (params[:property_id] || 0)).first
     end
 
     def unit_scope
+      set_property
       @property.present? ? @property.housing_units : Unit
     end
 

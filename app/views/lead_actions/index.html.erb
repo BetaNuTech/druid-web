@@ -28,9 +28,9 @@
               <td><%= lead_action.description %></td>
               <td><%= lead_action.active ? "Yes" : "No" %></td>
               <td>
-                <%= link_to 'Show', lead_action %> |
-                <%= link_to 'Edit', edit_lead_action_path(lead_action) %> |
-                <%= link_to 'Destroy', lead_action, method: :delete, data: { confirm: 'Are you sure?' } %>
+                <%= link_to lead_action do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_lead_action_path(lead_action) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to lead_action, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
               </td>
             </tr>
           <% end %>

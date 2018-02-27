@@ -1,12 +1,13 @@
 <div class="container">
   <div classs="row">
     <div class="col-md-6">
+      <h2><%= @property.name %></h2>
       <h1>Unit Types</h1>
     </div>
     <% if policy(UnitType).new? %>
       <div class="col-md-6 text-right">
         <%= glyph(:create) %>
-        <%= link_to 'Create New Unit Type', new_unit_type_path %>
+        <%= link_to 'Create New Unit Type', new_property_unit_type_path(@property) %>
       </div>
     <% end %>
   </div>
@@ -28,9 +29,9 @@
               <td class="first-column"><%= unit_type.name %></td>
               <td><%= unit_type.description %></td>
               <td>
-                <%= link_to 'Show', unit_type %> |
-                <%= link_to 'Edit', edit_unit_type_path(unit_type) %> |
-                <%= link_to 'Destroy', unit_type, method: :delete, data: { confirm: 'Are you sure?' } %>
+                <%= link_to property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to unit_type, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
               </td>
             </tr>
           <% end %>
@@ -42,7 +43,7 @@
     <% if policy(UnitType).new? %>
       <div class="col-md-12 text-right">
         <%= glyph(:create) %>
-        <%= link_to 'Create New Unit Type', new_unit_type_path %>
+        <%= link_to 'Create New Unit Type', new_property_unit_type_path(@property) %>
       </div>
     <% end %>
   </div>
