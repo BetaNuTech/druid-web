@@ -11,10 +11,10 @@
       <% end %>
     </p>
     <ul>
+      <strong><%= link_to("View All", property_units_path(@property)) %>&nbsp;</strong>
       <% @property.housing_units.order(unit: 'ASC').limit(10).each do |unit| %>
         <li><%= link_to(unit.unit, property_unit_path(@property, unit)) %></li>
       <% end %>
-      <%= link_to("View All", property_units_path(@property)) %>&nbsp;
     </ul>
   </div>
 </div>
