@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :unit_types
-  resources :notes
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
@@ -25,8 +23,19 @@ Rails.application.routes.draw do
 
   root to: redirect('/users/sign_in')
 
+  resources :lead_actions
+  resources :notes
+  resources :reasons
+  resources :roles
+  resources :unit_types
+  resources :units
   resources :users
-  resources :properties
+
+  resources :properties do
+    resources :units
+    resources :unit_types
+  end
+
   resources :leads do
     collection do
       get 'search', to: "leads#search"
@@ -35,12 +44,10 @@ Rails.application.routes.draw do
       post 'trigger_state_event', to: "leads#trigger_state_event"
     end
   end
+
   resources :lead_sources do
     post 'reset_token', on: :member
   end
 
-  resources :lead_actions
-  resources :reasons
-  resources :roles
 
 end

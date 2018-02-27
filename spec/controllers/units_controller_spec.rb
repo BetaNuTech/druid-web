@@ -1,20 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe UnitTypesController, type: :controller do
+RSpec.describe UnitsController, type: :controller do
   include_context "users"
   render_views
 
-  let(:valid_attributes) { attributes_for(:unit_type) }
-  let(:invalid_attributes) {{name: nil}}
+  let(:valid_attributes) { build(:unit).attributes }
+  let(:invalid_attributes) { {description: 'foobar'}}
 
   describe "GET #index" do
-    let(:property) { create(:property) }
-    let(:unit_type) { create(:unit_type, property: property) }
-
-    before(:each) do
-      unit_type
-    end
-
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
         get :index
@@ -52,12 +45,20 @@ RSpec.describe UnitTypesController, type: :controller do
         get :index
         expect(response).to be_success
       end
+    end
 
-      it "should succeed with a property_id param" do
+    describe "with a property" do
+      it "should only return associated units" do
         sign_in administrator
-        get :index, params: {property_id: property.id}
-        expect(response).to be_success
-        expect(assigns(:property)).to eq(property)
+        Unit.destroy_all
+        unit1 = create(:unit)
+        property1 = unit1.property
+        unit2 = create(:unit, property: property1)
+        unit3 = create(:unit)
+        property2 = unit3.property
+        get :index, params: {property_id: property1.id}
+        expect(assigns(:property)).to eq(property1)
+        expect(assigns(:units).count).to eq(2)
       end
     end
 
@@ -101,26 +102,20 @@ RSpec.describe UnitTypesController, type: :controller do
         get :new
         expect(response).to be_success
       end
-
-      it "should default to active" do
-        sign_in administrator
-        get :new
-        assert assigns(:unit_type).active
-      end
     end
   end
 
   describe "POST #create" do
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
-        post :create, params: {unit_type: valid_attributes}
+        post :create, params: {unit: valid_attributes}
         expect(response).to be_redirect
       end
 
-      it "should not create a UnitType" do
+      it "should not create a Unit" do
         expect{
-          post :create, params: {unit_type: valid_attributes}
-        }.to_not change{UnitType.count}
+          post :create, params: {unit: valid_attributes}
+        }.to_not change{Unit.count}
       end
     end
 
@@ -130,14 +125,14 @@ RSpec.describe UnitTypesController, type: :controller do
       end
 
       it "should fail and redirect" do
-        post :create, params: {unit_type: valid_attributes}
+        post :create, params: {unit: valid_attributes}
         expect(response).to be_redirect
       end
 
-      it "should not create a UnitType" do
+      it "should not create a Unit" do
         expect{
-          post :create, params: {unit_type: valid_attributes}
-        }.to_not change{UnitType.count}
+          post :create, params: {unit: valid_attributes}
+        }.to_not change{Unit.count}
       end
 
     end
@@ -148,14 +143,14 @@ RSpec.describe UnitTypesController, type: :controller do
       end
 
       it "should fail and redirect" do
-        post :create, params: {unit_type: valid_attributes}
+        post :create, params: {unit: valid_attributes}
         expect(response).to be_redirect
       end
 
-      it "should not create a UnitType" do
+      it "should not create a Unit" do
         expect{
-          post :create, params: {unit_type: valid_attributes}
-        }.to_not change{UnitType.count}
+          post :create, params: {unit: valid_attributes}
+        }.to_not change{Unit.count}
       end
     end
 
@@ -164,11 +159,11 @@ RSpec.describe UnitTypesController, type: :controller do
         sign_in operator
       end
 
-      it "should create a UnitType with valid attributes" do
+      it "should create a Unit with valid attributes" do
         expect{
-          post :create, params: {unit_type: valid_attributes}
-        }.to change{UnitType.count}.by(1)
-        post :create, params: {unit_type: valid_attributes}
+          post :create, params: {unit: valid_attributes}
+        }.to change{Unit.count}.by(1)
+        post :create, params: {unit: valid_attributes}
         expect(response).to be_success
       end
     end
@@ -178,30 +173,30 @@ RSpec.describe UnitTypesController, type: :controller do
         sign_in administrator
       end
 
-      it "should create a UnitType with valid attributes" do
+      it "should create a Unit with valid attributes" do
         expect{
-          post :create, params: {unit_type: valid_attributes}
-        }.to change{UnitType.count}.by(1)
-        post :create, params: {unit_type: valid_attributes}
+          post :create, params: {unit: valid_attributes}
+        }.to change{Unit.count}.by(1)
+        post :create, params: {unit: valid_attributes}
         expect(response).to be_success
       end
 
       it "should handle invalid attributes" do
-        post :create, params: {unit_type: invalid_attributes}
+        post :create, params: {unit: invalid_attributes}
         expect(response).to be_success
         expect {
-          post :create, params: {unit_type: invalid_attributes}
-        }.to_not change{UnitType.count}
+          post :create, params: {unit: invalid_attributes}
+        }.to_not change{Unit.count}
       end
     end
   end
 
   describe "GET #show" do
-    let(:unit_type) { create(:unit_type) }
+    let(:unit) { create(:unit) }
 
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
-        get :show, params: {id: unit_type.id}
+        get :show, params: {id: unit.id}
         expect(response).to be_redirect
       end
     end
@@ -209,7 +204,7 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        get :show, params: {id: unit_type.id}
+        get :show, params: {id: unit.id}
         expect(response).to be_redirect
       end
     end
@@ -217,7 +212,7 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an agent" do
       it "should succeed" do
         sign_in agent
-        get :show, params: {id: unit_type.id}
+        get :show, params: {id: unit.id}
         expect(response).to be_success
       end
     end
@@ -225,7 +220,7 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an operator" do
       it "should succeed" do
         sign_in operator
-        get :show, params: {id: unit_type.id}
+        get :show, params: {id: unit.id}
         expect(response).to be_success
       end
     end
@@ -233,7 +228,7 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an administrator" do
       it "should succeed" do
         sign_in administrator
-        get :show, params: {id: unit_type.id}
+        get :show, params: {id: unit.id}
         expect(response).to be_success
       end
     end
@@ -241,11 +236,11 @@ RSpec.describe UnitTypesController, type: :controller do
 
   describe "GET #edit" do
 
-    let(:unit_type) { create(:unit_type) }
+    let(:unit) { create(:unit) }
 
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
-        get :edit, params: {id: unit_type.id}
+        get :edit, params: {id: unit.id}
         expect(response).to be_redirect
       end
     end
@@ -253,7 +248,7 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        get :edit, params: {id: unit_type.id}
+        get :edit, params: {id: unit.id}
         expect(response).to be_redirect
       end
     end
@@ -261,7 +256,7 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an agent" do
       it "should fail and redirect" do
         sign_in agent
-        get :edit, params: {id: unit_type.id}
+        get :edit, params: {id: unit.id}
         expect(response).to be_redirect
       end
     end
@@ -269,7 +264,7 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an operator" do
       it "should succeed" do
         sign_in operator
-        get :edit, params: {id: unit_type.id}
+        get :edit, params: {id: unit.id}
         expect(response).to be_success
       end
     end
@@ -277,28 +272,28 @@ RSpec.describe UnitTypesController, type: :controller do
     describe "as an administrator" do
       it "should succeed" do
         sign_in administrator
-        get :edit, params: {id: unit_type.id}
+        get :edit, params: {id: unit.id}
         expect(response).to be_success
       end
     end
   end
 
   describe "PUT #update" do
-    let(:unit_type) { create(:unit_type) }
-    let(:updated_attributes) { {name: 'foobar12'}}
+    let(:unit) { create(:unit) }
+    let(:updated_attributes) { {unit: 'foobar12'}}
     let(:invalid_updated_attributes) {
-      # Attributes with a duplicate name
-      old_unit_type = create(:unit_type)
-      {name: old_unit_type.name, property_id: old_unit_type.property.id}
+      # Attributes with a duplicate unit
+      old_unit = create(:unit)
+      {unit: old_unit.unit, property_id: old_unit.property.id}
     }
 
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
         expect{
-          put :update, params: {id: unit_type.id, unit_type: updated_attributes}
+          put :update, params: {id: unit.id, unit: updated_attributes}
           expect(response).to be_redirect
-          unit_type.reload
-        }.to_not change{unit_type.name}
+          unit.reload
+        }.to_not change{unit.unit}
       end
     end
 
@@ -306,10 +301,10 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should fail and redirect" do
         sign_in unroled_user
         expect{
-          put :update, params: {id: unit_type.id, unit_type: updated_attributes}
+          put :update, params: {id: unit.id, unit: updated_attributes}
           expect(response).to be_redirect
-          unit_type.reload
-        }.to_not change{unit_type.name}
+          unit.reload
+        }.to_not change{unit.unit}
       end
     end
 
@@ -317,10 +312,10 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should fail and redirect" do
         sign_in agent
         expect{
-          put :update, params: {id: unit_type.id, unit_type: updated_attributes}
+          put :update, params: {id: unit.id, unit: updated_attributes}
           expect(response).to be_redirect
-          unit_type.reload
-        }.to_not change{unit_type.name}
+          unit.reload
+        }.to_not change{unit.unit}
       end
     end
 
@@ -328,50 +323,51 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should succeed" do
         sign_in operator
         expect{
-          put :update, params: {id: unit_type.id, unit_type: updated_attributes}
+          put :update, params: {id: unit.id, unit: updated_attributes}
           expect(response).to be_redirect
-          unit_type.reload
-        }.to change{unit_type.name}
+          unit.reload
+        }.to change{unit.unit}
       end
     end
 
     describe "as an administrator" do
       before do
-        unit_type
+        unit
         sign_in administrator
       end
 
       it "should succeed" do
         expect{
-          put :update, params: {id: unit_type.id, unit_type: updated_attributes}
+          put :update, params: {id: unit.id, unit: updated_attributes}
           expect(response).to be_redirect
-          unit_type.reload
-        }.to change{unit_type.name}
+          unit.reload
+        }.to change{unit.unit}
       end
 
       it "should handle invalid attributes" do
         expect{
-          put :update, params: {id: unit_type.id, unit_type: invalid_updated_attributes}
-          unit_type.reload
-        }.to_not change{unit_type.name}
+          put :update, params: {id: unit.id, unit: invalid_updated_attributes}
+          expect(response).to be_success
+          unit.reload
+        }.to_not change{unit.unit}
       end
     end
   end
 
   describe "DELETE #destroy" do
 
-    let(:unit_type) { create(:unit_type) }
+    let(:unit) { create(:unit) }
 
     before do
-      unit_type
+      unit
     end
 
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
         expect {
-          delete :destroy, params: {id: unit_type.id}
+          delete :destroy, params: {id: unit.id}
           expect(response).to be_redirect
-        }.to_not change{UnitType.count}
+        }.to_not change{Unit.count}
       end
     end
 
@@ -379,9 +375,9 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should fail and redirect" do
         sign_in unroled_user
         expect {
-          delete :destroy, params: {id: unit_type.id}
+          delete :destroy, params: {id: unit.id}
           expect(response).to be_redirect
-        }.to_not change{UnitType.count}
+        }.to_not change{Unit.count}
       end
     end
 
@@ -389,9 +385,9 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should fail and redirect" do
         sign_in agent
         expect {
-          delete :destroy, params: {id: unit_type.id}
+          delete :destroy, params: {id: unit.id}
           expect(response).to be_redirect
-        }.to_not change{UnitType.count}
+        }.to_not change{Unit.count}
       end
     end
 
@@ -399,9 +395,9 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should succeed" do
         sign_in operator
         expect {
-          delete :destroy, params: {id: unit_type.id}
+          delete :destroy, params: {id: unit.id}
           expect(response).to be_redirect
-        }.to change{UnitType.count}.by(-1)
+        }.to change{Unit.count}.by(-1)
       end
     end
 
@@ -409,9 +405,9 @@ RSpec.describe UnitTypesController, type: :controller do
       it "should succeed" do
         sign_in administrator
         expect {
-          delete :destroy, params: {id: unit_type.id}
+          delete :destroy, params: {id: unit.id}
           expect(response).to be_redirect
-        }.to change{UnitType.count}.by(-1)
+        }.to change{Unit.count}.by(-1)
       end
     end
   end

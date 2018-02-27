@@ -1,14 +1,14 @@
 class UnitTypesController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_property
   before_action :set_unit_type, only: [:show, :edit, :update, :destroy]
-  before_action :set_property, only: [:new]
   after_action :verify_authorized
 
   # GET /unit_types
   # GET /unit_types.json
   def index
     authorize UnitType
-    @unit_types = UnitType.order(name: 'ASC')
+    @unit_types = unit_type_scope.order(name: 'ASC')
   end
 
   # GET /unit_types/1
@@ -19,7 +19,7 @@ class UnitTypesController < ApplicationController
 
   # GET /unit_types/new
   def new
-    @unit_type = UnitType.new
+    @unit_type = unit_type_scope.new
     @unit_type.property = @property if @property.present?
     authorize @unit_type
   end
@@ -32,7 +32,7 @@ class UnitTypesController < ApplicationController
   # POST /unit_types
   # POST /unit_types.json
   def create
-    @unit_type = UnitType.new(unit_type_params)
+    @unit_type = unit_type_scope.new(unit_type_params)
     authorize @unit_type
 
     respond_to do |format|
@@ -79,7 +79,12 @@ class UnitTypesController < ApplicationController
     end
 
     def set_property
-      @property = params[:property_id].present? ? Property.find(params[:property_id]) : nil
+      @property ||= Property.where(id: (params[:property_id] || 0)).first
+    end
+
+    def unit_type_scope
+      set_property
+      @property.present? ? @property.unit_types : UnitType
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

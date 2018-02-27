@@ -27,4 +27,8 @@ module ApplicationHelper
   def nav_active_dropdown_class(path)
     request.path.match(path) ? 'btn-success' : 'btn-info'
   end
+
+  def select_state(val)
+    options_for_select(us_states, val)
+  end
 end

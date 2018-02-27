@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Units</h2>
+    <% if @property.housing_units.empty? %>
+      <p> None</p>
+    <% end %>
+    <p>
+      <%= link_to(new_property_unit_path(property_id: @property.id) ) do %>
+        <%= glyph(:create) %>
+        New
+      <% end %>
+    </p>
+    <ul>
+      <strong><%= link_to("View All", property_units_path(@property)) %>&nbsp;</strong>
+      <% @property.housing_units.order(unit: 'ASC').limit(10).each do |unit| %>
+        <li><%= link_to(unit.unit, property_unit_path(@property, unit)) %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

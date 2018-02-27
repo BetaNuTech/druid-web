@@ -1,0 +1,65 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <% if @property.present? %>
+        <h2><%= @property.name %></h2>
+      <% end %>
+      <h1>Units</h1>
+    </div>
+    <% if policy(Unit).new? %>
+      <div class="col-md-6 text-right">
+        <%= glyph(:create) %>
+        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path) %>
+      </div>
+    <% end %>
+  </div>
+  <div class="row">
+    <div class"col-md-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Unit Type</th>
+            <th>Rental Type</th>
+            <th>Unit</th>
+            <th>Floor</th>
+            <th>Sqft</th>
+            <th>Bedrooms</th>
+            <th>Address</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @units.each do |unit| %>
+            <tr>
+              <td><%= link_to(unit.property_name, property_path(unit.property)) %></td>
+              <td><%= unit.unit_type_name %></td>
+              <td><%= unit.rental_type_name %></td>
+              <td><%= unit.unit %></td>
+              <td><%= unit.floor %></td>
+              <td><%= unit.sqft %></td>
+              <td><%= unit.bedrooms %></td>
+              <td><%= unit.address1 %></td>
+              <td>
+                <%= link_to unit do %><%= glyph(:show) %><% end if policy(unit).show? %>&nbsp;
+                <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end if policy(unit).edit? %>&nbsp;
+                <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit).destroy? %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <% if policy(Unit).new? %>
+      <div class="col-md-12 text-right">
+        <%= glyph(:create) %>
+        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path) %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+

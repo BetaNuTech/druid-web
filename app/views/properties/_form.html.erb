@@ -82,7 +82,7 @@
 
         <div class="col-md-2 form-group">
           <%= form.label :state %>
-          <%= form.text_field :state, id: :property_state, class: "form-control" %>
+          <%= form.select :state, select_state(property.state), {include_blank: true}, { id: :property_state, class: "form-control" } %>
         </div>
 
         <div class="col-md-2 form-group">

@@ -3,7 +3,7 @@
     <div class="col-md-10">
 
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
           <h1>Property: <%= @property.name %></h1>
         </div>
       </div>
@@ -206,29 +206,12 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-12">
-          <h2>Unit Types</h2>
-          <% if @property.unit_types.empty? %>
-            <p>None</p>
-          <% end %>
-          <p>
-            <%= link_to(new_unit_type_path(property_id: @property.id) ) do %>
-              <%= glyph(:create) %>
-              New
-            <% end %>
-          </p>
-          <ul>
-            <% @property.unit_types.order(name: 'ASC').each do |unit_type| %>
-              <li><%= link_to(unit_type.name, unit_type_path(unit_type)) %></li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
+
+      <%= render partial: "show_unit_types" %>
+      <%= render partial: "show_units" %>
 
       <div class="row">
         <div class="col-md-6">
-
           <%= link_to 'Edit', edit_property_path(@property) %> |
           <%= link_to 'Back', :back %>
         </div>
