@@ -145,6 +145,13 @@
                     <% end %>
                   </li>
                   <% end %>
+                  <% if policy(Unit).index? %>
+                  <li>
+                    <%= link_to(units_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Units
+                    <% end %>
+                  </li>
+                  <% end %>
                 </ul>
               </div>
             </li> <!-- Properties -->
