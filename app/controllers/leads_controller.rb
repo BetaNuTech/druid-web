@@ -28,8 +28,9 @@ class LeadsController < ApplicationController
   # GET /leads/new
   def new
     @lead = Lead.new
-    authorize @lead
+    @lead.user = current_user
     @lead.build_preference
+    authorize @lead
   end
 
   # GET /leads/1/edit
