@@ -1,0 +1,59 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Resident:</strong>
+  <%= @resident_detail.resident_id %>
+</p>
+
+<p>
+  <strong>Phone1:</strong>
+  <%= @resident_detail.phone1 %>
+</p>
+
+<p>
+  <strong>Phone1 type:</strong>
+  <%= @resident_detail.phone1_type %>
+</p>
+
+<p>
+  <strong>Phone1 tod:</strong>
+  <%= @resident_detail.phone1_tod %>
+</p>
+
+<p>
+  <strong>Phone2:</strong>
+  <%= @resident_detail.phone2 %>
+</p>
+
+<p>
+  <strong>Phone2 type:</strong>
+  <%= @resident_detail.phone2_type %>
+</p>
+
+<p>
+  <strong>Phone2 tod:</strong>
+  <%= @resident_detail.phone2_tod %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @resident_detail.email %>
+</p>
+
+<p>
+  <strong>Ssn:</strong>
+  <%= @resident_detail.ssn %>
+</p>
+
+<p>
+  <strong>Id number:</strong>
+  <%= @resident_detail.id_number %>
+</p>
+
+<p>
+  <strong>Id state:</strong>
+  <%= @resident_detail.id_state %>
+</p>
+
+<%= link_to 'Edit', edit_resident_detail_path(@resident_detail) %> |
+<%= link_to 'Back', resident_details_path %>

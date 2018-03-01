@@ -1,0 +1,72 @@
+<%= form_with(model: resident_detail, local: true) do |form| %>
+  <% if resident_detail.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(resident_detail.errors.count, "error") %> prohibited this resident_detail from being saved:</h2>
+
+      <ul>
+      <% resident_detail.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :resident_id %>
+    <%= form.text_field :resident_id, id: :resident_detail_resident_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :phone1 %>
+    <%= form.text_field :phone1, id: :resident_detail_phone1 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :phone1_type %>
+    <%= form.text_field :phone1_type, id: :resident_detail_phone1_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :phone1_tod %>
+    <%= form.text_field :phone1_tod, id: :resident_detail_phone1_tod %>
+  </div>
+
+  <div class="field">
+    <%= form.label :phone2 %>
+    <%= form.text_field :phone2, id: :resident_detail_phone2 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :phone2_type %>
+    <%= form.text_field :phone2_type, id: :resident_detail_phone2_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :phone2_tod %>
+    <%= form.text_field :phone2_tod, id: :resident_detail_phone2_tod %>
+  </div>
+
+  <div class="field">
+    <%= form.label :email %>
+    <%= form.text_field :email, id: :resident_detail_email %>
+  </div>
+
+  <div class="field">
+    <%= form.label :ssn %>
+    <%= form.text_field :ssn, id: :resident_detail_ssn %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id_number %>
+    <%= form.text_field :id_number, id: :resident_detail_id_number %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id_state %>
+    <%= form.text_field :id_state, id: :resident_detail_id_state %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

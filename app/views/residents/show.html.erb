@@ -1,0 +1,74 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Lead:</strong>
+  <%= @resident.lead_id %>
+</p>
+
+<p>
+  <strong>Property:</strong>
+  <%= @resident.property_id %>
+</p>
+
+<p>
+  <strong>Unit:</strong>
+  <%= @resident.unit_id %>
+</p>
+
+<p>
+  <strong>Residentid:</strong>
+  <%= @resident.residentid %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @resident.status %>
+</p>
+
+<p>
+  <strong>First name:</strong>
+  <%= @resident.first_name %>
+</p>
+
+<p>
+  <strong>Middle name:</strong>
+  <%= @resident.middle_name %>
+</p>
+
+<p>
+  <strong>Last name:</strong>
+  <%= @resident.last_name %>
+</p>
+
+<p>
+  <strong>Address1:</strong>
+  <%= @resident.address1 %>
+</p>
+
+<p>
+  <strong>Address2:</strong>
+  <%= @resident.address2 %>
+</p>
+
+<p>
+  <strong>City:</strong>
+  <%= @resident.city %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @resident.state %>
+</p>
+
+<p>
+  <strong>Zip:</strong>
+  <%= @resident.zip %>
+</p>
+
+<p>
+  <strong>Country:</strong>
+  <%= @resident.country %>
+</p>
+
+<%= link_to 'Edit', edit_resident_path(@resident) %> |
+<%= link_to 'Back', residents_path %>

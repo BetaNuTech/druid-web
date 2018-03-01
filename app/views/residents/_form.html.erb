@@ -1,0 +1,87 @@
+<%= form_with(model: resident, local: true) do |form| %>
+  <% if resident.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(resident.errors.count, "error") %> prohibited this resident from being saved:</h2>
+
+      <ul>
+      <% resident.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :lead_id %>
+    <%= form.text_field :lead_id, id: :resident_lead_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :property_id %>
+    <%= form.text_field :property_id, id: :resident_property_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :unit_id %>
+    <%= form.text_field :unit_id, id: :resident_unit_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :residentid %>
+    <%= form.text_field :residentid, id: :resident_residentid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :status %>
+    <%= form.text_field :status, id: :resident_status %>
+  </div>
+
+  <div class="field">
+    <%= form.label :first_name %>
+    <%= form.text_field :first_name, id: :resident_first_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :middle_name %>
+    <%= form.text_field :middle_name, id: :resident_middle_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :last_name %>
+    <%= form.text_field :last_name, id: :resident_last_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :address1 %>
+    <%= form.text_field :address1, id: :resident_address1 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :address2 %>
+    <%= form.text_field :address2, id: :resident_address2 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :city %>
+    <%= form.text_field :city, id: :resident_city %>
+  </div>
+
+  <div class="field">
+    <%= form.label :state %>
+    <%= form.text_field :state, id: :resident_state %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zip %>
+    <%= form.text_field :zip, id: :resident_zip %>
+  </div>
+
+  <div class="field">
+    <%= form.label :country %>
+    <%= form.text_field :country, id: :resident_country %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

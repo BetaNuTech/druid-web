@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :resident_details
+  resources :residents
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
