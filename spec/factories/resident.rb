@@ -14,10 +14,12 @@ FactoryBot.define do
     country { "USA" }
 
     after(:build) do |resident|
-      property = create(:property)
-      resident.property = property
-      resident.unit = create(:unit, property_id: property.id)
-      resident.lead = create(:lead, property_id: property.id)
+      unless resident.property.present?
+        property = create(:property)
+        resident.property_id = property.id
+      end
+      resident.unit ||= create(:unit, property_id: resident.property_id)
+      resident.lead ||= create(:lead, property_id: resident.property_id)
     end
 
   end
