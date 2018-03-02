@@ -33,7 +33,7 @@ class Resident < ApplicationRecord
   STATUS_OPTIONS = ["current", "former"]
 
   ### Associations
-  belongs_to :lead
+  belongs_to :lead, optional: true
   belongs_to :property
   belongs_to :unit
   has_one :detail, class_name: 'ResidentDetail', dependent: :destroy
@@ -59,6 +59,14 @@ class Resident < ApplicationRecord
   end
 
   ### Instance Methods
+
+  def name
+    [title, first_name, middle_name, last_name].compact.join(" ")
+  end
+
+  def salutation
+    [title, last_name].join(" ")
+  end
 
   private
 

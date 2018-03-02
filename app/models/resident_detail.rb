@@ -27,6 +27,8 @@ class ResidentDetail < ApplicationRecord
   ### Constants
   ALLOWED_PARAMS = [:phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :email, :ssn, :id_number, :id_state ]
   DEFAULT_CRYPTO_KEY = 'default-crypto-key-default-crypto-key'
+  PHONE_TYPES = ["Cell", "Home", "Work"]
+  PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
 
   ### Associations
   belongs_to :resident

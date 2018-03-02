@@ -77,10 +77,6 @@ class ResidentsController < ApplicationController
       @resident = resident_scope.find(params[:id])
     end
 
-    def set_property
-      @property ||= Property.where(id: (params[:property_id] || 0)).first
-    end
-
     def resident_scope
       set_property
       @property.present? ? @property.residents : Resident

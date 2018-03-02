@@ -26,4 +26,20 @@ RSpec.describe ResidentDetail, type: :model do
       expect(resident_detail.resident).to be_a(Resident)
     end
   end
+
+  describe "encryption" do
+    it "provides the crypto key in the environment padded or truncated to 32 characters" do
+      new_key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+      ENV['CRYPTO_KEY'] = new_key
+      detail = ResidentDetail.new
+      expect(detail.crypto_key).to eq(new_key)
+      expect(detail.crypto_key.length).to eq(32)
+    end
+
+    it "provides a default crypto key if none is provided truncated to 32 characters" do
+      ENV['CRYPTO_KEY'] = nil
+      detail = ResidentDetail.new
+      expect(detail.crypto_key).to eq(ResidentDetail::DEFAULT_CRYPTO_KEY[0..31])
+    end
+  end
 end

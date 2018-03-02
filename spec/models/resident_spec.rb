@@ -91,4 +91,18 @@ RSpec.describe Resident, type: :model do
     end
   end
 
+  describe "instance methods" do
+    it "returns a full concatenated name" do
+      resident = build(:resident)
+      expected_name = [resident.title, resident.first_name, resident.middle_name, resident.last_name].join(" ")
+      expect(resident.name).to eq(expected_name)
+    end
+
+    it "returns a salutation" do
+      resident = build(:resident)
+      expected_name = [resident.title, resident.last_name].join(" ")
+      expect(resident.salutation).to eq(expected_name)
+    end
+  end
+
 end
