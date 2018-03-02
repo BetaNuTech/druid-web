@@ -1,30 +1,38 @@
 class ResidentsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_resident, only: [:show, :edit, :update, :destroy]
+  after_action :verify_authorized
 
   # GET /residents
   # GET /residents.json
   def index
-    @residents = Resident.all
+    authorize Resident
+    @residents = resident_scope.all
   end
 
   # GET /residents/1
   # GET /residents/1.json
   def show
+    authorize @resident
   end
 
   # GET /residents/new
   def new
-    @resident = Resident.new
+    @resident = resident_scope.new
+    authorize @resident
   end
 
   # GET /residents/1/edit
   def edit
+    authorize @resident
   end
 
   # POST /residents
   # POST /residents.json
   def create
-    @resident = Resident.new(resident_params)
+    @resident = resident_scope.new
+    authorize @resident
+    @resident.attributes = resident_params
 
     respond_to do |format|
       if @resident.save
@@ -40,6 +48,7 @@ class ResidentsController < ApplicationController
   # PATCH/PUT /residents/1
   # PATCH/PUT /residents/1.json
   def update
+    authorize @resident
     respond_to do |format|
       if @resident.update(resident_params)
         format.html { redirect_to @resident, notice: 'Resident was successfully updated.' }
@@ -54,6 +63,7 @@ class ResidentsController < ApplicationController
   # DELETE /residents/1
   # DELETE /residents/1.json
   def destroy
+    authorize @resident
     @resident.destroy
     respond_to do |format|
       format.html { redirect_to residents_url, notice: 'Resident was successfully destroyed.' }
@@ -64,11 +74,20 @@ class ResidentsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_resident
-      @resident = Resident.find(params[:id])
+      @resident = resident_scope.find(params[:id])
+    end
+
+    def set_property
+      @property ||= Property.where(id: (params[:property_id] || 0)).first
+    end
+
+    def resident_scope
+      set_property
+      @property.present? ? @property.residents : Resident
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resident_params
-      params.require(:resident).permit(:lead_id, :property_id, :unit_id, :residentid, :status, :first_name, :middle_name, :last_name, :address1, :address2, :city, :state, :zip, :country)
+      params.require(:resident).permit(policy(Resident).allowed_params)
     end
 end

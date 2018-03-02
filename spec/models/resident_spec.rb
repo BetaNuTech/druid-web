@@ -39,6 +39,10 @@ RSpec.describe Resident, type: :model do
 
     it "must have a status" do
       assert resident.valid?
+      resident.status = "former"
+      assert resident.valid?
+      resident.status = "invalid status"
+      refute resident.valid?
       resident.status = nil
       refute resident.valid?
     end
@@ -57,8 +61,34 @@ RSpec.describe Resident, type: :model do
   end
 
   describe "associations" do
-    it "has a detail (ResidentDetail)"
-    it "accepts nested attributes for ResidentDetail"
+    it "has a detail (ResidentDetail) which is assigned on initialization" do
+      resident = Resident.new
+      expect(resident.detail).to be_a(ResidentDetail)
+    end
+
+    it "accepts nested attributes for ResidentDetail" do
+      params = {
+        resident: {
+          first_name: "Joe",
+          detail_attributes: {
+            phone1: "555-555-5555"
+          }
+        }
+      }
+      resident = Resident.new
+      resident.attributes = params[:resident]
+      expect(resident.first_name).to eq(params[:resident][:first_name])
+      expect(resident.detail.phone1).to eq(params[:resident][:detail_attributes][:phone1])
+    end
+  end
+
+  describe "callbacks" do
+    it "assigns a random and unique residentid" do
+      resident = build(:resident)
+      resident.residentid = nil
+      resident.save!
+      expect(resident.residentid).to_not be_nil
+    end
   end
 
 end

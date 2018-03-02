@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :resident_details
-  resources :residents
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
@@ -32,10 +30,12 @@ Rails.application.routes.draw do
   resources :unit_types
   resources :units
   resources :users
+  resources :residents
 
   resources :properties do
     resources :units
     resources :unit_types
+    resources :residents
   end
 
   resources :leads do

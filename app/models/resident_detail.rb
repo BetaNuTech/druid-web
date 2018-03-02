@@ -25,7 +25,7 @@ class ResidentDetail < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :email, :ssn, :id_number, :id_state ]
+  ALLOWED_PARAMS = [:phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :email, :ssn, :id_number, :id_state ]
   DEFAULT_CRYPTO_KEY = 'default-crypto-key-default-crypto-key'
 
   ### Associations
