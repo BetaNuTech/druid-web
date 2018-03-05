@@ -134,21 +134,25 @@
                       <span class="glyphicon glyphicon-home"></span> Manage Properties
                     <% end %>
                   </li>
-                  <% if current_user.admin? %>
-                  <li><a href="#"><span class="glyphicon glyphicon-user"></span> Manage Property Residents</a></li>
-                  <% end %>
+                  <% if policy(Resident).index? %>
+                    <li>
+                      <%= link_to(residents_path) do %>
+                        <span class="glyphicon glyphicon-user"></span> Manage Residents
+                      <% end %>
+                    </li>
+                <% end %>
                   <li role="separator" class="divider"></li>
-                  <% if policy(UnitType).index? %>
-                  <li>
-                    <%= link_to(unit_types_path) do %>
-                      <span class="glyphicon glyphicon-home"></span> Unit Types
-                    <% end %>
-                  </li>
-                  <% end %>
                   <% if policy(Unit).index? %>
                   <li>
                     <%= link_to(units_path) do %>
                       <span class="glyphicon glyphicon-home"></span> Units
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <% if policy(UnitType).index? %>
+                  <li>
+                    <%= link_to(unit_types_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Unit Types
                     <% end %>
                   </li>
                   <% end %>

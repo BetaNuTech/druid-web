@@ -6,7 +6,11 @@
   <% if policy(Resident).new? %>
     <div class="col-md-6 text-right">
       <%= glyph(:create) %>
-      <%= link_to 'Create Resident', new_resident_path %>
+      <% if @property.present? %>
+        <%= link_to 'Create Resident', new_property_resident_path(@property) %>
+      <% else %>
+        <%= link_to 'Create Resident', new_resident_path %>
+      <% end %>
     </div>
   <% end %>
   </div>
@@ -60,7 +64,11 @@
   <% if policy(Resident).new? %>
     <div class="col-md-12 text-right">
       <%= glyph(:create) %>
-      <%= link_to 'Create Resident', new_resident_path %>
+      <% if @property.present? %>
+        <%= link_to 'Create Resident', new_property_resident_path(@property) %>
+      <% else %>
+        <%= link_to 'Create Resident', new_resident_path %>
+      <% end %>
     </div>
   <% end %>
   </div>
