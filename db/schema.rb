@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180226210959) do
+ActiveRecord::Schema.define(version: 20180301201857) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -187,6 +187,47 @@ ActiveRecord::Schema.define(version: 20180226210959) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "resident_details", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "resident_id"
+    t.string "phone1"
+    t.string "phone1_type"
+    t.string "phone1_tod"
+    t.string "phone2"
+    t.string "phone2_type"
+    t.string "phone2_tod"
+    t.string "email"
+    t.string "encrypted_ssn"
+    t.string "encrypted_ssn_iv"
+    t.string "id_number"
+    t.string "id_state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["resident_id"], name: "index_resident_details_on_resident_id"
+  end
+
+  create_table "residents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id"
+    t.uuid "property_id"
+    t.uuid "unit_id"
+    t.string "residentid"
+    t.string "status"
+    t.date "dob"
+    t.string "title"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "last_name"
+    t.string "address1"
+    t.string "address2"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["property_id", "status", "unit_id"], name: "index_residents_on_property_id_and_status_and_unit_id"
+    t.index ["residentid"], name: "index_residents_on_residentid", unique: true
   end
 
   create_table "roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

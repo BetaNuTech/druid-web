@@ -30,10 +30,12 @@ Rails.application.routes.draw do
   resources :unit_types
   resources :units
   resources :users
+  resources :residents
 
   resources :properties do
     resources :units
     resources :unit_types
+    resources :residents
   end
 
   resources :leads do

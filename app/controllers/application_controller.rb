@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
+  before_action :set_property
   around_action :user_timezone, if: :current_user
 
   private
@@ -19,4 +21,9 @@ class ApplicationController < ActionController::Base
     flash[:alert] = "You are not authorized to access this page or resource"
     redirect_to(request.referrer || root_url)
   end
+
+  def set_property
+    @property ||= Property.where(id: (params[:property_id] || 0)).first
+  end
+
 end

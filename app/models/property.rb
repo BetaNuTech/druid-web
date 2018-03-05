@@ -37,6 +37,7 @@ class Property < ApplicationRecord
   has_many :agents, through: :property_agents, class_name: 'User', source: :user
   has_many :unit_types, dependent: :destroy
   has_many :housing_units, class_name: 'Unit', dependent: :destroy
+  has_many :residents, dependent: :destroy
 
   ### Validations
   validates :name, presence: true, uniqueness: true

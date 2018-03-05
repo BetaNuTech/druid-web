@@ -1,0 +1,23 @@
+<div class="row fieldset_content">
+  <div class="col-md-12">
+    <h2>Residents</h2>
+    <%if @property.residents.empty? %>
+      <p>None</p>
+    <% end %>
+    <p>
+      <%= link_to(new_property_resident_path(@property)) do %>
+        <%= glyph(:create) %>
+        New
+      <% end %>
+    </p>
+    <ul>
+      <strong><%= link_to("View All", property_residents_path(@property)) %> </strong>
+      <% @property.residents.order(last_name: 'ASC', first_name: 'ASC').limit(10).each do |resident| %>
+        <li>
+          <%= link_to(resident.name, property_resident_path(@property, resident)) %>
+          (<%= link_to(resident.unit.unit, property_unit_path(@property, resident.unit)) %>)
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

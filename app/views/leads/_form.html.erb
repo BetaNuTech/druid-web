@@ -85,7 +85,7 @@
         </div>
         <div class="col-md-3 form-group">
           <%= form.label :phone1_tod, "Best Time to Call" %>
-          <%= form.select :phone1_tod, options_for_select(Lead::PHONE_TOD), {}, { class: "form-control" } %>
+          <%= form.select :phone1_tod, options_for_select(Lead::PHONE_TOD), {include_blank: true}, { class: "form-control" } %>
         </div>
       </div>
 

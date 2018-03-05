@@ -3,10 +3,12 @@
     <div class="col-md-6">
       <h1>Leads</h1>
     </div>
+    <% if policy(Lead).new? %>
     <div class="col-md-6 text-right">
       <%= glyph(:create) %>
       <%= link_to 'Create New Lead', new_lead_path %>
     </div>
+    <% end %>
   </div>
 
   <div class="row fieldset_content">

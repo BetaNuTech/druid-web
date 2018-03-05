@@ -1,6 +1,5 @@
 class UnitsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_property, only: [:index, :new, :show, :create, :edit, :update, :destroy]
   before_action :set_unit, only: [:show, :edit, :update, :destroy]
   after_action :verify_authorized
 
@@ -76,10 +75,6 @@ class UnitsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_unit
       @unit = unit_scope.find(params[:id])
-    end
-
-    def set_property
-      @property ||= Property.where(id: (params[:property_id] || 0)).first
     end
 
     def unit_scope

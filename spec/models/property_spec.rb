@@ -145,6 +145,15 @@ RSpec.describe Property, type: :model do
 
     end
 
+    describe "residents" do
+      it "has many residents" do
+        resident = create(:resident, property: active_property)
+        active_property.reload
+        expect(resident.property).to eq(active_property)
+        expect(active_property.residents).to eq([resident])
+      end
+    end
+
     describe "class methods" do
       describe "find_by_code_and_source" do
         let(:property1) { create(:property) }

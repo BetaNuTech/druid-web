@@ -1,0 +1,32 @@
+<div class="row fieldset_content">
+  <div class="col-md-12">
+    <h2>Listings</h2>
+    <% if @property.listings.empty? %>
+      <p>None</p>
+    <% end %>
+
+    <% @property.listings.each do |listing| %>
+      <div class="row">
+        <div class="col-md-3">
+          <h4><%= link_to(listing.source.name, lead_source_path(listing.source)) %></h4>
+          <p>
+            <strong>ID/Code:</strong>
+            <%= listing.code %>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <p>
+            <strong>Description</strong>
+            <%= listing.description %>
+          </p>
+          <p>
+            <strong>Active?:</strong>
+            <%= listing.active %>
+          </p>
+
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>
