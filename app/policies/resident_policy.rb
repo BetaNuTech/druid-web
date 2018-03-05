@@ -1,6 +1,6 @@
 class ResidentPolicy < ApplicationPolicy
   def index?
-    user.admin? || user.user?
+    user.admin? || user.agent?
   end
 
   def new?
