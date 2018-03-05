@@ -193,6 +193,14 @@ RSpec.describe ResidentsController, type: :controller do
         expect(response).to be_redirect
       end
 
+      it "updates nested detail data" do
+        sign_in agent
+        expect{
+          put :update, params: {id: resident.id, resident: {detail_attributes: {phone1: "1122334455"}}}
+          resident.reload
+        }.to change{ resident.detail.phone1 }
+      end
+
       describe "with invalid attributes" do
         let(:invalid_new_attributes) { {status: "Invalid", first_name: "Foobar"}}
         it "should handle the validation error" do
@@ -203,6 +211,7 @@ RSpec.describe ResidentsController, type: :controller do
           }.to_not change{ resident.first_name }
         end
       end
+
     end
 
     describe "as an operator" do

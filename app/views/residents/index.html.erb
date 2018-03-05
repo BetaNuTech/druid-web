@@ -1,53 +1,68 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Residents</h1>
+    </div>
+  <% if policy(Resident).new? %>
+    <div class="col-md-6 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create Resident', new_resident_path %>
+    </div>
+  <% end %>
+  </div>
 
-<h1>Residents</h1>
+  <div class="row fieldset_content">
+    <div class="col-md-12">
+      <table id="residents-table" class="table">
+        <thead>
+          <th>Resident ID</th>
+          <th>Status</th>
+          <th>Name</th>
+          <th>Property</th>
+          <th>Unit</th>
+          <th>Contact</th>
+          <th></th>
+        </thead>
+        <tbody>
+          <% @residents.each do |resident| %>
+            <tr>
+              <td><%= resident.residentid %></td>
+              <td><%= resident.status.try(:capitalize) %></td>
+              <td><%= link_to(resident.name, property_resident_path(resident.property, resident)) %></td>
+              <td><%= link_to(resident.property.name, property_path(resident.property)) %></td>
+              <td><%= link_to(resident.unit.unit, property_unit_path(resident.property, resident.unit)) %></td>
+              <td>
+                <p>
+                  <% if resident.detail.phone1.present? %>
+                    <span><%= glyph(:phone) %> <%= resident.detail.phone1 %></span><br/>
+                  <% end %>
+                  <% if resident.detail.phone2.present? %>
+                    <span><%= glyph(:phone) %> <%= resident.detail.phone2 %></span>
+                  <% end %>
+                  <% if resident.detail.email.present? %>
+                    <span><%= glyph(:email) %> <%= resident.detail.email %></span>
+                  <% end %>
+                </p>
+              </td>
+              <td>
+                <%= link_to property_resident_path(resident.property, resident) do %><%= glyph(:show) %><% end %>&nbsp;
+                <%= link_to edit_property_resident_path(resident.property, resident) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <%= link_to resident, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
 
-<table>
-  <thead>
-    <tr>
-      <th>Lead</th>
-      <th>Property</th>
-      <th>Unit</th>
-      <th>Residentid</th>
-      <th>Status</th>
-      <th>First name</th>
-      <th>Middle name</th>
-      <th>Last name</th>
-      <th>Address1</th>
-      <th>Address2</th>
-      <th>City</th>
-      <th>State</th>
-      <th>Zip</th>
-      <th>Country</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+  <% if policy(Resident).new? %>
+    <div class="col-md-12 text-right">
+      <%= glyph(:create) %>
+      <%= link_to 'Create Resident', new_resident_path %>
+    </div>
+  <% end %>
+  </div>
 
-  <tbody>
-    <% @residents.each do |resident| %>
-      <tr>
-        <td><%= resident.lead_id %></td>
-        <td><%= resident.property_id %></td>
-        <td><%= resident.unit_id %></td>
-        <td><%= resident.residentid %></td>
-        <td><%= resident.status %></td>
-        <td><%= resident.first_name %></td>
-        <td><%= resident.middle_name %></td>
-        <td><%= resident.last_name %></td>
-        <td><%= resident.address1 %></td>
-        <td><%= resident.address2 %></td>
-        <td><%= resident.city %></td>
-        <td><%= resident.state %></td>
-        <td><%= resident.zip %></td>
-        <td><%= resident.country %></td>
-        <td><%= link_to 'Show', resident %></td>
-        <td><%= link_to 'Edit', edit_resident_path(resident) %></td>
-        <td><%= link_to 'Destroy', resident, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Resident', new_resident_path %>
+</div>

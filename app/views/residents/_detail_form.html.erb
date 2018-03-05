@@ -1,4 +1,5 @@
-<%= form.fields_for :detail do |detail_form| %>
+<%= form.fields_for :detail do  |detail_form| %>
+  <%= detail_form.hidden_field :id %>
   <div class="fieldset_content">
     <fieldset>
       <legend>Details</legend>

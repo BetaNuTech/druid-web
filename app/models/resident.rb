@@ -81,7 +81,7 @@ class Resident < ApplicationRecord
   end
 
   def assign_detail
-    self.detail = ResidentDetail.new
+    self.detail ||= ResidentDetail.new
   end
 
 

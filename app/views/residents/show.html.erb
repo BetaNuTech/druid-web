@@ -1,74 +1,156 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+  <div class="row fieldset_content">
+    <div class="col-md-10">
 
-<p>
-  <strong>Lead:</strong>
-  <%= @resident.lead_id %>
-</p>
+      <div class="row">
+        <div class="col-md-6">
+          <h1>Resident</h1>
+          <h2><%= @resident.name %></h2>
+        </div>
+      </div>
 
-<p>
-  <strong>Property:</strong>
-  <%= @resident.property_id %>
-</p>
+      <div class="row">
+        <div class="col-md-12">
+          <p>
+            <strong>Resident ID: </strong>
+            <%= @resident.residentid %>
+          </p>
+          <% if @resident.lead.present? %>
+            <p>
+              <strong>Lead: </strong>
+              <%= link_to(@resident.name, lead_path(id: @resident.lead.id)) %>
+            </p>
+          <% end %>
+          <p>
+            <strong>Status: </strong>
+            <%= @resident.status.try(:capitalize) %>
+          </p>
+          <p>
+            <strong>Property: </strong>
+            <%= @resident.property.name %>
+          </p>
+          <p>
+            <strong>Unit: </strong>
+            <%= @resident.unit.unit %>
+          </p>
+        </div>
+      </div>
 
-<p>
-  <strong>Unit:</strong>
-  <%= @resident.unit_id %>
-</p>
+      <div class="row">
+        <div class="col-md-2">
+          <strong>Title: </strong>
+          <%= @resident.title %>
+        </div>
+        <div class="col-md-3">
+          <strong>First Name: </strong>
+          <%= @resident.first_name %>
+        </div>
+        <div class="col-md-3">
+          <strong>Middle Name: </strong>
+          <%= @resident.middle_name %>
+        </div>
+        <div class="col-md-3">
+          <strong>Last Name: </strong>
+          <%= @resident.last_name %>
+        </div>
+      </div>
 
-<p>
-  <strong>Residentid:</strong>
-  <%= @resident.residentid %>
-</p>
+      <div class="row">
+        <div class="col-md-12">
+          <strong>Address1: </strong>
+          <%= @resident.address1 %>
+        </div>
+      </div>
 
-<p>
-  <strong>Status:</strong>
-  <%= @resident.status %>
-</p>
+      <div class="row">
+        <div class="col-md-12">
+          <strong>Address2: </strong>
+          <%= @resident.address2 %>
+        </div>
+      </div>
 
-<p>
-  <strong>First name:</strong>
-  <%= @resident.first_name %>
-</p>
+      <div class="row">
+        <div class="col-md-4">
+          <strong>City: </strong>
+          <%= @resident.city %>
+        </div>
+        <div class="col-md-2">
+          <strong>State: </strong>
+          <%= @resident.state %>
+        </div>
+        <div class="col-md-2">
+          <strong>Zip: </strong>
+          <%= @resident.zip %>
+        </div>
+        <div class="col-md-2">
+          <strong>Country: </strong>
+          <%= @resident.country %>
+        </div>
+      </div>
 
-<p>
-  <strong>Middle name:</strong>
-  <%= @resident.middle_name %>
-</p>
+      <div class="row">
+        <div class="col-md-3">
+          <strong>Phone 1: </strong>
+          <%= @resident.detail.phone1 %>
+        </div>
+        <div class="col-md-3">
+          <strong>Type: </strong>
+          <%= @resident.detail.phone1_type || '-' %>
+        </div>
+        <div class="col-md-4">
+          <strong>Best Time to Call: </strong>
+          <%= @resident.detail.phone1_tod || '-' %>
+        </div>
+      </div>
 
-<p>
-  <strong>Last name:</strong>
-  <%= @resident.last_name %>
-</p>
+      <div class="row">
+        <div class="col-md-3">
+          <strong>Phone 2: </strong>
+          <%= @resident.detail.phone2 %>
+        </div>
+        <div class="col-md-3">
+          <strong>Type: </strong>
+          <%= @resident.detail.phone2_type || '-' %>
+        </div>
+        <div class="col-md-4">
+          <strong>Best Time to Call: </strong>
+          <%= @resident.detail.phone2_tod || '-' %>
+        </div>
+      </div>
 
-<p>
-  <strong>Address1:</strong>
-  <%= @resident.address1 %>
-</p>
+      <div class="row">
+        <div class="col-md-12">
+          <strong>Email: </strong>
+          <%= @resident.detail.email %>
+        </div>
+      </div>
 
-<p>
-  <strong>Address2:</strong>
-  <%= @resident.address2 %>
-</p>
 
-<p>
-  <strong>City:</strong>
-  <%= @resident.city %>
-</p>
+      <div class="row">
+        <div class="col-md-12">
+          <strong>SSN: </strong>
+          <%= @resident.detail.ssn %>
+        </div>
+      </div>
 
-<p>
-  <strong>State:</strong>
-  <%= @resident.state %>
-</p>
+      <div class="row">
+        <div class="col-md-4">
+          <strong>ID/DL Number: </strong>
+          <%= @resident.detail.id_number %>
+        </div>
+        <div class="col-md-3">
+          <strong>ID State:</strong>
+          <%= @resident.detail.id_state %>
+        </div>
+      </div>
 
-<p>
-  <strong>Zip:</strong>
-  <%= @resident.zip %>
-</p>
+    </div>
+  </div>
 
-<p>
-  <strong>Country:</strong>
-  <%= @resident.country %>
-</p>
-
-<%= link_to 'Edit', edit_resident_path(@resident) %> |
-<%= link_to 'Back', residents_path %>
+  <div class="row">
+    <div class="col-md-4">
+      <%= link_to 'Edit', edit_property_resident_path(@resident.property, @resident) %> |
+      <%= link_to 'Back', property_residents_path(@resident.property, @resident) %>
+    </div>
+  </div>
+</div>
