@@ -62,6 +62,10 @@ class Lead < ApplicationRecord
 
   ### Class Methods
 
+  def self.for_agent(agent)
+    where(user_id: agent.id)
+  end
+
   ### Instance Methods
   def name
     [title, first_name, last_name].join(' ')

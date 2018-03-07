@@ -28,8 +28,10 @@ class LeadsController < ApplicationController
   # GET /leads/new
   def new
     @lead = Lead.new
-    @lead.user = current_user
     @lead.build_preference
+    @lead.user ||= current_user
+    @lead.property ||= @property if @property.present?
+    @lead.source ||= LeadSource.default
     authorize @lead
   end
 

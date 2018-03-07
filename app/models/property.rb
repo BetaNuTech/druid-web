@@ -78,4 +78,8 @@ class Property < ApplicationRecord
     return nil unless source.present?
     self.listings.where(source_id: source.id).first.try(:code)
   end
+
+  def occupancy_rate
+    (housing_units.occupied.count.to_f / [ units || 1].min.to_f).round(1) * 100.0
+  end
 end

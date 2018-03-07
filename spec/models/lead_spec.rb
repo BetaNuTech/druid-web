@@ -79,6 +79,18 @@ RSpec.describe Lead, type: :model do
     expect(lead.property).to eq(property)
   end
 
+  describe "associations" do
+    let(:property) { create(:property) }
+    let(:lead) { create(:lead, user: agent, property: property) }
+    let(:lead2) { create(:lead, property: property) }
+
+    it "returns a list of leads assigned to an agent/user" do
+      lead; lead2
+      expect(property.leads.for_agent(agent)).to eq([lead])
+    end
+
+  end
+
   describe "priorities" do
     let(:lead) { create(:lead) }
 
@@ -156,6 +168,10 @@ RSpec.describe Lead, type: :model do
       expect(lead.permitted_states).to eq([:claimed, :converted, :disqualified])
       lead.claim!
       expect(lead.permitted_states).to eq([:open, :converted, :disqualified])
+    end
+
+    it "lists 'active' leads" do
+      expect(Lead.active).to eq([lead])
     end
 
     describe "priorities" do

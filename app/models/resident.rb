@@ -58,6 +58,10 @@ class Resident < ApplicationRecord
     return "R%s" % Array.new(8){rand(10)}.join
   end
 
+  def self.current
+    where(status: 'current')
+  end
+
   ### Instance Methods
 
   def name
@@ -67,6 +71,7 @@ class Resident < ApplicationRecord
   def salutation
     [title, last_name].join(" ")
   end
+
 
   private
 

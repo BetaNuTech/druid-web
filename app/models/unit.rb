@@ -44,5 +44,10 @@ class Unit < ApplicationRecord
 
   ### Class Methods
 
+  def self.occupied
+    # TODO: implement with Occupancy model
+    self.all
+  end
+
   ### Instance Methods
 end
