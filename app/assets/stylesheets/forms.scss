@@ -37,6 +37,11 @@ $error-color: #f2dede;
   padding: 1em 2em 0.5em 1em;
   margin: 1em auto;
   border: 1px 1px 1px 0 solid #ccc;
+
+  h2 {
+    margin-top: 0;
+    padding-top: 0;
+  }
 }
 
 .form-control-date-select {

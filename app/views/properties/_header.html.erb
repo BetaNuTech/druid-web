@@ -13,9 +13,9 @@
           <span class="btn btn-xs btn-info">Add</span>
         <% end %>
         <p>
-          Mine(<%= link_to(search_leads_path({lead_search: {user_ids: [current_user.id]}})) do %><%= @property.leads.for_agent(current_user).count %><% end %>)
-          Open(<%= link_to(search_leads_path({lead_search: {states: ['open']}})) do %><%= @property.leads.open.count %><% end %>)
-          Active(<%= link_to(search_leads_path({lead_search: {states: ['open', 'claimed']}})) do %><%= @property.leads.active.count %><% end %>)
+          Mine(<%= link_to(search_leads_path({lead_search: {property_ids: [@property.id], user_ids: [current_user.id]}})) do %><%= @property.leads.for_agent(current_user).count %><% end %>)
+          Open(<%= link_to(search_leads_path({lead_search: {property_ids: [@property.id], states: ['open']}})) do %><%= @property.leads.open.count %><% end %>)
+          Active(<%= link_to(search_leads_path({lead_search: {property_ids: [@property.id], states: ['open', 'claimed']}})) do %><%= @property.leads.active.count %><% end %>)
           All(<%= link_to(search_leads_path({lead_search: {property_ids: [@property.id]}})) do %><%= @property.leads.count %><% end %>)
         </p>
       </div>
