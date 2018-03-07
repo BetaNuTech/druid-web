@@ -39,6 +39,10 @@ module Leads
 
       end
 
+      def self.active
+        where.not(state: ['disqualified', 'converted'])
+      end
+
       def event_set_user(claimant=nil)
         self.user = claimant if claimant.present?
       end

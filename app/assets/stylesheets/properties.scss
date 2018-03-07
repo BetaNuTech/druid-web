@@ -18,3 +18,18 @@ tr.property-table-row-inactive td {
   font-size: 1.2em;
   text-align: right;
 }
+
+#property-header {
+  padding: 1em 1em 0.3em 1em;
+  position: relative;
+  top: -10px;
+
+  h2 { margin: 0; }
+  h4 { margin: 0; display: inline;}
+
+  .btn-xs {
+    position: relative;
+    top: -2px;
+  }
+}
+
