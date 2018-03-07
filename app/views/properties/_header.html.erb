@@ -1,7 +1,7 @@
 <% if @property.present? %>
 <div id="property-header" class="row bg-info">
   <div class="col-md-4 lead">
-    <%= @property.name %>
+    <%= link_to(@property.name, @property) %>
   </div>
   <div class="col-md-8">
     <div class="row">

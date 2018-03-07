@@ -131,13 +131,13 @@
                 <ul class="dropdown-menu">
                   <li>
                     <%= link_to(properties_path) do %>
-                      <span class="glyphicon glyphicon-home"></span> Manage Properties
+                      <span class="glyphicon glyphicon-home"></span> Properties
                     <% end %>
                   </li>
                   <% if policy(Resident).index? %>
                     <li>
                       <%= link_to(residents_path) do %>
-                        <span class="glyphicon glyphicon-user"></span> Manage Residents
+                        <span class="glyphicon glyphicon-user"></span> Residents
                       <% end %>
                     </li>
                 <% end %>
