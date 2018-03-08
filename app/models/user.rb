@@ -39,6 +39,7 @@ class User < ApplicationRecord
   ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :timezone]
 
   ### Associations
+  has_many :leads
 
   ### Validations
 

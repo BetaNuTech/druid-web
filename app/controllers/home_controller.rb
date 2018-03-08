@@ -10,5 +10,6 @@ class HomeController < ApplicationController
 
   def dashboard
     @page_title = "Druid Dashboard"
+    flash[:notice] = "This page is in active development"
   end
 end

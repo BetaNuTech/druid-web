@@ -1,46 +1,154 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-10">
-      <h1>Druid Dashboard</h1>
+    <div class="col-md-12 text-center">
       <p class="lead">
-        Welcome to the Druid Dashboard. Stuff will be here later!
+        Dashboard
       </p>
     </div>
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h2>Today</h2>
-      <table class="table">
-        <thead></thead>
-        <tbody>
-          <tr>
-            <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
-            <td><%= glyph(:person) %></td>
-            <td>Now</td>
-            <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
-          </tr>
-          <tr>
-            <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
-            <td><%= glyph(:person) %></td>
-            <td>Now</td>
-            <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
-          </tr>
-          <tr>
-            <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
-            <td><%= glyph(:pin) %></td>
-            <td>Today</td>
-            <td>Contact via email <%= link_to(lead.name, lead_path(lead)) %> </td>
-          </tr>
-          <tr>
-            <% lead = Lead.claimed.offset(rand(Lead.open.count)).first %>
-            <td><%= glyph(:pin) %></td>
-            <td>10:00AM</td>
-            <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>
-          </tr>
-        </tbody>
-
-      </table>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Today</h3>
+            </div>
+            <div class="col-md-6 text-right" style="padding-top: 20px;">
+              <%= link_to("Schedule Event/TODO", "#", {class: "btn btn-xs btn-success"}) %>
+            </div>
+          </div>
+          <table class="table">
+            <thead></thead>
+            <tbody>
+              <tr>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:person) %></td>
+                <td>Now</td>
+                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
+              </tr>
+              <tr>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:person) %></td>
+                <td>Now</td>
+                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
+              </tr>
+              <tr>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:pin) %></td>
+                <td>Today</td>
+                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) %> </td>
+              </tr>
+              <tr>
+                <% lead = Lead.claimed.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:pin) %></td>
+                <td>10:00AM</td>
+                <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Tomorrow</h3>
+            </div>
+          </div>
+          <table class="table">
+            <thead></thead>
+            <tbody>
+              <tr>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:person) %></td>
+                <td>Now</td>
+                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
+              </tr>
+              <tr>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:person) %></td>
+                <td>Now</td>
+                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
+              </tr>
+              <tr>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:pin) %></td>
+                <td>Today</td>
+                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) %> </td>
+              </tr>
+              <tr>
+                <% lead = Lead.claimed.offset(rand(Lead.open.count)).first %>
+                <td><%= glyph(:pin) %></td>
+                <td>10:00AM</td>
+                <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <h3>My Leads</h3>
+            </div>
+            <div class="col-md-6 text-right" style="padding-top: 20px;">
+              <%= link_to("Create Lead", new_lead_path, {class: "btn btn-xs btn-success"}) %>
+            </div>
+          </div>
+          <table class="table">
+            <tbody>
+              <% current_user.leads.each do |lead| %>
+                <tr>
+                  <td>
+                    <%= lead.priority.capitalize %> -
+                    <%= lead.state.capitalize %><br/>
+                    <strong>First Contact: </strong> <%= short_date(lead.first_comm) %><br/>
+                    <strong>Last Contact: </strong> <%= short_date(lead.last_comm) %>
+                </td>
+                <td>
+                  <strong><%= link_to(lead.name, lead_path(lead)) %></strong><br/>
+                  <strong>Phone: </strong> <%= [lead.phone1, lead.phone2].compact.first %><br/>
+                  <strong>Email: </strong> <%= lead.email %>
+              </td>
+              <td></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Stats</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <dl>
+            <dt>Leads</dt>
+            <dd>in Pipeline:  <%= current_user.leads.count %></dd>
+            <dd>Closed This Week:  2 </dd>
+            <dd>Closed This Month:  2 </dd>
+            <dd>Closed This Year:  2 </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>
+  </div>
+  <div class="row">
   </div>
   <div class="col-md-6">
     <h2></h2>
