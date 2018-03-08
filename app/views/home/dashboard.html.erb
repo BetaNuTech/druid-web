@@ -22,25 +22,25 @@
             <thead></thead>
             <tbody>
               <tr>
-                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:person) %></td>
                 <td>Now</td>
                 <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
               </tr>
               <tr>
-                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:person) %></td>
                 <td>Now</td>
                 <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
               </tr>
               <tr>
-                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:pin) %></td>
                 <td>Today</td>
                 <td>Contact via email <%= link_to(lead.name, lead_path(lead)) %> </td>
               </tr>
               <tr>
-                <% lead = Lead.claimed.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.claimed.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:pin) %></td>
                 <td>10:00AM</td>
                 <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>
@@ -60,25 +60,25 @@
             <thead></thead>
             <tbody>
               <tr>
-                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:person) %></td>
                 <td>Now</td>
                 <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
               </tr>
               <tr>
-                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:person) %></td>
                 <td>Now</td>
                 <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
               </tr>
               <tr>
-                <% lead = Lead.open.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:pin) %></td>
                 <td>Today</td>
                 <td>Contact via email <%= link_to(lead.name, lead_path(lead)) %> </td>
               </tr>
               <tr>
-                <% lead = Lead.claimed.offset(rand(Lead.open.count)).first %>
+                <% lead = Lead.claimed.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:pin) %></td>
                 <td>10:00AM</td>
                 <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>
