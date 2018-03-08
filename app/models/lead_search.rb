@@ -1,5 +1,5 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir ]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir ]
   LEAD_TABLE = Lead.table_name
   DEFAULT_SORT = [:priority, :desc]
   DEFAULT_PER_PAGE = 10
@@ -32,6 +32,7 @@ class LeadSearch
 
   def query_skope
     filtered_skope = self.
+      filter_by_source.
       filter_by_state.
       filter_by_priority.
       filter_by_user.
@@ -52,7 +53,7 @@ class LeadSearch
   def full_options
     opts = {
       "Filters" => {
-        "_index" => ["Agents", "Properties", "Priorities", "States", "First Name", "Last Name", "ID Number", "Search"],
+        "_index" => ["Agents", "Properties", "Priorities", "States", "Sources", "First Name", "Last Name", "ID Number", "Search"],
         "Agents" => {
           param: "user_ids",
           values: User.where(id: @options[:user_ids]).map{|u| {label: u.name, value: u.id}}
@@ -68,6 +69,10 @@ class LeadSearch
         "States" => {
           param: "states",
           values: Array(@options[:states]).map{|s| {label: s.capitalize, value: s}}
+        },
+        "Sources" => {
+          param: "sources",
+          values: LeadSource.where(id: @options[:sources]).map{|s| {label: s.name, value: s.id}}
         },
         "First Name" => {
           param: "first_name",
@@ -228,6 +233,16 @@ class LeadSearch
     if id_number.present?
       @skope = @skope.
         where(id_number: id_number)
+      @filter_applied = true
+    end
+    return self
+  end
+
+  def filter_by_source(sources=nil)
+    sources ||= @options[:sources]
+    if sources.present?
+      @skope = @skope.
+        where(lead_source_id: sources)
       @filter_applied = true
     end
     return self

@@ -38,12 +38,15 @@ RSpec.describe LeadSearch do
 
   describe "returns a collection of Leads according to options" do
     include_context "users"
+    let(:lead_source1) { create(:lead_source) }
+    let(:lead_source2) { create(:lead_source) }
 
     let(:lead1) {
       create(:lead,
              state: 'claimed', priority: 'medium', first_name: "AaaBBbCC", last_name: "DdEeFFGgJJ",
              user: agent,
              property: property1,
+             source: lead_source1
             )
     }
 
@@ -51,6 +54,7 @@ RSpec.describe LeadSearch do
       create(:lead,
              state: 'disqualified', priority: 'low', id_number: "11223344",
              property: property2,
+             source: lead_source2
             )
     }
 
@@ -67,6 +71,12 @@ RSpec.describe LeadSearch do
     it "returns a collection of leads" do
       search = LeadSearch.new(empty_params)
       expect(search.collection.count).to eq(Lead.count)
+    end
+
+    it "searches by source" do
+      search = LeadSearch.new({sources: [lead_source1.id]})
+      expect(search.collection.count).to eq(1)
+      expect(search.collection.to_a).to eq([lead1])
     end
 
     it "searches by agent" do
