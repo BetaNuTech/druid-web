@@ -3,6 +3,7 @@ class LeadSearch
   LEAD_TABLE = Lead.table_name
   DEFAULT_SORT = [:priority, :desc]
   DEFAULT_PER_PAGE = 10
+  MAX_PER_PAGE = 100
   SORT_OPTIONS = {
     priority: {
       asc: "#{LEAD_TABLE}.priority ASC, #{LEAD_TABLE}.created_at ASC",
@@ -284,7 +285,7 @@ class LeadSearch
 
   def query_limit
     per_page = Array(@options[:per_page] || nil).first || DEFAULT_PER_PAGE
-    per_page.to_i
+    [per_page.to_i, MAX_PER_PAGE].min
   end
 
   def query_offset
