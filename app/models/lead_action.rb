@@ -11,7 +11,7 @@
 #
 
 class LeadAction < ApplicationRecord
-  ALLOWED_PARAMS = [:id, :name, :description, :active]
+  ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active]
 
   validates :name,
     presence: true,

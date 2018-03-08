@@ -13,14 +13,24 @@
 
   <div class="fieldset_content">
     <div class="row">
-      <div class="form-group">
+      <div class="col-md-4 form-group">
         <%= form.label :name %>
         <%= form.text_field :name, id: :lead_action_name, class: "form-control" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="form-group">
+      <div class="col-md-4 form-group">
+        <%= form.label :glyph %>
+        <%= form.select :glyph, select_glyph(@lead_action.glyph),{include_blank: true}, { id: :lead_action_glyph, class: "form-control" } %>
+      </div>
+      <div class="col-md-8">
+        <%= render partial: "glyph_samples" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 form-group">
         <%= form.label :description %>
         <%= form.text_field :description, id: :lead_action_description, class: "form-control" %>
       </div>

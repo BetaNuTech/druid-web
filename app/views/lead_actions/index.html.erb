@@ -16,6 +16,7 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Glyph</th>
             <th>Description</th>
             <th>Active?</th>
             <th>Actions</th>
@@ -25,6 +26,7 @@
           <% @lead_actions.each do |lead_action| %>
             <tr>
               <td class="first-column"><%= lead_action.name %></td>
+              <td style="font-size: 1.5em;"><%= glyph(lead_action.glyph) %></td>
               <td><%= lead_action.description %></td>
               <td><%= lead_action.active ? "Yes" : "No" %></td>
               <td>

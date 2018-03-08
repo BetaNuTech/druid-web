@@ -4,20 +4,12 @@ module ApplicationHelper
   end
 
   def glyph(type)
-    glyph_mappings = {
-      create: ['Create', 'glyphicon glyphicon-plus'],
-      edit: ['Edit', 'glyphicon glyphicon-pencil'],
-      show: ['Show', 'glyphicon glyphicon-eye-open'],
-      delete: ['Delete', 'glyphicon glyphicon-trash'],
-      back: ['Back', 'glyphicon glyphicon-arrow-left'],
-      email: ['Email',  'glyphicon glyphicon-envelope'],
-      phone: ['Phone',  'glyphicon glyphicon-earphone' ],
-      fax: ['Fax',  'glyphicon glyphicon-file' ],
-      person: ['Person',  'glyphicon glyphicon-user' ],
-      address: ['Address',  'glyphicon glyphicon-home' ],
-    }
-    text, glyph_class = glyph_mappings.fetch(type.to_sym)
+    _text, glyph_class = GLYPHS.fetch(type.to_s,'')
     content_tag(:span, ' ', {class: glyph_class, "aria-hidden": true})
+  end
+
+  def select_glyph(val)
+    options_for_select(GLYPHS.keys.map{|g| [g,g]}, val)
   end
 
   def nav_active_class(path)
