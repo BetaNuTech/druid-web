@@ -7,7 +7,7 @@ class NotesController < ApplicationController
   # GET /notes.json
   def index
     authorize Note
-    @notes = Note.all
+    @notes = policy_scope(Note)
   end
 
   # GET /notes/1
@@ -19,6 +19,7 @@ class NotesController < ApplicationController
   # GET /notes/new
   def new
     @note = Note.new
+    @note.notable = current_user
     authorize @note
   end
 
@@ -78,7 +79,7 @@ class NotesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_note
-      @note = Note.find(params[:id])
+      @note = policy_scope(Note).find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

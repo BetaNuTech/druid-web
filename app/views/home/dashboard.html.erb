@@ -1,4 +1,5 @@
 <div class="container">
+  <!-- 
   <div class="row">
     <div class="col-md-12 text-center">
       <p class="lead">
@@ -6,6 +7,7 @@
       </p>
     </div>
   </div>
+  -->
   <div class="row">
     <div class="col-md-6">
       <div class="row">
@@ -13,10 +15,12 @@
           <div class="row">
             <div class="col-md-6">
               <h3>Today</h3>
-              <a href="#">View All</a>
             </div>
-            <div class="col-md-6 text-right" style="padding-top: 20px;">
-              <%= link_to("Schedule Event/TODO", "#", {class: "btn btn-xs btn-success"}) %>
+            <div class="col-md-2" style="padding-top: 20px;">
+              <%= link_to("View All", notes_path, {class: "btn btn-xs btn-success"})  %>
+            </div>
+            <div class="col-md-4 text-right" style="padding-top: 20px;">
+              <%= link_to("Schedule Event/TODO", new_note_path, {class: "btn btn-xs btn-success"}) %>
             </div>
           </div>
           <table class="table">
@@ -70,7 +74,7 @@
         <div class="col-md-12">
           <div class="row">
             <div class="col-md-6">
-              <h3>Tomorrow</h3>
+              <h3>Upcoming</h3>
             </div>
           </div>
           <table class="table">
@@ -146,13 +150,21 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <dl>
-              <dt>Leads</dt>
-              <dd>in Pipeline:  <%= current_user.leads.count %></dd>
-              <dd>Closed This Week:  2 </dd>
-              <dd>Closed This Month:  2 </dd>
-              <dd>Closed This Year:  2 </dd>
-            </dl>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td><strong>My Leads</strong></td>
+                  <td>
+                    <ul>
+                      <li>in Pipeline:  <%= current_user.leads.count %></li>
+                      <li>Closed This Week:  2 </li>
+                      <li>Closed This Month:  2 </li>
+                      <li>Closed This Year:  2 </li>
+                    </ul>                   
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

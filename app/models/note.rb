@@ -37,5 +37,20 @@ class Note < ApplicationRecord
   ### Class Methods
 
   ### Instance Methods
+  def start_time
+    self.schedule.try(:date)
+  end
+
+  def notable_subject(user=nil)
+    if notable.present?
+      if notable === user
+        "Personal Event/Note"
+      else
+        "%s (%s)" % [ notable.try(:name), notable_type ]
+      end
+    else
+      None
+    end
+  end
 
 end

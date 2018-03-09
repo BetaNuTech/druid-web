@@ -1,0 +1,11 @@
+<% if note.notable.present? %>
+  <% if note.notable === current_user %>
+    Personal Event/Note
+  <% else %>
+    <%= link_to url_for(note.notable) do %>
+      <%= note.notable.try(:name) %> (<%= note.notable_type %>)
+    <% end %>
+  <% end %>
+<% else %>
+  None
+<% end %>

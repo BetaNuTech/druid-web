@@ -1,4 +1,13 @@
 class NotePolicy < ApplicationPolicy
+
+  class Scope < Scope
+    def resolve
+      scope.
+        where(user_id: user.id).
+        order(created_at: "DESC")
+    end
+  end
+
   def index?
     user.admin?
   end

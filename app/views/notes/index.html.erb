@@ -1,37 +1,92 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Notes</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Lead action</th>
-      <th>Reason</th>
-      <th>Notable</th>
-      <th>Notable type</th>
-      <th>Content</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @notes.each do |note| %>
-      <tr>
-        <td><%= note.user_id %></td>
-        <td><%= note.lead_action_id %></td>
-        <td><%= note.reason_id %></td>
-        <td><%= note.notable_id %></td>
-        <td><%= note.notable_type %></td>
-        <td><%= note.content %></td>
-        <td><%= link_to 'Show', note %></td>
-        <td><%= link_to 'Edit', edit_note_path(note) %></td>
-        <td><%= link_to 'Destroy', note, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Events/Notes</h1>
+    </div>
+    <% if policy(Note).new? %>
+      <div class="col-md-6 text-right">
+        <%= glyph(:create) %>
+        <%= link_to "Create New Note", new_note_path %>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+  <div class="row">
+    <div class=col-md-12"">
+      <%= month_calendar events: @notes do |date, notes| %>
+        <%= date.day %><br/>
+        <% notes.each do |note| %>
+          <div class="note_calendar_entry">
+            <%= link_to note_path(note), title: note.content do %>
+              <span class="note_calendar_note_action">
+                <%= note.lead_action.try(:name) %>:
+              </span><br/>
+              <span class="note_calendar_note_subject">
+                <%= note.notable_subject(current_user) %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Author</th>
+            <th>Subject</th>
+            <th>Action</th>
+            <th>Reason</th>
+            <th>Content</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @notes.each do |note| %>
+            <tr>
+              <td class="text-nowrap"><%= note.user.try(:name) || 'None' %></td>
+              <td class="text-nowrap">
+                <%= render partial: "notes/notable_name", locals: {note: note} %>
+              </td>
+              <td class="text-nowrap">
+                <%= note.lead_action.name %>
+              </td>
+              <td>
+                <%= note.reason.name %><br/>
+                <small><%= note.schedule %></small>
+              </td>
+              <td width="33%">
+                <p>
+                  <%= note.content %>
+                </p>
+                <small>Posted <%= long_datetime(note.created_at) %></small>
+                <% if note.created_at != note.updated_at %>
+                  <br/>
+                  <small>Updated <%= long_datetime(note.updated_at) %></small>
+                <% end %>
+              </td>
+              <td class="text-nowrap">
+                <% if policy(note).edit? %>
+                  <%= link_to edit_note_path(note) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <% end %>
+                <% if policy(note).destroy? %>
+                  <%= link_to note, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <% if policy(Note).new? %>
+      <div class="col-md-12 text-right">
+        <%= glyph(:create) %>
+        <%= link_to "Create New Note", new_note_path %>
+      </div>
+    <% end %>
+  </div>
 
-<br>
-
-<%= link_to 'New Note', new_note_path %>
+</div>

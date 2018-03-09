@@ -1,4 +1,4 @@
-<%= form_with(model: note) do |form| %>
+<%= form_with(model: note, remote: true, format: :js) do |form| %>
   <% if note.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(note.errors.count, "error") %> prohibited this note from being saved:</h2>
@@ -16,24 +16,6 @@
 
   <div class="fieldset_content">
     <div class="row">
-      <div class="col-md-6">
-        <p>
-          <strong>Subject</strong><br/>
-          <% if note.notable.present? %>
-            <% if note.notable === current_user %>
-              Personal Event/Note
-            <% else %>
-              <%= link_to url_for(note.notable) do %>
-                <%= note.notable.try(:name) %> (<%= note.notable_type %>)
-              <% end %>
-            <% end %>
-          <% else %>
-            None
-          <% end %>
-        </p>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-md-4 form-group">
         <%= form.label :lead_action_id, "Action" %>
         <%= form.select :lead_action_id, select_action(note.lead_action_id), {include_blank: true},{id: :note_action, class: "form-control"} %>
@@ -44,8 +26,13 @@
       </div>
     </div>
     <div class="row">
+      <div class="col-md-2">
+        <p>
+          <span class="btn btn-sm btn-info toggle_note_schedule">Schedule</span>
+        </p>
+      </div>
       <div class="col-md-6">
-        <div class="note_schedule_selection">
+        <div class="note_schedule_selection" style="display: none;">
           <%= form.label :schedule %>
           <%= form.schedule_select :schedule, style: :bootstrap, until: true, input_types: {date: :date_picker, time: :time_picker, datetime: :datetime_picker} %>
         </div>
@@ -53,7 +40,7 @@
     </div>
     <div class="row">
       <div class="form-group col-md-8">
-        <%= form.label :content %>
+        <%= form.label :content, "New Comment" %>
         <%= form.text_area :content, id: :note_content, class: "form-control", rows: 5%>
       </div>
     </div>

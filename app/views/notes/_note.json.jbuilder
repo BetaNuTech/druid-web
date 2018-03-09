@@ -14,5 +14,6 @@ json.user do
     json.extract! note.user, :id, :name
   end
 end
+json.schedule note.schedule.to_s
 json.url note_url(note, format: :json)
 json.web_url note_url(note, format: :html)

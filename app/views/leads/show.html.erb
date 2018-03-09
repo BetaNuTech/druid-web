@@ -72,7 +72,7 @@
     <div class="preferences">
       <span>
         <strong>Move-In: </strong>
-        <%= @lead.preference.move_in %>
+        <%= long_date(@lead.preference.move_in) %>
       </span><br/>
       <span>
         <strong>Price: </strong>
@@ -103,7 +103,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <%= render partial: "notes/form", locals: {note: @lead.comments.build} %>
+        <%= render partial: "notes/lead_form", locals: {note: @lead.comments.build} %>
       </div>
     </div>
 
@@ -117,7 +117,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <%= link_to 'Edit', edit_lead_path(@lead) %> |
+        <%= link_to 'Edit Lead', edit_lead_path(@lead) %> |
         <%= link_to 'Back', :back %>
       </div>
     </div>

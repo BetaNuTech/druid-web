@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-md-6">
           <strong>Created:</strong>
-          <%= note.created_at %>
+          <%= long_datetime(note.created_at) %>
         </div>
         <div class="col-md-6">
           <strong>Author:</strong>
@@ -16,7 +16,7 @@
 
       <div class="row">
         <div class="col-md-6">
-          <strong>Lead Action:</strong>
+          <strong>Action:</strong>
           <%= note.lead_action.try(:name) || 'None' %>: <%= note.schedule %>
         </div>
         <div class="col-md-6">
@@ -32,11 +32,14 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-1 col-md-offset-11">
-          <%= link_to(note, { method: :delete, remote: true, confirm: 'Are you sure?' } ) do %><%= glyph(:delete) %><% end %>
+      <% if policy(note).edit? %>
+        <div class="row">
+          <div class="col-md-1 col-md-offset-11">
+            <%= link_to edit_note_path(note) do %><%= glyph(:edit) %><% end if policy(note).edit? %>
+            <%= link_to note, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(note).destroy? %>
+          </div>
         </div>
-      </div>
+      <% end %>
 
     </div>
   </div>

@@ -3,6 +3,14 @@ module ApplicationHelper
     datetime.present? ? datetime.strftime('%m-%d') : nil
   end
 
+  def long_datetime(datetime)
+    datetime.present? ? datetime.strftime('%B %e, %Y at %l:%M%p') : nil
+  end
+
+  def long_date(datetime)
+    datetime.present? ? datetime.strftime('%B %e, %Y') : nil
+  end
+
   def glyph(type)
     _text, glyph_class = GLYPHS.fetch(type.to_s,'')
     content_tag(:span, ' ', {class: glyph_class, "aria-hidden": true})
