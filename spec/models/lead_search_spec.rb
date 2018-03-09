@@ -130,6 +130,7 @@ RSpec.describe LeadSearch do
                                   first_name: "foo",
                                   last_name: "foo",
                                   id_number: "11223344",
+                                  sources: [LeadSource.first.id],
                                   text: ["foo"]
                                 })
         expect(search.full_options).to be_a(Hash)

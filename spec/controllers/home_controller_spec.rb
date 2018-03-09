@@ -4,6 +4,10 @@ RSpec.describe HomeController, type: :controller do
   include_context "users"
   render_views
 
+  before(:each) do
+    create(:lead)
+  end
+
   describe "when unauthenticated" do
     it "redirects to the login page at the root path" do
       get :dashboard
@@ -46,7 +50,7 @@ RSpec.describe HomeController, type: :controller do
         it "displays a link to Property Management" do
           get :dashboard
           expect(response).to be_success
-          expect(response.body).to match("Manage Properties")
+          expect(response.body).to match("Properties")
         end
 
         it "displays a link to Lead Management" do
@@ -84,7 +88,7 @@ RSpec.describe HomeController, type: :controller do
         it "displays a link to Property Management" do
           get :dashboard
           expect(response).to be_success
-          expect(response.body).to match("Manage Properties")
+          expect(response.body).to match("Properties")
         end
 
         it "displays a link to Lead Management" do
@@ -123,7 +127,7 @@ RSpec.describe HomeController, type: :controller do
         it "displays a link to Property Management" do
           get :dashboard
           expect(response).to be_success
-          expect(response.body).to match("Manage Properties")
+          expect(response.body).to match("Properties")
         end
 
         it "displays a link to Lead Management" do
