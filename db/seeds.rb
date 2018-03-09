@@ -75,3 +75,29 @@ rental_types.each do |rt_name|
     puts "[FAIL] (#{rt.errors.to_a})".red
   end
 end
+
+# LeadActions
+puts " * Creating Lead Actions"
+lead_actions = ['Send Email', 'Make Call', 'Send SMS', 'Tour Units', 'Other']
+lead_actions.each do |la_name|
+  print "   - #{la_name} "
+  la = LeadAction.new(name: la_name)
+  if la.save
+    puts "[OK]".green
+  else
+    puts "[FAIL] (#{la.errors.to_a})".red
+  end
+end
+
+# Reasons
+puts " * Creating Reaasons"
+reasons = ['First Contact', 'Follow-Up', 'Other']
+reasons.each do |r_name|
+  print "   - #{r_name} "
+  r = Reason.new(name: r_name)
+  if r.save
+    puts "[OK]".green
+  else
+    puts "[FAIL] (#{r.errors.to_a})".red
+  end
+end
