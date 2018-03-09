@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 ruby '2.4.3'
 
 git_source(:github) do |repo_name|
-  repo_name = '#{repo_name}/#{repo_name}' unless repo_name.include?('/')
-  'https://github.com/#{repo_name}.git'
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
+  "https://github.com/#{repo_name}.git"
 end
 
 gem 'rails', '~> 5.1'
@@ -20,14 +20,17 @@ gem 'delayed_job_active_record', '~> 4.1'
 gem 'awesome_print', '~> 1.8'
 gem 'pry-rails', '~> 0.3'
 gem 'pry-coolline', '~> 0.2'
-gem 'webpacker', "~> 3.2"
+gem 'webpacker', '~> 3.2'
 gem 'devise', '~> 4.3'
 gem 'colorize', '~> 0.8'
 gem 'pundit', '~> 1.1'
 gem 'audited', '~> 4.5'
 gem 'aasm', '~> 4.12'
-gem 'pg_search', "~> 2.1"
-gem 'attr_encrypted', "~> 3.1"
+gem 'pg_search', '~> 2.1'
+gem 'attr_encrypted', '~> 3.1'
+gem 'ice_cube', '~> 0.16'
+gem 'schedulable', '~> 0.0'
+gem 'simple_calendar', '~> 2.2'
 
 group :development, :test do
   gem 'pry-doc', '~> 0.11'
@@ -50,7 +53,7 @@ group :test do
 end
 
 group :development do
-  gem 'rubocop', "~> 0.52", require: false
+  gem 'rubocop', '~> 0.52', require: false
   gem 'web-console', '~> 3.5'
   gem 'listen', '~> 3.1', '< 3.2'
   gem 'spring', '~> 2.0'
