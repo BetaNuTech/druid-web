@@ -34,7 +34,7 @@ class NotePolicy < ApplicationPolicy
         allowed = Note::ALLOWED_PARAMS
       when user.agent?
         allowed = Note::ALLOWED_PARAMS
-        if record.user.present? && record.user != user
+        if record.respond_to?(:user) && record.user.present? && record.user != user
           allowed -= [:user_id]
         end
     end
