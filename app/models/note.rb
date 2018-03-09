@@ -16,9 +16,13 @@
 class Note < ApplicationRecord
   ### Class Concerns/Extensions
   audited
+  acts_as_schedulable :schedule
 
   ### Constants
-  ALLOWED_PARAMS = [ :id, :reason_id, :lead_action_id, :notable_id, :notable_type, :content ]
+  ALLOWED_PARAMS = [
+    :id, :reason_id, :lead_action_id, :notable_id, :notable_type, :content,
+    { schedule_attributes: Schedulable::ScheduleSupport.param_names }
+  ]
 
   ### Validations
   #validates :notable_id, :notable_type,

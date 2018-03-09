@@ -90,7 +90,7 @@ lead_actions.each do |la_name|
 end
 
 # Reasons
-puts " * Creating Reaasons"
+puts " * Creating Reasons"
 reasons = ['First Contact', 'Follow-Up', 'Other']
 reasons.each do |r_name|
   print "   - #{r_name} "

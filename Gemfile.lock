@@ -381,9 +381,9 @@ DEPENDENCIES
   rspec-rails (~> 3.7)
   rubocop (~> 0.52)
   sass-rails (~> 5.0)
-  schedulable (~> 0.0)
+  schedulable
   selenium-webdriver (~> 3.7)
-  simple_calendar (~> 2.2)
+  simple_calendar
   simplecov (~> 0.15)
   spring (~> 2.0)
   spring-watcher-listen (~> 2.0)

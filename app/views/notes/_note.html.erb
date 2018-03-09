@@ -5,7 +5,7 @@
     <div class="fieldset_content">
       <div class="row">
         <div class="col-md-6">
-          <strong>Date:</strong>
+          <strong>Created:</strong>
           <%= note.created_at %>
         </div>
         <div class="col-md-6">
@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-md-6">
           <strong>Lead Action:</strong>
-          <%= note.lead_action.try(:name) || 'None' %>
+          <%= note.lead_action.try(:name) || 'None' %>: <%= note.schedule %>
         </div>
         <div class="col-md-6">
           <strong>Reason:</strong>

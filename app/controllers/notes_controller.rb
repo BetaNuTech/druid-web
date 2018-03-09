@@ -32,7 +32,7 @@ class NotesController < ApplicationController
   def create
     @note = Note.new(note_params)
     authorize @note
-    @note.user = current_user
+    @note.user_id = current_user.id
 
     respond_to do |format|
       if @note.save
@@ -83,6 +83,6 @@ class NotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def note_params
-      params.require(:note).permit(:user_id, :lead_action_id, :reason_id, :notable_id, :notable_type, :content)
+      params.require(:note).permit(policy(Note).allowed_params)
     end
 end
