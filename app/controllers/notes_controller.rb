@@ -1,4 +1,6 @@
 class NotesController < ApplicationController
+  DEFAULT_LIMIT = 20
+
   before_action :authenticate_user!
   before_action :set_note, only: [:show, :edit, :update, :destroy]
   after_action :verify_authorized
@@ -7,7 +9,8 @@ class NotesController < ApplicationController
   # GET /notes.json
   def index
     authorize Note
-    @notes = policy_scope(Note)
+    @start_date = (params[:start_date] || Date.today.beginning_of_month.to_s )
+    @notes = policy_scope(Note).limit(set_limit)
   end
 
   # GET /notes/1
@@ -77,6 +80,12 @@ class NotesController < ApplicationController
   end
 
   private
+    def set_limit
+      @limit = (params[:limit] || DEFAULT_LIMIT).to_i
+      @limit_set = ( @limit != DEFAULT_LIMIT )
+      @limit
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_note
       @note = policy_scope(Note).find(params[:id])

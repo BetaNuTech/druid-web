@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6">
-      <h1>Events/Notes</h1>
+      <h1>Events/Notes Calendar</h1>
     </div>
     <% if policy(Note).new? %>
       <div class="col-md-6 text-right">
@@ -31,53 +31,37 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Author</th>
-            <th>Subject</th>
-            <th>Action</th>
-            <th>Reason</th>
-            <th>Content</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @notes.each do |note| %>
-            <tr>
-              <td class="text-nowrap"><%= note.user.try(:name) || 'None' %></td>
-              <td class="text-nowrap">
-                <%= render partial: "notes/notable_name", locals: {note: note} %>
-              </td>
-              <td class="text-nowrap">
-                <%= note.lead_action.name %>
-              </td>
-              <td>
-                <%= note.reason.name %><br/>
-                <small><%= note.schedule %></small>
-              </td>
-              <td width="33%">
-                <p>
-                  <%= note.content %>
-                </p>
-                <small>Posted <%= long_datetime(note.created_at) %></small>
-                <% if note.created_at != note.updated_at %>
-                  <br/>
-                  <small>Updated <%= long_datetime(note.updated_at) %></small>
-                <% end %>
-              </td>
-              <td class="text-nowrap">
-                <% if policy(note).edit? %>
-                  <%= link_to edit_note_path(note) do %><%= glyph(:edit) %><% end %>&nbsp;
-                <% end %>
-                <% if policy(note).destroy? %>
-                  <%= link_to note, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Upcoming</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <%= render partial: "notes", locals: { notes: @notes.upcoming } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Previous</h3>
+        </div>
+        <% unless @limit_set %>
+          <div class="col-md-6 text-right" style="position: relative; top: 2em;">
+            <%= link_to(notes_path(limit: 999, start_date: @start_date)) do %>
+              <span class="btn btn-xs btn-info">View All</span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <%= render partial: "notes", locals: { notes: @notes.previous } %>
+        </div>
+      </div>
     </div>
   </div>
   <div class="row">

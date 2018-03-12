@@ -1,0 +1,48 @@
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Author</th>
+            <th>Subject</th>
+            <th>Action</th>
+            <th>Reason</th>
+            <th>Content</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% notes.each do |note| %>
+            <tr>
+              <td class="text-nowrap"><%= note.user.try(:name) || 'None' %></td>
+              <td class="text-nowrap">
+                <%= render partial: "notes/notable_name", locals: {note: note} %>
+              </td>
+              <td class="text-nowrap">
+                <%= note.lead_action.name %>
+              </td>
+              <td>
+                <%= note.reason.name %><br/>
+                <small><%= note.schedule %></small>
+              </td>
+              <td width="33%">
+                <p>
+                  <%= note.content %>
+                </p>
+                <small>Posted <%= long_datetime(note.created_at) %></small>
+                <% if note.created_at != note.updated_at %>
+                  <br/>
+                  <small>Updated <%= long_datetime(note.updated_at) %></small>
+                <% end %>
+              </td>
+              <td class="text-nowrap">
+                <% if policy(note).edit? %>
+                  <%= link_to edit_note_path(note) do %><%= glyph(:edit) %><% end %>&nbsp;
+                <% end %>
+                <% if policy(note).destroy? %>
+                  <%= link_to note, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>

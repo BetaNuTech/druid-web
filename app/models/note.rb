@@ -36,6 +36,28 @@ class Note < ApplicationRecord
 
   ### Class Methods
 
+  def self.having_schedule
+    self.joins("JOIN schedules ON schedules.schedulable_type = 'Note' AND schedules.schedulable_id = notes.id")
+  end
+
+  def self.upcoming
+    skope = self.having_schedule.
+      where("schedules.date >= ?", Date.today)
+    return skope
+  end
+
+  def self.previous
+    skope = self.having_schedule.
+      where("schedules.date < ?", Date.today)
+    return skope
+  end
+
+  def self.with_start_date(date)
+    start_date = ( Date.parse(date).beginning_of_month rescue (Date.today.beginning_of_month) )
+    self.having_schedule.
+      where("schedules.date >= ?", start_date)
+  end
+
   ### Instance Methods
   def start_time
     self.schedule.try(:date)
