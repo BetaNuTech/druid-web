@@ -61,22 +61,23 @@ module Leads
       # |-----------------------+-------------------------|
       #
       def map(data)
+        Rails.logger.warn data.inspect
         return {
           title: '',
-          first_name: data[:name] || '(not provided)',
+          first_name: sanitize( data[:first_name] || '(not provided)' ),
           last_name: '',
           referral: nil,
-          phone1: data[:phone],
+          phone1: sanitize( data[:phone] ),
           phone2: nil,
-          email: data[:email],
+          email: sanitize( data[:email] ),
           fax: nil,
           preference_attributes: {
-						baths: data[:numBathroomsSought],
-						beds: data[:numBedroomsSought],
-						notes: ( data[:introduction] || '' ) + "; " + ( data[:message] || '' ),
-						smoker: data[:smoker],
+						baths: sanitize( data[:numBathroomsSought] ),
+						beds: sanitize( data[:numBedroomsSought] ),
+						notes: sanitize( data[:introduction] || '' ) + "; " + ( data[:message] || '' ),
+						smoker: sanitize( data[:smoker] ),
             raw_data: data.to_json,
-            pets: !(JSON.parse(data[:petDetailsJson] || '')).empty?
+            pets: !(JSON.parse(data[:petDetailsJson] || '{}')).empty?
           }
         }
       end
@@ -96,6 +97,10 @@ module Leads
       def filter_params(params)
         # STUB
         return params
+      end
+
+      def sanitize(value)
+        return ActionController::Base.helpers.sanitize(value)
       end
 
     end
