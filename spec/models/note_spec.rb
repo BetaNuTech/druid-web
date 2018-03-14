@@ -45,5 +45,28 @@ RSpec.describe Note, type: :model do
     it "belongs to a user" do
       expect(note.user).to be_a(User)
     end
+
+    it "returns the schedule start time" do
+      t = Time.now
+      d = Date.today
+      note.schedule = Schedule.new(time: t, date: d)
+      note.save!
+      expect(note.start_time).to eq(d)
+    end
+
+    it "returns notes after a scheduled date" do
+      t = Time.now
+      d = Date.today
+      note.schedule = Schedule.new(time: t, date: d)
+      note.save!
+      expect(Note.with_start_date(d)).to eq([note])
+    end
+
+    it "returns 'notable' information" do
+      lead = create(:lead)
+      note.notable = lead
+      note.save!
+      expect(note.notable_subject).to match("(Lead)")
+    end
   end
 end

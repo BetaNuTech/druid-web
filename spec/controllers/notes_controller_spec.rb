@@ -181,6 +181,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an unroled user" do
       it "should fail and redirect" do
+        note.user = unroled_user
+        note.save!
         sign_in unroled_user
         get :show, params: {id: note.id}
         expect(response).to be_redirect
@@ -189,6 +191,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an agent" do
       it "should succeed" do
+        note.user = agent
+        note.save!
         sign_in agent
         get :show, params: {id: note.id}
         expect(response).to be_success
@@ -197,6 +201,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an operator" do
       it "should succeed" do
+        note.user = operator
+        note.save!
         sign_in operator
         get :show, params: {id: note.id}
         expect(response).to be_success
@@ -205,6 +211,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an administrator" do
       it "should succeed" do
+        note.user = administrator
+        note.save!
         sign_in administrator
         get :show, params: {id: note.id}
         expect(response).to be_success
@@ -225,6 +233,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an unroled user" do
       it "should fail and redirect" do
+        note.user = unroled_user
+        note.save!
         sign_in unroled_user
         get :edit, params: {id: note.id}
         expect(response).to be_redirect
@@ -232,15 +242,19 @@ RSpec.describe NotesController, type: :controller do
     end
 
     describe "as an agent" do
-      it "should fail and redirect" do
+      it "should succeed" do
+        note.user = agent
+        note.save!
         sign_in agent
         get :edit, params: {id: note.id}
-        expect(response).to be_redirect
+        expect(response).to be_success
       end
     end
 
     describe "as an operator" do
       it "should succeed" do
+        note.user = operator
+        note.save!
         sign_in operator
         get :edit, params: {id: note.id}
         expect(response).to be_success
@@ -249,6 +263,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an administrator" do
       it "should succeed" do
+        note.user = administrator
+        note.save!
         sign_in administrator
         get :edit, params: {id: note.id}
         expect(response).to be_success
@@ -272,6 +288,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an unroled user" do
       it "should fail and redirect" do
+        note.user = unroled_user
+        note.save!
         sign_in unroled_user
         expect{
           put :update, params: {id: note.id, note: updated_attributes}
@@ -282,18 +300,22 @@ RSpec.describe NotesController, type: :controller do
     end
 
     describe "as an agent" do
-      it "should fail and redirect" do
+      it "should succeed" do
+        note.user = agent
+        note.save!
         sign_in agent
         expect{
           put :update, params: {id: note.id, note: updated_attributes}
           expect(response).to be_redirect
           note.reload
-        }.to_not change{note.content}
+        }.to change{note.content}
       end
     end
 
     describe "as an operator" do
       it "should succeed" do
+        note.user = operator
+        note.save!
         sign_in operator
         expect{
           put :update, params: {id: note.id, note: updated_attributes}
@@ -306,6 +328,8 @@ RSpec.describe NotesController, type: :controller do
     describe "as an administrator" do
       before do
         note
+        note.user = administrator
+        note.save!
         sign_in administrator
       end
 
@@ -338,6 +362,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an unroled user" do
       it "should fail and redirect" do
+        note.user = unroled_user
+        note.save!
         sign_in unroled_user
         expect {
           delete :destroy, params: {id: note.id}
@@ -347,17 +373,21 @@ RSpec.describe NotesController, type: :controller do
     end
 
     describe "as an agent" do
-      it "should fail and redirect" do
+      it "should succeed" do
+        note.user = agent
+        note.save!
         sign_in agent
         expect {
           delete :destroy, params: {id: note.id}
           expect(response).to be_redirect
-        }.to_not change{Note.count}
+        }.to change{Note.count}
       end
     end
 
     describe "as an operator" do
       it "should succeed" do
+        note.user = operator
+        note.save!
         sign_in operator
         expect {
           delete :destroy, params: {id: note.id}
@@ -368,6 +398,8 @@ RSpec.describe NotesController, type: :controller do
 
     describe "as an administrator" do
       it "should succeed" do
+        note.user = administrator
+        note.save!
         sign_in administrator
         expect {
           delete :destroy, params: {id: note.id}
