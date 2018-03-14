@@ -15,7 +15,6 @@
 
 class Note < ApplicationRecord
   ### Class Concerns/Extensions
-  audited
   acts_as_schedulable :schedule
 
   ### Constants
@@ -29,6 +28,7 @@ class Note < ApplicationRecord
     #presence: true
 
   ### Associations
+  # belongs_to :schedule # via: acts_as_schedulable
   belongs_to :lead_action, required: false
   belongs_to :notable, polymorphic: true, required: false
   belongs_to :reason, required: false
@@ -37,7 +37,7 @@ class Note < ApplicationRecord
   ### Class Methods
 
   def self.having_schedule
-    self.joins("JOIN schedules ON schedules.schedulable_type = 'Note' AND schedules.schedulable_id = notes.id")
+    self.joins("INNER JOIN schedules ON schedules.schedulable_type = 'Note' AND schedules.schedulable_id = notes.id")
   end
 
   def self.upcoming
