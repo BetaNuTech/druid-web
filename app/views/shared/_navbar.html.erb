@@ -61,12 +61,12 @@
                     <% end %>
                   </li>
                   <li>
-                    <%= link_to(search_leads_path(lead_search: {states: ['claimed']})) do %>
+                    <%= link_to(search_leads_path(lead_search: {states: Lead::CLAIMED_STATES})) do %>
                       <span class="glyphicon glyphicon-flag"></span> Claimed Leads
                     <% end %>
                   </li>
                   <li>
-                    <%= link_to(search_leads_path(lead_search: {states: ['converted']})) do %>
+                    <%= link_to(search_leads_path(lead_search: {states: Lead::CLOSED_STATES })) do %>
                       <span class="glyphicon glyphicon-check"></span> Closed Leads
                     <% end %>
                   </li>

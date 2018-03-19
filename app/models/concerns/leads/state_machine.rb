@@ -2,9 +2,13 @@ module Leads
   module StateMachine
     extend ActiveSupport::Concern
 
+    CLAIMED_STATES = %w{prospect appointment application approved denied movein resident}
+    CLOSED_STATES = %w{ disqualified abandoned resident exresident }
+
     included do
       # https://github.com/aasm/aasm
       include AASM
+
 
       aasm column: :state do
         state :open, initial: true
@@ -15,7 +19,7 @@ module Leads
         state :denied
         state :movein
         state :resident
-        state :former_resident
+        state :exresident
         state :disqualified
         state :abandoned
 
@@ -34,7 +38,7 @@ module Leads
         end
 
         event :claim do
-          transitions from: [ :open, :former_resident, :abandoned ], to: :prospect,
+          transitions from: [ :open, :exresident, :abandoned ], to: :prospect,
             after: ->(*args) { event_set_user(*args)}
         end
 
@@ -43,7 +47,7 @@ module Leads
         end
 
         event :discharge do
-          transitions from: [:resident], to: :former_resident
+          transitions from: [:resident], to: :exresident
         end
 
         event :disqualify do
@@ -72,7 +76,7 @@ module Leads
       end
 
       def self.active
-        where.not(state: ['disqualified', 'converted'])
+        where.not(state: CLOSED_STATES)
       end
 
       def event_set_user(claimant=nil)
