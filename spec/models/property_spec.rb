@@ -154,6 +154,14 @@ RSpec.describe Property, type: :model do
       end
     end
 
+    describe "engagement_policies" do
+      it "has many engagement_policies" do
+        engagement_policy = create(:engagement_policy, property: active_property)
+        active_property.reload
+        expect(active_property.engagement_policies).to eq([engagement_policy])
+      end
+    end
+
     describe "class methods" do
       describe "find_by_code_and_source" do
         let(:property1) { create(:property) }

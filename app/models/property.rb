@@ -38,6 +38,7 @@ class Property < ApplicationRecord
   has_many :unit_types, dependent: :destroy
   has_many :housing_units, class_name: 'Unit', dependent: :destroy
   has_many :residents, dependent: :destroy
+  has_many :engagement_policies, dependent: :destroy
 
   ### Validations
   validates :name, presence: true, uniqueness: true
