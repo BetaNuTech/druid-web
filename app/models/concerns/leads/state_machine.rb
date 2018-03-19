@@ -8,28 +8,60 @@ module Leads
 
       aasm column: :state do
         state :open, initial: true
-        state :claimed
-        state :converted
+        state :prospect
+        state :appointment
+        state :application
+        state :approved
+        state :denied
+        state :movein
+        state :resident
+        state :former_resident
         state :disqualified
+        state :abandoned
 
-        event :claim do
-          transitions from: :open, to: :claimed,
-            after: ->(*args) { event_set_user(*args)}
-        end
 
         event :abandon do
-          transitions from: :claimed, to: :open,
+          transitions from: [ :prospect, :appointment, :application, :approved, :denied ], to: :abandoned,
             after: ->(*args) { event_clear_user(*args) }
         end
 
-        event :convert do
-          transitions from: [ :open, :claimed ], to: :converted,
-            after: ->(*args) { set_priority_zero }
+        event :apply do
+          transitions from: [:appointment], to: :application
+        end
+
+        event :approve do
+          transitions from: [:application, :denied], to: :approved
+        end
+
+        event :claim do
+          transitions from: [ :open, :former_resident, :abandoned ], to: :prospect,
+            after: ->(*args) { event_set_user(*args)}
+        end
+
+        event :deny do
+          transitions from: [:application, :approved, :movein], to: :denied
+        end
+
+        event :discharge do
+          transitions from: [:resident], to: :former_resident
         end
 
         event :disqualify do
-          transitions from: [ :open, :claimed, :converted ], to: :disqualified,
+          transitions from: [ :open, :prospect, :appointment, :application, :denied ], to: :disqualified,
             after: ->(*args) { set_priority_zero }
+        end
+
+        event :lodge do
+          transitions from: [:movein], to: :resident,
+            after: ->(*args) { set_priority_zero }
+        end
+
+        event :move_in do
+          transitions from: [:approved], to: :movein
+        end
+
+        event :schedule do
+          transitions from: [:prospect], to: :appointment
         end
 
         event :requalify do

@@ -71,7 +71,7 @@ class Note < ApplicationRecord
         "%s (%s)" % [ notable.try(:name), notable_type ]
       end
     else
-      None
+      'None'
     end
   end
 

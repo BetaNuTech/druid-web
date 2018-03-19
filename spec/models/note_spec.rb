@@ -67,6 +67,13 @@ RSpec.describe Note, type: :model do
       note.notable = lead
       note.save!
       expect(note.notable_subject).to match("(Lead)")
+      note.notable = note.user
+      note.save!
+      expect(note.notable_subject(note.user)).to match("Personal Event/Note")
+      expect(note.notable_subject).to match("(User)")
+      note.notable = nil
+      note.save!
+      expect(note.notable_subject).to eq("None")
     end
   end
 end

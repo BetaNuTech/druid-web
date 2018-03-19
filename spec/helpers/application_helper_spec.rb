@@ -9,6 +9,14 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  describe "long_datetime" do
+    it "should format a long date" do
+      d = DateTime.now
+      out = long_datetime d
+      expect(out).to match(d.strftime('%B %e, %Y at %l:%M%p'))
+    end
+  end
+
   describe "http_auth_credentials" do
     it "should return credentials from ENVVARS" do
       authname = 'name'

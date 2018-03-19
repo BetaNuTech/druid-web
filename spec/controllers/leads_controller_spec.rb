@@ -413,7 +413,7 @@ RSpec.describe LeadsController, type: :controller do
       post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
       expect(response).to be_success
       lead.reload
-      assert lead.claimed?
+      assert lead.prospect?
       expect(lead.user).to eq(agent)
     end
 

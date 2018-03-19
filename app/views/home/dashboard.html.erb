@@ -91,7 +91,7 @@
                 </td>
               </tr>
               <tr>
-                <% lead = Lead.claimed.offset(rand(Lead.open.count)).first || Lead.first %>
+                <% lead = Lead.prospect.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:pin) %></td>
                 <td>10:00AM</td>
                 <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>

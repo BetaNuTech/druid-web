@@ -113,26 +113,26 @@ RSpec.describe Lead, type: :model do
       assert lead.open?
     end
 
-    it "transitions from open to claimed" do
+    it "transitions from open to prospect" do
       assert lead.open?
       lead.claim!
-      assert lead.claimed?
+      assert lead.prospect?
     end
 
-    it "optionally sets the user when claimed" do
+    it "optionally sets the user when prospect" do
       assert lead.open?
       lead.aasm.fire(:claim, agent)
       assert lead.save
       lead.reload
-      assert lead.claimed?
+      assert lead.prospect?
       expect(lead.user).to eq(agent)
     end
 
-    it "transitions from claimed to converted" do
+    it "transitions from prospect to scheduled" do
       assert lead.open?
       lead.claim!
-      lead.convert!
-      assert lead.converted?
+      lead.schedule!
+      assert lead.appointment?
     end
 
     it "transitions to disqualified" do
@@ -157,17 +157,17 @@ RSpec.describe Lead, type: :model do
     end
 
     it "lists valid events" do
-      expect(lead.permitted_state_events).to eq([:claim, :convert, :disqualify])
+      expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify].sort)
       lead.claim!
-      expect(lead.permitted_state_events).to eq([:abandon, :convert, :disqualify])
+      expect(lead.permitted_state_events.sort).to eq([:abandon, :schedule, :disqualify].sort)
       lead.disqualify!
       expect(lead.permitted_state_events).to eq([:requalify])
     end
 
     it "lists valid states" do
-      expect(lead.permitted_states).to eq([:claimed, :converted, :disqualified])
+      expect(lead.permitted_states).to eq([:prospect, :disqualified])
       lead.claim!
-      expect(lead.permitted_states).to eq([:open, :converted, :disqualified])
+      expect(lead.permitted_states.sort).to eq([:appointment, :abandoned, :disqualified].sort)
     end
 
     it "lists 'active' leads" do
@@ -182,10 +182,12 @@ RSpec.describe Lead, type: :model do
         expect(lead.priority).to eq("zero")
       end
 
-      it "should set priorty to zero when converted" do
+      it "should set priorty to zero when lodged" do
         lead.priority_low!
+        lead.state = "movein"
+        lead.save!
         expect(lead.priority).to eq("low")
-        lead.convert!
+        lead.lodge!
         expect(lead.priority).to eq("zero")
       end
 
@@ -203,7 +205,7 @@ RSpec.describe Lead, type: :model do
         refute lead.user.present?
         lead.trigger_event(event_name: 'claim', user: agent)
         lead.reload
-        assert lead.claimed?
+        assert lead.prospect?
         expect(lead.user).to eq(agent)
       end
 
@@ -222,7 +224,7 @@ RSpec.describe Lead, type: :model do
         lead.trigger_event(event_name: 'abandon')
         lead.reload
         expect(lead.user).to be_nil
-        assert lead.open?
+        assert lead.abandoned?
       end
 
       it "should do nothing if the specified event is invalid/unavailable" do
