@@ -29,7 +29,7 @@
               <td style="font-size: 1.5em;"><%= glyph(lead_action.glyph) %></td>
               <td><%= lead_action.description %></td>
               <td><%= lead_action.active ? "Yes" : "No" %></td>
-              <td>
+              <td class="text-nowrap">
                 <%= link_to lead_action do %><%= glyph(:show) %><% end %>&nbsp;
                 <%= link_to edit_lead_action_path(lead_action) do %><%= glyph(:edit) %><% end %>&nbsp;
                 <%= link_to lead_action, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
