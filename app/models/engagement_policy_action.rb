@@ -9,7 +9,7 @@
 #  deadline               :decimal(, )
 #  retry_count            :integer          default(0)
 #  retry_delay            :decimal(, )      default(0.0)
-#  retry_delay_multiplier :string
+#  retry_delay_multiplier :string           default("none")
 #  score                  :decimal(, )      default(1.0)
 #  active                 :boolean          default(TRUE)
 #  created_at             :datetime         not null
@@ -40,5 +40,4 @@ class EngagementPolicyAction < ApplicationRecord
 
   ### Instance Methods
 
-  private
 end

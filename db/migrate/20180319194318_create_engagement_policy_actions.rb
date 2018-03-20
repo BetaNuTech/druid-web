@@ -14,6 +14,6 @@ class CreateEngagementPolicyActions < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    add_index :engagement_policy_actions, [:engagement_policy_id, :lead_action_id], name: "engagement_policy_covering"
+    add_index :engagement_policy_actions, [:engagement_policy_id, :lead_action_id], name: "engagement_policy_action_covering"
   end
 end
