@@ -12,9 +12,23 @@
 #
 
 class LeadAction < ApplicationRecord
+  ### Class Concerns/Extensions
+  extend Seeds::Seedable
+
+  ### Constants
   ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active]
 
+  ### Associations
+
+  ### Validations
   validates :name,
     presence: true,
     uniqueness: { case_sensitive: false }
+
+  ### Class Methods
+
+
+  ### Instance Methods
+
+  private
 end

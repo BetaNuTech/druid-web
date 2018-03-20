@@ -1,0 +1,17 @@
+<%= form_with(model: engagement_policy, local: true) do |form| %>
+  <% if engagement_policy.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(engagement_policy.errors.count, "error") %> prohibited this engagement_policy from being saved:</h2>
+
+      <ul>
+      <% engagement_policy.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,45 @@
+---
+:lead_actions:
+  :key: :name
+  :data:
+  - :name: Contact Lead for the first time (Phone/SMS/Email)
+    :description: First contact
+    :active: true
+  - :name: Request Appointment (Phone/SMS/Email)
+    :description: Request to schedule an appointment with the Lead
+    :active: true
+  - :name: Schedule Appointment
+    :description: Schedule appointment with Lead
+    :active: true
+  - :name: Record Appointment Notes
+    :description: Record notes from the appointment, or why the lead did not attend.
+    :active: true
+  - :name: Prepare Application
+    :description: Prepare leasing application
+    :active: true
+  - :name: Deliver Application to Lead
+    :description: Prepare leasing application
+    :active: true
+  - :name: Process Application
+    :description: Push through the approval process
+    :active: true
+  - :name: Make Call
+    :description:
+    :active: true
+  - :name: Send Email
+    :description:
+    :active: true
+  - :name: Send SMS
+    :description:
+    :active: true
+  - :name: Tour Units with Lead
+    :description:
+    :active: true
+  - :name: Unit Inspection (Daily)
+    :description: Inspect units before tours
+    :active: true
+  - :name: Other
+    :description: Catch-all action. Use sparingly.
+    :active: true
+
+

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   resources :units
   resources :users
   resources :residents
+  resources :engagement_policies
 
   resources :properties do
     resources :units
