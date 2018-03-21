@@ -29,8 +29,9 @@ gem 'aasm', '~> 4.12'
 gem 'pg_search', '~> 2.1'
 gem 'attr_encrypted', '~> 3.1'
 gem 'ice_cube', '~> 0.16'
-gem 'schedulable'
-gem 'simple_calendar'
+gem 'schedulable', "~> 0.0"
+gem 'simple_calendar', "~> 2.2"
+gem 'httparty', "~> 0.16"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.11'
