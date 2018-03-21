@@ -1,0 +1,101 @@
+<LeadManagement>
+	<Prospects>
+		<Prospect>
+			<Customers>
+				<Customer Type="prospect">
+					<Identification IDType="ThirdPartyID" IDValue="D04" OrganizationName="Apts1-5"/>
+					<Identification IDValue="p0007725" IDType="ProspectID" OrganizationName="Yardi"/>
+					<Identification IDType="PropertyID" IDValue="ils001" OrganizationName="Yardi"/>
+					<Name>
+						<FirstName>Lawrence</FirstName>
+						<LastName>Scott</LastName>
+					</Name>
+					<Address AddressType="current">
+						<AddressLine1>1234 Main St.</AddressLine1>
+						<AddressLine2/>
+						<City>Mountain View</City>
+						<State>CA</State>
+						<PostalCode>94040</PostalCode>
+					</Address>
+					<Phone PhoneType="home">
+						<PhoneNumber>(555) 557-1234</PhoneNumber>
+					</Phone>
+					<Phone PhoneType="cell">
+					</Phone>
+					<PhoneNumber>(555)555-1234</PhoneNumber>
+					<Email>slawrence@email.com</Email>
+					<Lease>
+						<ExpectedMoveInDate>2011-09-01</ExpectedMoveInDate>
+						<LeaseFromDate>2011-09-01</LeaseFromDate>
+						<LeaseToDate>2012-08-30</LeaseToDate>
+						<ResponsibleForLease>true</ResponsibleForLease>
+					</Lease>
+				</Customer>
+			</Customers>
+			<CustomerPreferences>
+				<TargetMoveInDate>2011-09-01</TargetMoveInDate>
+				<DesiredFloorplan>>ils2b2</DesiredFloorplan>
+				<DesiredUnit>
+				</DesiredUnit>
+				<MarketingName>1211</MarketingName>
+				<DesiredRent Exact="1500.00"/>
+				<DesiredNumBedrooms Exact="1"/>
+				<DesiredLeaseTerms>12</DesiredLeaseTerms>
+				<Comment>Imported Source: Apartments.com</Comment>
+			</CustomerPreferences>
+			<Events>
+				<Event EventType="WalkIn" EventDate="2011-08-10T10:40:00">
+					<EventID IDValue="10243"/>
+					<Agent>
+						<AgentName>
+							<FirstName>Leslie</FirstName>
+							<LastName>Sparks</LastName>
+						</AgentName>
+					</Agent>
+					<EventReasons>Test</EventReasons>
+					<FirstContact>true</FirstContact>
+					<TransactionSource>Follow Up</TransactionSource>
+				</Event>
+				<Event EventType="Show" EventDate="2011-08-18T13:15:00.0">
+					<EventID IDValue="10367" IDType="1211"/>
+					<Agent>
+						<AgentName>
+							<FirstName>John</FirstName>
+							<LastName>Johnson</LastName>
+						</AgentName>
+					</Agent>
+					<EventReasons>Follow Up</EventReasons>
+					<FirstContact>false</FirstContact>
+					<Comments>Visit another apt</Comments>
+				</Event>
+				<Event EventType="Application" EventDate="2011-08-23T00:00:00">
+					<EventID IDValue="10443"/>
+					<Agent>
+						<AgentName>
+							<FirstName/>
+							<LastName>Bill Long</LastName>
+						</AgentName>
+					</Agent>
+				</Event>
+				<Event EventType="Approve" EventDate="2011-08-23T00:00:00">
+					<EventID IDValue="10446"/>
+					<Agent>
+						<AgentName>
+							<FirstName/>
+							<LastName>Bill Long</LastName>
+						</AgentName>
+					</Agent>
+				</Event>
+				<Event EventType="LeaseSign" EventDate="2011-08-23T00:00:00">
+					<EventID IDValue="10543"/>
+					<Agent>
+						<AgentName>
+							<FirstName/>
+							<LastName>Bill Long</LastName>
+						</AgentName>
+					</Agent>
+				</Event>
+			</Events>
+		</Prospect>
+	</Prospects>
+</LeadManagement>

@@ -1,4 +1,4 @@
-require_relative 'voyager/voyager'
+require_relative './voyager/voyager'
 
 module Yardi
 
