@@ -52,6 +52,7 @@ module Leads
       parse_result = @parser.new(@data).parse
 
       @lead = Lead.new(parse_result.lead)
+      @lead.priority = "urgent"
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
 
