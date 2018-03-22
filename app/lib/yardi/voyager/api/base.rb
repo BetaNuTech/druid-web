@@ -34,7 +34,6 @@ module Yardi
             'Content-Type' => 'text/xml; charset=utf-8',
             'SOAPAction' => ( "http://%{host}/YSI.Interfaces.WebServices/ItfILSGuestCard/%{method}" %
                              {host: 'tempuri.org', method: method} )
-                             # {serverhost: config[:serverhost], method: method} )
           }
         end
 

@@ -32,13 +32,14 @@ gem 'ice_cube', '~> 0.16'
 gem 'schedulable', "~> 0.0"
 gem 'simple_calendar', "~> 2.2"
 gem 'httparty', "~> 0.16"
+gem 'nokogiri', "~> 1.8"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.11'
   gem 'pry-stack_explorer', '~> 0.4'
   gem 'pry-byebug', '~> 3.5'
   gem 'byebug', '~> 9.1', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'bundler-audit', '~> 0.6'
+  gem 'bundler-audit', "~> 0.6"
   gem 'faker', '~> 1.7'
   gem 'factory_bot_rails', '~> 4.8', require: false
 end
