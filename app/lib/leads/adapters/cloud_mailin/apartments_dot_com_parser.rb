@@ -30,9 +30,9 @@ module Leads
           beds = nil
           notes = ( body.match(/Comments: (.+)Property Information/m)[1] rescue '(Parse Error)' ).strip
           smoker = nil
-          raw_data = ''
           pets = nil
           move_in = (Date.parse(body.match(/Move Date: (.*)$/)[1]) rescue nil)
+          raw_data = ''
 
           parsed = {
             title: title,

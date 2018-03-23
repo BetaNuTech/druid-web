@@ -1,3 +1,7 @@
+require_relative './adapters/druid'
+require_relative './adapters/zillow'
+require_relative './adapters/cloudmailin'
+
 module Leads
   module Adapters
     # List valid/enabled adapter classes Here
