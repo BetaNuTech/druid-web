@@ -26,7 +26,7 @@ module Leads
           fax = nil
           baths = nil
           beds = nil
-          notes = ( body.match(/Comments: (.+)Property Information/m)[1] rescue '(Parse Error)' ).strip
+          notes = ( body.match(/Comments: (.+)Property Information/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," ")
           smoker = nil
           raw_data = ''
           pets = nil

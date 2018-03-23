@@ -7,11 +7,8 @@ module Leads
   module Adapters
     module CloudMailin
 
-      # All CloudMailin Parsers loaded, except NullParser
-      PARSERS = Leads::Adapters::CloudMailin.constants.
-        select{|c| c.to_s.match(/^(?:(?!Null)).+Parser$/)}.
-        map{|x| Leads::Adapters::CloudMailin.const_get(x)}
-
+      # All Valid CloudMailin Parsers except NullParser
+      PARSERS = [ RentDotComParser, ApartmentsDotComParser, ZillowParser ]
 
       class Parser
         attr_reader :parser, :data
