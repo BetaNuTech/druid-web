@@ -31,7 +31,8 @@ module Leads
           notes = ( body.match(/Comments: (.+)Property Information/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," ")
           smoker = nil
           pets = nil
-          move_in = (Date.parse(body.match(/Move Date: (.*)$/)[1]) rescue nil)
+          move_in = ( (body.match(/Move Date: (.*)$/)[1]) rescue nil )
+          move_in = (DateTime.strptime(move_in, "%m/%d/%Y") rescue nil)
           raw_data = ''
 
           parsed = {

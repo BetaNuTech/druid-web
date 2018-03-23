@@ -31,6 +31,7 @@ module Leads
           raw_data = ''
           pets = nil
           move_in = ( body.match(/\[Moving Date\] (.+)/)[1] rescue '(Parse Error)' ).strip.gsub("\n"," ")
+          move_in = (DateTime.strptime(move_in, "%m/%d/%Y") rescue nil)
 
           parsed = {
             title: title,
