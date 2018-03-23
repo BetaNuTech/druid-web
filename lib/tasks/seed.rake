@@ -51,3 +51,13 @@ namespace :development do
 
   end
 end
+
+
+namespace :properties do
+  desc "Seed Property Data"
+  task :seed => :environment do
+    require_relative Rails.root + "db/seeds/seed_properties"
+
+    SeedProperties.new.call
+  end
+end
