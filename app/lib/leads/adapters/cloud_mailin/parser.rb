@@ -4,10 +4,10 @@ require_relative './null_parser'
 module Leads
   module Adapters
     module CloudMailin
+      PARSERS = [RentDotComParser, ApartmentsDotComParser]
+
       class Parser
         attr_reader :parser, :data
-
-        PARSERS = [RentDotComParser]
 
         def initialize(data)
           @data = data

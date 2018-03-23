@@ -1,3 +1,5 @@
+require_relative './cloud_mailin/cloud_mailin'
+
 module Leads
   module Adapters
     class Cloudmailin
