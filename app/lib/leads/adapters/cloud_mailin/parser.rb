@@ -8,7 +8,7 @@ module Leads
     module CloudMailin
 
       # All Valid CloudMailin Parsers except NullParser
-      PARSERS = [ RentDotComParser, ApartmentsDotComParser, ZillowParser ]
+      PARSERS = [ RentDotComParser, ApartmentsDotComParser, ZillowParser, ForrentDotComParser ]
 
       class Parser
         attr_reader :parser, :data

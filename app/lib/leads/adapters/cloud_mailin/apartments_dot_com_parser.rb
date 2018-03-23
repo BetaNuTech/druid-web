@@ -4,7 +4,7 @@ module Leads
       class ApartmentsDotComParser
         def self.match?(data)
           return (data.fetch(:plain, nil) || data.fetch(:html,nil) || '').
-            match?('Apartments.com').
+            match?('Apartments.com Network Team').
             present?
         end
 
