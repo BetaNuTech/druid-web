@@ -1,0 +1,198 @@
+---
+:engagement_policy:
+  :version: 1
+  :data:
+    - :version: 1
+      :property_id: null
+      :lead_state: open
+      :description: Global Engagement Policy for 'open' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Claim Lead
+          :description: Claim open Lead
+          :deadline: 1
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 5
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: prospect
+      :description: Global Engagement Policy for 'prospect' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: First Contact
+          :description: Initial Lead contact
+          :deadline: 2
+          :retry_count: 4
+          :retry_delay: 4
+          :retry_delay_multiplier: none
+          :score: 5
+          :active: true
+        - :lead_action_name: Schedule Appointment
+          :description: Schedule appointment with Lead
+          :deadline: 24
+          :retry_count: 2
+          :retry_delay: 12
+          :retry_delay_multiplier: none
+          :score: 5
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: appointment
+      :description: Global Engagement Policy for 'appointment' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Make Appointment Notes
+          :description: Record notes from appointment with Lead
+          :deadline: 24
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+        - :lead_action_name: Schedule Appointment
+          :description: Reschedule missed appointment
+          :deadline: 24
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 2
+          :active: true
+        - :lead_action_name: Prepare Application
+          :description: Prepare leasing application for Lead
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 2
+          :active: true
+        - :lead_action_name: Deliver Application
+          :description: Provide Application to Lead
+          :deadline: 36
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 2
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: application
+      :description: Global Engagement Policy for 'application' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Process Application
+          :description: Process leasing application
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 5
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: approved
+      :description: Global Engagement Policy for 'approved' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Assign New Resident Tasks
+          :description: Assign new resident Tasks
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: denied
+      :description: Global Engagement Policy for 'denied' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Make Call
+          :description: Call lead to resolve application issues
+          :deadline: 4
+          :retry_count: 4
+          :retry_delay: 4
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+        - :lead_action_name: Process Application
+          :description: Process revised application
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: movein
+      :description: Global Engagement Policy for 'movein' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Move-In Task
+          :description: Assign tasks for new resident move-in
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: resident
+      :description: Global Engagement Policy for 'resident' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Other
+          :description: Task for new residents
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: disqualified
+      :description: Global Engagement Policy for 'disqualified' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Other
+          :description: Task for disqualified leads
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: abandoned
+      :description: Global Engagement Policy for 'abandoned' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Process Application
+          :description: Process leasing application
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 5
+          :active: true
+    - :version: 1
+      :property_id: null
+      :lead_state: abandoned
+      :description: Global Engagement Policy for 'application' Leads
+      :active: true
+      :engagement_policy_actions:
+        - :lead_action_name: Transition to Disqualified
+          :description: Make notes and transition lead to 'disqualified' state
+          :deadline: 48
+          :retry_count: 0
+          :retry_delay: 0
+          :retry_delay_multiplier: none
+          :score: 5
+          :active: true

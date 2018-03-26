@@ -1,12 +1,16 @@
 ---
 :lead_actions:
+  :version: 1
   :key: :name
   :data:
-  - :name: Contact Lead for the first time (Phone/SMS/Email)
-    :description: First contact
+  - :name: Claim Lead
+    :description: Claim a new/open Lead
     :active: true
-  - :name: Request Appointment (Phone/SMS/Email)
-    :description: Request to schedule an appointment with the Lead
+  - :name: First Contact
+    :description: Contact Lead for the first time (Phone/SMS/Email)
+    :active: true
+  - :name: Request Appointment
+    :description: Request to schedule an appointment with the Lead (Phone/SMS/Email)
     :active: true
   - :name: Schedule Appointment
     :description: Schedule appointment with Lead
@@ -17,8 +21,8 @@
   - :name: Prepare Application
     :description: Prepare leasing application
     :active: true
-  - :name: Deliver Application to Lead
-    :description: Prepare leasing application
+  - :name: Deliver Application
+    :description: Prepare leasing application and provide to Lead
     :active: true
   - :name: Process Application
     :description: Push through the approval process
@@ -32,14 +36,24 @@
   - :name: Send SMS
     :description:
     :active: true
-  - :name: Tour Units with Lead
-    :description:
+  - :name: Tour Units
+    :description: Tour units with Lead
     :active: true
-  - :name: Unit Inspection (Daily)
+  - :name: Unit Inspection
     :description: Inspect units before tours
     :active: true
   - :name: Other
     :description: Catch-all action. Use sparingly.
     :active: true
-
-
+  - :name: Make Appointment Notes
+    :description: Record notes from appointment with Lead
+    :active: true
+  - :name: Assign New Resident Tasks
+    :description: Assign New Resident Tasks
+    :active: true
+  - :name: Move-In Task
+    :description: Generic move-in tasks
+    :active: true
+  - :name: Transition to Disqualified
+    :description: Make notes and transition lead to 'disqualified' state
+    :active: true
