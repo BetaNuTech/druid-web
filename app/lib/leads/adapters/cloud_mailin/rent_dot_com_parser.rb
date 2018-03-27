@@ -5,12 +5,8 @@ module Leads
       class RentDotComParser
         def self.match?(data)
           body = (data.fetch(:plain, nil) || data.fetch(:html,nil) || '')
-
-          return body.match?('on Rent.com and is').
-              present? &&
-            !body.match?('FORRENT.COM').
-              present?
-
+          sender = (data.fetch(:envelope,{}).fetch("from",""))
+          return sender.match("rent.com")
         end
 
         def self.parse(data)
