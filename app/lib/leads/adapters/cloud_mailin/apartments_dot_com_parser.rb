@@ -3,18 +3,17 @@ module Leads
     module CloudMailin
       class ApartmentsDotComParser
         def self.match?(data)
-          return (data.fetch(:plain, nil) || data.fetch(:html,nil) || '').
-            match?('Apartments.com Network').
-            present?
+          return (data.fetch(:envelope,{}).fetch(:from, "")).
+            match("lead@apartments.com")
         end
 
         def self.parse(data)
           # TODO
           #  * beds
           #  * baths
-          body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
+          body = data.fetch(:html,nil) || ''
 
-          name = ( body.match(/Name: (.+)$/)[1] rescue '(Parse Error)' ).gsub('*','')
+          name = ( body.match(/Name: ([\w ]+)/m)[1] rescue '(Parse Error)' ).strip
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -24,7 +23,8 @@ module Leads
           referral = "Apartments.com"
           phone1 = nil
           phone2 = nil
-          email = ( body.match(/Email: (.+)$/)[1] rescue '(Parse Error)' ).strip
+          #email = ( body.match(/Email: (.+)$/)[1] rescue '(Parse Error)' ).strip
+          email = (data.fetch(:headers,{}).fetch("Reply-To",""))
           fax = nil
           baths = nil
           beds = nil
