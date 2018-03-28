@@ -5,7 +5,7 @@ module Leads
       class RentDotComParser
         def self.match?(data)
           return (data.fetch(:envelope,{}).fetch(:from,"")).
-            match("rent.com")
+            match(/(?<!for)rent.com/)
         end
 
         def self.parse(data)
