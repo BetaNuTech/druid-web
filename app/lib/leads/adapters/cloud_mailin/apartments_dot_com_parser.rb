@@ -28,7 +28,7 @@ module Leads
           fax = nil
           baths = nil
           beds = nil
-          notes = self.sanitize(( body.match(/Comments: (.+)Property Information/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
+          notes = self.sanitize(( body.match(/Comments:(.+?)<br/m)[1] rescue '(Parse Error)' ).gsub("\n"," ")).strip
           smoker = nil
           pets = nil
           move_in = ( (body.match(/Move Date: (.*)$/)[1]) rescue nil )
