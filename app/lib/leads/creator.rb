@@ -55,6 +55,7 @@ module Leads
       @lead.priority = "urgent"
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
+      @lead.first_comm = DateTime.now
 
       case parse_result.status
         when :ok
