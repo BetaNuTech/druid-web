@@ -29,11 +29,12 @@ module Leads
           fax = nil
           baths = nil
           beds = nil
-          notes = ( body.match(/says[^"]+"(.+)".</m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," ")
+          notes = self.sanitize(( body.match(/says[^"]+"(.+)".</m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
           move_in = nil
-          raw_data = ''
+          agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
+          raw_data = data.to_json
 
           parsed = {
             title: title,
@@ -57,6 +58,10 @@ module Leads
           }
 
           return parsed
+        end
+
+        def self.sanitize(value)
+          return ActionController::Base.helpers.sanitize(value)
         end
       end
     end
