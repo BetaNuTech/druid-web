@@ -1,12 +1,12 @@
 module Yardi
   module Voyager
     module Api
-      class GuestCardsConfiguration < Base
+      class PropertyConfiguration < Base
 
         # Return GuestCards for the given property id
         def getConfig(option=nil)
           request_options = {
-            method: 'GetILSGuestCardConfiguration',
+            method: 'GetPropertyConfigurations',
             resource: 'ItfILSGuestCard.asmx'
           }
           xml_data = getXML(request_options)

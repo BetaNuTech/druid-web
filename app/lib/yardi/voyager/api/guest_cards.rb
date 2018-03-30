@@ -5,28 +5,33 @@ module Yardi
 
         # Return GuestCards for the given property id
         def getLeads(propertyid)
-          xml_data = getXML({method: 'GetYardiGuestActivity_Login', resource: 'ItfILSGuestCard.asmx', propertyid: propertyid})
+          request_options = {
+            method: 'GetYardiGuestActivity_Login',
+            resource: 'ItfILSGuestCard.asmx',
+            propertyid: propertyid
+          }
+          xml_data = getXML(request_options)
+          return xml_data
         end
 
         def request_template
           body_template = <<~EOS
             <?xml version="1.0" encoding="utf-8"?>
-              <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-                <soap:Body>
-                  <%{method}
-                      xmlns="https://%{host}/YSI.Interfaces.WebServices/ItfILSGuestCard">
-                    <UserName>%{username}</UserName>
-                    <Password>%{password}</Password>
-                    <ServerName>%{servername}</ServerName>
-                    <Database>%{database}</Database>
-                    <Platform>%{platform}</Platform>
-                    <YardiPropertyId>%{propertyid}</YardiPropertyId>
-                    <InterfaceEntity>%{vendorname}</InterfaceEntity>
-                    <InterfaceLicense>%{license}</InterfaceLicense>
-                  </%{method}>
-                </soap:Body>
+            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+              <soap:Body>
+                <%{method} xmlns="http://tempuri.org/YSI.Interfaces.WebServices/ItfILSGuestCard">
+                  <UserName>%{username}</UserName>
+                  <Password>%{password}</Password>
+                  <ServerName>%{servername}</ServerName>
+                  <Database>%{database}</Database>
+                  <Platform>%{platform}</Platform>
+                  <YardiPropertyId>%{propertyid}</YardiPropertyId>
+                  <InterfaceEntity>%{vendorname}</InterfaceEntity>
+                  <InterfaceLicense>%{license}</InterfaceLicense>
+                </%{method}>
+              </soap:Body>
             </soap:Envelope>
           EOS
 
