@@ -21,14 +21,14 @@ module Leads
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
           referral = "ApartmentGuide.com"
-          phone1 = ( data.match(/tel:([^"]+)/)[1] rescue '(Parse Error)')
+          phone1 = ( body.match(/Phone.+?<\/span>.+?tel:([^"]+)/)[1] rescue '(Parse Error)')
           phone2 = nil
-          email = (data.match(/mailto:([^"]+)/)[1] rescue '(Parse Error)')
+          email = (body.match(/mailto:([^"]+)/)[1] rescue '(Parse Error)')
           fax = nil
           baths = nil
           beds = nil
           notes = nil
-          notes = ( body.match(/Comments:.+?span>(.+?)<\/td>/m)[1] rescue '(Parse Error)' ).strip
+          notes = ( body.match(/Comments:.+?span>(.+?)<\/td>/m)[1] rescue '(Parse Error)' ).strip.gsub(/[\r\n]+/,' ')
           smoker = nil
           pets = nil
           move_in = ( body.match(/Move Date.+?span>(.+?)<\/td>/m)[1] rescue '(Parse Error)' ).strip
