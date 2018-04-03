@@ -16,8 +16,8 @@ module Leads
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
           title = nil
-          first_name = ( name_arr.first.chomp rescue nil )
-          last_name = ( name_arr.last.chomp rescue nil )
+          first_name = ( name_arr.first.chomp rescue '' )
+          last_name = ( name_arr.last.chomp rescue '' )
           referral = "Rent.com"
           phone1 = ( body.match(/Phone.+?<\/span>.+?>([^<]+)<\/a>/)[1] rescue '(Parse Error)' ).strip
           phone2 = nil
@@ -28,7 +28,7 @@ module Leads
           notes = self.sanitize(( body.match(/Comments.+?<\/span>(.+?)<\/td>/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
-          move_in = (Date.parse(body.match(/Move Date: (.*)$/)[1]) rescue nil)
+          move_in = (Date.parse(body.match(/Move Date.+?<\/span>(.*?)<\/td>/m)[1]) rescue nil)
           agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
           raw_data = data.to_json
 
