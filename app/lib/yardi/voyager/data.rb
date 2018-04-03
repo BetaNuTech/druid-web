@@ -1,8 +1,7 @@
 require_relative './data/errors'
 require_relative './data/agent'
 require_relative './data/property'
-require_relative './data/prospect'
-require_relative './data/prospect_preference'
+require_relative './data/guest_card'
 
 module Yardi
   module Voyager

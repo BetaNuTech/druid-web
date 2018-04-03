@@ -4,14 +4,15 @@ module Yardi
       class GuestCards < Base
 
         # Return GuestCards for the given property id
-        def getLeads(propertyid)
+        def getProspects(propertyid)
           request_options = {
             method: 'GetYardiGuestActivity_Login',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid
           }
-          xml_data = getXML(request_options)
-          return xml_data
+          response = getData(request_options)
+          guestcards = Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response)
+          return guestcards
         end
 
         def request_template

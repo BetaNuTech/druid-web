@@ -31,7 +31,7 @@ module Yardi
           ""
         end
 
-        def getXML(options)
+        def getData(options)
           url = "%{api_root}/%{resource}" % {api_root: api_root, resource: options[:resource]}
           body = request_body(options)
           headers = request_headers(method: options[:method], content_length: body.length)
@@ -39,12 +39,12 @@ module Yardi
           puts " * Request URL:\n" + url if @debug
           puts " * Request Headers:\n" + headers.to_a.map{|h| "#{h[0]}: #{h[1]}"}.join("\n") if @debug
           puts " * Request Body:\n" + body if @debug
-          result = fetch_xml(url: url, body: body, headers: headers)
+          result = fetch_data(url: url, body: body, headers: headers)
           puts " * Response:\n" + result.to_s if @debug
           return result
         end
 
-        def fetch_xml(url:, body:, headers: {}, options: {})
+        def fetch_data(url:, body:, headers: {}, options: {})
           return HTTParty.post(url, body: body, headers: headers)
         end
 

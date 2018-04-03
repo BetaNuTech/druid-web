@@ -1,7 +1,7 @@
 module Yardi
   module Voyager
     module Data
-      class Prospect
+      class GuestCard
         require 'nokogiri'
 
         REJECTED_CUSTOMER_TYPES = %w{guarantor cancelled other}
@@ -9,8 +9,7 @@ module Yardi
 
         attr_accessor :debug,
           :name_prefix, :first_name, :middle_name, :last_name,
-          :prospect_id, :third_party_id,
-          :property_id,
+          :prospect_id, :tenant_id, :third_party_id, :property_id,
           :address1, :address2, :city, :state, :postalcode,
           :email,
           :phones,
@@ -20,7 +19,7 @@ module Yardi
           :events,
           :record_type
 
-        def self.from_GetYardiGuestActivity_json(data)
+        def self.from_GetYardiGuestActivity(data)
           root_node = nil
 
           case data
@@ -42,12 +41,8 @@ module Yardi
               raise Data::Error.new("Invalid GuestCard data schema: #{e}")
           end
 
-          #_first_lead_node = root_node.first
-          #_first_lead = Prospect.from_guestcard_node(_first_lead_node)
-
-
           # TODO: Create Lead collection from Yardi Voyager GuestCard JSON
-          raw_leads = root_node.map{|record| Prospect.from_guestcard_node(record)}.flatten
+          raw_leads = root_node.map{|record| GuestCard.from_guestcard_node(record)}.flatten
 
           return raw_leads
         end
@@ -60,8 +55,29 @@ module Yardi
           prospect_events = data['Events']
 
           [ prospect_record ].flatten.compact.each do |pr|
-            prospect = Prospect.new
-            prospect.record_type = pr['Type']
+            # Abort processing if this is not a wanted Customer type
+            record_type = pr['Type']
+            next if !ACCEPTED_CUSTOMER_TYPES.include?(record_type)
+
+            prospect = GuestCard.new
+            prospect.record_type = record_type
+
+            pr['Identification'].tap do |identification|
+              ( identification ).each do |ident|
+                val = ident['IDValue']
+                case ident['IDType']
+                when 'ProspectID'
+                  prospect.prospect_id = val
+                when 'TenantID'
+                  prospect.tenant_id = val
+                when 'PropertyID'
+                  prospect.property_id = val
+                when 'ThirdPartyID'
+                  prospect.third_party_id = val
+                end
+              end
+            end if pr['Identification']
+
             pr['Name'].tap do |name|
               prospect.name_prefix = name['NamePrefix']
               prospect.first_name = name['FirstName']
@@ -109,30 +125,24 @@ module Yardi
               prospect.events = [ events ].flatten.compact.map{|e| "%s %s: %s" % [e["EventType"], e["EventDate"], e["Comments"]] }
             end
 
-            #puts prospect.inspect if @debug
-
-            if !ACCEPTED_CUSTOMER_TYPES.include?(prospect.record_type)
-              #puts "*** REJECTED DUE TO TYPE" if @debug
-              next
-            end
-
+            puts prospect.inspect2
             prospects << prospect
           end
 
           return prospects
         end
 
-        def inspect
+        def inspect2
           <<~EOS
-            == Prospect ==
+            == GuestCard ==
             * Type: #{@record_type}
             * Name: #{@name_prefix} #{@first_name} #{@middle_name} #{@last_name}
-            * Address: #{@address1}
-                       #{@address2}
-                       #{@city}
-                       #{@state}
-                       #{@postalcode}
+            * Address: #{@address1} #{@address2} #{@city}, #{@state} #{@postalcode}
             * Phones: #{@phones.inspect}
+            * Property ID: #{@property_id}
+            * Prospect ID: #{@prospect_id}
+            * Tenant ID: #{@tenant_id}
+            * Third Party ID: #{@third_party_id}
             * Preferences:
               - Expected Move In: #{@expected_move_in}
               - Lease From:       #{@lease_from}
