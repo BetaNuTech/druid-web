@@ -49,6 +49,7 @@ module Yardi
           # TODO: Create Lead collection from Yardi Voyager GuestCard JSON
           raw_leads = root_node.map{|record| Prospect.from_guestcard_node(record)}.flatten
 
+          return raw_leads
         end
 
         def self.from_guestcard_node(data)
@@ -59,7 +60,6 @@ module Yardi
           prospect_events = data['Events']
 
           [ prospect_record ].flatten.compact.each do |pr|
-            binding.pry unless pr.is_a?(Hash)
             prospect = Prospect.new
             prospect.record_type = pr['Type']
             pr['Name'].tap do |name|
