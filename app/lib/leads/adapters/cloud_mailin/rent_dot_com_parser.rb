@@ -9,9 +9,9 @@ module Leads
         end
 
         def self.parse(data)
-          body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
+          body = data.fetch(:html,'')
 
-          name = ( body.match(/Information for (.+)$/)[1] rescue '(Parse Error)' ).gsub('*','')
+          name = ( body.match(/Information for.+?<strong>(.+?)<\/strong>/)[1] rescue '(Parse Error)' ).gsub('*','')
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -19,13 +19,13 @@ module Leads
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
           referral = "Rent.com"
-          phone1 = nil
+          phone1 = ( body.match(/Phone.+?<\/span>.+?>([^<]+)<\/a>/)[1] rescue '(Parse Error)' ).strip
           phone2 = nil
-          email = ( body.match(/Email: (.+)$/)[1] rescue '(Parse Error)' ).strip
+          email = ( body.match(/Email.+?<\/span>.+?>([^<]+)<\/a>/)[1] rescue '(Parse Error)' ).strip
           fax = nil
           baths = nil
           beds = nil
-          notes = self.sanitize(( body.match(/Comments: (.+)Property Information/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
+          notes = self.sanitize(( body.match(/Comments.+?<\/span>(.+?)<\/td>/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
           move_in = (Date.parse(body.match(/Move Date: (.*)$/)[1]) rescue nil)
