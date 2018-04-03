@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180309172152) do
+ActiveRecord::Schema.define(version: 20180402200412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,32 @@ ActiveRecord::Schema.define(version: 20180309172152) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "engagement_policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "property_id"
+    t.string "lead_state"
+    t.text "description"
+    t.integer "version", default: 0
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active", "lead_state", "property_id", "version"], name: "covering"
+  end
+
+  create_table "engagement_policy_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "engagement_policy_id"
+    t.uuid "lead_action_id"
+    t.text "description"
+    t.decimal "deadline"
+    t.integer "retry_count", default: 0
+    t.decimal "retry_delay", default: "0.0"
+    t.string "retry_delay_multiplier", default: "none"
+    t.decimal "score", default: "1.0"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["engagement_policy_id", "lead_action_id"], name: "engagement_policy_action_covering"
   end
 
   create_table "lead_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -117,7 +143,10 @@ ActiveRecord::Schema.define(version: 20180309172152) do
     t.datetime "dob"
     t.string "id_number"
     t.string "id_state"
+    t.string "remoteid"
+    t.string "middle_name"
     t.index ["priority"], name: "index_leads_on_priority"
+    t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"
   end
 
