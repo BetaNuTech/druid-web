@@ -5,7 +5,7 @@ module Leads
       class ForrentDotComParser
         def self.match?(data)
           return (data.fetch(:plain, nil) || data.fetch(:html,nil) || '').
-            match?('FORRENT.COM GUESTCARD').
+            match('FORRENT.COM GUESTCARD').
             present?
         end
 
@@ -26,7 +26,7 @@ module Leads
           fax = nil
           baths = ( body.match(/\[# Baths\] (.+)$/)[1] rescue '(Parse Error)' ).strip.to_f
           beds = ( body.match(/\[# Beds\] (.+)$/)[1] rescue '(Parse Error)' ).strip.to_i
-          notes = self.sanitize(( body.match(/\[Comments\] (.+)/)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
+          notes = self.sanitize(( body.match(/\[Comments\](.+?)\[Submitted\]/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
           move_in = ( body.match(/\[Moving Date\] (.+)/)[1] rescue '(Parse Error)' ).strip.gsub("\n"," ")
