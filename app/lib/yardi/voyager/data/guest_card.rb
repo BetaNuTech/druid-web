@@ -138,7 +138,7 @@ module Yardi
 
         def summary
           <<~EOS
-            == Yard Voyager GuestCard ==
+            == Yardi Voyager GuestCard ==
             * Type: #{@record_type}
             * Name: #{@name_prefix} #{@first_name} #{@middle_name} #{@last_name}
             * Address: #{@address1} #{@address2} #{@city}, #{@state} #{@postalcode}
