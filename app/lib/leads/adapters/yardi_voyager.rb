@@ -50,7 +50,7 @@ module Leads
 
         preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
         preference.beds = guestcard.bedrooms
-        preference.min_price = (preference.max_price = guestcard.rent) - 1 unless guestcard.rent.nil?
+        preference.max_price = guestcard.rent unless guestcard.rent.nil?
         preference.notes = guestcard.preference_comment
         preference.raw_data = guestcard.summary
 

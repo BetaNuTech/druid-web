@@ -35,6 +35,18 @@ sources = {
     slug: 'Zillow',
     incoming: true,
     active: true
+  },
+  "cloudmailin": {
+    name: 'Cloudmailin',
+    slug: 'Cloudmailin',
+    incoming: true,
+    active: true
+  },
+  "yardi_voyager": {
+    name: 'YardiVoyager',
+    slug: 'YardiVoyager',
+    incoming: false,
+    active: true
   }
 }
 sources.each_pair do |source_name, attrs|
