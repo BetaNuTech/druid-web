@@ -10,8 +10,13 @@ module Yardi
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid
           }
-          response = getData(request_options)
-          guestcards = Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response)
+          begin
+            response = getData(request_options)
+            guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response)
+          rescue => e
+            Rails.logger.error "Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            return []
+          end
           return guestcards
         end
 

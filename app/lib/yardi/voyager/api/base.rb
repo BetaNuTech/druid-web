@@ -45,7 +45,27 @@ module Yardi
         end
 
         def fetch_data(url:, body:, headers: {}, options: {})
-          return HTTParty.post(url, body: body, headers: headers)
+          request_id = Digest::SHA1.hexdigest(rand(Time.now.to_i).to_s)[0..11]
+          data = nil
+          retries = 0
+          begin
+            start_time = Time.now
+            Rails.logger.warn "Yardi::Voyager::Api Requesting Data at #{url}, Action #{headers['SOAPAction']} [Request ID: #{request_id}]"
+            data = HTTParty.post(url, body: body, headers: headers)
+            elapsed = ( Time.now - start_time ).round(2)
+            Rails.logger.warn "Yardi::Voyager::Api Completed request in #{elapsed}s [Request ID: #{request_id}]"
+          rescue Net::ReadTimeout => e
+            if retries < 3
+              retries += 1
+              Rails.logger.error "Yardi::Voyager::Api encountered a timeout fetching data from #{url}. Retry #{retries} of 3 [Request ID: #{request_id}]"
+              sleep(5)
+              retry
+            else
+              Rails.logger.error "Yardi::Voyager::Api giving up [Request ID: #{request_id}]"
+              raise e
+            end
+          end
+          return data
         end
 
         def config

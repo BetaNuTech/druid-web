@@ -27,18 +27,23 @@ module Yardi
             begin
               data = JSON(data)
             rescue => e
-              raise Data::Error.new("Invalid GuestCard JSON: #{e}")
+              raise Yardi::Voyager::Data::Error.new("Invalid GuestCard JSON: #{e}")
             end
           when Hash
             # Noop
           else
-            raise Data::Error.new("Invalid GuestCard data. Should be JSON string or Hash")
+            raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data. Should be JSON string or Hash")
           end
 
           begin
+            error_messages = data["Envelope"]["Body"]["GetYardiGuestActivity_LoginResponse"]["GetYardiGuestActivity_LoginResult"].fetch("Messages",false)
+            if error_messages
+              err_msg = error_messages["Message"].fetch("__content__", "Unknown error")
+              raise Yardi::Voyager::Data::Error.new(err_msg)
+            end
             root_node = data["Envelope"]["Body"]["GetYardiGuestActivity_LoginResponse"]["GetYardiGuestActivity_LoginResult"]["LeadManagement"]["Prospects"]["Prospect"]
           rescue => e
-              raise Data::Error.new("Invalid GuestCard data schema: #{e}")
+            raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data schema: #{e}")
           end
 
           # TODO: Create Lead collection from Yardi Voyager GuestCard JSON
@@ -125,7 +130,6 @@ module Yardi
               prospect.events = [ events ].flatten.compact.map{|e| "%s %s: %s" % [e["EventType"], e["EventDate"], e["Comments"]] }
             end
 
-            puts prospect.inspect2
             prospects << prospect
           end
 
