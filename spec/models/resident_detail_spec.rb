@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: resident_details
+#
+#  id               :uuid             not null, primary key
+#  resident_id      :uuid
+#  phone1           :string
+#  phone1_type      :string
+#  phone1_tod       :string
+#  phone2           :string
+#  phone2_type      :string
+#  phone2_tod       :string
+#  email            :string
+#  encrypted_ssn    :string
+#  encrypted_ssn_iv :string
+#  id_number        :string
+#  id_state         :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe ResidentDetail, type: :model do

@@ -28,6 +28,8 @@
 #  dob            :datetime
 #  id_number      :string
 #  id_state       :string
+#  remoteid       :string
+#  middle_name    :string
 #
 
 class Lead < ApplicationRecord

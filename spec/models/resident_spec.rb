@@ -1,3 +1,28 @@
+# == Schema Information
+#
+# Table name: residents
+#
+#  id          :uuid             not null, primary key
+#  lead_id     :uuid
+#  property_id :uuid
+#  unit_id     :uuid
+#  residentid  :string
+#  status      :string
+#  dob         :date
+#  title       :string
+#  first_name  :string
+#  middle_name :string
+#  last_name   :string
+#  address1    :string
+#  address2    :string
+#  city        :string
+#  state       :string
+#  zip         :string
+#  country     :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe Resident, type: :model do

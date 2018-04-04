@@ -132,7 +132,7 @@ module Yardi
           return prospects
         end
 
-        def inspect2
+        def summary
           <<~EOS
             == GuestCard ==
             * Type: #{@record_type}
