@@ -61,6 +61,7 @@ class Lead < ApplicationRecord
   validates :first_name, presence: true
 	validates :phone1, presence: true, unless: ->(lead){ lead.phone2.present? || lead.email.present? }
 	validates :email, presence: true, unless: ->(lead){ lead.phone1.present? || lead.phone2.present? }
+  validates :remoteid, uniqueness: { case_sensitive: false }, if: 'remoteid.present?'
 
   ### Class Methods
 
@@ -69,6 +70,11 @@ class Lead < ApplicationRecord
   end
 
   ### Instance Methods
+
+  def imported?
+    return self.remoteid.present?
+  end
+
   def name
     [title, first_name, last_name].join(' ')
   end

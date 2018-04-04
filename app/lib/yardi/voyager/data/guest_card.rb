@@ -109,7 +109,7 @@ module Yardi
               prospect.lease_from = ( Date.parse(lease['LeaseFromDate']) rescue nil)
               prospect.lease_to = ( Date.parse(lease['LeaseToDate']) rescue nil)
               prospect.actual_move_in =( Date.parse(lease['ActualMoveIn']) rescue nil)
-              prospect.rent = lease['CurrentRent']
+              prospect.rent = ( lease['CurrentRent'] || 1 ).to_i
             end if pr['Lease']
             prospect.expected_move_in ||= prospect_preferences['TargetMoveInDate']
             prospect.floorplan = prospect_preferences['DesiredFloorplan']
@@ -117,10 +117,10 @@ module Yardi
               prospect.unit = (unit['MarketingName']) rescue nil
             end if prospect_preferences['DesiredUnit']
             prospect_preferences['DesiredRent'].tap do |rent|
-              prospect.rent = rent['Exact']
+              prospect.rent = rent['Exact'].to_i
             end if prospect_preferences['DesiredRent']
             prospect_preferences['DesiredNumBedrooms'].tap do |bedrooms|
-              prospect.bedrooms = bedrooms['Exact']
+              prospect.bedrooms = ( bedrooms['Exact'] || 1 ).to_i
             end if prospect_preferences['DesiredNumBedrooms']
             prospect_preferences['Comment'].tap do |comment|
               prospect.preference_comment = ([ comment ] || []).flatten.compact.join(' ')
@@ -138,7 +138,7 @@ module Yardi
 
         def summary
           <<~EOS
-            == GuestCard ==
+            == Yard Voyager GuestCard ==
             * Type: #{@record_type}
             * Name: #{@name_prefix} #{@first_name} #{@middle_name} #{@last_name}
             * Address: #{@address1} #{@address2} #{@city}, #{@state} #{@postalcode}
