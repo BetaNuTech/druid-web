@@ -47,6 +47,7 @@ module Leads
         lead.state = lead_state_for(guestcard)
         lead.priority = priority_from_state(lead.state)
         lead.notes = guestcard.summary
+        lead.first_comm = DateTime.now
 
         preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
         preference.beds = guestcard.bedrooms
