@@ -30,7 +30,7 @@
                 <% lead = Lead.offset(rand(Lead.count)).first %>
                 <td><%= glyph(:person) %></td>
                 <td>Now</td>
-                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
+                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead)) rescue ''%></td>
                 <td>
                   <%= link_to(glyph(:show), "#") %>&nbsp;
                   <%= link_to(glyph(:edit), "#") %>
@@ -40,7 +40,7 @@
                 <% lead = Lead.offset(rand(Lead.count)).first %>
                 <td><%= glyph(:person) %></td>
                 <td>Now</td>
-                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead))%></td>
+                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead)) rescue ''%></td>
                 <td>
                   <%= link_to(glyph(:show), "#") %>&nbsp;
                   <%= link_to(glyph(:edit), "#") %>
@@ -50,7 +50,7 @@
                 <td><%= glyph(:pin) %></td>
                 <% lead = Lead.offset(rand(Lead.count)).first %>
                 <td>Today</td>
-                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) %> </td>
+                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
                 <td>
                   <%= link_to(glyph(:show), "#") %>&nbsp;
                   <%= link_to(glyph(:edit), "#") %>
@@ -60,7 +60,7 @@
                 <% lead = Lead.offset(rand(Lead.count)).first %>
                 <td><%= glyph(:pin) %></td>
                 <td>10:00AM</td>
-                <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>
+                <td>Tour <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
                 <td>
                   <%= link_to(glyph(:show), "#") %>&nbsp;
                   <%= link_to(glyph(:edit), "#") %>
@@ -84,7 +84,7 @@
                 <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:pin) %></td>
                 <td>Today</td>
-                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) %> </td>
+                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
                 <td>
                   <%= link_to(glyph(:show), "#") %>&nbsp;
                   <%= link_to(glyph(:edit), "#") %>
@@ -94,7 +94,7 @@
                 <% lead = Lead.prospect.offset(rand(Lead.open.count)).first || Lead.first %>
                 <td><%= glyph(:pin) %></td>
                 <td>10:00AM</td>
-                <td>Tour <%= link_to(lead.name, lead_path(lead)) %> </td>
+                <td>Tour <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
                 <td>
                   <%= link_to(glyph(:show), "#") %>&nbsp;
                   <%= link_to(glyph(:edit), "#") %>
