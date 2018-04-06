@@ -1,6 +1,22 @@
 namespace :development do
+end
+
+
+namespace :seed do
+  desc "Seed Property Data"
+  task :properties => :environment do
+    require_relative Rails.root + "db/seeds/seed_properties"
+
+    SeedProperties.new.call
+  end
+
+  desc "Seed LeadActions"
+  task :lead_actions => :environment do
+    LeadAction.load_seed_data
+  end
+
   desc "Seed Development Environment with random data"
-  task :seed => :environment do
+  task :development => :environment do
     require 'factory_bot_rails'
 
     puts "=== Seeding Development Environment"
@@ -8,19 +24,19 @@ namespace :development do
     puts "(press ENTER to continue or CTRL-C to quit)"
     _c = STDIN.gets
 
-    lead_source_count = 5
-    puts "= Creating #{lead_source_count} Lead Sources"
-    lead_source_count.times {
-      source = FactoryBot.create(:lead_source)
-      puts "  - #{source.name}"
-    }
+    #lead_source_count = 5
+    #puts "= Creating #{lead_source_count} Lead Sources"
+    #lead_source_count.times {
+      #source = FactoryBot.create(:lead_source)
+      #puts "  - #{source.name}"
+    #}
 
-    property_count = 10
-    puts "= Creating #{property_count} Properties"
-    property_count.times {
-      property = FactoryBot.create(:property)
-      puts "  - #{property.name}"
-    }
+    #property_count = 10
+    #puts "= Creating #{property_count} Properties"
+    #property_count.times {
+      #property = FactoryBot.create(:property)
+      #puts "  - #{property.name}"
+    #}
 
     agent_count = 10
     puts "= Creating #{agent_count} Agents"
@@ -52,12 +68,3 @@ namespace :development do
   end
 end
 
-
-namespace :properties do
-  desc "Seed Property Data"
-  task :seed => :environment do
-    require_relative Rails.root + "db/seeds/seed_properties"
-
-    SeedProperties.new.call
-  end
-end

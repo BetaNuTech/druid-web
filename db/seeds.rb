@@ -89,17 +89,17 @@ rental_types.each do |rt_name|
 end
 
 # LeadActions
-puts " * Creating Lead Actions"
-lead_actions = ['Send Email', 'Make Call', 'Send SMS', 'Tour Units', 'Other', 'Record Contact']
-lead_actions.each do |la_name|
-  print "   - #{la_name} "
-  la = LeadAction.new(name: la_name)
-  if la.save
-    puts "[OK]".green
-  else
-    puts "[FAIL] (#{la.errors.to_a})".red
-  end
-end
+#puts " * Creating Lead Actions"
+#lead_actions = ['Send Email', 'Make Call', 'Send SMS', 'Tour Units', 'Other', 'Record Contact']
+#lead_actions.each do |la_name|
+  #print "   - #{la_name} "
+  #la = LeadAction.new(name: la_name)
+  #if la.save
+    #puts "[OK]".green
+  #else
+    #puts "[FAIL] (#{la.errors.to_a})".red
+  #end
+#end
 
 # Reasons
 puts " * Creating Reasons"
@@ -113,3 +113,6 @@ reasons.each do |r_name|
     puts "[FAIL] (#{r.errors.to_a})".red
   end
 end
+
+Rake::Task["seed:properties"].invoke
+Rake::Task["seed:lead_actions"].invoke

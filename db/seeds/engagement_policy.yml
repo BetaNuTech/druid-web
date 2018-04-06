@@ -3,7 +3,7 @@
   :version: 1
   :data:
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: open
       :description: Global Engagement Policy for 'open' Leads
       :active: true
@@ -17,7 +17,7 @@
           :score: 5
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: prospect
       :description: Global Engagement Policy for 'prospect' Leads
       :active: true
@@ -39,7 +39,7 @@
           :score: 5
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: appointment
       :description: Global Engagement Policy for 'appointment' Leads
       :active: true
@@ -77,7 +77,7 @@
           :score: 2
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: application
       :description: Global Engagement Policy for 'application' Leads
       :active: true
@@ -91,7 +91,7 @@
           :score: 5
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: approved
       :description: Global Engagement Policy for 'approved' Leads
       :active: true
@@ -105,7 +105,7 @@
           :score: 1
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: denied
       :description: Global Engagement Policy for 'denied' Leads
       :active: true
@@ -127,7 +127,7 @@
           :score: 1
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: movein
       :description: Global Engagement Policy for 'movein' Leads
       :active: true
@@ -141,7 +141,7 @@
           :score: 1
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: resident
       :description: Global Engagement Policy for 'resident' Leads
       :active: true
@@ -155,7 +155,7 @@
           :score: 1
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: disqualified
       :description: Global Engagement Policy for 'disqualified' Leads
       :active: true
@@ -169,27 +169,13 @@
           :score: 1
           :active: true
     - :version: 1
-      :property_id: null
+      :property_name: null
       :lead_state: abandoned
       :description: Global Engagement Policy for 'abandoned' Leads
       :active: true
       :engagement_policy_actions:
         - :lead_action_name: Process Application
           :description: Process leasing application
-          :deadline: 48
-          :retry_count: 0
-          :retry_delay: 0
-          :retry_delay_multiplier: none
-          :score: 5
-          :active: true
-    - :version: 1
-      :property_id: null
-      :lead_state: abandoned
-      :description: Global Engagement Policy for 'application' Leads
-      :active: true
-      :engagement_policy_actions:
-        - :lead_action_name: Transition to Disqualified
-          :description: Make notes and transition lead to 'disqualified' state
           :deadline: 48
           :retry_count: 0
           :retry_delay: 0

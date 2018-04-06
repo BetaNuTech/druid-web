@@ -19,13 +19,14 @@ class EngagementPolicy < ApplicationRecord
 
   ### Associations
   belongs_to :property, required: false
+  has_many :actions, class_name: 'EngagementPolicyAction'
 
   ### Scopes
   scope :latest_version, -> { where(active: true).order(version: "DESC") }
   scope :for_property, ->(propertyid) { latest_version.where(property_id: [property_id, nil]) }
 
   ### Validations
-  validates :lead_state, inclusion: Lead.aasm.states.map{|s| s.name.to_s}
+  validates :lead_state, inclusion: Lead.state_names, presence: true
   validates :description, presence: true
   validates :version, uniqueness: {scope: :property_id, message: "should be unique per Property"}
 

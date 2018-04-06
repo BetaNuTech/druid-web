@@ -1,10 +1,24 @@
 module Seeds
   module Seedable
 
+    # Example YAML data
+    #
+    #   ---
+    #   :lead_actions:
+    #     :version: 1
+    #     :key: :name
+    #     :data:
+    #     - :name: Claim Lead
+    #       :description: Claim a new/open Lead
+    #       :active: true
+    #     - :name: First Contact
+    #       :description: Contact Lead for the first time (Phone/SMS/Email)
+    #       :active: true
+
     def load_seed_data(yaml_path=nil)
       klass_name = self.class_name
 
-      yaml_path ||= "#{Rails.root}/db/seed/#{self.table_name}.yml"
+      yaml_path ||= "#{Rails.root}/db/seeds/#{self.table_name}.yml"
       raise "Data not found: #{yaml_path}" unless File.exist?(yaml_path)
 
       Rails.logger.info "SEED DATA: Loading #{yaml_path}"
@@ -21,7 +35,6 @@ module Seeds
       errors = []
 
       begin
-        puts data.inspect
         self.transaction do
           data.each do |record|
             if (old_record = self.where(key_attribute => record.fetch(key_attribute)).first).present?

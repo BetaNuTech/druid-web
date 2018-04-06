@@ -5,6 +5,12 @@ module Leads
     CLAIMED_STATES = %w{prospect appointment application approved denied movein resident}
     CLOSED_STATES = %w{ disqualified abandoned resident exresident }
 
+    class_methods do
+      def state_names
+        Lead.aasm.states.map{|s| s.name.to_s}
+      end
+    end
+
     included do
       # https://github.com/aasm/aasm
       include AASM
