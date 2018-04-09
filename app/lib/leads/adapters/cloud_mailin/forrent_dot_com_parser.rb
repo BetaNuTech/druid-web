@@ -12,7 +12,7 @@ module Leads
         def self.parse(data)
           body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
 
-          name = ( body.match(/\[Prospect Name\] (.+)$/)[1] rescue '(Parse Error)' ).gsub('*','')
+          name = ( body.match(/\[Prospect Name\] (.+)$/)[1] rescue '(None)' ).gsub('*','')
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -20,16 +20,16 @@ module Leads
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
           referral = "ForRent.com"
-          phone1 = ( body.match(/\[Phone\] (.+)$/)[1] rescue '(Parse Error)' ).strip
+          phone1 = ( body.match(/\[Phone\] (.+)$/)[1] rescue '(None)' ).strip
           phone2 = nil
-          email = ( body.match(/\[Email\] (.+)$/)[1] rescue '(Parse Error)' ).strip
+          email = ( body.match(/\[Email\] (.+)$/)[1] rescue '(None)' ).strip
           fax = nil
-          baths = ( body.match(/\[# Baths\] (.+)$/)[1] rescue '(Parse Error)' ).strip.to_f
-          beds = ( body.match(/\[# Beds\] (.+)$/)[1] rescue '(Parse Error)' ).strip.to_i
-          notes = self.sanitize(( body.match(/\[Comments\](.+?)\[Submitted\]/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
+          baths = ( body.match(/\[# Baths\] (.+)$/)[1] rescue '(None)' ).strip.to_f
+          beds = ( body.match(/\[# Beds\] (.+)$/)[1] rescue '(None)' ).strip.to_i
+          notes = self.sanitize(( body.match(/\[Comments\](.+?)\[Submitted\]/m)[1] rescue '(None)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
-          move_in = ( body.match(/\[Moving Date\] (.+)/)[1] rescue '(Parse Error)' ).strip.gsub("\n"," ")
+          move_in = ( body.match(/\[Moving Date\] (.+)/)[1] rescue '(None)' ).strip.gsub("\n"," ")
           move_in = (DateTime.strptime(move_in, "%m/%d/%Y") rescue nil)
           agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
           raw_data = data.to_json

@@ -13,7 +13,7 @@ module Leads
           #  * baths
           body = data.fetch(:html,nil) || ''
 
-          name = ( body.match(/Name: ([\w ]+)/m)[1] rescue '(Parse Error)' ).strip
+          name = ( body.match(/Name: ([\w ]+)/m)[1] rescue '(None)' ).strip
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -23,12 +23,12 @@ module Leads
           referral = "Apartments.com"
           phone1 = nil
           phone2 = nil
-          #email = ( body.match(/Email: (.+)$/)[1] rescue '(Parse Error)' ).strip
+          #email = ( body.match(/Email: (.+)$/)[1] rescue '(None)' ).strip
           email = (data.fetch(:headers,{}).fetch("Reply-To",""))
           fax = nil
           baths = nil
           beds = nil
-          notes = self.sanitize(( body.match(/Comments:(.+?)<br/m)[1] rescue '(Parse Error)' ).gsub("\n"," ")).strip
+          notes = self.sanitize(( body.match(/Comments:(.+?)<br/m)[1] rescue '(None)' ).gsub("\n"," ")).strip
           smoker = nil
           pets = nil
           move_in = ( (body.match(/Move Date: (.*)$/)[1]) rescue nil )

@@ -15,7 +15,7 @@ module Leads
           #  * baths
           body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
 
-          name = (body.match(/ +(.+) is interested in/)[1] rescue '(Parse Error)' )
+          name = (body.match(/ +(.+) is interested in/)[1] rescue '(None)' )
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -23,13 +23,13 @@ module Leads
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
           referral = "ApartmentList.com"
-          phone1 = (body.match(/phone:([^ ]+)/m)[1] rescue '(Parse Error)' ).strip
+          phone1 = (body.match(/phone:([^ ]+)/m)[1] rescue '(None)' ).strip
           phone2 = nil
-          email = (body.match(/e-mail:\s+([^ ]+)$/m)[1] rescue '(Parse Error)' ).strip
+          email = (body.match(/e-mail:\s+([^ ]+)$/m)[1] rescue '(None)' ).strip
           fax = nil
           baths = nil
           beds = nil
-          notes = self.sanitize(( body.match(/\*preference\*(.+)Apartment List/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
+          notes = self.sanitize(( body.match(/\*preference\*(.+)Apartment List/m)[1] rescue '(None)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
           move_in = (body.match(/move in date\*\s+(\d{2}\/\d{2}\/\d{4})$/m)[1] rescue nil)

@@ -11,7 +11,7 @@ module Leads
         def self.parse(data)
           body = data.fetch(:html,'')
 
-          name = ( body.match(/Information for.+?<strong>(.+?)<\/strong>/)[1] rescue '(Parse Error)' ).gsub('*','')
+          name = ( body.match(/Information for.+?<strong>(.+?)<\/strong>/)[1] rescue '(None)' ).gsub('*','')
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -19,13 +19,13 @@ module Leads
           first_name = ( name_arr.first.chomp rescue '' )
           last_name = ( name_arr.last.chomp rescue '' )
           referral = "Rent.com"
-          phone1 = ( body.match(/Phone.+?<\/span>.+?>([^<]+)<\/a>/)[1] rescue '(Parse Error)' ).strip
+          phone1 = ( body.match(/Phone.+?<\/span>.+?>([^<]+)<\/a>/)[1] rescue '(None)' ).strip
           phone2 = nil
-          email = ( body.match(/Email.+?<\/span>.+?>([^<]+)<\/a>/)[1] rescue '(Parse Error)' ).strip
+          email = ( body.match(/Email.+?<\/span>.+?>([^<]+)<\/a>/)[1] rescue '(None)' ).strip
           fax = nil
           baths = nil
           beds = nil
-          notes = self.sanitize(( body.match(/Comments.+?<\/span>(.+?)<\/td>/m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
+          notes = self.sanitize(( body.match(/Comments.+?<\/span>(.+?)<\/td>/m)[1] rescue '(None)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
           move_in = (Date.parse(body.match(/Move Date.+?<\/span>(.*?)<\/td>/m)[1]) rescue nil)

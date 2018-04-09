@@ -14,7 +14,7 @@ module Leads
           #  * baths
           body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
 
-          name = ( body.match(/New Contact(.+) says:/m)[1] rescue '(Parse Error)' ).gsub('*','')
+          name = ( body.match(/New Contact(.+) says:/m)[1] rescue '(None)' ).gsub('*','')
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -23,13 +23,13 @@ module Leads
           last_name = ( name_arr.last.chomp rescue nil )
           last_name = nil if last_name == first_name
           referral = "Zillow.com"
-          phone1 = (body.match(/([0-9]{3}[-.][0-9]{3}[-.][0-9]{3})/)[1] rescue '(Parse Error)')
+          phone1 = (body.match(/([0-9]{3}[-.][0-9]{3}[-.][0-9]{3})/)[1] rescue '(None)')
           phone2 = nil
-          email = ( body.match(/<([^\?]+)\?subject=/m)[1] rescue '(Parse Error)' ).strip
+          email = ( body.match(/<([^\?]+)\?subject=/m)[1] rescue '(None)' ).strip
           fax = nil
           baths = nil
           beds = nil
-          notes = self.sanitize(( body.match(/says[^"]+"(.+)".</m)[1] rescue '(Parse Error)' ).strip.gsub("\n"," "))
+          notes = self.sanitize(( body.match(/says[^"]+"(.+)".</m)[1] rescue '(None)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = nil
           move_in = nil
