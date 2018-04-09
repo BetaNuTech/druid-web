@@ -30,8 +30,10 @@ class EngagementPolicyAction < ApplicationRecord
 
   ### Validations
   validates :description, :active, { presence: true }
-  validates :deadline, :retry_count, :retry_delay, :score,
+  validates :deadline, :score,
     { numericality: { greater_than: 0 }, presence: true,  }
+  validates :retry_count, :retry_delay,
+    { numericality: true, presence: true,  }
   validates :retry_delay_multiplier, { presence: true, inclusion: VALID_DELAY_MULTIPLIERS }
 
   ### Callbacks

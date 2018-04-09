@@ -66,5 +66,14 @@ namespace :seed do
     }
 
   end
+
+  desc "Load EngagementPolicy"
+  task :engagement_policy => :environment do
+    filename = File.join(Rails.root,"db","seeds", "engagement_policy.yml")
+
+    puts "*** Loading EngagementPolicy from #{filename}"
+    loader = EngagementPolicyLoader.new(filename)
+    loader.call
+  end
 end
 

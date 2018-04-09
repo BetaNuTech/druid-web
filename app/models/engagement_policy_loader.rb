@@ -36,9 +36,16 @@ class EngagementPolicyLoader
           raise "Record[#{index}] Lead State '#{lead_state}' is invalid"
         end
 
-        if (old_policy = EngagementPolicy.where(lead_state: lead_state, property_id: property_id)).present?
+        old_policy = EngagementPolicy.
+          where(lead_state: lead_state, property_id: property_id).
+          order(version: "desc").first
+        if old_policy.present?
           if old_policy.version >= version
             # Skip import if imported policy is the same or earlier version
+            msg = " = EngagementPolicyLoader: '%s' Leads EngagementPolicy for '%s' is up-to-date with version #{old_policy.version} (skipping import)" %
+              [old_policy.lead_state, (old_policy.property.present? ? old_policy.property.name : "default")]
+            puts msg
+            Rails.logger.warn msg
             next
           else
             if active
@@ -47,7 +54,7 @@ class EngagementPolicyLoader
             end
           end
           old_policy.save
-          msg = "EngagementPolicyLoader: Deprecated '#{old_policy.description}' version #{old_policy.version}"
+          msg = " - EngagementPolicyLoader: Deprecated '#{old_policy.description}' version #{old_policy.version}"
           puts msg
           Rails.logger.warn msg
         end
@@ -80,10 +87,12 @@ class EngagementPolicyLoader
         new_policy.actions = actions
         new_policy.save!
         new_policy.reload
-        msg = "EngagementPolicyLoader: Created '#{new_policy.description}' version #{new_policy.version} with #{new_policy.actions.count} actions"
+        msg = " + EngagementPolicyLoader: Created '#{new_policy.description}' version #{new_policy.version} with #{new_policy.actions.count} actions"
+        new_policy.actions.each do |a|
+          msg += "\n   + Task: #{a.lead_action.name}"
+        end
         puts msg
         Rails.logger.warn msg
-
       end
 
     end

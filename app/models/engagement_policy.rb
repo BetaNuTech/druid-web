@@ -19,7 +19,7 @@ class EngagementPolicy < ApplicationRecord
 
   ### Associations
   belongs_to :property, required: false
-  has_many :actions, class_name: 'EngagementPolicyAction'
+  has_many :actions, class_name: 'EngagementPolicyAction', dependent: :destroy
 
   ### Scopes
   scope :latest_version, -> { where(active: true).order(version: "DESC") }
@@ -28,7 +28,7 @@ class EngagementPolicy < ApplicationRecord
   ### Validations
   validates :lead_state, inclusion: Lead.state_names, presence: true
   validates :description, presence: true
-  validates :version, uniqueness: {scope: :property_id, message: "should be unique per Property"}
+  validates :version, uniqueness: {scope: [ :property_id, :lead_state ], message: "should be unique per Property per Lead state"}
 
   ### Callbacks
   before_validation :assign_version
