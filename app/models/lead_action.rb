@@ -25,10 +25,20 @@ class LeadAction < ApplicationRecord
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  ### Class Methods
+  ### Callbacks
+  before_destroy :check_for_use
 
+  ### Class Methods
 
   ### Instance Methods
 
   private
+
+  def check_for_use
+    # Verify there are no dependent EngagementPolicyActions
+    if EngagementPolicyAction.where(lead_action_id: self.id).any?
+      errors.add(:base, "Will not delete. This Lead Action is in use by an Engagement Policy")
+      throw(:abort)
+    end
+  end
 end

@@ -63,9 +63,13 @@ class LeadActionsController < ApplicationController
   # DELETE /lead_actions/1.json
   def destroy
     authorize @lead_action
-    @lead_action.destroy
     respond_to do |format|
-      format.html { redirect_to lead_actions_url, notice: 'Lead action was successfully destroyed.' }
+      if @lead_action.destroy
+        notice = 'Lead action was successfully destroyed.'
+      else
+        notice = @lead_action.errors.to_a.join(' ')
+      end
+      format.html { redirect_to lead_actions_url, notice: notice}
       format.json { head :no_content }
     end
   end

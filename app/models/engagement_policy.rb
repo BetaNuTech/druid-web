@@ -24,6 +24,7 @@ class EngagementPolicy < ApplicationRecord
   ### Scopes
   scope :latest_version, -> { where(active: true).order(version: "DESC") }
   scope :for_property, ->(propertyid) { latest_version.where(property_id: [property_id, nil]) }
+  scope :without_property, -> { latest_version.where(property_id: nil)}
 
   ### Validations
   validates :lead_state, inclusion: Lead.state_names, presence: true

@@ -27,6 +27,7 @@ class EngagementPolicyAction < ApplicationRecord
   belongs_to :lead_action
 
   ### Scopes
+  scope :active, -> { where(active: true)}
 
   ### Validations
   validates :description, :active, { presence: true }

@@ -201,6 +201,15 @@
                   <% end %>
 
                   <li role="separator" class="divider"></li>
+                  <% if policy(EngagementPolicy).index? %>
+                  <li>
+                    <%= link_to(engagement_policies_path) do %>
+                      <span class="glyphicon glyphicon-check"></span> Engagement Policies
+                    <% end %>
+                  </li>
+                  <% end %>
+
+                  <li role="separator" class="divider"></li>
                   <% if policy(Reason).index? %>
                   <li>
                     <%= link_to(reasons_path) do %>
