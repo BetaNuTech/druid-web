@@ -37,7 +37,12 @@ class LeadAction < ApplicationRecord
   def check_for_use
     # Verify there are no dependent EngagementPolicyActions
     if EngagementPolicyAction.where(lead_action_id: self.id).any?
-      errors.add(:base, "Will not delete. This Lead Action is in use by an Engagement Policy")
+      errors.add(:base, "Will not delete. This Lead Action is in use by an Engagement Policy.")
+      throw(:abort)
+    end
+
+    if Note.where(lead_action_id: self.id).any?
+      errors.add(:base, "Will not delete. This Lead Action is in use by a Note.")
       throw(:abort)
     end
   end
