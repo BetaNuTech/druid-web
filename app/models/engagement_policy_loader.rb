@@ -44,7 +44,7 @@ class EngagementPolicyLoader
             # Skip import if imported policy is the same or earlier version
             msg = " = EngagementPolicyLoader: '%s' Leads EngagementPolicy for '%s' is up-to-date with version #{old_policy.version} (skipping import)" %
               [old_policy.lead_state, (old_policy.property.present? ? old_policy.property.name : "default")]
-            puts msg
+            puts msg unless Rails.env.test?
             Rails.logger.warn msg
             next
           else
@@ -55,7 +55,7 @@ class EngagementPolicyLoader
           end
           old_policy.save
           msg = " - EngagementPolicyLoader: Deprecated '#{old_policy.description}' version #{old_policy.version}"
-          puts msg
+          puts msg unless Rails.env.test?
           Rails.logger.warn msg
         end
 
@@ -91,7 +91,7 @@ class EngagementPolicyLoader
         new_policy.actions.each do |a|
           msg += "\n   + Task: #{a.lead_action.name}"
         end
-        puts msg
+        puts msg unless Rails.env.test?
         Rails.logger.warn msg
       end
 

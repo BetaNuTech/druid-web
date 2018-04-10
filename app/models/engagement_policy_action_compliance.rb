@@ -22,7 +22,7 @@ class EngagementPolicyActionCompliance < ApplicationRecord
 
   ### Associations
   belongs_to :scheduled_action
-  belongs_to :user
+  belongs_to :user, optional: true
 
   ### Scopes
   #scope :expired, ->{where("expired_at < ?", DateTime.now)}

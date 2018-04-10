@@ -86,6 +86,6 @@ class Property < ApplicationRecord
 
   def primary_agent
     # TODO REFACTOR
-    property_agents.first
+    property_agents.first.try(:user)
   end
 end
