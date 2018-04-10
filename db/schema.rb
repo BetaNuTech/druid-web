@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180402200412) do
+ActiveRecord::Schema.define(version: 20180410160239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,21 @@ ActiveRecord::Schema.define(version: 20180402200412) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["active", "lead_state", "property_id", "version"], name: "covering"
+  end
+
+  create_table "engagement_policy_action_compliances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "scheduled_action_id"
+    t.uuid "user_id"
+    t.string "state", default: "pending"
+    t.datetime "expires_at"
+    t.datetime "completed_at"
+    t.decimal "score"
+    t.text "memo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "epac_expires_at"
+    t.index ["state"], name: "epac_state"
+    t.index ["user_id", "scheduled_action_id"], name: "epac_user_id_sa_id"
   end
 
   create_table "engagement_policy_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -266,6 +281,27 @@ ActiveRecord::Schema.define(version: 20180402200412) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "scheduled_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.uuid "target_id"
+    t.string "target_type"
+    t.uuid "originator_id"
+    t.uuid "lead_action_id"
+    t.uuid "reason_id"
+    t.uuid "schedule_id"
+    t.uuid "engagement_policy_action_id"
+    t.uuid "engagement_policy_action_compliance_id"
+    t.text "description"
+    t.datetime "completed_at"
+    t.string "state", default: "pending"
+    t.integer "attempt", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["originator_id"], name: "index_scheduled_actions_on_originator_id"
+    t.index ["target_id", "target_type"], name: "scheduled_action_target"
+    t.index ["user_id"], name: "index_scheduled_actions_on_user_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

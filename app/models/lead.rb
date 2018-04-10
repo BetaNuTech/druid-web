@@ -56,6 +56,7 @@ class Lead < ApplicationRecord
   belongs_to :property, required: false
   belongs_to :user, required: false
   has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
+  has_many :scheduled_actions, as: :target
 
   ### Validations
   validates :first_name, presence: true

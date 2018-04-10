@@ -17,4 +17,6 @@ class Reason < ApplicationRecord
     presence: true,
     uniqueness: { case_sensitive: false }
 
+  scope :active, -> {where(active: true)}
+
 end

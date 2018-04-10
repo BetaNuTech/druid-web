@@ -83,4 +83,9 @@ class Property < ApplicationRecord
   def occupancy_rate
     (housing_units.occupied.count.to_f / [ units || 1].min.to_f).round(1) * 100.0
   end
+
+  def primary_agent
+    # TODO REFACTOR
+    property_agents.first
+  end
 end

@@ -66,20 +66,20 @@ RSpec.describe EngagementPolicyAction, type: :model do
       refute(epa.valid?)
     end
 
-    it "should have a retry_count greater than 0" do
+    it "should have a retry_count 0 or greater" do
       assert(epa.valid?)
       epa.retry_count = nil
       refute(epa.valid?)
       epa.retry_count = 0
-      refute(epa.valid?)
+      assert(epa.valid?)
     end
 
-    it "should have a retry_delay greater than 0" do
+    it "should have a retry_delay 0 or greater" do
       assert(epa.valid?)
       epa.retry_delay = nil
       refute(epa.valid?)
       epa.retry_delay = 0
-      refute(epa.valid?)
+      assert(epa.valid?)
     end
 
     it "should have a score greater than 0" do

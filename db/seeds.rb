@@ -103,7 +103,7 @@ end
 
 # Reasons
 puts " * Creating Reasons"
-reasons = ['First Contact', 'Follow-Up', 'Other']
+reasons = ['First Contact', 'Follow-Up', 'Other', 'Scheduled']
 reasons.each do |r_name|
   print "   - #{r_name} "
   r = Reason.new(name: r_name)
