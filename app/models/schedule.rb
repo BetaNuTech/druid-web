@@ -18,4 +18,7 @@
 #
 
 class Schedule < Schedulable::Model::Schedule
+  def to_datetime
+    DateTime.new(date.year, date.month, date.day, time.hour, time.min)
+  end
 end
