@@ -23,6 +23,7 @@
 class ScheduledAction < ApplicationRecord
   ### Class Concerns/Extensions
   include ScheduledActions::StateMachine
+  acts_as_schedulable :schedule
 
   ### Constants
 
@@ -32,9 +33,8 @@ class ScheduledAction < ApplicationRecord
   belongs_to :orginator, class_name: 'ScheduledAction', optional: true
   belongs_to :lead_action, optional: true
   belongs_to :reason, optional: true
-  belongs_to :schedule, optional: true
   belongs_to :engagement_policy_action, optional: true
-  belongs_to :engagement_policy_action_compliance, optional: true
+  belongs_to :engagement_policy_action_compliance, optional: true, dependent: :destroy
 
   ### Scopes
 

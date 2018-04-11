@@ -290,7 +290,6 @@ ActiveRecord::Schema.define(version: 20180410160239) do
     t.uuid "originator_id"
     t.uuid "lead_action_id"
     t.uuid "reason_id"
-    t.uuid "schedule_id"
     t.uuid "engagement_policy_action_id"
     t.uuid "engagement_policy_action_compliance_id"
     t.text "description"

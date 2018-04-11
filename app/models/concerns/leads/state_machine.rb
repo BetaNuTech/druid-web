@@ -29,6 +29,7 @@ module Leads
         state :disqualified
         state :abandoned
 
+        after_all_transitions :create_scheduled_actions
 
         event :abandon do
           transitions from: [ :prospect, :appointment, :application, :approved, :denied ], to: :abandoned,

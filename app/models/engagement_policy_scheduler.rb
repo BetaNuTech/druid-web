@@ -6,7 +6,8 @@ class EngagementPolicyScheduler
   def create_scheduled_actions(lead:)
     unless lead.is_a?(Lead)
       msg = "Must Provide a Lead"
-      raise_error(msg)
+      log_error(msg)
+      return []
     end
 
     property = lead.property
@@ -21,7 +22,8 @@ class EngagementPolicyScheduler
 
     unless policy.present?
       msg = "No EngagementPolicy found for Lead[#{ lead.try(:id) }] with state #{lead.state} assigned to Property #{property.try(:name)}"
-      raise_error(msg)
+      log_error(msg)
+      return []
     end
 
     actions = []
@@ -40,10 +42,11 @@ class EngagementPolicyScheduler
           next
         end
 
-        due = DateTime.now + policy_action.deadline.hours
+        due = DateTime.now.utc + policy_action.deadline.hours
         schedule = Schedule.new(
           date: due.to_date,
           time: due.to_time,
+          # Single instance schedule
           rule: "singular",
           interval: 1
         )
@@ -99,10 +102,9 @@ class EngagementPolicyScheduler
     return reason
   end
 
-  def raise_error(msg:, error: "")
+  def log_error(msg)
     message = "EngagementPolicyScheduler ERROR: " + msg
     Rails.logger.error message
-    raise Error.new(message)
   end
 
 end

@@ -18,7 +18,6 @@
 
 class EngagementPolicyAction < ApplicationRecord
   ### Class Concerns/Extensions
-  acts_as_schedulable :schedule
 
   ### Constants
   VALID_DELAY_MULTIPLIERS = %w{ none double nonlinear }
