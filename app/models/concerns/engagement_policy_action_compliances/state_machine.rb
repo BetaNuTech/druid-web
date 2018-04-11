@@ -19,12 +19,14 @@ module EngagementPolicyActionCompliances
         state :expired
         state :rejected
 
+        after_all_events :after_all_events_callback
+
         event :complete do
-          transitions from: [:pending], to: "completed"
+          transitions from: [:pending], to: :completed
         end
 
         event :retry do
-          transitions from: [:pending], to: "completed_retry"
+          transitions from: [:pending], to: :completed_retry
         end
 
         event :expire do
@@ -34,6 +36,13 @@ module EngagementPolicyActionCompliances
         event :reject do
           transitions from: [:pending, :completed_retry], to: :rejected
         end
+      end
+
+      def after_all_events_callback
+        set_completion_date
+        calculate_score
+        add_completion_memo
+        save
       end
     end
   end

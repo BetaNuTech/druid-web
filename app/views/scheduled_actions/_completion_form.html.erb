@@ -1,5 +1,4 @@
-<%= render partial: "summary", locals: { scheduled_action: @scheduled_action} %>
-<%= form_with(model: @scheduled_action, action: complete_scheduled_action_path(@scheduled_action) ) do |form| %>
+<%= form_for(@scheduled_action, url: complete_scheduled_action_path(@scheduled_action), method: :post ) do |form| %>
   <div class="fieldset_content">
     <div class="row">
       <div class="col-md-12">

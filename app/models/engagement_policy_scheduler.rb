@@ -105,6 +105,24 @@ class EngagementPolicyScheduler
     return false
   end
 
+  def handle_scheduled_action_completion(scheduled_action)
+    unless (compliance = scheduled_action.engagement_policy_action_compliance).present?
+      log_error("Skipping Compliance Record handling of Updated ScheduledAction because there is none")
+      return true
+    end
+
+    case scheduled_action.state
+    when 'completed'
+      compliance.complete!
+    when 'completed_retry'
+      compliance.retry!
+    when 'expired'
+      compliance.expire!
+    when 'rejected'
+      compliance.reject!
+    end
+  end
+
   private
 
   def default_reason

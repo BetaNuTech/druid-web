@@ -16,7 +16,7 @@ module ScheduledActions
       scope :complete, -> {where.not(state: ['pending'])}
 
       def is_completed?
-        ['completed', 'completed_retry'].include?(state)
+        ['completed', 'completed_retry', 'rejected'].include?(state)
       end
 
       aasm column: :state do
@@ -25,6 +25,8 @@ module ScheduledActions
         state :completed_retry
         state :expired
         state :rejected
+
+        after_all_events :after_all_events_callback
 
         event :complete do
           transitions from: [:pending], to: :completed
@@ -41,6 +43,39 @@ module ScheduledActions
         event :reject do
           transitions from: [:pending, :completed_retry], to: :rejected
         end
+      end
+
+      def after_all_events_callback
+        self.transaction do
+          set_completion_time
+          update_compliance_record
+        end
+      end
+
+      def set_completion_time
+        case self.state
+        when 'completed', 'completed_retry'
+          self.completed_at = DateTime.now
+          self.save
+        end
+      end
+
+      def trigger_event(event_name:)
+        event = event_name.to_sym
+        if permitted_state_events.include?(event.to_sym)
+          self.aasm.fire(event)
+          return self.save
+        else
+          return false
+        end
+      end
+
+      def permitted_state_events
+        aasm.events(permitted: true).map(&:name)
+      end
+
+      def permitted_states
+        aasm.states(permitted: true).map(&:name)
       end
 
     end

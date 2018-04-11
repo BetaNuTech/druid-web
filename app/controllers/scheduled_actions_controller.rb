@@ -40,6 +40,9 @@ class ScheduledActionsController < ApplicationController
 
   def complete
     authorize @scheduled_action
+    set_completion_action_and_message
+    @scheduled_action.trigger_event(event_name: @scheduled_action.completion_action)
+    redirect_to completion_form_scheduled_action_path(@scheduled_action)
   end
 
   # POST /scheduled_actions

@@ -35,5 +35,36 @@ class EngagementPolicyActionCompliance < ApplicationRecord
   ### Class Methods
   ### Instance Methods
 
+
+  def set_completion_date
+    if self.completed_at.nil?
+      case self.state
+      when 'completed', 'completed_retry'
+        self.completed_at = self.scheduled_action.completed_at
+      end
+    end
+  end
+
+  def add_completion_memo
+    if state == 'rejected'
+      self.memo = "Rejected"
+      return
+    end
+    if (expires_at > ( completed_at ))
+      msg = "on time"
+    else
+      lateness = ( (completed_at.to_i - expires_at.to_i).to_f / 3600.0 ).round(1)
+      msg = "#{lateness} hours after deadline"
+    end
+    self.memo = ""
+    self.memo += " (Completed #{msg})"
+  end
+
+  def calculate_score
+    #base_score = scheduled_action.engagement_policy_action.try(:score)
+    # TODO
+    self.score = 0
+  end
+
   private
 end

@@ -37,7 +37,7 @@
               <td class="text-nowrap">
                 <% if policy(scheduled_action).edit? && scheduled_action.pending? %>
                     <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete'), title: 'Complete Task' ) do %><%= glyph(:ok) %><% end %>&nbsp;
-                  <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'retry'), title: 'Complete and Re-Attempt Task Later' ) do %><%= glyph(:refresh) %><% end %>&nbsp;
+                  <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete_retry'), title: 'Complete and Re-Attempt Task Later' ) do %><%= glyph(:refresh) %><% end %>&nbsp;
                   <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'reject'), title: 'Reject Task' ) do %><%= glyph(:remove) %><% end %>&nbsp;
                 <% end %>
                 <% case scheduled_action.state

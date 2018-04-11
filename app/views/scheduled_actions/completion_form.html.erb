@@ -2,7 +2,10 @@
   <div class="row">
     <div class="col-md-12">
       <h2>Reviewing Task</h2>
-      <%= render 'completion_form', note: @note %>
+      <%= render partial: "summary", locals: { scheduled_action: @scheduled_action} %>
+      <% unless @scheduled_action.is_completed? %>
+        <%= render 'completion_form', note: @scheduled_action %>
+      <% end %>
     </div>
   </div>
   <div class="row">

@@ -6,18 +6,21 @@
 
     <p>
       <strong>Due:</strong> <%= scheduled_action.schedule.to_s %> &mdash;
-      <strong>Status:</strong> <%= scheduled_action.state.capitalize %> &mdash;
       <strong>Reason:</strong> <%= scheduled_action.reason.description %> <br/>
-
+      <strong>Status:</strong> <%= scheduled_action.state.capitalize %> &mdash;
+      <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;
+      <strong>Last Attempt: </strong>
+      <% if scheduled_action.originator.present? %>
+        <%= link_to(scheduled_action.originator.completed_at || 'Incomplete',
+                   completion_form_scheduled_action_path(scheduled_action.originator)) %>
+      <% else %>
+        None
+      <% end %><br/>
       <% if scheduled_action.engagement_policy_action_compliance.present? %>
-        <strong>Compliance:</strong> <%= scheduled_action.engagement_policy_action_compliance.state.capitalize %> &mdash;
-        <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;
-        <strong>Last Attempt: </strong>
-        <% if scheduled_action.originator.present? %>
-          <%= link_to(scheduled_action.originator.completed_at || 'Incomplete',
-                     completion_form_scheduled_action_path(scheduled_action.originator)) %>
-        <% else %>
-          None
+        <strong>Compliance:</strong> <%= scheduled_action.engagement_policy_action_compliance.state.capitalize %>
+        <% if scheduled_action.is_completed? %>
+          <br/>
+          <strong>Compliance Memo: </strong> <%= scheduled_action.engagement_policy_action_compliance.memo %><br/>
         <% end %>
         <br/>
       <% end %>
