@@ -1,0 +1,11 @@
+<% if scheduled_action.target.present? %>
+  <% if scheduled_action.target === current_user %>
+    Personal Task
+  <% else %>
+    <%= link_to url_for(scheduled_action.target) do %>
+      <%= scheduled_action.target.try(:name) %> (<%= scheduled_action.target_type %>)
+    <% end %>
+  <% end %>
+<% else %>
+  None
+<% end %>

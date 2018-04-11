@@ -24,12 +24,19 @@ Rails.application.routes.draw do
   root to: redirect('/users/sign_in')
 
   resources :lead_actions
+  resources :scheduled_actions do
+    member do
+      post 'complete', to: 'scheduled_actions#complete'
+      get 'completion_form', to: 'scheduled_actions#completion_form'
+    end
+  end
   resources :notes
   resources :reasons
   resources :roles
   resources :unit_types
   resources :units
-  resources :users
+  resources :users do
+  end
   resources :residents
   resources :engagement_policies
 

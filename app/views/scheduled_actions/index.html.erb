@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Task Calendar</h1>
+    </div>
+    <% if policy(ScheduledAction).new? %>
+      <div class="col-md-6 text-right">
+        <%= glyph(:create) %>
+        <%= link_to "Schedule New Task", new_scheduled_action_path %>
+      </div>
+    <% end %>
+  </div>
+  <div class="row">
+    <div class=col-md-12"">
+      <%= month_calendar events: @scheduled_actions do |date, scheduled_actions| %>
+        <%= date.day %><br/>
+        <% scheduled_actions.each do |scheduled_action| %>
+          <div class="scheduled_action_calendar_entry">
+            <%= link_to scheduled_action_path(scheduled_action), title: scheduled_action.description do %>
+              <span class="scheduled_action_calendar_scheduled_action_action">
+                <%= scheduled_action.lead_action.try(:name) %>:
+              </span><br/>
+              <span class="scheduled_action_calendar_scheduled_action_subject">
+                <%= scheduled_action.target_subject(current_user) %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Upcoming</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.upcoming } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Previous</h3>
+        </div>
+        <% unless @limit_set %>
+          <div class="col-md-6 text-right" style="position: relative; top: 2em;">
+            <%= link_to(scheduled_actions_path(limit: 999, start_date: @start_date)) do %>
+              <span class="btn btn-xs btn-info">View All</span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <% if policy(ScheduledAction).new? %>
+      <div class="col-md-12 text-right">
+        <%= glyph(:create) %>
+        <%= link_to "Schedule New Task", new_scheduled_action_path %>
+      </div>
+    <% end %>
+  </div>
+
+</div>

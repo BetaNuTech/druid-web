@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col-md-12">
+    <p class="lead">
+      <%= scheduled_action.description %>
+    </p>
+
+    <p>
+      <strong>Due:</strong> <%= scheduled_action.schedule.to_s %> &mdash;
+      <strong>Status:</strong> <%= scheduled_action.state.capitalize %> &mdash;
+      <strong>Reason:</strong> <%= scheduled_action.reason.description %> <br/>
+
+      <% if scheduled_action.engagement_policy_action_compliance.present? %>
+        <strong>Compliance:</strong> <%= scheduled_action.engagement_policy_action_compliance.state.capitalize %> &mdash;
+        <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;
+        <strong>Last Attempt: </strong>
+        <% if scheduled_action.originator.present? %>
+          <%= link_to(scheduled_action.originator.completed_at || 'Incomplete',
+                     completion_form_scheduled_action_path(scheduled_action.originator)) %>
+        <% else %>
+          None
+        <% end %>
+        <br/>
+      <% end %>
+      <strong>Owner:</strong> <%= scheduled_action.user.try(:name) || 'None' %> <br/>
+      <strong>Subject:</strong> <%= link_to(scheduled_action.target_subject, url_for(scheduled_action.target)) %>
+      <% if scheduled_action.target.is_a?(Lead) %>
+        <blockquote style="font-size: 0.8em; margin-left: 2em;">
+          <%= glyph(:email) %> <%= scheduled_action.target.email %><br/>
+          <%= glyph(:phone) %> <%= scheduled_action.target.phone1 %>
+          <% if scheduled_action.target.phone2.present? %>
+            <br/>
+            <%= glyph(:phone) %> <%= scheduled_action.target.phone2 %> <br/>
+          <% end %>
+        </blockquote>
+      <% end %>
+    </p>
+
+  </div>
+</div>

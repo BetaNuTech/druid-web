@@ -1,0 +1,17 @@
+<%= form_with(model: scheduled_action, local: true) do |form| %>
+  <% if scheduled_action.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(scheduled_action.errors.count, "error") %> prohibited this scheduled_action from being saved:</h2>
+
+      <ul>
+      <% scheduled_action.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

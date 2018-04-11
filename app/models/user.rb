@@ -40,6 +40,7 @@ class User < ApplicationRecord
 
   ### Associations
   has_many :leads
+  has_many :scheduled_actions
 
   ### Validations
 

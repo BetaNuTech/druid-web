@@ -23,7 +23,7 @@ module LeadsHelper
   end
 
   def state_toggle(lead)
-    render partial: "state_toggle", locals: { lead: lead }
+    render partial: "leads/state_toggle", locals: { lead: lead }
   end
 
   def trigger_lead_state_event(lead:, event_name:)
