@@ -29,7 +29,7 @@ module Leads
         state :disqualified
         state :abandoned
 
-        after_all_transitions :create_scheduled_actions
+        after_all_events :after_all_events_callback
 
         event :abandon do
           transitions from: [ :prospect, :appointment, :application, :approved, :denied ], to: :abandoned,
@@ -118,6 +118,10 @@ module Leads
 
       def permitted_states
         aasm.states(permitted: true).map(&:name)
+      end
+
+      def after_all_events_callback
+        create_scheduled_actions
       end
 
     end

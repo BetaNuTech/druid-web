@@ -6,8 +6,7 @@ module Leads
       after_create :create_scheduled_actions
 
       def create_scheduled_actions
-        EngagementPolicyScheduler.new.
-          create_scheduled_actions(lead: self)
+        EngagementPolicyScheduler.new.create_scheduled_actions(lead: self)
       end
     end
   end
