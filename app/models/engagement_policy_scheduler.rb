@@ -91,7 +91,17 @@ class EngagementPolicyScheduler
   end
 
   # Re-assign incomplete ScheduledActions
-  def reassign_lead(lead:, agent:)
+  def reassign_lead_agent(lead:, agent:)
+    incomplete_states = [:pending, :expired]
+    lead.transaction do
+      lead.scheduled_actions.where(state: incomplete_states).each do |action|
+        action.user = agent
+        action.save
+        compliance = action.engagement_policy_action_compliance
+        compliance.user = agent
+        compliance.save
+      end
+    end
     return false
   end
 

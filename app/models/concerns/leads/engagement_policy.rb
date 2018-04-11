@@ -4,9 +4,20 @@ module Leads
 
     included do
       after_create :create_scheduled_actions
+      after_save :ensure_scheduled_action_ownership
 
       def create_scheduled_actions
         EngagementPolicyScheduler.new.create_scheduled_actions(lead: self)
+      end
+
+      def reassign_scheduled_actions
+        EngagementPolicyScheduler.new.reassign_lead_agent(lead: self, agent: self.user)
+      end
+
+      def ensure_scheduled_action_ownership
+        if self.saved_change_to_attribute?(:user_id)
+          reassign_scheduled_actions
+        end
       end
     end
   end

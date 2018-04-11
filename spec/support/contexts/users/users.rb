@@ -32,4 +32,12 @@ RSpec.shared_context "users" do
     user
   }
 
+  let(:agent2) {
+    user = create(:user)
+    user.role = agent_role
+    user.save
+    user.confirm
+    user
+  }
+
 end
