@@ -89,6 +89,15 @@ table#leads-table {
   display: none;
 }
 
+.Lead .scheduled_actions {
+  grid-area: LeadScheduledActions;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+}
+
 @media(min-width: 600px) {
   .Lead {
     display: grid;
@@ -100,6 +109,7 @@ table#leads-table {
       "LeadActions LeadActions LeadActions"
       "LeadContact LeadProperty LeadPreferences"
       "LeadNotes LeadNotes LeadNotes"
+      "LeadScheduledActions LeadScheduledActions LeadScheduledActions"
       "LeadComments LeadComments LeadComments"
     ;
   }
