@@ -10,6 +10,10 @@ class HomeController < ApplicationController
 
   def dashboard
     @page_title = "Druid Dashboard"
-    flash[:notice] = "This page is in active development"
+
+    @my_leads = Lead.for_agent(current_user).active
+    @unclaimed_leads = Lead.open.order(created_at: 'desc').limit(10)
+    @today_actions = ScheduledAction.for_agent(current_user).due_today.sorted_by_due_asc
+    @upcoming_actions = ScheduledAction.for_agent(current_user).upcoming.sorted_by_due_asc
   end
 end

@@ -41,6 +41,7 @@ class ScheduledAction < ApplicationRecord
   has_many :notes, as: :notable, dependent: :destroy
 
   ### Scopes
+  scope :for_agent, ->(agent) { where(user_id: agent.id) }
 
   ### Validations
   validates :state, presence: true, inclusion: ScheduledAction.state_names

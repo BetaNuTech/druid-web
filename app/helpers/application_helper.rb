@@ -3,6 +3,14 @@ module ApplicationHelper
     datetime.present? ? datetime.strftime('%m-%d') : nil
   end
 
+  def short_time(datetime)
+    datetime.present? ? datetime.strftime('%l:%M%p') : nil
+  end
+
+  def short_datetime(datetime)
+    datetime.present? ? datetime.strftime('%m-%d %l:%M%p') : nil
+  end
+
   def long_datetime(datetime)
     datetime.present? ? datetime.strftime('%B %e, %Y at %l:%M%p') : nil
   end

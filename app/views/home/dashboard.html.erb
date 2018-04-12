@@ -26,46 +26,28 @@
           <table class="table">
             <thead></thead>
             <tbody>
-              <tr>
-                <% lead = Lead.offset(rand(Lead.count)).first %>
-                <td><%= glyph(:person) %></td>
-                <td>Now</td>
-                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead)) rescue ''%></td>
-                <td>
-                  <%= link_to(glyph(:show), "#") %>&nbsp;
-                  <%= link_to(glyph(:edit), "#") %>
-                </td>
-              </tr>
-              <tr>
-                <% lead = Lead.offset(rand(Lead.count)).first %>
-                <td><%= glyph(:person) %></td>
-                <td>Now</td>
-                <td>Unclaimed Lead: <%= link_to(lead.name, lead_path(lead)) rescue ''%></td>
-                <td>
-                  <%= link_to(glyph(:show), "#") %>&nbsp;
-                  <%= link_to(glyph(:edit), "#") %>
-                </td>
-              </tr>
-              <tr>
-                <td><%= glyph(:pin) %></td>
-                <% lead = Lead.offset(rand(Lead.count)).first %>
-                <td>Today</td>
-                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
-                <td>
-                  <%= link_to(glyph(:show), "#") %>&nbsp;
-                  <%= link_to(glyph(:edit), "#") %>
-                </td>
-              </tr>
-              <tr>
-                <% lead = Lead.offset(rand(Lead.count)).first %>
-                <td><%= glyph(:pin) %></td>
-                <td>10:00AM</td>
-                <td>Tour <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
-                <td>
-                  <%= link_to(glyph(:show), "#") %>&nbsp;
-                  <%= link_to(glyph(:edit), "#") %>
-                </td>
-              </tr>
+              <% @unclaimed_leads.each do |lead| %>
+                <tr>
+                  <td><%= glyph(:person) %></td>
+                  <td>Now</td>
+                  <td>Unclaimed Lead: <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span></td>
+                  <td class="nowrap">
+                    <%= link_to(glyph(:show), lead_path(lead)) %>
+                    <!-- <%= link_to(glyph(:edit), edit_lead_path(lead)) %> -->
+                  </td>
+                </tr>
+              <% end %>
+              <% @today_actions.each do |scheduled_action| %>
+                <tr>
+                  <td><%= glyph(:pin) %></td>
+                  <td><%= short_time(scheduled_action.schedule.to_datetime) %></td>
+                  <td><%= scheduled_action.description %>:
+                    <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span></td>
+                  <td>
+                    <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+                  </td>
+                </tr>
+              <% end %>
             </tbody>
           </table>
         </div>
@@ -80,26 +62,16 @@
           <table class="table">
             <thead></thead>
             <tbody>
-              <tr>
-                <% lead = Lead.open.offset(rand(Lead.open.count)).first || Lead.first %>
-                <td><%= glyph(:pin) %></td>
-                <td>Today</td>
-                <td>Contact via email <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
-                <td>
-                  <%= link_to(glyph(:show), "#") %>&nbsp;
-                  <%= link_to(glyph(:edit), "#") %>
-                </td>
-              </tr>
-              <tr>
-                <% lead = Lead.prospect.offset(rand(Lead.open.count)).first || Lead.first %>
-                <td><%= glyph(:pin) %></td>
-                <td>10:00AM</td>
-                <td>Tour <%= link_to(lead.name, lead_path(lead)) rescue '' %> </td>
-                <td>
-                  <%= link_to(glyph(:show), "#") %>&nbsp;
-                  <%= link_to(glyph(:edit), "#") %>
-                </td>
-              </tr>
+              <% @upcoming_actions.each do |scheduled_action| %>
+                <tr>
+                  <td><%= glyph(:pin) %></td>
+                  <td><%= short_datetime(scheduled_action.schedule.to_datetime) %></td>
+                  <td><%= scheduled_action.description %>: <%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %> </td>
+                  <td>
+                    <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+                  </td>
+                </tr>
+              <% end %>
             </tbody>
           </table>
         </div>
@@ -118,7 +90,7 @@
           </div>
           <table class="table">
             <tbody>
-              <% current_user.leads.each do |lead| %>
+              <% @my_leads.each do |lead| %>
                 <tr>
                   <td>
                     <strong><%= link_to(lead.name, lead_path(lead)) %></strong><br/>
@@ -156,11 +128,11 @@
                   <td><strong>My Leads</strong></td>
                   <td>
                     <ul>
-                      <li>in Pipeline:  <%= current_user.leads.count %></li>
-                      <li>Conversion Rate: 27%</li>
-                      <li>Closed This Week:  2 </li>
-                      <li>Closed This Month:  2 </li>
-                      <li>Closed This Year:  2 </li>
+                      <li>in Pipeline:  <%= current_user.leads.active.count %></li>
+                      <li>Conversion Rate: XX%</li>
+                      <li>Closed This Week:  XXX </li>
+                      <li>Closed This Month:  XXX </li>
+                      <li>Closed This Year:  XXX </li>
                     </ul>
                   </td>
                 </tr>

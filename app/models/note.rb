@@ -42,7 +42,7 @@ class Note < ApplicationRecord
 
   def self.upcoming
     skope = self.having_schedule.
-      where("schedules.date >= ?", Date.today)
+      where("schedules.date > ?", Date.today)
     return skope
   end
 

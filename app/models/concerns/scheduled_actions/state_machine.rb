@@ -12,7 +12,7 @@ module ScheduledActions
       # https://github.com/aasm/aasm
       include AASM
 
-      scope :incomplete, -> {where.not(state: ['completed', 'rejected'])}
+      scope :incomplete, -> {where.not(state: ['completed', 'completed_retry', 'rejected'])}
       scope :complete, -> {where.not(state: ['pending'])}
 
       def is_completed?
