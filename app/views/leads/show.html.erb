@@ -101,7 +101,7 @@
     <h2>Pending Tasks</h2>
     <% @lead.scheduled_actions.incomplete.each do |scheduled_action| %>
         <%= glyph(:pin) %>
-        <%= short_time(scheduled_action.schedule.to_datetime) %>&mdash;
+        <%= short_datetime(scheduled_action.schedule.to_datetime) %>&mdash;
         <%= link_to(scheduled_action.description, completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
     <% end %>
   </div>
