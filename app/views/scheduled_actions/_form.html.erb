@@ -1,4 +1,4 @@
-<%= form_with(model: scheduled_action, local: true) do |form| %>
+<%= form_with(model: scheduled_action) do |form| %>
   <% if scheduled_action.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(scheduled_action.errors.count, "error") %> prohibited this scheduled_action from being saved:</h2>
@@ -11,7 +11,44 @@
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= form.submit %>
+  <%= form.hidden_field :notable_id, id: :scheduled_action_notable_id %>
+  <%= form.hidden_field :notable_type, id: :scheduled_action_notable_type %>
+
+  <div class="fieldset_content">
+    <div class="row">
+      <div class="col-md-6">
+        <p>
+          <strong>Subject</strong><br/>
+              Personal Event/ScheduledTask
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <%= form.label :lead_action_id, "Action" %>
+        <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id), {include_blank: true},{id: :scheduled_action_action, class: "form-control"} %>
+      </div>
+      <div class="col-md-4 form-group">
+        <%= form.label :reason_id, "Reason" %>
+        <%= form.select :reason_id, select_reason(scheduled_action.reason_id),{include_blank: true},{id: :scheduled_action_reason, class: "form-control"} %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="scheduled_action_schedule_selection">
+          <%= form.label :schedule %>
+          <%= form.schedule_select :schedule, style: :bootstrap, until: true, input_types: {date: :date_picker, time: :time_picker, datetime: :datetime_picker} %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-8">
+        <%= form.label :description %>
+        <%= form.text_area :description, id: :scheduled_action_description, class: "form-control", rows: 5%>
+      </div>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
   </div>
 <% end %>

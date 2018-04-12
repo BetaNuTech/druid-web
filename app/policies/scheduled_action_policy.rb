@@ -12,7 +12,10 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def edit?
-    user.admin? || (user.agent? && record.user.present? && record.user === user  )
+    user.admin? ||
+      ( record.user.present? &&
+        record.user === user &&
+        !record.engagement_policy_action_compliance.present? )
   end
 
   def update?
@@ -27,12 +30,14 @@ class ScheduledActionPolicy < ApplicationPolicy
     edit?
   end
 
-  def complete?
-    edit?
+  def completion_form?
+    user.admin? ||
+      ( record.user.present? &&
+        record.user === user)
   end
 
-  def completion_form?
-    edit?
+  def complete?
+    completion_form?
   end
 
   def allowed_params

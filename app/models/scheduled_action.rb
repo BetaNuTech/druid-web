@@ -38,6 +38,7 @@ class ScheduledAction < ApplicationRecord
   belongs_to :reason, optional: true
   belongs_to :engagement_policy_action, optional: true
   belongs_to :engagement_policy_action_compliance, optional: true, dependent: :destroy
+  has_many :notes, as: :notable, dependent: :destroy
 
   ### Scopes
 

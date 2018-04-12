@@ -39,6 +39,7 @@
                     <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete'), title: 'Complete Task' ) do %><%= glyph(:ok) %><% end %>&nbsp;
                   <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete_retry'), title: 'Complete and Re-Attempt Task Later' ) do %><%= glyph(:refresh) %><% end %>&nbsp;
                   <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'reject'), title: 'Reject Task' ) do %><%= glyph(:remove) %><% end %>&nbsp;
+                  <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'note'), title: 'Write Note' ) do %><%= glyph(:file) %><% end %>&nbsp;
                 <% else %>
                   <%= link_to(scheduled_action_status(scheduled_action), completion_form_scheduled_action_path(scheduled_action)) %>
                 <% end %>

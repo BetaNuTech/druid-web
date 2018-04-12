@@ -26,6 +26,8 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions/new
   def new
     @scheduled_action = ScheduledAction.new
+    @scheduled_action.schedule = Schedule.new
+    authorize @scheduled_action
   end
 
   # GET /scheduled_actions/1/edit
@@ -48,8 +50,10 @@ class ScheduledActionsController < ApplicationController
   # POST /scheduled_actions
   # POST /scheduled_actions.json
   def create
-    raise ActiveRecord::RecordNotFound
     @scheduled_action = ScheduledAction.new(scheduled_action_params)
+    @scheduled_action.user = current_user
+    @scheduled_action.target = @lead || @property || current_user
+    authorize @scheduled_action_params
 
     respond_to do |format|
       if @scheduled_action.save
@@ -80,7 +84,6 @@ class ScheduledActionsController < ApplicationController
   # DELETE /scheduled_actions/1
   # DELETE /scheduled_actions/1.json
   def destroy
-    raise ActiveRecord::RecordNotFound
     @scheduled_action.destroy
     respond_to do |format|
       format.html { redirect_to scheduled_actions_url, notice: 'Scheduled action was successfully destroyed.' }
