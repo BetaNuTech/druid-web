@@ -43,6 +43,11 @@ module ScheduledActions
         event :reject do
           transitions from: [:pending, :completed_retry], to: :rejected
         end
+
+        event :restore do
+          transitions from: [:completed, :completed_retry, :rejected, :expired], to: :pending,
+            after: :reset_completion_status
+        end
       end
 
       def after_all_events_callback

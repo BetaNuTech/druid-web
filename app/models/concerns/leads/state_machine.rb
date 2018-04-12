@@ -80,6 +80,11 @@ module Leads
             after: ->(*args) { event_clear_user; set_priority_low }
         end
 
+        event :release do
+          transitions from: :prospect, to: :open,
+            after: ->(*args) { event_clear_user; set_priority_urgent }
+        end
+
       end
 
       def self.active
@@ -100,6 +105,10 @@ module Leads
 
       def set_priority_low
         self.priority = "low"
+      end
+
+      def set_priority_urgent
+        self.priority = "urgent"
       end
 
       def trigger_event(event_name:, user: false)

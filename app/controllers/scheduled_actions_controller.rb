@@ -111,7 +111,7 @@ class ScheduledActionsController < ApplicationController
     def set_completion_action_and_message
       @scheduled_action ||= set_scheduled_action
       @scheduled_action.completion_action = params.fetch(:scheduled_action,{}).fetch(:completion_action, params[:event])
-      @scheduled_action.completion_message = params.fetch(:scheduled_action,{}).fetch(:completion_message, nil)
+      @scheduled_action.completion_message = params.fetch(:scheduled_action,{}).fetch(:completion_message, params[:message])
     end
 
 end

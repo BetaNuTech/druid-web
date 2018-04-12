@@ -10,6 +10,10 @@ module ScheduledActions
         EngagementPolicyScheduler.new.handle_scheduled_action_completion(self)
       end
 
+      def reset_completion_status
+        EngagementPolicyScheduler.new.reset_completion_status(self)
+      end
+
     end
   end
 end

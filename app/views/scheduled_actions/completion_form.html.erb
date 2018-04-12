@@ -3,7 +3,9 @@
     <div class="col-md-12">
       <h2>Reviewing Task</h2>
       <%= render partial: "summary", locals: { scheduled_action: @scheduled_action} %>
-      <% unless @scheduled_action.is_completed? %>
+      <% if @scheduled_action.is_completed? %>
+        <%= link_to("Restore", complete_scheduled_action_path(id: @scheduled_action.id, event: 'restore'), { method: :post , class: "btn btn-success"}) %>
+      <% else %>
         <%= render 'completion_form', note: @scheduled_action %>
       <% end %>
     </div>

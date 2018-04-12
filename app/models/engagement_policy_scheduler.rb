@@ -123,6 +123,18 @@ class EngagementPolicyScheduler
     end
   end
 
+  def reset_completion_status(scheduled_action)
+    scheduled_action.state = 'pending'
+    scheduled_action.completed_at = nil
+    scheduled_action.save!
+    compliance = scheduled_action.engagement_policy_action_compliance
+    compliance.state = 'pending'
+    compliance.score = nil
+    compliance.memo = nil
+    compliance.completed_at = nil
+    compliance.save!
+  end
+
   private
 
   def default_reason
