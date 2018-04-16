@@ -28,7 +28,10 @@ class ScheduledAction < ApplicationRecord
   include ScheduledActions::StateMachine
 
   ### Constants
-  ALLOWED_PARAMS = [:user_id, :lead_action_id, :reason_id, :description]
+  ALLOWED_PARAMS = [
+    :user_id, :lead_action_id, :reason_id, :description,
+    { schedule_attributes: Schedulable::ScheduleSupport.param_names }
+  ]
 
   ### Associations
   belongs_to :user, optional: true
@@ -67,6 +70,15 @@ class ScheduledAction < ApplicationRecord
     else
       'None'
     end
+  end
+
+  def summary
+    parts = []
+    parts << ( engagement_policy_action_compliance.present? ? "Engagement Policy Task" : "Personal Task" )
+    parts << lead_action.description || lead_action.name
+    parts << schedule.try(:long_datetime)
+    parts << state.upcase
+    return "%s: %s by %s [%s]" % parts
   end
 
   private

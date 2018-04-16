@@ -5,8 +5,8 @@
     </p>
 
     <p>
-      <strong>Due:</strong> <%= scheduled_action.schedule.to_s %> &mdash;
-      <strong>Reason:</strong> <%= scheduled_action.reason.description %> <br/>
+      <strong>Due:</strong> <%= scheduled_action.schedule.long_datetime %> &mdash;
+      <strong>Reason:</strong> <%= scheduled_action.reason.description || scheduled_action.reason.name %> <br/>
       <strong>Status:</strong> <%= scheduled_action.state.capitalize %> &mdash;
       <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;
       <strong>Last Attempt: </strong>

@@ -37,7 +37,7 @@ class EngagementPolicyScheduler
 
         if old_action.present?
           msg = "EngagementPolicyScheduler WARNING: ScheduledAction for Lead[#{lead.id}] and EngagementPolicyAction[#{policy_action.description}] already present"
-          puts msg
+          puts msg unless Rails.production?
           Rails.logger.warn msg
           next
         end
@@ -102,7 +102,7 @@ class EngagementPolicyScheduler
         compliance.save
       end
     end
-    return false
+    return true
   end
 
   def handle_scheduled_action_completion(scheduled_action)
@@ -110,6 +110,8 @@ class EngagementPolicyScheduler
       log_error("Skipping Compliance Record handling of Updated ScheduledAction because there is none")
       return true
     end
+
+    scheduled_action.add_subject_completion_note
 
     case scheduled_action.state
     when 'completed'

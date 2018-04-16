@@ -20,7 +20,7 @@
               <%= link_to("Calendar", scheduled_actions_path, {class: "btn btn-xs btn-success"})  %>
             </div>
             <div class="col-md-4 text-right" style="padding-top: 20px;">
-              <%= link_to("Schedule Event/TODO", new_scheduled_action_path, {class: "btn btn-xs btn-success"}) %>
+              <%= link_to("Schedule Task", new_scheduled_action_path, {class: "btn btn-xs btn-success"}) %>
             </div>
           </div>
           <table class="table">
@@ -39,12 +39,21 @@
               <% end %>
               <% @today_actions.each do |scheduled_action| %>
                 <tr>
-                  <td><%= glyph(:pin) %></td>
+                  <td><%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %></td>
                   <td><%= short_time(scheduled_action.schedule.to_datetime) %></td>
-                  <td><%= scheduled_action.description %>:
-                    <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span></td>
                   <td>
-                    <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+                    <%= scheduled_action.description %>
+                    <% unless scheduled_action.target == current_user %>
+                      : <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span>
+                    <% end %>
+                  </td>
+                  <td class="text-nowrap">
+                    <% if policy(scheduled_action).show? %>
+                      <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+                    <% end %>
+                    <% if policy(scheduled_action).edit? %>
+                      <%= link_to(glyph(:edit), edit_scheduled_action_path(scheduled_action)) %>
+                    <% end %>
                   </td>
                 </tr>
               <% end %>
@@ -64,11 +73,21 @@
             <tbody>
               <% @upcoming_actions.each do |scheduled_action| %>
                 <tr>
-                  <td><%= glyph(:pin) %></td>
+                  <td><%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %></td>
                   <td><%= short_datetime(scheduled_action.schedule.to_datetime) %></td>
-                  <td><%= scheduled_action.description %>: <%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %> </td>
                   <td>
-                    <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+                    <%= scheduled_action.description %>
+                    <% unless scheduled_action.target == current_user %>
+                      : <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span>
+                    <% end %>
+                  </td>
+                  <td class="text-nowrap">
+                    <% if policy(scheduled_action).show? %>
+                      <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+                    <% end %>
+                    <% if policy(scheduled_action).edit? %>
+                      <%= link_to(glyph(:edit), edit_scheduled_action_path(scheduled_action)) %>
+                    <% end %>
                   </td>
                 </tr>
               <% end %>

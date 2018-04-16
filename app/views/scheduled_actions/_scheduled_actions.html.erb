@@ -22,7 +22,7 @@
               </td>
               <td>
                 <%= scheduled_action.reason.name %><br/>
-                <small><%= scheduled_action.schedule %></small>
+                <small><%= short_datetime(scheduled_action.schedule.to_datetime) if scheduled_action.schedule.present? %></small>
               </td>
               <td width="33%">
                 <p>
@@ -35,7 +35,12 @@
                 <% end %>
               </td>
               <td class="text-nowrap">
-                <% if policy(scheduled_action).edit? && scheduled_action.pending? %>
+                <% if policy(scheduled_action).edit? %>
+                  <%= link_to(edit_scheduled_action_path(scheduled_action)) do %>
+                    <%= glyph(:edit) %>
+                  <% end %>
+                <% end %>
+                <% if policy(scheduled_action).completion_form? && scheduled_action.pending? %>
                     <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete'), title: 'Complete Task' ) do %><%= glyph(:ok) %><% end %>&nbsp;
                   <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete_retry'), title: 'Complete and Re-Attempt Task Later' ) do %><%= glyph(:refresh) %><% end %>&nbsp;
                   <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'reject'), title: 'Reject Task' ) do %><%= glyph(:remove) %><% end %>&nbsp;

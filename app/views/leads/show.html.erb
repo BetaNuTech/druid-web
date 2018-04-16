@@ -99,11 +99,18 @@
   </div>
   <div class="scheduled_actions">
     <h2>Pending Tasks</h2>
+    <% if @lead.scheduled_actions.incomplete.empty? %>
+      <p>None</p>
+    <% end %>
+    <ul>
     <% @lead.scheduled_actions.incomplete.each do |scheduled_action| %>
+      <li>
         <%= glyph(:pin) %>
         <%= short_datetime(scheduled_action.schedule.to_datetime) %>&mdash;
         <%= link_to(scheduled_action.description, completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+      </li>
     <% end %>
+    </ul>
   </div>
   <div class="comments">
 

@@ -8,19 +8,16 @@ module ScheduledActions
       end
 
       def upcoming
-        return self.incomplete.having_schedule.
-          where("schedules.date > ?", Date.today)
+        return self.incomplete.having_schedule.sorted_by_due_asc
       end
 
       def due_today
-        return self.upcoming
+        return self.upcoming.
           where("schedules.date < ?", Date.today)
       end
 
       def previous
-        skope = self.incomplete.having_schedule.
-          where("schedules.date < ?", Date.today).
-          or(self.having_schedule.complete)
+        skope = self.having_schedule.complete
         return skope
       end
 

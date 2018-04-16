@@ -42,7 +42,7 @@
                   </span>
                 </p>
               </td>
-              <td>
+              <td class="text-nowrap">
                 <%= link_to property do %><%= glyph(:show) %><% end if policy(property).show? %>&nbsp;
                 <%= link_to edit_property_path(property) do %><%= glyph(:edit) %><% end if policy(property).edit? %>&nbsp;
                 <%= link_to property, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(property).destroy? %>

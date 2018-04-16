@@ -21,6 +21,7 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions/1
   # GET /scheduled_actions/1.json
   def show
+    authorize @scheduled_action
   end
 
   # GET /scheduled_actions/new
@@ -53,11 +54,11 @@ class ScheduledActionsController < ApplicationController
     @scheduled_action = ScheduledAction.new(scheduled_action_params)
     @scheduled_action.user = current_user
     @scheduled_action.target = @lead || @property || current_user
-    authorize @scheduled_action_params
+    authorize @scheduled_action
 
     respond_to do |format|
       if @scheduled_action.save
-        format.html { redirect_to @scheduled_action, notice: 'Scheduled action was successfully created.' }
+        format.html { redirect_to scheduled_actions_path, notice: 'Scheduled action was successfully created.' }
         format.json { render :show, status: :created, location: @scheduled_action }
       else
         format.html { render :new }
@@ -69,10 +70,10 @@ class ScheduledActionsController < ApplicationController
   # PATCH/PUT /scheduled_actions/1
   # PATCH/PUT /scheduled_actions/1.json
   def update
-    raise ActiveRecord::RecordNotFound
+    authorize @scheduled_action
     respond_to do |format|
       if @scheduled_action.update(scheduled_action_params)
-        format.html { redirect_to @scheduled_action, notice: 'Scheduled action was successfully updated.' }
+        format.html { redirect_to scheduled_actions_path, notice: 'Scheduled action was successfully updated.' }
         format.json { render :show, status: :ok, location: @scheduled_action }
       else
         format.html { render :edit }
@@ -84,6 +85,7 @@ class ScheduledActionsController < ApplicationController
   # DELETE /scheduled_actions/1
   # DELETE /scheduled_actions/1.json
   def destroy
+    authorize @scheduled_action
     @scheduled_action.destroy
     respond_to do |format|
       format.html { redirect_to scheduled_actions_url, notice: 'Scheduled action was successfully destroyed.' }
@@ -108,7 +110,7 @@ class ScheduledActionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def scheduled_action_params
-      params.fetch(:scheduled_action, {})
+      params.require(:scheduled_action).permit(policy(@scheduled_action || ScheduledAction).allowed_params)
     end
 
     def set_completion_action_and_message

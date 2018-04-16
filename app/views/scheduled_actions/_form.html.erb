@@ -19,7 +19,7 @@
       <div class="col-md-6">
         <p>
           <strong>Subject</strong><br/>
-              Personal Event/ScheduledTask
+          Personal Task
         </p>
       </div>
     </div>
@@ -50,5 +50,10 @@
     <div class="form-group">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
+    <% if policy(@scheduled_action).destroy? && !@scheduled_action.new_record? %>
+      <p class="text-right">
+        <%= link_to('Delete', scheduled_action_path(@scheduled_action), class: "btn btn-danger btn-small", method: :delete, data: {confirm: 'Are you sure you want to delete this Task?'} )%>
+      </p>
+    <% end %>
   </div>
 <% end %>
