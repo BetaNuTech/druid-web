@@ -18,7 +18,7 @@ module ScheduledActions
       def add_subject_completion_note(message=nil)
         note = nil
         if target.present? && target.respond_to?(:notes)
-          note_content = summary + " -- " + ( message || completion_message )
+          note_content = summary + " -- " + ( message || completion_message || "")
           note = Note.new(
             user: user,
             lead_action: lead_action,

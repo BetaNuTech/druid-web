@@ -6,6 +6,10 @@ module EngagementPolicyActionCompliances
       def state_names
         EngagementPolicyActionCompliance.aasm.states.map{|s| s.name.to_s}
       end
+
+      def completed_states
+        EngagementPolicyActionCompliance.state_names - ['pending']
+      end
     end
 
     included do
@@ -39,6 +43,7 @@ module EngagementPolicyActionCompliances
       end
 
       def after_all_events_callback
+        return true unless EngagementPolicyActionCompliance.completed_states.include?(self.state)
         set_completion_date
         calculate_score
         add_completion_memo

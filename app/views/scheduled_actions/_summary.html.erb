@@ -18,9 +18,12 @@
       <% end %><br/>
       <% if scheduled_action.engagement_policy_action_compliance.present? %>
         <strong>Compliance:</strong> <%= scheduled_action.engagement_policy_action_compliance.state.capitalize %>
-      <% if scheduled_action.is_completed? %>
-            &mdash;
-           <%= scheduled_action.engagement_policy_action_compliance.memo %><br/>
+        <% if scheduled_action.is_completed? %>
+          &mdash;
+         <%= scheduled_action.engagement_policy_action_compliance.memo %>
+         &mdash;
+         <%= scheduled_action.engagement_policy_action_compliance.score %> pts. earned
+          <br/>
         <% end %>
         <br/>
       <% end %>

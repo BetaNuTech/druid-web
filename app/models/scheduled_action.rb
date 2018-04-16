@@ -73,12 +73,13 @@ class ScheduledAction < ApplicationRecord
   end
 
   def summary
-    parts = []
-    parts << ( engagement_policy_action_compliance.present? ? "Engagement Policy Task" : "Personal Task" )
-    parts << lead_action.description || lead_action.name
-    parts << schedule.try(:long_datetime)
-    parts << state.upcase
-    return "%s: %s by %s [%s]" % parts
+    parts = {
+      desc: ( engagement_policy_action_compliance.present? ? "Engagement Policy Task" : "Personal Task" ),
+      action: lead_action.description || lead_action.name,
+      schedule: schedule.try(:long_datetime),
+      state: state.try(:upcase) || '',
+    }
+    return "%{desc}: %{action} by %{schedule} [%{state}] " % parts
   end
 
   private
