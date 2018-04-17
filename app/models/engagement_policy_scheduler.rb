@@ -90,6 +90,63 @@ class EngagementPolicyScheduler
     return false
   end
 
+  def create_retry_record(originator)
+    if originator.personal_task?
+      msg = "EngagementPolicyScheduler: cannot retry Personal Task ScheduledAction[#{originator.id}]"
+      puts msg unless Rails.production?
+      Rails.logger.warn msg
+      return nil
+    end
+
+    attempt = ( originator.attempt || 1 ) + 1
+    max_attempts = originator.engagement_policy_action.retry_count || 0
+
+    # Abort and return if we have reached max attempts
+    if attempt > max_attempts
+      msg = "EngagementPolicyScheduler: Reached max attempts #{max_attempts} for ScheduledAction[#{originator.id}]"
+      puts msg unless Rails.production?
+      Rails.logger.warn msg
+      return nil
+    end
+
+    due = originator.engagement_policy_action.next_scheduled_attempt
+
+    schedule = Schedule.new(
+      date: due.to_date,
+      time: due.to_time,
+      # Single instance schedule
+      rule: "singular",
+      interval: 1
+    )
+
+    description = "[ATTEMPT #{attempt}/#{max_attemps}] " + originator.lead_action.description
+    action = ScheduledAction.new(
+      user: originator.user,
+      target: originator.lead,
+      originator: originator,
+      lead_action: originator.lead_action,
+      reason: default_reason,
+      schedule: schedule,
+      engagement_policy_action: originator.engagement_policy_action,
+      description: description,
+      attempt: ( originator.attempt || 1 ) + 1
+    )
+    action.save!
+
+    compliance = EngagementPolicyActionCompliance.new(
+      scheduled_action: action,
+      user: originator.user,
+      expires_at: due
+    )
+
+    action.engagement_policy_action_compliance = compliance
+    action.save!
+    action.reload
+
+    action
+
+  end
+
   # Re-assign incomplete ScheduledActions
   def reassign_lead_agent(lead:, agent:)
     incomplete_states = [:pending, :expired]

@@ -33,7 +33,8 @@ module ScheduledActions
         end
 
         event :retry do
-          transitions from: [:pending], to: :completed_retry
+          transitions from: [:pending], to: :completed_retry,
+            after: :create_retry_record
         end
 
         event :expire do

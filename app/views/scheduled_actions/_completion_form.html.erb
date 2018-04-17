@@ -4,6 +4,7 @@
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-4 form-group">
+            <%= form.label :completion_action, "Mark Task as Completed" %>
             <%= form.select(:completion_action, select_scheduled_action_action(@scheduled_action.completion_action), {prompt: '-Please Select-'}, class: "form-control") %>
           </div>
         </div>

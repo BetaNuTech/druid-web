@@ -15,6 +15,10 @@ module ScheduledActions
         add_subject_completion_note("Reset Task/Scheduled Action")
       end
 
+      def create_retry_record
+        EngagementPolicyScheduler.new.create_retry_record(self)
+      end
+
       def add_subject_completion_note(message=nil)
         note = nil
         if target.present? && target.respond_to?(:notes)

@@ -43,4 +43,22 @@ class EngagementPolicyAction < ApplicationRecord
 
   ### Instance Methods
 
+  def next_scheduled_attempt(attempt)
+    delay_multiplier = case retry_delay_modifier
+      when 'none'
+        1.0
+      when 'double'
+        2 * attempt.to_f
+      when 'nonliner'
+        2**attempt
+      else
+        1.0
+      end
+
+    now = DateTime.now.utc
+    attempt_date = now + ( delay_multiplier * retry_delay )
+
+    return attempt_date
+  end
+
 end
