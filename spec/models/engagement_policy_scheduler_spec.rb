@@ -121,9 +121,11 @@ RSpec.describe EngagementPolicyScheduler do
 
       # First retry
       new_action = new_actions.first
+      expect(new_action.engagement_policy_action_compliance.present?)
       expect(new_action.attempt).to eq(2)
       new_action.trigger_event(event_name: 'retry')
       new_action.reload
+      expect(new_action.state).to eq('completed_retry')
       new_actions = ScheduledAction.where(originator_id: new_action.id)
       expect(new_actions.count).to eq(1)
       expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 2)
@@ -131,13 +133,32 @@ RSpec.describe EngagementPolicyScheduler do
       # Second/Final retry
       new_action = new_actions.first
       expect(new_action.attempt).to eq(3)
+      expect(new_action.engagement_policy_action_compliance.present?)
       new_action.trigger_event(event_name: 'retry')
       new_action.reload
+      expect(new_action.state).to eq('completed_retry')
       new_actions = ScheduledAction.where(originator_id: new_action.id)
 
       # There shouldn't be any new retry records
+      expect(new_action.state).to eq('completed_retry')
+      expect(new_action.engagement_policy_action_compliance.present?)
       expect(new_actions.count).to eq(0)
       expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 2)
+
+    end
+
+    it "should create retries for a Personal Task without an associated Reason" do
+      scheduled_action = ScheduledAction.new(
+        user: agent,
+        description: "This is a test"
+      )
+
+      scheduled_action.save!
+
+      scheduled_action_count = ScheduledAction.count
+
+      scheduled_action.trigger_event(event_name: 'retry')
+      expect(ScheduledAction.count).to eq(2)
 
     end
 

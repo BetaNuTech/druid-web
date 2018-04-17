@@ -46,22 +46,30 @@ class EngagementPolicyActionCompliance < ApplicationRecord
   end
 
   def add_completion_memo
-    if state == 'rejected'
-      self.memo = "Rejected"
-      return
-    end
-    if (expires_at > ( completed_at ))
-      msg = "on time"
+    case state
+    when 'rejected'
+      msg = 'Rejected'
+    when 'expired'
+      msg = 'Expired'
     else
-      lateness = ( (completed_at.to_i - expires_at.to_i).to_f / 3600.0 ).round(1)
-      msg = "#{lateness} hours after deadline"
+      if (expires_at > ( completed_at ))
+        msg = "on time"
+      else
+        lateness = ( (completed_at.to_i - expires_at.to_i).to_f / 3600.0 ).round(1)
+        msg = "#{lateness} hours after deadline"
+      end
+      msg = "(Completed #{msg})"
     end
-    self.memo = ""
-    self.memo += "(Completed #{msg})"
+    self.memo = msg
+    true
   end
 
   def calculate_score
-    return 0 if completed_at.nil?
+    # Score is 0 if incomplete
+    if completed_at.nil?
+      self.score = 0
+      return score
+    end
 
     score_multiplier = 1.0
     quick_turn_value = 10 * 60

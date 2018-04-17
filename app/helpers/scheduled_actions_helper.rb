@@ -1,7 +1,16 @@
 module ScheduledActionsHelper
 
-  def select_scheduled_action_action(action)
-    options = [ ['Mark Complete', 'complete'], ['Mark Complete and Retry Later', 'complete_retry'], ['Reject', 'reject'] ]
+  def select_scheduled_action_action(scheduled_action)
+    action = scheduled_action.completion_action
+
+    option_labels = {
+      complete: 'Mark Complete',
+      retry: 'Mark Complete and Retry Later',
+      reject: 'Reject (task is not necessary)',
+      expire: 'Expire (too late to complete)'
+    }
+    permissible_events = scheduled_action.selectable_state_events
+    options = permissible_events.map{|e| [option_labels[e.to_sym], e.to_s]}.compact
     options_for_select(options, action)
   end
 
@@ -23,6 +32,8 @@ module ScheduledActionsHelper
       glyph(:refresh)
     when 'rejected'
       glyph(:remove)
+    when 'expired'
+      glyph(:time)
     else
       action.state
     end

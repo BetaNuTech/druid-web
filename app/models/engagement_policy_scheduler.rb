@@ -7,7 +7,7 @@ class EngagementPolicyScheduler
     unless lead.is_a?(Lead)
       msg = "Must Provide a Lead"
       log_error(msg)
-      return []
+      return false
     end
 
     property = lead.property
@@ -23,7 +23,7 @@ class EngagementPolicyScheduler
     unless policy.present?
       msg = "No EngagementPolicy found for Lead[#{ lead.try(:id) }] with state #{lead.state} assigned to Property #{property.try(:name)}"
       log_error(msg)
-      return []
+      return true
     end
 
     actions = []
@@ -91,25 +91,18 @@ class EngagementPolicyScheduler
   end
 
   def create_retry_record(originator)
-    if originator.personal_task?
-      msg = "EngagementPolicyScheduler: cannot retry Personal Task ScheduledAction[#{originator.id}]"
-      puts msg unless Rails.production?
-      Rails.logger.warn msg
-      return nil
-    end
-
     attempt = ( originator.attempt || 1 ) + 1
-    max_attempts = ( originator.engagement_policy_action.retry_count || 0 ) + 1
+    max_attempts = originator.max_attempts || 1
 
     # Abort and return if we have reached max attempts
-    if attempt > max_attempts
+    if originator.final_attempt?
       msg = "EngagementPolicyScheduler: Reached max attempts #{max_attempts} for ScheduledAction[#{originator.id}]"
       puts msg unless Rails.env.production?
       Rails.logger.warn msg
       return nil
     end
 
-    due = originator.engagement_policy_action.next_scheduled_attempt(attempt)
+    due = originator.next_scheduled_attempt(attempt)
 
     schedule = Schedule.new(
       date: due.to_date,
@@ -119,7 +112,7 @@ class EngagementPolicyScheduler
       interval: 1
     )
 
-    description = "[ATTEMPT #{attempt}/#{max_attempts}] " + originator.lead_action.description
+    description = "%s [%s]" % [originator.description, 'RETRY']
     action = ScheduledAction.new(
       user: originator.user,
       target: originator.target,
@@ -133,18 +126,19 @@ class EngagementPolicyScheduler
     )
     action.save!
 
-    compliance = EngagementPolicyActionCompliance.new(
-      scheduled_action: action,
-      user: originator.user,
-      expires_at: due
-    )
+    if action.compliance_task?
+      compliance = EngagementPolicyActionCompliance.new(
+        scheduled_action: action,
+        user: originator.user,
+        expires_at: due
+      )
 
-    action.engagement_policy_action_compliance = compliance
-    action.save!
+      action.engagement_policy_action_compliance = compliance
+      action.save!
+    end
     action.reload
 
-    action
-
+    return action
   end
 
   # Re-assign incomplete ScheduledActions
@@ -186,12 +180,14 @@ class EngagementPolicyScheduler
     scheduled_action.state = 'pending'
     scheduled_action.completed_at = nil
     scheduled_action.save!
-    compliance = scheduled_action.engagement_policy_action_compliance
-    compliance.state = 'pending'
-    compliance.score = nil
-    compliance.memo = nil
-    compliance.completed_at = nil
-    compliance.save!
+    if scheduled_action.engagement_policy_action_compliance.present?
+      compliance = scheduled_action.engagement_policy_action_compliance
+      compliance.state = 'pending'
+      compliance.score = nil
+      compliance.memo = nil
+      compliance.completed_at = nil
+      compliance.save!
+    end
   end
 
   private

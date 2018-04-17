@@ -82,13 +82,5 @@ class ScheduledAction < ApplicationRecord
     return "%{desc}: %{action} by %{schedule} [%{state}] " % parts
   end
 
-  def personal_task?
-    return ( user_id.present? && !compliance_task? )
-  end
-
-  def compliance_task?
-    return (engagement_policy_action_compliance_id.present? && engagement_policy_action_id.present?)
-  end
-
   private
 end

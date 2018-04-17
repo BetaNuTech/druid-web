@@ -56,7 +56,7 @@ class EngagementPolicyAction < ApplicationRecord
       end
 
     now = DateTime.now.utc
-    attempt_date = now + ( delay_multiplier * retry_delay )
+    attempt_date = now + ( delay_multiplier * retry_delay ).hours
 
     return attempt_date
   end

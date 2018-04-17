@@ -7,12 +7,16 @@
     <p>
       <strong>Due:</strong> <%= scheduled_action.schedule.long_datetime %> &mdash;
       <strong>Reason:</strong> <%= scheduled_action.reason.description || scheduled_action.reason.name %> <br/>
-      <strong>Status:</strong> <%= scheduled_action.state.capitalize %> &mdash;
+      <strong>Status:</strong> <%= scheduled_action.state.humanize.capitalize %> &mdash;
       <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;
       <strong>Last Attempt: </strong>
       <% if scheduled_action.originator.present? %>
-        <%= link_to(scheduled_action.originator.completed_at || 'Incomplete',
+        <% if scheduled_action.originator.completed_at.present? %>
+        <%= link_to(short_datetime(scheduled_action.originator.completed_at),
                    completion_form_scheduled_action_path(scheduled_action.originator)) %>
+        <% else %>
+          Incomplete
+        <% end %>
       <% else %>
         None
       <% end %><br/>

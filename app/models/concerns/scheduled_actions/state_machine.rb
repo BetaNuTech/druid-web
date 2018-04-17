@@ -34,6 +34,7 @@ module ScheduledActions
 
         event :retry do
           transitions from: [:pending], to: :completed_retry,
+            #guard: :can_retry?,
             after: :create_retry_record
         end
 
@@ -82,6 +83,15 @@ module ScheduledActions
 
       def permitted_states
         aasm.states(permitted: true).map(&:name)
+      end
+
+      def selectable_state_events
+        base_events = permitted_state_events
+        omit = []
+        if final_attempt?
+          omit << :retry
+        end
+        return base_events - omit
       end
 
     end

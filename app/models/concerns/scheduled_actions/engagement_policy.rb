@@ -37,6 +37,33 @@ module ScheduledActions
         return note
       end
 
+      def max_attempts
+        return 999 unless engagement_policy_action.present?
+        return engagement_policy_action.retry_count + 1
+      end
+
+      def final_attempt?
+        return false unless engagement_policy_action.present?
+        return attempt >= max_attempts
+      end
+
+      def can_retry?
+        return !final_attempt?
+      end
+
+      def personal_task?
+        return ( user_id.present? && !compliance_task? )
+      end
+
+      def compliance_task?
+        return (engagement_policy_action_compliance_id.present? && engagement_policy_action_id.present?)
+      end
+
+      def next_scheduled_attempt(this_attempt=nil)
+        return personal_task? ? ( DateTime.now.utc + 1.day ) : engagement_policy_action.next_scheduled_attempt(this_attempt)
+      end
+
+
     end
   end
 end
