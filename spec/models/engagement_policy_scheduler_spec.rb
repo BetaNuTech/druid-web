@@ -99,6 +99,48 @@ RSpec.describe EngagementPolicyScheduler do
 
     end
 
+    it "should create retries for ScheduledActions" do
+      seed_engagement_policy
+      lead = create(:lead, state: initial_state )
+      lead.reload
+      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.reload
+      scheduled_actions = lead.scheduled_actions.order("created_at ASC")
+
+      retry_count = 2
+      initial_scheduled_actions_count = ScheduledAction.count
+
+      # First attempt
+      original_action = scheduled_actions.last
+      original_action.trigger_event(event_name: 'retry')
+      original_action.reload
+      new_actions = ScheduledAction.where(originator_id: original_action.id)
+      expect(original_action.engagement_policy_action.retry_count).to eq(retry_count)
+      expect(new_actions.count).to eq(1)
+      expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 1)
+
+      # First retry
+      new_action = new_actions.first
+      expect(new_action.attempt).to eq(2)
+      new_action.trigger_event(event_name: 'retry')
+      new_action.reload
+      new_actions = ScheduledAction.where(originator_id: new_action.id)
+      expect(new_actions.count).to eq(1)
+      expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 2)
+
+      # Second/Final retry
+      new_action = new_actions.first
+      expect(new_action.attempt).to eq(3)
+      new_action.trigger_event(event_name: 'retry')
+      new_action.reload
+      new_actions = ScheduledAction.where(originator_id: new_action.id)
+
+      # There shouldn't be any new retry records
+      expect(new_actions.count).to eq(0)
+      expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 2)
+
+    end
+
   end
 
 

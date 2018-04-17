@@ -99,17 +99,17 @@ class EngagementPolicyScheduler
     end
 
     attempt = ( originator.attempt || 1 ) + 1
-    max_attempts = originator.engagement_policy_action.retry_count || 0
+    max_attempts = ( originator.engagement_policy_action.retry_count || 0 ) + 1
 
     # Abort and return if we have reached max attempts
     if attempt > max_attempts
       msg = "EngagementPolicyScheduler: Reached max attempts #{max_attempts} for ScheduledAction[#{originator.id}]"
-      puts msg unless Rails.production?
+      puts msg unless Rails.env.production?
       Rails.logger.warn msg
       return nil
     end
 
-    due = originator.engagement_policy_action.next_scheduled_attempt
+    due = originator.engagement_policy_action.next_scheduled_attempt(attempt)
 
     schedule = Schedule.new(
       date: due.to_date,
@@ -119,10 +119,10 @@ class EngagementPolicyScheduler
       interval: 1
     )
 
-    description = "[ATTEMPT #{attempt}/#{max_attemps}] " + originator.lead_action.description
+    description = "[ATTEMPT #{attempt}/#{max_attempts}] " + originator.lead_action.description
     action = ScheduledAction.new(
       user: originator.user,
-      target: originator.lead,
+      target: originator.target,
       originator: originator,
       lead_action: originator.lead_action,
       reason: default_reason,
