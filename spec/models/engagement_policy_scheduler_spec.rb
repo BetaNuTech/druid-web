@@ -169,6 +169,29 @@ RSpec.describe EngagementPolicyScheduler do
 
     end
 
+    it "should create a retry with a provided delay value and unit" do
+      seed_engagement_policy
+      lead = create(:lead, state: initial_state )
+      lead.reload
+      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.reload
+      scheduled_actions = lead.scheduled_actions.order("created_at ASC")
+
+      retry_count = 2
+      initial_scheduled_actions_count = ScheduledAction.count
+
+      # First attempt
+      original_action = scheduled_actions.last
+      original_action.completion_retry_delay_value = 10
+      original_action.completion_retry_delay_unit = 'days'
+      original_action.trigger_event(event_name: 'retry')
+      original_action.reload
+      new_actions = ScheduledAction.where(originator_id: original_action.id)
+      expect(new_actions.count).to eq(1)
+      expect(new_actions.first.schedule.to_datetime.day).to eq(( DateTime.now + 10.days ).day)
+
+    end
+
   end
 
 
