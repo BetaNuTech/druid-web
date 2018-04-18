@@ -71,6 +71,12 @@ class EngagementPolicyActionCompliance < ApplicationRecord
       return score
     end
 
+    # Retry completions get 1 point
+    if state == 'completed_retry'
+      self.score = 1
+      return score
+    end
+
     score_multiplier = 1.0
     quick_turn_value = 10 * 60
     quick_turn_ratio = 0.25
