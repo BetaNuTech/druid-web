@@ -14,6 +14,7 @@ module ScheduledActions
 
       scope :incomplete, -> {where.not(state: ['completed', 'completed_retry', 'rejected', 'expired'])}
       scope :complete, -> {where.not(state: ['pending'])}
+      scope :finished, -> {where(state: [ 'completed', 'completed_retry' ])}
 
       def is_completed?
         ['completed', 'completed_retry', 'rejected'].include?(state)
