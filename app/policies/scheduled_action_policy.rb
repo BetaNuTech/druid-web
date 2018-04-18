@@ -12,11 +12,8 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def edit?
-    (
-      user.admin? ||
-      (record.user.present? && record.user === user) &&
-        !record.engagement_policy_action_compliance.present?
-    )
+    user.admin? ||
+    ((record.user.present? && record.user === user) && record.personal_task?)
   end
 
   def update?

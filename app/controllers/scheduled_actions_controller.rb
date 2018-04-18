@@ -9,6 +9,7 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions.json
   def index
     authorize ScheduledAction
+    set_limit
     if @lead
       @scheduled_actions = @lead.scheduled_actions
     elsif @user
@@ -45,7 +46,7 @@ class ScheduledActionsController < ApplicationController
     authorize @scheduled_action
     set_completion_action_and_message
     @scheduled_action.trigger_event(event_name: @scheduled_action.completion_action)
-    redirect_to completion_form_scheduled_action_path(@scheduled_action)
+    redirect_to completion_form_scheduled_action_path(@scheduled_action, scheduled_action: scheduled_action_params)
   end
 
   # POST /scheduled_actions
@@ -117,6 +118,12 @@ class ScheduledActionsController < ApplicationController
       @scheduled_action ||= set_scheduled_action
       @scheduled_action.completion_action = params.fetch(:scheduled_action,{}).fetch(:completion_action, params[:event])
       @scheduled_action.completion_message = params.fetch(:scheduled_action,{}).fetch(:completion_message, params[:message])
+      @scheduled_action.completion_retry_delay_value = params.fetch(:scheduled_action,{}).fetch(:completion_retry_delay_value, params[:retry_delay_value])
+      @scheduled_action.completion_retry_delay_unit = params.fetch(:scheduled_action,{}).fetch(:completion_retry_delay_unit, params[:retry_delay_unit])
+    end
+
+    def set_limit
+      return @limit ||= (params[:limit] || 10).to_i
     end
 
 end

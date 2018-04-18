@@ -41,6 +41,7 @@ class User < ApplicationRecord
   ### Associations
   has_many :leads
   has_many :scheduled_actions
+  has_many :compliances, class_name: 'EngagementPolicyActionCompliance'
 
   ### Validations
 
@@ -54,6 +55,10 @@ class User < ApplicationRecord
     else
       [name_prefix, first_name, last_name].compact.join(' ')
     end
+  end
+
+  def score
+    compliances.sum(:score)
   end
 
 end

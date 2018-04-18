@@ -7,20 +7,28 @@
     <p>
       <strong>Due:</strong> <%= scheduled_action.schedule.long_datetime %> &mdash;
       <strong>Reason:</strong> <%= scheduled_action.reason.description || scheduled_action.reason.name %> <br/>
-      <strong>Status:</strong> <%= scheduled_action.state.capitalize %> &mdash;
+      <strong>Status:</strong> <%= scheduled_action.state.humanize.titlecase %> &mdash;
       <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;
       <strong>Last Attempt: </strong>
       <% if scheduled_action.originator.present? %>
-        <%= link_to(scheduled_action.originator.completed_at || 'Incomplete',
+        <% if scheduled_action.originator.completed_at.present? %>
+        <%= link_to(short_datetime(scheduled_action.originator.completed_at),
                    completion_form_scheduled_action_path(scheduled_action.originator)) %>
+        <% else %>
+          Incomplete
+        <% end %>
       <% else %>
         None
       <% end %><br/>
       <% if scheduled_action.engagement_policy_action_compliance.present? %>
-        <strong>Compliance:</strong> <%= scheduled_action.engagement_policy_action_compliance.state.capitalize %>
-      <% if scheduled_action.is_completed? %>
-            &mdash;
-           <%= scheduled_action.engagement_policy_action_compliance.memo %><br/>
+        <strong>Compliance:</strong> <%= scheduled_action.engagement_policy_action_compliance.state.humanize.titlecase %>
+        <% if scheduled_action.is_completed? %>
+          on <%= short_datetime(scheduled_action.completed_at) %>
+          &mdash;
+         <%= scheduled_action.engagement_policy_action_compliance.memo %>
+         &mdash;
+         <%= scheduled_action.engagement_policy_action_compliance.score %> pts. earned
+          <br/>
         <% end %>
         <br/>
       <% end %>

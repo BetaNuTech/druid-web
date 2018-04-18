@@ -1,7 +1,16 @@
 module ScheduledActionsHelper
 
-  def select_scheduled_action_action(action)
-    options = [ ['Add Note', 'note'], ['Mark Complete', 'complete'], ['Mark Complete and Retry Later', 'complete_retry'], ['Reject', 'reject'] ]
+  def select_scheduled_action_action(scheduled_action)
+    action = scheduled_action.completion_action
+
+    option_labels = {
+      complete: 'Mark Complete',
+      retry: 'Mark Complete and Retry Later',
+      reject: 'Reject (task is not necessary)',
+      expire: 'Expire (too late to complete)'
+    }
+    permissible_events = scheduled_action.selectable_state_events
+    options = permissible_events.map{|e| [option_labels[e.to_sym], e.to_s]}.compact
     options_for_select(options, action)
   end
 
@@ -23,8 +32,36 @@ module ScheduledActionsHelper
       glyph(:refresh)
     when 'rejected'
       glyph(:remove)
+    when 'expired'
+      glyph(:time)
     else
       action.state
     end
   end
+
+  def scheduled_action_completion_retry_delay_select_value(scheduled_action)
+    options = ( 1..60 ).to_a.map{|hour| [hour.to_i, hour.to_i]}
+    provided_delay = scheduled_action.completion_retry_delay_value.try(:to_i) || 0
+    retry_delay = provided_delay == 0 ? ( scheduled_action.engagement_policy_action.try(:retry_delay) || 1 ) : provided_delay
+
+    return options_for_select(options, retry_delay.to_i)
+  end
+
+  def scheduled_action_completion_retry_delay_select_unit(scheduled_action)
+    options = [['Hours', 'hours'], ['Days','days']]
+
+    provided_delay_unit = scheduled_action.completion_retry_delay_unit
+    retry_delay_unit = nil
+
+    if ['hours', 'days'].include?(provided_delay_unit)
+      retry_delay_unit = provided_delay_unit
+    else
+      compliance_delay = ( scheduled_action.engagement_policy_action.try(:retry_delay) || 1).to_f / 24.0 # in days
+      compliance_delay_unit = (compliance_delay >= 1.0) ? 'days' : 'hours'
+      retry_delay_unit = compliance_delay_unit
+    end
+
+    return options_for_select(options, retry_delay_unit)
+  end
+
 end
