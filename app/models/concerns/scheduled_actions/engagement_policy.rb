@@ -27,7 +27,7 @@ module ScheduledActions
             user: user,
             lead_action: lead_action,
             notable: target,
-            reason: Reason.where(name: "Scheduled").first,
+            reason: reason,
             content: note_content
           )
           note.save

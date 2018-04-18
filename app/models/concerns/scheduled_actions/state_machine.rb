@@ -35,7 +35,6 @@ module ScheduledActions
 
         event :retry do
           transitions from: [:pending], to: :completed_retry,
-            #guard: :can_retry?,
             after: :create_retry_record
         end
 
