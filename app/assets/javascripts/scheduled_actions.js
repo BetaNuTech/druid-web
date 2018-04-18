@@ -1,7 +1,7 @@
 $(document).on('turbolinks:load', function() {
 
   var scheduled_action_completion_action_selector = $('#scheduled_action_completion_action');
-  var retry_delay_selector_container = $('#retry_delay_selector_container');
+  var retry_delay_selector_container = $('.retry_delay_selector');
 
   retry_delay_selector_container.hide();    
 

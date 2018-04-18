@@ -30,7 +30,7 @@ class ScheduledAction < ApplicationRecord
   ### Constants
   ALLOWED_PARAMS = [
     :user_id, :lead_action_id, :reason_id, :description,
-    :completion_message, :completion_action, :completion_retry_delay,
+    :completion_message, :completion_action, :completion_retry_delay_value, :completion_retry_delay_unit,
     { schedule_attributes: Schedulable::ScheduleSupport.param_names }
   ]
 
