@@ -9,6 +9,7 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions.json
   def index
     authorize ScheduledAction
+    set_limit
     if @lead
       @scheduled_actions = @lead.scheduled_actions
     elsif @user
@@ -117,6 +118,10 @@ class ScheduledActionsController < ApplicationController
       @scheduled_action ||= set_scheduled_action
       @scheduled_action.completion_action = params.fetch(:scheduled_action,{}).fetch(:completion_action, params[:event])
       @scheduled_action.completion_message = params.fetch(:scheduled_action,{}).fetch(:completion_message, params[:message])
+    end
+
+    def set_limit
+      return @limit ||= (params[:limit] || 10).to_i
     end
 
 end

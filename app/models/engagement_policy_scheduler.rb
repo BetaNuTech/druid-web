@@ -126,7 +126,7 @@ class EngagementPolicyScheduler
     )
     action.save!
 
-    if action.compliance_task?
+    if originator.compliance_task?
       compliance = EngagementPolicyActionCompliance.new(
         scheduled_action: action,
         user: originator.user,

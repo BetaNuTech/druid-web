@@ -112,18 +112,22 @@ RSpec.describe EngagementPolicyScheduler do
 
       # First attempt
       original_action = scheduled_actions.last
+      note_count = Note.count
       original_action.trigger_event(event_name: 'retry')
       original_action.reload
       new_actions = ScheduledAction.where(originator_id: original_action.id)
+      expect(Note.count).to eq(note_count + 1)
       expect(original_action.engagement_policy_action.retry_count).to eq(retry_count)
       expect(new_actions.count).to eq(1)
       expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 1)
 
       # First retry
       new_action = new_actions.first
+      note_count = Note.count
       expect(new_action.engagement_policy_action_compliance.present?)
       expect(new_action.attempt).to eq(2)
       new_action.trigger_event(event_name: 'retry')
+      expect(Note.count).to eq(note_count + 1)
       new_action.reload
       expect(new_action.state).to eq('completed_retry')
       new_actions = ScheduledAction.where(originator_id: new_action.id)
@@ -132,9 +136,11 @@ RSpec.describe EngagementPolicyScheduler do
 
       # Second/Final retry
       new_action = new_actions.first
+      note_count = Note.count
       expect(new_action.attempt).to eq(3)
       expect(new_action.engagement_policy_action_compliance.present?)
       new_action.trigger_event(event_name: 'retry')
+      expect(Note.count).to eq(note_count + 1)
       new_action.reload
       expect(new_action.state).to eq('completed_retry')
       new_actions = ScheduledAction.where(originator_id: new_action.id)
@@ -157,6 +163,7 @@ RSpec.describe EngagementPolicyScheduler do
 
       scheduled_action_count = ScheduledAction.count
 
+      expect(ScheduledAction.count).to eq(1)
       scheduled_action.trigger_event(event_name: 'retry')
       expect(ScheduledAction.count).to eq(2)
 

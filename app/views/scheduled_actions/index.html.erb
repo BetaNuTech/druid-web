@@ -62,7 +62,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous } %>
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous.limit(@limit) } %>
         </div>
       </div>
     </div>
