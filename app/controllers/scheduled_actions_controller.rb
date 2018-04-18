@@ -118,6 +118,7 @@ class ScheduledActionsController < ApplicationController
       @scheduled_action ||= set_scheduled_action
       @scheduled_action.completion_action = params.fetch(:scheduled_action,{}).fetch(:completion_action, params[:event])
       @scheduled_action.completion_message = params.fetch(:scheduled_action,{}).fetch(:completion_message, params[:message])
+      @scheduled_action.completion_retry_delay = params.fetch(:scheduled_action,{}).fetch(:completion_retry_delay, params[:retry_delay])
     end
 
     def set_limit

@@ -4,7 +4,7 @@ module ScheduledActions
 
     included do
 
-      attr_accessor :completion_message, :completion_action
+      attr_accessor :completion_message, :completion_action, :completion_retry_delay
 
       def update_compliance_record
         EngagementPolicyScheduler.new.handle_scheduled_action_completion(self)

@@ -17,7 +17,7 @@ module ScheduledActions
       scope :finished, -> {where(state: [ 'completed', 'completed_retry' ])}
 
       def is_completed?
-        ['completed', 'completed_retry', 'rejected'].include?(state)
+        ['completed', 'completed_retry', 'rejected', 'expired'].include?(state)
       end
 
       aasm column: :state do

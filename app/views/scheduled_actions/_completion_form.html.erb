@@ -7,6 +7,10 @@
             <%= form.label :completion_action, "Mark Task as Completed" %>
             <%= form.select(:completion_action, select_scheduled_action_action(@scheduled_action), {prompt: '-Please Select-'}, class: "form-control") %>
           </div>
+          <div class="col-md-2 form-group" id="retry_delay_selector_container">
+            <%= form.label :completion_retry_delay, "Next Due in:" %>
+            <%= form.select(:completion_retry_delay, scheduled_action_completion_retry_delay_select(@scheduled_action), {prompt: '-Please Select-'}, class: 'form-control') %>
+          </div>
         </div>
         <div class="row">
           <div class="col-md-12 form-group">

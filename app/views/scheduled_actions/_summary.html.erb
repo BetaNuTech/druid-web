@@ -23,6 +23,7 @@
       <% if scheduled_action.engagement_policy_action_compliance.present? %>
         <strong>Compliance:</strong> <%= scheduled_action.engagement_policy_action_compliance.state.capitalize %>
         <% if scheduled_action.is_completed? %>
+          <%= short_datetime(scheduled_action.completed_at) %>
           &mdash;
          <%= scheduled_action.engagement_policy_action_compliance.memo %>
          &mdash;

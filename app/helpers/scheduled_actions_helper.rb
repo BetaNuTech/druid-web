@@ -38,4 +38,13 @@ module ScheduledActionsHelper
       action.state
     end
   end
+
+  def scheduled_action_completion_retry_delay_select(scheduled_action)
+    options = ( 1..48 ).to_a.map{|hour| ["#{hour} hours", hour.to_i]}
+    provided_delay = scheduled_action.completion_retry_delay.try(:to_i) || 0
+    retry_delay = provided_delay == 0 ? ( scheduled_action.engagement_policy_action.try(:retry_delay) || 1 ) : provided_delay
+
+    return options_for_select(options, retry_delay.to_i)
+  end
+
 end
