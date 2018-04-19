@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <!-- Header -->
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Today</h3>
+      </div>
+      <div class="col-md-2" style="padding-top: 20px;">
+        <%= link_to("Calendar", scheduled_actions_path, {class: "btn btn-xs btn-success"})  %>
+      </div>
+      <div class="col-md-4 text-right" style="padding-top: 20px;">
+        <%= link_to("Schedule Task", new_scheduled_action_path, {class: "btn btn-xs btn-success"}) %>
+      </div>
+    </div>
+    <!-- End Header -->
+
+    <!-- Listing -->
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table">
+          <thead></thead>
+          <tbody>
+
+            <!-- Unclaimed Leads -->
+            <% @unclaimed_leads.each do |lead| %>
+              <tr>
+                <td><%= glyph(:person) %></td>
+                <td>Now</td>
+                <td>Unclaimed Lead: <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span></td>
+                <td class="nowrap">
+                  <%= link_to(glyph(:show), lead_path(lead)) %>
+                  <!-- <%= link_to(glyph(:edit), edit_lead_path(lead)) %> -->
+                </td>
+              </tr>
+            <% end %>
+
+            <!-- ScheduledActions for today -->
+            <%= render collection: @today_actions, partial: 'scheduled_action' %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- End Listing -->
+
+  </div>
+</div>

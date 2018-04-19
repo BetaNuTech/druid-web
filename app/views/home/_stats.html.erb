@@ -1,0 +1,27 @@
+<div class="col-md-12">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Stats</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <tbody>
+          <tr>
+            <td><strong>My Leads</strong></td>
+            <td>
+              <ul>
+                <li>in Pipeline:  <%= current_user.leads.active.count %></li>
+                <li>Conversion Rate: XX%</li>
+                <li>Closed This Week:  XXX </li>
+                <li>Closed This Month:  XXX </li>
+                <li>Closed This Year:  XXX </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

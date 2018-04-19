@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>My Leads</h3>
+      </div>
+      <div class="col-md-6 text-right" style="padding-top: 20px;">
+        <%= link_to("Create Lead", new_lead_path, {class: "btn btn-xs btn-success"}) %>
+      </div>
+    </div>
+    <table class="table">
+      <thead></thead>
+      <tbody>
+        <% @my_leads.each do |lead| %>
+          <tr>
+            <td>
+              <strong><%= link_to(lead.name, lead_path(lead)) %></strong>
+              <br>
+              <strong>Phone: </strong> <%= [lead.phone1, lead.phone2].compact.first %>
+              <br>
+              <strong>Email: </strong> <%= lead.email %>
+            </td>
+            <td>
+              <%= lead.priority.capitalize %> -
+              <%= lead.state.capitalize %>
+              <br>
+              <strong>First Contact: </strong> <%= short_date(lead.first_comm) %>
+              <br>
+              <strong>Last Contact: </strong> <%= short_date(lead.last_comm) %>
+              <br>
+              <strong>Pending Tasks/Events: </strong> <a href="#">3</a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
