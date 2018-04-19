@@ -27,7 +27,17 @@
               <tr>
                 <td><%= glyph(:person) %></td>
                 <td>Now</td>
-                <td>Unclaimed Lead: <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span></td>
+                <td>
+                  <span class="lead">
+                    <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span>
+                  </span>
+                  for <span class="lead_property_name text-nowrap"><%= lead.property.try(:name) %></span>
+                  <br/>
+                  <span class="dashboard_lead_created"><%= short_datetime(lead.created_at) %></span>
+                  <%= "via " + lead.referral if lead.referral.present? %>
+                  <span class="text-nowrap">(<%= lead.source.name %>)</span>
+                  <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+                </td>
                 <td class="nowrap">
                   <%= link_to(glyph(:show), lead_path(lead)) %>
                   <!-- <%= link_to(glyph(:edit), edit_lead_path(lead)) %> -->

@@ -27,14 +27,7 @@
       <strong>Owner:</strong> <%= scheduled_action.user.try(:name) || 'None' %> <br/>
       <strong>Subject:</strong> <%= link_to(scheduled_action.target_subject, url_for(scheduled_action.target)) %>
       <% if scheduled_action.target.is_a?(Lead) %>
-        <blockquote style="font-size: 0.8em; margin-left: 2em;">
-          <%= glyph(:email) %> <%= scheduled_action.target.email %><br/>
-          <%= glyph(:phone) %> <%= scheduled_action.target.phone1 %>
-          <% if scheduled_action.target.phone2.present? %>
-            <br/>
-            <%= glyph(:phone) %> <%= scheduled_action.target.phone2 %> <br/>
-          <% end %>
-        </blockquote>
+        <%= render partial: "leads/contact_mini_card", locals: {lead: scheduled_action.target} %>
       <% end %>
     </p>
 
