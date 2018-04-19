@@ -1,3 +1,17 @@
 // Place all the styles related to the Home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#dashboard .glyphicon {
+  opacity: 0.50;
+}
+
+.dashboard_item_date {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.dashboard_lead_notes {
+  font-size: 0.8em;
+  font-style: italic;
+}

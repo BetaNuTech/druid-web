@@ -1,4 +1,4 @@
-<div class="row">
+<div id="dashboard_today" class="row">
   <div class="col-md-12">
 
     <!-- Header -->
@@ -6,10 +6,10 @@
       <div class="col-md-6">
         <h3>Today</h3>
       </div>
-      <div class="col-md-2" style="padding-top: 20px;">
+      <div class="col-md-2" style="padding-top: 22px;">
         <%= link_to("Calendar", scheduled_actions_path, {class: "btn btn-xs btn-success"})  %>
       </div>
-      <div class="col-md-4 text-right" style="padding-top: 20px;">
+      <div class="col-md-2" style="padding-top: 22px;">
         <%= link_to("Schedule Task", new_scheduled_action_path, {class: "btn btn-xs btn-success"}) %>
       </div>
     </div>
@@ -26,7 +26,7 @@
             <% @unclaimed_leads.each do |lead| %>
               <tr>
                 <td><%= glyph(:person) %></td>
-                <td>Now</td>
+                <td class="dashboard_item_date">Now</td>
                 <td>
                   <span class="lead">
                     <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span>
@@ -37,10 +37,17 @@
                   <%= "via " + lead.referral if lead.referral.present? %>
                   <span class="text-nowrap">(<%= lead.source.name %>)</span>
                   <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+                  <% if lead.preference.notes.present? %>
+                    <p class="dashboard_lead_notes">
+                      <span>
+                      <%= lead.preference.notes %>
+                      </span>
+                    </p>
+                  <% end %>
                 </td>
                 <td class="nowrap">
                   <%= link_to(glyph(:show), lead_path(lead)) %>
-                  <!-- <%= link_to(glyph(:edit), edit_lead_path(lead)) %> -->
+                  <%= link_to(glyph(:edit), edit_lead_path(lead)) %>
                 </td>
               </tr>
             <% end %>
