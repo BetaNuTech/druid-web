@@ -20,7 +20,7 @@ module ApplicationHelper
   end
 
   def glyph(type)
-    _text, glyph_class = GLYPHS.fetch(type.to_s,'')
+    _text, glyph_class = GLYPHS.fetch(type.to_s.gsub('_','-'),'')
     content_tag(:span, ' ', {class: glyph_class, "aria-hidden": true})
   end
 
@@ -29,11 +29,11 @@ module ApplicationHelper
   end
 
   def nav_active_class(path)
-    request.path.match(path) ? 'btn-success btn-nav-active' : 'btn-info'
+    request.path.match(path) ? 'btn-success btn-nav-active' : 'btn-primary'
   end
 
   def nav_active_dropdown_class(path)
-    request.path.match(path) ? 'btn-success' : 'btn-info'
+    request.path.match(path) ? 'btn-success' : 'btn-primary'
   end
 
   def select_state(val)

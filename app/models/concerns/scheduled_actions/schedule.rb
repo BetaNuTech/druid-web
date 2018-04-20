@@ -13,7 +13,7 @@ module ScheduledActions
 
       def due_today
         return self.upcoming.
-          where("schedules.date < ?", Date.today)
+          where("schedules.date <= ?", Date.today)
       end
 
       def previous

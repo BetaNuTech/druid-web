@@ -12,7 +12,7 @@ class HomeController < ApplicationController
     @page_title = "Druid Dashboard"
 
     @my_leads = Lead.for_agent(current_user).active
-    @unclaimed_leads = Lead.open.order(created_at: 'desc').limit(10)
+    @unclaimed_leads = current_user.available_leads
     @today_actions = ScheduledAction.for_agent(current_user).due_today.sorted_by_due_asc
     @upcoming_actions = ScheduledAction.for_agent(current_user).upcoming.sorted_by_due_asc
   end

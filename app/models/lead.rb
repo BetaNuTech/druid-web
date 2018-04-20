@@ -59,6 +59,9 @@ class Lead < ApplicationRecord
   has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
   has_many :scheduled_actions, as: :target
 
+  ### Scopes
+  scope :ordered_by_created, -> {order(created_at: "ASC")} 
+
   ### Validations
   validates :first_name, presence: true
 	validates :phone1, presence: true, unless: ->(lead){ lead.phone2.present? || lead.email.present? }

@@ -1,7 +1,10 @@
 <div class="col-md-12">
   <div class="row">
     <div class="col-md-12">
-      <h3>Stats</h3>
+      <h3>
+        <%= glyph(:stats) %>
+        Stats
+      </h3>
     </div>
   </div>
   <div class="row">
@@ -9,14 +12,14 @@
       <table class="table">
         <tbody>
           <tr>
+            <td><strong>My Score</strong></td>
+            <td><span class="badge"><%= current_user.total_score %></span></td>
+          </tr>
+          <tr>
             <td><strong>My Leads</strong></td>
             <td>
               <ul>
                 <li>in Pipeline:  <%= current_user.leads.active.count %></li>
-                <li>Conversion Rate: XX%</li>
-                <li>Closed This Week:  XXX </li>
-                <li>Closed This Month:  XXX </li>
-                <li>Closed This Year:  XXX </li>
               </ul>
             </td>
           </tr>

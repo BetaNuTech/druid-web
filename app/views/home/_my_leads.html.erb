@@ -2,10 +2,13 @@
   <div class="col-md-12">
     <div class="row">
       <div class="col-md-6">
-        <h3>My Leads</h3>
+        <h3>
+          <%= glyph(:person) %>
+          My Leads
+        </h3>
       </div>
       <div class="col-md-6" style="padding-top: 22px;">
-        <%= link_to("Create Lead", new_lead_path, {class: "btn btn-xs btn-success"}) %>
+        <%= link_to("Create Lead", new_lead_path, {class: "btn btn-xs btn-primary"}) %>
       </div>
     </div>
     <table class="table">
@@ -14,21 +17,21 @@
         <% @my_leads.each do |lead| %>
           <tr>
             <td>
-              <strong><%= link_to(lead.name, lead_path(lead)) %></strong>
-              <br>
-              <strong>Phone: </strong> <%= [lead.phone1, lead.phone2].compact.first %>
-              <br>
-              <strong>Email: </strong> <%= lead.email %>
+              <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
+              <% if lead.property.present? %>
+                for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
+              <% end %>
+              <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
             </td>
             <td>
-              <%= lead.priority.capitalize %> -
-              <%= lead.state.capitalize %>
+              <%= lead_priority_icon(lead) %>
+              <%= lead_state_label(lead) %>
               <br>
-              <strong>First Contact: </strong> <%= short_date(lead.first_comm) %>
+              <%= glyph(:leaf) %> <%= short_datetime(lead.first_comm) %>
               <br>
-              <strong>Last Contact: </strong> <%= short_date(lead.last_comm) %>
+              <%= glyph(:tree_conifer) %> <%= short_datetime(lead.last_comm) %>
               <br>
-              <strong>Pending Tasks/Events: </strong><%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions')) %></a>
+              <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
             </td>
           </tr>
         <% end %>

@@ -223,30 +223,31 @@
           <% end %>
 
           <% end %>
+
           <li> <!-- Account -->
             <div class="btn-group">
               <% if current_user.present? %>
-                <%= link_to(destroy_user_session_path, method: :delete, class: "btn btn-info") do %>
-                  <span class="glyphicon glyphicon-off"></span> Logout
+                <%= link_to(edit_user_path(current_user), method: :get, class: "btn btn-primary") do %>
+                  <span class="glyphicon glyphicon-user"></span> My Account
                 <% end %>
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu">
                   <li>
-                    <%= link_to(edit_user_path(current_user)) do %>
-                      <span class="glyphicon glyphicon-user"></span> My Account
+                    <%= link_to(destroy_user_session_path, method: :delete) do %>
+                      <span class="glyphicon glyphicon-off"></span> Logout
                     <% end %>
                   </li>
                 </ul>
               <% else %>
-                <%= link_to(new_user_session_path, class: "btn btn-info") do %>
+                <%= link_to(new_user_session_path, class: "btn btn-primary") do %>
                   <span class="glyphicon glyphicon-off"></span> Login
                 <% end %>
               <% end %>
             </div>
-          </li> <!-- Properties -->
+          </li> <!-- Account -->
         </ul>
       </div><!--/.nav-collapse -->
     </div>

@@ -115,4 +115,28 @@ table#leads-table {
   }
 }
 
+.lead_priority_icon_zero span.glyphicon {
+  opacity: 1.0 !important;
+  color: #d3d3d3;
+}
+
+.lead_priority_icon_low span.glyphicon {
+  opacity: 1.0 !important;
+  color: #000;
+}
+
+.lead_priority_icon_medium span.glyphicon {
+  opacity: 1.0 !important;
+  color: #ffd700;
+}
+
+.lead_priority_icon_high span.glyphicon {
+  opacity: 1.0 !important;
+  color: #ff4500;
+}
+
+.lead_priority_icon_urgent span.glyphicon {
+  opacity: 1.0 !important;
+  color: #ff0000;
+}
 
