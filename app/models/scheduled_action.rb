@@ -9,7 +9,6 @@
 #  originator_id                          :uuid
 #  lead_action_id                         :uuid
 #  reason_id                              :uuid
-#  schedule_id                            :uuid
 #  engagement_policy_action_id            :uuid
 #  engagement_policy_action_compliance_id :uuid
 #  description                            :text

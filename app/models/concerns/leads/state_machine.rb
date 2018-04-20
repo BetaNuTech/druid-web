@@ -64,7 +64,7 @@ module Leads
 
         event :lodge do
           transitions from: [:movein], to: :resident,
-            after: ->(*args) { set_priority_zero }
+            after: ->(*args) { set_conversion_date; set_priority_zero }
         end
 
         event :move_in do
@@ -131,6 +131,10 @@ module Leads
 
       def after_all_events_callback
         create_scheduled_actions # Leads::EngagementPolicy#create_scheduled_actions
+      end
+
+      def set_conversion_date
+        self.conversion_date = DateTime.now
       end
 
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180410160239) do
+ActiveRecord::Schema.define(version: 20180420185717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,6 +160,7 @@ ActiveRecord::Schema.define(version: 20180410160239) do
     t.string "id_state"
     t.string "remoteid"
     t.string "middle_name"
+    t.datetime "conversion_date"
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"
