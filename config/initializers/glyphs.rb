@@ -267,5 +267,6 @@ GLYPHS = {
   'xbt' => ['xbt', 'glyphicon glyphicon-xbt'],
   'yen' => ['yen', 'glyphicon glyphicon-yen'],
   'zoom-in' => ['zoom-in', 'glyphicon glyphicon-zoom-in'],
-  'zoom-out' => ['zoom-out', 'glyphicon glyphicon-zoom-out']
+  'zoom-out' => ['zoom-out', 'glyphicon glyphicon-zoom-out'],
+  'task' => ['th-list', 'glyphicon glyphicon-th-list']
 }

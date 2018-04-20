@@ -1,0 +1,39 @@
+<div id="dashboard_today" class="row">
+  <div class="col-md-12">
+
+    <!-- Header -->
+    <div class="row">
+      <div class="col-md-6">
+        <h3>
+          <%= glyph(:task) %>
+          Today
+        </h3>
+      </div>
+      <div class="col-md-2" style="padding-top: 22px;">
+        <%= link_to("Calendar", scheduled_actions_path, {class: "btn btn-xs btn-primary"})  %>
+      </div>
+      <div class="col-md-2" style="padding-top: 22px;">
+        <%= link_to("Schedule Task", new_scheduled_action_path, {class: "btn btn-xs btn-primary"}) %>
+      </div>
+    </div>
+    <!-- End Header -->
+
+    <!-- Listing -->
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table">
+          <thead></thead>
+          <tbody>
+            <!-- Unclaimed Leads -->
+            <%= render collection: @unclaimed_leads, partial: 'lead' %>
+
+            <!-- ScheduledActions for today -->
+            <%= render collection: @today_actions, partial: 'scheduled_action' %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- End Listing -->
+
+  </div>
+</div>

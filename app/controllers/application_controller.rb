@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_property
-    @property ||= Property.where(id: (params[:property_id] || 0)).first
+    @current_property ||= Property.where(id: (params[:property_id] || 0)).first || current_user.try(:properties).try(:first)
   end
 
 end

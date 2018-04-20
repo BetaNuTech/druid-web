@@ -1,0 +1,40 @@
+<tr>
+  <td><%= glyph(:person) %></td>
+  <td class="dashboard_item_date">Now</td>
+  <td>
+    <span class="lead">
+      <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span>
+    </span>
+    <% if lead.property.present? %>
+      for
+      <span class="lead_property_name text-nowrap">
+        <%= link_to(lead.property.name, property_path(lead.property)) %>
+      </span>
+    <% end %>
+    <br/>
+    <%= lead_priority_icon(lead) %> <%= lead_state_label(lead) %><br/>
+    <span class="dashboard_lead_created">
+      <%= glyph(:time) %>
+      <%= short_datetime(lead.created_at) %>
+    </span>
+    <%= "via " + lead.referral if lead.referral.present? %>
+    <span class="text-nowrap">
+      <%= glyph(:filter) %>
+      <%= lead.source.name %>
+    </span>
+    <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+    <% if lead.preference.notes.present? %>
+      <p class="dashboard_lead_notes">
+        <%= glyph(:question_sign) %>
+        <span>
+          <%= lead.preference.notes %>
+        </span>
+      </p>
+    <% end %>
+  </td>
+  <td class="nowrap">
+    <%= link_to(glyph(:show), lead_path(lead)) %>
+    <%= link_to(glyph(:edit), edit_lead_path(lead)) %>
+  </td>
+</tr>
+

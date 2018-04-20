@@ -12,7 +12,7 @@
   <div class="row">
     <div class="col-md-12">
       <%= link_to 'Show', @user %> |
-      <%= link_to 'Back', users_path %>
+      <%= link_to 'Back', policy(User).index? ? users_path : :back %>
     </div>
   </div>
 </div>

@@ -1,0 +1,8 @@
+<blockquote style="font-size: 0.8em; margin-left: 2em;">
+  <%= glyph(:email) %> <%= lead.email %><br/>
+  <%= glyph(:phone) %> <%= lead.phone1 %>
+  <% if lead.phone2.present? %>
+    <br/>
+    <%= glyph(:phone) %> <%= lead.phone2 %> <br/>
+  <% end %>
+</blockquote>

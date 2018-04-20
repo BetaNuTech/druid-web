@@ -1,0 +1,41 @@
+<div class="row" id="dashboard_my_leads">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>
+          <%= glyph(:person) %>
+          My Leads
+        </h3>
+      </div>
+      <div class="col-md-6" style="padding-top: 22px;">
+        <%= link_to("Create Lead", new_lead_path, {class: "btn btn-xs btn-primary"}) %>
+      </div>
+    </div>
+    <table class="table">
+      <thead></thead>
+      <tbody>
+        <% @my_leads.each do |lead| %>
+          <tr>
+            <td>
+              <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
+              <% if lead.property.present? %>
+                for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
+              <% end %>
+              <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+            </td>
+            <td>
+              <%= lead_priority_icon(lead) %>
+              <%= lead_state_label(lead) %>
+              <br>
+              <%= glyph(:leaf) %> <%= short_datetime(lead.first_comm) %>
+              <br>
+              <%= glyph(:tree_conifer) %> <%= short_datetime(lead.last_comm) %>
+              <br>
+              <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

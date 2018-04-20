@@ -42,6 +42,7 @@ class User < ApplicationRecord
   has_many :leads
   has_many :scheduled_actions
   has_many :compliances, class_name: 'EngagementPolicyActionCompliance'
+  has_many :engagement_policy_action_compliances
 
   ### Validations
 
@@ -59,6 +60,19 @@ class User < ApplicationRecord
 
   def score
     compliances.sum(:score)
+  end
+
+  def available_leads
+    if admin?
+      return Lead.open
+    else
+      return Lead.open.where(property_id: properties.map(&:id))
+    end
+
+  end
+
+  def total_score
+    engagement_policy_action_compliances.sum(:score)
   end
 
 end
