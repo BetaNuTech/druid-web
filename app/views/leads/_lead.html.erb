@@ -1,27 +1,16 @@
 <tr id="lead_<%= lead.id %>" class="lead-table-row">
   <td>
+    <%= lead_priority_icon(lead) %>
     <%= state_toggle(lead) %>
-    <strong>Priority:</strong> <%= lead.priority.capitalize %>
   </td>
   <td class="nowrap">
-    <h3>
+    <span class="lead">
       <%= lead.title %>
       <%= lead.first_name %>
       <%= lead.last_name %>
-    </h3>
-
-    <% if lead.phone1.present? %>
-      <%= glyph(:phone) %> <%= lead.phone1 || '-' %><br/>
-    <% end %>
-    <% if lead.phone2.present? %>
-      <%= glyph(:phone) %> <%= lead.phone2 || '-' %><br/>
-    <% end %>
-    <% if lead.email.present? %>
-      <%= glyph(:email) %> <%= lead.email || '-' %><br/>
-    <% end %>
-    <% if lead.fax.present? %>
-      <%= glyph(:fax) %> <%= lead.fax || '-' %><br/>
-    <% end %>
+    </span>
+    <br/>
+    <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
   </td>
   <td class="nowrap">
     <% if lead.property.present? %>
@@ -44,10 +33,10 @@
     </p>
   </td>
   <td>
-    <%= short_date(lead.first_comm) %> |
-    <%= short_date(lead.last_comm) || '-' %>
+    <%= short_datetime(lead.first_comm) %> |
+    <%= short_datetime(lead.last_comm) || '-' %>
   </td>
-  <td>
+  <td class="nowrap">
     <%= link_to lead do %><%= glyph(:show) %><% end %>&nbsp;
     <%= link_to edit_lead_path(lead) do %><%= glyph(:edit) %><% end %>&nbsp;
     <%= link_to lead, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
