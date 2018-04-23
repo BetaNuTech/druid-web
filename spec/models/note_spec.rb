@@ -76,4 +76,14 @@ RSpec.describe Note, type: :model do
       expect(note.notable_subject).to eq("None")
     end
   end
+
+  describe "callbacks" do
+    it "should update the Lead's last_comm if the LeadAction is a contact event" do
+      lead_action = create(:lead_action, is_contact: true)
+      lead = create(:lead, last_comm: DateTime.now)
+      expect{
+        note = create(:note, notable: lead, lead_action: lead_action)
+      }.to change{ lead.last_comm }
+    end
+  end
 end

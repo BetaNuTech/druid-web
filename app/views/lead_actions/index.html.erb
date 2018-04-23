@@ -19,6 +19,7 @@
             <th>Glyph</th>
             <th>Description</th>
             <th>Active?</th>
+            <th>Is Contact?</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -29,6 +30,7 @@
               <td style="font-size: 1.5em;"><%= glyph(lead_action.glyph) %></td>
               <td><%= lead_action.description %></td>
               <td><%= lead_action.active ? "Yes" : "No" %></td>
+              <td><%= lead_action.is_contact ? "Yes" : "No" %></td>
               <td class="text-nowrap">
                 <%= link_to lead_action do %><%= glyph(:show) %><% end %>&nbsp;
                 <%= link_to edit_lead_action_path(lead_action) do %><%= glyph(:edit) %><% end %>&nbsp;

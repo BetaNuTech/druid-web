@@ -16,7 +16,7 @@ class LeadAction < ApplicationRecord
   extend Seeds::Seedable
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active]
+  ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active, :is_contact]
 
   ### Associations
 

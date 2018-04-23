@@ -16,6 +16,7 @@
 class Note < ApplicationRecord
   ### Class Concerns/Extensions
   acts_as_schedulable :schedule
+  include Notes::Leads
 
   ### Constants
   ALLOWED_PARAMS = [

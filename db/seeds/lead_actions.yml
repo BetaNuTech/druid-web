@@ -7,67 +7,88 @@
     :description: Claim a new/open Lead
     :glyph: flag
     :active: true
+    :is_contact: false
   - :name: First Contact
     :description: Contact Lead for the first time (Phone/SMS/Email)
     :glyph: user
     :active: true
+    :is_contact: true
   - :name: Request Appointment
     :description: Request to schedule an appointment with the Lead (Phone/SMS/Email)
     :glyph: question-sign
+    :is_contact: true
     :active: true
   - :name: Schedule Appointment
     :description: Schedule appointment with Lead
     :glyph: calendar
+    :is_contact: true
     :active: true
   - :name: Prepare Application
     :description: Prepare leasing application
     :glyph: inbox
+    :is_contact: false
     :active: true
   - :name: Deliver Application
     :glyph: share
     :description: Prepare leasing application and provide to Lead
+    :is_contact: true
     :active: true
   - :name: Process Application
     :description: Push through the approval process
     :glyph: wrench
+    :is_contact: false
     :active: true
   - :name: Make Call
     :glyph: phone-alt
     :description:
+    :is_contact: true
     :active: true
   - :name: Send Email
     :description:
-    :glyph: envelope
+    :is_contact: true
     :active: true
   - :name: Send SMS
     :description:
     :glyph: phone
+    :is_contact: true
     :active: true
   - :name: Tour Units
     :description: Tour units with Lead
     :glyph: user
+    :is_contact: true
     :active: true
   - :name: Unit Inspection
     :description: Inspect units before tours
     :glyph: search
+    :is_contact: false
     :active: true
   - :name: Other
     :description: Catch-all action. Use sparingly.
     :glyph: ok
+    :is_contact: false
     :active: true
   - :name: Make Appointment Notes
     :description: Record notes from appointment with Lead
     :glyph: pencil
+    :is_contact: false
     :active: true
   - :name: Assign New Resident Tasks
     :description: Assign New Resident Tasks
     :glyph: indent-left
+    :is_contact: false
     :active: true
   - :name: Move-In Task
     :description: Generic move-in tasks
     :glyph: tasks
+    :is_contact: false
     :active: true
   - :name: Transition to Disqualified
     :glyph: thumbs-down
     :description: Make notes and transition lead to 'disqualified' state
+    :is_contact: false
+    :active: true
+  - :name: Make Contact Notes
+    :glyph: pencil
+    :description: Record notes from a Lead contact and update Last Contact timestamp
+    :is_contact: true
     :active: true
