@@ -39,6 +39,7 @@ class Lead < ApplicationRecord
   audited
   include Leads::EngagementPolicy
   include Leads::StateMachine
+  include Leads::Priority
   include Leads::Search
 
   ### Constants

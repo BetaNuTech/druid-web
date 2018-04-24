@@ -34,4 +34,11 @@ namespace :leads do
       end
     end
   end
+
+  desc "Calculate and Set Lead Priorities"
+  task :prioritize => :environment do
+    puts " * Setting Lead Priorities"
+    Lead.set_priorities
+    puts "Done."
+  end
 end
