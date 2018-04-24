@@ -13,7 +13,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
-    user === record || user.administrator? || (user.operator? && !record.administrator?)
+    user === record || user.admin?
   end
 
   def update?
@@ -40,6 +40,8 @@ class UserPolicy < ApplicationPolicy
     when ->(u) { u.administrator? }
       # NOOP all valid fields allowed
     when ->(u) { u.operator? }
+      # NOOP all valid fields allowed
+    when ->(u) { u.manager? }
       # NOOP all valid fields allowed
     when ->(u) { u.agent? }
       valid_user_params = valid_user_params - [:role_id]

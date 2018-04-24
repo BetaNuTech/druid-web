@@ -48,7 +48,7 @@ RSpec.describe LeadAction, type: :model do
   end
 
   it "has ALLOWED_PARAMS" do
-    expect(LeadAction::ALLOWED_PARAMS.sort).to eq([:id, :name, :glyph, :description,:active].sort)
+    expect(LeadAction::ALLOWED_PARAMS.sort).to eq([:id, :name, :glyph, :description,:active, :is_contact].sort)
   end
 
 end

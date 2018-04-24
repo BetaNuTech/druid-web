@@ -24,6 +24,14 @@ RSpec.shared_context "users" do
     user
   }
 
+  let(:manager) {
+    user = create(:user)
+    user.role = manager_role
+    user.save
+    user.confirm
+    user
+  }
+
   let(:agent) {
     user = create(:user)
     user.role = agent_role

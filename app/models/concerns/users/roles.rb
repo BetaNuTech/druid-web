@@ -21,6 +21,10 @@ module Users
         role.try(:admin?)
       end
 
+      def manager?
+        role.try(:manager?)
+      end
+
       def user?
         role.try(:user?)
       end

@@ -23,6 +23,7 @@ class Role < ApplicationRecord
   HIERARCHY = [
     :administrator,
     :operator,
+    :manager,
     :agent
   ]
 
@@ -39,6 +40,10 @@ class Role < ApplicationRecord
 
   def self.operator
     self.where(slug: 'operator').first
+  end
+
+  def self.manager
+    self.where(slug: 'manager').first
   end
 
   # Instance Methods
@@ -59,12 +64,16 @@ class Role < ApplicationRecord
     slug == 'operator'
   end
 
+  def manager?
+    slug == 'manager'
+  end
+
   def agent?
     slug == 'agent'
   end
 
   def admin?
-    administrator? || operator?
+    administrator? || operator? || manager?
   end
 
   def user?

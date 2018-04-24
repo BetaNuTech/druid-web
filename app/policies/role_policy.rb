@@ -34,6 +34,12 @@ class RolePolicy < ApplicationPolicy
       Role::ALLOWED_PARAMS
     when ->(u) { u.operator? }
       []
+    when ->(u) { u.manager? }
+      []
+    when ->(u) { u.agent? }
+      []
+    else
+      []
     end
   end
 

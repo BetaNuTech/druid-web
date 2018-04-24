@@ -1,11 +1,11 @@
 class PropertyPolicy < ApplicationPolicy
 
   def index?
-    user.administrator? || user.operator? || user.agent?
+    user.agent? || user.admin?
   end
 
   def new?
-    user.administrator? || user.operator?
+    user.admin?
   end
 
   def create?
@@ -13,7 +13,7 @@ class PropertyPolicy < ApplicationPolicy
   end
 
   def edit?
-    user.administrator? || user.operator?
+    user.admin?
   end
 
   def update?
@@ -36,6 +36,8 @@ class PropertyPolicy < ApplicationPolicy
     when ->(u) { u.administrator? }
       # NOOP all valid fields allowed
     when ->(u) { u.operator? }
+      # NOOP all valid fields allowed
+    when ->(u) { u.manager? }
       # NOOP all valid fields allowed
     when ->(u) { u.agent? }
       valid_property_params = []

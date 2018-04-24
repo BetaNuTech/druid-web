@@ -51,8 +51,8 @@ RSpec.describe UnitsController, type: :controller do
       it "should only return associated units" do
         sign_in administrator
         Unit.destroy_all
-        unit1 = create(:unit)
-        property1 = unit1.property
+        property1 = create(:property)
+        unit1 = create(:unit, property: property1)
         unit2 = create(:unit, property: property1)
         unit3 = create(:unit)
         property2 = unit3.property

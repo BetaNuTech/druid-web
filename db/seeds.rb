@@ -5,8 +5,9 @@
 ##
 # Roles
 roles = {
-  administrator: "highest level role",
-  operator: "system administrator",
+  administrator: "Highest level role",
+  operator: "System Administrator",
+  manager: "Property Manager",
   agent: "Agent role"
 }
 puts " * Creating Roles"
@@ -88,19 +89,6 @@ rental_types.each do |rt_name|
   end
 end
 
-# LeadActions
-#puts " * Creating Lead Actions"
-#lead_actions = ['Send Email', 'Make Call', 'Send SMS', 'Tour Units', 'Other', 'Record Contact']
-#lead_actions.each do |la_name|
-  #print "   - #{la_name} "
-  #la = LeadAction.new(name: la_name)
-  #if la.save
-    #puts "[OK]".green
-  #else
-    #puts "[FAIL] (#{la.errors.to_a})".red
-  #end
-#end
-
 # Reasons
 puts " * Creating Reasons"
 reasons = ['First Contact', 'Follow-Up', 'Other', 'Scheduled']
@@ -116,3 +104,4 @@ end
 
 Rake::Task["seed:properties"].invoke
 Rake::Task["seed:lead_actions"].invoke
+Rake::Task["seed:engagement_policy"].invoke

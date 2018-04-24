@@ -38,6 +38,8 @@ class LeadSourcePolicy < ApplicationPolicy
       LeadSource::ALLOWED_PARAMS
     when ->(u) { u.operator? }
       LeadSource::ALLOWED_PARAMS
+    when ->(u) { u.manager? }
+      LeadSource::ALLOWED_PARAMS
     when ->(u) { u.agent? }
       []
     end

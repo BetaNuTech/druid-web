@@ -20,7 +20,7 @@
     <%= "via " + lead.referral if lead.referral.present? %>
     <span class="text-nowrap">
       <%= glyph(:filter) %>
-      <%= lead.source.name %>
+      <%= lead.source.present? ? lead.source.name : '(None)'%>
     </span>
     <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
     <% if lead.preference.notes.present? %>
