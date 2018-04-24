@@ -61,7 +61,7 @@ class Lead < ApplicationRecord
   has_many :scheduled_actions, as: :target
 
   ### Scopes
-  scope :ordered_by_created, -> {order(created_at: "ASC")} 
+  scope :ordered_by_created, -> {order(created_at: "ASC")}
 
   ### Validations
   validates :first_name, presence: true
@@ -76,6 +76,12 @@ class Lead < ApplicationRecord
   end
 
   ### Instance Methods
+
+  def users_for_lead_assignment(default: nil)
+    users = ( property.present? ? property.agents : User.agents ).by_name_asc
+    users = [default].compact if users.empty?
+    return users
+  end
 
   def imported?
     return self.remoteid.present?

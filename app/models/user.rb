@@ -46,6 +46,12 @@ class User < ApplicationRecord
 
   ### Validations
 
+  ## Scopes
+  scope :by_name_asc, -> {
+    includes(:profile).
+    order("user_profiles.last_name ASC, user_profiles.first_name ASC")
+  }
+
   ### Class Methods
 
   ### Instance Methods

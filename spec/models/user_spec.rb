@@ -45,6 +45,14 @@ RSpec.describe User, type: :model do
     expect(user.name).to eq(user.email)
   end
 
+  it "can be sorted by name" do
+    user1 = create(:user, profile: build(:user_profile, last_name: 'zzz', first_name: 'aaa'))
+    user2 = create(:user, profile: build(:user_profile, last_name: 'zzz', first_name: 'bbb'))
+    user3 = create(:user, profile: build(:user_profile, last_name: 'aaa', first_name: 'aaa'))
+
+    expect(User.by_name_asc.to_a).to eq([user3, user1, user2])
+  end
+
   describe "associations" do
     describe "property agents" do
       let(:property_agent) { create(:property_agent) }
@@ -57,6 +65,11 @@ RSpec.describe User, type: :model do
       it "has many properties" do
         user = property_agent.user
         expect(user.properties.count).to eq(1)
+      end
+
+      it "returns all Users associated with a property" do
+        property_agent
+        expect(User.agents.count).to eq(1)
       end
     end
 

@@ -85,6 +85,6 @@ class LeadPolicy < ApplicationPolicy
   # Allow admin or Lead owner to reassign Lead to another User
   #  but disallow claiming another Agent's Lead
   def change_user?
-    user.admin? || same_user?
+    user.admin? || user.manager? || same_user?
   end
 end

@@ -35,7 +35,10 @@ module LeadsHelper
   end
 
   def users_for_select(lead)
-    options_from_collection_for_select(User.all, 'id', 'name', lead.user_id)
+    options_from_collection_for_select(
+      lead.users_for_lead_assignment(default: current_user),
+      'id', 'name', lead.user_id
+    )
   end
 
   def priorities_for_select(lead)
@@ -64,7 +67,7 @@ module LeadsHelper
       end
     end
   end
-  
+
   def lead_state_label(lead)
     tag.span(class: 'label label-info') do
       lead.state.try(:titlecase)
