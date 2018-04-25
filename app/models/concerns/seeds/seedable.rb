@@ -18,7 +18,7 @@ module Seeds
       #       :active: true
 
       def load_seed_data(yaml_path=nil)
-        klass_name = class_name
+        klass_name = name
 
         yaml_path ||= "#{Rails.root}/db/seeds/#{table_name}.yml"
         raise "Data not found: #{yaml_path}" unless File.exist?(yaml_path)
