@@ -16,7 +16,7 @@ module Seeds
     #       :active: true
 
     def load_seed_data(yaml_path=nil)
-      klass_name = self.class_name
+      klass_name = class_name
 
       yaml_path ||= "#{Rails.root}/db/seeds/#{self.table_name}.yml"
       raise "Data not found: #{yaml_path}" unless File.exist?(yaml_path)
@@ -35,7 +35,7 @@ module Seeds
       errors = []
 
       begin
-        self.transaction do
+        transaction do
           data.each do |record|
             if (old_record = self.where(key_attribute => record.fetch(key_attribute)).first).present?
               if old_record.update_attributes(record)
