@@ -20,12 +20,12 @@
         <li>
           <strong>FC:</strong>
           &nbsp;
-          <span><%= @lead.first_comm.try(:strftime, "%m/%d/%y") %></span>
+          <span><%= short_datetime(@lead.first_comm) %></span>
         </li>
         <li>
           <strong>LC:</strong>
           &nbsp;
-          <span><%= @lead.last_comm.try(:strftime, "%m/%d/%y") %></span>
+          <span><%= short_datetime(@lead.last_comm) %></span>
         </li>
       </ul>
     </div>
@@ -97,46 +97,15 @@
       </span>
     </p>
   </div>
-  <div class="scheduled_actions" id="scheduled_actions">
-    <h2>Pending Tasks</h2>
-    <% if @lead.scheduled_actions.incomplete.empty? %>
-      <p>None</p>
-    <% end %>
-    <ul>
-    <% @lead.scheduled_actions.incomplete.each do |scheduled_action| %>
-      <li>
-        <%= glyph(:pin) %>
-        <%= short_datetime(scheduled_action.schedule.to_datetime) %>&mdash;
-        <%= link_to(scheduled_action.description, completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
-      </li>
-    <% end %>
-    </ul>
-  </div>
-  <div class="comments">
 
-    <h2>Comments</h2>
+  <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
+  <%= render partial: 'comments', locals: {lead: @lead} %>
 
-    <div class="row">
-      <div class="col-md-12">
-        <%= render partial: "notes/lead_form", locals: {note: @lead.comments.build} %>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <div id="comments">
-          <%= render partial: "notes/note", collection: @lead.comments  %>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <%= link_to 'Edit Lead', edit_lead_path(@lead) %> |
-        <%= link_to 'Back', :back %>
-      </div>
-    </div>
-
-  </div>
 </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-xs btn-primary" %>
+      <%= link_to 'Back', :back, class: "btn btn-xs btn-info" %>
+    </div>
+  </div>
 </div>

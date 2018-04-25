@@ -1,0 +1,15 @@
+<div class="row scheduled_actions" id="scheduled_actions">
+  <div class="col-md-12">
+    <h2>Pending Tasks</h2>
+    <% if lead.scheduled_actions.incomplete.empty? %>
+      <p class="lead">None</p>
+    <% end %>
+    <table class="table">
+      <thead></thead>
+      <tbody>
+        <%= render collection: lead.scheduled_actions.incomplete, partial: 'scheduled_action' %>
+      </tbody>
+    </table>
+
+  </div>
+</div>

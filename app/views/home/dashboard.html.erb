@@ -3,7 +3,7 @@
     <!-- Left Column -->
     <div class="col-md-6">
       <%= render partial: "today" %>
-      <%= render partial: "upcoming" %>
+      <%= render partial: "upcoming", locals: {scheduled_actions: @upcoming_actions} %>
     </div>
     <!-- End Left Column -->
 
