@@ -14,7 +14,7 @@ module ScheduledActions
       end
 
       def due_today
-        return self.upcoming.
+        return self.incomplete.having_schedule.
           where("schedules.date <= ?", Date.today).
           sorted_by_due_asc
       end
