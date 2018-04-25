@@ -18,15 +18,15 @@ module Seeds
       #       :active: true
 
       def load_seed_data(yaml_path=nil)
-        klass_name = self.class_name
+        klass_name = class_name
 
-        yaml_path ||= "#{Rails.root}/db/seeds/#{self.table_name}.yml"
+        yaml_path ||= "#{Rails.root}/db/seeds/#{table_name}.yml"
         raise "Data not found: #{yaml_path}" unless File.exist?(yaml_path)
 
         Rails.logger.info "SEED DATA: Loading #{yaml_path}"
 
         seed_data = YAML.load(File.read(yaml_path))
-        data_description = seed_data.fetch(self.table_name.to_sym, {data:[]})
+        data_description = seed_data.fetch(table_name.to_sym, {data:[]})
         key_attribute = data_description.fetch(:key, :name)
         data = data_description.fetch(:data)
         raise "Seed data empty: #{yaml_path}" if data.empty?
@@ -39,7 +39,7 @@ module Seeds
         begin
           transaction do
             data.each do |record|
-              if (old_record = self.where(key_attribute => record.fetch(key_attribute)).first).present?
+              if (old_record = where(key_attribute => record.fetch(key_attribute)).first).present?
                 if old_record.update_attributes(record)
                   if old_record.changed?
                     Rails.logger.info "SEED LOAD: Updated #{klass_name}[#{old_record.id}] : #{old_record.previous_changes}"
@@ -53,7 +53,7 @@ module Seeds
                   errors << {id: old_record.id, errors: old_record.errors.to_a}
                 end
               else
-                new_record = self.new(record)
+                new_record = new(record)
                 if new_record.save
                   Rails.logger.info "SEED LOAD: Created #{klass_name}[#{new_record.id}] : #{record}"
                   imported << {id: new_record.id, changes: new_record.previous_changes}
