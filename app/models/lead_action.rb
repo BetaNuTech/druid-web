@@ -13,7 +13,7 @@
 
 class LeadAction < ApplicationRecord
   ### Class Concerns/Extensions
-  extend Seeds::Seedable
+  include Seeds::Seedable
 
   ### Constants
   ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active, :is_contact]
