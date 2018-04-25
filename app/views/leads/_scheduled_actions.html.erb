@@ -7,7 +7,7 @@
     <table class="table">
       <thead></thead>
       <tbody>
-        <%= render collection: lead.scheduled_actions.incomplete, partial: 'scheduled_action' %>
+        <%= render collection: lead.scheduled_actions.incomplete.sorted_by_due_asc, partial: 'scheduled_action' %>
       </tbody>
     </table>
 
