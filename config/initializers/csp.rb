@@ -6,6 +6,7 @@ SecureHeaders::Configuration.default do |config|
   }
   config.x_content_type_options = "nosniff"
   config.x_xss_protection = "1; mode=block"
+  config.referrer_policy = %w(same-origin)
   config.csp = {
     default_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self' 'unsafe-inline'),
     connect_src: Rails.env.production? ? %w('self') : %w('self' http://localhost:3035 ws://localhost:3035),
