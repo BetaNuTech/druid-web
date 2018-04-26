@@ -11,6 +11,13 @@
           </tr>
         </thead>
         <tbody>
+          <% if scheduled_actions.empty? %>
+            <tr>
+              <td>
+                <p class="lead">None</p>
+              </td>
+            </tr>
+          <% end %>
           <% scheduled_actions.each do |scheduled_action| %>
             <tr>
               <td class="text-nowrap"><%= scheduled_action.user.try(:name) || 'None' %></td>

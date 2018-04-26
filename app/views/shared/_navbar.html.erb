@@ -236,7 +236,7 @@
             <div class="btn-group">
               <% if current_user.present? %>
                 <%= link_to(edit_user_path(current_user), method: :get, class: "btn btn-primary") do %>
-                  <span class="glyphicon glyphicon-user"></span> Welcome, <%= current_user.name %>!
+                  <span class="glyphicon glyphicon-user"></span> Welcome, <%= current_user.name %>
                 <% end %>
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
