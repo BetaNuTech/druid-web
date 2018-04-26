@@ -13,7 +13,7 @@ SecureHeaders::Configuration.default do |config|
     font_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     img_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     object_src: %w('none'),
-    script_src: Rails.env.production? ? %w(https: 'unsafe-eval') :  %w(http: 'unsafe-eval'),
+    script_src: Rails.env.production? ? %w(https:) :  %w(http: 'unsafe-eval'),
     style_src: Rails.env.production? ? %w(https: 'self' 'unsafe-inline') :  %w(http: 'self' 'unsafe-inline')
   }
 end
