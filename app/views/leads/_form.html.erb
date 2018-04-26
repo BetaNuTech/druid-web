@@ -42,16 +42,19 @@
       <legend>Lead Information</legend>
 
       <div class="row">
-        <div class="col-md-4 form-group">
+        <div class="col-md-6 form-group">
           <%= form.label 'Property'%><br/>
           <%= form.select :property_id, properties_for_select(@lead.property_id), { include_blank: true }, { class: "form-control" } %>
         </div>
-        <div class="col-md-4 form-group">
+        <div class="col-md-6 form-group">
           <%= form.label 'Lead Source'%><br/>
           <%= form.select :lead_source_id, sources_for_select(@lead.lead_source_id), { include_blank: true }, { class: "form-control" } %>
         </div>
-        <div class="col-md-4 form-group">
-          <%= form.label :referral, 'Referral/Origin'%><br/>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :referral, 'Referral/Origin' %>
           <%= form.text_field :referral, id: :lead_referral, class: "form-control" %>
         </div>
       </div>
@@ -134,13 +137,6 @@
         <div class="col-md-2 form-group">
           <%= form.label :id_state, "DL/ID State" %>
           <%= form.select :id_state, options_for_select(US_STATES), {include_blank: true}, { class: "form-control" } %>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :referral %>
-          <%= form.text_field :referral, id: :lead_referral, class: "form-control" %>
         </div>
       </div>
 
