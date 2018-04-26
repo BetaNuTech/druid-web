@@ -8,7 +8,7 @@ SecureHeaders::Configuration.default do |config|
   config.x_xss_protection = "1; mode=block"
   config.csp = {
     default_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self' 'unsafe-inline'),
-    connect_src: %w('self'),
+    connect_src: Rails.env.production? ? %w('self') : %w('self' http://localhost:3035 ws://localhost:3035),
     font_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     img_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     object_src: %w('none'),
