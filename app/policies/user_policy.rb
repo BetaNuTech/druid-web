@@ -32,6 +32,10 @@ class UserPolicy < ApplicationPolicy
     user.admin?
   end
 
+  def assign_to_role?
+    user.admin?
+  end
+
   def allowed_params
     valid_user_params = User::ALLOWED_PARAMS
     valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS } ]

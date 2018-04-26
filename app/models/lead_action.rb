@@ -12,7 +12,7 @@
 #
 
 class LeadAction < ApplicationRecord
-  ### Class Concerns/Extensions
+  ### class concerns/extensions
   include Seeds::Seedable
 
   ### Constants

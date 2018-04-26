@@ -15,6 +15,11 @@ namespace :seed do
     LeadAction.load_seed_data
   end
 
+  desc "Seed Reasons"
+  task :reasons => :environment do
+    Reason.load_seed_data
+  end
+
   desc "Seed Development Environment with random data"
   task :development => :environment do
     require 'factory_bot_rails'

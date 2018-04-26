@@ -24,12 +24,12 @@
               <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
             </td>
             <td>
-              <%= lead_priority_icon(lead) %>
               <%= lead_state_label(lead) %>
+              <%= lead_priority_icon(lead) %>
               <br>
-              <%= glyph(:leaf) %> <%= short_datetime(lead.first_comm) %>
+              <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
               <br>
-              <%= glyph(:tree_conifer) %> <%= short_datetime(lead.last_comm) %>
+              <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
               <br>
               <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
             </td>

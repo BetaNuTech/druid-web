@@ -13,10 +13,18 @@
           <span class="btn btn-xs btn-primary">Add</span>
         <% end %>
         <p>
-          Mine: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id], user_ids: [current_user.id]}})) do %><%= @current_property.leads.for_agent(current_user).count %><% end %> | 
-          Open: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id], states: ['open']}})) do %><%= @current_property.leads.open.count %><% end %> |
-          Active: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id], states: ['open', 'claimed']}})) do %><%= @current_property.leads.active.count %><% end %> |
-          All: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id]}})) do %><%= @current_property.leads.count %><% end %>
+          <span class="text-nowrap">
+            Mine: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id], user_ids: [current_user.id]}})) do %><%= @current_property.leads.for_agent(current_user).count %><% end %>
+          </span> &bullet;
+          <span class="text-nowrap">
+            Open: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id], states: ['open']}})) do %><%= @current_property.leads.open.count %><% end %>
+          </span> &bullet;
+          <span class="text-nowrap">
+            Active: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id], states: ['open', 'claimed']}})) do %><%= @current_property.leads.active.count %><% end %>
+          </span> &bullet;
+          <span class="text-nowrap">
+            All: <%= link_to(search_leads_path({lead_search: {property_ids: [@current_property.id]}})) do %><%= @current_property.leads.count %><% end %>
+          </span>
         </p>
       </div>
       <div class="col-md-4">
@@ -27,9 +35,13 @@
           <span class="btn btn-xs btn-primary">Add</span>
         <% end %>
         <p>
-          Total: <%= @current_property.units %> |
-          Occupied: <%= @current_property.housing_units.occupied.count %>
+          <span class="text-nowrap">
+            Total: <%= @current_property.units %>
+          </span> &bullet;
+          <span class="text-nowrap">
+            Occupied: <%= @current_property.housing_units.occupied.count %>
           <small>(<%= @current_property.occupancy_rate %>%)</small>
+          </span>
         </p>
       </div>
       <div class="col-md-4">

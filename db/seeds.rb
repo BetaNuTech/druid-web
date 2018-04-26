@@ -75,6 +75,20 @@ if admin.save
 else
   puts "[FAIL] (#{admin.errors.to_a})".red
 end
+## Agent user
+agent_email = 'agent@example.com'
+print "   - #{agent_email} "
+agent_password = 'ChangeMeNow'
+agent = User.new(email: agent_email, password: agent_password, password_confirmation: agent_password)
+if agent.save
+  agent.confirm
+  agent.role = Role.agent
+  agent.save!
+  puts "(password: '#{agent_password}') [OK]".green
+else
+  puts "[FAIL] (#{agent.errors.to_a})".red
+end
+
 
 # Rental Types
 puts " * Creating Rental Types"
@@ -89,19 +103,8 @@ rental_types.each do |rt_name|
   end
 end
 
-# Reasons
-puts " * Creating Reasons"
-reasons = ['First Contact', 'Follow-Up', 'Other', 'Scheduled']
-reasons.each do |r_name|
-  print "   - #{r_name} "
-  r = Reason.new(name: r_name)
-  if r.save
-    puts "[OK]".green
-  else
-    puts "[FAIL] (#{r.errors.to_a})".red
-  end
-end
 
 Rake::Task["seed:properties"].invoke
+Rake::Task["seed:reasons"].invoke
 Rake::Task["seed:lead_actions"].invoke
 Rake::Task["seed:engagement_policy"].invoke

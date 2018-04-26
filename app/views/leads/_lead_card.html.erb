@@ -1,0 +1,36 @@
+<div class="lead_card">
+  <span class="lead">
+    <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span>
+  </span>
+  <% if lead.property.present? %>
+    for
+    <span class="lead_property_name text-nowrap">
+      <%= link_to(lead.property.name, property_path(lead.property)) %>
+    </span>
+  <% end %>
+  <br/>
+  <%= lead_state_label(lead) %>
+  <%= lead_priority_icon(lead) %>
+  <br/>
+  <span class="dashboard_lead_created">
+    <%= glyph(:question_sign) %>
+    <%= short_datetime(lead.created_at) %>
+  </span>
+  <%= "via " + lead.referral if lead.referral.present? %>
+  <span class="text-nowrap">
+    <%= glyph(:filter) %>
+    <%= lead.source.present? ? lead.source.name : '(None)'%>
+  </span><br/>
+  <span class="text-nowrap">
+    <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+  </span>
+  <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+  <% if lead.preference.notes.present? %>
+    <p class="dashboard_lead_notes">
+      <%= glyph(:question_sign) %>
+      <span>
+        <%= lead.preference.notes %>
+      </span>
+    </p>
+  <% end %>
+</div>

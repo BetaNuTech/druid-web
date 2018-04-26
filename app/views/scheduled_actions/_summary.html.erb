@@ -6,7 +6,7 @@
 
     <p>
       <strong>Due:</strong> <%= scheduled_action.schedule.long_datetime %> &mdash;
-      <strong>Reason:</strong> <%= scheduled_action.reason.description || scheduled_action.reason.name %> <br/>
+      <strong>Reason:</strong> <%= scheduled_action.reason.present? ? scheduled_action.reason.description || scheduled_action.reason.name : 'None' %> <br/>
       <strong>Status:</strong> <%= scheduled_action.state.humanize.titlecase %> &mdash;
       <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;
       <strong>Last Attempt: </strong>

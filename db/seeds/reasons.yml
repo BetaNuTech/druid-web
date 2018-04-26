@@ -1,0 +1,17 @@
+---
+:reasons:
+  :version: 1
+  :key: :name
+  :data:
+  - :name: First Contact
+    :description: First Contact
+    :active: true
+  - :name: Follow-Up
+    :description: Follow-Up
+    :active: true
+  - :name: Scheduled
+    :description: Scheduled by Engagement Policy
+    :active: true
+  - :name: Other
+    :description: 
+    :active: true
