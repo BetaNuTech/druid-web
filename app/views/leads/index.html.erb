@@ -3,7 +3,7 @@
     <div class="col-md-6">
       <h1>Leads</h1>
     </div>
-    <% if policy(Lead).new? %>
+    <% if policy(Lead).new? && false%>
       <div class="col-md-6 text-right">
         <%= glyph(:create) %>
         <%= link_to 'Create New Lead', new_lead_path %>
@@ -12,13 +12,9 @@
   </div>
 
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-10">
       <table id="leads-table" class="table">
         <thead>
-          <tr>
-            <th>Name/Contact</th>
-            <th>Actions</th>
-          </tr>
         </thead>
 
         <tbody>
@@ -48,10 +44,12 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-12 text-right">
-      <%= glyph(:create) %>
-      <%= link_to 'Create New Lead', new_lead_path %>
+  <% if policy(Lead).new? && false%>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <%= glyph(:create) %>
+        <%= link_to 'Create New Lead', new_lead_path %>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>

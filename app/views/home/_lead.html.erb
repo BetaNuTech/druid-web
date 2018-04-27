@@ -1,6 +1,15 @@
 <tr>
   <td><%= glyph(:person) %></td>
-  <td class="dashboard_item_date">Now</td>
+  <td class="dashboard_item_date">
+    <% if lead.open? && policy(lead).permitted_state_events.any? %>
+      <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: 'claim'),
+                  { method: :post,
+                    class: "btn btn-sm btn-primary",
+                    data: {confirm: "Are you sure you want to claim this lead?"} } ) do %>
+        Claim
+      <% end %>
+    <% end %>
+  </td>
   <td>
     <%= render partial: "leads/lead_card", locals: {lead: lead} %>
   </td>

@@ -44,7 +44,7 @@ class LeadSearchLead extends React.Component {
             </li>
           </ul>
         </div>
-        <LeadActions lead_id={this.props.data.id} />
+        { false && <LeadActions lead_id={this.props.data.id} /> }
         <div className={Style.contact} >
           <span className={Style.lead_name}>
             <a href={this.props.data.web_url} target="_blank">
@@ -112,7 +112,7 @@ class LeadSearchLead extends React.Component {
             </span>
           </p>
         </div>
-        <LeadComments lead_id={this.props.data.id} />
+        { false && <LeadComments lead_id={this.props.data.id} /> }
       </div>
     );
   }

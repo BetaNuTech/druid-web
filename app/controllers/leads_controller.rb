@@ -94,6 +94,7 @@ class LeadsController < ApplicationController
     respond_to do |format|
       format.js
       format.json { render :show, status: :ok, location: @lead }
+      format.html { redirect_to(@lead)}
     end
   end
 
