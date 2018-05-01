@@ -17,5 +17,17 @@ FactoryBot.define do
     end
     description Faker::Lorem.sentence
     active true
+
+    factory :sms_message_type do
+      name "SMS"
+      description "SMS"
+    end
+
+    factory :email_message_type do
+      name "Email"
+      description "Email"
+    end
   end
+
+
 end

@@ -23,5 +23,13 @@ class MessageType < ApplicationRecord
 
   ### Class Methods
 
+  def self.email
+    MessageType.where(name: 'Email').first
+  end
+
+  def self.sms
+    MessageType.where(name: 'SMS').first
+  end
+
   ### Instance Methods
 end

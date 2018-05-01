@@ -96,6 +96,20 @@ class Lead < ApplicationRecord
     self.class.priorities[self.priority]
   end
 
+  def template_variables
+    {
+      "lead_name" => '',
+      'lead_floorplan' => '',
+      "agent_name" => '',
+      "agent_title" => '',
+      "property_name" => '',
+      'property_city' => '',
+      'property_amenities' => '',
+      'property_website' => '',
+      'property_phone' => ''
+    }
+  end
+
   private
 
 end
