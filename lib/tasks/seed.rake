@@ -80,5 +80,11 @@ namespace :seed do
     loader = EngagementPolicyLoader.new(filename)
     loader.call
   end
+
+  desc "Load Message Types"
+  task :message_types => :environment do
+    MessageType.load_seed_data
+  end
+
 end
 

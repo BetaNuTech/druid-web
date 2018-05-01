@@ -1,0 +1,12 @@
+---
+:message_types:
+  :version: 1
+  :key: :name
+  :data:
+  - :name: Email
+    :description: Messages delivered via Email
+    :active: true
+  - :name: SMS
+    :description: Messages delivered via SMS
+    :active: false
+
