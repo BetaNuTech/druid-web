@@ -143,3 +143,6 @@ table#leads-table {
   color: #ff0000;
 }
 
+table.lead_listing tr:nth-child(even) {
+  background: #edf2f7;
+}
