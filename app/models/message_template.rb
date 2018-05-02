@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: message_templates
+#
+#  id              :uuid             not null, primary key
+#  message_type_id :uuid             not null
+#  user_id         :uuid
+#  name            :string           not null
+#  subject         :string           not null
+#  body            :text             not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
 class MessageTemplate < ApplicationRecord
   ### Class Concerns/Extensions
   include Seeds::Seedable

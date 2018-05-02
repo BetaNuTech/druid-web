@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180501194850) do
+ActiveRecord::Schema.define(version: 20180502161409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,15 +167,26 @@ ActiveRecord::Schema.define(version: 20180501194850) do
     t.index ["state"], name: "index_leads_on_state"
   end
 
-  create_table "message_templates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "message_type_id"
-    t.uuid "user_id"
-    t.string "name"
-    t.string "subject"
-    t.text "body"
+  create_table "message_delivery_adapters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_type_id", null: false
+    t.string "slug", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["message_type_id"], name: "index_message_templates_on_message_type_id"
+    t.index ["message_type_id"], name: "index_message_delivery_adapters_on_message_type_id"
+    t.index ["slug"], name: "index_message_delivery_adapters_on_slug", unique: true
+  end
+
+  create_table "message_templates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_type_id", null: false
+    t.uuid "user_id"
+    t.string "name", null: false
+    t.string "subject", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "message_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
