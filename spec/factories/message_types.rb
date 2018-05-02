@@ -3,9 +3,9 @@
 # Table name: message_types
 #
 #  id          :uuid             not null, primary key
-#  name        :string
+#  name        :string           not null
 #  description :text
-#  active      :boolean
+#  active      :boolean          default(TRUE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

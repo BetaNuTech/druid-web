@@ -4,7 +4,8 @@
 #
 #  id              :uuid             not null, primary key
 #  message_type_id :uuid             not null
-#  name            :string
+#  slug            :string           not null
+#  name            :string           not null
 #  description     :text
 #  active          :boolean          default(TRUE), not null
 #  created_at      :datetime         not null
