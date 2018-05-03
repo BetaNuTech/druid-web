@@ -102,4 +102,27 @@ RSpec.describe Message, type: :model do
       expect(message.state).to eq('failed')
     end
   end
+
+  describe "auto-fill from template" do
+    let(:message) { create(:message)}
+
+    it "should report whether filling the message data is without error" do
+      assert message.fill
+      mt = message.message_template
+      mt.body = "{{foo"
+      mt.save!
+      message.reload
+      refute message.fill
+    end
+
+    it "should fill the message subject" do
+      assert message.fill
+      expect(message.subject).to match(message.messageable.name)
+    end
+
+    it "should fill the message body" do
+      assert message.fill
+      expect(message.body).to match(message.messageable.property.name)
+    end
+  end
 end

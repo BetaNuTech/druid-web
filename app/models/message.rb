@@ -40,12 +40,12 @@ class Message < ApplicationRecord
   ### Instance Methods
 
   def fill
-    fill_error = false
+    no_errors = true
     if message_template.present?
       template_data = messageable.respond_to?(:message_template_data) ? messageable.message_template_data : {}
       rendered_template = message_template.render(template_data)
       if rendered_template.errors?
-        fill_error = true
+        no_errors = false
         rendered_template.errors.each do |err|
           errors.add(:message_template, err)
         end
@@ -53,10 +53,10 @@ class Message < ApplicationRecord
       self.subject = rendered_template.subject
       self.body = rendered_template.body
     end
-    return fill_error
+    return no_errors
   end
 
-  def perform_delivery
+    def perform_delivery
     # TODO: create MessageDelivery object and send
   end
 
