@@ -121,6 +121,10 @@ RSpec.describe Message, type: :model do
     end
 
     it "should fill the message body" do
+      lead = message.messageable
+      lead.property = create(:property)
+      lead.save!
+      message.reload
       assert message.fill
       expect(message.body).to match(message.messageable.property.name)
     end

@@ -20,7 +20,6 @@ class MessageType < ApplicationRecord
 
   ### Validations
   validates :name, presence: true
-  validates :active, presence: true
 
   ## Scopes
   scope :active, -> { where(active: true) }

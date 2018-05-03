@@ -45,6 +45,6 @@ FactoryBot.define do
     email { Faker::Internet.email }
     preference_attributes { FactoryBot.attributes_for(:lead_preference)}
     priority { ["low", "medium", "high", "urgent"][rand(4)] }
-    property { create(:property)}
+    #property { create(:property)}
   end
 end

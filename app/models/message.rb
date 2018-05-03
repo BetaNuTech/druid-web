@@ -56,7 +56,7 @@ class Message < ApplicationRecord
     return no_errors
   end
 
-    def perform_delivery
+  def perform_delivery
     # TODO: create MessageDelivery object and send
   end
 

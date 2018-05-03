@@ -24,17 +24,20 @@
         <table class="table lead_listing">
           <thead></thead>
           <tbody>
+
             <!-- Unclaimed Leads -->
             <tr>
               <td colspan="4">
                 <span class="text-nowrap lead">
                   <% if @limit_leads != @unclaimed_leads.count %>
                     <%= @limit_leads %> of
+                    <%= @unclaimed_leads.count %> Unclaimed Leads
+                    <span>
+                      <%= link_to("Show All", root_path(limit_leads: 999), class: "btn btn-xs btn-primary") %>
+                    </span>
+                  <% else %>
+                    <%= @unclaimed_leads.count %> Unclaimed Leads
                   <% end %>
-                  <%= @unclaimed_leads.count %> Unclaimed Leads
-                </span>
-                <span>
-                  <%= link_to("Show All", root_path(limit_leads: 999), class: "btn btn-xs btn-primary") %>
                 </span>
               </td>
             </tr>
