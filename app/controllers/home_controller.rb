@@ -15,5 +15,6 @@ class HomeController < ApplicationController
     @unclaimed_leads = current_user.available_leads
     @today_actions = ScheduledAction.for_agent(current_user).due_today.sorted_by_due_asc
     @upcoming_actions = ScheduledAction.for_agent(current_user).upcoming.sorted_by_due_asc
+    @limit_leads = [ ( params[:limit_leads] || 5 ).to_i,  @unclaimed_leads.count ].min
   end
 end

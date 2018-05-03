@@ -24,23 +24,30 @@
         <table class="table lead_listing">
           <thead></thead>
           <tbody>
+            <!-- Unclaimed Leads -->
             <tr>
               <td colspan="4">
-                <p class="lead">
-                  <span class="text-nowrap">
-                    <%= @unclaimed_leads.count %> Unclaimed Leads
-                  </span>
-                  &mdash;
-                  <span class="text-nowrap">
-                    <%= @today_actions.count %> Tasks Due
-                  </span>
-                </p>
+                <span class="text-nowrap lead">
+                  <% if @limit_leads != @unclaimed_leads.count %>
+                    <%= @limit_leads %> of
+                  <% end %>
+                  <%= @unclaimed_leads.count %> Unclaimed Leads
+                </span>
+                <span>
+                  <%= link_to("Show All", root_path(limit_leads: 999), class: "btn btn-xs btn-primary") %>
+                </span>
               </td>
             </tr>
-            <!-- Unclaimed Leads -->
-            <%= render collection: @unclaimed_leads.limit(5), partial: 'lead' %>
+            <%= render collection: @unclaimed_leads.limit(@limit_leads), partial: 'lead' %>
 
             <!-- ScheduledActions for today -->
+            <tr>
+              <td colspan="4">
+                <span class="text-nowrap lead">
+                  <%= @today_actions.count %> Tasks Due Today
+                </span>
+              </td>
+            </tr>
             <%= render collection: @today_actions, partial: 'scheduled_action' %>
           </tbody>
         </table>
