@@ -8,6 +8,7 @@
 #  active      :boolean          default(TRUE)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  title       :string
 #
 
 class PropertyAgent < ApplicationRecord
@@ -15,7 +16,7 @@ class PropertyAgent < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:user_id, :property_id, :active, :id, :_destroy]
+  ALLOWED_PARAMS = [:user_id, :property_id, :active, :title, :id, :_destroy]
 
   ### Associations
   belongs_to :user

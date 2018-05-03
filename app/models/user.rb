@@ -43,6 +43,7 @@ class User < ApplicationRecord
   has_many :scheduled_actions
   has_many :compliances, class_name: 'EngagementPolicyActionCompliance'
   has_many :engagement_policy_action_compliances
+  has_many :messages
 
   ### Validations
 

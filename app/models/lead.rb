@@ -96,17 +96,17 @@ class Lead < ApplicationRecord
     self.class.priorities[self.priority]
   end
 
-  def template_variables
+  def message_template_data
     {
-      "lead_name" => '',
+      "lead_name" => name,
       'lead_floorplan' => '',
-      "agent_name" => '',
+      "agent_name" => user.name,
       "agent_title" => '',
-      "property_name" => '',
-      'property_city' => '',
+      "property_name" => property.try(:name),
+      'property_city' => property.try(:city),
       'property_amenities' => '',
       'property_website' => '',
-      'property_phone' => ''
+      'property_phone' => property.phone
     }
   end
 

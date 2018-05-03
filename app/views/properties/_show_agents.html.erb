@@ -7,7 +7,7 @@
 
     <ul>
       <% @property.agents.each do |agent| %>
-        <li><%= link_to(agent.name, user_path(agent)) %></li>
+        <li><%= link_to(agent.name, user_path(agent)) %> (<%= agent.title_for_property(@property) %>)</li>
       <% end %>
     </ul>
   </div>

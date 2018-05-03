@@ -58,7 +58,7 @@ class MessageTemplate < ApplicationRecord
   ### Instance Methods
 
   def render(data={})
-    output = {subject: '', body: '', errors: {subject: [], body: []}}
+    output = {subject: nil, body: nil, errors: {subject: [], body: []}}
     parts = {subject: subject, body: body}
 
     parts.each_pair do |part, content|

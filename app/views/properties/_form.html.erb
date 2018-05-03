@@ -98,16 +98,23 @@
       </div>
 
       <div class="row">
-        <div class="col-md-3 form-group">
+        <div class="col-md-6 form-group">
           <%= form.label :phone %>
           <%= form.text_field :phone, id: :property_phone, class: "form-control", type: :phone %>
         </div>
 
-        <div class="col-md-3 form-group">
+        <div class="col-md-6 form-group">
           <%= form.label :fax %>
           <%= form.text_field :fax, id: :property_fax, class: "form-control", type: :phone %>
         </div>
-        <div class="col-md-4 form-group">
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :website %>
+          <%= form.text_field :website, id: :property_website, class: "form-control" %>
+        </div>
+        <div class="col-md-6 form-group">
           <%= form.label :email %>
           <%= form.text_field :email, id: :property_email, class: "form-control" %>
         </div>

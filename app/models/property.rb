@@ -21,10 +21,11 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  active       :boolean          default(TRUE)
+#  website      :string
 #
 
 class Property < ApplicationRecord
-  ALLOWED_PARAMS = [:name, :address1, :address2, :address3, :city, :state, :zip, :country, :organization, :contact_name, :phone, :fax, :email, :units, :notes, :active]
+  ALLOWED_PARAMS = [:name, :address1, :address2, :address3, :city, :state, :zip, :country, :organization, :contact_name, :phone, :fax, :email, :website, :units, :notes, :active]
   audited
 
   ## Associations

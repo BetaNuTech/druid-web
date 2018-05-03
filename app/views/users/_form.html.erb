@@ -120,6 +120,10 @@
               <%= agent_form.label :_destroy, "Remove" %>
             </div>
           </div>
+          <div class="col-md-6">
+            <%= agent_form.label :title %>
+            <%= agent_form.text_field :title, {class: "form-control"} %>
+          </div>
         </div>
       <% end %>
     </fieldset>
