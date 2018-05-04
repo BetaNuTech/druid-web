@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180503154002) do
+ActiveRecord::Schema.define(version: 20180504205752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -165,6 +165,19 @@ ActiveRecord::Schema.define(version: 20180503154002) do
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"
+  end
+
+  create_table "message_deliveries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_id"
+    t.uuid "message_type_id"
+    t.integer "attempt"
+    t.datetime "attempted_at"
+    t.string "status"
+    t.text "log"
+    t.datetime "delivered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_deliveries_on_message_id"
   end
 
   create_table "message_delivery_adapters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -1,7 +1,7 @@
 require_relative './adapters/action_mailer'
 
 module Messages
-  module Adapters
+  module DeliveryAdapters
     # List valid/enabled adapter classes Here
     ### IMPORTANT: Values in the VALID array correspond directly to
     # the MessageDeliveryAdapter record "slug"s
