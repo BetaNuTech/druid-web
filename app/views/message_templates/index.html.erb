@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Message Templates</h1>
+    </div>
+    <% if policy(MessageTemplate).new? %>
+      <div class="col-md-6 text-right">
+        <%= link_to('Create a Message Template', new_message_template_path, class: "btn btn-xs btn-primary" ) %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <% if @message_templates.empty? %>
+        <p class="lead">None</p>
+      <% else %>
+        <thead>
+          <table class="table">
+            <th>Type</th>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Actions</th>
+          </thead>
+          <tbody>
+            <% @message_templates.each do |message_template| %>
+              <tr>
+                <td><%= message_template.message_type.name %></td>
+                <td><%= message_template.name %></td>
+                <td><%= message_template.user.present? ? message_template.user.name : 'Shared' %></td>
+                <td>
+                  <%= link_to message_template do %><%= glyph(:show) %><% end %>&nbsp;
+                  <%= link_to edit_message_template_path(message_template) do %><%= glyph(:edit) %><% end %>&nbsp;
+                  <%= link_to message_template, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+
+</div>

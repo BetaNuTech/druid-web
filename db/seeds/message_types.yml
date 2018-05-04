@@ -8,5 +8,5 @@
     :active: true
   - :name: SMS
     :description: Messages delivered via SMS
-    :active: false
+    :active: true
 

@@ -67,7 +67,7 @@ if User.count == 0
   admin_email = 'admin@example.com'
   print "   - #{admin_email} "
   admin_password = 'ChangeMeNow'
-  admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password)
+  admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password, timezone: 'America/Detroit', profile_attributes: {first_name: 'admin'})
   if admin.save
     admin.confirm
     admin.role = Role.administrator
@@ -110,12 +110,12 @@ end
 # MessageTypes
 
 puts " * Creating Message Types"
-Rake::Task["seed:message_types"]
+Rake::Task["db:seed:message_types"].invoke
 puts " * Creating Properties"
-Rake::Task["seed:properties"].invoke
+Rake::Task["db:seed:properties"].invoke
 puts " * Creating Reasons"
-Rake::Task["seed:reasons"].invoke
+Rake::Task["db:seed:reasons"].invoke
 puts " * Creating Lead Actions"
-Rake::Task["seed:lead_actions"].invoke
+Rake::Task["db:seed:lead_actions"].invoke
 puts " * Creating Engagement Policy"
-Rake::Task["seed:engagement_policy"].invoke
+Rake::Task["db:seed:engagement_policy"].invoke

@@ -41,6 +41,7 @@ class MessageTemplate < ApplicationRecord
   end
 
   ### Constants
+  ALLOWED_PARAMS = [:id, :message_type_id, :user_id, :name, :subject, :body]
 
   ### Associations
   belongs_to :user, optional: true
@@ -83,6 +84,10 @@ class MessageTemplate < ApplicationRecord
 
     result = Rendered.new(subject: output[:subject], body: output[:body], errors: output[:errors])
     return result
+  end
+
+  def shared?
+    return !user_id.present?
   end
 
 end

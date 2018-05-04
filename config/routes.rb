@@ -59,5 +59,7 @@ Rails.application.routes.draw do
     post 'reset_token', on: :member
   end
 
+  resources :message_templates
+
 
 end

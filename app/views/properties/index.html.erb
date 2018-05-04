@@ -5,8 +5,7 @@
     </div>
     <% if policy(Property).new? %>
     <div class="col-md-6 text-right">
-      <%= glyph(:create) %>
-      <%= link_to 'Create New Property', new_property_path %>
+      <%= link_to 'Add a New Property', new_property_path, class: "btn btn-xs btn-primary" %>
     </div>
     <% end %>
   </div>
