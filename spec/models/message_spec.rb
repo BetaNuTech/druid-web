@@ -15,6 +15,8 @@
 #  delivered_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  message_type_id     :uuid
+#  thread              :uuid
 #
 
 require 'rails_helper'
@@ -62,12 +64,23 @@ RSpec.describe Message, type: :model do
     it "always has a recipientid" do
       assert message.valid?
       message.recipientid = nil
+      message.messageable = nil
+      assert message.recipientid.nil?
       refute message.valid?
+      expect( message.errors.to_a).to eq(["Recipientid can't be blank"])
     end
     it "always has a senderid" do
-      assert message.valid?
-      message.senderid = nil
-      refute message.valid?
+      begin
+        Message.skip_callback(:validation, :before, :set_meta)
+        assert message.valid?
+        message.senderid = nil
+        message.validate
+        assert message.senderid.nil?
+        refute message.valid?
+        expect( message.errors.to_a).to eq(["Senderid can't be blank"])
+      ensure
+        Message.set_callback(:validation, :before, :set_meta)
+      end
     end
     it "always has a subject" do
       assert message.valid?
@@ -127,6 +140,41 @@ RSpec.describe Message, type: :model do
       message.reload
       assert message.fill
       expect(message.body).to match(message.messageable.property.name)
+    end
+  end
+
+  describe "callbacks" do
+    let(:message) { create(:message)}
+    let(:phone) { "555-555-5555" }
+    let(:email) { "lead@example.com"}
+    let(:lead) { create(:lead, phone1: phone, phone1_type: 'Cell', email: email )}
+    let(:sms_message_type) { create(:sms_message_type)}
+    let(:email_message_type) { create(:email_message_type)}
+    let(:sms_message) { create(:message, { messageable: lead, message_type: sms_message_type } )}
+    let(:new_sms_message) { build(:message, { messageable: lead, message_type: sms_message_type } )}
+
+    it "sets senderid on create" do
+      message
+      expect(sms_message.recipientid).to eq(lead.phone1)
+    end
+
+    it "sets senderid on update" do
+      sms_message
+      sms_message.senderid = nil
+      sms_message.save
+      expect(sms_message).to_not be_nil
+    end
+
+    it "sets recipientid on create" do
+      new_sms_message.recipientid = nil
+      new_sms_message.save
+      expect(new_sms_message.recipientid).to_not be_nil
+    end
+
+    it "sets thread id on create" do
+      assert new_sms_message.thread.nil?
+      new_sms_message.save
+      expect(new_sms_message.thread).to_not be_nil
     end
   end
 end

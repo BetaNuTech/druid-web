@@ -15,6 +15,8 @@
 #  delivered_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  message_type_id     :uuid
+#  thread              :uuid
 #
 
 class Message < ApplicationRecord
@@ -23,19 +25,42 @@ class Message < ApplicationRecord
 
   ### Constants
   # TODO: Allowed params
+  MESSAGE_DELIVERY_REPLY_TO_ENV='MESSAGE_DELIVERY_REPLY_TO'
+  ALLOWED_PARAMS = [:message_template_id, ]
 
   ### Associations
   belongs_to :user
   belongs_to :messageable, polymorphic: true, optional: true
   belongs_to :message_template, optional: true
-  # has_many :message_deliveries
+  belongs_to :message_type
+  has_many :message_deliveries
 
   ### Validations
   validates :senderid, :recipientid, :subject, :body, presence: true
 
-  ## Scopes
+  ### Scopes
+  scope :for_thread, ->(threadid) { where(thread: threadid)}
+
+  ### Callbacks
+  before_validation :set_meta
 
   ### Class Methods
+
+  def self.base_senderid
+    return ENV.fetch(MESSAGE_DELIVERY_REPLY_TO_ENV, 'default@example.com')
+  end
+
+  def self.new_message(from:, to:, message_type:)
+    message = Message.new(
+      user: from,
+      messageable: to,
+      message_type: message_type
+    )
+    message.set_senderid
+    message_set_recipientid
+    message.set_thread
+    return message
+  end
 
   ### Instance Methods
 
@@ -56,8 +81,39 @@ class Message < ApplicationRecord
     return no_errors
   end
 
+  def new_message_reply
+    reject_attrs = [:id, :created_at, :updated_at, :delivered_at, :state, :message_template_id, :body ]
+    attrs = attributes
+    attrs.delete_if{|key,value| reject_attrs.include?(key.to_sym)}
+    return Message.new(attrs)
+  end
+
   def perform_delivery
     # TODO: create MessageDelivery object and send
+  end
+
+  def set_senderid
+    set_thread
+    self.senderid ||= Message.base_senderid.sub('@',"+#{thread}@")
+  end
+
+  def set_recipientid
+    if messageable.present?
+      newid = messageable.message_recipientid(message_type: message_type)
+      self.recipientid = newid if newid.present?
+    end
+    return true
+  end
+
+  def set_thread
+    self.thread ||= SecureRandom.uuid
+  end
+
+  def set_meta
+    set_thread
+    set_senderid
+    set_recipientid
+    return true
   end
 
 end

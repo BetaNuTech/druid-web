@@ -15,6 +15,9 @@ class MessageType < ApplicationRecord
   include Seeds::Seedable
 
   ### Constants
+  SMS_TYPE_NAME = 'SMS'
+  EMAIL_TYPE_NAME = 'Email'
+
   ### Associations
   has_many :message_templates
 
@@ -27,12 +30,20 @@ class MessageType < ApplicationRecord
   ### Class Methods
 
   def self.email
-    MessageType.where(name: 'Email').first
+    MessageType.where(name: EMAIL_TYPE_NAME).first
   end
 
   def self.sms
-    MessageType.where(name: 'SMS').first
+    MessageType.where(name: SMS_TYPE_NAME).first
   end
 
   ### Instance Methods
+
+  def sms?
+    name == SMS_TYPE_NAME
+  end
+
+  def email?
+    name == EMAIL_TYPE_NAME
+  end
 end

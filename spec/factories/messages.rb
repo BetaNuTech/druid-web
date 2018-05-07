@@ -15,11 +15,14 @@
 #  delivered_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  message_type_id     :uuid
+#  thread              :uuid
 #
 
 FactoryBot.define do
   factory :message do
     messageable { create(:lead) }
+    message_type { create(:email_message_type) }
     user { create(:user) }
     state { 'draft' }
     senderid { Faker::Internet.email }
@@ -27,6 +30,5 @@ FactoryBot.define do
     message_template { create(:message_template)}
     subject { Faker::Lorem.sentence }
     body { Faker::Lorem.paragraph }
-    delivered_at { Faker::Date.between(3.days.ago, Date.today)}
   end
 end

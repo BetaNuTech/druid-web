@@ -1,4 +1,4 @@
-require_relative './adapters/action_mailer'
+require_relative './delivery_adapters/action_mailer'
 
 module Messages
   module DeliveryAdapters
