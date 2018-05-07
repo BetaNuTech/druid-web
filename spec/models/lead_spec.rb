@@ -388,6 +388,8 @@ RSpec.describe Lead, type: :model do
 
   describe "messaging helpers" do
     let(:lead) { create(:lead) }
+    let(:sms_message_type) {create(:sms_message_type)}
+    let(:email_message_type) {create(:email_message_type)}
 
     it "returns message_template information" do
       expected_data_keys = [ 'lead_name', 'lead_floorplan', 'agent_name', 'agent_title', "property_name", 'property_city', 'property_amenities', 'property_website', 'property_phone' ]
@@ -423,6 +425,15 @@ RSpec.describe Lead, type: :model do
       email_message_type = create(:email_message_type)
       expect(lead.message_recipientid(message_type: sms_message_type)).to eq(lead.phone2)
       expect(lead.message_recipientid(message_type: email_message_type)).to eq(lead.email)
+    end
+
+    it "returns supported message types depending on data present" do
+      sms_message_type
+      email_message_type
+      lead.phone1_type = 'Cell'
+      expect(lead.message_types_available).to eq([sms_message_type, email_message_type])
+      lead.email = nil
+      expect(lead.message_types_available).to eq([sms_message_type])
     end
   end
 end

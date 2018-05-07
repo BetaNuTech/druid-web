@@ -21,11 +21,13 @@ FactoryBot.define do
     factory :sms_message_type do
       name "SMS"
       description "SMS"
+      active true
     end
 
     factory :email_message_type do
       name "Email"
       description "Email"
+      active true
     end
   end
 
