@@ -143,6 +143,57 @@ RSpec.describe Message, type: :model do
     end
   end
 
+  describe "using the Message.new_message helper" do
+    let(:lead) { create(:lead, user: user)}
+    let(:user) { create(:user)}
+    let(:message_type) { create(:email_message_type)}
+    let(:message_template) { create(:message_template, message_type: message_type)}
+
+    it "assigns a user" do
+      message = Message.new_message(from: user, to: lead, message_type: message_type)
+      expect(message.user).to eq(user)
+    end
+
+    it "assigns the messageable" do
+      message = Message.new_message(from: user, to: lead, message_type: message_type)
+      expect(message.messageable).to eq(lead)
+    end
+
+    it "assigns the message_type" do
+      message = Message.new_message(from: user, to: lead, message_type: message_type)
+      expect(message.message_type).to eq(message_type)
+    end
+
+    it "optionally assigns the message_template if provided" do
+      message = Message.new_message(from: user, to: lead, message_type: message_type)
+      expect(message.message_template).to be_nil
+      message = Message.new_message(from: user, to: lead, message_type: message_type, message_template: message_template)
+      expect(message.message_template).to eq(message_template)
+    end
+
+    it "optionally assigns the thread id" do
+      threadid = 'foobar'
+      message = Message.new_message(from: user, to: lead, message_type: message_type, thread: threadid)
+      expect(message.thread).to eq(threadid)
+    end
+
+    it "fills the message using the message_template if provided" do
+      message = Message.new_message(from: user, to: lead, message_type: message_type, message_template: message_template)
+      assert message.valid?
+      expect(message.subject).to match(lead.name)
+      expect(message.body).to match(lead.user.name)
+    end
+
+
+
+    it "assigns meta information" do
+      message = Message.new_message(from: user, to: lead, message_type: message_type)
+      expect(message.recipientid).to eq(lead.email)
+      expect(message.senderid).to_not be_nil
+      expect(message.thread).to_not be_nil
+    end
+  end
+
   describe "callbacks" do
     let(:message) { create(:message)}
     let(:phone) { "555-555-5555" }

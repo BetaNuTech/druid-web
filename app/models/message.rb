@@ -50,27 +50,27 @@ class Message < ApplicationRecord
     return ENV.fetch(MESSAGE_DELIVERY_REPLY_TO_ENV, 'default@example.com')
   end
 
-  def self.new_message(from:, to:, message_type:)
+  def self.new_message(from:, to:, message_type:, message_template: nil, thread: nil)
     message = Message.new(
       user: from,
       messageable: to,
-      message_type: message_type
+      message_type: message_type,
+      message_template: message_template,
+      thread: thread
     )
-    message.set_senderid
-    message_set_recipientid
-    message.set_thread
+    message.set_meta
+    message.fill
     return message
   end
 
   ### Instance Methods
 
   def fill
-    no_errors = true
+    any_errors = false
     if message_template.present?
-      template_data = messageable.respond_to?(:message_template_data) ? messageable.message_template_data : {}
       rendered_template = message_template.render(template_data)
       if rendered_template.errors?
-        no_errors = false
+        any_errors = true
         rendered_template.errors.each do |err|
           errors.add(:message_template, err)
         end
@@ -78,8 +78,13 @@ class Message < ApplicationRecord
       self.subject = rendered_template.subject
       self.body = rendered_template.body
     end
-    return no_errors
+    return !any_errors
   end
+
+  def template_data
+    return (messageable.present? && messageable.respond_to?(:message_template_data)) ? messageable.message_template_data : {}
+  end
+
 
   def new_message_reply
     reject_attrs = [:id, :created_at, :updated_at, :delivered_at, :state, :message_template_id, :body ]
