@@ -53,13 +53,14 @@ Rails.application.routes.draw do
     member do
       post 'trigger_state_event', to: "leads#trigger_state_event"
     end
+    resources :messages
   end
 
   resources :lead_sources do
     post 'reset_token', on: :member
   end
 
+  resources :messages
   resources :message_templates
-
 
 end

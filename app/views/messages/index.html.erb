@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>
+        Messages
+        <% if @messageable.present? %>
+          for <%= @messageable.name %>
+        <% end %>
+      </h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Subject</th>
+          <th>Body</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @messages.each do |message| %>
+          <tr>
+            <td>
+              <% if message.draft? %>
+                <%= link_to("Send Now", "#", {class: "btn btn-sm btn-primary"}) %>
+              <% else %>
+                <%= short_datetime(message.delivered_at) %>
+              <% end %>
+            </td>
+            <td><%= message.message_type.name %></td>
+            <td>
+              <span class="text-nowrap">
+                <%= truncate(message.sender_name, length: 20) %>
+              </span>
+            </td>
+            <td>
+              <span class="text-nowrap">
+                <%= truncate(message.recipient_name, length: 20) %>
+              </span>
+            </td>
+            <td><span class="text-nowrap"><%= message.subject %></span></td>
+            <td>
+              <%= truncate(message.body, length: Message::PREVIEW_LENGTH, omission: '... (continued)') %>
+              <% if message.body.length > Message::PREVIEW_LENGTH %>
+                <%= link_to('View', message_path(message), class: "btn btn-xs btn-primary") %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

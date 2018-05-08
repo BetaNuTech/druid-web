@@ -16,7 +16,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  message_type_id     :uuid
-#  thread              :uuid
+#  threadid            :uuid
 #
 
 class Message < ApplicationRecord
@@ -24,9 +24,9 @@ class Message < ApplicationRecord
   include Messages::StateMachine
 
   ### Constants
-  # TODO: Allowed params
   MESSAGE_DELIVERY_REPLY_TO_ENV='MESSAGE_DELIVERY_REPLY_TO'
-  ALLOWED_PARAMS = [:message_template_id, ]
+  ALLOWED_PARAMS = [:message_template_id, :subject, :body, :message_type_id]
+  PREVIEW_LENGTH=200
 
   ### Associations
   belongs_to :user
@@ -39,7 +39,7 @@ class Message < ApplicationRecord
   validates :senderid, :recipientid, :subject, :body, presence: true
 
   ### Scopes
-  scope :for_thread, ->(threadid) { where(thread: threadid)}
+  scope :for_thread, ->(threadid) { where(threadid: threadid)}
 
   ### Callbacks
   before_validation :set_meta
@@ -50,16 +50,25 @@ class Message < ApplicationRecord
     return ENV.fetch(MESSAGE_DELIVERY_REPLY_TO_ENV, 'default@example.com')
   end
 
-  def self.new_message(from:, to:, message_type:, message_template: nil, thread: nil)
-    message = Message.new(
-      user: from,
-      messageable: to,
-      message_type: message_type,
-      message_template: message_template,
-      thread: thread
-    )
-    message.set_meta
+  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil)
+    message = Message.new(message_type: message_type,  message_template: message_template, threadid: threadid )
+
+    message.set_threadid
+
+    if from.is_a?(User)
+      message.user = from
+      message.messageable = to
+      message.senderid = message.outgoing_senderid
+      message.recipientid = message.outgoing_recipientid
+    elsif to.is_a?(User)
+      message.user = to
+      message.messageable = from
+      message.senderid = message.incoming_senderid
+      message.recipientid = message.incoming_recipientid
+    end
+
     message.fill
+
     return message
   end
 
@@ -97,28 +106,49 @@ class Message < ApplicationRecord
     # TODO: create MessageDelivery object and send
   end
 
-  def set_senderid
-    set_thread
-    self.senderid ||= Message.base_senderid.sub('@',"+#{thread}@")
+  def outgoing_senderid
+    return Message.base_senderid.sub('@',"+#{threadid}@")
   end
 
-  def set_recipientid
+  def outgoing_recipientid
+    rid = nil
     if messageable.present?
-      newid = messageable.message_recipientid(message_type: message_type)
-      self.recipientid = newid if newid.present?
+      rid = messageable.message_recipientid(message_type: message_type)
     end
-    return true
+    return rid
   end
 
-  def set_thread
-    self.thread ||= SecureRandom.uuid
+  def incoming_recipientid
+    outgoing_senderid
+  end
+
+  def incoming_senderid
+    outgoing_recipientid
+  end
+
+  def set_threadid
+    self.threadid ||= SecureRandom.uuid
   end
 
   def set_meta
-    set_thread
-    set_senderid
-    set_recipientid
+    set_threadid
     return true
+  end
+
+  def incoming?
+    return recipientid == outgoing_senderid
+  end
+
+  def outgoing?
+    return senderid == outgoing_senderid
+  end
+
+  def sender_name
+    return outgoing? ? user.name : messageable.name
+  end
+
+  def recipient_name
+    return incoming? ? user.name : messageable.name
   end
 
 end

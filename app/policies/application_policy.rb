@@ -17,4 +17,8 @@ class ApplicationPolicy
     @record = record
   end
 
+  def is_owner?
+    record.user == user
+  end
+
 end
