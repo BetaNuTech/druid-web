@@ -46,12 +46,38 @@ class Message < ApplicationRecord
 
   ### Class Methods
 
+  def self.identify_messageable_from_params(params)
+    messageable_id = (params[:message] || {}).fetch(:messageable_id, params[:messageable_id])
+    messageable_type = (params[:message] || {}).fetch(:messageable_type, params[:messageable_type])
+
+    if params[:lead_id].present?
+      return Lead.find(params[:lead_id])
+    elsif messageable_id.present? && messageable_type.present?
+      begin
+      klass = Kernel.const_get(messageable_type)
+      if klass.new.respond_to?(:messages)
+        return klass.find(messageable_id)
+      end
+      rescue
+        raise ActiveRecord::RecordNotFound
+      end
+    else
+      return nil
+    end
+  end
+
   def self.base_senderid
     return ENV.fetch(MESSAGE_DELIVERY_REPLY_TO_ENV, 'default@example.com')
   end
 
-  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil)
-    message = Message.new(message_type: message_type,  message_template: message_template, threadid: threadid )
+  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil)
+    message = Message.new(
+      message_type: message_type,
+      message_template: message_template,
+      threadid: threadid,
+      subject: subject,
+      body: body
+    )
 
     message.set_threadid
 
@@ -67,7 +93,7 @@ class Message < ApplicationRecord
       message.recipientid = message.incoming_recipientid
     end
 
-    message.fill
+    message.fill if message.body.empty? && message.subject.empty?
 
     return message
   end
@@ -103,7 +129,7 @@ class Message < ApplicationRecord
   end
 
   def perform_delivery
-    # TODO: create MessageDelivery object and send
+    self.delivered_at = DateTime.now
   end
 
   def outgoing_senderid

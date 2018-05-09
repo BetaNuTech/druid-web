@@ -1,7 +1,7 @@
 <%= form_with(model: message, local: true) do |form| %>
   <% if message.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(message.errors.count, "error") %> prohibited this message from being saved:</h2>
+    <div id='error_explanation'>
+      <h2><%= pluralize(message.errors.count, 'error') %> prohibited this message from being saved:</h2>
 
       <ul>
       <% message.errors.full_messages.each do |message| %>
@@ -11,7 +11,44 @@
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= form.submit %>
+  <%= form.hidden_field :message_type_id %>
+  <%= form.hidden_field :messageable_id %>
+  <%= form.hidden_field :messageable_type %>
+
+  <%= form.hidden_field :recipientid %>
+  <%= form.hidden_field :senderid %>
+  <%= form.hidden_field :threadid %>
+
+  <div class='fieldset_content'>
+    <div class='row'>
+      <div class='col-md-4 form-group'>
+        <%= form.label :message_template_id, 'Template' %>
+        <%= link_to('Load', '#' , { id: 'message_template_load_button', class: 'btn btn-xs btn-info', data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type)} }) %>
+        <%= form.select :message_template_id, message_template_options(message.message_template_id),
+          { include_blank: true}, { id: 'message_template_select', class: 'form-control' } %>
+      </div>
+      <div class='col-md-2'>
+        <br/>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-md-12 form-group'>
+        <%= form.label :subject %>
+        <%= form.text_field :subject, class: 'form-control' %>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-md-12 form-group'>
+        <%= form.label :body %>
+        <%= form.text_area :body, { rows: 10, class: 'form-control' } %>
+      </div>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-md-6 form-group'>
+      <button type='submit' class='btn btn-primary'>Submit</button>
+      <%= link_to('Cancel', :back, {class: "btn btn-xs btn-info"}) %>
+    </div>
   </div>
 <% end %>

@@ -10,14 +10,21 @@
     </div>
   </div>
 
+  <% if @messageable.present? %>
+  <div class="row">
+    <div class="col-md-6">
+      <%= render partial: "new_message_callout", locals: {messageable: @messageable} %>
+    </div>
+  </div>
+  <% end %>
+
   <div class="row">
     <table class="table">
       <thead>
         <tr>
           <th>Date</th>
           <th>Type</th>
-          <th>From</th>
-          <th>To</th>
+          <th>From/To</th>
           <th>Subject</th>
           <th>Body</th>
         </tr>
@@ -28,6 +35,8 @@
             <td>
               <% if message.draft? %>
                 <%= link_to("Send Now", "#", {class: "btn btn-sm btn-primary"}) %>
+                <br/>
+                <%= short_datetime(message.updated_at) %>
               <% else %>
                 <%= short_datetime(message.delivered_at) %>
               <% end %>
@@ -35,12 +44,17 @@
             <td><%= message.message_type.name %></td>
             <td>
               <span class="text-nowrap">
-                <%= truncate(message.sender_name, length: 20) %>
+                <span class="btn btn-xs btn-default">
+                  <b>From:</b>
+                  <%= truncate(message.sender_name, length: 20) %>
+                </span>
               </span>
-            </td>
-            <td>
+              <br/>
               <span class="text-nowrap">
+                <span class="btn btn-xs btn-default">
+                <b>To:</b>
                 <%= truncate(message.recipient_name, length: 20) %>
+                </span>
               </span>
             </td>
             <td><span class="text-nowrap"><%= message.subject %></span></td>
@@ -54,5 +68,12 @@
         <% end %>
       </tbody>
     </table>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <% if @messageable.present? %>
+        <%= link_to("Back", url_for(@messageable), class: "btn btn-xs btn-info") %>
+      <% end %>
+    </div>
   </div>
 </div>

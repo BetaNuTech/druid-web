@@ -1,5 +1,19 @@
-<h1>New Message</h1>
-
-<%= render 'form', message: @message %>
-
-<%= link_to 'Back', messages_path %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <p class="lead">
+        Compose
+        <%= @message_type.name %>
+        Message for
+        <%= @messageable.name %>
+      </p>
+      <%= render 'form', message: @message %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <br/>
+      <%= link_to 'Back', url_for(@messageable), class: "btn btn-xs btn-info" %>
+    </div>
+  </div>
+</div>

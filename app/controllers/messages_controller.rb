@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_message, only: [:show, :edit, :update, :destroy]
-  before_action :set_messageable, only: [:index, :show, :edit, :update, :destroy]
+  before_action :set_messageable, only: [:index, :new, :show, :edit, :update, :destroy]
   after_action :verify_authorized
 
   # GET /messages
@@ -14,25 +14,61 @@ class MessagesController < ApplicationController
   # GET /messages/1
   # GET /messages/1.json
   def show
+    authorize @message
+    set_messageable
+    set_message_type
+    set_message_template
   end
 
   # GET /messages/new
   def new
-    @message = Message.new
+    set_message_type
+    set_message_template
+    @message = Message.new(
+      user: current_user,
+      message_type_id: @message_type.try(:id),
+      message_template_id: @message_template.try(:id),
+      messageable: @messageable
+    )
+    authorize @message
+    @message.fill
   end
 
   # GET /messages/1/edit
   def edit
+    authorize @message
+    set_messageable
+    set_message_type
+    set_message_template
   end
 
   # POST /messages
   # POST /messages.json
   def create
-    @message = Message.new(message_params)
+    authorize Message.new
+
+    set_messageable
+    set_message_type
+    set_message_template
+    @message = Message.new(
+      user: current_user,
+      message_type_id: @message_type.try(:id),
+      message_template_id: @message_template.try(:id),
+      messageable: @messageable
+    )
+
+    @message = Message.new_message(
+      from: current_user,
+      to: @messageable,
+      message_type: @message_type,
+      message_template: @message_template,
+      subject: params[:message][:subject],
+      body: params[:message][:body]
+    )
 
     respond_to do |format|
       if @message.save
-        format.html { redirect_to @message, notice: 'Message was successfully created.' }
+        format.html { redirect_to @message.messageable, notice: 'Message was successfully created.' }
         format.json { render :show, status: :created, location: @message }
       else
         format.html { render :new }
@@ -45,8 +81,9 @@ class MessagesController < ApplicationController
   # PATCH/PUT /messages/1.json
   def update
     respond_to do |format|
+      authorize @message
       if @message.update(message_params)
-        format.html { redirect_to @message, notice: 'Message was successfully updated.' }
+        format.html { redirect_to @message.messageable, notice: 'Message was successfully updated.' }
         format.json { render :show, status: :ok, location: @message }
       else
         format.html { render :edit }
@@ -58,11 +95,21 @@ class MessagesController < ApplicationController
   # DELETE /messages/1
   # DELETE /messages/1.json
   def destroy
+    authorize @message
+    messageable = @message.messageable
     @message.destroy
     respond_to do |format|
-      format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
+      format.html { redirect_to messageable, notice: 'Draft Message was deleted' }
       format.json { head :no_content }
     end
+  end
+
+  def deliver
+    set_message
+    authorize @message
+    @message.deliver
+    @message.save
+    redirect_to @message.messageable, notice: 'Message Sent'
   end
 
   private
@@ -79,11 +126,23 @@ class MessagesController < ApplicationController
     end
 
     def set_messageable
-      @messageable = nil
-      if (lead_id = params[:lead_id]).present?
-        @messageable = Lead.find(lead_id)
+      @messageable = Message.identify_messageable_from_params(params) || @message.try(:messageable)
+    end
+
+    def set_message_type
+      if (message_type_id = (( params[:message] || {} ).fetch(:message_type_id, params[:message_type_id]))).present?
+        @message_type = MessageType.find(message_type_id)
+      else
+        @message_type = @message.try(:message_type)
       end
-      return @messageable
+    end
+
+    def set_message_template
+      if (message_template_id = (( params[:message] || {} ).fetch(:message_template_id, params[:message_template_id]))).present?
+        @message_template = MessageTemplate.find(message_template_id)
+      else
+        @message_template = @message.try(:message_template)
+      end
     end
 
     def message_params

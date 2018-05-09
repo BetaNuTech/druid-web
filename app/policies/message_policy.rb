@@ -30,15 +30,19 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def edit?
-    user.administrator? || is_owner?
+    record.draft? && ( user.administrator? || is_owner? )
   end
 
   def update?
     edit?
   end
 
-  def destroy
-    edit?
+  def destroy?
+    record.draft? && edit?
+  end
+
+  def deliver?
+    record.draft? && edit?
   end
 
   def same_property?

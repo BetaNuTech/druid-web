@@ -56,6 +56,10 @@ class MessageTemplate < ApplicationRecord
 
   ### Class Methods
 
+  def self.available_for_user(user)
+    where(user_id: [nil, user.id])
+  end
+
   ### Instance Methods
 
   def render(data={})
