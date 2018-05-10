@@ -7,8 +7,8 @@ module MessagesHelper
       return select_tag('message_type_id', options_for_select(available.collect{|t| [t.name, t.id]}))
     else
       return content_tag(:span) do
-        hidden_field_tag('message_type_id', available.first.id) +
-        content_tag(:span, available.first.name)
+        hidden_field_tag('message_type_id', available.first.try(:id)) +
+        content_tag(:span, available.first.try(:name))
       end
     end
   end

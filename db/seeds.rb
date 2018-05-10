@@ -107,8 +107,6 @@ rental_types.each do |rt_name|
   end
 end
 
-# MessageTypes
-
 puts " * Creating Message Types"
 Rake::Task["db:seed:message_types"].invoke
 puts " * Creating Properties"
@@ -119,3 +117,25 @@ puts " * Creating Lead Actions"
 Rake::Task["db:seed:lead_actions"].invoke
 puts " * Creating Engagement Policy"
 Rake::Task["db:seed:engagement_policy"].invoke
+
+# Message Delivery Adapters
+puts ' * Creating Message Delivery Adapters'
+print '   - Mail: ActionMailer'
+if MessageDeliveryAdapter.where(slug: 'ActionMailer').any?
+  puts '[OK]'.green
+else
+  adapter = MessageDeliveryAdapter.new(
+    name: 'ActionMailer',
+    slug: 'ActionMailer',
+    description: 'Message delivery via Email and Rails application mail backend',
+    active: true,
+    message_type: MessageType.find_by_name('Email')
+  )
+  if adapter.save
+    puts ' [OK]'.green
+  else
+    puts " [FAIL] (#{adapter.errors.to_a})".red
+  end
+end
+
+

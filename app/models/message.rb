@@ -93,7 +93,7 @@ class Message < ApplicationRecord
       message.recipientid = message.incoming_recipientid
     end
 
-    message.fill if message.body.empty? && message.subject.empty?
+    message.fill if !message.body.present? && !message.subject.present?
 
     return message
   end

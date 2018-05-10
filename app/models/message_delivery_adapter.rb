@@ -21,8 +21,9 @@ class MessageDeliveryAdapter < ApplicationRecord
   belongs_to :message_type
 
   ### Validations
-  validates :name, :active, presence: true
+  validates :name, presence: true
   validates :slug, presence: true, uniqueness: true
+  validates_inclusion_of :active, in: [true, false]
 
   ## Scopes
   scope :active, -> { where(active: true) }
