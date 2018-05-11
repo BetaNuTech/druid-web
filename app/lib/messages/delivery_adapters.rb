@@ -7,7 +7,7 @@ module Messages
     # the MessageDeliveryAdapter record "slug"s
     SUPPORTED = ['ActionMailer']
 
-    # Does the provided source match a valid Lead Adapter Source
+    # Does the provided source match a valid  Message Delivery Adapter Source
     def self.supported_source?(source)
       SUPPORTED.include?(source)
     end

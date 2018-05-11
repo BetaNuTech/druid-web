@@ -55,5 +55,21 @@ RSpec.describe MessageDeliveryAdapter, type: :model do
       message_delivery_adapter.message_type = nil
       refute message_delivery_adapter.valid?
     end
+    it "always has a unique api_token" do
+      assert message_delivery_adapter.valid?
+      message_delivery_adapter2 = create(:message_delivery_adapter)
+      message_delivery_adapter.api_token = message_delivery_adapter2.api_token
+      refute message_delivery_adapter.valid?
+    end
+  end
+
+  describe "callbacks" do
+    it "generates a missing api_token" do
+      mda = build(:message_delivery_adapter)
+      mda.api_token = nil
+      assert mda.api_token.nil?
+      assert mda.valid?
+      refute mda.api_token.nil?
+    end
   end
 end

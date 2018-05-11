@@ -39,8 +39,10 @@ module Messages
       err_msg = "MessageDeliveryAdapter could not be found for #{message.message_type.name}"
       if available.any?
         adapter_record = available.first
+        adapter_name = adapter_record.name
         begin
-          adapter = Kernel.const_get("Messages::DeliveryAdapters::#{adapter_record.name}")
+          raise "Invalid DeliveryAdapter #{adapter_name}" unless Messages::DeliveryAdapters.supported_source?(adapter_name)
+          adapter = Kernel.const_get("Messages::DeliveryAdapters::#{adapter_name}")
           return adapter.new
         rescue
           Rails.logger.error err_msg

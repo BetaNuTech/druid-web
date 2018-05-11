@@ -24,11 +24,19 @@ class MessageDeliveryAdapter < ApplicationRecord
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true
   validates_inclusion_of :active, in: [true, false]
+  validates :api_token, presence: true, uniqueness: true
 
   ## Scopes
   scope :active, -> { where(active: true) }
 
+  # Callbacks
+  before_validation :assign_api_token
+
   ### Class Methods
 
   ### Instance Methods
+
+  def assign_api_token
+    self.api_token ||= Digest::SHA256.hexdigest(Time.now.to_s + rand.to_s)[0..31]
+  end
 end

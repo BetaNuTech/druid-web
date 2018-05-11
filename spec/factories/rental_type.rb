@@ -1,5 +1,7 @@
 FactoryBot.define do
   factory :rental_type do
-    name { Faker::Lorem.word }
+    sequence :name do |n|
+      "Rental Type #{n}"
+    end
   end
 end
