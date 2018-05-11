@@ -42,7 +42,7 @@ module Messages
 
       # Validate Parser
       if @parser.nil?
-        error_message =  "Parser for MessageDeliveryAdapyer not found: #{@source.try(:name) || 'UNKNOWN'}"
+        error_message = "Parser for MessageDeliveryAdapter not found: #{@source.try(:name) || 'UNKNOWN'}"
         @errors.add(:base, error_message)
         @message.errors.add(:base, error_message)
         return @message

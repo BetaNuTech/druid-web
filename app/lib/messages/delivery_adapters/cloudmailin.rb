@@ -3,12 +3,11 @@ module Messages
     class Cloudmailin
 
       def initialize(params)
-        @threadid = get_threadid(params)
         @data = filter_params(params)
       end
 
       def parse
-        return build(data: extract(@data), threadid: @threadid)
+        return build(data: extract(@data))
       end
 
       private
@@ -17,17 +16,11 @@ module Messages
         return Cloudmailin::Parser.new(data).parse
       end
 
-      def build(data:, threadid:)
+      def build(data:)
         message = Message.new(data)
         message.validate
         status = message.valid? ? :ok : :invalid
-        result = Messages::Receiver::Result.new( status: status, message: data, errors: message.errors, threadid: threadid)
-      end
-
-      def get_property_code(params)
-        to_addr = params.fetch(:envelope, {}).fetch(:to,'') || ""
-        code = ( to_addr.split('@').first || "" ).split("+").last
-        return code
+        result = Messages::Receiver::Result.new( status: status, message: data, errors: message.errors )
       end
 
       def filter_params(params)
