@@ -54,4 +54,42 @@ RSpec.describe MessageDelivery, type: :model do
     end
   end
 
+  describe "Delivery" do
+    let(:message_type) { MessageType.email || create(:email_message_type) }
+    let(:adapter) { create(:email_delivery_adapter, message_type: message_type)}
+    let(:message) { create(:message, message_type: message_type)}
+    let(:delivery) { create(:message_delivery, message: message, message_type: message_type)}
+
+    before :each do
+      adapter
+    end
+
+    it "performs the message delivery if the message is a draft" do
+      expect(delivery.message).to eq(message)
+      assert delivery.message.draft?
+      assert delivery.perform
+      message.reload
+    end
+
+    it "performs the message delivery if the message is failed" do
+      message.state = 'failed'
+      message.save!
+      delivery.reload
+      expect(delivery.message).to eq(message)
+      assert delivery.message.failed?
+      assert delivery.perform
+    end
+
+    it "refuses to re-deliver a sent message" do
+      expect(delivery.message).to eq(message)
+      assert delivery.message.draft?
+      message.deliver!
+      message.reload
+      assert(message.sent?)
+      delivery.reload
+      assert(delivery.message.sent?)
+      refute delivery.perform
+    end
+  end
+
 end

@@ -97,7 +97,6 @@ class EngagementPolicyScheduler
     # Abort and return if we have reached max attempts
     if originator.final_attempt?
       msg = "EngagementPolicyScheduler: Reached max attempts #{max_attempts} for ScheduledAction[#{originator.id}]"
-      puts msg unless Rails.env.production?
       Rails.logger.warn msg
       return nil
     end

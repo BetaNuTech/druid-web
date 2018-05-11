@@ -51,6 +51,17 @@ class MessageDelivery < ApplicationRecord
 
   ### Instance Methods
 
+  def perform
+    if message.draft? || message.failed?
+      sender = Messages::Sender.new(self)
+      sender.deliver
+      save
+      return delivered?
+    else
+      return false
+    end
+  end
+
   def delivered?
     return delivered_at.present?
   end

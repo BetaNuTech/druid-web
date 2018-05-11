@@ -22,7 +22,7 @@
 FactoryBot.define do
   factory :message do
     messageable { create(:lead) }
-    message_type { create(:email_message_type) }
+    message_type { MessageType.email || create(:email_message_type) }
     user { create(:user) }
     state { 'draft' }
     senderid { Faker::Internet.email }

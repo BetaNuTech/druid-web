@@ -7,5 +7,12 @@ FactoryBot.define do
     name { Faker::Lorem.sentence }
     description { Faker::Lorem.sentence }
     active { true }
+
+    factory :email_delivery_adapter do
+      message_type { MessageType.email || create(:email_message_type)}
+      name 'ActionMailer'
+      slug 'ActionMailer'
+      active { true }
+    end
   end
 end

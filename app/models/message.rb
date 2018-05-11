@@ -33,7 +33,7 @@ class Message < ApplicationRecord
   belongs_to :messageable, polymorphic: true, optional: true
   belongs_to :message_template, optional: true
   belongs_to :message_type
-  has_many :message_deliveries
+  has_many :deliveries, class_name: 'MessageDelivery'
 
   ### Validations
   validates :senderid, :recipientid, :subject, :body, presence: true
@@ -129,7 +129,10 @@ class Message < ApplicationRecord
   end
 
   def perform_delivery
-    self.delivered_at = DateTime.now
+    delivery = MessageDelivery.create!( message: self, message_type: message_type )
+    delivery.perform
+    self.delivered_at = delivery.delivered_at
+    save
   end
 
   def outgoing_senderid

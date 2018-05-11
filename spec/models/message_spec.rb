@@ -21,6 +21,13 @@
 require 'rails_helper'
 
 RSpec.describe Message, type: :model do
+  let(:message_type) { MessageType.email || create(:email_message_type) }
+  let(:adapter) { create(:email_delivery_adapter, message_type: message_type)}
+
+  before :each do
+    adapter
+  end
+
   describe "initialization" do
     it "can be initialized" do
       message = build(:message)
@@ -225,6 +232,26 @@ RSpec.describe Message, type: :model do
       assert new_sms_message.threadid.nil?
       new_sms_message.save
       expect(new_sms_message.threadid).to_not be_nil
+    end
+  end
+
+  describe "state machine" do
+    let(:message) { create(:message, message_type: message_type)}
+    describe "delivery" do
+      it "sends the message when the message recieves the 'deliver' event" do
+        adapter
+        assert MessageDelivery.count == 0
+        expect(message.delivered_at).to be_nil
+        message.deliver!
+        assert MessageDelivery.count == 1
+        expect(message.delivered_at).to_not be_nil
+        expect(message.state).to eq('sent')
+        message.reload
+        expect(message.deliveries.count).to eq(1)
+        delivery = message.deliveries.last
+        expect(delivery.attempt).to eq(1)
+        expect(MessageDelivery.previous_attempt_number(message)).to eq(1)
+      end
     end
   end
 end

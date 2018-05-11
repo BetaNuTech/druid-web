@@ -22,7 +22,7 @@ class MessageType < ApplicationRecord
   has_many :message_templates
 
   ### Validations
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
 
   ## Scopes
   scope :active, -> { where(active: true) }
@@ -30,11 +30,11 @@ class MessageType < ApplicationRecord
   ### Class Methods
 
   def self.email
-    MessageType.where(name: EMAIL_TYPE_NAME).first
+    MessageType.where(name: EMAIL_TYPE_NAME).active.first
   end
 
   def self.sms
-    MessageType.where(name: SMS_TYPE_NAME).first
+    MessageType.where(name: SMS_TYPE_NAME).active.first
   end
 
   ### Instance Methods
