@@ -1,7 +1,7 @@
 module Api
   module V1
     class LeadsController < ApiController
-      before_action :validate_token
+      before_action :validate_lead_source_token
 
       # GET /api/v1/leads.json?token=XXX&limit=XXX
       def index
@@ -24,6 +24,11 @@ module Api
         end
       end
 
+      private
+
+      def validate_lead_source_token
+        validate_source_token(source: LeadSource, token: api_token)
+      end
     end
   end
 end

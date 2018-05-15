@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe Messages::Receiver do
   include_context "cloudmailin_incoming_message"
   let(:receiver) {
-    message
     Messages::Receiver.new(data: cmi_message_data, token: cloudmailin_adapter_token)
   }
 

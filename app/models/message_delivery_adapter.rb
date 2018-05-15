@@ -35,6 +35,10 @@ class MessageDeliveryAdapter < ApplicationRecord
 
   ### Class Methods
 
+  def self.from_token(token)
+    self.active.where(api_token: token).first
+  end
+
   ### Instance Methods
 
   def assign_api_token

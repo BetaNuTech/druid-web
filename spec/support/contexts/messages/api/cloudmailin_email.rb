@@ -1,7 +1,7 @@
 RSpec.shared_context "cloudmailin_incoming_message" do
   include_context "users"
 
-  let(:email_message_type) { create(:email_message_type) }
+  let(:email_message_type) { MessageType.email || create(:email_message_type) }
   let(:email_delivery_adapter) { create(:email_delivery_adapter) }
   let(:email_adapter_token) { email_delivery_adapter.api_token }
   let(:cloudmailin_delivery_adapter) { create(:cloudmailin_delivery_adapter) }
@@ -15,6 +15,7 @@ RSpec.shared_context "cloudmailin_incoming_message" do
   }
   let(:cmi_message_data) {
     {
+      token: cloudmailin_adapter_token,
       envelope: {
         to: "foobar+#{message.threadid}@example.com",
         from: "joane.dough@example.com"
