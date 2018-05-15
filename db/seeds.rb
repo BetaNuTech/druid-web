@@ -62,31 +62,35 @@ end
 
 # Users
 puts " * Creating Users"
-## Admin user
-admin_email = 'admin@example.com'
-print "   - #{admin_email} "
-admin_password = 'ChangeMeNow'
-admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password)
-if admin.save
-  admin.confirm
-  admin.role = Role.administrator
-  admin.save!
-  puts "(password: '#{admin_password}') [OK]".green
+if User.count == 0
+  ## Admin user
+  admin_email = 'admin@example.com'
+  print "   - #{admin_email} "
+  admin_password = 'ChangeMeNow'
+  admin = User.new(email: admin_email, password: admin_password, password_confirmation: admin_password, timezone: 'America/Detroit', profile_attributes: {first_name: 'admin'})
+  if admin.save
+    admin.confirm
+    admin.role = Role.administrator
+    admin.save!
+    puts "(password: '#{admin_password}') [OK]".green
+  else
+    puts "[FAIL] (#{admin.errors.to_a})".red
+  end
+  ## Agent user
+  agent_email = 'agent@example.com'
+  print "   - #{agent_email} "
+  agent_password = 'ChangeMeNow'
+  agent = User.new(email: agent_email, password: agent_password, password_confirmation: agent_password)
+  if agent.save
+    agent.confirm
+    agent.role = Role.agent
+    agent.save!
+    puts "(password: '#{agent_password}') [OK]".green
+  else
+    puts "[FAIL] (#{agent.errors.to_a})".red
+  end
 else
-  puts "[FAIL] (#{admin.errors.to_a})".red
-end
-## Agent user
-agent_email = 'agent@example.com'
-print "   - #{agent_email} "
-agent_password = 'ChangeMeNow'
-agent = User.new(email: agent_email, password: agent_password, password_confirmation: agent_password)
-if agent.save
-  agent.confirm
-  agent.role = Role.agent
-  agent.save!
-  puts "(password: '#{agent_password}') [OK]".green
-else
-  puts "[FAIL] (#{agent.errors.to_a})".red
+  puts 'Aborting, as User accounts are present.'
 end
 
 
@@ -103,8 +107,52 @@ rental_types.each do |rt_name|
   end
 end
 
+puts " * Creating Message Types"
+Rake::Task["db:seed:message_types"].invoke
+puts " * Creating Properties"
+Rake::Task["db:seed:properties"].invoke
+puts " * Creating Reasons"
+Rake::Task["db:seed:reasons"].invoke
+puts " * Creating Lead Actions"
+Rake::Task["db:seed:lead_actions"].invoke
+puts " * Creating Engagement Policy"
+Rake::Task["db:seed:engagement_policy"].invoke
 
-Rake::Task["seed:properties"].invoke
-Rake::Task["seed:reasons"].invoke
-Rake::Task["seed:lead_actions"].invoke
-Rake::Task["seed:engagement_policy"].invoke
+# Message Delivery Adapters
+puts ' * Creating Message Delivery Adapters'
+print '   - Mail: ActionMailer'
+if MessageDeliveryAdapter.where(slug: 'ActionMailer').any?
+  puts '[OK]'.green
+else
+  adapter = MessageDeliveryAdapter.new(
+    name: 'ActionMailer',
+    slug: 'ActionMailer',
+    description: 'Message delivery via Email and Rails application mail backend',
+    active: true,
+    message_type: MessageType.find_by_name('Email')
+  )
+  if adapter.save
+    puts ' [OK]'.green
+  else
+    puts " [FAIL] (#{adapter.errors.to_a})".red
+  end
+end
+
+
+print '   - Mail: CloudMailin'
+if MessageDeliveryAdapter.where(slug: 'CloudMailin').any?
+  puts '[OK]'.green
+else
+  adapter = MessageDeliveryAdapter.new(
+    name: 'CloudMailin',
+    slug: 'CloudMailin',
+    description: 'Message receipt via CloudMailin',
+    active: true,
+    message_type: MessageType.find_by_name('Email')
+  )
+  if adapter.save
+    puts ' [OK]'.green
+  else
+    puts " [FAIL] (#{adapter.errors.to_a})".red
+  end
+end

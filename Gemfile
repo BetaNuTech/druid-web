@@ -11,7 +11,7 @@ gem 'pg', '~> 0.21'
 gem 'puma', '~> 3.11'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '~> 3.2'
-gem 'secure_headers'
+gem 'secure_headers', "~> 5.0"
 
 gem 'turbolinks', '~> 5.0'
 gem 'jbuilder', '~> 2.7'
@@ -34,6 +34,7 @@ gem 'schedulable', "~> 0.0"
 gem 'simple_calendar', "~> 2.2"
 gem 'httparty', "~> 0.16"
 gem 'nokogiri', "~> 1.8"
+gem 'liquid', "~> 4.0"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.11'

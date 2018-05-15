@@ -8,7 +8,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'docs/swagger.:format', to: "swagger#index"
       get 'docs', to: "swagger#apidocs"
-      resources :leads
+      resources :leads, only: [:index, :create]
+      resources :messages, only: [:create]
     end
   end
 
@@ -53,11 +54,18 @@ Rails.application.routes.draw do
     member do
       post 'trigger_state_event', to: "leads#trigger_state_event"
     end
+    resources :messages do
+      post 'deliver', on: :member
+    end
   end
 
   resources :lead_sources do
     post 'reset_token', on: :member
   end
 
+  resources :messages do
+    post 'deliver', on: :member
+  end
+  resources :message_templates
 
 end

@@ -41,6 +41,7 @@ class Lead < ApplicationRecord
   include Leads::StateMachine
   include Leads::Priority
   include Leads::Search
+  include Leads::Messaging
 
   ### Constants
   ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority]

@@ -1,0 +1,10 @@
+<div class="send_new_message_callout">
+  <%= form_tag new_message_path, method: :get %>
+  <%= hidden_field_tag('messageable_id', messageable.id) %>
+  <%= hidden_field_tag('messageable_type', messageable.class.name) %>
+  <%= submit_tag "Compose", class: "btn btn-sm btn-primary" %>
+  a new
+  <%= select_message_type_for(messageable) %>
+  Message to <%= messageable.name %>
+  </form>
+</div>

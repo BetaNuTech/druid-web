@@ -1,0 +1,50 @@
+<%= form_with(model: message_template, local: true) do |form| %>
+  <% if message_template.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(message_template.errors.count, "error") %> prohibited this message_template from being saved:</h2>
+
+      <ul>
+        <% message_template.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="fieldset_content">
+    <div class="row">
+      <div class="col-md-3 form-group">
+        <%= form.label "Visibility" %>
+        <%= form.select :user_id, select_message_template_user(message_template.user_id), class: 'form-control' %>
+
+      </div>
+      <div class="col-md-3 form-group">
+        <%= form.label :message_type_id %>
+        <%= form.select :message_type_id, select_message_type(message_template.message_type_id), id: :message_template_message_type, class: 'form-control' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <%= form.label :name %>
+        <%= form.text_field :name, id: :message_template_name, class: 'form-control' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <%= form.label :subject %>
+        <%= form.text_field :subject, id: :message_template_subject, class: 'form-control' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <%= form.label :body %>
+        <%= form.text_area :body, { id: :message_template_body, class: 'form-control', rows: 15}  %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+    <%= render partial: "template_help" %>
+  <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180423165400) do
+ActiveRecord::Schema.define(version: 20180515193808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,71 @@ ActiveRecord::Schema.define(version: 20180423165400) do
     t.index ["state"], name: "index_leads_on_state"
   end
 
+  create_table "message_deliveries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_id"
+    t.uuid "message_type_id"
+    t.integer "attempt"
+    t.datetime "attempted_at"
+    t.string "status"
+    t.text "log"
+    t.datetime "delivered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_deliveries_on_message_id"
+  end
+
+  create_table "message_delivery_adapters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_type_id", null: false
+    t.string "slug", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "api_token"
+    t.index ["api_token"], name: "index_message_delivery_adapters_on_api_token"
+    t.index ["message_type_id"], name: "index_message_delivery_adapters_on_message_type_id"
+    t.index ["slug"], name: "index_message_delivery_adapters_on_slug", unique: true
+  end
+
+  create_table "message_templates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_type_id", null: false
+    t.uuid "user_id"
+    t.string "name", null: false
+    t.string "subject", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "message_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "messageable_id"
+    t.string "messageable_type"
+    t.uuid "user_id", null: false
+    t.string "state", default: "draft", null: false
+    t.string "senderid", null: false
+    t.string "recipientid", null: false
+    t.uuid "message_template_id"
+    t.string "subject", null: false
+    t.text "body", null: false
+    t.datetime "delivered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "message_type_id"
+    t.string "threadid"
+    t.index ["messageable_type", "messageable_id"], name: "message_messageable"
+    t.index ["state"], name: "index_messages_on_state"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "lead_action_id"
@@ -198,6 +263,7 @@ ActiveRecord::Schema.define(version: 20180423165400) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: true
+    t.string "website"
     t.index ["active"], name: "index_properties_on_active"
   end
 
@@ -207,6 +273,7 @@ ActiveRecord::Schema.define(version: 20180423165400) do
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
     t.index ["user_id", "property_id"], name: "index_property_agents_on_user_id_and_property_id", unique: true
   end
 

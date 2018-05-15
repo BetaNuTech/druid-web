@@ -101,6 +101,18 @@ table#leads-table {
   }
 }
 
+.Lead .messages {
+  grid-area: LeadMessages;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
 @media(min-width: 600px) {
   .Lead {
     display: grid;
@@ -114,6 +126,7 @@ table#leads-table {
       "LeadNotes LeadNotes LeadNotes"
       "LeadScheduledActions LeadScheduledActions LeadScheduledActions"
       "LeadComments LeadComments LeadComments"
+      "LeadMessages LeadMessages LeadMessages"
     ;
   }
 }
@@ -143,3 +156,6 @@ table#leads-table {
   color: #ff0000;
 }
 
+table.lead_listing tr:nth-child(even) {
+  background: #edf2f7;
+}

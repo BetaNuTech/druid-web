@@ -21,6 +21,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  active       :boolean          default(TRUE)
+#  website      :string
 #
 
 require 'rails_helper'

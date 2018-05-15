@@ -1,0 +1,6 @@
+---
+:message_delivery_adapters
+  :version: 1
+  :key: :slug
+  :data:
+    

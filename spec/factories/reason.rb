@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :reason do
-    name { Faker::Lorem.word }
+    sequence :name do |n|
+      "Reason #{n}"
+    end
     description { Faker::Lorem.sentence }
     active true
   end

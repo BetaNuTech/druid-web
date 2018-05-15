@@ -38,10 +38,10 @@
 
             <li> <!-- Leads -->
               <div class="btn-group">
-                <%= link_to(leads_path, class: "btn #{nav_active_class(leads_path)}") do %>
+                <%= link_to(leads_path, class: "btn btn-primary") do %>
                   <span class="glyphicon glyphicon-flag"></span> Leads
                 <% end %>
-                <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(leads_path) %>" data-toggle="dropdown">
+                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -129,10 +129,10 @@
             <% if policy(Property).index? %>
             <li> <!-- Properties -->
               <div class="btn-group">
-                <%= link_to(properties_path, class: "btn #{nav_active_class(properties_path)}") do %>
+                <%= link_to(properties_path, class: "btn btn-primary") do %>
                   <span class="glyphicon glyphicon-home"></span> Properties
                 <% end %>
-                <button type="button" class="btn dropdown-toggle <%= nav_active_dropdown_class(properties_path)%>" data-toggle="dropdown">
+                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -169,11 +169,11 @@
             </li> <!-- Properties -->
             <% end %>
 
-            <% if current_user.admin? %>
+            <%# if current_user.admin? %>
             <li> <!-- System -->
               <div class="btn-group">
-                <a  href="#" class="btn btn-info"><span class="glyphicon glyphicon-wrench"></span> System</a>
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                <a  href="#" class="btn btn-primary"><span class="glyphicon glyphicon-wrench"></span> System</a>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -225,10 +225,18 @@
                     <% end %>
                   </li>
                   <% end %>
+
+                  <li role="separator" class="divider"></li>
+                  <% if policy(MessageTemplate).index? %>
+                  <li>
+                    <%= link_to(message_templates_path) do %>
+                      <%= glyph('folder-open') %> Message Templates
+                    <% end %>
+                  </li>
+                  <% end %>
                 </ul>
               </div>
             </li> <!-- System -->
-          <% end %>
 
           <% end %>
 

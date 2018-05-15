@@ -8,6 +8,7 @@
 #  active      :boolean          default(TRUE)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  title       :string
 #
 
 require 'rails_helper'

@@ -9,6 +9,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  glyph       :string
+#  is_contact  :boolean          default(FALSE)
 #
 
 class LeadAction < ApplicationRecord

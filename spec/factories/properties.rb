@@ -21,6 +21,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  active       :boolean          default(TRUE)
+#  website      :string
 #
 
 FactoryBot.define do
@@ -40,6 +41,7 @@ FactoryBot.define do
     email { Faker::Internet.email }
     units { Faker::Number.number(3) }
     notes { Faker::Lorem.sentence }
+    website { Faker::Internet.url }
     active true
   end
 end

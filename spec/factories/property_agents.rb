@@ -8,12 +8,14 @@
 #  active      :boolean          default(TRUE)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  title       :string
 #
 
 FactoryBot.define do
   factory :property_agent do
     user { create(:user) }
     property { create(:property) }
+    title { Faker::Lorem.sentence }
     active true
   end
 end

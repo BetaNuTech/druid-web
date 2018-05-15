@@ -8,6 +8,11 @@ module Users
       has_many :properties, through: :property_agents
 
       scope :agents, -> { includes(:property_agents).where.not(property_agents: {id: nil})}
+
+      def title_for_property(property)
+        property_agents.where(property_id: property.id).limit(1).
+          first.try(:title)
+      end
     end
   end
 end

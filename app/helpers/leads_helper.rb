@@ -69,7 +69,7 @@ module LeadsHelper
   end
 
   def lead_state_label(lead)
-    tag.span(class: 'label label-info') do
+    tag.span(class: 'label label-success') do
       lead.state.try(:titlecase)
     end
   end

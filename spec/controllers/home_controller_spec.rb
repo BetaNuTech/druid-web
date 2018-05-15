@@ -136,10 +136,10 @@ RSpec.describe HomeController, type: :controller do
           expect(response.body).to match("Create Lead")
         end
 
-        it "does not display a section for System" do
+        it "displays a section for System" do
           get :dashboard
           expect(response).to be_success
-          expect(response.body).to_not match("System")
+          expect(response.body).to match("System")
         end
       end
 
