@@ -46,6 +46,10 @@ class Message < ApplicationRecord
 
   ### Class Methods
 
+  def self.new_threadid
+    SecureRandom.uuid.to_s.gsub('-','')
+  end
+
   def self.identify_messageable_from_params(params)
     messageable_id = (params[:message] || {}).fetch(:messageable_id, params[:messageable_id])
     messageable_type = (params[:message] || {}).fetch(:messageable_type, params[:messageable_type])
@@ -156,8 +160,9 @@ class Message < ApplicationRecord
   end
 
   def set_threadid
-    self.threadid ||= SecureRandom.uuid
+    self.threadid ||= self.class.new_threadid
   end
+
 
   def set_meta
     set_threadid

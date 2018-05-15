@@ -6,7 +6,7 @@ RSpec.shared_context "cloudmailin_incoming_message" do
   let(:email_adapter_token) { email_delivery_adapter.api_token }
   let(:cloudmailin_delivery_adapter) { create(:cloudmailin_delivery_adapter) }
   let(:cloudmailin_adapter_token) { cloudmailin_delivery_adapter.api_token }
-  let(:message_threadid) { SecureRandom.uuid }
+  let(:message_threadid) { Message.new_threadid }
   let(:message_user) { agent }
   let(:message_lead) { create(:lead, user: message_user) }
   let(:message) {

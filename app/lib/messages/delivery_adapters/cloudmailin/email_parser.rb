@@ -7,11 +7,18 @@ module Messages
           return true
         end
 
-        def self.parse(data)
-          recipientid = to = data.fetch(:envelope,{}).fetch(:to,'')
-          senderid = from = data.fetch(:envelope,{}).fetch(:from)
-          subject = data.fetch(:headers,{}).fetch(:Subject)
-          body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
+        def self.parse(in_data)
+          data = case in_data
+            when Hash, ActionController::Parameters
+              in_data
+            else
+              {}
+            end
+
+          recipientid = to = ( data.fetch(:envelope).fetch(:to, '') rescue '')
+          senderid = from = ( data.fetch(:envelope).fetch(:from, '') rescue '')
+          subject = ( data.fetch(:headers,{}).fetch(:Subject, '') rescue '' )
+          body = data.fetch(:plain, nil) || data.fetch(:html, nil) || ''
           message_template_id = nil
           message_type_id = MessageType.email.try(:id)
           delivered_at = DateTime.now
