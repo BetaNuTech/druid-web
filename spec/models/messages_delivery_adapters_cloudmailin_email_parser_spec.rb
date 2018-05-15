@@ -15,11 +15,11 @@ RSpec.describe Messages::DeliveryAdapters::Cloudmailin::EmailParser do
       assert result[:messageable_type] == 'Lead'
       assert result[:user_id] == message.user_id
       assert result[:state] == 'sent'
-      assert result[:senderid] = cmi_data[:envelope][:from]
-      assert result[:recipientid] = cmi_data[:envelope][:to]
+      assert result[:senderid] = cmi_message_data[:envelope][:from]
+      assert result[:recipientid] = cmi_message_data[:envelope][:to]
       assert result[:message_template_id] == nil
-      assert result[:subject] == cmi_data[:headers][:Subject]
-      assert result[:body] == cmi_data[:plain]
+      assert result[:subject] == cmi_message_data[:headers][:Subject]
+      assert result[:body] == cmi_message_data[:plain]
       assert result[:delivered_at].present?
       assert result[:message_type_id] == MessageType.email.try(:id)
       assert result[:threadid] == message.threadid
