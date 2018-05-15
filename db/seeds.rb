@@ -139,3 +139,20 @@ else
 end
 
 
+print '   - Mail: CloudMailin'
+if MessageDeliveryAdapter.where(slug: 'CloudMailin').any?
+  puts '[OK]'.green
+else
+  adapter = MessageDeliveryAdapter.new(
+    name: 'CloudMailin',
+    slug: 'CloudMailin',
+    description: 'Message receipt via CloudMailin',
+    active: true,
+    message_type: MessageType.find_by_name('Email')
+  )
+  if adapter.save
+    puts ' [OK]'.green
+  else
+    puts " [FAIL] (#{adapter.errors.to_a})".red
+  end
+end

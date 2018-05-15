@@ -8,7 +8,7 @@ module Messages
         end
 
         def self.parse(data)
-          recipientid = to = data.fetch(:envelope,{}).fetch(:to)
+          recipientid = to = data.fetch(:envelope,{}).fetch(:to,'')
           senderid = from = data.fetch(:envelope,{}).fetch(:from)
           subject = data.fetch(:headers,{}).fetch(:Subject)
           body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
@@ -16,8 +16,7 @@ module Messages
           message_type_id = MessageType.email.try(:id)
           delivered_at = DateTime.now
 
-          to_addr = data.fetch(:envelope, {}).fetch(:to,'') || ""
-          threadid = ( to_addr.split('@').first || "" ).split("+").last
+          threadid = ( recipientid.split('@').first || "" ).split("+").last
 
           if (last_message = Message.where(threadid: threadid).order("delivered_at DESC").first)
             user_id = last_message.user_id

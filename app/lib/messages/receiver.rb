@@ -35,28 +35,55 @@ module Messages
       # Validate Access Token for MessageDeliveryAdapter
       unless ( @source.present? && @token.present? )
         error_message =  "Invalid Access Token '#{@token}'}"
-        @errors.add(:base, error_message)
-        @message.errors.add(:base, error_message)
+        add_error(error_message)
         return @message
       end
 
       # Validate Parser
       if @parser.nil?
         error_message = "Parser for MessageDeliveryAdapter not found: #{@source.try(:name) || 'UNKNOWN'}"
-        @errors.add(:base, error_message)
-        @message.errors.add(:base, error_message)
+        add_error(error_message)
         return @message
       end
 
       parse_result = @parser.new(@data).parse
 
-      # TODO
       @message = Message.new(parse_result.message)
 
+      case parse_result.status
+      when :ok
+        @message.save
+        create_delivery_record(@message)
+      else
+        @message.validate
+        parse_result.errors.each do |err|
+          add_error(err)
+        end
+      end
 
+      @errors = @message.errors
+
+      return @message
     end
 
     private
+
+    def add_error(error_message)
+      err = error_message.to_s
+      @errors.add(:base, err)
+      @message.errors.add(:base, err)
+    end
+
+    def create_delivery_record(message)
+      return MessageDelivery.create(
+        message: message,
+        message_type: message.message_type,
+        attempt: 1,
+        attempted_at: message.delivered_at,
+        status: MessageDelivery::SUCCESS,
+        delivered_at: message.delivered_at
+      )
+    end
 
     def get_source(token)
       return MessageDeliveryAdapter.active.where(api_token: token).first

@@ -5,7 +5,7 @@ module Messages
     # List valid/enabled adapter classes Here
     ### IMPORTANT: Values in the VALID array correspond directly to
     # the MessageDeliveryAdapter record "slug"s
-    SUPPORTED = ['ActionMailer']
+    SUPPORTED = ['ActionMailer', 'CloudMailin']
 
     # Does the provided source match a valid  Message Delivery Adapter Source
     def self.supported_source?(source)

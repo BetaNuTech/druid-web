@@ -17,7 +17,17 @@ FactoryBot.define do
       slug 'ActionMailer'
       active { true }
       sequence :api_token do |n|
-        "Token#{n}"
+        "ActionMailer Token#{n}"
+      end
+    end
+
+    factory :cloudmailin_delivery_adapter do
+      message_type { MessageType.email || create(:email_message_type)}
+      name 'CloudMailin'
+      slug 'CloudMailin'
+      active { true }
+      sequence :api_token do |n|
+        "CloudMailin Token#{n}"
       end
     end
   end
