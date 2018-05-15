@@ -16,6 +16,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  message_type_id     :uuid
+#  threadid            :uuid
 #
 
 require 'rails_helper'

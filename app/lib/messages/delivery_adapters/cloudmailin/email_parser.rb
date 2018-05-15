@@ -8,18 +8,18 @@ module Messages
         end
 
         def self.parse(data)
-          to = data.fetch("envelope",{}).fetch("to")
-          from = data.fetch("envelope",{}).fetch("from")
-          subject = data.fetch("headers",{}).fetch("Subject")
+          recipientid = to = data.fetch(:envelope,{}).fetch(:to)
+          senderid = from = data.fetch(:envelope,{}).fetch(:from)
+          subject = data.fetch(:headers,{}).fetch(:Subject)
           body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
           message_template_id = nil
           message_type_id = MessageType.email.try(:id)
           delivered_at = DateTime.now
 
-          to_addr = params.fetch(:envelope, {}).fetch(:to,'') || ""
-          threadid = ( _to_addr.split('@').first || "" ).split("+").last
+          to_addr = data.fetch(:envelope, {}).fetch(:to,'') || ""
+          threadid = ( to_addr.split('@').first || "" ).split("+").last
 
-          if (last_message = Message.where(threadid: threadid))
+          if (last_message = Message.where(threadid: threadid).order("delivered_at DESC").first)
             user_id = last_message.user_id
             messageable_id = last_message.messageable_id
             messageable_type = last_message.messageable_type
@@ -40,7 +40,8 @@ module Messages
             subject: subject,
             body: body,
             delivered_at: delivered_at,
-            message_type_id: message_type_id
+            message_type_id: message_type_id,
+            threadid: threadid
           }
 
         end

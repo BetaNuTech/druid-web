@@ -10,6 +10,7 @@
 #  active          :boolean          default(TRUE), not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  api_token       :string
 #
 
 require 'rails_helper'

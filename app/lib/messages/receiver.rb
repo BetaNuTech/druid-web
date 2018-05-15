@@ -24,7 +24,7 @@ module Messages
       @message = Message.new
       @data = data
       @saved = false
-      @errors = ActiveModel::Errors.new(Lead)
+      @errors = ActiveModel::Errors.new(Message)
       @token = token
       @source = get_source(@token)
       @parser = get_parser(@source)

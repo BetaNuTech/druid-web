@@ -1,6 +1,8 @@
 module Messages
   module DeliveryAdapters
-    class Cloudmailin
+    class CloudMailin
+
+      attr_reader :data
 
       def initialize(params)
         @data = filter_params(params)
@@ -21,6 +23,7 @@ module Messages
         message.validate
         status = message.valid? ? :ok : :invalid
         result = Messages::Receiver::Result.new( status: status, message: data, errors: message.errors )
+        return result
       end
 
       def filter_params(params)

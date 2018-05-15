@@ -4,6 +4,9 @@ FactoryBot.define do
     sequence :slug do |n|
       "Name#{n}"
     end
+    sequence :api_token do |n|
+      "Token#{n}"
+    end
     name { Faker::Lorem.sentence }
     description { Faker::Lorem.sentence }
     active { true }
@@ -13,6 +16,9 @@ FactoryBot.define do
       name 'ActionMailer'
       slug 'ActionMailer'
       active { true }
+      sequence :api_token do |n|
+        "Token#{n}"
+      end
     end
   end
 end
