@@ -52,15 +52,13 @@ class Lead < ApplicationRecord
   enum priority: { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, _prefix: :priority
 
   ### Associations
-  has_one :preference,
-    class_name: 'LeadPreference',
-    dependent: :destroy
+  has_one :preference, class_name: 'LeadPreference', dependent: :destroy
   accepts_nested_attributes_for :preference
   belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id', required: false
   belongs_to :property, required: false
   belongs_to :user, required: false
   has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
-  has_many :scheduled_actions, as: :target
+  has_many :scheduled_actions, as: :target, dependent: :destroy
 
   ### Scopes
   scope :ordered_by_created, -> {order(created_at: "ASC")}

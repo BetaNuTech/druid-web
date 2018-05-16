@@ -3,7 +3,7 @@ module Leads
     extend ActiveSupport::Concern
 
     included do
-      has_many :messages, as: :messageable
+      has_many :messages, as: :messageable, dependent: :destroy
 
       def message_template_data
         {
