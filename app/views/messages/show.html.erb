@@ -17,6 +17,9 @@
             <span class="btn btn-xs btn-<%= @message.draft? ? 'default' : 'success' %>">
               <%= @message.incoming? ? 'Incoming' : 'Outgoing' %>
             </span>
+            <% if @message.failed? %>
+              <span class="btn btn-xs btn-danger">Delivery Failed</span>
+            <% end %>
             <b> <%= short_datetime(@message.delivered_at) %> </b>
           </p>
         </div>

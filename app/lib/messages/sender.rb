@@ -13,8 +13,8 @@ module Messages
     def deliver
       begin
         @adapter.deliver(
-          from: delivery.message.senderid,
-          to: delivery.message.recipientid,
+          from: delivery.message.from_address,
+          to: delivery.message.to_address,
           subject: delivery.message.subject,
           body: delivery.message.body
         )
@@ -25,6 +25,7 @@ module Messages
         delivery.status = MessageDelivery::FAILED
         delivery.log = e.to_s
         delivery.save!
+        delivery.message.fail!
       end
     end
 

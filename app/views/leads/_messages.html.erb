@@ -44,6 +44,9 @@
                   <span class="btn btn-xs btn-<%= message.draft? ? 'default' : 'success' %>">
                     <%= message.incoming? ? 'Incoming' : 'Outgoing' %>
                   </span>
+                  <% if message.failed? %>
+                    <span class="btn btn-xs btn-danger">Delivery Failed</span>
+                  <% end %>
                 </td>
                 <td><span class="text-nowrap"><%= message.subject %></span></td>
                 <td>

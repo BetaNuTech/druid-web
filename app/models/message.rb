@@ -139,6 +139,18 @@ class Message < ApplicationRecord
     save
   end
 
+  def from_address
+    if message_type.email? && outgoing?
+      return "\"#{user.name} at #{user.try(:property).try(:name) || 'Bluestone Properties'}\" <#{senderid}>"
+    else
+      return senderid
+    end
+  end
+
+  def to_address
+    return recipientid
+  end
+
   def outgoing_senderid
     return Message.base_senderid.sub('@',"+#{threadid}@")
   end
