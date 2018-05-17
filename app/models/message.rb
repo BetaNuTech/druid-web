@@ -108,14 +108,18 @@ class Message < ApplicationRecord
     any_errors = false
     if message_template.present?
       rendered_template = message_template.render(template_data)
+      self.subject = ''
+      self.body = ''
       if rendered_template.errors?
         any_errors = true
         rendered_template.errors.each do |err|
-          errors.add(:message_template, err)
+          errors.add_to_base(err)
         end
+        self.subject += rendered_template.errors.subject.join('; ')
+        self.body += rendered_template.errors.body.join('; ')
       end
-      self.subject = rendered_template.subject
-      self.body = rendered_template.body
+      self.subject += rendered_template.subject || ''
+      self.body += rendered_template.body || ''
     end
     return !any_errors
   end
@@ -141,7 +145,7 @@ class Message < ApplicationRecord
 
   def from_address
     if message_type.email? && outgoing?
-      return "\"#{user.name} at #{user.try(:property).try(:name) || 'Bluestone Properties'}\" <#{senderid}>"
+      return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluestone Properties'}\" <#{senderid}>"
     else
       return senderid
     end
