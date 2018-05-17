@@ -10,8 +10,8 @@ module Users
       scope :agents, -> { includes(:property_agents).where.not(property_agents: {id: nil})}
 
       def title_for_property(property)
-        property_agents.where(property_id: property.id).limit(1).
-          first.try(:title)
+        return property_agents.where(property_id: property.try(:id)).limit(1).
+          first.try(:title) || ''
       end
     end
   end
