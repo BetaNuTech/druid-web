@@ -4,6 +4,7 @@ $(document).on('turbolinks:load', function() {
 
   $('#message_template_select').on('change', function(e){
     $('#message_template_load_button').show();
+    $('#message_template_view_button').hide();
   });
 
   $('#message_template_load_button').on('click', function(){

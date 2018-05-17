@@ -8,12 +8,12 @@ module Leads
       def message_template_data
         {
           "lead_name" => name,
-          'lead_floorplan' => '',
+          'lead_floorplan' => ' ',
           "agent_name" => user.try(:name),
-          "agent_title" => user.try(:title),
+          "agent_title" => user.try(:title_for_property, property),
           "property_name" => property.try(:name),
           'property_city' => property.try(:city),
-          'property_amenities' => '',
+          'property_amenities' => ' ',
           'property_website' => property.try(:website),
           'property_phone' => property.try(:phone)
         }

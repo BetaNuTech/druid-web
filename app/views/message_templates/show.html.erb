@@ -48,7 +48,7 @@
           <p>
             <strong>Body:</strong><br/>
             <blockquote>
-              <%= @message_template.body %>
+              <%= simple_format(@message_template.body || '') %>
             </blockquote>
           </p>
         </div>
