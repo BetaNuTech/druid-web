@@ -15,7 +15,8 @@ module Leads
           'property_city' => property.try(:city),
           'property_amenities' => ' ',
           'property_website' => property.try(:website),
-          'property_phone' => property.try(:phone)
+          'property_phone' => property.try(:phone),
+          'property_school_district' => property.try(:school_district)
         }
       end
 
