@@ -124,11 +124,23 @@
     </fieldset>
 
     <fieldset>
+      <legend>Other Information</legend>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :school_district %>
+          <%= form.text_field :school_district, id: :property_school_district, class: "form-control" %>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
       <legend>Listing IDs/Codes</legend>
       <%= render partial: 'property_listing_form', locals: {form: form} %>
     </fieldset>
   </div>
   <div class="form-group">
     <button type="submit" class="btn btn-primary">Submit</button>
+    <%= link_to('Cancel', property_path(property), class: 'btn btn-xs btn-info') %>
   </div>
 <% end %>
