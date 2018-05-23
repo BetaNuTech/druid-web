@@ -28,6 +28,9 @@ class UnitType < ApplicationRecord
 
   ### Validations
 
+  ### Scopes
+  scope :active, -> {where(active: true)}
+
   ### Class Methods
 
   ### Instance Methods

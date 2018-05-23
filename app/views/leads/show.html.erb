@@ -82,6 +82,10 @@
       <strong>Unit Size: </strong>
       <%= @lead.preference.min_area %> - <%= @lead.preference.max_area %>
     </span><br/>
+    <span>
+      <strong>Unit Type: </strong>
+      <%= @lead.preference.unit_type.try(:name) %>
+    </span><br/>
   </div>
   <div class="notes">
     <p class="lead_notes">

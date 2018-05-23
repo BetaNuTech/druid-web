@@ -1,4 +1,10 @@
 module LeadsHelper
+
+  def unit_types_for_select(property:, value:)
+    return [] unless property.present?
+    options_from_collection_for_select(property.unit_types.active.order('name asc'), 'id', 'name', value)
+  end
+
   def titles_for_select(val)
     options_for_select(%w{Ms. Mrs. Mr. Mx. Dr.}, val)
   end

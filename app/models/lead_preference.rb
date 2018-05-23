@@ -23,13 +23,14 @@
 
 class LeadPreference < ApplicationRecord
   DEFAULT_UNIT_SYSTEM = :imperial
-  ALLOWED_PARAMS = [:baths, :beds, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes, :raw_data]
+  ALLOWED_PARAMS = [:baths, :beds, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes, :raw_data, :unit_type_id]
 
   audited
 
   ### Associations
 
   belongs_to :lead
+  belongs_to :unit_type, optional: true
 
   ### Validations
 

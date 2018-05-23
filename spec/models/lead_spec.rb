@@ -392,7 +392,7 @@ RSpec.describe Lead, type: :model do
     let(:email_message_type) {create(:email_message_type)}
 
     it "returns message_template information" do
-      expected_data_keys = [ 'lead_name', 'lead_floorplan', 'agent_name', 'agent_title', "property_name", 'property_city', 'property_amenities', 'property_website', 'property_phone' ]
+      expected_data_keys = [ 'lead_name', 'lead_floorplan', 'agent_name', 'agent_title', "property_name", 'property_city', 'property_amenities', 'property_website', 'property_phone', 'property_school_district' ]
       attrs = lead.message_template_data
       assert attrs.is_a?(Hash)
       expect(attrs.keys.sort).to eq(expected_data_keys.sort)
