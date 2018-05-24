@@ -1,0 +1,114 @@
+digraph DruidAppHierarchy {
+  label="Druid Features";
+  labelloc="t";
+  node[shape="rect"];
+  splines="ortho";
+
+  subgraph cluster0 {
+    label="User Flow";
+
+    Druid[label="Druid Login"];
+
+    Druid->ViewDashboard[style="solid"];
+    ViewDashboard->ListUnclaimedLeads[style="dotted"];
+    ViewDashboard->ListMyLeads[style="dotted"];
+    ViewDashboard->ViewStats[style="dotted"];
+    ViewDashboard->CreateLead;
+    ViewDashboard->PropertyNavigation[style="dotted"];
+    ViewDashboard->ViewTodayTasks[style="dotted"];
+    ViewDashboard->CreateTask;
+    ViewDashboard->ViewCalendar;
+
+    subgraph cluster1 {
+      label="Leads";
+      CreateLead;
+      ListUnclaimedLeads->ClaimLead;
+      ListUnclaimedLeads->ViewLead;
+      ListUnclaimedLeads->EditLead;
+
+      ListMyLeads->ViewLead;
+      ListMyLeads->EditLead;
+
+      ViewLead->ClaimLead;
+      ViewLead->ProgressLead;
+      ViewLead->EditLead;
+
+      CreateLead->ViewLead;
+    }
+
+    ListUnclaimedLeads->ViewProperty;
+    ListMyLeads->ViewProperty;
+
+    subgraph cluster2 {
+      label="Properties";
+      ViewProperty;
+      PropertyNavigation->ViewProperty;
+      PropertyNavigation->AddPropertyLead;
+      PropertyNavigation->AddPropertyUnit;
+      PropertyNavigation->AddPropertyResident;
+
+      AddPropertyLead->CreateLead[style="dotted"];
+    }
+
+
+    subgraph cluster3 {
+      label="Tasks";
+      ViewTodayTasks;
+      ViewCalendar;
+      CreateTask;
+    }
+
+  }
+
+  subgraph cluster10 {
+    label="Application Hierarchy";
+    Home[label="Home Page"; shape="tab"];
+    Unlock[label="Unlock Account"; shape="tab"];
+    Login[label="Login"; shape="rect"];
+    PasswordReset[label="Reset Password"; shape="tab"];
+    Dashboard[label="Dashboard"; shape="tab"];
+    Navigation[label="Navigation"; shape="underline"];
+    LeadMenu[label="Leads Menu"; shape="underline"];
+    PropertiesMenu[label="Properties Menu"; shape="underline"];
+    SystemMenu[label="System Menu"; shape="underline"];
+    AccountMenu[label="Account Menu"; shape="underline"];
+    EditAccount[label="Edit Account"; shape="tab"];
+    Logout[label="Logout"; shape="rect"];
+    PropertyNavigation1[label="Property Navigation"; shape="underline"];
+    LeadIndex[label="Lead Listing"; shape="tab"];
+    LeadSearch[label="Lead Search"; shape="tab"];
+    MyLeads[label="My Leads"; shape="underline"];
+    LeadsByState[label="Leads (by state) "; shape="underline"];
+    LeadNew[label="Create Lead"; shape="tab"];
+
+    Home->Login;
+    Home->PasswordReset;
+    Home->Unlock;
+    Login->Dashboard;
+
+    Dashboard->Navigation;
+    Dashboard->PropertyNavigation1;
+
+    // Navigation Menu
+    Navigation->LeadMenu;
+    Navigation->PropertiesMenu;
+    Navigation->SystemMenu;
+    Navigation->AccountMenu;
+
+    // Navigation -- Leads Menu
+    LeadMenu->MyLeads;
+    MyLeads->LeadSearch;
+    LeadMenu->LeadsByState;
+    LeadsByState->LeadSearch;
+    LeadMenu->LeadSearch;
+
+    // Navigation -- Properties Menu
+
+
+
+    AccountMenu->EditAccount;
+    AccountMenu->Logout;
+  }
+
+
+}

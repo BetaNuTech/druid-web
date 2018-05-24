@@ -1,0 +1,94 @@
+digraph DruidAppHierarchy {
+  label="Druid Features and User Flow";
+  labelloc="t";
+  node[shape="rect"];
+  splines="ortho";
+  rankdir="LR";
+
+  Druid[label="Druid Login"];
+
+  Druid->ViewDashboard[style="solid"];
+  ViewDashboard->ListUnclaimedLeads[style="dotted"];
+  ViewDashboard->ListMyLeads[style="dotted"];
+  ViewDashboard->ViewStats[style="dotted"];
+  ViewDashboard->CreateLead;
+  ViewDashboard->PropertyNavigation[style="dotted"];
+  ViewDashboard->ViewTodayTasks[style="dotted"];
+  ViewDashboard->CreateTask;
+  ViewDashboard->ViewCalendar;
+
+  ViewDashboard->Navigation[style="dotted"];
+  Navigation->LeadsMenu;
+  Navigation->PropertiesMenu;
+  Navigation->SystemMenu;
+  Navigation->ProfileMenu;
+
+  ProfileMenu->Logout;
+
+  subgraph cluster0 {
+    label="Admin";
+    SystemMenu->ListUsers;
+    SystemMenu->ListRoles;
+    SystemMenu->ListLeadSources;
+    SystemMenu->ListLeadActions;
+    SystemMenu->ListEngagementPolicies;
+    SystemMenu->ListReasons;
+    SystemMenu->ListMessageTemplates;
+  }
+
+  subgraph cluster1 {
+    label="Leads";
+    CreateLead;
+    SearchLeads;
+
+    SearchLeads->ViewLead;
+    ListUnclaimedLeads->ClaimLead;
+    ListUnclaimedLeads->ViewLead;
+    ListUnclaimedLeads->EditLead;
+
+    ListMyLeads->ViewLead;
+    ListMyLeads->EditLead;
+
+    ViewLead->ClaimLead;
+    ViewLead->ProgressLead;
+    ViewLead->EditLead;
+
+    CreateLead->ViewLead;
+    LeadsMenu->SearchLeads;
+    LeadsMenu->CreateLead;
+    LeadsMenu->ListAllLeads[style="dashed"];
+
+    ListAllLeads->ViewLead;
+    ListAllLeads->EditLead;
+  }
+
+  ListUnclaimedLeads->ViewProperty;
+  ListMyLeads->ViewProperty;
+
+  subgraph cluster2 {
+    label="Properties";
+    ViewProperty;
+    CreateProperty;
+    ListProperties->CreateProperty;
+    PropertiesMenu->ListProperties;
+    PropertiesMenu->ListResidents;
+    PropertiesMenu->ListUnits;
+    PropertiesMenu->ListUnitTypes;
+    PropertyNavigation->ViewProperty;
+    PropertyNavigation->AddPropertyLead;
+    PropertyNavigation->AddPropertyUnit;
+    PropertyNavigation->AddPropertyResident;
+
+    AddPropertyLead->CreateLead[style="dotted"];
+  }
+
+
+
+  subgraph cluster3 {
+    label="Tasks";
+    ViewTodayTasks;
+    ViewCalendar;
+    CreateTask;
+  }
+
+}
