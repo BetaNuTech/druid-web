@@ -2,7 +2,7 @@
 # More info at https://github.com/guard/guard#readme
 
 ## Uncomment and set this to only include directories you want to watch
- directories %w(app lib config test spec) \
+ directories %w(app lib config test spec doc) \
   .select{|d| Dir.exists?(d) ? d : UI.warning("Directory #{d} does not exist")}
 
 ## Note: if you are using the `directories` clause above and you are not
@@ -69,3 +69,8 @@ guard :rspec, cmd: "NO_TEST_COVERAGE=true bundle exec rspec " do
     Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
   end
 end
+
+guard 'rake', task: 'docs:compile:dot', run_on_all: true do
+  watch(%r{^doc/.*.dot$})
+end
+

@@ -50,6 +50,7 @@ group :test do
   gem 'warden-rspec-rails', '~> 0.2'
   gem 'capybara', '~> 2.16'
   gem 'guard-rspec', '~> 4.7', require: false
+  gem 'guard-rake', "~> 1.0", require: false
   gem 'rails-controller-testing', '~> 1.0'
   gem 'rspec-rails', '~> 3.7'
   gem 'selenium-webdriver', '~> 3.7'

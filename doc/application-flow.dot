@@ -1,7 +1,7 @@
 digraph DruidAppHierarchy {
   label="Druid Features and User Flow";
   labelloc="t";
-  node[shape="rect"];
+  node[shape="rect",style=filled,color=black,fillcolor=white];
   splines="ortho";
   rankdir="LR";
 
@@ -27,17 +27,77 @@ digraph DruidAppHierarchy {
 
   subgraph cluster0 {
     label="Admin";
-    SystemMenu->ListUsers;
+    style="filled";
+    color=lightgray;
     SystemMenu->ListRoles;
     SystemMenu->ListLeadSources;
     SystemMenu->ListLeadActions;
     SystemMenu->ListEngagementPolicies;
     SystemMenu->ListReasons;
     SystemMenu->ListMessageTemplates;
+    SystemMenu->ListLeadSources;
+
+    ListLeadSources->CreateLeadSource;
+
+    ListLeadActions->CreateLeadAction;
+    ListLeadActions->EditLeadAction;
+    subgraph cluster01 {
+      label="Users";
+      style="filled";
+      color=gray;
+      EditMyAccount->EditUser[style="dashed"];
+      ViewUser->EditUser;
+      ListUsers->EditUser;
+      ListUsers->ViewUser;
+    }
+    SystemMenu->ListUsers;
+
+    subgraph cluster02 {
+      label="LeadActions";
+      style="filled";
+      color="gray";
+      CreateLeadAction;
+      ListLeadActions->ViewLeadAction;
+      ViewLeadAction->EditLeadAction;
+    }
+
+    subgraph cluster03 {
+      label="Reasons";
+      style="filled";
+      color="gray";
+      ListReasons->CreateReason;
+      ListReasons->ViewReason;
+      ListReasons->EditReason;
+      ViewReason->EditReason;
+    }
+
+    subgraph cluster04 {
+      label="LeadSources";
+      style="filled";
+      color="gray";
+      CreateLeadSource;
+      ViewLeadSource;
+      ListLeadSources->ViewLeadSource;
+      ListLeadSources->EditLeadSource;
+      ViewLeadSource->EditLeadSource;
+      ViewLeadSource->ListListings;
+    }
+
+    subgraph cluster05 {
+      label="Roles";
+      style="filled";
+      color="gray";
+      ListRoles->CreateRole;
+      ListRoles->ViewRole;
+      ListRoles->EditRole;
+      ViewRole->EditRole;
+    }
   }
 
   subgraph cluster1 {
     label="Leads";
+    style="filled";
+    color=lightgray;
     CreateLead;
     SearchLeads;
 
@@ -67,6 +127,11 @@ digraph DruidAppHierarchy {
 
   subgraph cluster2 {
     label="Properties";
+    style="filled";
+    color=lightgray;
+
+    { rank=same;ViewProperty;CreateProperty;ListProperties;EditProperty; }
+
     ViewProperty;
     CreateProperty;
     ListProperties->CreateProperty;
@@ -79,16 +144,92 @@ digraph DruidAppHierarchy {
     PropertyNavigation->AddPropertyUnit;
     PropertyNavigation->AddPropertyResident;
 
-    AddPropertyLead->CreateLead[style="dotted"];
-  }
+    ViewProperty->EditProperty;
+    ViewProperty->ListProperties;
 
+    EditProperty->EditPropertyListing[style="dotted"];
+    EditProperty->CreatePropertyListing[style="dotted"];
+
+    AddPropertyLead->CreateLead[style="dashed"];
+    ViewProperty->ListPropertyListings[style="dotted"];
+    ListPropertyListings->ViewLeadSource;
+
+    ViewProperty->ListAgents[style="dotted"];
+    ListAgents->ShowAgent;
+    ShowAgent->ShowUser[style="dashed"];
+
+    ViewProperty->ListUnits[style="dotted"];
+    ListUnits->CreateUnit;
+    ListUnits->ViewUnit;
+    ListUnits->EditUnit;
+    subgraph cluster21 {
+      label="Units";
+      style="filled";
+      color="gray";
+      AddPropertyUnit;
+      CreateUnit;
+      AddPropertyUnit->CreateUnit[style="dashed"];
+      ViewUnit;
+      EditUnit;
+      ListUnits;
+    }
+
+    ViewProperty->CreateResident;
+    ViewProperty->ListResidents[style="dotted"];
+    ViewProperty->ListResidents;
+    subgraph cluster22 {
+      label="Residents";
+      style="filled";
+      color="gray";
+      AddPropertyResident;
+      AddPropertyResident->CreateResident[style="dashed"];
+      ListResidents->CreateResident;
+      ListResidents->EditResident;
+    }
+
+    ViewProperty->ListUnitTypes[style="dotted"];
+    ViewProperty->ListUnitTypes;
+    ViewProperty->CreateUnitType;
+    ViewProperty->ViewUnitType;
+    subgraph cluster23 {
+      label="UnitTypes";
+      style="filled";
+      color="gray";
+      ListUnitTypes->ViewUnitType;
+      ListUnitTypes->CreateUnitType;
+      ListUnitTypes->EditUnitType;
+      ViewUnitType->EditUnitType;
+    }
+
+  }
 
 
   subgraph cluster3 {
     label="Tasks";
+    style="filled";
+    color=lightgray;
     ViewTodayTasks;
     ViewCalendar;
     CreateTask;
+    ViewCalendar->ViewTodayTasks[style="dotted"];
   }
+
+  ProfileMenu->EditMyAccount;
+
+  subgraph cluster5 {
+    label="Messages";
+    style="filled";
+    color=lightgray;
+    CreateMessage;
+    ViewMessage->EditMessage;
+    ListMessages->ViewMessage;
+    ListMessages->EditMessage;
+    SendMessage;
+  }
+
+  ViewLead->SendMessage;
+  ViewLead->CreateMessage;
+  ViewLead->ViewMessage;
+  ViewLead->ListMessages[style="dotted"];
 
 }
