@@ -23,6 +23,7 @@
 #  active          :boolean          default(TRUE)
 #  website         :string
 #  school_district :string
+#  amenities       :text
 #
 
 FactoryBot.define do
@@ -44,6 +45,7 @@ FactoryBot.define do
     notes { Faker::Lorem.sentence }
     website { Faker::Internet.url }
     school_district { Faker::Company.name }
+    amenities { Array.new(rand(10)){Faker::Lorem.word}.join(',') }
     active true
   end
 end

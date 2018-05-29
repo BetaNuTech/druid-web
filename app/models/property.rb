@@ -23,12 +23,13 @@
 #  active          :boolean          default(TRUE)
 #  website         :string
 #  school_district :string
+#  amenities       :text
 #
 
 class Property < ApplicationRecord
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
                     :country, :organization, :contact_name, :phone, :fax, :email,
-                    :website, :units, :notes, :school_district, :active ]
+                    :website, :units, :notes, :school_district, :amenities, :active ]
   audited
 
   ## Associations

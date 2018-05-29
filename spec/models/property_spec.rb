@@ -23,6 +23,7 @@
 #  active          :boolean          default(TRUE)
 #  website         :string
 #  school_district :string
+#  amenities       :text
 #
 
 require 'rails_helper'
