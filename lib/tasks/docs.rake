@@ -2,6 +2,7 @@ namespace :docs do
   namespace :compile do
 
 
+    # Usage: rake doc:dot[doc/filename.dot]
     desc "Compile DOT files in doc/"
     task :dot, :paths do |t, args|
       output_types = %w{png pdf}
