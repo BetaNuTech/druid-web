@@ -13,7 +13,7 @@ module Leads
           "agent_title" => user.try(:title_for_property, property),
           "property_name" => property.try(:name),
           'property_city' => property.try(:city),
-          'property_amenities' => ' ',
+          'property_amenities' => property.try(:amenities),
           'property_website' => property.try(:website),
           'property_phone' => property.try(:phone),
           'property_school_district' => property.try(:school_district)
