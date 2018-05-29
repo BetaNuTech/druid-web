@@ -25,6 +25,7 @@ require 'rails_helper'
 
 RSpec.describe LeadPreference, type: :model do
 
+  let(:lead_preference) { create(:lead_preference) }
   let(:valid_attributes) {
     {
       min_area: 1,
@@ -34,13 +35,30 @@ RSpec.describe LeadPreference, type: :model do
     }
   }
 
-  it "must be associated with a Lead" do
-    pref = LeadPreference.new(valid_attributes)
-    pref.save
-    refute(pref.valid?)
-    pref.lead = create(:lead)
-    pref.save
-    assert(pref.valid?)
+  describe :associations do
+    it "must be associated with a Lead" do
+      pref = LeadPreference.new(valid_attributes)
+      pref.save
+      refute(pref.valid?)
+      pref.lead = create(:lead)
+      pref.save
+      assert(pref.valid?)
+    end
+
+    it "may have a unit_type" do
+      assert(lead_preference.unit_type.present?)
+      lead_preference.unit_type = nil
+      lead_preference.save
+      assert(lead_preference.valid?)
+    end
+
+    it "returns the preference's unit_type name" do
+      expect(lead_preference.unit_type_name).to eq(lead_preference.unit_type.name)
+      lead_preference.unit_type = nil
+      lead_preference.save
+      expect(lead_preference.unit_type_name).to eq(LeadPreference::NO_UNIT_PREFERENCE)
+    end
+
   end
 
   it "must have a min_area smaller than max_area" do
@@ -91,4 +109,5 @@ RSpec.describe LeadPreference, type: :model do
     pref = LeadPreference.new
     expect(pref.unit_system).to eq(:imperial)
   end
+
 end

@@ -22,9 +22,13 @@
 #
 
 class LeadPreference < ApplicationRecord
+
+  ### Constants
   DEFAULT_UNIT_SYSTEM = :imperial
   ALLOWED_PARAMS = [:baths, :beds, :min_price, :max_price, :min_area, :max_area, :move_in, :pets, :smoker, :washerdryer, :notes, :raw_data, :unit_type_id]
+  NO_UNIT_PREFERENCE='(no preference)'
 
+  ### Class Concerns/Extensions
   audited
 
   ### Associations
@@ -68,6 +72,10 @@ class LeadPreference < ApplicationRecord
   allow_blank: true
 
   ### Instance Methods
+
+  def unit_type_name
+    unit_type.try(:name) || NO_UNIT_PREFERENCE
+  end
 
   def unit_system
     DEFAULT_UNIT_SYSTEM

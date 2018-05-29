@@ -8,7 +8,7 @@ module Leads
       def message_template_data
         {
           "lead_name" => name,
-          'lead_floorplan' => ' ',
+          'lead_floorplan' => preference.try(:unit_type_name),
           "agent_name" => user.try(:name),
           "agent_title" => user.try(:title_for_property, property),
           "property_name" => property.try(:name),

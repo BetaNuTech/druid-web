@@ -33,5 +33,7 @@ FactoryBot.define do
     smoker { Faker::Boolean.boolean }
     washerdryer { Faker::Boolean.boolean }
     notes {Faker::Lorem.paragraph}
+    lead
+    unit_type
   end
 end
