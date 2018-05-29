@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180522190948) do
+ActiveRecord::Schema.define(version: 20180529185737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -266,6 +266,7 @@ ActiveRecord::Schema.define(version: 20180522190948) do
     t.boolean "active", default: true
     t.string "website"
     t.string "school_district"
+    t.text "amenities"
     t.index ["active"], name: "index_properties_on_active"
   end
 
