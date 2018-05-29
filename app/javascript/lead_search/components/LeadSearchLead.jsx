@@ -12,6 +12,12 @@ class LeadSearchLead extends React.Component {
     return thedate.format(formatter)
   }
 
+  formatDateTime = (date) => {
+    const thedate = moment(date)
+    const formatter = "MM/DD/YYYY hh:mm a"
+    return thedate.format(formatter)
+  }
+
   render() {
     return(
       <div className={Style.LeadSearchLead} key={this.props.data.id}>
@@ -35,12 +41,12 @@ class LeadSearchLead extends React.Component {
             <li>
               <strong>FC:</strong>
               &nbsp;
-              <span>{this.formatDate(this.props.first_comm)}</span>
+              <span>{this.formatDateTime(this.props.first_comm)}</span>
             </li>
             <li>
               <strong>LC:</strong>
               &nbsp;
-              <span>{this.formatDate(this.props.last_comm)}</span>
+              <span>{this.formatDateTime(this.props.last_comm)}</span>
             </li>
           </ul>
         </div>
