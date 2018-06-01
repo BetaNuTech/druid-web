@@ -55,7 +55,7 @@ class MessageDelivery < ApplicationRecord
     if message.draft? || message.failed?
       sender = Messages::Sender.new(self)
       sender.deliver
-      save
+      reload
       return delivered?
     else
       return false
@@ -64,6 +64,10 @@ class MessageDelivery < ApplicationRecord
 
   def delivered?
     return delivered_at.present?
+  end
+
+  def success?
+    return status == SUCCESS
   end
 
   def set_attempt

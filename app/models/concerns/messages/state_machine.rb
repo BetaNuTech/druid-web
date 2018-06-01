@@ -26,7 +26,7 @@ module Messages
         end
 
         event :fail do
-          transitions from: :sent, to: :failed
+          transitions from: [:draft, :sent ], to: :failed
         end
       end
     end

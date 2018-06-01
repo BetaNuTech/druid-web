@@ -8,7 +8,7 @@ class ApiController < ApplicationController
   end
 
   def validate_source_token(source: , token:)
-    @source = api_token.present? ? source.from_token(api_token) : false
+    @source = api_token.present? ? source.from_token(token) : false
     if @source.present?
       return true
     else

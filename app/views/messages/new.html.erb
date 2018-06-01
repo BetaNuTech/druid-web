@@ -7,7 +7,7 @@
         Message for
         <%= @messageable.name %>
       </p>
-      <%= render 'form', message: @message %>
+      <%= render partial: 'form', locals: { message: @message, message_type: @message_type }  %>
     </div>
   </div>
   <div class="row">

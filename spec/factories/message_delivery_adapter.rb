@@ -21,6 +21,16 @@ FactoryBot.define do
       end
     end
 
+    factory :sms_delivery_adapter do
+      message_type { MessageType.sms || create(:sms_message_type)}
+      name 'SMS'
+      slug 'TwilioAdapter'
+      active { true }
+      sequence :api_token do |n|
+        "Twilio Token#{n}"
+      end
+    end
+
     factory :cloudmailin_delivery_adapter do
       message_type { MessageType.email || create(:email_message_type)}
       name 'CloudMailin'
