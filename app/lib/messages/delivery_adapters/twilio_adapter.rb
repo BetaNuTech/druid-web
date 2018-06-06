@@ -28,15 +28,13 @@ module Messages
             return {
               status: :created,
               format: :xml,
-              body: '<Response></Response>'
+              body: ''
             }
           else
             return {
               status: :created,
               format: :xml,
-              body: Twilio::TwiML::MessagingResponse.new do |r|
-                r.message body: 'Sorry, there was an error when receiving your message.'
-              end.to_s
+              body: "Sorry, we haven't heard from you before at this number and don't know how to route your message."
             }
           end
         end

@@ -64,7 +64,7 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
         post :create, params: twilio_message_data, format: :json
         msg = response.body
         expect(response).to have_http_status(:created)
-        expect(msg).to match('<Response/>')
+        expect(msg).to eq('')
       end
 
       it "should return an TwiML response with error message upon failure" do
@@ -72,9 +72,7 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
         post :create, params: invalid_data, format: :json
         msg = response.body
         expect(response).to have_http_status(:created)
-        expect(msg).to_not match('<Response/>')
-        expect(msg).to match('<Message>')
-        expect(msg).to match('error')
+        expect(msg).to match('Sorry')
       end
 
       it "should return an error with an invalid token" do
