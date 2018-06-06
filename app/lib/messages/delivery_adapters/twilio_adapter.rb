@@ -28,7 +28,7 @@ module Messages
             return {
               status: :created,
               format: :xml,
-              body: Twilio::TwiML::MessagingResponse.new.to_s
+              body: '<Response></Response>'
             }
           else
             return {
