@@ -4,6 +4,24 @@ module Messages
 
       attr_reader :data
 
+      class << self
+        def response_for(message)
+          if message.valid?
+            return {
+              status: :created,
+              format: :json,
+              body: message.to_json
+            }
+          else
+            return {
+              status: :unprocessable_entity,
+              format: :json,
+              body: {errors: message.errors}.to_json
+            }
+          end
+        end
+      end
+
       def initialize(params)
         @data = filter_params(params)
       end
@@ -11,6 +29,7 @@ module Messages
       def parse
         return build(data: extract(@data))
       end
+
 
       private
 

@@ -22,6 +22,25 @@ module Messages
         def get_phone
           return ENV.fetch(PHONE_ENV,'')
         end
+
+        def response_for(message)
+          if message.valid?
+            return {
+              status: :created,
+              format: :xml,
+              body: Twilio::TwiML::MessagingResponse.new.to_s
+            }
+          else
+            return {
+              status: :created,
+              format: :xml,
+              body: Twilio::TwiML::MessagingResponse.new do |r|
+                r.message body: 'Sorry, there was an error when receiving your message.'
+              end.to_s
+            }
+          end
+        end
+
       end
 
 

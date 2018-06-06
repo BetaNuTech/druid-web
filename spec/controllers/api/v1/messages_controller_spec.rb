@@ -59,20 +59,22 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
         expect(Message.count).to eq(message_count + 1)
       end
 
-      it "should return message JSON upon success" do
+      it "should return an empty TwiML response upon success" do
         sms_message
         post :create, params: twilio_message_data, format: :json
-        msg = JSON.parse(response.body)
-        expect(msg["user_id"]).to eq(sms_message_user.id)
-        expect(msg["threadid"]).to eq(sms_message_threadid)
+        msg = response.body
+        expect(response).to have_http_status(:created)
+        expect(msg).to match('<Response/>')
       end
 
-      it "should return errors with invalid data" do
+      it "should return an TwiML response with error message upon failure" do
         invalid_data = twilio_message_data.merge({'From' => nil})
         post :create, params: invalid_data, format: :json
-        msg = JSON.parse(response.body)
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(msg["errors"]).to be_a(Hash)
+        msg = response.body
+        expect(response).to have_http_status(:created)
+        expect(msg).to_not match('<Response/>')
+        expect(msg).to match('<Message>')
+        expect(msg).to match('error')
       end
 
       it "should return an error with an invalid token" do

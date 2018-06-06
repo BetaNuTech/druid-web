@@ -66,6 +66,10 @@ module Messages
       return @message
     end
 
+    def response
+      @parser.response_for(@message)
+    end
+
     private
 
     def add_error(error_message)

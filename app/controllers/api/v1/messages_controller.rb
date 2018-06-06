@@ -8,11 +8,10 @@ module Api
         log_message_data(message_data)
         receiver = Messages::Receiver.new(data: message_data, token: api_token)
         @message = receiver.execute
-        if @message.valid?
-          render :create, status: :created, format: :json
-        else
-          render json: {errors: receiver.errors}, status: :unprocessable_entity, format: :json
-        end
+        response_data = receiver.response
+        render plain: response_data[:body],
+               status: response_data[:status],
+               format: response_data[:format]
       end
 
 
