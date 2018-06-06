@@ -15,12 +15,12 @@
     <div class="row">
       <div class="col-md-3 form-group">
         <%= form.label "Visibility" %>
-        <%= form.select :user_id, select_message_template_user(message_template.user_id), class: 'form-control' %>
+        <%= form.select :user_id, select_message_template_user(message_template.user_id), {}, { class: 'form-control' } %>
 
       </div>
       <div class="col-md-3 form-group">
         <%= form.label :message_type_id %>
-        <%= form.select :message_type_id, select_message_type(message_template.message_type_id), id: :message_template_message_type, class: 'form-control' %>
+        <%= form.select :message_type_id, select_message_type(message_template.message_type_id), {}, {id: :message_template_message_type, class: 'form-control'} %>
       </div>
     </div>
     <div class="row">
@@ -29,7 +29,7 @@
         <%= form.text_field :name, id: :message_template_name, class: 'form-control' %>
       </div>
     </div>
-    <div class="row">
+    <div class="row" id="message_template_subject_input">
       <div class="col-md-12 form-group">
         <%= form.label :subject %>
         <%= form.text_field :subject, id: :message_template_subject, class: 'form-control' %>

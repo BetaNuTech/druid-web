@@ -60,6 +60,14 @@ class MessageTemplate < ApplicationRecord
     where(user_id: [nil, user.id])
   end
 
+  def self.available_for_user_and_type(user, message_type=nil)
+    skope = self.available_for_user(user)
+    if message_type.present?
+      skope = skope.where(message_type_id: message_type.id)
+    end
+    return skope
+  end
+
   ### Instance Methods
 
   def render(data={})

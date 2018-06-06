@@ -31,17 +31,18 @@ module Leads
       end
 
       def message_sms_destination
+        destination = nil
         if respond_to?(:phone1_type) && respond_to?(:phone1) && phone1_type == 'Cell'
-          return phone1
+          destination = phone1
         elsif respond_to?(:phone2_type) && respond_to?(:phone2) && phone2_type == 'Cell'
-          return phone2
+          destination = phone2
         elsif respond_to?(:phone_type) && respond_to?(:phone) && phone_type == 'Cell'
-          return phone
+          destination = phone
         elsif !respond_to?(:phone_type) && respond_to?(:phone)
-          return phone
-        else
-          return nil
+          destination = phone
         end
+        destination = Message.format_phone(destination)
+        return destination
       end
 
       def message_email_destination

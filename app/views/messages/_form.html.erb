@@ -25,19 +25,29 @@
         <%= form.label :message_template_id, 'Template' %>
         <%= link_to('Load', '#' , { id: 'message_template_load_button', class: 'btn btn-xs btn-info', data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type)} }) %>
         <%= link_to('View', message_template_path(id: message.message_template), {id: 'message_template_view_button', target: '_blank', class: 'btn btn-xs btn-info'}) if message.message_template.present? %>
-        <%= form.select :message_template_id, message_template_options(message.message_template_id),
+        <% if any_message_templates_available?(message_type) %>
+          <%= form.select :message_template_id, message_template_options(message_type, message.message_template_id),
           { include_blank: true}, { id: 'message_template_select', class: 'form-control' } %>
+        <% else %>
+          <p>
+            None available.
+          </p>
+        <% end %>
       </div>
       <div class='col-md-2'>
         <br/>
       </div>
     </div>
-    <div class='row'>
-      <div class='col-md-12 form-group'>
-        <%= form.label :subject %>
-        <%= form.text_field :subject, class: 'form-control' %>
+    <% if edit_message_subject?(message) %>
+      <div class='row'>
+        <div class='col-md-12 form-group'>
+          <%= form.label :subject %>
+          <%= form.text_field :subject, class: 'form-control' %>
+        </div>
       </div>
-    </div>
+    <% else %>
+      <%= form.hidden_field :subject, value: '(No subject)' %>
+    <% end %>
     <div class='row'>
       <div class='col-md-12 form-group'>
         <%= form.label :body %>

@@ -24,7 +24,6 @@ class Message < ApplicationRecord
   include Messages::StateMachine
 
   ### Constants
-  MESSAGE_DELIVERY_REPLY_TO_ENV='MESSAGE_DELIVERY_REPLY_TO'
   ALLOWED_PARAMS = [:message_template_id, :subject, :body, :message_type_id]
   PREVIEW_LENGTH=200
 
@@ -33,7 +32,7 @@ class Message < ApplicationRecord
   belongs_to :messageable, polymorphic: true, optional: true
   belongs_to :message_template, optional: true
   belongs_to :message_type
-  has_many :deliveries, class_name: 'MessageDelivery'
+  has_many :deliveries, class_name: 'MessageDelivery', dependent: :destroy
 
   ### Validations
   validates :senderid, :recipientid, :subject, :body, presence: true
@@ -43,6 +42,7 @@ class Message < ApplicationRecord
 
   ### Callbacks
   before_validation :set_meta
+  after_save :fail_on_delivery_failure
 
   ### Class Methods
 
@@ -70,9 +70,11 @@ class Message < ApplicationRecord
     end
   end
 
-  def self.base_senderid
-    return ENV.fetch(MESSAGE_DELIVERY_REPLY_TO_ENV, 'default@example.com')
+  def self.format_phone(val)
+    return nil if ( val.nil? || (!val.is_a?(String)) )
+    return ( "+1" + val.gsub(/[^\d]/,'').sub(/\A1/,'') )
   end
+
 
   def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil)
     message = Message.new(
@@ -139,8 +141,20 @@ class Message < ApplicationRecord
   def perform_delivery
     delivery = MessageDelivery.create!( message: self, message_type: message_type )
     delivery.perform
+    delivery.reload
     self.delivered_at = delivery.delivered_at
-    save
+    save!
+  end
+
+  def fail_on_delivery_failure
+    reload
+    return true if failed?
+    if (last_delivery = deliveries.order(created_at: 'desc').first).present?
+      unless last_delivery.success?
+        self.fail!
+      end
+    end
+    return true
   end
 
   def from_address
@@ -156,7 +170,15 @@ class Message < ApplicationRecord
   end
 
   def outgoing_senderid
-    return Message.base_senderid.sub('@',"+#{threadid}@")
+    case
+    when message_type.nil?
+      return 'NONE'
+    when message_type.sms?
+      return Messages::Sender.find_adapter(self).base_senderid
+    when message_type.email?
+      return Messages::Sender.find_adapter(self).base_senderid.
+              sub('@',"+#{threadid}@")
+    end
   end
 
   def outgoing_recipientid

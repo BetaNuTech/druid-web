@@ -19,7 +19,7 @@ module Api
       private
 
       def log_message_data(data)
-        if ENV.fetch("DEBUG_MESSAGE_API", nil).present?
+        if ( ENV.fetch("DEBUG_MESSAGE_API", "false").downcase != 'false' )
           Rails.logger.warn "[#{DateTime.now} MESSAGE API] #{data.inspect}"
         end
       end

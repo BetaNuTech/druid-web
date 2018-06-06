@@ -8,12 +8,22 @@ module MessagesHelper
     else
       return content_tag(:span) do
         hidden_field_tag('message_type_id', available.first.try(:id)) +
-        content_tag(:span, available.first.try(:name))
+          content_tag(:span, available.first.try(:name))
       end
     end
   end
 
-  def message_template_options(value)
-    options_for_select(MessageTemplate.available_for_user(current_user).collect{|t| [t.name, t.id]}, value)
+  def message_template_options(message_type=nil, value)
+    templates = MessageTemplate.available_for_user_and_type(current_user, message_type)
+    options_for_select(templates.collect{|t| [t.name, t.id]}, value)
+  end
+
+  def any_message_templates_available?(message_type=nil)
+    MessageTemplate.available_for_user_and_type(current_user, message_type).exists?
+  end
+
+  def edit_message_subject?(message=nil)
+    return true if message.nil?
+    return message.message_type.has_subject?
   end
 end

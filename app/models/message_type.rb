@@ -20,6 +20,7 @@ class MessageType < ApplicationRecord
 
   ### Associations
   has_many :message_templates
+  has_many :delivery_adapters, class_name: "MessageDeliveryAdapter"
 
   ### Validations
   validates :name, presence: true, uniqueness: true
@@ -45,5 +46,13 @@ class MessageType < ApplicationRecord
 
   def email?
     name == EMAIL_TYPE_NAME
+  end
+
+  def has_subject?
+    sms? ? false : true
+  end
+
+  def has_body?
+    true
   end
 end

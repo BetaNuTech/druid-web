@@ -107,8 +107,7 @@ class MessagesController < ApplicationController
   def deliver
     set_message
     authorize @message
-    @message.deliver
-    @message.save
+    @message.deliver!
     redirect_to @message.messageable, notice: 'Message Sent'
   end
 

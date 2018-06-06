@@ -407,10 +407,10 @@ RSpec.describe Lead, type: :model do
       lead.phone2 = "555-555-5512"
       lead.phone1_type = 'Cell'
       lead.phone2_type = 'Home'
-      expect(lead.message_sms_destination).to eq(lead.phone1)
+      expect(lead.message_sms_destination).to eq(Message.format_phone(lead.phone1))
       lead.phone1_type = 'Home'
       lead.phone2_type = 'Cell'
-      expect(lead.message_sms_destination).to eq(lead.phone2)
+      expect(lead.message_sms_destination).to eq(Message.format_phone( lead.phone2 ))
       lead.phone1_type = 'Home'
       lead.phone2_type = 'Home'
       expect(lead.message_sms_destination).to be_nil
@@ -423,7 +423,7 @@ RSpec.describe Lead, type: :model do
       lead.phone2_type = 'Cell'
       sms_message_type = create(:sms_message_type)
       email_message_type = create(:email_message_type)
-      expect(lead.message_recipientid(message_type: sms_message_type)).to eq(lead.phone2)
+      expect(lead.message_recipientid(message_type: sms_message_type)).to eq(Message.format_phone(lead.phone2))
       expect(lead.message_recipientid(message_type: email_message_type)).to eq(lead.email)
     end
 
