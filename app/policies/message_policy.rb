@@ -45,6 +45,10 @@ class MessagePolicy < ApplicationPolicy
     record.draft? && edit?
   end
 
+  def mark_read?
+    user.admin? || same_user
+  end
+
   def same_property?
     record.try(:messageable).try(:present?) &&
       user.properties.include?(record.messageable.property)

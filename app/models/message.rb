@@ -42,6 +42,7 @@ class Message < ApplicationRecord
 
   ### Scopes
   scope :for_thread, ->(threadid) { where(threadid: threadid)}
+  scope :unread, -> { where(read_at: nil) }
 
   ### Callbacks
   before_validation :set_meta
@@ -118,6 +119,10 @@ class Message < ApplicationRecord
   end
 
   ### Instance Methods
+
+  def read?
+    return !read_at.nil?
+  end
 
   def fill
     any_errors = false

@@ -111,6 +111,13 @@ class MessagesController < ApplicationController
     redirect_to @message.messageable, notice: 'Message Sent'
   end
 
+  def mark_read
+    set_message
+    authorize @message
+    Message.mark_read!(@message, current_user)
+    redirect_to messages_path, notice: 'Marked message as read'
+  end
+
   private
 
     def record_scope
@@ -121,7 +128,7 @@ class MessagesController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_message
-      @message = record_scope.find(params[:id])
+      @message = record_scope.find(params[:id] || params[:message_id])
     end
 
     def set_messageable

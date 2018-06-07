@@ -39,4 +39,8 @@ module ApplicationHelper
   def select_state(val)
     options_for_select(us_states, val)
   end
+
+  def navbar_cache_key
+    [current_user, current_user.messages.unread.count]
+  end
 end

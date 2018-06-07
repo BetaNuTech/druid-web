@@ -2,7 +2,7 @@ class LeadsController < ApplicationController
   include LeadsHelper
 
   before_action :authenticate_user!
-  before_action :set_lead, only: [:show, :edit, :update, :destroy, :trigger_state_event]
+  before_action :set_lead, only: [:show, :edit, :update, :destroy, :trigger_state_event, :mark_messages_read]
   after_action :verify_authorized
 
   # GET /leads
@@ -96,6 +96,12 @@ class LeadsController < ApplicationController
       format.json { render :show, status: :ok, location: @lead }
       format.html { redirect_to(@lead)}
     end
+  end
+
+  def mark_messages_read
+    authorize @lead
+    Message.mark_read!(@lead.messages, current_user)
+    redirect_to(@lead, notice: 'All Messages marked as read')
   end
 
   private

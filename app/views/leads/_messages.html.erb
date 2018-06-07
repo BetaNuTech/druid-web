@@ -14,6 +14,14 @@
     </div>
 
     <div class="row">
+      <div class="col-md-3 pull-right">
+        <% if lead.messages.unread.exists? %>
+          <%= link_to('Mark All as Read', mark_messages_read_lead_path(id: lead.id), method: :post, class: 'btn btn-xs btn-primary') %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="row">
       <div class="col-md-12">
         <% if lead.messages.empty? %>
           <p class="lead">None</p>
@@ -28,7 +36,7 @@
           </thead>
           <tbody>
             <% lead.messages.order("delivered_at DESC").each do |message| %>
-              <tr>
+              <tr class="<%= message.read? ? '' : 'message_unread' %>">
                 <td>
                   <span class="text-nowrap">
                     <% if message.draft? %>
