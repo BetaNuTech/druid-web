@@ -17,6 +17,8 @@
 #  updated_at          :datetime         not null
 #  message_type_id     :uuid
 #  threadid            :string
+#  read_at             :datetime
+#  read_by_user_id     :uuid
 #
 
 class Message < ApplicationRecord
@@ -32,6 +34,7 @@ class Message < ApplicationRecord
   belongs_to :messageable, polymorphic: true, optional: true
   belongs_to :message_template, optional: true
   belongs_to :message_type
+  belongs_to :read_by, foreign_key: 'read_by_user_id', class_name: 'User', optional: true
   has_many :deliveries, class_name: 'MessageDelivery', dependent: :destroy
 
   ### Validations
@@ -45,6 +48,21 @@ class Message < ApplicationRecord
   after_save :fail_on_delivery_failure
 
   ### Class Methods
+
+  def self.unread
+    where(read_at: nil).
+      select{|r| r.incoming?}
+  end
+
+  # Mark collection as read by user
+  def self.mark_read!(collection,user=nil)
+    collection = Array(collection) if collection.is_a?(Message)
+    collection.each do |record|
+      record.read_at ||= DateTime.now
+      ( record.read_by ||= user ) if user
+      record.save!
+    end
+  end
 
   def self.new_threadid
     SecureRandom.uuid.to_s.gsub('-','')
@@ -105,6 +123,11 @@ class Message < ApplicationRecord
   end
 
   ### Instance Methods
+
+  def read?
+    return true if outgoing?
+    return incoming? && !read_at.nil?
+  end
 
   def fill
     any_errors = false

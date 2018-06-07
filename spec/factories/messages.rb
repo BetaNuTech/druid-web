@@ -17,6 +17,8 @@
 #  updated_at          :datetime         not null
 #  message_type_id     :uuid
 #  threadid            :string
+#  read_at             :datetime
+#  read_by_user_id     :uuid
 #
 
 FactoryBot.define do
@@ -30,5 +32,7 @@ FactoryBot.define do
     message_template { create(:message_template)}
     subject { Faker::Lorem.sentence }
     body { Faker::Lorem.paragraph }
+    read_at nil
+    read_by_user_id nil
   end
 end

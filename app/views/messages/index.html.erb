@@ -19,19 +19,27 @@
   <% end %>
 
   <div class="row">
+    <div class="col-md-12">
+      <%= paginate @messages %>
+    </div>
+  </div>
+
+  <div class="row">
     <table class="table">
       <thead>
         <tr>
           <th>Date</th>
+          <th>Lead</th>
           <th>Type</th>
           <th>From/To</th>
           <th>Subject</th>
           <th>Body</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         <% @messages.each do |message| %>
-          <tr>
+          <tr class="<%= message.read? ? '' : 'message_unread' %>">
             <td>
               <% if message.draft? %>
                 <%= link_to("Send Now", "#", {class: "btn btn-sm btn-primary"}) %>
@@ -39,6 +47,13 @@
                 <%= short_datetime(message.updated_at) %>
               <% else %>
                 <%= short_datetime(message.delivered_at) %>
+              <% end %>
+            </td>
+            <td>
+              <% if message.messageable %>
+                <%= link_to(message.messageable.name, url_for(message.messageable)) %>
+              <% else %>
+                <em>None</em>
               <% end %>
             </td>
             <td><%= message.message_type.name %></td>
@@ -64,10 +79,20 @@
                 <%= link_to('View', message_path(message), class: "btn btn-xs btn-primary") %>
               <% end %>
             </td>
+            <td>
+              <% unless message.read? %>
+                <%= link_to('Mark Read', message_mark_read_path(message_id: message.id), method: :post, class: 'btn btn-xs btn-primary') %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
     </table>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= paginate @messages %>
+    </div>
   </div>
   <div class="row">
     <div class="col-md-6">

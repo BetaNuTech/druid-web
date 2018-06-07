@@ -1,4 +1,4 @@
-<% cache_if current_user.present?, current_user do %>
+<% cache_if current_user.present?, navbar_cache_key do %>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
 
@@ -87,6 +87,21 @@
                 </ul>
               </div>
             </li> <!-- Leads -->
+
+            <li>
+              <div class="btn-group">
+                <%= link_to(messages_path, class: "btn btn-primary") do %>
+                  <% if current_user.messages.unread.any? %>
+                    <span style="color: red" >
+                      <%= glyph(:warning_sign) %>
+                    </span>
+                  <% else %>
+                    <span class="glyphicon glyphicon-envelope"></span>
+                  <% end %>
+                  Messages
+                <% end %>
+              </div>
+            </li>
 
             <% if false %>
             <li> <!-- Messaging -->

@@ -38,6 +38,10 @@ class LeadPolicy < ApplicationPolicy
     edit?
   end
 
+  def mark_messages_read?
+    user.admin? || same_user?
+  end
+
   # Allow event to be issued if valid,
   #  current_user is admin, no user is associated with lead,
   #  or current_user owns lead

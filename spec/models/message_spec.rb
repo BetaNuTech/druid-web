@@ -17,6 +17,8 @@
 #  updated_at          :datetime         not null
 #  message_type_id     :uuid
 #  threadid            :string
+#  read_at             :datetime
+#  read_by_user_id     :uuid
 #
 
 require 'rails_helper'
@@ -254,5 +256,41 @@ RSpec.describe Message, type: :model do
         expect(MessageDelivery.previous_attempt_number(message)).to eq(1)
       end
     end
+  end
+
+  describe "read state" do
+    let(:messages) { create_list(:message, 5)}
+    let(:user) { create(:user) }
+
+    it "should mark multiple messages as read by a user" do
+      messages
+      Message.mark_read!(Message.limit(2), user)
+      expect(Message.where("read_by_user_id is not null").count).to eq(2)
+      expect(Message.unread.count).to eq(messages.count - 2)
+    end
+
+    it "should mark multiple messages as read without a user" do
+      messages
+      Message.mark_read!(Message.limit(2))
+      expect(Message.where("read_by_user_id is null").count).to eq(messages.count)
+      expect(Message.unread.count).to eq(messages.count - 2)
+    end
+
+    it "should mark a single message as read by a user" do
+      messages
+      message = Message.first
+      Message.mark_read!(message, user)
+      expect(Message.where("read_by_user_id is not null").count).to eq(1)
+      expect(Message.unread.count).to eq(messages.count - 1)
+    end
+
+    it "should mark a single message as read without a user" do
+      messages
+      message = Message.first
+      Message.mark_read!(message)
+      expect(Message.where("read_by_user_id is null").count).to eq(messages.count)
+      expect(Message.unread.count).to eq(messages.count - 1)
+    end
+
   end
 end

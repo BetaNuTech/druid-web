@@ -53,9 +53,11 @@ Rails.application.routes.draw do
     end
     member do
       post 'trigger_state_event', to: "leads#trigger_state_event"
+      post 'mark_messages_read', to: "leads#mark_messages_read"
     end
     resources :messages do
       post 'deliver', on: :member
+      post 'mark_read', to: "messages#mark_read"
     end
   end
 
@@ -65,6 +67,7 @@ Rails.application.routes.draw do
 
   resources :messages do
     post 'deliver', on: :member
+    post 'mark_read', to: "messages#mark_read"
   end
   resources :message_templates
 
