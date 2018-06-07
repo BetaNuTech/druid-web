@@ -36,6 +36,7 @@ gem 'httparty', "~> 0.16"
 gem 'nokogiri', "~> 1.8"
 gem 'liquid', "~> 4.0"
 gem 'twilio-ruby', "~> 5.10"
+gem 'kaminari', "~> 1.1"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.11'

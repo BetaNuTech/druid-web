@@ -42,13 +42,17 @@ class Message < ApplicationRecord
 
   ### Scopes
   scope :for_thread, ->(threadid) { where(threadid: threadid)}
-  scope :unread, -> { where(read_at: nil) }
 
   ### Callbacks
   before_validation :set_meta
   after_save :fail_on_delivery_failure
 
   ### Class Methods
+
+  def self.unread
+    where(read_at: nil).
+      select{|r| r.incoming?}
+  end
 
   # Mark collection as read by user
   def self.mark_read!(collection,user=nil)
@@ -121,7 +125,8 @@ class Message < ApplicationRecord
   ### Instance Methods
 
   def read?
-    return !read_at.nil?
+    return true if outgoing?
+    return incoming? && !read_at.nil?
   end
 
   def fill

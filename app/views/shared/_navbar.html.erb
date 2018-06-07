@@ -91,7 +91,7 @@
             <li>
               <div class="btn-group">
                 <%= link_to(messages_path, class: "btn btn-primary") do %>
-                  <% if current_user.messages.unread.exists? %>
+                  <% if current_user.messages.unread.any? %>
                     <span style="color: red" >
                       <%= glyph(:warning_sign) %>
                     </span>

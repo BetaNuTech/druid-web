@@ -41,6 +41,6 @@ module ApplicationHelper
   end
 
   def navbar_cache_key
-    [current_user, current_user.messages.unread.count]
+    [current_user, current_user.try(:messages).try(:unread).try(:size)]
   end
 end

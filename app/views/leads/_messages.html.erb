@@ -15,7 +15,7 @@
 
     <div class="row">
       <div class="col-md-3 pull-right">
-        <% if lead.messages.unread.exists? %>
+        <% if lead.messages.unread.any? %>
           <%= link_to('Mark All as Read', mark_messages_read_lead_path(id: lead.id), method: :post, class: 'btn btn-xs btn-primary') %>
         <% end %>
       </div>

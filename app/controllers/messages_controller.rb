@@ -9,6 +9,7 @@ class MessagesController < ApplicationController
   def index
     authorize Message
     @messages = record_scope
+    @messages = @messages.page(params[:page])
   end
 
   # GET /messages/1

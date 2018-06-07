@@ -19,6 +19,12 @@
   <% end %>
 
   <div class="row">
+    <div class="col-md-12">
+      <%= paginate @messages %>
+    </div>
+  </div>
+
+  <div class="row">
     <table class="table">
       <thead>
         <tr>
@@ -82,6 +88,11 @@
         <% end %>
       </tbody>
     </table>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= paginate @messages %>
+    </div>
   </div>
   <div class="row">
     <div class="col-md-6">
