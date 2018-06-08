@@ -246,4 +246,8 @@ class Message < ApplicationRecord
     return incoming? ? user.name : messageable.name
   end
 
+  def html?
+    return message_type.try(:html) ? true : false
+  end
+
 end

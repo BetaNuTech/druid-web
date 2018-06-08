@@ -5,8 +5,10 @@
   :data:
   - :name: Email
     :description: Messages delivered via Email
+    :html: true
     :active: true
   - :name: SMS
     :description: Messages delivered via SMS
+    :html: false
     :active: true
 
