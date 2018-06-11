@@ -1,5 +1,14 @@
 namespace :leads do
 
+  desc "Cleanup"
+  task :delete_old => :environment do
+    puts "! DELETE OPEN LEADS OLDER THAN 1 WEEK !"
+    puts "(press ENTER to continue or CTRL-C to quit)"
+    _c = STDIN.gets
+    Lead.open.where("created_at < ?", (Date.today - 7.days)).each{|l| l.without_auditing{l.destroy}}
+    Audited::Audit.where("created_at < ?", (Date.today - 7.days)).destroy_all
+  end
+
   namespace :yardi do
 
     desc "Import GuestCards"
