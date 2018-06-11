@@ -30,7 +30,8 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def edit?
-    record.draft? && ( user.administrator? || is_owner? )
+    (record.respond_to?(:draft?) ? record.draft? : true ) &&
+      ( user.administrator? || is_owner? )
   end
 
   def update?

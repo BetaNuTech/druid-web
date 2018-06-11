@@ -37,10 +37,10 @@ class MessagesController < ApplicationController
 
   # GET /messages/1/edit
   def edit
-    authorize @message
     set_messageable
     set_message_type
     set_message_template
+    authorize @message
   end
 
   # POST /messages
@@ -51,12 +51,6 @@ class MessagesController < ApplicationController
     set_messageable
     set_message_type
     set_message_template
-    @message = Message.new(
-      user: current_user,
-      message_type_id: @message_type.try(:id),
-      message_template_id: @message_template.try(:id),
-      messageable: @messageable
-    )
 
     @message = Message.new_message(
       from: current_user,
