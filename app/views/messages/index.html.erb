@@ -74,7 +74,7 @@
             </td>
             <td><span class="text-nowrap"><%= message.subject %></span></td>
             <td>
-              <%= truncate(message.body, length: Message::PREVIEW_LENGTH, omission: '... (continued)') %>
+              <%= truncate(sanitize(message.body || '', tags: []), length: Message::PREVIEW_LENGTH, omission: '... (continued)') %>
               <% if message.body.length > Message::PREVIEW_LENGTH %>
                 <%= link_to('View', message_path(message), class: "btn btn-xs btn-primary") %>
               <% end %>
