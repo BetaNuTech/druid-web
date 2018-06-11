@@ -35,7 +35,7 @@ RSpec.describe Users::SessionsController, type: :controller do
 
       it "will not authenticate with invalid credentials" do
         post :create, params: {user: {email: unroled_user.email, password: 'wrong password' }}
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(session).to be_empty
       end
     end

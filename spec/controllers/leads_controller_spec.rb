@@ -39,7 +39,7 @@ RSpec.describe LeadsController, type: :controller do
         sign_in operator
         lead = Lead.create! valid_attributes
         get :index, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
     end
@@ -49,7 +49,7 @@ RSpec.describe LeadsController, type: :controller do
         sign_in agent
         lead = Lead.create! valid_attributes
         get :index, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
     end
@@ -90,9 +90,9 @@ RSpec.describe LeadsController, type: :controller do
       it "returns a success reponse" do
         sign_in agent
         get :search, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
         get :search, params: {}, format: :json
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -106,14 +106,14 @@ RSpec.describe LeadsController, type: :controller do
       it "returns a success response" do
         sign_in operator
         get :show, params: {id: lead.to_param}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "can return JSON data" do
         sign_in operator
         assert(lead.preference.present?)
         get :show, params: {id: lead.to_param}, format: :json
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -121,14 +121,14 @@ RSpec.describe LeadsController, type: :controller do
       it "returns a success response" do
         sign_in agent
         get :show, params: {id: lead.to_param}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "can return JSON data" do
         sign_in agent
         assert(lead.preference.present?)
         get :show, params: {id: lead.to_param}, format: :json
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -149,7 +149,7 @@ RSpec.describe LeadsController, type: :controller do
       it "returns a success response" do
         sign_in operator
         get :new, params: {}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -157,7 +157,7 @@ RSpec.describe LeadsController, type: :controller do
       it "returns a success response" do
         sign_in agent
         get :new, params: {}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -179,7 +179,7 @@ RSpec.describe LeadsController, type: :controller do
         sign_in operator
         lead = Lead.create! valid_attributes
         get :edit, params: {id: lead.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -188,7 +188,7 @@ RSpec.describe LeadsController, type: :controller do
         sign_in agent
         lead = Lead.create! valid_attributes
         get :edit, params: {id: lead.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -261,7 +261,7 @@ RSpec.describe LeadsController, type: :controller do
         it "returns a success response (i.e. to display the 'new' template)" do
           sign_in agent
           post :create, params: {lead: invalid_attributes}, session: valid_session
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
@@ -296,7 +296,7 @@ RSpec.describe LeadsController, type: :controller do
           sign_in agent
           lead = Lead.create! valid_attributes
           put :update, params: {id: lead.to_param, lead: invalid_attributes}
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
 
@@ -411,7 +411,7 @@ RSpec.describe LeadsController, type: :controller do
     it "should trigger event if the event is valid" do
       sign_in agent
       post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
-      expect(response).to be_success
+      expect(response).to be_successful
       lead.reload
       assert lead.prospect?
       expect(lead.user).to eq(agent)
@@ -420,7 +420,7 @@ RSpec.describe LeadsController, type: :controller do
     it "should gracefully handle an invalid event" do
       sign_in agent
       post :trigger_state_event, params: { id: lead.to_param, eventid: 'invalid'}, format: :js
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
   end

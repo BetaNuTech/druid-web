@@ -19,7 +19,7 @@ RSpec.describe HomeController, type: :controller do
     it "renders the dashboard page" do
       sign_in unroled_user
       get :dashboard
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template(:dashboard)
     end
 
@@ -31,31 +31,31 @@ RSpec.describe HomeController, type: :controller do
       describe "the navigation bar" do
         it "displays a link to User Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Manage Druid Users")
         end
 
         it "displays a link to Role Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Manage User Roles")
         end
 
         it "displays a link to LeadSource Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Lead Sources")
         end
 
         it "displays a link to Property Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Properties")
         end
 
         it "displays a link to Lead Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Create Lead")
         end
       end
@@ -69,31 +69,31 @@ RSpec.describe HomeController, type: :controller do
       describe "the navigation bar" do
         it "displays a link to User Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Manage Druid Users")
         end
 
         it "does not display a link to Role Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to_not match("Manage User Roles")
         end
 
         it "displays a link to LeadSource Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Lead Sources")
         end
 
         it "displays a link to Property Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Properties")
         end
 
         it "displays a link to Lead Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Create Lead")
         end
       end
@@ -108,37 +108,37 @@ RSpec.describe HomeController, type: :controller do
       describe "the navigation bar" do
         it "does not display a link to User Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to_not match("Manage Druid Users")
         end
 
         it "does not display a link to Role Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to_not match("Manage User Roles")
         end
 
         it "does not display a link to LeadSource Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to_not match("Lead Sources")
         end
 
         it "displays a link to Property Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Properties")
         end
 
         it "displays a link to Lead Management" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("Create Lead")
         end
 
         it "displays a section for System" do
           get :dashboard
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to match("System")
         end
       end

@@ -35,7 +35,7 @@ RSpec.describe NotesController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe NotesController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe NotesController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe NotesController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe NotesController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -195,7 +195,7 @@ RSpec.describe NotesController, type: :controller do
         note.save!
         sign_in agent
         get :show, params: {id: note.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -205,7 +205,7 @@ RSpec.describe NotesController, type: :controller do
         note.save!
         sign_in operator
         get :show, params: {id: note.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -215,7 +215,7 @@ RSpec.describe NotesController, type: :controller do
         note.save!
         sign_in administrator
         get :show, params: {id: note.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -247,7 +247,7 @@ RSpec.describe NotesController, type: :controller do
         note.save!
         sign_in agent
         get :edit, params: {id: note.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe NotesController, type: :controller do
         note.save!
         sign_in operator
         get :edit, params: {id: note.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -267,7 +267,7 @@ RSpec.describe NotesController, type: :controller do
         note.save!
         sign_in administrator
         get :edit, params: {id: note.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end

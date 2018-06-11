@@ -9,12 +9,12 @@ RSpec.describe Api::V1::SwaggerController, type: :controller do
   describe "GET #index" do
     it "should render swagger JSON for druid" do
       get :index, params: { token: druid_source.api_token }, format: :json
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "should render swagger JSON for zillow" do
       get :index, params: { token: zillow_source.api_token }, format: :json
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "should raise a 404 error if the source is not found" do
@@ -28,7 +28,7 @@ RSpec.describe Api::V1::SwaggerController, type: :controller do
   describe "GET #apidocs" do
     it "should render the Swagger index HTML from public/" do
       get :apidocs, params: { token: druid_source.api_token }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 end

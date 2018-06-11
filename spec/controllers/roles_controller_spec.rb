@@ -24,13 +24,13 @@ RSpec.describe RolesController, type: :controller do
         sign_in administrator
         create(:role)
         get :index, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "can return JSON data" do
         sign_in administrator
         get :index, params: {}, format: :json
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -60,13 +60,13 @@ RSpec.describe RolesController, type: :controller do
       it "returns a successful response" do
         sign_in administrator
         get :show, params: {id: role.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "can return JSON data" do
         sign_in administrator
         get :show, params: {id: role.id}, format: :json
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe RolesController, type: :controller do
       it "returns a successful response" do
         sign_in administrator
         get :new, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -107,7 +107,7 @@ RSpec.describe RolesController, type: :controller do
       it "returns a successful response" do
         sign_in administrator
         get :edit, params: {id: role.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -165,7 +165,7 @@ RSpec.describe RolesController, type: :controller do
           it "should re-render the page" do
             sign_in administrator
             post :create, params: {role: invalid_attributes}
-            expect(response).to be_success
+            expect(response).to be_successful
           end
         end
       end
@@ -218,7 +218,7 @@ RSpec.describe RolesController, type: :controller do
             role
             sign_in administrator
             put :update, params: {id: role.id, role: {name: ''}}
-            expect(response).to be_success
+            expect(response).to be_successful
           end
         end
 

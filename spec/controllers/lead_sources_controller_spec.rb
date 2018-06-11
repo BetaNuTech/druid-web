@@ -21,7 +21,7 @@ RSpec.describe LeadSourcesController, type: :controller do
       it "allows access" do
         sign_in administrator
         get :index, params: {}, session: valid_session, format: 'html'
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -30,14 +30,14 @@ RSpec.describe LeadSourcesController, type: :controller do
         it "as #{format}: returns a success response when no records are present" do
           sign_in operator
           get :index, params: {}, session: valid_session, format: format
-          expect(response).to be_success
+          expect(response).to be_successful
         end
 
         it "as #{format}: returns a success response when records are present" do
           sign_in operator
           create(:lead_source)
           get :index, params: {}, session: valid_session, format: format
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe LeadSourcesController, type: :controller do
       it "returns a success response" do
         sign_in operator
         get :new, params: {}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe LeadSourcesController, type: :controller do
         sign_in operator
         lead_source = create(:lead_source)
         get :show, params: { id: lead_source.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe LeadSourcesController, type: :controller do
         sign_in operator
         lead_source = create(:lead_source)
         get :edit, params: { id: lead_source.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -143,7 +143,7 @@ RSpec.describe LeadSourcesController, type: :controller do
         it "returns a success response (i.e. to display the 'new' template)" do
           sign_in operator
           post :create, params: {lead_source: invalid_attributes}, session: valid_session
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
@@ -206,7 +206,7 @@ RSpec.describe LeadSourcesController, type: :controller do
           sign_in operator
           lead_source = create(:lead_source)
           put :update, params: {id: lead_source.to_param, lead_source: invalid_attributes}, session: valid_session
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end

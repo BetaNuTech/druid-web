@@ -27,7 +27,7 @@ RSpec.describe ResidentsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe ResidentsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -122,7 +122,7 @@ RSpec.describe ResidentsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :show, params: {id: resident.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -148,7 +148,7 @@ RSpec.describe ResidentsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :edit, params: {id: resident.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end

@@ -30,7 +30,7 @@ RSpec.describe UsersController, type: :controller do
         sign_in administrator
         user = User.create! valid_attributes
         get :index, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to render_template("users/index")
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe UsersController, type: :controller do
         sign_in operator
         user = User.create! valid_attributes
         get :index, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to render_template("users/index")
       end
     end
@@ -60,7 +60,7 @@ RSpec.describe UsersController, type: :controller do
         sign_in operator
         user = User.create! valid_attributes
         get :show, params: {id: user.to_param}
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to render_template("users/show")
       end
     end
@@ -78,7 +78,7 @@ RSpec.describe UsersController, type: :controller do
         sign_in agent
         user = agent
         get :show, params: {id: user.to_param}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -88,7 +88,7 @@ RSpec.describe UsersController, type: :controller do
       it "returns a success response" do
         sign_in operator
         get :new, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
     describe "as an agent" do
@@ -106,7 +106,7 @@ RSpec.describe UsersController, type: :controller do
         sign_in operator
         user = User.create! valid_attributes
         get :edit, params: {id: user.to_param}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
     describe "as an agent" do
@@ -148,7 +148,7 @@ RSpec.describe UsersController, type: :controller do
         it "returns a success response (i.e. to display the 'new' template)" do
           sign_in operator
           post :create, params: {user: invalid_attributes}
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
@@ -231,7 +231,7 @@ RSpec.describe UsersController, type: :controller do
           sign_in operator
           user = User.create! valid_attributes
           put :update, params: {id: user.to_param, user: invalid_attributes}
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
 

@@ -27,7 +27,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "should default to active" do
@@ -155,7 +155,7 @@ RSpec.describe ReasonsController, type: :controller do
           post :create, params: {reason: valid_attributes}
         }.to change{Reason.count}.by(1)
         post :create, params: {reason: valid_attributes}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -169,12 +169,12 @@ RSpec.describe ReasonsController, type: :controller do
           post :create, params: {reason: valid_attributes}
         }.to change{Reason.count}.by(1)
         post :create, params: {reason: valid_attributes}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "should handle invalid attributes" do
         post :create, params: {reason: invalid_attributes}
-        expect(response).to be_success
+        expect(response).to be_successful
         expect {
           post :create, params: {reason: invalid_attributes}
         }.to_not change{Reason.count}
@@ -204,7 +204,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :show, params: {id: reason.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -212,7 +212,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :show, params: {id: reason.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -220,7 +220,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :show, params: {id: reason.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -256,7 +256,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :edit, params: {id: reason.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -264,7 +264,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :edit, params: {id: reason.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -338,7 +338,7 @@ RSpec.describe ReasonsController, type: :controller do
       it "should handle invalid attributes" do
         expect{
           put :update, params: {id: reason.id, reason: invalid_updated_attributes}
-          expect(response).to be_success
+          expect(response).to be_successful
           reason.reload
         }.to_not change{reason.name}
       end

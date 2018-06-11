@@ -13,7 +13,8 @@ module Messages
           from: from,
           to: to,
           subject: subject,
-          body: body
+          body: body,
+          content_type: 'text/html'
         ).deliver
       end
 

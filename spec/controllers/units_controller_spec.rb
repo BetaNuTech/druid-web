@@ -27,7 +27,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -164,7 +164,7 @@ RSpec.describe UnitsController, type: :controller do
           post :create, params: {unit: valid_attributes}
         }.to change{Unit.count}.by(1)
         post :create, params: {unit: valid_attributes}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -178,12 +178,12 @@ RSpec.describe UnitsController, type: :controller do
           post :create, params: {unit: valid_attributes}
         }.to change{Unit.count}.by(1)
         post :create, params: {unit: valid_attributes}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "should handle invalid attributes" do
         post :create, params: {unit: invalid_attributes}
-        expect(response).to be_success
+        expect(response).to be_successful
         expect {
           post :create, params: {unit: invalid_attributes}
         }.to_not change{Unit.count}
@@ -213,7 +213,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in agent
         get :show, params: {id: unit.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -221,7 +221,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :show, params: {id: unit.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -229,7 +229,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :show, params: {id: unit.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -265,7 +265,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in operator
         get :edit, params: {id: unit.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -273,7 +273,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should succeed" do
         sign_in administrator
         get :edit, params: {id: unit.id}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -347,7 +347,7 @@ RSpec.describe UnitsController, type: :controller do
       it "should handle invalid attributes" do
         expect{
           put :update, params: {id: unit.id, unit: invalid_updated_attributes}
-          expect(response).to be_success
+          expect(response).to be_successful
           unit.reload
         }.to_not change{unit.unit}
       end

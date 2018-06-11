@@ -25,7 +25,7 @@ RSpec.describe PropertiesController, type: :controller do
         sign_in administrator
         property = Property.create! valid_attributes
         get :index, params: {}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
     end
@@ -35,7 +35,7 @@ RSpec.describe PropertiesController, type: :controller do
         sign_in operator
         property = Property.create! valid_attributes
         get :index, params: {}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe PropertiesController, type: :controller do
         sign_in agent
         property = Property.create! valid_attributes
         get :index, params: {}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -56,7 +56,7 @@ RSpec.describe PropertiesController, type: :controller do
         sign_in operator
         property = Property.create! valid_attributes
         get :show, params: {id: property.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe PropertiesController, type: :controller do
         sign_in agent
         property = Property.create! valid_attributes
         get :show, params: {id: property.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -75,7 +75,7 @@ RSpec.describe PropertiesController, type: :controller do
       it "returns a success response" do
         sign_in operator
         get :new, params: {}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe PropertiesController, type: :controller do
         sign_in administrator
         property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -103,14 +103,14 @@ RSpec.describe PropertiesController, type: :controller do
         sign_in operator
         property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "returns a success response" do
         sign_in operator
         property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -158,7 +158,7 @@ RSpec.describe PropertiesController, type: :controller do
         it "returns a success response (i.e. to display the 'new' template)" do
           sign_in operator
           post :create, params: {property: invalid_attributes}, session: valid_session
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
@@ -205,7 +205,7 @@ RSpec.describe PropertiesController, type: :controller do
           sign_in operator
           property = Property.create! valid_attributes
           put :update, params: {id: property.to_param, property: invalid_attributes}, session: valid_session
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
