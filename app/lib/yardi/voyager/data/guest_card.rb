@@ -4,7 +4,7 @@ module Yardi
       class GuestCard
         require 'nokogiri'
 
-        REJECTED_CUSTOMER_TYPES = %w{guarantor cancelled other}
+        # REJECTED_CUSTOMER_TYPES = %w{guarantor cancelled other}
         ACCEPTED_CUSTOMER_TYPES = %w{applicant approved_applicant future_resident prospect}
 
         attr_accessor :debug,
@@ -46,14 +46,12 @@ module Yardi
             raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data schema: #{e}")
           end
 
-          # TODO: Create Lead collection from Yardi Voyager GuestCard JSON
           raw_leads = root_node.map{|record| GuestCard.from_guestcard_node(record)}.flatten
 
           return raw_leads
         end
 
         def self.from_guestcard_node(data)
-          # TODO: Create Lead from GuestCard Hash
           prospects = []
           prospect_record = data['Customers']['Customer']
           prospect_preferences = data['CustomerPreferences']

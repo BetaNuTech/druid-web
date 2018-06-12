@@ -21,14 +21,28 @@ module Yardi
           }
         end
 
-        def request_body(params)
-          template_vars = config.merge(params)
-          return request_template % template_vars
+        def request_body(options)
+          template_vars = config.merge(options)
+          return request_template(options[:method]) % template_vars
         end
 
-        def request_template
+        def request_template(method=nil)
           # STUB
-          ""
+          case method
+          when 'stub'
+            template_stub
+          else
+            template_stub
+          end
+        end
+
+        def template_stub
+          body_template = ""
+
+          # Remove all line-feeds. Line-feeds kill the server for some reason.
+          body_template = body_template.gsub(/[\n\r]+/,'')
+
+          return body_template
         end
 
         def getData(options)
