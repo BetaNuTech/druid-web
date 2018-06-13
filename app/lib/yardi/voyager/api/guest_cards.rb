@@ -20,18 +20,18 @@ module Yardi
           return guestcards
         end
 
-	def request_template(method=nil)
-	  case method
-	  when 'GetYardiGuestActivity_Login'
-	    template_GetYardiGuestActivity_Login
-	  when 'ImportYardiGuest_Login'
-	    template_ImportYardiGuest_Login
-	  else
-	    template_GetYardiGuestActivity_Login
-	  end
-	end
+        def request_template(method=nil)
+          case method
+          when 'GetYardiGuestActivity_Login'
+            template_GetYardiGuestActivity_Login
+          when 'ImportYardiGuest_Login'
+            template_ImportYardiGuest_Login
+          else
+            template_GetYardiGuestActivity_Login
+          end
+        end
 
-	def template_GetYardiGuestActivity_Login
+        def template_GetYardiGuestActivity_Login
           body_template = <<~EOS
             <?xml version="1.0" encoding="utf-8"?>
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -58,7 +58,7 @@ module Yardi
           return body_template
         end
 
-	def template_ImportYardiGuest_Login
+        def template_ImportYardiGuest_Login
           body_template = <<~EOS
             <?xml version="1.0" encoding="utf-8"?>
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -74,7 +74,7 @@ module Yardi
                   <YardiPropertyId>%{propertyid}</YardiPropertyId>
                   <InterfaceEntity>%{vendorname}</InterfaceEntity>
                   <InterfaceLicense>%{license}</InterfaceLicense>
-		  <XmlDoc>%{xml}</XmlDoc>
+                  <XmlDoc>%{xml}</XmlDoc>
                 </%{method}>
               </soap:Body>
             </soap:Envelope>
@@ -85,6 +85,7 @@ module Yardi
 
           return body_template
         end
+
       end
     end
   end
