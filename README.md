@@ -232,6 +232,20 @@ An hourly background job imports Lead information into Druid. Ensure that the fo
 
 Hourly: `rake leads:yardi:import_guestcards`
 
+#### Druid Configuration
+
+```
+# Environment Variables
+YARDI_VOYAGER_DATABASE=gazv_live
+YARDI_VOYAGER_HOST=www.yardiasp14.com
+YARDI_VOYAGER_LICENSE=XXX
+YARDI_VOYAGER_PASSWORD=XXX
+YARDI_VOYAGER_SERVERNAME=gazv_live
+YARDI_VOYAGER_USERNAME=druid
+YARDI_VOYAGER_VENDORNAME=Druid ILS Guest Card
+YARDI_VOYAGER_WEBSHARE=21253beta
+```
+
 ### Cloudmailin
 
 Cloudmailin provides incoming mail via webhooks. Incoming mail is used by the following features:
