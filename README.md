@@ -40,10 +40,29 @@ Whenever a new config file MUST be created, be sure to:
   * add the config file to `.gitignore`
   * we do not want to create configuration files intended only for development/developers to be checked into source control
 
-
 ## Running
 
-Run: `bundle exec foreman start` to start the Puma application server and DelayedJob background workers.
+In development it is recommended to use the `bin/server` script to run the
+application. This script does the following:
+
+* Installs any missing gems using `bundler`
+* Checks for any security vulnerabilities with `bundle audit check --update`
+* Starts Foreman, which executes processes defined in `Procfile.dev`
+
+### Foreman Processes
+
+Foreman will automatically load environment variables as defined in the `.env` file. Be sure to customize this file before running the application.
+
+The following are started by Foreman in development (`Procfile.dev`):
+
+  * *web* Puma application server (configured in `config/puma.rb`)
+  * *worker* DelayedJob worker via `bundle exec rails jobs:work`
+  * *webpacker* WebPacker dev server (automatically compiles packfiles and reloads the browser when appropriate. This compiles the React component for `Lead#search`)
+
+The following are started by Foreman (or Heroku) in production (`Procfile`):
+
+  * *web* Puma application server
+  * *worker* DelayedJob worker
 
 ## Console
 
@@ -77,6 +96,12 @@ Be sure to create and update FactoryBot factories whenever a database model is c
 Run `bundle exec annotate` to annotate models, tests. and factories with
 model/table fields at the beginning of the file.  These annotations can be a
 huge help during development and testing to understand the database schema.
+
+# Documentation
+
+Place documentation in `README.md` or in `doc/`.  Guard will automatically any
+graphviz dot files using the rake task `rake docs:compile:dot`. This task may
+be run in a standalone fashion as well using the pattern `rake docs:compile:dot[doc/filename.dot]`
 
 # Services
 
