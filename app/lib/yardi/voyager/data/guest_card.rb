@@ -36,12 +36,22 @@ module Yardi
           end
 
           begin
+            # Handle Server Error
+            if data["Envelope"]["Body"].fetch("Fault", false)
+              err_msg = data["Envelope"]["Body"]["Fault"].to_s
+              raise Yardi::Voyager::Data::Error.new(err_msg)
+            end
+
+            # Handle Other Error
             error_messages = data["Envelope"]["Body"]["GetYardiGuestActivity_LoginResponse"]["GetYardiGuestActivity_LoginResult"].fetch("Messages",false)
             if error_messages
               err_msg = error_messages["Message"].fetch("__content__", "Unknown error")
               raise Yardi::Voyager::Data::Error.new(err_msg)
             end
+
+            # Extract Prospect Data
             root_node = data["Envelope"]["Body"]["GetYardiGuestActivity_LoginResponse"]["GetYardiGuestActivity_LoginResult"]["LeadManagement"]["Prospects"]["Prospect"]
+
           rescue => e
             raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data schema: #{e}")
           end
