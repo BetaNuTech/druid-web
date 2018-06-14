@@ -20,6 +20,23 @@ module Yardi
           return guestcards
         end
 
+        def sendGuestCards(propertyid:, leads:)
+          request_options = {
+            method: 'ImportYardiGuest_Login',
+            resource: 'ItfILSGuestCard.asmx',
+            propertyid: propertyid,
+            xml: Yardi::Voyager::Data::GuestCard.to_xml(leads: leads, propertyid: propertyid)
+          }
+          begin
+            response = getData(request_options)
+            # TODO process result
+          rescue => e
+            Rails.logger.error "Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            return false
+          end
+          return true
+        end
+
         def request_template(method=nil)
           case method
           when 'GetYardiGuestActivity_Login'

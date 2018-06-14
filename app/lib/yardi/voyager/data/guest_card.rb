@@ -19,6 +19,23 @@ module Yardi
           :events,
           :record_type
 
+        def self.from_lead(lead, yardi_property_id)
+          # TODO
+          card = GuestCard.new
+          card.name_prefix = lead.title
+          card.first_name = lead.first_name
+          card.last_name = lead.last_name
+          card.prospect_id = lead.remoteid
+          card.property_id = yardi_property_id
+          card.email = lead.email
+          card.phones = [
+            [lead.phone1_type.try(:downcase), lead.phone1],
+            [lead.phone2_type.try(:downcase), lead.phone2] ]
+          card.expected_move_in = lead.preference.move_in.strftime("%FT%T") if lead.preference.move_in.present?
+          card.preference_comment = lead.preference.notes
+          return card
+        end
+
         def self.from_GetYardiGuestActivity(data)
           root_node = nil
 
@@ -142,6 +159,46 @@ module Yardi
           end
 
           return prospects
+        end
+
+        def self.to_xml(leads:, propertyid:)
+          organization = Yardi::Voyager::Api::Configuration.new.vendorname
+          builder = Nokogiri::XML::Builder.new do |xml|
+            xml.LeadManagement {
+              xml.Prospects {
+                xml.Prospect {
+                  xml.Customers {
+                    leads.each do |lead|
+                      customer = GuestCard.from_lead(lead, propertyid)
+                      xml.Customer {
+                        xml.Identification('IDType' => 'PropertyID', 'IDValue' => yardipropertyid, 'OrganizationName' => organization)
+                        xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
+                        xml.Name {
+                          xml.FirstName customer.first_name
+                          xml.LastName customer.last_name
+                        }
+                        customer.phones.compact.each do |phone|
+                          if phone.first.present?
+                            xml.Phone('PhoneType' => phone[0])
+                            xml.PhoneNumber phone[1]
+                          end
+                        end
+                        xml.Email customer.email
+                        if customer.expected_move_in.present?
+                          xml.Lease {
+                            xml.ExpectedMoveInDate customer.expected_move_in
+                          }
+                        end
+                      }
+                    end
+                  }
+                }
+              }
+            }
+          end
+
+          # Return XML without XML doctype or carriage returns
+          return builder.doc.root.serialize(save_with:0)
         end
 
         def summary
