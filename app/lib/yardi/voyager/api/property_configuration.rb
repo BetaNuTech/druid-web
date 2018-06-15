@@ -9,11 +9,11 @@ module Yardi
             method: 'GetPropertyConfigurations',
             resource: 'ItfILSGuestCard.asmx'
           }
-          xml_data = getXML(request_options)
+          xml_data = getData(request_options)
           return xml_data
         end
 
-        def request_template
+        def request_template(method=nil)
           body_template = <<~EOS
             <?xml version="1.0" encoding="utf-8"?>
               <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

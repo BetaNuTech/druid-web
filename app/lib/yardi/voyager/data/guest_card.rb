@@ -170,8 +170,8 @@ module Yardi
                   xml.Customers {
                     leads.each do |lead|
                       customer = GuestCard.from_lead(lead, propertyid)
-                      xml.Customer {
-                        xml.Identification('IDType' => 'PropertyID', 'IDValue' => yardipropertyid, 'OrganizationName' => organization)
+                      xml.Customer('Type' => 'prospect') {
+                        xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => organization)
                         xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
                         xml.Name {
                           xml.FirstName customer.first_name
@@ -196,6 +196,9 @@ module Yardi
               }
             }
           end
+
+          # Return XML without carriage returns
+          #return builder.doc.serialize(save_with:0).gsub(/[\n\r]+/,'')
 
           # Return XML without XML doctype or carriage returns
           return builder.doc.root.serialize(save_with:0)
