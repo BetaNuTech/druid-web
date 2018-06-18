@@ -14,7 +14,7 @@ module Yardi
             response = getData(request_options)
             guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response)
           rescue => e
-            Rails.logger.error "Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            Rails.logger.error "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
             return []
           end
           return guestcards
@@ -29,12 +29,12 @@ module Yardi
           }
           begin
             response = getData(request_options)
-            # TODO process result
+            guestcards = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response.parsed_response)
           rescue => e
-            Rails.logger.error "Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            Rails.logger.error "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
             return false
           end
-          return true
+          return guestcards
         end
 
         def request_template(method=nil)
@@ -91,7 +91,7 @@ module Yardi
                   <YardiPropertyId>%{propertyid}</YardiPropertyId>
                   <InterfaceEntity>%{vendorname}</InterfaceEntity>
                   <InterfaceLicense>%{license}</InterfaceLicense>
-                  <XmlDoc>%{xml}</XmlDoc>
+                  %{xml}
                 </%{method}>
               </soap:Body>
             </soap:Envelope>

@@ -10,6 +10,7 @@ module Yardi
         def initialize(conf=nil)
           @debug = false
           @configuration = conf || Yardi::Voyager::Api::Configuration.new(:env)
+          @request_id = nil
         end
 
         def request_headers(method:, content_length:)
@@ -59,23 +60,23 @@ module Yardi
         end
 
         def fetch_data(url:, body:, headers: {}, options: {})
-          request_id = Digest::SHA1.hexdigest(rand(Time.now.to_i).to_s)[0..11]
+          @request_id = Digest::SHA1.hexdigest(rand(Time.now.to_i).to_s)[0..11]
           data = nil
           retries = 0
           begin
             start_time = Time.now
-            Rails.logger.warn "Yardi::Voyager::Api Requesting Data at #{url}, Action #{headers['SOAPAction']} [Request ID: #{request_id}]"
+            Rails.logger.warn "Yardi::Voyager::Api Requesting Data at #{url}, Action #{headers['SOAPAction']} #{format_request_id}"
             data = HTTParty.post(url, body: body, headers: headers)
             elapsed = ( Time.now - start_time ).round(2)
-            Rails.logger.warn "Yardi::Voyager::Api Completed request in #{elapsed}s [Request ID: #{request_id}]"
+            Rails.logger.warn "Yardi::Voyager::Api Completed request in #{elapsed}s #{format_request_id} "
           rescue Net::ReadTimeout => e
             if retries < 3
               retries += 1
-              Rails.logger.error "Yardi::Voyager::Api encountered a timeout fetching data from #{url}. Retry #{retries} of 3 [Request ID: #{request_id}]"
+              Rails.logger.error "Yardi::Voyager::Api encountered a timeout fetching data from #{url}. Retry #{retries} of 3 #{format_request_id}"
               sleep(5)
               retry
             else
-              Rails.logger.error "Yardi::Voyager::Api giving up [Request ID: #{request_id}]"
+              Rails.logger.error "Yardi::Voyager::Api giving up #{format_request_id}"
               raise e
             end
           end
@@ -88,6 +89,10 @@ module Yardi
 
         def api_root
           return "https://%{host}/%{webshare}/Webservices" % config
+        end
+
+        def format_request_id
+          return "[Request ID: #{@request_id}]"
         end
 
       end

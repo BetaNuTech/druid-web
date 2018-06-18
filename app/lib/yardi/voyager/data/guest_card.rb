@@ -37,17 +37,25 @@ module Yardi
         end
 
         def self.from_GetYardiGuestActivity(data)
+          self.from_api_response(response: data, method: 'GetYardiGuestActivity_Login')
+        end
+
+        def self.from_ImportYardiGuest(data)
+          self.from_api_response(response: data, method: 'ImportYardiGuest_Login')
+        end
+
+        def self.from_api_response(response:, method:)
           root_node = nil
 
-          case data
+          case response
           when String
             begin
-              data = JSON(data)
+              data = JSON(response)
             rescue => e
               raise Yardi::Voyager::Data::Error.new("Invalid GuestCard JSON: #{e}")
             end
           when Hash
-            # Noop
+            data = response
           else
             raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data. Should be JSON string or Hash")
           end
@@ -60,14 +68,14 @@ module Yardi
             end
 
             # Handle Other Error
-            error_messages = data["Envelope"]["Body"]["GetYardiGuestActivity_LoginResponse"]["GetYardiGuestActivity_LoginResult"].fetch("Messages",false)
+            error_messages = data["Envelope"]["Body"]["#{method}Response"]["#{method}Result"].fetch("Messages",false)
             if error_messages
               err_msg = error_messages["Message"].fetch("__content__", "Unknown error")
               raise Yardi::Voyager::Data::Error.new(err_msg)
             end
 
             # Extract Prospect Data
-            root_node = data["Envelope"]["Body"]["GetYardiGuestActivity_LoginResponse"]["GetYardiGuestActivity_LoginResult"]["LeadManagement"]["Prospects"]["Prospect"]
+            root_node = data["Envelope"]["Body"]["#{method}Response"]["#{method}Result"]["LeadManagement"]["Prospects"]["Prospect"]
 
           rescue => e
             raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data schema: #{e}")
