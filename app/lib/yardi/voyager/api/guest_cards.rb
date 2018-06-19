@@ -83,15 +83,15 @@ module Yardi
                 xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
               <soap:Body>
                 <%{method} xmlns="http://tempuri.org/YSI.Interfaces.WebServices/ItfILSGuestCard">
-                  <UserName>%{username}</UserName>
-                  <Password>%{password}</Password>
-                  <ServerName>%{servername}</ServerName>
-                  <Database>%{database}</Database>
-                  <Platform>%{platform}</Platform>
-                  <YardiPropertyId>%{propertyid}</YardiPropertyId>
-                  <InterfaceEntity>%{vendorname}</InterfaceEntity>
-                  <InterfaceLicense>%{license}</InterfaceLicense>
-                  %{xml}
+									<UserName>%{username}</UserName>
+									<Password>%{password}</Password>
+									<ServerName>%{servername}</ServerName>
+									<Database>%{database}</Database>
+									<Platform>%{platform}</Platform>
+									<YardiPropertyId>%{propertyid}</YardiPropertyId>
+									<InterfaceEntity>%{vendorname}</InterfaceEntity>
+									<InterfaceLicense>%{license}</InterfaceLicense>
+									<XmlDocument>%{xml}</XmlDocument>
                 </%{method}>
               </soap:Body>
             </soap:Envelope>

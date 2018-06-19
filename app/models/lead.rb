@@ -95,6 +95,10 @@ class Lead < ApplicationRecord
     self.class.priorities[self.priority]
   end
 
+  def shortid
+    id.to_s.gsub('-','')[0..19]
+  end
+
   private
 
 end

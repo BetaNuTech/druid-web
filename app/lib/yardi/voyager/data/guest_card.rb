@@ -179,6 +179,7 @@ module Yardi
                     leads.each do |lead|
                       customer = GuestCard.from_lead(lead, propertyid)
                       xml.Customer('Type' => 'prospect') {
+                        xml.Identification('IDType' => 'ThirdPartyID', 'IDValue' => lead.shortid, 'OrganizationName' => organization)
                         xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => organization)
                         xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
                         xml.Name {
