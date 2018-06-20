@@ -165,6 +165,43 @@ RSpec.describe Property, type: :model do
       end
     end
 
+    describe "property_agents" do
+      describe "manager" do
+
+        include_context "users"
+
+        let(:property) { create(:property) }
+        let(:agent) {
+          user = create(:user)
+          user.property_agents = [PropertyAgent.new(user: user, property: property)]
+          user.role = agent_role
+          user.save!
+          user
+        }
+        let(:agent2) {
+          user = create(:user)
+          user.property_agents = [PropertyAgent.new(user: user, property: property)]
+          user.role = manager_role
+          user.save!
+          user
+        }
+        let(:agent3) {
+          user = create(:user)
+          user.property_agents = [PropertyAgent.new(user: user, property: property)]
+          user.role = manager_role
+          user.save!
+          user
+        }
+        let(:agents) { agent3; agent2; agent }
+
+        it "should return the agents with a manager role" do
+          agents
+          expect(property.managers).to eq([agent3, agent2])
+        end
+
+      end
+    end
+
     describe "class methods" do
       describe "find_by_code_and_source" do
         let(:property1) { create(:property) }

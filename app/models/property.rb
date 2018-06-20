@@ -93,4 +93,15 @@ class Property < ApplicationRecord
     # TODO REFACTOR
     property_agents.first.try(:user)
   end
+
+  # Return the first active manager user with an active assignment to the Property
+  def managers
+    User.
+      includes(:role, property_agents: [:property]).
+      where(properties: {id: self.id},
+            property_agents: {active: true},
+            roles: {slug: Role.manager.slug}).
+      order('property_agents.created_at ASC')
+  end
+
 end
