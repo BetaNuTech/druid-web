@@ -226,6 +226,16 @@ RAILS_LOG_TO_STDOUT=enabled
 PAPERTRAIL_API_TOKEN=XXX (automatically set by addon configuration)
 ```
 
+### ScoutApp
+
+ScoutApp provides performance analysis.
+
+On Heroku, this service is provisioned as an addon using the 'Chairlift' (free) tier.
+
+#### Druid Configuration
+
+* Gem: `scout_apm`
+
 ### Mailgun
 
 Mailgun provides outgoing email service for the application, used by ActionMailer.

@@ -38,6 +38,7 @@ gem 'liquid', "~> 4.0"
 gem 'twilio-ruby', "~> 5.10"
 gem 'kaminari', "~> 1.1"
 gem 'ckeditor', "~> 4.2"
+gem 'scout_apm', "~> 2.4"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.13'
