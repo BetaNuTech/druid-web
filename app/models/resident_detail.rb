@@ -43,7 +43,7 @@ class ResidentDetail < ApplicationRecord
   def crypto_key
     unless (key = ENV.fetch('CRYPTO_KEY', nil)).present?
       key = DEFAULT_CRYPTO_KEY
-      err_message = "ERROR: ENV[CRYPTO_KEY] is not set!!! Defaulting to '#{key}'"
+      err_message = "ERROR: ENV[CRYPTO_KEY] is not set!!! Using default."
       Rails.logger.error err_message
     end
     # Key must be 32 characters
