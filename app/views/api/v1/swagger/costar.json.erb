@@ -21,10 +21,10 @@
     }
   ],
   "schemes": [
-    "https"
+    "<%= Rails.env.development? ? 'http' : 'https' %>"
   ],
   "paths": {
-    "leads.json": {
+    "/leads.json": {
       "post": {
         "tags": [
           "lead"
@@ -157,6 +157,7 @@
       "properties": {
         "property_id": {
           "type": "string",
+          "required": true,
           "description": "Listing Property Code/ID"
         },
         "title": {
@@ -165,66 +166,81 @@
         },
         "first_name": {
           "type": "string",
+          "required": true,
           "description": "Lead first name"
         },
         "last_name": {
           "type": "string",
+          "required": false,
           "description": "Lead last name"
         },
         "phone1": {
           "type": "string",
+          "required": true,
           "description": "Lead phone number"
         },
         "phone2": {
           "type": "string",
+          "required": false,
           "description": "Lead alternate phone"
         },
         "fax": {
           "type": "string",
+          "required": false,
           "description": "Lead fax number"
         },
         "email": {
           "type": "string",
+          "required": true,
           "description": "Lead email address"
         },
         "preference_attributes": {
           "type": "object",
           "properties": {
             "min_area": {
-              "type": "string",
+              "type": "integer",
+              "required": false,
               "description": "Minimum Unit Size (square feet)"
             },
             "max_area": {
-              "type": "string",
+              "type": "integer",
+              "required": false,
               "description": "Maximum Unit Size (square feet)"
             },
             "move_in": {
               "type": "string",
+              "required": false,
               "format": "date",
               "description": "Move in date"
             },
             "baths": {
               "type": "integer",
+              "required": false,
               "description": "Bathrooms"
             },
             "beds": {
               "type": "integer",
+              "required": false,
               "description": "Bedrooms"
             },
             "pets": {
               "type": "boolean",
+              "required": false,
               "description": "Pets permitted (true|false)"
             },
             "smoker": {
               "type": "boolean",
+              "required": false,
               "description": "Smoking permitted (true|false)"
             },
             "washerdryer": {
               "type": "boolean",
+              "required": false,
               "description": "Washer/Dryer connections present"
             },
             "notes": {
               "type": "string",
+              "required": false,
               "description": "Notes and comments from Lead"
             }
           }
