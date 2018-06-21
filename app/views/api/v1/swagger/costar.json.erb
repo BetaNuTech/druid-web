@@ -1,0 +1,319 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Druid Lead Management App",
+    "description": "Lead API for data source: '<%= @source.name %>'",
+    "version": "<%= DruidWeb::VERSION %>",
+    "contact": {
+      "email": "patrick@bluestone-prop.com"
+    },
+    "license": {
+      "name": "Proprietary and Closed Source",
+      "url": ""
+    }
+  },
+  "host": "<%= request.host_with_port %>",
+  "basePath": "/api/v1/",
+  "tags": [
+    {
+      "name": "lead",
+      "description": "Incoming lead information"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "leads.json": {
+      "post": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "Post a Lead to Druid",
+        "description": "POST a JSON document containing Lead data. \n \
+           - Perform an HTTP POST with `Content-Type: application/json` (NOT `application/x-www-form-urlencoded` or `multipart/form-data`) \n \
+           - Include a `?token=` param in the URL for authentication. \n \
+           - Validation: `first_name` and one of [ `phone1`, `phone2`, `email` ] are required keys. \n \
+          ",
+        "operationId": "addLead",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Lead Data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Lead"
+            }
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "description": "Authentication Token provided by Bluestone",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "$ref": "#/responses/InvalidLeadResponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Lead"
+            },
+            "examples": {
+              "application/json": {
+                "$ref": "#/responses/LeadResponse"
+              }
+            }
+          },
+          "201": {
+            "description": "Record was created successfully",
+            "schema": {
+              "$ref": "#/definitions/Lead"
+            },
+            "examples": {
+              "application/json": {
+                "$ref": "#/responses/LeadResponse"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "Get Leads created by this source",
+        "description": "GET leads.json with a ?token= parameter for authentication and an optional ?limit= parameter to limit results to the last XXX Leads created by this source",
+        "operationId": "getLeads",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "description": "Authentication Token provided by Bluestone",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of records to return",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/responses/LeadsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "$ref": "#/responses/LeadsResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": [],
+  "definitions": {
+    "Lead": {
+      "type": "object",
+      "properties": {
+        "property_id": {
+          "type": "string",
+          "description": "Listing Property Code/ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "Name prefix"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "Lead first name"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Lead last name"
+        },
+        "phone1": {
+          "type": "string",
+          "description": "Lead phone number"
+        },
+        "phone2": {
+          "type": "string",
+          "description": "Lead alternate phone"
+        },
+        "fax": {
+          "type": "string",
+          "description": "Lead fax number"
+        },
+        "email": {
+          "type": "string",
+          "description": "Lead email address"
+        },
+        "preference_attributes": {
+          "type": "object",
+          "properties": {
+            "min_area": {
+              "type": "string",
+              "description": "Minimum Unit Size (square feet)"
+            },
+            "max_area": {
+              "type": "string",
+              "description": "Maximum Unit Size (square feet)"
+            },
+            "move_in": {
+              "type": "string",
+              "format": "date",
+              "description": "Move in date"
+            },
+            "baths": {
+              "type": "integer",
+              "description": "Bathrooms"
+            },
+            "beds": {
+              "type": "integer",
+              "description": "Bedrooms"
+            },
+            "pets": {
+              "type": "boolean",
+              "description": "Pets permitted (true|false)"
+            },
+            "smoker": {
+              "type": "boolean",
+              "description": "Smoking permitted (true|false)"
+            },
+            "washerdryer": {
+              "type": "boolean",
+              "description": "Washer/Dryer connections present"
+            },
+            "notes": {
+              "type": "string",
+              "description": "Notes and comments from Lead"
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "InvalidLeadResponse": {
+      "errors": {
+          "email": [
+              "can't be blank"
+          ]
+      }
+    },
+    "LeadResponse": {
+      "id": "6ddcb08b-bf5a-42eb-9617-e836521089bf",
+      "title": "",
+      "first_name": "Yoda",
+      "last_name": "Yodason",
+      "referral": "Darth Sidious",
+      "state": null,
+      "notes": "",
+      "first_comm": null,
+      "last_comm": null,
+      "phone1": "NA",
+      "phone2": "",
+      "fax": "",
+      "email": "yoda@dagobah.force",
+      "created_at": "2018-01-02T17:53:20.514Z",
+      "updated_at": "2018-01-02T17:53:20.514Z",
+      "preference": {
+        "min_area": 50,
+        "max_area": 51,
+        "min_price": "100.0",
+        "max_price": "200.0",
+        "move_in": "2017-12-22T00:00:00.000Z",
+        "baths": null,
+        "beds": 0,
+        "smoker": false,
+        "washerdryer": false,
+        "notes": "do you take Republic Credits?"
+      },
+      "property": {
+        "id": "203c343b-f546-4d31-b1e2-246cb6393e5d",
+        "name": "Test Property",
+        "source": "Druid WebApp",
+        "remoteid": "XXX"
+      },
+      "url": "http://localhost:3000/leads/6ddcb08b-bf5a-42eb-9617-e836521089bf.json"
+    },
+    "LeadsResponse": [
+      {
+        "id": "6ddcb08b-bf5a-42eb-9617-e836521089bf",
+        "title": "Mr.",
+        "first_name": "Yoda",
+        "last_name": "Yodason",
+        "referral": "Darth Sidious",
+        "state": null,
+        "notes": "",
+        "first_comm": null,
+        "last_comm": null,
+        "phone1": "NA",
+        "phone2": "",
+        "fax": "",
+        "email": "yoda@dagobah.force",
+        "created_at": "2018-01-02T17:53:20.514Z",
+        "updated_at": "2018-01-02T17:53:20.514Z",
+        "preference": {
+          "min_area": 50,
+          "max_area": 51,
+          "min_price": "100.0",
+          "max_price": "200.0",
+          "move_in": "2017-12-22T00:00:00.000Z",
+          "baths": null,
+          "beds": 0,
+          "smoker": false,
+          "washerdryer": false,
+          "notes": "do you take Republic Credits?"
+        },
+        "property": {
+          "id": "203c343b-f546-4d31-b1e2-246cb6393e5d",
+          "name": "Test Property",
+          "source": "Druid WebApp",
+          "remoteid": "XXX"
+        },
+        "url": "http://localhost:3000/leads/6ddcb08b-bf5a-42eb-9617-e836521089bf.json"
+      }
+    ]
+  },
+  "externalDocs": null
+}
