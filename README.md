@@ -356,3 +356,14 @@ provisions sub-accounts for management.
 | Production  | Messaging | Unconfigured | Unconfigured                                            |
 |-------------+-----------+--------------+---------------------------------------------------------|
 ```
+
+### Exception Notification
+
+The `exception_notification` gem is used to email error notifications to developers.
+
+#### Druid Configuration
+
+```
+# Environment Variables
+EXCEPTION_RECIPIENTS='example@example.com,example2@example.com'
+```

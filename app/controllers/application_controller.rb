@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_property
   around_action :user_timezone, if: :current_user
+  before_action :prepare_exception_notifier
 
   private
 
@@ -24,6 +25,12 @@ class ApplicationController < ActionController::Base
 
   def set_property
     @property = @current_property ||= Property.where(id: (params[:property_id] || 0)).first || current_user.try(:properties).try(:first)
+  end
+
+  def prepare_exception_notifier
+    request.env["exception_notifier.exception_data"] = {
+      current_user: current_user
+    }
   end
 
 end

@@ -39,6 +39,7 @@ gem 'twilio-ruby', "~> 5.10"
 gem 'kaminari', "~> 1.1"
 gem 'ckeditor', "~> 4.2"
 gem 'scout_apm', "~> 2.4"
+gem 'exception_notification', "~> 4.2"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.13'
