@@ -57,11 +57,15 @@ module Yardi
           rescue Net::ReadTimeout => e
             if retries < 3
               retries += 1
-              Rails.logger.error "Yardi::Voyager::Api encountered a timeout fetching data from #{url}. Retry #{retries} of 3 [Request ID: #{request_id}]"
+              msg = "Yardi::Voyager::Api encountered a timeout fetching data from #{url}. Retry #{retries} of 3 [Request ID: #{request_id}]"
+              Rails.logger.error msg
+              ErrorNotification.send(StandardError.new(msg))
               sleep(5)
               retry
             else
-              Rails.logger.error "Yardi::Voyager::Api giving up [Request ID: #{request_id}]"
+              msg = "Yardi::Voyager::Api giving up [Request ID: #{request_id}]"
+              Rails.logger.error msg
+              ErrorNotification.send(StandardError.new(msg))
               raise e
             end
           end

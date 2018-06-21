@@ -361,9 +361,14 @@ provisions sub-accounts for management.
 
 The `exception_notification` gem is used to email error notifications to developers.
 
+The `ErrorNotification` class is exposed to allow easy notification of errors from anywhere:
+
+Usage: `ErrorNotification.send(StandardError.new('error message'), {extra1: 'foo', extra2: 'bar'})`
+
 #### Druid Configuration
 
 ```
 # Environment Variables
-EXCEPTION_RECIPIENTS='example@example.com,example2@example.com'
+EXCEPTION_RECIPIENTS='example@example.com,example2@example.com' # Required or notification gracefully fails
+EXCEPTION_NOTIFIER_ENABLED=true   # Enabled by default
 ```

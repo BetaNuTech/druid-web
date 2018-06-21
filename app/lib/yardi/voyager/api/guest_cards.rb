@@ -14,7 +14,9 @@ module Yardi
             response = getData(request_options)
             guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response)
           rescue => e
-            Rails.logger.error "Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            msg = "Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            Rails.logger.error msg
+            ErrorNotification.send(StandardError.new(msg))
             return []
           end
           return guestcards

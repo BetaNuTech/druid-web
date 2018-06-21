@@ -45,6 +45,7 @@ class ResidentDetail < ApplicationRecord
       key = DEFAULT_CRYPTO_KEY
       err_message = "ERROR: ENV[CRYPTO_KEY] is not set!!! Using default."
       Rails.logger.error err_message
+      ErrorNotification.send(StandardError.new(err_message),{ resident: resident})
     end
     # Key must be 32 characters
     return ( key + '0'*32  )[0..31]
