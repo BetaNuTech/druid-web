@@ -236,6 +236,13 @@ On Heroku, this service is provisioned as an addon using the 'Chairlift' (free) 
 
 * Gem: `scout_apm`
 
+```
+# Environment Variables
+SCOUT_LOG_LEVEL=WARN
+SCOUT_MONITOR=true
+SCOUT_KEY=XXX
+```
+
 ### Mailgun
 
 Mailgun provides outgoing email service for the application, used by ActionMailer.
