@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180608141831) do
+ActiveRecord::Schema.define(version: 2018_06_22_203032) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
   enable_extension "pgcrypto"
+  enable_extension "plpgsql"
 
   create_table "audits", force: :cascade do |t|
     t.integer "auditable_id"
@@ -420,7 +420,10 @@ ActiveRecord::Schema.define(version: 20180608141831) do
     t.string "country"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "remoteid"
+    t.integer "bathrooms"
     t.index ["property_id", "unit"], name: "index_units_on_property_id_and_unit", unique: true
+    t.index ["remoteid"], name: "index_units_on_remoteid"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

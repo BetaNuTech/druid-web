@@ -30,6 +30,7 @@ FactoryBot.define do
     floor { Faker::Number.between(1,3) }
     sqft { Faker::Number.between(400, 1200) }
     bedrooms { Faker::Number.between(1,3) }
+    bathrooms { Faker::Number.between(1,3) }
     description { Faker::Lorem.sentence }
     address1 { Faker::Address.street_address }
     address2 { Faker::Address.secondary_address }
@@ -37,5 +38,8 @@ FactoryBot.define do
     state { Faker::Address.state }
     zip { Faker::Address.postcode }
     country { "USA" }
+    sequence :remoteid do |n|
+      "remote-#{n}"
+    end
   end
 end

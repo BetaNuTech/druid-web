@@ -139,7 +139,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
 
     it "should return leads for the source associated with the provided token" do
       get :index, params: {token: source.api_token}, format: :json
-      expect(response).to have_http_status(:success)
+      expect(response).to be_successful
       response_json = JSON.parse(response.body)
       expect(response_json.size).to eq(2)
       expect(response_json[0]["id"]).to eq(lead2.id)
@@ -151,7 +151,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
     it "should limit the number of leads returned" do
       record_limit = 1
       get :index, params: {token: source.api_token, limit: record_limit}, format: :json
-      expect(response).to have_http_status(:success)
+      expect(response).to be_successful
       response_json = JSON.parse(response.body)
       expect(response_json.size).to eq(record_limit)
     end

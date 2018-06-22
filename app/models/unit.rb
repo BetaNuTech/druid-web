@@ -41,6 +41,9 @@ class Unit < ApplicationRecord
   validates :unit,
     presence: true,
     uniqueness: { case_sensitive: false, scope: :property_id }
+  validates :remoteid,
+    uniqueness: { case_sensitive: false, scope: :property_id },
+    if: Proc.new{|unit| unit.remoteid.present? }
 
   ### Class Methods
 
