@@ -18,6 +18,8 @@ staging)
   git push $staging_remote $tag:master
   echo "  - Running Migrations"
   heroku run rake db:migrate --app $staging_app
+  git tag -f staging-current
+  git push --tags -f
   ;;
 prod)
   echo "** Deploying to Production"
@@ -29,18 +31,12 @@ prod)
   git push $prod_remote $tag:master
   echo "  - Running Migrations"
   heroku run rake db:migrate --app $production_app
-  ;;
-production)
-  echo "Production"
-  echo "Production"
-  tag="prod-$date_str"
-  git tag -f $tag
-  git push --tags
-  git push $prod_remote $tag:master
+  git tag -f prod-current
+  git push --tags -f
   ;;
 *)
   echo "*** Environment unknown or not provided. Cowardly exiting."
-  echo "Usage: bin/deploy (staging|prod|production)"
+  echo "Usage: bin/deploy (staging|prod)"
   exit
   ;;
 esac
