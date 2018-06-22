@@ -199,6 +199,7 @@ class EngagementPolicyScheduler
   def log_error(msg)
     message = "EngagementPolicyScheduler ERROR: " + msg
     Rails.logger.error message
+    ErrorNotification.send(Error.new(message))
   end
 
 end

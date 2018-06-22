@@ -48,10 +48,20 @@ sources = {
     slug: 'YardiVoyager',
     incoming: false,
     active: true
+  },
+  "costar": {
+    name: 'CoStar',
+    slug: 'Costar',
+    incoming: true,
+    active: true
   }
 }
 sources.each_pair do |source_name, attrs|
   print "   - '#{source_name}' (slug: #{attrs[:slug]}) "
+  if (LeadSource.where(slug: attrs[:slug]).any?)
+    puts "[OK]".green
+    next
+  end
   source = LeadSource.new(attrs)
   if source.save
     puts "[OK]".green

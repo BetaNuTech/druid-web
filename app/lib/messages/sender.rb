@@ -28,10 +28,12 @@ module Messages
         rescue => e
           err_msg = "#{err_msg}: #{e.to_s}"
           Rails.logger.error err_msg
+          ErrorNotification.send(StandardError.new(err_msg))
           raise Error.new(err_msg)
         end
       else
         Rails.logger.error err_msg
+        ErrorNotification.send(StandardError.new(err_msg))
         raise Error.new(err_msg)
       end
     end
@@ -66,12 +68,14 @@ module Messages
       unless delivery.message.is_a?(Message) && delivery.message.present?
         msg = "Invalid MessageDelivery#{delivery.id}. Message not present"
         Rails.logger.error msg
+        ErrorNotification.send(StandardError.new(msg))
         raise Error.new(msg)
       end
 
       unless delivery.message.valid?
         msg = "Invalid MessageDelivery#{delivery.id}. Message is invalid: #{delivery.message.errors.to_a}"
         Rails.logger.error msg
+        ErrorNotification.send(StandardError.new(msg))
         raise Error.new(msg)
       end
 

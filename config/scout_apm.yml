@@ -1,0 +1,5 @@
+common: &defaults
+  name: 'Druid Lead Management'
+development:
+  dev_trace: true
+  monitor: true

@@ -226,6 +226,23 @@ RAILS_LOG_TO_STDOUT=enabled
 PAPERTRAIL_API_TOKEN=XXX (automatically set by addon configuration)
 ```
 
+### ScoutApp
+
+ScoutApp provides performance analysis.
+
+On Heroku, this service is provisioned as an addon using the 'Chairlift' (free) tier.
+
+#### Druid Configuration
+
+* Gem: `scout_apm`
+
+```
+# Environment Variables
+SCOUT_LOG_LEVEL=WARN
+SCOUT_MONITOR=true
+SCOUT_KEY=XXX
+```
+
 ### Mailgun
 
 Mailgun provides outgoing email service for the application, used by ActionMailer.
@@ -338,4 +355,20 @@ provisions sub-accounts for management.
 | Staging     | Messaging | 512-643-7241 | https://staging.druidsite.com/api/v1/messages?token=XXX |
 | Production  | Messaging | Unconfigured | Unconfigured                                            |
 |-------------+-----------+--------------+---------------------------------------------------------|
+```
+
+### Exception Notification
+
+The `exception_notification` gem is used to email error notifications to developers.
+
+The `ErrorNotification` class is exposed to allow easy notification of errors from anywhere:
+
+Usage: `ErrorNotification.send(StandardError.new('error message'), {extra1: 'foo', extra2: 'bar'})`
+
+#### Druid Configuration
+
+```
+# Environment Variables
+EXCEPTION_RECIPIENTS='example@example.com,example2@example.com' # Required or notification gracefully fails
+EXCEPTION_NOTIFIER_ENABLED=true   # Enabled by default
 ```

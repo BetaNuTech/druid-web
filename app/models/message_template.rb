@@ -84,11 +84,13 @@ class MessageTemplate < ApplicationRecord
           msg = "MessageTemplate Rendering Error (#{part}): #{e}"
           output[:errors][part] = [ msg ]
           Rails.logger.error msg
+          ErrorNotification.send(StandardError.new(msg), {message_template: self.id})
         else
           if template.errors.any?
             msg = "MessageTemplate Rendering Error (#{part}): #{template.errors.join('; ')}"
             output[:errors][part] = template.errors
             Rails.logger.error msg
+            ErrorNotification.send(StandardError.new(msg), {message_template: self.id})
           end
         end
       end
