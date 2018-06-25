@@ -11,11 +11,10 @@ module Leads
         raise "Lead Adapter Error! LeadSource record for #{LEAD_SOURCE_SLUG} is missing!" if @lead_source.nil?
         @property_code = get_property_code(params)
         @property = property_for_listing_code(@property_code)
-        @data = fetch(@property_code)
       end
 
-      def parse
-        # TODO
+      def processLeads
+        @data = fetch_GuestCards(@property_code)
         leads = collection_from_guestcards(@data)
         ActiveRecord::Base.transaction do
           leads.each{|l| l.save}
@@ -23,14 +22,39 @@ module Leads
         return leads
       end
 
+      def processUnitTypes
+        @data = fetch_Floorplans(@property_code)
+        unit_types = collection_from_floorplans(@data)
+        ActiveRecord::Base.transaction do
+          unit_types.each{|l| l.save}
+        end
+        return unit_types
+      end
+
       private
+
+      def collection_from_floorplans(floorplans)
+        return floorplans.map{|floorplan| unit_type_from_floorplan(floorplan)}
+      end
+
+      def unit_type_from_floorplan(floorplan)
+        unit_type = UnitType.where(property_id: @property.id, remoteid: floorplan.remoteid).first || UnitType.new
+        unit_type.property ||= @property
+        unit_type.name = floorplan.name
+        unit_type.remoteid = floorplan.remoteid
+        unit_type.bathrooms = floorplan.bathrooms
+        unit_type.bedrooms = floorplan.bedrooms
+        unit_type.market_rent = floorplan.market_rent
+        unit_type.sqft = floorplan.sqft
+
+        return unit_type
+      end
 
       def collection_from_guestcards(guestcards)
         return guestcards.map{|guestcard| lead_from_guestcard(guestcard)}
       end
 
       def lead_from_guestcard(guestcard)
-        # TODO
         lead = Lead.new
         preference = LeadPreference.new
 
@@ -65,8 +89,12 @@ module Leads
         return lead
       end
 
-      def fetch(propertycode)
+      def fetch_GuestCards(propertycode)
         return Yardi::Voyager::Api::GuestCards.new.getGuestCards(propertycode)
+      end
+
+      def fetch_Floorplans(propertycode)
+        return Yardi::Voyager::Api::Floorplans.new.getFloorplans(propertycode)
       end
 
       def lead_state_for(guestcard)

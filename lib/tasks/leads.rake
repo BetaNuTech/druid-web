@@ -31,7 +31,7 @@ namespace :leads do
         puts msg
         Rails.logger.warn msg
         adapter = Leads::Adapters::YardiVoyager.new({ property_code: property[:code] })
-        leads = adapter.parse
+        leads = adapter.processLeads
 
         count = leads.size
         succeeded = leads.select{|l| l.id.present? }.size
