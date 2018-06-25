@@ -13,6 +13,7 @@
 #  bathrooms   :integer
 #  bedrooms    :integer
 #  market_rent :decimal(, )      default(0.0)
+#  sqft        :decimal(, )      default(0.0)
 #
 
 require 'rails_helper'

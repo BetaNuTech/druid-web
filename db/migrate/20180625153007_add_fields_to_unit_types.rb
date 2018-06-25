@@ -4,6 +4,7 @@ class AddFieldsToUnitTypes < ActiveRecord::Migration[5.2]
     add_column :unit_types, :bathrooms, :integer
     add_column :unit_types, :bedrooms, :integer
     add_column :unit_types, :market_rent, :decimal, default: 0.0
+    add_column :unit_types, :sqft, :decimal, default: 0.0
     add_index :unit_types, :remoteid
   end
 end

@@ -13,6 +13,7 @@
 #  bathrooms   :integer
 #  bedrooms    :integer
 #  market_rent :decimal(, )      default(0.0)
+#  sqft        :decimal(, )      default(0.0)
 #
 
 FactoryBot.define do
@@ -26,6 +27,7 @@ FactoryBot.define do
     end
     bedrooms { Faker::Number.between(1,3) }
     bathrooms { Faker::Number.between(1,3) }
+    sqft { Faker::Number.between(600, 2500) }
     active true
   end
 end

@@ -404,6 +404,7 @@ ActiveRecord::Schema.define(version: 2018_06_25_153007) do
     t.integer "bathrooms"
     t.integer "bedrooms"
     t.decimal "market_rent", default: "0.0"
+    t.decimal "sqft", default: "0.0"
     t.index ["property_id", "name"], name: "index_unit_types_on_property_id_and_name", unique: true
     t.index ["remoteid"], name: "index_unit_types_on_remoteid"
   end

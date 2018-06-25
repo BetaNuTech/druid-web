@@ -34,6 +34,10 @@
 
   <div class="row">
     <div class="col-md-2 form-group">
+      <%= form.label :sqft, "Square Feet" %>
+      <%= form.number_field :sqft, class: "form-control" %>
+    </div>
+    <div class="col-md-2 form-group">
       <%= form.label :bedrooms %>
       <%= form.number_field :bedrooms, class: "form-control" %>
     </div>
