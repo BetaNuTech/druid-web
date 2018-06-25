@@ -9,13 +9,17 @@
 #  updated_at  :datetime         not null
 #  description :text
 #  property_id :uuid
+#  remoteid    :string
+#  bathrooms   :integer
+#  bedrooms    :integer
+#  market_rent :decimal(, )      default(0.0)
 #
 
 class UnitType < ApplicationRecord
   ### Class Concerns/Extensions
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :name, :description, :property_id, :active]
+  ALLOWED_PARAMS = [:id, :name, :description, :property_id, :bathrooms, :bedrooms, :market_rent, :active]
 
   ### Validations
   validates :name,

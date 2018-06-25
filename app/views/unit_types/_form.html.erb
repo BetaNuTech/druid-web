@@ -4,37 +4,46 @@
       <h2><%= pluralize(unit_type.errors.count, "error") %> prohibited this unit_type from being saved:</h2>
 
       <ul>
-      <% unit_type.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% unit_type.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="fieldset_content">
-    <div class="row">
-      <div class="col-md-6 form-group">
-        <%= form.label :property %>
-        <%= form.select :property_id, select_property(unit_type.property_id), {include_blank: true}, {class: "form-control"} %>
-      </div>
+  <div class="row">
+    <div class="col-md-6 form-group">
+      <%= form.label :property %>
+      <%= form.select :property_id, select_property(unit_type.property_id), {include_blank: true}, {class: "form-control"} %>
     </div>
   </div>
 
-  <div class="fieldset_content">
-    <div class="row">
-      <div class="col-md-6 form-group">
-        <%= form.label :name %>
-        <%= form.text_field :name, id: :unit_type_name, class: "form-control" %>
-      </div>
+  <div class="row">
+    <div class="col-md-6 form-group">
+      <%= form.label :name %>
+      <%= form.text_field :name, id: :unit_type_name, class: "form-control" %>
     </div>
   </div>
 
-  <div class="fieldset_content">
-    <div class="row">
-      <div class="col-md-8 form-group">
-        <%= form.label :description %>
-        <%= form.text_area :description, id: :unit_type_description, class: "form-control" %>
-      </div>
+  <div class="row">
+    <div class="col-md-8 form-group">
+      <%= form.label :description %>
+      <%= form.text_area :description, id: :unit_type_description, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 form-group">
+      <%= form.label :bedrooms %>
+      <%= form.number_field :bedrooms, class: "form-control" %>
+    </div>
+    <div class="col-md-2 form-group">
+      <%= form.label :bathrooms %>
+      <%= form.number_field :bathrooms, class: "form-control" %>
+    </div>
+    <div class="col-md-2 form-group">
+      <%= form.label :market_rent %>
+      <%= form.number_field :market_rent, class: "form-control" %>
     </div>
   </div>
 

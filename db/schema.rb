@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_22_203032) do
+ActiveRecord::Schema.define(version: 2018_06_25_153007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -400,7 +400,12 @@ ActiveRecord::Schema.define(version: 2018_06_22_203032) do
     t.datetime "updated_at", null: false
     t.text "description"
     t.uuid "property_id"
+    t.string "remoteid"
+    t.integer "bathrooms"
+    t.integer "bedrooms"
+    t.decimal "market_rent", default: "0.0"
     t.index ["property_id", "name"], name: "index_unit_types_on_property_id_and_name", unique: true
+    t.index ["remoteid"], name: "index_unit_types_on_remoteid"
   end
 
   create_table "units", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -422,6 +427,10 @@ ActiveRecord::Schema.define(version: 2018_06_22_203032) do
     t.datetime "updated_at", null: false
     t.string "remoteid"
     t.integer "bathrooms"
+    t.string "occupancy", default: "vacant"
+    t.string "lease_status", default: "available"
+    t.date "available_on"
+    t.decimal "market_rent", default: "0.0"
     t.index ["property_id", "unit"], name: "index_units_on_property_id_and_unit", unique: true
     t.index ["remoteid"], name: "index_units_on_remoteid"
   end

@@ -33,27 +33,57 @@
       </div>
 
       <div class="row">
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-4">
           <%= form.label :unit, "Unit Number/Name" %>
           <%= form.text_field :unit, id: :unit_unit, class: "form-control" %>
+        </div>
+        <div class="form-group col-md-4">
+          <%= form.label :remoteid, "Remote ID" %><br/>
+          <%= unit.remoteid || 'None' %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-2">
           <%= form.label :floor %>
           <%= form.number_field :floor, id: :unit_floor, class: "form-control" %>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-2">
           <%= form.label :sqft %>
           <%= form.number_field :sqft, id: :unit_sqft, class: "form-control" %>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-2">
           <%= form.label :bedrooms %>
           <%= form.number_field :bedrooms, id: :unit_bedrooms, class: "form-control" %>
         </div>
+        <div class="form-group col-md-2">
+          <%= form.label :bathrooms %>
+          <%= form.number_field :bathrooms, id: :unit_bathrooms, class: "form-control" %>
+        </div>
       </div>
 
+    </fieldset>
+
+    <fieldset>
+      <legend>Availability</legend>
+      <div class="row">
+        <div class="form-group col-md-2">
+          <%= form.label :occupancy %>
+          <%= form.select :occupancy, select_occupancy(unit.occupancy), {include_blank: false},{id: :unit_occupancy, class: "form-control"}   %>
+        </div>
+        <div class="form-group col-md-2">
+          <%= form.label :lease_status %>
+          <%= form.select :lease_status, select_lease_status(unit.lease_status), {include_blank: false},{id: :unit_lease_status, class: "form-control"}   %>
+        </div>
+        <div class="form-group col-md-2">
+          <%= form.label :available_on %>
+          <%= form.date_field :available_on, class: "form-control" %>
+        </div>
+        <div class="form-group col-md-2">
+          <%= form.label :market_rent %>
+          <%= form.number_field :market_rent, class: "form-control" %>
+        </div>
+      </div>
     </fieldset>
 
     <fieldset>

@@ -24,6 +24,10 @@
             <strong>Name:</strong>
             <%= @unit_type.name %>
           </p>
+          <p>
+            <strong>Remote ID:</strong>
+            <%- @unit_type.remoteid || 'None' %>
+          </p>
         </div>
       </div>
       <div class="row">
@@ -32,6 +36,21 @@
             <strong>Description:</strong>
             <%= @unit_type.description %>
           </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <strong>Bedrooms:</strong>
+          <%= @unit_type.bedrooms %>
+        </div>
+        <div class="col-md-2">
+          <strong>Bathrooms:</strong>
+          <%= @unit_type.bathrooms %>
+        </div>
+        <div class="col-md-2">
+          <strong>Market Rent:</strong>
+          <%= @unit_type.market_rent %>
         </div>
       </div>
 

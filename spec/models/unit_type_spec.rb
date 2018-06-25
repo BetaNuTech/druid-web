@@ -9,6 +9,10 @@
 #  updated_at  :datetime         not null
 #  description :text
 #  property_id :uuid
+#  remoteid    :string
+#  bathrooms   :integer
+#  bedrooms    :integer
+#  market_rent :decimal(, )      default(0.0)
 #
 
 require 'rails_helper'

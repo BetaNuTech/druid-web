@@ -19,6 +19,12 @@
 #  country        :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  remoteid       :string
+#  bathrooms      :integer
+#  occupancy      :string           default("vacant")
+#  lease_status   :string           default("available")
+#  available_on   :date
+#  market_rent    :decimal(, )      default(0.0)
 #
 
 FactoryBot.define do
@@ -41,5 +47,8 @@ FactoryBot.define do
     sequence :remoteid do |n|
       "remote-#{n}"
     end
+    occupancy {Unit::OCCUPANCY_STATUSES[rand(1)]}
+    lease_status {Unit::LEASE_STATUSES[rand(5)]}
+    market_rent { Faker::Number.between(600, 2500) }
   end
 end

@@ -19,6 +19,12 @@
 #  country        :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  remoteid       :string
+#  bathrooms      :integer
+#  occupancy      :string           default("vacant")
+#  lease_status   :string           default("available")
+#  available_on   :date
+#  market_rent    :decimal(, )      default(0.0)
 #
 
 require 'rails_helper'
@@ -55,7 +61,7 @@ RSpec.describe Unit, type: :model do
   end
 
   it "has ALLOWED_PARAMS" do
-    expect(Unit::ALLOWED_PARAMS).to eq([:id, :property_id, :unit_type_id, :rental_type_id, :unit, :floor, :sqft, :bedrooms, :address1, :address2, :city, :state, :zipcode, :country])
+    expect(Unit::ALLOWED_PARAMS.sort).to eq([:id, :property_id, :unit_type_id, :rental_type_id, :unit, :floor, :sqft, :bedrooms, :bathrooms, :occupancy, :lease_status, :available_on, :market_rent,  :address1, :address2, :city, :state, :zipcode, :country].sort)
   end
 
   describe "associations" do
