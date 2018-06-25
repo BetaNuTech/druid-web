@@ -3,7 +3,7 @@ namespace :unit_types do
   namespace :yardi do
 
     desc "Import GuestCards"
-    task :import_unit_types => :environment do
+    task :import_floorplans => :environment do
 
       properties = [
         {name: 'Maplebrook', code: 'maplebr'},
@@ -24,7 +24,7 @@ namespace :unit_types do
         end
 
         msg=<<~EOS
-          - Processed #{leads.size} Records
+          - Processed #{unit_types.size} Records
           - #{succeeded} Records saved
           - #{failures.size} Failed
         EOS

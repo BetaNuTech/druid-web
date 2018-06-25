@@ -33,7 +33,10 @@
             <tr>
               <td><%= link_to(unit_type.property_name, property_path(unit_type.property)) || 'None' %></td>
               <td class="first-column"><%= unit_type.name %></td>
-              <td><%= unit_type.description %></td>
+              <td>
+                <%= unit_type.size_summary %><br/>
+                <%= unit_type.description %>
+              </td>
               <td>
                 <%= link_to property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:show) %><% end %>&nbsp;
                 <%= link_to edit_property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:edit) %><% end %>&nbsp;

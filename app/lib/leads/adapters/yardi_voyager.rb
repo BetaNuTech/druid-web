@@ -94,7 +94,7 @@ module Leads
       end
 
       def fetch_Floorplans(propertycode)
-        return Yardi::Voyager::Api::Floorplans.new.getFloorplans(propertycode)
+        return Yardi::Voyager::Api::Floorplans.new.getFloorPlans(propertycode)
       end
 
       def lead_state_for(guestcard)

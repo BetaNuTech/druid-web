@@ -39,4 +39,7 @@ class UnitType < ApplicationRecord
   ### Class Methods
 
   ### Instance Methods
+  def size_summary
+    "%sBR %sBA (%s sqft)" % [bedrooms, bathrooms, sqft]
+  end
 end
