@@ -14,4 +14,22 @@ module UnitsHelper
   def select_lease_status(val)
     options_for_select(Unit::LEASE_STATUSES.map{|s| [s.humanize.capitalize, s]}, val)
   end
+
+  def unit_occupancy_icon(unit)
+    case unit.occupancy
+    when "vacant"
+      glyph(:ok)
+    else
+      glyph(:user)
+    end
+  end
+
+  def unit_occupancy_class(unit)
+    case unit.occupancy
+    when "vacant"
+      "unit_occupancy_vacant"
+    else
+      "unit_occupancy_occupied"
+    end
+  end
 end

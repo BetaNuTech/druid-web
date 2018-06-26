@@ -56,8 +56,7 @@ class Unit < ApplicationRecord
   ### Class Methods
 
   def self.occupied
-    # TODO: implement with Occupancy model
-    self.all
+    where(occupancy: 'occupied')
   end
 
   ### Instance Methods

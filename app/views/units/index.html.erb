@@ -16,10 +16,10 @@
         <thead>
           <tr>
             <th>Property</th>
+            <th></th>
             <th>Unit Type</th>
             <th>Rental Type</th>
             <th>Unit</th>
-            <th>Floor</th>
             <th>Sqft</th>
             <th>Bedrooms</th>
             <th>Address</th>
@@ -29,12 +29,15 @@
 
         <tbody>
           <% @units.each do |unit| %>
-            <tr>
+            <tr class="<%= unit_occupancy_class(unit) %>">
               <td><%= link_to(unit.property_name, property_path(unit.property)) %></td>
+              <td>
+                <%= unit_occupancy_icon(unit) %>
+                <%= unit.occupancy.try(:humanize) %>:<%= unit.lease_status.try(:humanize) %>
+              </td>
               <td><%= unit.unit_type_name %></td>
               <td><%= unit.rental_type_name %></td>
               <td><%= unit.unit %></td>
-              <td><%= unit.floor %></td>
               <td><%= unit.sqft %></td>
               <td><%= unit.bedrooms %></td>
               <td><%= unit.address1 %></td>

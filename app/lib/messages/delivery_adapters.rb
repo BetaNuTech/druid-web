@@ -1,5 +1,3 @@
-require_relative './delivery_adapters/action_mailer'
-
 module Messages
   module DeliveryAdapters
     # List valid/enabled adapter classes Here

@@ -22,7 +22,7 @@ module Messages
         adapter_name = adapter_record.slug
         begin
           raise "Invalid DeliveryAdapter #{adapter_name}" unless Messages::DeliveryAdapters.supported_source?(adapter_name)
-          adapter_class_name = "Messages::DeliveryAdapters::#{adapter_name}"
+          adapter_class_name = "::Messages::DeliveryAdapters::#{adapter_name}"
           adapter = Kernel.const_get(adapter_class_name)
           return adapter.new
         rescue => e
