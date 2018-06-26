@@ -59,6 +59,7 @@ module Yardi
           end
 
           data['Units']['Unit'].tap do |unit_data|
+            unit.remoteid = unit_data['Identification']['IDValue']
             unit.name = unit_data['Identification']['IDValue']
             unit.floorplan_id = unit_data['UnitType']
             unit.floorplan_name = unit_data['FloorplanName']

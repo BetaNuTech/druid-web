@@ -2,6 +2,7 @@ module Leads
   module Adapters
     class YardiVoyager
       LEAD_SOURCE_SLUG = 'YardiVoyager'
+      DEFAULT_RENTAL_TYPE = 'Residential'
 
       # Accepts a Hash
       #
@@ -31,7 +32,40 @@ module Leads
         return unit_types
       end
 
+      def processUnits
+        @data = fetch_Units(@property_code)
+        units = collection_from_yardi_units(@data)
+        ActiveRecord::Base.transaction do
+          units.each{|l| l.save}
+        end
+        return units
+      end
+
       private
+
+      def collection_from_yardi_units(units)
+        return units.map{|unit| unit_from_yardi_unit(unit)}
+      end
+
+      def unit_from_yardi_unit(yardi_unit)
+        unit = Unit.where(property_id: @property.id, remoteid: yardi_unit.remoteid).first || Unit.new
+        unit_type = UnitType.where(property_id: @property.id, remoteid: yardi_unit.floorplan_id).first
+        rental_type = RentalType.where(name: DEFAULT_RENTAL_TYPE).first
+
+        unit.property_id ||= @property.id
+        unit.unit_type_id ||= unit_type.try(:id)
+        unit.rental_type_id ||= rental_type.try(:id)
+        unit.remoteid ||= yardi_unit.remoteid
+        unit.unit ||= yardi_unit.name
+
+        unit.bedrooms = yardi_unit.bedrooms
+        unit.bathrooms = yardi_unit.bathrooms
+        unit.lease_status = yardi_unit.lease_status
+        unit.occupancy = yardi_unit.occupancy
+        unit.available_on = yardi_unit.available_on
+
+        return unit
+      end
 
       def collection_from_floorplans(floorplans)
         return floorplans.map{|floorplan| unit_type_from_floorplan(floorplan)}
@@ -95,6 +129,10 @@ module Leads
 
       def fetch_Floorplans(propertycode)
         return Yardi::Voyager::Api::Floorplans.new.getFloorPlans(propertycode)
+      end
+
+      def fetch_Units(propertycode)
+        return Yardi::Voyager::Api::Units.new.getUnits(propertycode)
       end
 
       def lead_state_for(guestcard)
