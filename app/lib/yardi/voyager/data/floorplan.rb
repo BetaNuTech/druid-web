@@ -53,11 +53,9 @@ module Yardi
         end
 
         def self.from_floorplan_node(data)
-          floorplans = []
-          floorplan_record = data
           floorplan = Floorplan.new
-          floorplan.name = floorplan_record["Name"]
-          floorplan_record["Room"].each do |room|
+          floorplan.name = data["Name"]
+          data["Room"].each do |room|
             case room['RoomType']
             when 'Bedroom'
               floorplan.bedrooms = room["Count"].to_i
@@ -65,9 +63,9 @@ module Yardi
               floorplan.bathrooms = room["Count"].to_i
             end
           end
-          floorplan.sqft = floorplan_record["SquareFeet"]["Max"].to_i
-          floorplan.market_rent = floorplan_record["MarketRent"]["Max"].to_f
-          floorplan.remoteid = floorplan_record["IDValue"]
+          floorplan.sqft = data["SquareFeet"]["Max"].to_i
+          floorplan.market_rent = data["MarketRent"]["Max"].to_f
+          floorplan.remoteid = data["IDValue"]
           return floorplan
         end
       end

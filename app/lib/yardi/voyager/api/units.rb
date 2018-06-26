@@ -12,10 +12,9 @@ module Yardi
           }
           begin
             response = getData(request_options)
-            units = []
-            binding.pry
+            units = Yardi::Voyager::Data::Unit.from_UnitAvailability_Login(response.parsed_response)
           rescue => e
-            msg = "#{format_request_id} Yardi::Voyager::Api::Units encountered an error fetching data. #{e}"
+            msg = "#{format_request_id} Yardi::Voyager::Api::Units encountered an error fetching data. #{e} #{e.backtrace.to_a.first}"
             Rails.logger.error msg
             ErrorNotification.send(StandardError.new(msg))
             return []

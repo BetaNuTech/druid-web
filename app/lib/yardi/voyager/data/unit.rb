@@ -42,7 +42,6 @@ module Yardi
 
             # Extract Unit Data
             root_node = data['Envelope']['Body']["#{method}Response"]["#{method}Result"]['PhysicalProperty']['Property']['ILS_Unit']
-
           rescue => e
             raise Yardi::Voyager::Data::Error.new("Invalid Unit data schema: #{e}")
           end
@@ -53,8 +52,25 @@ module Yardi
         end
 
         def self.from_unit_node(data)
-          # TODO
-          return nil
+          unit = Unit.new
+
+          if ( availability = data.fetch('Availability',{}).fetch('MadeReadyDate', nil)).present?
+            unit.available_on = Date.new(availability['Year'].to_i, availability['Month'].to_i, availability['Day'].to_i)
+          end
+
+          data['Units']['Unit'].tap do |unit_data|
+            unit.name = unit_data['Identification']['IDValue']
+            unit.floorplan_id = unit_data['UnitType']
+            unit.floorplan_name = unit_data['FloorplanName']
+            unit.bedrooms = unit_data['UnitBedrooms'].to_i
+            unit.bathrooms = unit_data['UnitBathrooms'].to_i
+            unit.sqft = unit_data['MaxSquareFeet'].to_i
+            unit.market_rent = unit_data['MarketRent'].to_f
+            unit.occupancy = unit_data['UnitOccupancyStatus']
+            unit.lease_status = unit_data['UnitLeasedStatus']
+          end
+
+          return unit
         end
 
       end
