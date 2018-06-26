@@ -14,7 +14,7 @@ FactoryBot.define do
     factory :email_delivery_adapter do
       message_type { MessageType.email || create(:email_message_type)}
       name 'ActionMailer'
-      slug 'ActionMailer'
+      slug 'Actionmailer'
       active { true }
       sequence :api_token do |n|
         "ActionMailer Token#{n}"

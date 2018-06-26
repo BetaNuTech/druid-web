@@ -91,12 +91,12 @@ namespace :db do
       # Message Delivery Adapters
       puts '*** Creating Message Delivery Adapters'
       print '   - Mail: ActionMailer'
-      if MessageDeliveryAdapter.where(slug: 'ActionMailer').any?
+      if MessageDeliveryAdapter.where(slug: 'Actionmailer').any?
         puts '[OK]'.green
       else
         adapter = MessageDeliveryAdapter.new(
           name: 'ActionMailer',
-          slug: 'ActionMailer',
+          slug: 'Actionmailer',
           description: 'Message delivery via Email and Rails application mail backend',
           active: true,
           message_type: MessageType.find_by_name('Email')

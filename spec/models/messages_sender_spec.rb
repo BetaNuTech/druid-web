@@ -8,7 +8,7 @@ RSpec.describe Messages::Sender do
     let(:message_delivery_adapter_ar) {
       MessageDeliveryAdapter.create!(
         message_type: message_type,
-        slug: 'ActionMailer',
+        slug: 'Actionmailer',
         name: 'ActionMailer',
         active: true
       )
@@ -41,7 +41,7 @@ RSpec.describe Messages::Sender do
       message_delivery_adapter_ar2
       message_delivery_adapter_ar3
       sender = Messages::Sender.new(delivery)
-      assert sender.adapter.is_a?(Messages::DeliveryAdapters::ActionMailer)
+      assert sender.adapter.is_a?(Messages::DeliveryAdapters::Actionmailer)
     end
 
     it "performs delivery of a message with the correct adapter" do

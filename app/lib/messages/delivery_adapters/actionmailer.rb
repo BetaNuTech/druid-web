@@ -1,6 +1,6 @@
 module Messages
   module DeliveryAdapters
-    class ActionMailer
+    class Actionmailer
 
       MESSAGE_DELIVERY_REPLY_TO_ENV='MESSAGE_DELIVERY_REPLY_TO'
 
