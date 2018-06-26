@@ -58,6 +58,7 @@ module Leads
         unit.remoteid ||= yardi_unit.remoteid
         unit.unit ||= yardi_unit.name
 
+        unit.sqft = yardi_unit.sqft
         unit.bedrooms = yardi_unit.bedrooms
         unit.bathrooms = yardi_unit.bathrooms
         unit.lease_status = yardi_unit.lease_status
