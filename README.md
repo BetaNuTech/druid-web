@@ -40,6 +40,30 @@ Whenever a new config file MUST be created, be sure to:
   * add the config file to `.gitignore`
   * we do not want to create configuration files intended only for development/developers to be checked into source control
 
+### Special
+
+#### CDR Database
+
+Setup of the Asterisk Call Data Record database is not performed by `bin/setup`.
+
+In production, this database is a replica MySQL instance. In development, it is best to load a database
+dump into a local instance.
+
+Example development setup would look like this:
+
+```
+mysql -e 'create database asteriskcdrdb; grant all privileges on asteriskcdrdb.* to 'cdrdb'@'localhost' identified by 'cdrdb_Password';"
+mysql asteriskcdrdb < db/cdrdb-schema.sql
+# OR
+mysql asteriskcdrdb < path/to/cdrdb-dump.sql
+```
+
+And add the `CDRDB_URL` environment variable to `.env`:
+
+```
+CDRDB_URL='mysql2://cdrdb:cdrdb_Password@localhost/asteriskcdrdb'
+```
+
 ## Running
 
 In development it is recommended to use the `bin/server` script to run the
@@ -210,6 +234,19 @@ On Heroku, this service is provisioned as an addon using the 'standard-0' tier.
 ```
 # Environment Variables
 DATABASE_URL=XXX (automatically set by addon configuration)
+```
+
+### Asterisk CDR Database
+
+In production, the Asterisk CDR database is a replicated MySQL database containing call records. This database backs the `Cdr` ActiveRecord model.
+
+A schema SQL file is provided in `db/cdrdb-schema.sql`
+
+#### Druid Configuration
+
+```
+# Environment Variables
+CDRDB_URL='mysql2://USER:PASSWORD@HOST/asteriskcdrdb'
 ```
 
 ### Papertrail

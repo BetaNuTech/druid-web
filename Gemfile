@@ -8,6 +8,7 @@ end
 
 gem 'rails', '~> 5.2'
 gem 'pg', '~> 0.21'
+gem 'mysql2', "~> 0.5"
 gem 'puma', '~> 3.11'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '~> 3.2'
