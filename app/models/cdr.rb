@@ -29,7 +29,7 @@
 #  flag_imported :integer          default(0)
 #
 
-# Reference: https://wiki.asterisk.org/wiki/display/AST/Asterisk+12+CDR+Specification
+### Data Reference: https://wiki.asterisk.org/wiki/display/AST/Asterisk+12+CDR+Specification
 
 class Cdr < CdrdbModel
   ### Class Concerns/Extensions/Configuration
@@ -39,9 +39,21 @@ class Cdr < CdrdbModel
   #DCONTEXTS = ["app-blackhole", "app-blacklist-add", "app-blacklist-remove", "app-calltrace-perform", "default", "ext-fax", "ext-group", "ext-local", "ext-meetme", "ext-queues", "from-did-direct", "from-internal", "from-internal-xfer", "from-queue", "from-trunk", "from-trunk-sip-a2b", "from-trunk-sip-voxox", "ivr-1", "ivr-10", "ivr-11", "ivr-12", "ivr-13", "ivr-14", "ivr-15", "ivr-16", "ivr-17", "ivr-18", "ivr-19", "ivr-20", "ivr-21", "ivr-22", "ivr-23", "ivr-24", "ivr-25", "ivr-26", "ivr-27", "ivr-28", "ivr-29", "ivr-30", "ivr-31", "ivr-32", "ivr-33", "ivr-34", "ivr-35", "ivr-36", "ivr-37", "ivr-39", "ivr-4", "ivr-40", "ivr-5", "ivr-6", "ivr-7", "ivr-8", "ivr-9", "vm-callme"]
 
   ### Scopes
-  scope :incoming, -> { where(dcontext: 'from-did-direct') }
+  scope :incoming, -> { where(dcontext: 'from-did-direct', disposition: 'ANSWERED') }
 
   ### Class Methods
+
+  def self.incoming_from(number)
+    incoming.where(src: Cdr.format_phone(number))
+  end
+
+  def self.format_phone(number)
+    out = ( number || '' ).to_s.gsub(/[^0-9]/,'')
+    if (out.length > 10 && out[0] == '1')
+      out = out[1..-1]
+    end
+    return out
+  end
 
   ### Instance Methods
 
