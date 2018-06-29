@@ -71,6 +71,7 @@ class Cdr < CdrdbModel
   end
 
   def self.number_variants(numbers)
+    numbers = numbers.select{|number| (number || '').length > 1}
     return Array(numbers).compact.
       map{|number| [ self.format_phone(number), self.format_phone(number, prefixed: true) ]}.
       flatten.uniq
