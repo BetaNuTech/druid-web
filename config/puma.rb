@@ -50,7 +50,7 @@ preload_app!
 #
  on_worker_boot do
    ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-   CdrdbModel.establish_connection if defined?(CdrdbModel)
+   CdrdbModel.establish_connection(ENV.fetch('CDRDB_URL','')) if defined?(CdrdbModel)
  end
 #
 
