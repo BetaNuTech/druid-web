@@ -38,6 +38,7 @@ preload_app!
 #
  before_fork do
    ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
+   CdrdbModel.connection_pool.disconnect! if defined?(CdrdbModel)
  end
 
 # The code in the `on_worker_boot` will be called if you are using
@@ -49,6 +50,7 @@ preload_app!
 #
  on_worker_boot do
    ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+   CdrdbModel.establish_connection if defined?(CdrdbModel)
  end
 #
 
