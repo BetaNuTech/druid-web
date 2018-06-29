@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_26_201836) do
+ActiveRecord::Schema.define(version: 2018_06_29_172502) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -163,6 +163,8 @@ ActiveRecord::Schema.define(version: 2018_06_26_201836) do
     t.string "remoteid"
     t.string "middle_name"
     t.datetime "conversion_date"
+    t.json "call_log"
+    t.datetime "call_log_updated_at"
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"

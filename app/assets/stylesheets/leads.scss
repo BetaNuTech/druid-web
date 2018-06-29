@@ -113,6 +113,18 @@ table#leads-table {
   }
 }
 
+.Lead .calls {
+  grid-area: LeadCalls;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
 @media(min-width: 600px) {
   .Lead {
     display: grid;
@@ -127,6 +139,7 @@ table#leads-table {
       "LeadScheduledActions LeadScheduledActions LeadScheduledActions"
       "LeadComments LeadComments LeadComments"
       "LeadMessages LeadMessages LeadMessages"
+      "LeadCalls LeadCalls LeadCalls"
     ;
   }
 }
