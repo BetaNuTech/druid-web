@@ -80,4 +80,9 @@ module LeadsHelper
     end
   end
 
+  def call_log_timestamp(lead)
+    return lead.call_log_updated_at.nil? ? '(pending update)' :
+      ( 'Last updated ' + distance_of_time_in_words(lead.call_log_updated_at || DateTime.now, DateTime.now) + ' ago' )
+  end
+
 end

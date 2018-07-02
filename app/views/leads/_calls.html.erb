@@ -2,8 +2,11 @@
   <div class="col-md-12">
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-2">
         <h2>Calls</h2>
+      </div>
+      <div class="col-md-6">
+        <em><%= call_log_timestamp(lead) %></em>
       </div>
     </div>
 
@@ -33,11 +36,6 @@
             None
           </p>
         <% end %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <em>Call log last updated <%= distance_of_time_in_words(lead.call_log_updated_at || DateTime.now, DateTime.now) %> ago</em>
       </div>
     </div>
   </div>
