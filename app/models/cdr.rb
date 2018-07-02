@@ -74,7 +74,7 @@ class Cdr < CdrdbModel
     numbers = Array(numbers).compact.select{|number| (number || '').length > 1}
     return numbers.
       map{|number| [ self.format_phone(number), self.format_phone(number, prefixed: true) ]}.
-      flatten.uniq
+      flatten.uniq.select{|n| n.length >= 10}
   end
 
   ### Instance Methods
