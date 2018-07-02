@@ -40,9 +40,7 @@ Whenever a new config file MUST be created, be sure to:
   * add the config file to `.gitignore`
   * we do not want to create configuration files intended only for development/developers to be checked into source control
 
-### Special
-
-#### CDR Database
+### CDR Database
 
 Setup of the Asterisk Call Data Record database is not performed by `bin/setup`.
 
@@ -62,6 +60,29 @@ And add the `CDRDB_URL` environment variable to `.env`:
 
 ```
 CDRDB_URL='mysql2://cdrdb:cdrdb_Password@localhost/asteriskcdrdb'
+```
+
+#### CDR database in Production
+
+Heroku requires special configuration in order to contact Amazon RDS database hosts:
+A custom CA certificate is required. (see: https://devcenter.heroku.com/articles/amazon-rds)
+
+This CA certificate was downloaded and committed to SCM:
+
+```
+curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > ./config/amazon-rds-ca-cert.pem
+```
+
+This problem can identified in logs with the following error message:
+
+```
+Mysql2::Error::ConnectionError: Can't connect to MySQL server on 'asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com'
+```
+
+The `CDRDB_URL` for production should look like this:
+
+```
+CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'
 ```
 
 ## Running
