@@ -22,12 +22,12 @@ module Yardi
           return guestcards
         end
 
-        def sendGuestCards(propertyid:, leads:)
+        def sendGuestCard(propertyid:, lead:)
           request_options = {
             method: 'ImportYardiGuest_Login',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid,
-            xml: Yardi::Voyager::Data::GuestCard.to_xml(leads: leads, propertyid: propertyid)
+            xml: Yardi::Voyager::Data::GuestCard.to_xml(lead: lead, propertyid: propertyid)
           }
           begin
             response = getData(request_options)
@@ -39,6 +39,7 @@ module Yardi
           return guestcards
         end
 
+        # Call template method depending on method
         def request_template(method=nil)
           case method
           when 'GetYardiGuestActivity_Login'
@@ -93,7 +94,7 @@ module Yardi
 									<YardiPropertyId>%{propertyid}</YardiPropertyId>
 									<InterfaceEntity>%{vendorname}</InterfaceEntity>
 									<InterfaceLicense>%{license}</InterfaceLicense>
-									<XmlDocument>%{xml}</XmlDocument>
+									<XmlDoc>%{xml}</XmlDoc>
                 </%{method}>
               </soap:Body>
             </soap:Envelope>

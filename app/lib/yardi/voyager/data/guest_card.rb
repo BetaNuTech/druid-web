@@ -20,7 +20,6 @@ module Yardi
           :record_type
 
         def self.from_lead(lead, yardi_property_id)
-          # TODO
           card = GuestCard.new
           card.name_prefix = lead.title
           card.first_name = lead.first_name
@@ -169,37 +168,62 @@ module Yardi
           return prospects
         end
 
-        def self.to_xml(leads:, propertyid:)
+        def self.to_xml(lead:, propertyid:)
           organization = Yardi::Voyager::Api::Configuration.new.vendorname
+          agent = lead.user ||
+                  lead.property.primary_agent ||
+                  User.new(first_name: 'None', last_name: 'None')
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.LeadManagement {
               xml.Prospects {
                 xml.Prospect {
                   xml.Customers {
-                    leads.each do |lead|
-                      customer = GuestCard.from_lead(lead, propertyid)
-                      xml.Customer('Type' => 'prospect') {
-                        xml.Identification('IDType' => 'ThirdPartyID', 'IDValue' => lead.shortid, 'OrganizationName' => organization)
-                        xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => organization)
-                        xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
-                        xml.Name {
-                          xml.FirstName customer.first_name
-                          xml.LastName customer.last_name
-                        }
-                        customer.phones.compact.each do |phone|
-                          if phone.first.present?
-                            xml.Phone('PhoneType' => phone[0])
-                            xml.PhoneNumber phone[1]
-                          end
-                        end
-                        xml.Email customer.email
-                        if customer.expected_move_in.present?
-                          xml.Lease {
-                            xml.ExpectedMoveInDate customer.expected_move_in
+                    customer = GuestCard.from_lead(lead, propertyid)
+                    xml.Customer('Type' => 'prospect') {
+                      xml.Identification('IDType' => 'ThirdPartyID', 'IDValue' => lead.shortid, 'OrganizationName' => organization)
+                      xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => 'Yardi')
+                      xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
+                      xml.Name {
+												xml.NamePrefix customer.name_prefix || ' '
+                        xml.FirstName customer.first_name || ' '
+                        xml.LastName customer.last_name || ' '
+                      }
+											xml.Address('AddressType' => 'current') {
+												xml.AddressLine1 'No Address'
+												xml.AddressLine2 'Provided'
+												xml.City 'No City'
+												xml.State	'AL'
+												xml.PostalCode '12345'
+											}
+                      customer.phones.compact.each do |phone|
+                        if phone.first.present?
+                          xml.Phone('PhoneType' => phone[0]) {
+														xml.PhoneNumber phone[1]
                           }
                         end
+                      end
+                      xml.Email customer.email
+                      if customer.expected_move_in.present?
+                        xml.Lease {
+                          xml.ExpectedMoveInDate customer.expected_move_in
+                        }
+                      end
+                    }
+                  }
+                  xml.Events {
+                    xml.Event('EventType' => 'Other', 'EventDate' => lead.first_comm.strftime("%FT%T") + '.0' ) {
+                      xml.EventID('IDValue' => '0')
+                      xml.Agent {
+                        xml.AgentName {
+                          xml.FirstName agent.first_name
+                          xml.LastName agent.last_name
+                        }
                       }
-                    end
+                      xml.EventReasons 'First contact'
+                      xml.FirstContact 'true'
+                      xml.Comments( lead.preference.notes.empty? ? 'None at this time' : lead.preference.notes )
+                      xml.TransactionSource lead.source.name
+                    }
                   }
                 }
               }
