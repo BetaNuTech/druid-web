@@ -2,6 +2,7 @@ if Rails.env.test?
   Rails.logger.warn "CDRDB S3 configuration skipped in TEST"
 else
 
+  ### BEGIN CDRDB Call Recording Configuration
   config = {
     region: 'CDRDB_S3_REGION',
     bucket: 'CDRDB_S3_BUCKET',
@@ -34,5 +35,6 @@ else
     )
     ::CDRDB_CALL_RECORDING_S3_SIGNER = Aws::S3::Presigner.new(client: CDRDB_CALL_RECORDING_S3_CLIENT)
   end
+  ### END CDRDB Call Recording Configuration
 
 end
