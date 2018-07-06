@@ -1,0 +1,16 @@
+<tr>
+  <td><%= long_datetime(DateTime.parse(call_entry["date"])) rescue '' %></td>
+  <td><%= call_entry["src"] %></td>
+  <td><%= call_entry["dst"] %></td>
+  <td><%= call_entry["disposition"] %></td>
+  <td>
+    <% if call_entry["recording_path"].present? %>
+      <audio controls>
+        <source src="<%= call_entry["recording_path"] %>" type="<%= call_entry["recording_type"]%>" />
+        <%= link_to("Download", call_entry["recording_path"]) %>
+      </audio>
+    <% else %>
+      None
+    <% end %>
+  </td>
+</tr>

@@ -37,6 +37,18 @@ module Cdrs
         return !recording_path.nil?
       end
 
+      def recording_media_type
+        extension = ( recording_path || '').split('.').last
+        return case extension
+        when'wav'
+          'audio/wav'
+        when 'mp3'
+          'audio/mpeg'
+        else
+          ''
+        end
+      end
+
     end
   end
 end

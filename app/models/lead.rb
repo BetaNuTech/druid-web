@@ -114,15 +114,16 @@ class Lead < ApplicationRecord
     if should_update_call_log?
       transaction do
         self.call_log = Cdr.calls_for([phone1, phone2]).
-                              map{|cdr| { id: cdr.id,
-                                          date: cdr.calldate,
-                                          src: cdr.src,
-                                          dst: cdr.dst,
-                                          disposition: cdr.disposition,
-                                          recordingfile: cdr.recordingfile,
-                                          recording_path: cdr.recording_path
-                                    } }.
-                              to_json
+                              map{|cdr|
+                                { id: cdr.id,
+                                  date: cdr.calldate,
+                                  src: cdr.src,
+                                  dst: cdr.dst,
+                                  disposition: cdr.disposition,
+                                  recordingfile: cdr.recordingfile,
+                                  recording_path: cdr.recording_path,
+                                  recording_type: cdr.recording_media_type }
+                              }.to_json
         self.call_log_updated_at = DateTime.now
         save
       end

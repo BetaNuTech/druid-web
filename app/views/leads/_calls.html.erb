@@ -21,15 +21,7 @@
             <th>Disposition</th>
             <th>Recording</th>
           </thead>
-          <% lead.calls.each do |call| %>
-            <tr>
-              <td><%= long_datetime(DateTime.parse(call["date"])) rescue '' %></td>
-              <td><%= call["src"] %></td>
-              <td><%= call["dst"] %></td>
-              <td><%= call["disposition"] %></td>
-              <td><%= call["recording_path"].present? ? call["recording_path"] : 'None' %></td>
-            </tr>
-          <% end %>
+          <%= render partial: 'call_entry', collection: lead.calls %>
         </table>
         <% else %>
           <p class="lead">
