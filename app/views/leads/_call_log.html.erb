@@ -7,7 +7,6 @@
     <% if lead.should_update_call_log? %>
       <script type="text/javascript">
         $( document ).on('turbolinks:load', function() {
-          console.log("Fetching new call log");
           $.ajax({ "url": "<%= call_log_partial_lead_path(id: lead.id) %>" });
         })
       </script>
