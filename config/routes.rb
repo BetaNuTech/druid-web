@@ -54,6 +54,7 @@ Rails.application.routes.draw do
     member do
       post 'trigger_state_event', to: "leads#trigger_state_event"
       post 'mark_messages_read', to: "leads#mark_messages_read"
+      get 'call_log_partial', to: "leads#call_log_partial"
     end
     resources :messages do
       post 'deliver', on: :member

@@ -1,35 +1,6 @@
 <div class="row calls">
-  <div class="col-md-12">
-
-    <div class="row">
-      <div class="col-md-2">
-        <h2>Calls</h2>
-      </div>
-      <div class="col-md-6">
-        <em><%= call_log_timestamp(lead) %></em>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <% if lead.calls.present? %>
-        <table class="table">
-          <thead>
-            <th>Date</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Disposition</th>
-            <th>Recording</th>
-          </thead>
-          <%= render partial: 'call_entry', collection: lead.calls %>
-        </table>
-        <% else %>
-          <p class="lead">
-            None
-          </p>
-        <% end %>
-      </div>
-    </div>
+  <div id="lead_call_log" class="col-md-12">
+    <%= render partial: 'call_log', locals: {lead: lead} %>
   </div>
 </div>
 

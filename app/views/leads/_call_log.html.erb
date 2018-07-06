@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-2">
+    <h2>Calls</h2>
+  </div>
+  <div class="col-md-6">
+    <em><%= call_log_timestamp(lead) %></em>
+    <% if lead.should_update_call_log? %>
+      <script type="text/javascript">
+        $( document ).on('turbolinks:load', function() {
+          console.log("Fetching new call log");
+          $.ajax({ "url": "<%= call_log_partial_lead_path(id: lead.id) %>" });
+        })
+      </script>
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12" data-lead_id="<%= lead.id %>">
+    <% if lead.calls.present? %>
+      <table class="table">
+        <thead>
+          <th>Date</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Disposition</th>
+          <th>Recording</th>
+        </thead>
+        <%= render partial: 'call_entry', collection: lead.calls %>
+      </table>
+    <% else %>
+      <p class="lead">
+        None
+      </p>
+    <% end %>
+  </div>
+</div>
+
