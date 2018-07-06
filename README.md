@@ -71,6 +71,7 @@ Integration with this S3 bucket requires the following environment variables to 
 
 ```
 CDRDB_S3_BUCKET='druidaudio'
+CDRDB_S3_REGION='us-east-2'
 CDRDB_S3_ACCESS_KEY=XXX
 CDRDB_S3_SECRET_KEY=XXX
 ```
@@ -237,6 +238,7 @@ vary from what is shown below.
 APPLICATION_HOST=www.druidapp.com
 CDRDB_S3_ACCESS_KEY=''
 CDRDB_S3_BUCKET='druidaudio'
+CDRDB_S3_REGION='us-east-2'
 CDRDB_AWSCLI_PROFILE='asterisk-druidaudio'
 CDRDB_S3_SECRET_KEY=''
 CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'

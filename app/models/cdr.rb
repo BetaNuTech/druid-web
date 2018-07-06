@@ -84,6 +84,19 @@ class Cdr < CdrdbModel
     true
   end
 
+  def recording_path_key
+    return calldate.strftime("%Y/%m/%d/#{recordingfile}")
+  end
+
+  def recording_path
+    # see config/initializers/aws.rb for AWS S3 client configuration
+    return ::CDRDB_CALL_RECORDING_S3_SIGNER.presigned_url(
+      :get_object,
+      bucket: ::CDRDB_CALL_RECORDING_S3_CONFIG[:bucket],
+      key: recording_path_key
+    )
+  end
+
   private
 
 end
