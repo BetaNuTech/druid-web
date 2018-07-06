@@ -35,6 +35,7 @@
 class Cdr < CdrdbModel
   ### Class Concerns/Extensions/Configuration
   self.table_name = 'cdr'
+  include Cdrs::Aws
 
   ### Constants
   #DCONTEXTS = ["app-blackhole", "app-blacklist-add", "app-blacklist-remove", "app-calltrace-perform", "default", "ext-fax", "ext-group", "ext-local", "ext-meetme", "ext-queues", "from-did-direct", "from-internal", "from-internal-xfer", "from-queue", "from-trunk", "from-trunk-sip-a2b", "from-trunk-sip-voxox", "ivr-1", "ivr-10", "ivr-11", "ivr-12", "ivr-13", "ivr-14", "ivr-15", "ivr-16", "ivr-17", "ivr-18", "ivr-19", "ivr-20", "ivr-21", "ivr-22", "ivr-23", "ivr-24", "ivr-25", "ivr-26", "ivr-27", "ivr-28", "ivr-29", "ivr-30", "ivr-31", "ivr-32", "ivr-33", "ivr-34", "ivr-35", "ivr-36", "ivr-37", "ivr-39", "ivr-4", "ivr-40", "ivr-5", "ivr-6", "ivr-7", "ivr-8", "ivr-9", "vm-callme"]
@@ -45,9 +46,10 @@ class Cdr < CdrdbModel
 
   def self.calls_for(numbers)
     variants = self.number_variants(numbers)
-    self.select(:calldate, :src, :dst, :dcontext, :disposition, :recordingfile).
+    self.select(:id, :calldate, :src, :dst, :dcontext, :disposition, :recordingfile).
       where("src IN (:src) OR dst IN (:dst)",
-             { dst: variants, src: variants})
+             { dst: variants, src: variants}).
+      order("calldate DESC")
   end
 
   def self.format_phone(number,prefixed: false)
@@ -83,6 +85,7 @@ class Cdr < CdrdbModel
   def readonly?
     true
   end
+
 
   private
 

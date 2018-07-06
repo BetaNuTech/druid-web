@@ -14,6 +14,10 @@ class LeadPolicy < ApplicationPolicy
     index?
   end
 
+  def call_log_partial?
+    show?
+  end
+
   def new?
     index?
   end

@@ -81,8 +81,16 @@ module LeadsHelper
   end
 
   def call_log_timestamp(lead)
-    return lead.call_log_updated_at.nil? ? '(pending update)' :
-      ( 'Last updated ' + distance_of_time_in_words(lead.call_log_updated_at || DateTime.now, DateTime.now) + ' ago' )
+    please_wait_message =  ' (Pending update: please wait)'
+    if lead.call_log_updated_at.nil?
+      last_updated_message = please_wait_message
+    else
+      last_updated_message = 'Last updated ' + distance_of_time_in_words(lead.call_log_updated_at || DateTime.now, DateTime.now) + ' ago.'
+      if lead.should_update_call_log?
+        last_updated_message += please_wait_message
+      end
+    end
+    return last_updated_message
   end
 
 end

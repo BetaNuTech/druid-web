@@ -26,8 +26,8 @@ This code is proprietary and distribution is strictly prohibited.
 
 * Local Configuration:
   * Customize `config/database.yml`
-  * Customize `.env`
-  * Customize `.pryrc`
+  * Customize `.env` from `env.example`
+  * Customize `.pryrc` from `pryrc.example`
   * ... etc. as indicated by `bin/setup`
 
 Any configuration that is used in production should use environment variables instead of config files.
@@ -62,27 +62,38 @@ And add the `CDRDB_URL` environment variable to `.env`:
 CDRDB_URL='mysql2://cdrdb:cdrdb_Password@localhost/asteriskcdrdb'
 ```
 
-#### CDR database in Production
 
-Heroku requires special configuration in order to contact Amazon RDS database hosts:
-A custom CA certificate is required. (see: https://devcenter.heroku.com/articles/amazon-rds)
+#### CDR Recordings
 
-This CA certificate was downloaded and committed to SCM:
+Call recordings in WAV format are synchronized from the Asterisk phone system to an S3 bucket on Amazon.
 
-```
-curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > ./config/amazon-rds-ca-cert.pem
-```
-
-This problem can identified in logs with the following error message:
+Integration with this S3 bucket requires the following environment variables to be set:
 
 ```
-Mysql2::Error::ConnectionError: Can't connect to MySQL server on 'asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com'
+CDRDB_S3_BUCKET='druidaudio'
+CDRDB_S3_REGION='us-east-2'
+CDRDB_S3_ACCESS_KEY=XXX
+CDRDB_S3_SECRET_KEY=XXX
 ```
 
-The `CDRDB_URL` for production should look like this:
+#### Determine CDR Recording Bucket Usage
+
+A helpful script at `bin/bucket_size` can be used to determine S3 bucket usage. This tool requires the `awscli` tools to be installed, and configuration placed in `~/.aws/credentials`
 
 ```
-CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'
+# ~/.aws/credentials
+
+[asterisk-druidaudio]
+aws_access_key_id = XXX
+aws_secret_access_key = XXX
+region = us-east-2
+```
+
+The following environment variables must be set in `.env`:
+
+```
+CDRDB_S3_BUCKET='druidaudio'
+CDRDB_AWSCLI_PROFILE='asterisk-druidaudio'
 ```
 
 ## Running
@@ -219,16 +230,58 @@ Admins (Role is `administrator` or `operator`) may manage users via a Web UI.
 
 ### Environment Variables
 
+Reference `env.example` for the full set of required environment variables. Values WILL
+vary from what is shown below.
+
 ```
 # Environment Variables
-APPLICATION_HOST=staging.druidsite.com (or www.druidsite.com for production)
-CRYPTO_KEY=XXX (generate a value using 'rake secret')
+APPLICATION_HOST=www.druidapp.com
+CDRDB_S3_ACCESS_KEY=''
+CDRDB_S3_BUCKET='druidaudio'
+CDRDB_S3_REGION='us-east-2'
+CDRDB_AWSCLI_PROFILE='asterisk-druidaudio'
+CDRDB_S3_SECRET_KEY=''
+CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'
+CRYPTO_KEY=XXX
+DEBUG_MESSAGE_API=false
+EXCEPTION_NOTIFIER_ENABLED=true
+EXCEPTION_RECIPIENTS='example@example.com,example2@example.com'
+HTTP_AUTH_NAME=XXX
+HTTP_AUTH_PASSWORD=XXX
 LANG=en_US.UTF-8
+MAILGUN_API_KEY=XXX
+MAILGUN_DOMAIN=XXX
+MAILGUN_PUBLIC_KEY=XXX
+MAILGUN_SMTP_LOGIN=XXX
+MAILGUN_SMTP_PASSWORD=XXX
+MAILGUN_SMTP_PORT=XXX
+MAILGUN_SMTP_SERVER=XXX
+MESSAGE_DELIVERY_REPLY_TO="messages@example.com"
+MESSAGE_DELIVERY_TWILIO_PHONE='+15555555555'
+MESSAGE_DELIVERY_TWILIO_SID='XXX'
+MESSAGE_DELIVERY_TWILIO_TOKEN='XXX'
+PAPERTRAIL_API_TOKEN=XXX
+PORT=3000
 RACK_ENV=production
 RAILS_ENV=production
 RAILS_LOG_TO_STDOUT=enabled
+RAILS_MAX_THREADS=5
 RAILS_SERVE_STATIC_FILES=enabled
-SECRET_KEY_BASE=XXX (generate a value using 'rake secret')
+SCOUT_DEV_TRACE=true
+SCOUT_KEY=XXX
+SCOUT_LOG_LEVEL=WARN
+SCOUT_MONITOR=false
+SECRET_KEY_BASE=XXX
+SMTP_DOMAIN=localhost
+WEB_CONCURRENCY=1
+YARDI_VOYAGER_DATABASE="gazv_test"
+YARDI_VOYAGER_HOST="www.yardiasp14.com"
+YARDI_VOYAGER_LICENSE="XXX"
+YARDI_VOYAGER_PASSWORD="XXX"
+YARDI_VOYAGER_SERVERNAME="gazv_test"
+YARDI_VOYAGER_USERNAME="XXX"
+YARDI_VOYAGER_VENDORNAME="Bluestone Druid"
+YARDI_VOYAGER_WEBSHARE="21253beta"
 ```
 
 ### Seed Data
@@ -263,11 +316,28 @@ In production, the Asterisk CDR database is a replicated MySQL database containi
 
 A schema SQL file is provided in `db/cdrdb-schema.sql`
 
-#### Druid Configuration
+Heroku requires special configuration in order to contact Amazon RDS database hosts:
+A custom CA certificate is required. (see: https://devcenter.heroku.com/articles/amazon-rds)
+
+This CA certificate was downloaded and committed to SCM:
 
 ```
+curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > ./config/amazon-rds-ca-cert.pem
+```
+
+This problem can identified in logs with the following error message:
+
+```
+Mysql2::Error::ConnectionError: Can't connect to MySQL server on 'asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com'
+```
+
+#### Druid Configuration
+
 # Environment Variables
-CDRDB_URL='mysql2://USER:PASSWORD@HOST/asteriskcdrdb'
+The `CDRDB_URL` for production should look like this:
+
+```
+CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'
 ```
 
 ### Papertrail
