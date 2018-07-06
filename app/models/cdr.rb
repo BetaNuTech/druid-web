@@ -46,9 +46,10 @@ class Cdr < CdrdbModel
 
   def self.calls_for(numbers)
     variants = self.number_variants(numbers)
-    self.select(:calldate, :src, :dst, :dcontext, :disposition, :recordingfile).
+    self.select(:id, :calldate, :src, :dst, :dcontext, :disposition, :recordingfile).
       where("src IN (:src) OR dst IN (:dst)",
-             { dst: variants, src: variants})
+             { dst: variants, src: variants}).
+      order("calldate DESC")
   end
 
   def self.format_phone(number,prefixed: false)

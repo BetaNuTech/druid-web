@@ -27,7 +27,7 @@
               <td><%= call["src"] %></td>
               <td><%= call["dst"] %></td>
               <td><%= call["disposition"] %></td>
-              <td><%= call["recordingfile"].empty? ? 'None' : call["recordingfile"] %></td>
+              <td><%= call["recording_path"].present? ? call["recording_path"] : 'None' %></td>
             </tr>
           <% end %>
         </table>
