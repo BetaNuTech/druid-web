@@ -41,6 +41,7 @@ gem 'kaminari', "~> 1.1"
 gem 'ckeditor', "~> 4.2"
 gem 'scout_apm', "~> 2.4"
 gem 'exception_notification', "~> 4.2"
+gem 'aws-sdk-s3', "~> 1.14"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.13'

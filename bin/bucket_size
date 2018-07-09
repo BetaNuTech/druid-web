@@ -1,0 +1,4 @@
+#!/bin/bash
+[ -e .env ] && source .env
+echo "S3 Bucket Usage for $CDRDB_S3_BUCKET"
+aws s3api list-objects --output json --query "{size: sum(Contents[].Size), records: length(Contents[])}" --bucket $CDRDB_S3_BUCKET --profile $CDRDB_AWSCLI_PROFILE

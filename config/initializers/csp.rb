@@ -13,6 +13,7 @@ SecureHeaders::Configuration.default do |config|
     font_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     img_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     object_src: %w('none'),
+    media_src: %w(https://druidaudio.s3.us-east-2.amazonaws.com),
     script_src: Rails.env.production? ? %w(https: 'unsafe-inline') :  %w(http: 'unsafe-eval' 'unsafe-inline' ),
     style_src: Rails.env.production? ? %w(https: 'self' 'unsafe-inline') :  %w(http: 'self' 'unsafe-inline')
   }

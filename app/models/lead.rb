@@ -42,12 +42,12 @@ class Lead < ApplicationRecord
   include Leads::Priority
   include Leads::Search
   include Leads::Messaging
+  include Leads::CallLog
 
   ### Constants
   ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
-  CALL_LOG_FREQUENCY = 10 # minutes
 
   ### Enums
   enum priority: { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, _prefix: :priority
@@ -98,37 +98,6 @@ class Lead < ApplicationRecord
 
   def shortid
     id.to_s.gsub('-','')[0..19]
-  end
-
-  # Return Hash of cached call information
-  #
-  # Use cached call_log and update using a background job if the data is stale
-  def calls
-    if should_update_call_log?
-      delay.update_call_log
-    end
-    return JSON.parse(call_log || '[]')
-  end
-
-  def update_call_log
-    if should_update_call_log?
-      transaction do
-        self.call_log = Cdr.calls_for([phone1, phone2]).
-                              map{|cdr| { date: cdr.calldate,
-                                          src: cdr.src,
-                                          dst: cdr.dst,
-                                          disposition: cdr.disposition,
-                                          recordingfile: cdr.recordingfile } }.
-                              to_json
-        self.call_log_updated_at = DateTime.now
-        save
-      end
-    end
-    return JSON.parse(self.call_log)
-  end
-
-  def should_update_call_log?
-    return (call_log.nil? || call_log.empty? || call_log_updated_at.nil? || call_log_updated_at < (DateTime.now - CALL_LOG_FREQUENCY.minutes))
   end
 
   private
