@@ -184,17 +184,18 @@ module Yardi
                       xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => 'Yardi')
                       xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
                       xml.Name {
-												xml.NamePrefix customer.name_prefix || ' '
+												xml.NamePrefix customer.name_prefix
+												#xml.MiddleName
                         xml.FirstName customer.first_name || ' '
                         xml.LastName customer.last_name || ' '
                       }
-											xml.Address('AddressType' => 'current') {
-												xml.AddressLine1 'No Address'
-												xml.AddressLine2 'Provided'
-												xml.City 'No City'
-												xml.State	'AL'
-												xml.PostalCode '12345'
-											}
+											#xml.Address('AddressType' => 'current') {
+												#xml.AddressLine1
+												#xml.AddressLine2
+												#xml.City
+												#xml.State
+												#xml.PostalCode
+											#}
                       customer.phones.compact.each do |phone|
                         if phone.first.present?
                           xml.Phone('PhoneType' => phone[0]) {
@@ -211,15 +212,15 @@ module Yardi
                     }
                   }
                   xml.Events {
-                    xml.Event('EventType' => 'Other', 'EventDate' => lead.first_comm.strftime("%FT%T") + '.0' ) {
-                      xml.EventID('IDValue' => '0')
+                    xml.Event('EventType' => 'WalkIn', 'EventDate' => lead.first_comm.strftime("%FT%T") ) {
+                      xml.EventID('IDValue' => '')
                       xml.Agent {
                         xml.AgentName {
                           xml.FirstName agent.first_name
                           xml.LastName agent.last_name
                         }
                       }
-                      xml.EventReasons 'First contact'
+                      xml.EventReasons 'Druid sourced lead'
                       xml.FirstContact 'true'
                       xml.Comments( lead.preference.notes.empty? ? 'None at this time' : lead.preference.notes )
                       xml.TransactionSource lead.source.name
