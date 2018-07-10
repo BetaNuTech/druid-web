@@ -41,6 +41,18 @@ module Leads
         return units
       end
 
+      # Send new/unsynced Leads to Yardi Voyager
+      def sendLeads(leads)
+        # Only send Assigned Leads lacking a remoteid
+        leads_for_transfer = leads.select{|l| l.remoteid.nil? && !l.user_id.nil? }
+
+        updated_leads = send_Leads(leads_for_transfer)
+        ActiveRecord::Base.transaction do
+          updated_leads.map{|l| l.save }
+        end
+        return updated_leads
+      end
+
       private
 
       def collection_from_yardi_units(units)
@@ -134,6 +146,16 @@ module Leads
 
       def fetch_Units(propertycode)
         return Yardi::Voyager::Api::Units.new.getUnits(propertycode)
+      end
+
+      def send_Leads(leads)
+        # Abort if ANY leads belong to the wrong Property
+        err = leads.map(&:property_id).compact.uniq.any?{|p_id| p_id != @property.id }
+        raise "Leads::Adapters::YardiVoyager Aborting transfer of Leads due to Property assignment mismatch" if err
+
+        return leads.map do |lead|
+          Yardi::Voyager::Api::GuestCards.new.sendGuestCard(propertyid: @property_code, lead: lead)
+        end
       end
 
       def lead_state_for(guestcard)

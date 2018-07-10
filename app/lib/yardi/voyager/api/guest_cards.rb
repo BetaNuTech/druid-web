@@ -31,20 +31,19 @@ module Yardi
           }
           begin
             response = getData(request_options)
-            guestcards = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response: response.parsed_response, lead: lead)
-            updated_lead = guestcards.first
+            updated_lead = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response: response.parsed_response, lead: lead)
             if updated_lead.present?
               Rails.logger.warn "Yardi::Voyager::Api Submitted Lead:#{updated_lead.id} as Voyager GuestCard:#{updated_lead.remoteid}"
             else
-              Rails.logger.error "Yardi::Voyager::Api Submission of Lead[#{lead.id}] as Voyager GuestCard did not return a Lead as expected" 
+              Rails.logger.error "Yardi::Voyager::Api Submission of Lead[#{lead.id}] as Voyager GuestCard did not return a Lead as expected"
             end
           rescue => e
             msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
             ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
-            return []
+            return lead
           end
-          return guestcards
+          return updated_lead
         end
 
         # Call template method depending on method

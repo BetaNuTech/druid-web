@@ -55,7 +55,7 @@ module Yardi
             end
             lead.remoteid = remoteid if remoteid.present?
           end
-          return [ lead ]
+          return lead
         end
 
         def self.from_api_response(response:, method:, &block)
