@@ -14,7 +14,7 @@ module Yardi
             response = getData(request_options)
             guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response)
           rescue => e
-            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
             ErrorNotification.send(StandardError.new(msg))
             return []
@@ -31,10 +31,18 @@ module Yardi
           }
           begin
             response = getData(request_options)
-            guestcards = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response.parsed_response)
+            guestcards = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response: response.parsed_response, lead: lead)
+            updated_lead = guestcards.first
+            if updated_lead.present?
+              Rails.logger.warn "Yardi::Voyager::Api Submitted Lead:#{updated_lead.id} as Voyager GuestCard:#{updated_lead.remoteid}"
+            else
+              Rails.logger.error "Yardi::Voyager::Api Submission of Lead[#{lead.id}] as Voyager GuestCard did not return a Lead as expected" 
+            end
           rescue => e
-            Rails.logger.error "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
-            return false
+            msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
+            Rails.logger.error msg
+            ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
+            return []
           end
           return guestcards
         end
@@ -72,8 +80,7 @@ module Yardi
             </soap:Envelope>
           EOS
 
-          # Remove all line-feeds. Line-feeds kill the server for some reason.
-          body_template = body_template.gsub(/[\n\r]+/,'')
+          body_template = cleanup_xml(body_template)
 
           return body_template
         end
@@ -100,10 +107,14 @@ module Yardi
             </soap:Envelope>
           EOS
 
-          # Remove all line-feeds. Line-feeds kill the server for some reason.
-          body_template = body_template.gsub(/[\n\r]+/,'')
+          body_template = cleanup_xml(body_template)
 
           return body_template
+        end
+
+        def cleanup_xml(xml)
+          # Remove all line-feeds. Line-feeds kill the server for some reason.
+          return xml.gsub(/[\n\r]+/,'').gsub(/>[\s]+</,'><')
         end
 
       end

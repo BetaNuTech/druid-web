@@ -30,20 +30,35 @@ module Yardi
           card.phones = [
             [lead.phone1_type.try(:downcase), lead.phone1],
             [lead.phone2_type.try(:downcase), lead.phone2] ]
-          card.expected_move_in = lead.preference.move_in.strftime("%FT%T") if lead.preference.move_in.present?
+          #card.expected_move_in = lead.preference.move_in.strftime("%FT%T") if lead.preference.move_in.present?
+          card.expected_move_in = lead.preference.move_in.strftime("%Y-%m-%d")
           card.preference_comment = lead.preference.notes
           return card
         end
 
         def self.from_GetYardiGuestActivity(data)
-          self.from_api_response(response: data, method: 'GetYardiGuestActivity_Login')
+          self.from_api_response(response: data, method: 'GetYardiGuestActivity_Login') do |response_data|
+             response_data["LeadManagement"]["Prospects"]["Prospect"].
+               map{|record| GuestCard.from_guestcard_node(record)}.flatten
+          end
         end
 
-        def self.from_ImportYardiGuest(data)
-          self.from_api_response(response: data, method: 'ImportYardiGuest_Login')
+        # Return [ Lead ] with an updated remoteid from Yardi Voyager
+        def self.from_ImportYardiGuest(response:, lead:)
+          self.from_api_response(response: response, method: 'ImportYardiGuest_Login') do |response_data|
+            messages = response_data.fetch("Messages",false)
+            if messages
+              msgs = Array(messages["Message"]).map do |m|
+                [m.fetch("messageType",'Default'), m.fetch("__content__", "Default")]
+              end
+              remoteid = msgs.map{|m| m[1].match(/CustomerID: ([a-z0-9]+)$/)[1] rescue nil}.compact.first
+            end
+            lead.remoteid = remoteid if remoteid.present?
+          end
+          return [ lead ]
         end
 
-        def self.from_api_response(response:, method:)
+        def self.from_api_response(response:, method:, &block)
           root_node = nil
 
           case response
@@ -65,24 +80,20 @@ module Yardi
               err_msg = data["Envelope"]["Body"]["Fault"].to_s
               raise Yardi::Voyager::Data::Error.new(err_msg)
             end
-
-            # Handle Other Error
-            error_messages = data["Envelope"]["Body"]["#{method}Response"]["#{method}Result"].fetch("Messages",false)
-            if error_messages
-              err_msg = error_messages["Message"].fetch("__content__", "Unknown error")
-              raise Yardi::Voyager::Data::Error.new(err_msg)
+            root_node = data["Envelope"]["Body"]["#{method}Response"]["#{method}Result"]
+            messages = root_node.fetch("Messages",false)
+            if messages
+              msgs = Array(messages["Message"]).map do |m|
+                [m.fetch("messageType",'Default'), m.fetch("__content__", "Unknown error")].join(': ')
+              end
+              msg = msgs.join(';')
+              Rails.logger.warn("Yardi::Voyager API Messages: #{msg}")
             end
-
-            # Extract Prospect Data
-            root_node = data["Envelope"]["Body"]["#{method}Response"]["#{method}Result"]["LeadManagement"]["Prospects"]["Prospect"]
-
           rescue => e
             raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data schema: #{e}")
           end
 
-          raw_leads = root_node.map{|record| GuestCard.from_guestcard_node(record)}.flatten
-
-          return raw_leads
+          return yield(root_node)
         end
 
         def self.from_guestcard_node(data)
@@ -174,7 +185,7 @@ module Yardi
                   lead.property.primary_agent ||
                   User.new(first_name: 'None', last_name: 'None')
           builder = Nokogiri::XML::Builder.new do |xml|
-            xml.LeadManagement {
+            xml.LeadManagement('xmlns' => '') {
               xml.Prospects {
                 xml.Prospect {
                   xml.Customers {
@@ -204,35 +215,36 @@ module Yardi
                         end
                       end
                       xml.Email customer.email
-                      if customer.expected_move_in.present?
+                      if customer.expected_move_in.present? &&
+                        customer.expected_move_in > ( lead.first_comm + 1.week )
                         xml.Lease {
                           xml.ExpectedMoveInDate customer.expected_move_in
                         }
                       end
                     }
                   }
-                  xml.Events {
-                    xml.Event('EventType' => 'WalkIn', 'EventDate' => lead.first_comm.strftime("%FT%T") ) {
-                      xml.EventID('IDValue' => '')
-                      xml.Agent {
-                        xml.AgentName {
-                          xml.FirstName agent.first_name
-                          xml.LastName agent.last_name
+                  unless lead.remoteid.present?
+                    # New GuestCards in Voyager must provide at least one Event record.
+                    xml.Events {
+                      xml.Event('EventType' => 'Other', 'EventDate' => lead.first_comm.strftime("%FT%T") ) {
+                        xml.EventID('IDValue' => '')
+                        xml.Agent {
+                          xml.AgentName {
+                            xml.FirstName agent.first_name
+                            xml.LastName agent.last_name
+                          }
                         }
+                        xml.EventReasons 'Spoke to'
+                        xml.FirstContact 'true'
+                        xml.Comments("%s (Druid Lead from %s/%s)" % [lead.preference.notes, lead.source.try(:name), lead.referral])
+                        xml.TransactionSource 'Referral'
                       }
-                      xml.EventReasons 'Druid sourced lead'
-                      xml.FirstContact 'true'
-                      xml.Comments( lead.preference.notes.empty? ? 'None at this time' : lead.preference.notes )
-                      xml.TransactionSource lead.source.name
                     }
-                  }
+                  end
                 }
               }
             }
           end
-
-          # Return XML without carriage returns
-          #return builder.doc.serialize(save_with:0).gsub(/[\n\r]+/,'')
 
           # Return XML without XML doctype or carriage returns
           return builder.doc.root.serialize(save_with:0)
