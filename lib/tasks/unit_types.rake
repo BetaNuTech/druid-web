@@ -2,7 +2,7 @@ namespace :unit_types do
 
   namespace :yardi do
 
-    desc "Import GuestCards"
+    desc "Import Floorplans"
     task :import_floorplans => :environment do
 
       properties = [

@@ -43,10 +43,7 @@ module Leads
 
       # Send new/unsynced Leads to Yardi Voyager
       def sendLeads(leads)
-        # Only send Assigned Leads lacking a remoteid
-        leads_for_transfer = leads.select{|l| l.remoteid.nil? && !l.user_id.nil? }
-
-        updated_leads = send_Leads(leads_for_transfer)
+        updated_leads = send_Leads(leads)
         ActiveRecord::Base.transaction do
           updated_leads.map{|l| l.save }
         end
