@@ -16,6 +16,13 @@ namespace :leads do
     LeadPreference.auditing_enabled = true
   end
 
+  namespace :recordings do
+    desc "Cleanup old non-lead recordings"
+    task :cleanup => :environment do
+      Cdr.cleanup_non_lead_recordings(start_date: 2.weeks.ago, end_date: 1.week.ago)
+    end
+  end
+
   namespace :yardi do
 
     desc "Import GuestCards"

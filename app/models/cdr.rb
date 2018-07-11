@@ -52,6 +52,39 @@ class Cdr < CdrdbModel
       order("calldate DESC")
   end
 
+  def self.non_leads(start_date:, end_date:)
+    variants = self.number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
+    self.select(:id, :calldate, :src, :dst, :recordingfile).
+      where("recordingfile IS NOT null AND recordingfile != ''").
+      where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
+      where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: variants, src: variants})
+  end
+
+  def self.non_lead_recordings(start_date:, end_date:)
+    self.non_leads(start_date: start_date, end_date: end_date).
+      map{|cdr| cdr.recording_path_key}.
+      sort
+  end
+
+  def self.cleanup_non_lead_recordings(start_date:, end_date:)
+    Rails.logger.warn("CDR Recording Cleanup: Identifying Non-Lead Call recordings")
+    keys = self.non_lead_recordings(start_date: start_date, end_date: end_date)
+    Rails.logger.warn("CDR Recording Cleanup: Found #{keys.count} keys to delete")
+
+    # AWS only allows us to delete 1000 objects at a time
+    keys.each_slice(1000).each do |key_set|
+      Rails.logger.warn("CDR Recording Cleanup: Deleting #{keys.count} objects")
+      response = ::CDRDB_CALL_RECORDING_S3_CLIENT.delete_objects({
+        bucket: ::CDRDB_CALL_RECORDING_S3_CONFIG[:bucket],
+        delete: {
+          objects: key_set.map{|k| {key: k}},
+          quiet: false
+        }
+      })
+      Rails.logger.warn("CDR Recording Cleanup: Deleted objects: #{response.to_h.inspect}")
+    end
+  end
+
   def self.format_phone(number,prefixed: false)
     # Strip non-digits
     out = ( number || '' ).to_s.gsub(/[^0-9]/,'')
