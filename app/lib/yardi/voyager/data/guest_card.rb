@@ -54,8 +54,8 @@ module Yardi
               remoteid = msgs.map{|m| m[1].match(/CustomerID: ([a-z0-9]+)$/)[1] rescue nil}.compact.first
             end
             lead.remoteid = remoteid if remoteid.present?
+            lead
           end
-          return lead
         end
 
         def self.from_api_response(response:, method:, &block)
