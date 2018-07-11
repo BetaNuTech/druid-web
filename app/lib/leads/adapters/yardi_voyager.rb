@@ -134,15 +134,21 @@ module Leads
       end
 
       def fetch_GuestCards(propertycode)
-        return Yardi::Voyager::Api::GuestCards.new.getGuestCards(propertycode)
+        adapter = Yardi::Voyager::Api::GuestCards.new
+        adapter.debug = true if debug?
+        return adapter.getGuestCards(propertycode)
       end
 
       def fetch_Floorplans(propertycode)
-        return Yardi::Voyager::Api::Floorplans.new.getFloorPlans(propertycode)
+        adapter = Yardi::Voyagee::Api::Floorplans.new
+        adapter.debug = true if debug?
+        return adapter.getFloorPlans(propertycode)
       end
 
       def fetch_Units(propertycode)
-        return Yardi::Voyager::Api::Units.new.getUnits(propertycode)
+        adapter = Yardi::Voyager::Api::Units.new
+        adapter.debug if debug?
+        return adapter.getUnits(propertycode)
       end
 
       def send_Leads(leads)
@@ -151,7 +157,9 @@ module Leads
         raise "Leads::Adapters::YardiVoyager Aborting transfer of Leads due to Property assignment mismatch" if err
 
         return leads.map do |lead|
-          Yardi::Voyager::Api::GuestCards.new.sendGuestCard(propertyid: @property_code, lead: lead)
+          adapter = Yardi::Voyager::Api::GuestCards.new
+          adapter.debug = true if debug?
+          adapter.sendGuestCard(propertyid: @property_code, lead: lead)
         end
       end
 
@@ -195,6 +203,10 @@ module Leads
           first.try(:property)
         Rails.logger.warn "Error in Leads::Adapters::YardiVoyager finding PropertyListing code '#{listingcode}'" if property.nil?
         return property
+      end
+
+      def debug?
+        return ENV.fetch('DEBUG', 'true').downcase == 'true'
       end
 
     end

@@ -27,10 +27,7 @@ module Yardi
           card.prospect_id = lead.remoteid
           card.property_id = yardi_property_id
           card.email = lead.email
-          card.phones = [
-            [lead.phone1_type.try(:downcase), lead.phone1],
-            [lead.phone2_type.try(:downcase), lead.phone2] ]
-          #card.expected_move_in = lead.preference.move_in.strftime("%FT%T") if lead.preference.move_in.present?
+          card.phones = self.voyager_phones_from_lead(lead)
           card.expected_move_in = lead.preference.move_in.strftime("%Y-%m-%d")
           card.preference_comment = lead.preference.notes
           return card
@@ -184,13 +181,16 @@ module Yardi
           agent = lead.user ||
                   lead.property.primary_agent ||
                   User.new(first_name: 'None', last_name: 'None')
+          customer = GuestCard.from_lead(lead, propertyid)
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.LeadManagement('xmlns' => '') {
               xml.Prospects {
                 xml.Prospect {
                   xml.Customers {
-                    customer = GuestCard.from_lead(lead, propertyid)
                     xml.Customer('Type' => 'prospect') {
+                      if lead.remoteid.present?
+                        xml.Identification('IDType' => 'ProspectID', 'IDValue' => lead.remoteid)
+                      end
                       xml.Identification('IDType' => 'ThirdPartyID', 'IDValue' => lead.shortid, 'OrganizationName' => organization)
                       xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => 'Yardi')
                       xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
@@ -223,6 +223,24 @@ module Yardi
                       end
                     }
                   }
+                  xml.CustomerPreferences {
+                    if customer.expected_move_in.present? &&
+                      customer.expected_move_in > ( lead.first_comm + 1.week )
+                        xml.TargetMoveInDate customer.expected_move_in
+                    end
+                    if ( lead.preference.try(:beds) || 0 ) > 0
+                      xml.DesiredNumBedrooms('Exact' => lead.preference.beds.to_i.to_s)
+                    end
+                    if ( lead.preference.try(:baths) || 0 ) > 0
+                      xml.DesiredNumBathrooms('Exact' => lead.preference.baths.round.to_s)
+                    end
+                    #if (lead.preference.try(:max_price) || 0) > 0
+                      #xml.DesiredRent('Exact' => lead.preference.max_price.to_s)
+                    #end
+                    #if lead.preference.unit_type.present? && lead.preference.unit_type.remoteid.present?
+                      #xml.DesiredFloorplan lead.preference.unit_type.name
+                    #end
+                  }
                   unless lead.remoteid.present?
                     # New GuestCards in Voyager must provide at least one Event record.
                     xml.Events {
@@ -248,6 +266,36 @@ module Yardi
 
           # Return XML without XML doctype or carriage returns
           return builder.doc.root.serialize(save_with:0)
+        end
+
+        def self.voyager_phones_from_lead(lead)
+          phones = { office: nil, cell: nil, home: nil, fax: nil }
+          convert_phone_type = lambda { |phone_type|
+            case phone_type
+            when 'Cell'
+              'cell'
+            when 'Home'
+              'home'
+            when 'Work'
+              'office'
+            else
+              'home'
+            end
+          }
+          [[lead.phone1, lead.phone1_type],[lead.phone2, lead.phone2_type]].each do |phone|
+            pn, pt = phone
+            case pt
+            when 'Cell'
+              phones[:cell] = pn
+            when 'Home'
+              phones[:home] = pn
+            when 'Work'
+              phones[:office] = pn
+            end
+          end
+          phones[:office] ||= ( phones[:home] || phones[:cell] )
+          phones[:cell] ||= (phones[:home] || phones[:office])
+          return phones.to_a
         end
 
         def summary
