@@ -234,9 +234,15 @@ module Yardi
                     if ( lead.preference.try(:baths) || 0 ) > 0
                       xml.DesiredNumBathrooms('Exact' => lead.preference.baths.round.to_s)
                     end
+
+                    # Voyager doesn't like DesiredRent elements for some reason
+                    #
                     #if (lead.preference.try(:max_price) || 0) > 0
                       #xml.DesiredRent('Exact' => lead.preference.max_price.to_s)
                     #end
+
+                    # Voyager doesn't like DesiredFloorplan elements for some reason
+                    #
                     #if lead.preference.unit_type.present? && lead.preference.unit_type.remoteid.present?
                       #xml.DesiredFloorplan lead.preference.unit_type.name
                     #end
