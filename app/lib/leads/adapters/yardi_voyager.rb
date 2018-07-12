@@ -140,14 +140,14 @@ module Leads
       end
 
       def fetch_Floorplans(propertycode)
-        adapter = Yardi::Voyagee::Api::Floorplans.new
+        adapter = Yardi::Voyager::Api::Floorplans.new
         adapter.debug = true if debug?
         return adapter.getFloorPlans(propertycode)
       end
 
       def fetch_Units(propertycode)
         adapter = Yardi::Voyager::Api::Units.new
-        adapter.debug if debug?
+        adapter.debug = true if debug?
         return adapter.getUnits(propertycode)
       end
 
@@ -156,9 +156,10 @@ module Leads
         err = leads.map(&:property_id).compact.uniq.any?{|p_id| p_id != @property.id }
         raise "Leads::Adapters::YardiVoyager Aborting transfer of Leads due to Property assignment mismatch" if err
 
+        adapter = Yardi::Voyager::Api::GuestCards.new
+        adapter.debug = true if debug?
+
         return leads.map do |lead|
-          adapter = Yardi::Voyager::Api::GuestCards.new
-          adapter.debug = true if debug?
           adapter.sendGuestCard(propertyid: @property_code, lead: lead)
         end
       end

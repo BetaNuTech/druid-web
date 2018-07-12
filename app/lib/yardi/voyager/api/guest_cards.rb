@@ -16,7 +16,7 @@ module Yardi
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
-            ErrorNotification.send(StandardError.new(msg))
+            ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
           return guestcards
