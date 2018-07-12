@@ -23,6 +23,7 @@ module Yardi
           card = GuestCard.new
           card.name_prefix = lead.title
           card.first_name = lead.first_name
+          card.middle_name = lead.middle_name
           card.last_name = lead.last_name
           card.prospect_id = lead.remoteid
           card.property_id = yardi_property_id
@@ -193,11 +194,11 @@ module Yardi
                       end
                       xml.Identification('IDType' => 'ThirdPartyID', 'IDValue' => lead.shortid, 'OrganizationName' => organization)
                       xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => 'Yardi')
-                      xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
+                      #xml.Identification('IDType' => 'NoMiddleName', 'IDValue' => 'true')
                       xml.Name {
 												xml.NamePrefix customer.name_prefix
-												#xml.MiddleName
                         xml.FirstName customer.first_name || ' '
+                        xml.MiddleName customer.middle_name
                         xml.LastName customer.last_name || ' '
                       }
 											#xml.Address('AddressType' => 'current') {
