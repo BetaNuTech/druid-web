@@ -4,38 +4,54 @@ module Leads
       LEAD_SOURCE_SLUG = 'YardiVoyager'
       DEFAULT_RENTAL_TYPE = 'Residential'
 
-      # Accepts a Hash
+      attr_reader :property, :property_code, :lead_source, :data
+
+      # This Class interacts with the YardiVoyager API in the Yardi::Voyager namespace
+      # Use it to send Leads to YardiVoyager, or download Leads, UnitTypes, and Units
+      #
+      # Accepts a Hash at minimum containing a valid
+      # PropertyListing code for the YardiVoyager LeadSource
       #
       # Ex: { property_code: 'marble'}
       def initialize(params)
         @lead_source =  get_lead_source
-        raise "Lead Adapter Error! LeadSource record for #{LEAD_SOURCE_SLUG} is missing!" if @lead_source.nil?
+        if @lead_source.nil?
+          msg = "Lead Adapter Error! LeadSource record for #{LEAD_SOURCE_SLUG} is missing!"
+          err = StandardError.new(msg)
+          ErrorNotification.send(err, params)
+          Rails.logger.error msg
+          raise err
+        end
         @property_code = get_property_code(params)
         @property = property_for_listing_code(@property_code)
       end
 
+      # Fetch New Leads from YardiVoyager
+      # or progress Lead state if the Lead is already in Druid
       def processLeads
         @data = fetch_GuestCards(@property_code)
-        leads = collection_from_guestcards(@data)
         ActiveRecord::Base.transaction do
+          leads = collection_from_guestcards(@data)
           leads.each{|l| l.save}
         end
         return leads
       end
 
+      # Fetch New UnitTypes from YardiVoyager
       def processUnitTypes
         @data = fetch_Floorplans(@property_code)
-        unit_types = collection_from_floorplans(@data)
         ActiveRecord::Base.transaction do
+          unit_types = collection_from_floorplans(@data)
           unit_types.each{|l| l.save}
         end
         return unit_types
       end
 
+      # Fetch New Units from YardiVoyager
       def processUnits
         @data = fetch_Units(@property_code)
-        units = collection_from_yardi_units(@data)
         ActiveRecord::Base.transaction do
+          units = collection_from_yardi_units(@data)
           units.each{|l| l.save}
         end
         return units
@@ -43,8 +59,8 @@ module Leads
 
       # Send new/unsynced Leads to Yardi Voyager
       def sendLeads(leads)
-        updated_leads = send_Leads(leads)
         ActiveRecord::Base.transaction do
+          updated_leads = send_Leads(leads)
           updated_leads.map{|l| l.save }
         end
         return updated_leads
@@ -81,6 +97,7 @@ module Leads
         return floorplans.map{|floorplan| unit_type_from_floorplan(floorplan)}
       end
 
+      # Return a UnitType record based on the provided Vardi::Voyager::Data::Floorplan
       def unit_type_from_floorplan(floorplan)
         unit_type = UnitType.where(property_id: @property.id, remoteid: floorplan.remoteid).first || UnitType.new
         unit_type.property ||= @property
@@ -94,38 +111,64 @@ module Leads
         return unit_type
       end
 
+      # Return Lead records based on the provided [ Vardi::Voyager::Data::GuestCard ]
       def collection_from_guestcards(guestcards)
         return guestcards.map{|guestcard| lead_from_guestcard(guestcard)}
       end
 
+      # Return a Lead record based on the provided Vardi::Voyager::Data::GuestCard
       def lead_from_guestcard(guestcard)
-        lead = Lead.new
-        preference = LeadPreference.new
+        remoteid = guestcard.prospect_id || guestcard.tenant_id
 
-        lead.remoteid = guestcard.prospect_id || guestcard.tenant_id
-        lead.title = guestcard.name_prefix
-        lead.first_name = guestcard.first_name
-        lead.middle_name = guestcard.middle_name
-        lead.last_name = guestcard.last_name
-        unless guestcard.phones.nil?
-          lead.phone1 = guestcard.phones.first.try(:last)
-          lead.phone2 = guestcard.phones.last.try(:last) if guestcard.phones.size > 1
+        lead = Lead.where(property_id: @property.id, remoteid: remoteid).first || Lead.new
+
+        preference = lead.preference || LeadPreference.new
+
+        if lead.new_record?
+          lead.remoteid = remoteid
+          lead.title = guestcard.name_prefix
+          lead.first_name = guestcard.first_name
+          lead.middle_name = guestcard.middle_name
+          lead.last_name = guestcard.last_name
+          unless guestcard.phones.nil?
+            lead.phone1 = guestcard.phones.first.try(:last)
+            lead.phone2 = guestcard.phones.last.try(:last) if guestcard.phones.size > 1
+          end
+          lead.email = guestcard.email
+          lead.state = lead_state_for(guestcard)
+          lead.priority = priority_from_state(lead.state)
+          lead.notes = guestcard.summary
+          lead.first_comm = DateTime.now
+
+          preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
+          preference.beds = guestcard.bedrooms
+          preference.max_price = guestcard.rent unless guestcard.rent.nil?
+          preference.notes = guestcard.preference_comment
+          preference.raw_data = guestcard.summary
+
+          lead.source = @lead_source
+          lead.preference = preference
+          lead.property = @property
+        else
+          # Update Lead State from Yardi Data
+          # We will do not merge changes from Voyager into Druid
+          old_state = lead.state
+          new_state = lead_state_for(guestcard)
+
+          # Has the Lead state progressed?
+          if Lead.compare_states(new_state, old_state) == 1
+            event_name = Lead.event_name_for_transition(from: old_state, to: new_state)
+            if event_name
+              lead.trigger_event(event_name: event_name)
+            else
+              # no event can transition the Lead
+              msg = "Lead Adapter Error! Can't update Lead[#{lead.id}] state for GuestCard[#{guestcard.prospect_id}] for Property[#{@property.name}] with record_type[#{guestcard.record_type}]"
+              Rails.logger.warn msg
+              ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, guestcard: guestcard.summary})
+            end
+          end
         end
-        lead.email = guestcard.email
-        lead.state = lead_state_for(guestcard)
-        lead.priority = priority_from_state(lead.state)
-        lead.notes = guestcard.summary
-        lead.first_comm = DateTime.now
 
-        preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
-        preference.beds = guestcard.bedrooms
-        preference.max_price = guestcard.rent unless guestcard.rent.nil?
-        preference.notes = guestcard.preference_comment
-        preference.raw_data = guestcard.summary
-
-        lead.source = @lead_source
-        lead.preference = preference
-        lead.property = @property
 
         # TODO: Lead Events
         #

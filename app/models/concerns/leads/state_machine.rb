@@ -9,6 +9,31 @@ module Leads
       def state_names
         Lead.aasm.states.map{|s| s.name.to_s}
       end
+
+      def compare_states(state1=nil, state2=nil)
+        return nil if state1.nil? || state2.nil?
+
+        index1 = Lead.state_names.index(state1.to_s)
+        index2 = Lead.state_names.index(state2.to_s)
+
+        if index1 > index2
+          return 1
+        elsif index1 == index2
+          return 0
+        else
+          return -1
+        end
+      end
+
+      def event_name_for_transition(from: , to: )
+        state1 = from
+        state2 = to
+        return nil if state1.nil? || state2.nil?
+        dummy = Lead.new(state: state1)
+        events = dummy.aasm.events(:permitted => true).map{|event| {name: event.name, transitions: event.transitions.map{|t| [t.from, t.to]}}}
+        event = events.select{|event| event[:transitions].any?{|transition| transition[0].to_s == state1.to_s && transition[1].to_s == state2.to_s} }.first
+        return event.nil? ? nil : event[:name]
+      end
     end
 
     included do
@@ -37,7 +62,7 @@ module Leads
         end
 
         event :apply do
-          transitions from: [:appointment], to: :application
+          transitions from: [:prospect, :appointment], to: :application
         end
 
         event :approve do
