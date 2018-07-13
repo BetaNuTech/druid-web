@@ -32,5 +32,12 @@ FactoryBot.define do
       slug 'Zillow'
       active true
     end
+
+    factory :yardi_voyager_source do
+      name 'YardiVoyager'
+      incoming true
+      slug 'YardiVoyager'
+      active true
+    end
   end
 end

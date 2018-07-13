@@ -10,7 +10,7 @@ module Leads
         Lead.aasm.states.map{|s| s.name.to_s}
       end
 
-      def compare_state(state1=nil, state2=nil)
+      def compare_states(state1=nil, state2=nil)
         return nil if state1.nil? || state2.nil?
 
         index1 = Lead.state_names.index(state1.to_s)
@@ -62,7 +62,7 @@ module Leads
         end
 
         event :apply do
-          transitions from: [:appointment], to: :application
+          transitions from: [:prospect, :appointment], to: :application
         end
 
         event :approve do

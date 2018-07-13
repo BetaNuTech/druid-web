@@ -4,6 +4,8 @@ module Leads
       LEAD_SOURCE_SLUG = 'YardiVoyager'
       DEFAULT_RENTAL_TYPE = 'Residential'
 
+      attr_reader :property, :property_code, :lead_source, :data
+
       # Accepts a Hash
       #
       # Ex: { property_code: 'marble'}
@@ -22,8 +24,8 @@ module Leads
 
       def processLeads
         @data = fetch_GuestCards(@property_code)
-        leads = collection_from_guestcards(@data)
         ActiveRecord::Base.transaction do
+          leads = collection_from_guestcards(@data)
           leads.each{|l| l.save}
         end
         return leads
@@ -31,8 +33,8 @@ module Leads
 
       def processUnitTypes
         @data = fetch_Floorplans(@property_code)
-        unit_types = collection_from_floorplans(@data)
         ActiveRecord::Base.transaction do
+          unit_types = collection_from_floorplans(@data)
           unit_types.each{|l| l.save}
         end
         return unit_types
@@ -40,8 +42,8 @@ module Leads
 
       def processUnits
         @data = fetch_Units(@property_code)
-        units = collection_from_yardi_units(@data)
         ActiveRecord::Base.transaction do
+          units = collection_from_yardi_units(@data)
           units.each{|l| l.save}
         end
         return units
@@ -49,8 +51,8 @@ module Leads
 
       # Send new/unsynced Leads to Yardi Voyager
       def sendLeads(leads)
-        updated_leads = send_Leads(leads)
         ActiveRecord::Base.transaction do
+          updated_leads = send_Leads(leads)
           updated_leads.map{|l| l.save }
         end
         return updated_leads
@@ -137,11 +139,13 @@ module Leads
           lead.preference = preference
           lead.property = @property
         else
-          # TODO Update Lead from Yardi Data
+          # Update Lead State from Yardi Data
+          # We will do not merge changes from Voyager into Druid
           old_state = lead.state
           new_state = lead_state_for(guestcard)
 
-          if compare_states(new_state, old_state) == 1
+          # Has the Lead state progressed?
+          if Lead.compare_states(new_state, old_state) == 1
             event_name = Lead.event_name_for_transition(from: old_state, to: new_state)
             if event_name
               lead.trigger_event(event_name: event_name)
