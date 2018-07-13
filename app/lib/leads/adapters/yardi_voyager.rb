@@ -6,7 +6,11 @@ module Leads
 
       attr_reader :property, :property_code, :lead_source, :data
 
-      # Accepts a Hash
+      # This Class interacts with the YardiVoyager API in the Yardi::Voyager namespace
+      # Use it to send Leads to YardiVoyager, or download Leads, UnitTypes, and Units
+      #
+      # Accepts a Hash at minimum containing a valid
+      # PropertyListing code for the YardiVoyager LeadSource
       #
       # Ex: { property_code: 'marble'}
       def initialize(params)
@@ -22,6 +26,8 @@ module Leads
         @property = property_for_listing_code(@property_code)
       end
 
+      # Fetch New Leads from YardiVoyager
+      # or progress Lead state if the Lead is already in Druid
       def processLeads
         @data = fetch_GuestCards(@property_code)
         ActiveRecord::Base.transaction do
@@ -31,6 +37,7 @@ module Leads
         return leads
       end
 
+      # Fetch New UnitTypes from YardiVoyager
       def processUnitTypes
         @data = fetch_Floorplans(@property_code)
         ActiveRecord::Base.transaction do
@@ -40,6 +47,7 @@ module Leads
         return unit_types
       end
 
+      # Fetch New Units from YardiVoyager
       def processUnits
         @data = fetch_Units(@property_code)
         ActiveRecord::Base.transaction do
@@ -89,6 +97,7 @@ module Leads
         return floorplans.map{|floorplan| unit_type_from_floorplan(floorplan)}
       end
 
+      # Return a UnitType record based on the provided Vardi::Voyager::Data::Floorplan
       def unit_type_from_floorplan(floorplan)
         unit_type = UnitType.where(property_id: @property.id, remoteid: floorplan.remoteid).first || UnitType.new
         unit_type.property ||= @property
@@ -102,10 +111,12 @@ module Leads
         return unit_type
       end
 
+      # Return Lead records based on the provided [ Vardi::Voyager::Data::GuestCard ]
       def collection_from_guestcards(guestcards)
         return guestcards.map{|guestcard| lead_from_guestcard(guestcard)}
       end
 
+      # Return a Lead record based on the provided Vardi::Voyager::Data::GuestCard
       def lead_from_guestcard(guestcard)
         remoteid = guestcard.prospect_id || guestcard.tenant_id
 
