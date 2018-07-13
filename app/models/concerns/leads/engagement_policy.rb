@@ -19,6 +19,10 @@ module Leads
           reassign_scheduled_actions
         end
       end
+
+      def send_application_to_lead
+        LeadMailer.with(lead: self).application_link.deliver_later
+      end
     end
   end
 end
