@@ -7,9 +7,25 @@ module Leads
       CALL_LOG_FREQUENCY = 10 # minutes
 
       scope :recent_recordings, -> (start_time=1.week.ago) {
-        phone_numbers = self.all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq
-        return Cdr.where('calldate >= ? AND recordingfile IS NOT NULL', start_time).
-          calls_for(phone_numbers)
+        leads = {}
+        lead_phone_numbers = self.all.inject({}) do |memo, lead|
+          phones = [lead.phone1, lead.phone2].compact
+          if phones.size > 0
+            memo[lead.id] = Cdr.number_variants(phones)
+          end
+          memo
+        end
+        phone_numbers = lead_phone_numbers.to_a.map{|l| l[1]}.flatten.compact.uniq
+        call_records = Cdr.where('( recordingfile IS NOT NULL AND recordingfile != "" ) AND calldate >= ?', start_time).
+          calls_for(phone_numbers).
+          to_a
+        lead_phone_numbers.each_pair do |leadid, phones|
+          cdr_matches = call_records.select{|cdr| phones.include?(cdr.src) || phones.include?(cdr.dst)}
+          if cdr_matches.present?
+            leads[leadid] = { lead: Lead.find(leadid), calls: cdr_matches }
+          end
+        end
+        leads
       }
 
       # Return Hash of cached call information
