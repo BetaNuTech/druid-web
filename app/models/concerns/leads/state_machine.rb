@@ -138,7 +138,7 @@ module Leads
       end
 
       def apply_event_callback
-        send_application_to_lead
+        send_application_to_lead  # Leads::EngagementPolicy#send_application_to_lead
       end
 
       def trigger_event(event_name:, user: false)
