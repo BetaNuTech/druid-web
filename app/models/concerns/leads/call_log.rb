@@ -6,6 +6,12 @@ module Leads
 
       CALL_LOG_FREQUENCY = 10 # minutes
 
+      scope :recent_recordings, -> (start_time=1.week.ago) {
+        phone_numbers = self.all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq
+        return Cdr.where('calldate >= ? AND recordingfile IS NOT NULL', start_time).
+          calls_for(phone_numbers)
+      }
+
       # Return Hash of cached call information
       def calls
         #if should_update_call_log?
@@ -39,5 +45,6 @@ module Leads
         return (call_log.nil? || call_log.empty? || call_log_updated_at.nil? || call_log_updated_at < (DateTime.now - CALL_LOG_FREQUENCY.minutes))
       end
     end
+
   end
 end
