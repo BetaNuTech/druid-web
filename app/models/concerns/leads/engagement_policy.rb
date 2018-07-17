@@ -21,7 +21,7 @@ module Leads
       end
 
       def send_application_to_lead
-        LeadMailer.with(lead: self).application_link.deliver_later
+        # TODO lookup MessageTemplate and perform MessageDelivery
       end
     end
   end
