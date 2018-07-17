@@ -1,5 +1,5 @@
 <tr>
-  <td><%= long_datetime(DateTime.parse(call_entry["date"])) rescue '' %></td>
+  <td><%= long_datetime(DateTime.parse(call_entry["date"]).localtime) rescue '' %></td>
   <td><%= call_entry["src"] %></td>
   <td><%= call_entry["dst"] %></td>
   <td><%= call_entry["disposition"] %></td>
