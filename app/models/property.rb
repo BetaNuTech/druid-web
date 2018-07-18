@@ -24,12 +24,13 @@
 #  website         :string
 #  school_district :string
 #  amenities       :text
+#  application_url :string
 #
 
 class Property < ApplicationRecord
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
                     :country, :organization, :contact_name, :phone, :fax, :email,
-                    :website, :units, :notes, :school_district, :amenities, :active ]
+                    :website, :units, :notes, :school_district, :amenities, :active, :application_url ]
   audited
 
   ## Associations

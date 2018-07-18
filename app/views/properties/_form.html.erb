@@ -114,6 +114,14 @@
           <%= form.label :website %>
           <%= form.text_field :website, id: :property_website, class: "form-control" %>
         </div>
+
+        <div class="col-md-6 form-group">
+          <%= form.label :application_url, 'Rental Application URL' %>
+          <%= form.text_field :application_url, id: :property_application_url, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-6 form-group">
           <%= form.label :email %>
           <%= form.text_field :email, id: :property_email, class: "form-control" %>
