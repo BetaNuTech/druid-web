@@ -2,35 +2,37 @@
 #
 # Table name: leads
 #
-#  id              :uuid             not null, primary key
-#  user_id         :uuid
-#  lead_source_id  :uuid
-#  title           :string
-#  first_name      :string
-#  last_name       :string
-#  referral        :string
-#  state           :string
-#  notes           :text
-#  first_comm      :datetime
-#  last_comm       :datetime
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  property_id     :uuid
-#  phone1          :string
-#  phone2          :string
-#  fax             :string
-#  email           :string
-#  priority        :integer          default("low")
-#  phone1_type     :string
-#  phone2_type     :string
-#  phone1_tod      :string
-#  phone2_tod      :string
-#  dob             :datetime
-#  id_number       :string
-#  id_state        :string
-#  remoteid        :string
-#  middle_name     :string
-#  conversion_date :datetime
+#  id                  :uuid             not null, primary key
+#  user_id             :uuid
+#  lead_source_id      :uuid
+#  title               :string
+#  first_name          :string
+#  last_name           :string
+#  referral            :string
+#  state               :string
+#  notes               :text
+#  first_comm          :datetime
+#  last_comm           :datetime
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  property_id         :uuid
+#  phone1              :string
+#  phone2              :string
+#  fax                 :string
+#  email               :string
+#  priority            :integer          default("low")
+#  phone1_type         :string
+#  phone2_type         :string
+#  phone1_tod          :string
+#  phone2_tod          :string
+#  dob                 :datetime
+#  id_number           :string
+#  id_state            :string
+#  remoteid            :string
+#  middle_name         :string
+#  conversion_date     :datetime
+#  call_log            :json
+#  call_log_updated_at :datetime
 #
 
 class Lead < ApplicationRecord
