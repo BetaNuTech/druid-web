@@ -119,6 +119,8 @@ end
 
 puts " * Creating Message Types"
 Rake::Task["db:seed:message_types"].invoke
+puts " * Creating Message Templates"
+Rake::Task["db:seed:message_templates"].invoke
 puts " * Creating Properties"
 Rake::Task["db:seed:properties"].invoke
 puts " * Creating Reasons"

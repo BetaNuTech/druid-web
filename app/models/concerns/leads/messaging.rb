@@ -16,7 +16,12 @@ module Leads
           'property_amenities' => property.try(:amenities),
           'property_website' => property.try(:website),
           'property_phone' => property.try(:phone),
-          'property_school_district' => property.try(:school_district)
+          'property_school_district' => property.try(:school_district),
+          'property_application_url' => property.try(:application_url),
+          'html_email_header_image' => ("%s://%s/email_header_sapphire-620.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
+          'email_bluestone_logo' => ("%s://%s/bluestone_logo_small.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
+          'email_housing_logo' => ("%s://%s/equal_housing_logo.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
+          'email_unsubscribe_link' => ("%s://%s/unsubscribe" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
         }
       end
 
