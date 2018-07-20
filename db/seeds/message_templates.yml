@@ -9,22 +9,33 @@
     :body: >
       Hello {{lead_name}},
 
+
       My name is {{agent_name}} and I am the {{agent_title}} at {{property_name}}. I am glad to be able to help you with your search for your new apartment home in {{property_city}}!
+
 
       Let me ask you a few questions to help me find the perfect apartment for you. What size apartment are you looking for? When are you looking to move? We offer spacious one, two, and three bedroom apartment homes!
 
+
       Our community has many unique features to make your lifestyle much more convenient, {{property_amenities}}. What else is important to you in your new home? Do you have any pet friends that you will be bringing with you?
+
 
       We can’t help but boast about the services you are going to receive. We’re proud of our reputation for exceptional maintenance service. Our leasing and management staff is always responsive and professional. We are going to be there for you when you need us! We are conveniently located close to shopping and restaurants. Our property is located in the highly esteemed “school district”.
 
+
       I would love to extend an invitation to you to come out and take a look at our beautiful community so that we can show you around. We hope to see you this week but in the meantime, please also take a look at our property website: {{property_website}} and view available floorplans. If you would like to receive pictures via email, please let me know and I will forward some to you. There is also a variety of pictures on our website.
+
 
       Thank you for inquiring about our community, please contact me soon to set up your tour.
 
+
       {{agent_name}}
+
       {{agent_title}}
+
       {{property_name}}
+
       {{property_website}}
+
       {{property_phone}}
   - :name: Invite to Online Application - Online Lead - HTML
     :message_type_id: <%= MessageType.email.try(:id) %>

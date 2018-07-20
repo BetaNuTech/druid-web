@@ -145,7 +145,7 @@ class Message < ApplicationRecord
       end
       self.subject += rendered_template.subject || ''
       self.body += rendered_template.body || ''
-      if message_type.try(:html)
+      if message_type && rich_editor?
         self.body = self.body.gsub(/[\n]+/, '<BR/>')
       end
     end
@@ -251,6 +251,10 @@ class Message < ApplicationRecord
 
   def html?
     return message_type.try(:html) ? true : false
+  end
+
+  def rich_editor?
+    html? && !( body || '' ).match(/<html>/)
   end
 
 end
