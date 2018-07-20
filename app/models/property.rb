@@ -106,7 +106,7 @@ class Property < ApplicationRecord
   end
 
   def address(line_break="\n\r")
-    [address1, address2, address3, "#{city}, #{state} #{zip}"].compact.join(line_break)
+    [address1, address2, address3, "#{city} #{state} #{zip}"].compact.join(line_break)
   end
 
   def address_html
