@@ -145,6 +145,9 @@ class Message < ApplicationRecord
       end
       self.subject += rendered_template.subject || ''
       self.body += rendered_template.body || ''
+      if message_type.try(:html)
+        self.body = self.body.gsub(/[\n]+/, '<BR/>')
+      end
     end
     return !any_errors
   end

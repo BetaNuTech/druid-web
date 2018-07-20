@@ -105,4 +105,12 @@ class Property < ApplicationRecord
       order('property_agents.created_at ASC')
   end
 
+  def address(line_break="\n\r")
+    [address1, address2, address3, "#{city}, #{state} #{zip}"].compact.join(line_break)
+  end
+
+  def address_html
+    address("<BR/>")
+  end
+
 end

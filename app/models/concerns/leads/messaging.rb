@@ -12,6 +12,8 @@ module Leads
           "agent_name" => user.try(:name),
           "agent_title" => user.try(:title_for_property, property),
           "property_name" => property.try(:name),
+          "property_address" => property.try(:address),
+          "property_address_html" => property.try(:address_html),
           'property_city' => property.try(:city),
           'property_amenities' => property.try(:amenities),
           'property_website' => property.try(:website),
