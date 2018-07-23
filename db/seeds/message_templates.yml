@@ -137,7 +137,7 @@
                     <!-- START MAIN CONTENT AREA -->
                     <tr>
                       <td>
-                        <img src ="{{email_bluestone_logo}}}" alt="Bluestone logo"/>
+                        <img src ="{{html_email_header_image}}" alt="Blue header image"/>
                       </td>
                     </tr>
                     <tr>
@@ -307,7 +307,7 @@
                     <!-- START MAIN CONTENT AREA -->
                     <tr>
                       <td>
-                        <img src ="{{email_bluestone_logo}}}" alt="Bluestone logo"/>
+                        <img src ="{{html_email_header_image}}" alt="Blue Header Image"/>
                       </td>
                     </tr>
                     <tr>
