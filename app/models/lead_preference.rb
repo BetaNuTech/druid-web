@@ -83,4 +83,20 @@ class LeadPreference < ApplicationRecord
     DEFAULT_UNIT_SYSTEM
   end
 
+  def optout!
+    self.optout_email = true
+    self.optout_email_date ||= DateTime.now
+    save
+  end
+
+  def optin!
+    self.optout_email = false
+    self.optout_email_date = nil
+    save
+  end
+
+  def optout?
+    optout_email
+  end
+
 end

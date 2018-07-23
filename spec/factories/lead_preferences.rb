@@ -37,5 +37,7 @@ FactoryBot.define do
     notes {Faker::Lorem.paragraph}
     lead
     unit_type
+    optout_email { false }
+    optout_email_date { nil }
   end
 end
