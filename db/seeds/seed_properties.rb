@@ -9,7 +9,12 @@ class SeedProperties
     "contact_name" => 4,
     "units" => 5,
     "address" => 6,
-    "listing_id" => 7
+    "city" => 7,
+    "state" => 8,
+    "zip" => 9,
+    "listing_id" => 10,
+    "website" => 11,
+    "application" => 12
   }
 
   def initialize(filename=nil)
@@ -43,6 +48,11 @@ class SeedProperties
         property.contact_name = row[COLUMNS["contact_name"]]
         property.units = row[COLUMNS["units"]]
         property.address1 = row[COLUMNS["address"]]
+        property.city = row[COLUMNS["city"]]
+        property.state = row[COLUMNS["state"]]
+        property.zip = row[COLUMNS["zip"]]
+        property.website = row[COLUMNS["website"]]
+        property.application_url = row[COLUMNS["application"]]
 
         if property.save
           PropertyListing.create(
