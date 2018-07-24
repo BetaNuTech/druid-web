@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_29_172502) do
+ActiveRecord::Schema.define(version: 2018_07_18_164617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -121,6 +121,8 @@ ActiveRecord::Schema.define(version: 2018_06_29_172502) do
     t.integer "beds"
     t.text "raw_data"
     t.uuid "unit_type_id"
+    t.boolean "optout_email", default: false
+    t.datetime "optout_email_date"
   end
 
   create_table "lead_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -272,6 +274,7 @@ ActiveRecord::Schema.define(version: 2018_06_29_172502) do
     t.string "website"
     t.string "school_district"
     t.text "amenities"
+    t.string "application_url"
     t.index ["active"], name: "index_properties_on_active"
   end
 

@@ -72,4 +72,7 @@ Rails.application.routes.draw do
   end
   resources :message_templates
 
+  get '/messaging/preferences', to: 'home#messaging_preferences', as: 'messaging_preferences'
+  post '/messaging/unsubscribe', to: 'home#unsubscribe', as: 'messaging_unsubscribe'
+
 end

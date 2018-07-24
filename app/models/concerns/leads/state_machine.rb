@@ -62,7 +62,8 @@ module Leads
         end
 
         event :apply do
-          transitions from: [:prospect, :appointment], to: :application
+          transitions from: [:prospect, :appointment], to: :application,
+            after: -> (*args) { apply_event_callback }
         end
 
         event :approve do
@@ -134,6 +135,10 @@ module Leads
 
       def set_priority_urgent
         self.priority = "urgent"
+      end
+
+      def apply_event_callback
+        send_rental_application # Leads::EngagementPolicy#send_application_to_lead
       end
 
       def trigger_event(event_name:, user: false)

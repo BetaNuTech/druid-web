@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Update your Messaging Preferences</h1>
+    </div>
+  </div>
+
+  <% if @lead.present? %>
+    <div class="row">
+      <div class="col-md-12">
+        <%= form_tag(messaging_unsubscribe_path) %>
+        <%= hidden_field_tag :lead_id, params[:id] %>
+
+        <div class="row">
+          <div class="col-md-4">
+            <%= label_tag :lead_email, 'Email Address' %>
+            <%= text_field_tag :lead_email, @lead.email, class: "form-control" %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <%= check_box_tag :lead_optout, "true", @lead.optout? %>
+            <%= label_tag :lead_optout, 'Opt out of Emails and Notifications' %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  <% else %>
+    <h2>Sorry! We could not find your record.</h2>
+  <% end %>
+
+</div>

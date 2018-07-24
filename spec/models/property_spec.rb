@@ -24,6 +24,7 @@
 #  website         :string
 #  school_district :string
 #  amenities       :text
+#  application_url :string
 #
 
 require 'rails_helper'

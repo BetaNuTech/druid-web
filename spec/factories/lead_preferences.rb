@@ -2,23 +2,25 @@
 #
 # Table name: lead_preferences
 #
-#  id           :uuid             not null, primary key
-#  lead_id      :uuid
-#  min_area     :integer
-#  max_area     :integer
-#  min_price    :decimal(, )
-#  max_price    :decimal(, )
-#  move_in      :datetime
-#  baths        :decimal(, )
-#  pets         :boolean
-#  smoker       :boolean
-#  washerdryer  :boolean
-#  notes        :text
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  beds         :integer
-#  raw_data     :text
-#  unit_type_id :uuid
+#  id                :uuid             not null, primary key
+#  lead_id           :uuid
+#  min_area          :integer
+#  max_area          :integer
+#  min_price         :decimal(, )
+#  max_price         :decimal(, )
+#  move_in           :datetime
+#  baths             :decimal(, )
+#  pets              :boolean
+#  smoker            :boolean
+#  washerdryer       :boolean
+#  notes             :text
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  beds              :integer
+#  raw_data          :text
+#  unit_type_id      :uuid
+#  optout_email      :boolean          default(FALSE)
+#  optout_email_date :datetime
 #
 
 FactoryBot.define do
@@ -35,5 +37,7 @@ FactoryBot.define do
     notes {Faker::Lorem.paragraph}
     lead
     unit_type
+    optout_email { false }
+    optout_email_date { nil }
   end
 end

@@ -12,11 +12,18 @@ module Leads
           "agent_name" => user.try(:name),
           "agent_title" => user.try(:title_for_property, property),
           "property_name" => property.try(:name),
+          "property_address" => property.try(:address),
+          "property_address_html" => property.try(:address_html),
           'property_city' => property.try(:city),
           'property_amenities' => property.try(:amenities),
           'property_website' => property.try(:website),
           'property_phone' => property.try(:phone),
-          'property_school_district' => property.try(:school_district)
+          'property_school_district' => property.try(:school_district),
+          'property_application_url' => property.try(:application_url),
+          'html_email_header_image' => ("%s://%s/email_header_sapphire-620.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
+          'email_bluestone_logo' => ("%s://%s/bluestone_logo_small.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
+          'email_housing_logo' => ("%s://%s/equal_housing_logo.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
+          'email_unsubscribe_link' => ("%s://%s/messaging/preferences?id=%s" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST',''), id]),
         }
       end
 
@@ -55,6 +62,19 @@ module Leads
         types << MessageType.active.email if message_email_destination.present?
         return types
       end
+
+      def optout!
+        preference.optout! if preference.present?
+      end
+
+      def optin!
+        preference.optin! if preference.present?
+      end
+
+      def optout?
+        preference.optout? if preference.present?
+      end
+
     end
   end
 end

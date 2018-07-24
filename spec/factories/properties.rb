@@ -24,6 +24,7 @@
 #  website         :string
 #  school_district :string
 #  amenities       :text
+#  application_url :string
 #
 
 FactoryBot.define do
@@ -46,6 +47,7 @@ FactoryBot.define do
     website { Faker::Internet.url }
     school_district { Faker::Company.name }
     amenities { Array.new(rand(10)){Faker::Lorem.word}.join(',') }
+    application_url { Faker::Internet.url }
     active true
   end
 end

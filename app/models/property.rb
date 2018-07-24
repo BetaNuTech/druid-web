@@ -24,12 +24,13 @@
 #  website         :string
 #  school_district :string
 #  amenities       :text
+#  application_url :string
 #
 
 class Property < ApplicationRecord
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
                     :country, :organization, :contact_name, :phone, :fax, :email,
-                    :website, :units, :notes, :school_district, :amenities, :active ]
+                    :website, :units, :notes, :school_district, :amenities, :active, :application_url ]
   audited
 
   ## Associations
@@ -102,6 +103,14 @@ class Property < ApplicationRecord
             property_agents: {active: true},
             roles: {slug: Role.manager.slug}).
       order('property_agents.created_at ASC')
+  end
+
+  def address(line_break="\n\r")
+    [address1, address2, address3, "#{city} #{state} #{zip}"].compact.join(line_break)
+  end
+
+  def address_html
+    address("<BR/>")
   end
 
 end

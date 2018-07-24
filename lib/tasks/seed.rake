@@ -85,6 +85,11 @@ namespace :db do
       MessageType.load_seed_data
     end
 
+    desc "Load Message Templates"
+    task :message_templates => :environment do
+      MessageTemplate.load_seed_data
+    end
+
     desc "Load Message Delivery Adapters"
     task :message_delivery_adapters => :environment do
 
