@@ -49,6 +49,20 @@ class Cdr < CdrdbModel
   }
 
   ### Class Methods
+  
+  def self.for_leads(start_date:, end_date:)
+    variants = self.number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
+    self.select(:id, :calldate, :src, :dst, :recordingfile).
+      where("recordingfile IS NOT null AND recordingfile != ''").
+      where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
+      where("src IN (:src) AND dst IN (:dst)", { dst: variants, src: variants})
+  end
+
+  def self.lead_recordings(start_date:, end_date:)
+    self.for_leads(start_date: start_date, end_date: end_date).
+      map{|cdr| cdr.recording_path_key}.
+      sort
+  end
 
   def self.non_leads(start_date:, end_date:)
     variants = self.number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
