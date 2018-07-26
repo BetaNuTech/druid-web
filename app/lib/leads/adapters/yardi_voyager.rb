@@ -151,7 +151,7 @@ module Leads
           lead.property = @property
         else
           # Update Lead State from Yardi Data
-          # We will do not merge changes from Voyager into Druid
+          # We will not merge changes from Voyager into Druid
           old_state = lead.state
           new_state = lead_state_for(guestcard)
 
@@ -164,7 +164,11 @@ module Leads
               # no event can transition the Lead
               msg = "Lead Adapter Error! Can't update Lead[#{lead.id}] state for GuestCard[#{guestcard.prospect_id}] for Property[#{@property.name}] with record_type[#{guestcard.record_type}]"
               Rails.logger.warn msg
-              ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, guestcard: guestcard.summary})
+              if !lead.open?
+                # If the Lead is unclaimed, this issue isn't urgent and doesn't require notification.
+                # ( We assume that the Lead is unclaimed for a reason )
+                ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, guestcard: guestcard.summary})
+              end
             end
           end
         end
