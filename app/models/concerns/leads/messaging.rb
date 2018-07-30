@@ -64,15 +64,45 @@ module Leads
       end
 
       def optout!
-        preference.optout! if preference.present?
+        if preference.present?
+          preference.optout!
+          create_optout_comment(content: "Lead used email unsubscribe link to opt out of automated emails")
+        end
       end
 
       def optin!
-        preference.optin! if preference.present?
+        if preference.present?
+          preference.optin!
+          create_optin_comment(content: "Lead used email unsubscribe link to opt back into automated emails")
+        end
       end
 
       def optout?
         preference.optout? if preference.present?
+      end
+
+      def create_optout_comment(content:)
+        note_lead_action = LeadAction.where(name: 'Lead Email Opt-Out').first
+        note_reason = Reason.where(name: 'Lead Preference Set').first
+        note = Note.create(
+          user: agent,
+          lead_action: note_lead_action,
+          notable: self,
+          reason: note_reason,
+          content: content
+        )
+      end
+
+      def create_optin_comment(content:)
+        note_lead_action = LeadAction.where(name: 'Lead Email Opt-In').first
+        note_reason = Reason.where(name: 'Lead Preference Set').first
+        note = Note.create(
+          user: agent,
+          lead_action: note_lead_action,
+          notable: self,
+          reason: note_reason,
+          content: content
+        )
       end
 
     end

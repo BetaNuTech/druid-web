@@ -1,6 +1,21 @@
 ---
-:message_delivery_adapters
+:message_delivery_adapters:
   :version: 1
   :key: :slug
   :data:
-    
+  - :name: ActionMailer
+    :slug: Actionmailer
+    :description: Message delivery via Email and Rails application mail backend
+    :active: true
+    :message_type_id: <%= MessageType.find_by_name('Email').id %>
+  - :name: CloudMailin
+    :slug: CloudMailin
+    :description: Message receipt via CloudMailin
+    :active: true
+    :message_type_id: <%= MessageType.find_by_name('Email').id %>
+  - :name: Twilio
+    :slug: TwilioAdapter
+    :description: Message delivery and receipt via Twilio
+    :active: true
+    :message_type_id: <%= MessageType.find_by_name('SMS').id %>
+

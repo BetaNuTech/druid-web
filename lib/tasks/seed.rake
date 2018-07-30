@@ -92,63 +92,7 @@ namespace :db do
 
     desc "Load Message Delivery Adapters"
     task :message_delivery_adapters => :environment do
-
-      # Message Delivery Adapters
-      puts '*** Creating Message Delivery Adapters'
-      print '   - Mail: ActionMailer'
-      if MessageDeliveryAdapter.where(slug: 'Actionmailer').any?
-        puts '[OK]'.green
-      else
-        adapter = MessageDeliveryAdapter.new(
-          name: 'ActionMailer',
-          slug: 'Actionmailer',
-          description: 'Message delivery via Email and Rails application mail backend',
-          active: true,
-          message_type: MessageType.find_by_name('Email')
-        )
-        if adapter.save
-          puts ' [OK]'.green
-        else
-          puts " [FAIL] (#{adapter.errors.to_a})".red
-        end
-      end
-
-
-      print '   - Mail: CloudMailin'
-      if MessageDeliveryAdapter.where(slug: 'CloudMailin').any?
-        puts '[OK]'.green
-      else
-        adapter = MessageDeliveryAdapter.new(
-          name: 'CloudMailin',
-          slug: 'CloudMailin',
-          description: 'Message receipt via CloudMailin',
-          active: true,
-          message_type: MessageType.find_by_name('Email')
-        )
-        if adapter.save
-          puts ' [OK]'.green
-        else
-          puts " [FAIL] (#{adapter.errors.to_a})".red
-        end
-      end
-
-      print '   - SMS: TwilioAdapter'
-      if MessageDeliveryAdapter.where(slug: 'TwilioAdapter').any?
-        puts '[OK]'.green
-      else
-        adapter = MessageDeliveryAdapter.new(
-          name: 'Twilio',
-          slug: 'TwilioAdapter',
-          description: 'Message delivery and receipt via Twilio',
-          active: true,
-          message_type: MessageType.find_by_name('SMS')
-        )
-        if adapter.save
-          puts ' [OK]'.green
-        else
-          puts " [FAIL] (#{adapter.errors.to_a})".red
-        end
-      end
+      MessageDeliveryAdapter.load_seed_data
     end
 
   end # namespace :seed

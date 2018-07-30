@@ -107,6 +107,10 @@ class Lead < ApplicationRecord
     false
   end
 
+  def agent
+    user || property.try(:managers).try(:first)
+  end
+
   private
 
 end
