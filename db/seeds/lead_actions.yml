@@ -44,6 +44,7 @@
     :is_contact: true
     :active: true
   - :name: Send Email
+    :glyph: envelope
     :description:
     :is_contact: true
     :active: true
@@ -92,3 +93,9 @@
     :description: Record notes from a Lead contact and update Last Contact timestamp
     :is_contact: true
     :active: true
+  - :name: Email Rental Application
+    :glyph: envelope
+    :description: Email Property.application_url to Lead (upon transition to 'Appointment' state)
+    :is_contact: true
+    :active: true
+

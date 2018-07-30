@@ -21,11 +21,6 @@ module Leads
       end
 
       def send_rental_application
-        if optout?
-          Rails.logger.warn "Rental application was not emailed to Lead[#{id}] due to opt-out."
-          return true
-        end
-
         if walk_in?
           message_template_name = 'Invite to Online Application - Walkin - HTML'
         else
@@ -33,33 +28,54 @@ module Leads
         end
 
         message_template = MessageTemplate.where(name: message_template_name).first
-        message_user = user || property.managers.first
+        errors = {errors: []}
 
-        if message_template && message_user
+        if !optout? && message_template && agent
           message = Message.new_message(
-            from: message_user,
+            from: agent,
             to: self,
             message_type: MessageType.email,
             message_template: message_template,
           )
           message.deliver!
           message.reload
+          comment_content = "SENT: #{message_template_name}"
         else
           # Cannot send Message: send Error Notification
           message = Message.new()
-          errors = {errors: []}
-          error = StandardError.new("Lead Pipeline: Could not send application to Lead[#{self.id}]")
+          error_message = "Lead Pipeline: Could not send application to Lead[#{self.id}]"
+          errors[:errors] << error_message
+          error = StandardError.new(error_message)
+          if optout?
+            errors[:errors] << "Rental application was not emailed to Lead[#{id}] due to opt-out."
+          end
           if message_template.nil?
             errors[:errors] << "Missing Message Template: '#{message_template_name}'"
           end
-          if message_user.nil?
+          if agent.nil?
             errors[:errors] << "Lead has no agent, and property has no manager"
           end
           ErrorNotification.send(error,errors)
+          comment_content = "NOT SENT: #{message_template_name} -- #{errors[:errors].join('; ')}"
         end
+
+        create_rental_application_comment(success: !errors[:errors].any?, content: comment_content, agent: agent)
 
         return message.deliveries.last
       end
+
+      def create_rental_application_comment(success: true, content:, agent:)
+        note_lead_action = LeadAction.where(name: 'Email Rental Application').first
+        note_reason = Reason.where(name: 'Pipeline Event').first
+        note = Note.create(
+          user: agent,
+          lead_action: note_lead_action,
+          notable: self,
+          reason: note_reason,
+          content: content
+        )
+      end
+
     end
   end
 end

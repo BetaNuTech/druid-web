@@ -15,3 +15,6 @@
   - :name: Other
     :description: 
     :active: true
+  - :name: Pipeline Event
+    :description:
+    :active: true
