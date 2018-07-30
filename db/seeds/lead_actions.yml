@@ -98,4 +98,13 @@
     :description: Email Property.application_url to Lead (upon transition to 'Appointment' state)
     :is_contact: true
     :active: true
-
+  - :name: Lead Email Opt-Out
+    :glyph: envelope
+    :description: The Lead used the Email Unsubscribe Link to opt out of email messages
+    :is_contact: true
+    :active: true
+  - :name: Lead Email Opt-In
+    :glyph: envelope
+    :description: The Lead used the Email Unsubscribe Link to opt back into email messages
+    :is_contact: true
+    :active: true

@@ -59,12 +59,12 @@ module Leads
           comment_content = "NOT SENT: #{message_template_name} -- #{errors[:errors].join('; ')}"
         end
 
-        create_rental_application_comment(success: !errors[:errors].any?, content: comment_content, agent: agent)
+        create_rental_application_comment(content: comment_content, agent: agent)
 
         return message.deliveries.last
       end
 
-      def create_rental_application_comment(success: true, content:, agent:)
+      def create_rental_application_comment(content:, agent:)
         note_lead_action = LeadAction.where(name: 'Email Rental Application').first
         note_reason = Reason.where(name: 'Pipeline Event').first
         note = Note.create(

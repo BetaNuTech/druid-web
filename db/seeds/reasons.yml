@@ -18,3 +18,6 @@
   - :name: Pipeline Event
     :description:
     :active: true
+  - :name: Lead Preference Set
+    :description: Caused by a Lead making preference changes
+    :active: true
