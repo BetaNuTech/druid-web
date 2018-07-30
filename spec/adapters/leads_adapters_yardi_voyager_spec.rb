@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Leads::Adapters::YardiVoyager do
+  include_context "users"
+
   let(:property_code) { 'marble' }
   let(:property) { create(:property) }
   let(:lead_source) { create(:yardi_voyager_source)}
@@ -15,6 +17,10 @@ RSpec.describe Leads::Adapters::YardiVoyager do
   }
 
   describe "initialization" do
+    before do
+      manager
+    end
+
     it "should initialize and set instance variables" do
       adapter
       expect(adapter.property).to eq(property)
@@ -36,6 +42,12 @@ RSpec.describe Leads::Adapters::YardiVoyager do
       guestcard.record_type = 'applicant'
       updated_lead = adapter.send(:lead_from_guestcard, guestcard)
       expect(updated_lead.id).to eq(lead.id)
+    end
+  end
+
+  describe "lead data import" do
+    before do
+      manager
     end
 
     it "progresses existing lead state from a guestcard (private method)" do
