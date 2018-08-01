@@ -30,6 +30,7 @@ module Leads
       # or progress Lead state if the Lead is already in Druid
       def processLeads
         @data = fetch_GuestCards(@property_code)
+        leads = []
         ActiveRecord::Base.transaction do
           leads = collection_from_guestcards(@data)
           leads.each{|l| l.save}
@@ -143,7 +144,7 @@ module Leads
           preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
           preference.beds = guestcard.bedrooms
           preference.max_price = guestcard.rent unless guestcard.rent.nil?
-          preference.notes = guestcard.preference_comment
+          preference.notes = guestcard.preference_comment # Note that Yardi Voyager data in the Comment node is often truncated.
           preference.raw_data = guestcard.summary
 
           lead.source = @lead_source
@@ -173,11 +174,69 @@ module Leads
           end
         end
 
-
-        # TODO: Lead Events
-        #
+				new_comments = notes_from_guestcard_events(lead: lead, events: guestcard.events)
+#binding.pry if new_comments.present?
+        lead.comments << new_comments
 
         return lead
+      end
+
+      def notes_from_guestcard_events(lead:, events: [])
+        return ( events || [] ).map do |event|
+          event_type, event_date, event_comment = event
+          event_date_parsed = (DateTime.parse(event_date) rescue nil)
+					event_lead_action_id = lead_action_from_event_type(event_type).try(:id),
+          event_content = event_comment
+          if event_date_parsed.nil?
+            event_content += " [#{event_date_parsed}]"
+          end
+					event_user_id = lead.user_id
+					old_note = Note.where(lead_action_id: event_lead_action_id,
+																notable_id: lead.id, notable_type: 'Lead',
+																content: event_content).first
+					if old_note
+						nil
+					else
+						Note.new(
+							user_id: event_user_id,
+							lead_action_id: event_lead_action_id,
+							notable_id: lead.id,
+							notable_type: 'Lead',
+							content: event_content,
+              created_at: ( event_date_parsed || DateTime.now )
+						)
+					end
+        end.compact
+      end
+
+      def lead_action_from_event_type(event_type)
+        action_name = {
+            'Application': 'Process Application',
+            'ApplicationDenied': 'Process Application',
+            'Appointment': 'Schedule Appointment',
+            'Approve': 'Process Application',
+            'CallFromProspect': 'Make Call',
+            'CallToProspect': 'Make Call',
+            'Cancel': 'Other',
+            'CancelApplication': 'Process Application',
+            'CancelAppointment': 'Schedule Appointment',
+            'Chat': 'Other',
+            'Email': 'Send Email',
+            'First Contact': 'First Contact',
+            'Hold': 'Other',
+            'LeaseSign': 'Process Application',
+            'Other': 'Other',
+            'ReActivate': 'Other',
+            'ReApply': 'Process Application',
+            'Release': 'Process Application',
+            'ReturnVisit': 'Schedule Appointment',
+            'Show': 'Tour Units',
+            'Text': 'Send SMS',
+            'Transfer': 'Other',
+            'WalkIn': 'Process Application',
+            'WebService': 'Other' }.
+          fetch(event_type, 'Other')
+          return LeadAction.where(name: action_name).first || LeadAction.where(name: 'Other').first
       end
 
       def fetch_GuestCards(propertycode)

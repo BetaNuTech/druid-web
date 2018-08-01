@@ -164,11 +164,13 @@ module Yardi
               prospect.bedrooms = ( bedrooms['Exact'] || 1 ).to_i
             end if prospect_preferences['DesiredNumBedrooms']
             prospect_preferences['Comment'].tap do |comment|
+              # Note that Yardi Voyager data in the Comment node is often truncated.
+              # Full text appears in the Events node children.
               prospect.preference_comment = ([ comment ] || []).flatten.compact.join(' ')
             end if prospect_preferences['Comment']
 
             if (events = prospect_events.try(:first).try(:last))
-              prospect.events = [ events ].flatten.compact.map{|e| "%s %s: %s" % [e["EventType"], e["EventDate"], e["Comments"]] }
+              prospect.events = [ events ].flatten.compact.map{|e| [e["EventType"], e["EventDate"], e["Comments"]] }
             end
 
             prospects << prospect
