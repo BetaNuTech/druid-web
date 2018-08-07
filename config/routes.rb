@@ -70,7 +70,12 @@ Rails.application.routes.draw do
     post 'deliver', on: :member
     post 'mark_read', to: "messages#mark_read"
   end
+
   resources :message_templates
+
+  namespace :stats do
+    get 'manager', to: "manager"
+  end
 
   get '/messaging/preferences', to: 'home#messaging_preferences', as: 'messaging_preferences'
   post '/messaging/unsubscribe', to: 'home#unsubscribe', as: 'messaging_unsubscribe'

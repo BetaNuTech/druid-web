@@ -11,6 +11,9 @@ class HomeController < ApplicationController
     @limit_leads = [ ( params[:limit_leads] || 5 ).to_i,  @unclaimed_leads.count ].min
   end
 
+  def manager_dashboard
+
+  end
 
   def messaging_preferences
     @page = "Update Messaging Preferences"
