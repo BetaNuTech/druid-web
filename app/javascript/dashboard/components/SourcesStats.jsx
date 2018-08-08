@@ -1,7 +1,9 @@
 import React from 'react'
 import Style from './SourcesStats.scss'
 
-import { scaleLinear, scaleBand } from 'd3-scale'
+import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
+import { schemePaired } from 'd3'
+
 import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft} from 'd3-axis'
@@ -38,6 +40,8 @@ class SourcesStats extends React.Component {
       rangeRound([0, this.width]).
       padding(0.2)
 
+    const colorScale = scaleOrdinal(schemePaired)
+
     // Position chart with margin
     const chart = select(node)
     chart.attr("transform", "translate(" + this.margin.top + "," + this.margin.left + ")")
@@ -60,23 +64,26 @@ class SourcesStats extends React.Component {
         .attr("text-anchor", "end")
         .text("Leads")
 
+    // Position Bars
     var bar = chart.selectAll(".bar")
       .append("g")
         .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
 
+    // Add Bars
     bar
       .data(this.props.data.series)
       .enter()
         .append('rect')
           .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
           .attr('class', 'bar')
-          .style('fill', '#cccccc')
+          .style('fill', d => colorScale(this.props.selectX(d)))
           .style('stroke', '#000')
           .attr('x', d => xScale(this.props.selectX(d)))
           .attr('y', d => yScale(this.props.selectY(d)))
           .attr('height', d => this.height - yScale(this.props.selectY(d)))
           .attr('width', xScale.bandwidth())
 
+    // Add values to bars
     bar
       .data(this.props.data.series)
       .enter()
@@ -86,17 +93,6 @@ class SourcesStats extends React.Component {
           .attr("y", d => this.margin.top + yScale(this.props.selectY(d)) - 5)
           .text(d => this.props.selectY(d) )
 
-      /*
-    select(node)
-      .selectAll('rect')
-      .data(this.props.data.series)
-      .enter().append('rect')
-        .style('fill', '#cccccc')
-        .attr('x', d => xScale(this.props.selectX(d)))
-        .attr('y', d => this.height - yScale(this.props.selectY(d)))
-        .attr('height', d => yScale(this.props.selectY(d)))
-        .attr('width', xScale.bandwidth())
-      */
   }
 
   render(){
