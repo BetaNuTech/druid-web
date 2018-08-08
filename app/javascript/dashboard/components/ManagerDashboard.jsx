@@ -32,7 +32,7 @@ class ManagerDashboard extends React.Component {
           selectX={datum => datum.label}
           selectY={datum => datum.val}
           height={ 300 }
-          width={ 500 }
+          width={ 400 }
         />
       </div>
     )

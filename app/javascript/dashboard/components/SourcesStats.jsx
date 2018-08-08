@@ -40,27 +40,35 @@ class SourcesStats extends React.Component {
 
     // Position chart with margin
     const chart = select(node)
-      chart.attr("transform", "translate(" + this.margin.top + "," + this.margin.left + ")")
+    chart.attr("transform", "translate(" + this.margin.top + "," + this.margin.left + ")")
 
     // Add Horizontal (x) Axis labels
     chart.append("g")
       .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + this.height + ")")
+      .attr("transform", `translate(${this.margin.left},${this.margin.top + this.height})`)
       .call(axisBottom(xScale))
 
     // Add Vertical (y) Axis labels
     chart.append("g")
       .attr("class", "axis axis--y")
+      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
       .call(axisLeft(yScale))
+
+    chart
+      .append("text")
+        .attr("transform", `translate(${this.margin.left + 20},${this.margin.top}) rotate(-90)`)
+        .attr("text-anchor", "end")
+        .text("Leads")
 
     var bar = chart.selectAll(".bar")
       .append("g")
-        .attr("transform", "translate(0," + this.height + ")")
+        .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
 
     bar
       .data(this.props.data.series)
       .enter()
         .append('rect')
+          .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
           .attr('class', 'bar')
           .style('fill', '#cccccc')
           .style('stroke', '#000')
@@ -68,6 +76,15 @@ class SourcesStats extends React.Component {
           .attr('y', d => yScale(this.props.selectY(d)))
           .attr('height', d => this.height - yScale(this.props.selectY(d)))
           .attr('width', xScale.bandwidth())
+
+    bar
+      .data(this.props.data.series)
+      .enter()
+        .append("text")
+          .attr('text-anchor', "middle")
+          .attr("x", d => this.margin.left + xScale(this.props.selectX(d)) + xScale.bandwidth()/2)
+          .attr("y", d => this.margin.top + yScale(this.props.selectY(d)) - 5)
+          .text(d => this.props.selectY(d) )
 
       /*
     select(node)
