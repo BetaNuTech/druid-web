@@ -12,10 +12,11 @@ class ManagerDashboard extends React.Component {
         sources_stats: {
           data: {
             series: [
-              { label: "Foo", value: 2},
-              { label: "bar", value: 5},
-              { label: "Quux", value: 7},
-              { label: "Acme", value: 4}
+              { label: "Foo", val: 2},
+              { label: "bar", val: 5 },
+              { label: "Quux", val: 10 },
+              { label: "Acme", val: 4},
+              { label: "Test", val: 12}
             ]
           }
         }
@@ -25,11 +26,11 @@ class ManagerDashboard extends React.Component {
 
   render() {
     return(
-      <div className="Style.ManagerDashboard">
+      <div className={ Style.ManagerDashboard }>
         <h1>Manager Dashboard</h1>
         <SourcesStats data={this.state.data.sources_stats.data}
           selectX={datum => datum.label}
-          selectY={datum => datum.value}
+          selectY={datum => datum.val}
           height={ 300 }
           width={ 500 }
         />
