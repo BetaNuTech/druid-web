@@ -59,7 +59,13 @@ EOS
 
     raw_result = ActiveRecord::Base.connection.execute(sql).to_a
     result = raw_result.map do |record|
-      {label: record["source_name"].strip, val: {total: record["total_count"], converted: record["converted_count"]}}
+      {
+        label: record["source_name"].strip,
+        val: {
+                Total: record["total_count"],
+                Converted: record["converted_count"]
+             }
+      }
     end
 
     return result
