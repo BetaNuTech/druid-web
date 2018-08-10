@@ -5,6 +5,12 @@ class StatsController < ApplicationController
   def manager
     authorize Stat
     @webpack = 'dashboard'
+    @stats = Stat.new(
+      user: current_user,
+      filters: {
+        users: params[:user_ids],
+        properties: params[:property_ids]
+      })
   end
 
 end
