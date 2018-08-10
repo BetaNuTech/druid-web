@@ -45,7 +45,7 @@ class GroupedBar extends React.Component {
     if (this.props.data.series[0] != undefined) {
       keys = Object.keys(selectY(this.props.data.series[0])) }
     // Adjust bar height to account for legend
-    margin_top = margin_top + keys.length * 30
+    margin_top = margin_top + keys.length * 20
     height = this.height - margin_top - margin_bottom
 
     // Horizontal (x0) Axis for groups of bars
@@ -72,9 +72,6 @@ class GroupedBar extends React.Component {
       .domain([0, maxValue])
 
     const colorScale = scaleOrdinal(schemePaired)
-
-    // Position chart with margin
-    chart.attr("transform", "translate(" + margin_left + "," + margin_top + ")")
 
     // Add Horizontal (x) Axis
     chart.append("g")
@@ -151,7 +148,7 @@ class GroupedBar extends React.Component {
     //// Add Legend Keys
     legend
       .append("rect")
-        .attr("x", 10 )
+        .attr("x", margin_left + 10 )
         .attr("width", 15)
         .attr("height", 15)
         .attr("fill", d => colorScale(keys.indexOf(d)))
@@ -159,7 +156,7 @@ class GroupedBar extends React.Component {
     //// Add Legend Key Labels
     legend
       .append("text")
-        .attr("x", 30)
+        .attr("x", margin_left + 30)
         .attr("y", 10)
         .attr("dy", "0.1em")
         .text(d => d)

@@ -49,7 +49,7 @@ class ManagerDashboard extends React.Component {
         <GroupedBar data={this.state.data.grouped_bar.data}
           selectX={datum => datum.label}
           selectY={datum => datum.val}
-          height='300'
+          height='400'
           width='500'
           yAxisLabel='Widgets'
         />
