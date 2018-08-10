@@ -1,5 +1,5 @@
 import React from 'react'
-import Style from './SourcesStats.scss'
+import Style from './SimpleBar.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
 import { schemePaired } from 'd3'
@@ -8,7 +8,7 @@ import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft} from 'd3-axis'
 
-class SourcesStats extends React.Component {
+class SimpleBar extends React.Component {
   constructor(props) {
     super(props)
     this.margin = {top: 20, bottom: 20, left: 20, right: 20}
@@ -98,7 +98,7 @@ class SourcesStats extends React.Component {
   render(){
     return(
       <div className={Style.SourcesStats}>
-        <h2>Source Stats</h2>
+        <h2>Simple Bar Chart</h2>
         <svg ref={node => this.node = node}
           className="bargraph"
           width={this.props.width}
@@ -114,4 +114,4 @@ class SourcesStats extends React.Component {
 }
 
 
-export default SourcesStats
+export default SimpleBar

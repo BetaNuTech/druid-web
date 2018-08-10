@@ -2,6 +2,8 @@ import React from 'react'
 import Style from './ManagerDashboard.scss'
 import axios from 'axios'
 import SourcesStats from './SourcesStats.jsx'
+import SimpleBar from './SimpleBar.jsx'
+import GroupedBar from './GroupedBar.jsx'
 
 class ManagerDashboard extends React.Component {
   constructor(props) {
@@ -19,6 +21,16 @@ class ManagerDashboard extends React.Component {
               { label: "Test", val: 12}
             ]
           }
+        },
+        grouped_bar: {
+          data: {
+            series: [
+              { label: "Foo", val: {total: 5, converted: 3 }},
+              { label: "Bar", val: {total: 10, converted: 6}},
+              { label: "Quux", val: {total: 12, converted: 4}},
+              { label: "Acme", val: {total: 20, converted: 12}},
+            ]
+          }
         }
       }
     }
@@ -28,11 +40,18 @@ class ManagerDashboard extends React.Component {
     return(
       <div className={ Style.ManagerDashboard }>
         <h1>Manager Dashboard</h1>
-        <SourcesStats data={this.state.data.sources_stats.data}
+        <SimpleBar data={this.state.data.sources_stats.data}
           selectX={datum => datum.label}
           selectY={datum => datum.val}
           height={ 300 }
           width={ 400 }
+        />
+        <GroupedBar data={this.state.data.grouped_bar.data}
+          selectX={datum => datum.label}
+          selectY={datum => datum.val}
+          height='300'
+          width='500'
+          yAxisLabel='Widgets'
         />
       </div>
     )
