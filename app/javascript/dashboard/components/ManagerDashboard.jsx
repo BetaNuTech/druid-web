@@ -2,6 +2,7 @@ import React from 'react'
 import Style from './ManagerDashboard.scss'
 import axios from 'axios'
 import SourcesStats from './SourcesStats.jsx'
+import LeadSources from './LeadSources.jsx'
 import SimpleBar from './SimpleBar.jsx'
 import GroupedBar from './GroupedBar.jsx'
 
@@ -13,45 +14,46 @@ class ManagerDashboard extends React.Component {
       data: {
         sources_stats: {
           data: {
-            series: [
-              { label: "Foo", val: 2},
-              { label: "bar", val: 5 },
-              { label: "Quux", val: 10 },
-              { label: "Acme", val: 4},
-              { label: "Test", val: 12}
-            ]
+            series: [ ]
           }
         },
-        grouped_bar: {
+        lead_sources: {
           data: {
-            series: [
-              { label: "Foo", val: {total: 5, converted: 3 }},
-              { label: "Bar", val: {total: 10, converted: 6}},
-              { label: "Quux", val: {total: 12, converted: 4}},
-              { label: "Acme", val: {total: 20, converted: 12}},
-            ]
+            series: [ ]
           }
         }
       }
     }
   }
 
+  componentDidMount() {
+    this.updateData()
+  }
+
+  updateData = () => {
+    let url = this.state.api_root + '/manager.json'
+    window.activateLoader()
+    axios.get(url||this.state.api)
+    .then(response => {
+      this.setState({ data: response.data.data })
+      window.disableLoader()
+    })
+    .catch(error => {
+      // TODO: display error to user
+      //console.log(error)
+    })
+  }
+
   render() {
     return(
       <div className={ Style.ManagerDashboard }>
         <h1>Manager Dashboard</h1>
-        <SimpleBar data={this.state.data.sources_stats.data}
-          selectX={datum => datum.label}
-          selectY={datum => datum.val}
-          height={ 300 }
-          width={ 400 }
-        />
-        <GroupedBar data={this.state.data.grouped_bar.data}
+        <LeadSources data={this.state.data.lead_sources.data}
           selectX={datum => datum.label}
           selectY={datum => datum.val}
           height='400'
           width='500'
-          yAxisLabel='Widgets'
+          yAxisLabel='Leads'
         />
       </div>
     )
