@@ -11,7 +11,7 @@ import { axisBottom, axisLeft} from 'd3-axis'
 class SimpleBar extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 20, bottom: 20, left: 50, right: 20}
+    this.margin = {top: 20, bottom: 70, left: 50, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
   }
@@ -64,6 +64,15 @@ class SimpleBar extends React.Component {
       .attr("class", "axis axis--x")
       .attr("transform", `translate(${margin_left},${margin_top + this.height})`)
       .call(axisBottom(xScale))
+      .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end")
+
+    chart
+      .append("text")
+      .attr("transform", `translate(${width / 2}, ${this.props.height})`)
+        .attr("text-anchor", "middle")
+        .text("Lead State")
 
     // Add Vertical (y) Axis labels
     chart.append("g")
@@ -90,7 +99,6 @@ class SimpleBar extends React.Component {
           .attr("transform", `translate(${margin_left},${margin_top})`)
           .attr('class', 'bar')
           .style('fill', d => colorScale(this.props.selectX(d)))
-          .style('stroke', '#000')
           .attr('x', d => xScale(this.props.selectX(d)))
           .attr('y', d => yScale(this.props.selectY(d)))
           .attr('height', d => this.height - yScale(this.props.selectY(d)))
@@ -110,9 +118,7 @@ class SimpleBar extends React.Component {
 
   render(){
     return(
-      <div className={Style.SourcesStats}>
-        <h2>Simple Bar Chart</h2>
-        <div ref={node => this.node = node}/>
+      <div ref={node => this.node = node} className={Style.SourcesStats}>
       </div>
     )
   }

@@ -3,6 +3,7 @@ import Style from './ManagerDashboard.scss'
 import axios from 'axios'
 import SourcesStats from './SourcesStats.jsx'
 import LeadSources from './LeadSources.jsx'
+import LeadStates from './LeadStates.jsx'
 import SimpleBar from './SimpleBar.jsx'
 import GroupedBar from './GroupedBar.jsx'
 
@@ -12,7 +13,7 @@ class ManagerDashboard extends React.Component {
     this.state = {
       api_root: '/stats',
       data: {
-        sources_stats: {
+        lead_states: {
           data: {
             series: [ ]
           }
@@ -53,6 +54,13 @@ class ManagerDashboard extends React.Component {
           selectY={datum => datum.val}
           height='400'
           width='500'
+          yAxisLabel='Leads'
+        />
+        <LeadStates data={this.state.data.lead_states.data}
+          selectX={datum => datum.label}
+          selectY={datum => datum.val}
+          height='400'
+          width='600'
           yAxisLabel='Leads'
         />
       </div>
