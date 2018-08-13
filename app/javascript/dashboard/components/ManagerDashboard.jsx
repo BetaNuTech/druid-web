@@ -4,8 +4,6 @@ import axios from 'axios'
 import SourcesStats from './SourcesStats.jsx'
 import LeadSources from './LeadSources.jsx'
 import LeadStates from './LeadStates.jsx'
-import SimpleBar from './SimpleBar.jsx'
-import GroupedBar from './GroupedBar.jsx'
 
 class ManagerDashboard extends React.Component {
   constructor(props) {
@@ -47,20 +45,19 @@ class ManagerDashboard extends React.Component {
 
   render() {
     return(
-      <div className={ Style.ManagerDashboard }>
-        <h1>Manager Dashboard</h1>
+      <div id="ManagerDashboard" className={ Style.ManagerDashboard }>
         <LeadSources data={this.state.data.lead_sources.data}
           selectX={datum => datum.label}
           selectY={datum => datum.val}
-          height='400'
-          width='500'
+          height='300'
+          width='400'
           yAxisLabel='Leads'
         />
         <LeadStates data={this.state.data.lead_states.data}
           selectX={datum => datum.label}
           selectY={datum => datum.val}
-          height='400'
-          width='600'
+          height='300'
+          width='400'
           yAxisLabel='Leads'
         />
       </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import Style from './GroupedBar.scss'
+import Style from './LeadSources.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
 import { schemePaired } from 'd3'
@@ -8,10 +8,10 @@ import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft} from 'd3-axis'
 
-class GroupedBar extends React.Component {
+class LeadSources extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 30, bottom: 20, left: 50, right: 20}
+    this.margin = {top: 10, bottom: 15, left: 50, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
   }
@@ -83,6 +83,12 @@ class GroupedBar extends React.Component {
       .attr("class", "axis axis--x")
       .attr("transform", `translate(${margin_left},${margin_top + height})`)
       .call(axisBottom(xScaleGroup))
+
+    chart
+      .append("text")
+      .attr("transform", `translate(${width / 2}, ${this.props.height})`)
+        .attr("text-anchor", "middle")
+        .text("Lead Source")
 
     // Add Vertical (y) Axis
     chart.append("g")
@@ -169,10 +175,7 @@ class GroupedBar extends React.Component {
 
   render(){
     return(
-      <div className={Style.SourcesStats}>
-        <h2>Lead Sources</h2>
-        <div ref={node => this.node = node}/>
-      </div>
+      <div ref={node => this.node = node} className={Style.LeadSources}></div>
     )
   }
 
@@ -180,4 +183,4 @@ class GroupedBar extends React.Component {
 }
 
 
-export default GroupedBar
+export default LeadSources

@@ -1,5 +1,5 @@
 import React from 'react'
-import Style from './SimpleBar.scss'
+import Style from './LeadStates.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
 import { schemePaired } from 'd3'
@@ -8,7 +8,7 @@ import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft} from 'd3-axis'
 
-class SimpleBar extends React.Component {
+class LeadStates extends React.Component {
   constructor(props) {
     super(props)
     this.margin = {top: 20, bottom: 70, left: 50, right: 20}
@@ -118,7 +118,7 @@ class SimpleBar extends React.Component {
 
   render(){
     return(
-      <div ref={node => this.node = node} className={Style.SourcesStats}>
+      <div ref={node => this.node = node} className={Style.LeadStates}>
       </div>
     )
   }
@@ -127,4 +127,4 @@ class SimpleBar extends React.Component {
 }
 
 
-export default SimpleBar
+export default LeadStates
