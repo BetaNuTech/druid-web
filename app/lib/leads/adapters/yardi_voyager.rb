@@ -175,7 +175,6 @@ module Leads
         end
 
 				new_comments = notes_from_guestcard_events(lead: lead, events: guestcard.events)
-#binding.pry if new_comments.present?
         lead.comments << new_comments
 
         return lead
@@ -185,7 +184,7 @@ module Leads
         return ( events || [] ).map do |event|
           event_type, event_date, event_comment = event
           event_date_parsed = (DateTime.parse(event_date) rescue nil)
-					event_lead_action_id = lead_action_from_event_type(event_type).try(:id),
+					event_lead_action_id = lead_action_from_event_type(event_type).try(:id)
           event_content = event_comment
           if event_date_parsed.nil?
             event_content += " [#{event_date_parsed}]"
