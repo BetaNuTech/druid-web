@@ -8,8 +8,8 @@ class StatsController < ApplicationController
     @stats = Stat.new(
       user: current_user,
       filters: {
-        users: params[:user_ids],
-        properties: params[:property_ids]
+        user_ids: params[:user_ids],
+        property_ids: params[:property_ids]
       })
   end
 

@@ -1,9 +1,18 @@
 class Stat
-  attr_reader :user_ids, :property_ids
+  attr_reader :user_ids, :property_ids, :users, :properties
 
   def initialize(user:, filters: {})
     @user_ids = get_user_ids(filters.fetch(:user_ids, []))
     @property_ids = get_property_ids(filters.fetch(:property_ids, []))
+    @users = User.find(@user_ids)
+    @properties = Property.find(@property_ids)
+  end
+
+  def filters_json
+    {
+      users: @users.map{|user| {label: user.name, val: user.id}},
+      properties: @properties.map{|property| {label: property.name, val: property.id}}
+    }
   end
 
   def lead_states
@@ -26,14 +35,7 @@ class Stat
   end
 
   def lead_sources_conversion_json
-    filters = []
-    if @user_ids.present?
-      filters << "leads.user_id in (#{@user_ids.map{|i| "'#{i}'"}.join(',')})"
-    end
-    if @property_ids.present?
-      filters << "leads.property_id in (#{@property_ids.map{|i| "'#{i}'"}.join(',')})"
-    end
-    filter_sql = filters.map{|f| "(#{f})"}.join(" AND ")
+    _filter_sql = filter_sql
 
     sql=<<-EOS
       SELECT
@@ -46,16 +48,16 @@ class Stat
           count(*) AS total_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
-          #{ "WHERE #{filter_sql}" if filters.any?}
+        #{ "WHERE #{_filter_sql}" if _filter_sql.present?}
         GROUP BY ( lead_sources.name, leads.referral )
       ) total_counts
-      RIGHT JOIN (
+      FULL OUTER JOIN (
         SELECT
           concat(lead_sources.name, ' ', leads.referral) AS source_name,
           count(*) AS converted_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
-        WHERE (leads.state = 'movein')#{ " AND #{filter_sql}" if filters.any?}
+        WHERE (leads.state = 'movein')#{ " AND #{_filter_sql}" if _filter_sql.present?}
         GROUP BY ( lead_sources.name, leads.referral )
       ) converted_counts
        ON total_counts.source_name = converted_counts.source_name;
@@ -66,8 +68,8 @@ EOS
       {
         label: record["source_name"].strip,
         val: {
-                Total: record["total_count"],
-                Converted: record["converted_count"]
+                Total: record["total_count"] || 0,
+                Converted: record["converted_count"] || 0
              }
       }
     end
@@ -79,7 +81,42 @@ EOS
     return lead_sources.map{|key, value| {label: key, val: value}}
   end
 
+  def property_leads_json
+    _filter_sql = filter_sql
+
+    sql=<<-EOS
+      SELECT
+        properties.name AS property_name,
+        count(*) AS total_count
+      FROM leads
+        INNER JOIN properties
+          ON leads.property_id = properties.id
+      #{ "WHERE #{_filter_sql}" if _filter_sql.present?}
+      GROUP BY properties.name
+      ORDER BY properties.name
+EOS
+
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      {
+        label: record["property_name"],
+        val: record["total_count"]
+      }
+    end
+  end
+
   private
+
+  def filter_sql
+    filters = []
+    if @user_ids.present?
+      filters << "leads.user_id in (#{@user_ids.map{|i| "'#{i}'"}.join(',')})"
+    end
+    if @property_ids.present?
+      filters << "leads.property_id in (#{@property_ids.map{|i| "'#{i}'"}.join(',')})"
+    end
+    return filters.map{|f| "(#{f})"}.join(" AND ")
+  end
 
   def apply_skope(skope)
     if @user_ids.present?

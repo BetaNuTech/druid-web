@@ -1,5 +1,5 @@
 import React from 'react'
-import Style from './LeadStates.scss'
+import Style from './PropertyLeads.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
 import { schemePaired } from 'd3'
@@ -8,12 +8,14 @@ import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { axisBottom, axisLeft} from 'd3-axis'
 
-class LeadStates extends React.Component {
+class PropertyLeads extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 20, bottom: 70, left: 50, right: 20}
+    this.margin = {top: 20, bottom: 100, left: 50, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
+    this.yAxisLabel = this.props.yAxisLabel
+    this.xAxisLabel = this.props.xAxisLabel
   }
 
   componentDidMount() {
@@ -31,6 +33,8 @@ class LeadStates extends React.Component {
     let margin_right = this.margin.right
     let width = this.width
     let height = this.height
+    let yAxisLabel = this.yAxisLabel
+    let xAxisLabel = this.xAxisLabel
 
     const node = this.node
 
@@ -56,9 +60,6 @@ class LeadStates extends React.Component {
 
     const colorScale = scaleOrdinal(schemePaired)
 
-    // Position chart with margin
-    //chart.attr("transform", "translate(" + margin_top + "," + margin_left + ")")
-
     // Add Horizontal (x) Axis labels
     chart.append("g")
       .attr("class", "axis axis--x")
@@ -70,9 +71,9 @@ class LeadStates extends React.Component {
 
     chart
       .append("text")
-      .attr("transform", `translate(${width / 2}, ${this.props.height})`)
+      .attr("transform", `translate(${width / 2}, ${this.props.height - 5})`)
         .attr("text-anchor", "middle")
-        .text("Lead State")
+        .text(xAxisLabel)
 
     // Add Vertical (y) Axis labels
     chart.append("g")
@@ -84,7 +85,7 @@ class LeadStates extends React.Component {
       .append("text")
         .attr("transform", `translate(${margin_left + 20},${margin_top}) rotate(-90)`)
         .attr("text-anchor", "end")
-        .text("Leads")
+        .text(yAxisLabel)
 
     // Position Bars
     var bar = chart.selectAll(".bar")
@@ -118,7 +119,7 @@ class LeadStates extends React.Component {
 
   render(){
     return(
-      <div ref={node => this.node = node} className={Style.LeadStates}>
+      <div ref={node => this.node = node} className={Style.PropertyLeads}>
       </div>
     )
   }
@@ -127,4 +128,4 @@ class LeadStates extends React.Component {
 }
 
 
-export default LeadStates
+export default PropertyLeads

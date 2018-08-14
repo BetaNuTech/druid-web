@@ -33,6 +33,17 @@
                 <%= link_to(root_path, class: "btn btn-primary") do %>
                   <span class="glyphicon glyphicon-th-large"></span> Dashboard
                 <% end %>
+                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(stats_manager_path) do %>
+                      <span class="glyphicon glyphicon-star"></span> Stats Dashboard
+                    <% end %>
+                  </li>
+                </ul>
               </div>
             </li>
 

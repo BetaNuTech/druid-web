@@ -1,8 +1,9 @@
-.ManagerDashboard {
-}
-
-.ChartContainer {
+.Filters {
   display: flex;
   flex-flow: row wrap;
   align-items: baseline;
+}
+
+.FilterGroup {
+  padding: 1em;
 }
