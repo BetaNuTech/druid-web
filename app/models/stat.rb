@@ -36,6 +36,8 @@ class Stat
 
   def lead_sources_conversion_json
     _filter_sql = filter_sql
+    converted_states = %w{movein resident exresident}
+    converted_states_sql = "leads.state IN (%s)" % converted_states.map{|s| "'#{s}'"}.join(',')
 
     sql=<<-EOS
       SELECT
@@ -57,7 +59,7 @@ class Stat
           count(*) AS converted_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
-        WHERE (leads.state = 'movein')#{ " AND #{_filter_sql}" if _filter_sql.present?}
+        WHERE (#{converted_states_sql})#{ " AND #{_filter_sql}" if _filter_sql.present?}
         GROUP BY ( lead_sources.name, leads.referral )
       ) converted_counts
        ON total_counts.source_name = converted_counts.source_name;
