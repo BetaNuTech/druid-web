@@ -12,7 +12,11 @@ class Stat
   end
 
   def lead_states_json
-    return lead_states.map{|key, value| {label: key.humanize, val: value}}
+    _lead_states = lead_states
+    state_order = Lead.aasm.states.map(&:name).map(&:to_s)
+    return state_order.map do |state_name|
+      {label: state_name.humanize, val: ( _lead_states[state_name] || 0 ) }
+    end
   end
 
   def lead_sources
