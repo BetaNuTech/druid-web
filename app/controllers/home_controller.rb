@@ -12,6 +12,7 @@ class HomeController < ApplicationController
   end
 
   def manager_dashboard
+    @page_title = "Manager Dashboard"
 
   end
 

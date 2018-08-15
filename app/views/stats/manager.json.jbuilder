@@ -18,4 +18,8 @@ json.data do
       json.series @stats.property_leads_json
     end
   end
+
+  json.open_leads do
+    json.data @stats.open_leads_json
+  end
 end

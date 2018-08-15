@@ -88,13 +88,14 @@ EOS
 
     sql=<<-EOS
       SELECT
+        properties.id AS property_id,
         properties.name AS property_name,
         count(*) AS total_count
       FROM leads
-        INNER JOIN properties
-          ON leads.property_id = properties.id
+      INNER JOIN properties
+        ON leads.property_id = properties.id
       #{ "WHERE #{_filter_sql}" if _filter_sql.present?}
-      GROUP BY properties.name
+      GROUP BY properties.name, properties.id
       ORDER BY properties.name
 EOS
 
@@ -102,9 +103,35 @@ EOS
     result = raw_result.map do |record|
       {
         label: record["property_name"],
-        val: record["total_count"]
+        val: record["total_count"],
+        id: record["property_id"]
       }
     end
+  end
+
+  def open_leads
+    skope = apply_skope(Lead)
+    skope.
+      where(state: 'open').
+      where("leads.created_at <= ?", 1.hour.ago).
+      order(created_at: "asc")
+  end
+
+  def open_leads_json
+    {
+      total: open_leads.count,
+      count: open_leads.limit(10).size,
+      series: open_leads.limit(10).map do |lead|
+          {
+            id: lead.id,
+            label: lead.name,
+            created_at: lead.created_at,
+            url: "/leads/#{lead.id}",
+            priority: lead.priority,
+            source: "#{lead.source.name}#{lead.referral.present? ? " " + lead.referral : ''}"
+          }
+        end
+    }
   end
 
   private

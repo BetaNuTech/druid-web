@@ -77,6 +77,11 @@ Rails.application.routes.draw do
     get 'manager', to: "manager"
   end
 
+  namespace :home do
+    get 'manager_dashboard', to: 'manager_dashboard'
+    get 'dashboard', to: 'dashboard'
+  end
+
   get '/messaging/preferences', to: 'home#messaging_preferences', as: 'messaging_preferences'
   post '/messaging/unsubscribe', to: 'home#unsubscribe', as: 'messaging_unsubscribe'
 

@@ -9,8 +9,8 @@ class Filters extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    this.setState({filters: this.props.filters})
+  componentWillReceiveProps(nextProps) {
+    this.setState({filters: nextProps.filters})
   }
 
   propertyFiltersContent = () => {

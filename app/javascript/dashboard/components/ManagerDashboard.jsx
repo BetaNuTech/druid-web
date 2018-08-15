@@ -41,6 +41,24 @@ class ManagerDashboard extends React.Component {
     return( this.state.api_root + window.location.search )
   }
 
+  urlFromFilters = () => {
+    let url = this.state.api_root + "?filter=true"
+
+    let property_id_params = this.state.data.filters.properties.map(d => `property_id[]=${d}`)
+    let user_id_params = this.state.data.filters.users.map(d => `user_id[]=${d}`)
+
+
+    for (var p of this.state.data.filters.properties) {
+      url = `${url}&property_id[]=${p.val}`
+    }
+
+    for (var p of this.state.data.filters.users) {
+      url = `${url}&user_id[]=${p.val}`
+    }
+
+    return(url)
+  }
+
   componentDidMount() {
     this.updateData()
   }
