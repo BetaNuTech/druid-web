@@ -11,9 +11,11 @@ import { axisBottom, axisLeft} from 'd3-axis'
 class LeadSources extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 10, bottom: 15, left: 50, right: 20}
+    this.margin = {top: 50, bottom: 40, left: 50, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
+    this.yAxisLabel = this.props.yAxisLabel
+    this.xAxisLabel = this.props.xAxisLabel
   }
 
   componentDidMount() {
@@ -24,6 +26,41 @@ class LeadSources extends React.Component {
     this.createBarChart()
   }
 
+  getDataKeys = () => {
+    let keys = []
+    if (this.props.data.series[0] != undefined) {
+      keys = Object.keys(this.props.selectY(this.props.data.series[0])) }
+
+    return(keys)
+  }
+
+  getYScale = () => {
+    let maxYValue = max(this.props.data.series,
+                        d => max(this.getDataKeys(),
+                                  key => this.props.selectY(d)[key] ))
+    return(scaleLinear()
+      .range([this.height, 0])
+      .domain([0, maxYValue]))
+  }
+
+  getXScaleGroup = () => {
+    return(scaleBand()
+      .domain(this.props.data.series.map(this.props.selectX))
+      .rangeRound([0, this.width])
+      .paddingInner(0.1))
+  }
+
+  getXScaleBar = () => {
+    return(scaleBand()
+      .domain(this.getDataKeys())
+      .rangeRound([0,this.getXScaleGroup().bandwidth()])
+      .padding(0.05))
+  }
+
+  getColorScale = () => {
+    return(scaleOrdinal(schemePaired))
+  }
+
   createBarChart = () => {
     let margin_top = this.margin.top
     let margin_bottom = this.margin.bottom
@@ -31,52 +68,22 @@ class LeadSources extends React.Component {
     let margin_right = this.margin.right
     let width = this.width
     let height = this.height
+    let yAxisLabel = this.yAxisLabel
+    let xAxisLabel = this.xAxisLabel
 
-    const node = this.node
-
-    // Remove previous chart
-    select(node).select("svg").remove()
-
-    const chart = select(node)
-      .append("svg")
-      .attr("class", "bargraph")
-      .attr("width", this.props.width)
-      .attr("height", this.props.height)
+    const chart = select(this.node)
 
     const selectY = this.props.selectY
     const selectX = this.props.selectX
 
-    // Data Value Keys
-    let keys = []
-    if (this.props.data.series[0] != undefined) {
-      keys = Object.keys(selectY(this.props.data.series[0])) }
-    // Adjust bar height to account for legend
-    margin_top = margin_top + keys.length * 20
-    height = this.height - margin_top - margin_bottom
+    let keys = this.getDataKeys()
 
-    // Horizontal (x0) Axis for groups of bars
-    const xScaleGroup = scaleBand()
-      .domain(this.props.data.series.map(selectX))
-      .rangeRound([0, this.width])
-      .paddingInner(0.1)
+    const xScaleGroup = this.getXScaleGroup()
 
-    // Horizontal (x1) Axis for bars
-    const xScaleBar = scaleBand()
-      .domain(keys)
-      .rangeRound([0,xScaleGroup.bandwidth()])
-      .padding(0.05)
+    const xScaleBar = this.getXScaleBar()
 
-
-
-    // Vertical (y) axis for values
-    let maxYValue = max(this.props.data.series,
-                        d => max(keys,
-                                  key => selectY(d)[key] ))
-    const yScale = scaleLinear()
-      .range([height, 0])
-      .domain([0, maxYValue])
-
-    const colorScale = scaleOrdinal(schemePaired)
+    const yScale = this.getYScale()
+    const colorScale = this.getColorScale()
 
     // Add Horizontal (x) Axis
     chart.append("g")
@@ -102,7 +109,7 @@ class LeadSources extends React.Component {
         .attr("class", "axis-label--y")
         .attr("transform", `translate(${margin_left + 20},${margin_top}) rotate(-90)`)
         .attr("text-anchor", "end")
-        .text(this.props.yAxisLabel)
+        .text(yAxisLabel)
 
     // Position Bars
     var bar = chart.selectAll(".bar")
@@ -175,7 +182,14 @@ class LeadSources extends React.Component {
 
   render(){
     return(
-      <div ref={node => this.node = node} className={Style.LeadSources}></div>
+      <div className={Style.LeadSources}>
+        <svg ref={node => this.node = node}
+          className="bargraph"
+          height={this.props.height}
+          width={this.props.width}
+        >
+        </svg>
+      </div>
     )
   }
 

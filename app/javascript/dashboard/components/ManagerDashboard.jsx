@@ -87,6 +87,7 @@ class ManagerDashboard extends React.Component {
             height='300'
             width='400'
             yAxisLabel='Leads'
+            xAxisLabel='Lead Source'
           />
           <LeadStates data={this.state.data.lead_states.data}
             selectX={datum => datum.label}
@@ -94,6 +95,7 @@ class ManagerDashboard extends React.Component {
             height='300'
             width='400'
             yAxisLabel='Leads'
+            xAxisLabel='Lead State'
           />
           <PropertyLeads data={this.state.data.property_leads.data}
             selectX={datum => datum.label}
