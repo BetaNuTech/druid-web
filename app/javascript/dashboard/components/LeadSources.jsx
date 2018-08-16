@@ -23,7 +23,7 @@ class LeadSources extends React.Component {
   }
 
   componentDidUpdate() {
-    this.createBarChart()
+    this.updateBarChart()
   }
 
   getDataKeys = () => {
@@ -61,96 +61,47 @@ class LeadSources extends React.Component {
     return(scaleOrdinal(schemePaired))
   }
 
-  createBarChart = () => {
-    let margin_top = this.margin.top
-    let margin_bottom = this.margin.bottom
-    let margin_left = this.margin.left
-    let margin_right = this.margin.right
-    let width = this.width
-    let height = this.height
-    let yAxisLabel = this.yAxisLabel
-    let xAxisLabel = this.xAxisLabel
-
+  addAxes = () => {
     const chart = select(this.node)
-
-    const selectY = this.props.selectY
-    const selectX = this.props.selectX
-
-    let keys = this.getDataKeys()
-
     const xScaleGroup = this.getXScaleGroup()
-
-    const xScaleBar = this.getXScaleBar()
-
     const yScale = this.getYScale()
-    const colorScale = this.getColorScale()
 
     // Add Horizontal (x) Axis
     chart.append("g")
       .attr("class", "axis axis--x")
-      .attr("transform", `translate(${margin_left},${margin_top + height})`)
+      .attr("transform", `translate(${this.margin.left},${this.margin.top + this.height})`)
       .call(axisBottom(xScaleGroup))
-
-    chart
-      .append("text")
-      .attr("transform", `translate(${width / 2}, ${this.props.height})`)
-        .attr("text-anchor", "middle")
-        .text("Lead Source")
 
     // Add Vertical (y) Axis
     chart.append("g")
       .attr("class", "axis axis--y")
-      .attr("transform", `translate(${margin_left},${margin_top})`)
+      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
       .call(axisLeft(yScale))
+  }
+
+  addAxesLabels = () => {
+    const chart = select(this.node)
+
+    // Add Horizontal (x) Axis Label
+    chart
+      .append("text")
+      .attr("transform", `translate(${this.width / 2}, ${this.props.height})`)
+        .attr("text-anchor", "middle")
+        .text(this.xAxisLabel)
 
     // Add Vertical (y) Axis Label
     chart
       .append("text")
         .attr("class", "axis-label--y")
-        .attr("transform", `translate(${margin_left + 20},${margin_top}) rotate(-90)`)
-        .attr("text-anchor", "end")
-        .text(yAxisLabel)
+        .attr("transform", `translate(20,${( this.props.height) / 2}) rotate(-90)`)
+        .attr("text-anchor", "middle")
+        .text(this.yAxisLabel)
+  }
 
-    // Position Bars
-    var bar = chart.selectAll(".bar")
-      .append("g")
-        .attr("transform", `translate(${margin_left},${margin_top})`)
-
-    // Add Bars
-    bar
-      .data(this.props.data.series)
-      .enter()
-        .append("g")
-          .attr("class", d => `bargroup bargroup--${selectX(d)}`)
-          .attr("transform", d => `translate(${xScaleGroup(selectX(d))},0)`)
-      .selectAll(".bar")
-      .data(d => keys.map(key => ( {key: key, value: selectY(d)[key], index: keys.indexOf(key)} )))
-      .enter()
-        .append("rect")
-          .attr("class", ".bar")
-          .attr("x", d => xScaleBar(d.key) )
-          .attr("y", d => yScale(d.value) )
-          .attr("width", xScaleBar.bandwidth())
-          .attr("height", d => height - yScale(d.value))
-          .attr("fill", d => colorScale(d.index))
-          .attr("transform", `translate(${margin_left},${margin_top})`)
-
-    // Add Values
-    bar
-      .data(this.props.data.series)
-      .enter()
-        .append("g")
-          .attr("class", "bargroup--values")
-          .attr("transform", d => `translate(${margin_left + xScaleGroup(selectX(d))},${margin_top})`)
-      .selectAll(".label--value")
-      .data(d => keys.map(key => ( {key: key, value: selectY(d)[key]} )))
-      .enter()
-        .append("text")
-          .attr("class", "label--value")
-          .attr('text-anchor', "middle")
-          .attr("x", d => xScaleBar(d.key) + xScaleBar.bandwidth()/2 )
-          .attr("y", d => yScale(d.value) - 5 )
-          .text(d => d.value)
+  addLegend = () => {
+    const chart = select(this.node)
+    const keys = this.getDataKeys()
+    const colorScale = this.getColorScale()
 
     // Add Legend
     const legend = chart.append("g")
@@ -166,7 +117,7 @@ class LeadSources extends React.Component {
     //// Add Legend Keys
     legend
       .append("rect")
-        .attr("x", margin_left + 10 )
+        .attr("x", this.margin.left + 10 )
         .attr("width", 15)
         .attr("height", 15)
         .attr("fill", d => colorScale(keys.indexOf(d)))
@@ -174,10 +125,73 @@ class LeadSources extends React.Component {
     //// Add Legend Key Labels
     legend
       .append("text")
-        .attr("x", margin_left + 30)
+        .attr("x", this.margin.left + 30)
         .attr("y", 10)
         .attr("dy", "0.1em")
         .text(d => d)
+  }
+
+  updateBarChart = () => {
+    const chart = select(this.node)
+    const xScaleGroup = this.getXScaleGroup()
+    const xScaleBar = this.getXScaleBar()
+    const yScale = this.getYScale()
+    const keys = this.getDataKeys()
+    const colorScale = this.getColorScale()
+
+    this.addAxes()
+    this.addLegend()
+
+    // Position Bars
+    const bar = chart.selectAll(".bar")
+      .append("g")
+        .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+
+    // Add Bars
+    bar
+      .data(this.props.data.series)
+      .enter()
+        .append("g")
+          .attr("class", d => `bargroup bargroup--${this.props.selectX(d)}`)
+          .attr("transform", d => `translate(${xScaleGroup(this.props.selectX(d))},0)`)
+      .selectAll(".bar")
+      .data(d => keys.map(key => ( {key: key, value: this.props.selectY(d)[key], index: keys.indexOf(key)} )))
+      .enter()
+        .append("rect")
+          .merge(bar)
+          .attr("class", ".bar")
+          .attr("x", d => xScaleBar(d.key) )
+          .attr("y", d => yScale(d.value) )
+          .attr("width", xScaleBar.bandwidth())
+          .attr("height", d => this.height - yScale(d.value))
+          .attr("fill", d => colorScale(d.index))
+          .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+
+    // Add Values
+    bar
+      .data(this.props.data.series)
+      .enter()
+        .append("g")
+          .attr("class", "bargroup--values")
+          .attr("transform", d => `translate(${this.margin.left + xScaleGroup(this.props.selectX(d))},${this.margin.top})`)
+      .selectAll(".label--value")
+      .data(d => keys.map(key => ( {key: key, value: this.props.selectY(d)[key]} )))
+      .enter()
+        .append("text")
+          .merge(bar)
+          .attr("class", "label--value")
+          .attr('text-anchor', "middle")
+          .attr("x", d => xScaleBar(d.key) + xScaleBar.bandwidth()/2 )
+          .attr("y", d => yScale(d.value) - 5 )
+          .text(d => d.value)
+
+    bar.exit().remove()
+  }
+
+  createBarChart = () => {
+    this.addAxes()
+    this.addAxesLabels()
+    this.updateBarChart()
   }
 
   render(){
