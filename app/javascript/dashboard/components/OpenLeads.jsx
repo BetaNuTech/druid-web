@@ -13,7 +13,7 @@ class OpenLeads extends React.Component {
     this.setState({data: nextProps.data.data})
   }
 
-  leadRows = () => {
+  leadRows() {
     return(
       this.state.data.series.map((d) =>
         <tr key={d.id}>
@@ -32,16 +32,16 @@ class OpenLeads extends React.Component {
   }
 
   render() {
-  console.log(this.leadRows())
     return(
       <div className={Style.OpenLeads}>
         <h4>
           Open Leads
           ({this.state.data.count} of {this.state.data.total})
         </h4>
-        <hr/>
         <table className="table {Style.OpenLeadTable}">
-          {this.leadRows()}
+          <tbody>
+            {this.leadRows()}
+          </tbody>
         </table>
       </div>
     )

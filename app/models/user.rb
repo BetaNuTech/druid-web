@@ -82,4 +82,43 @@ class User < ApplicationRecord
     engagement_policy_action_compliances.sum(:score)
   end
 
+  def weekly_score
+    engagement_policy_action_compliances.
+      where(completed_at: (Date.today.beginning_of_week)..DateTime.now).
+      sum(:score)
+  end
+
+  def tasks_completed(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+    ScheduledAction.includes(:engagement_policy_action_compliance).
+      where( engagement_policy_action_compliances: {completed_at: start_date..end_date},
+             scheduled_actions: {user_id: id} )
+  end
+
+  def tasks_pending
+    ScheduledAction.includes(:engagement_policy_action_compliance).
+      where( engagement_policy_action_compliances: {state: 'pending'},
+             scheduled_actions: {user_id: id} )
+  end
+
+  # User's leads which changed state from 'open' to 'prospect'
+  def claimed_leads(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+    all_claimed_lead_audits = Audited::Audit.
+      where(auditable_type: 'Lead').
+      where(created_at: start_date..end_date).
+      where("(audited_changes->'state') IS NOT NULL AND (audited_changes->'state' @> '[\"open\", \"prospect\"]')")
+
+    audit_lead_ids = all_claimed_lead_audits.select(:auditable_id).map(&:auditable_id)
+    return leads.where(id: audit_lead_ids)
+  end
+
+  # User's leads which changed state from 'open' to 'prospect'
+  def closed_leads(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+    all_closed_lead_audits = Audited::Audit.
+      where(auditable_type: 'Lead').
+      where(created_at: start_date..end_date).
+      where("(audited_changes->'state') IS NOT NULL AND (audited_changes->'state' @> '[\"movein\", \"resident\"]')")
+    audit_lead_ids = all_closed_lead_audits.select(:auditable_id).map(&:auditable_id)
+    return leads.where(id: audit_lead_ids)
+  end
+
 end

@@ -22,4 +22,8 @@ json.data do
   json.open_leads do
     json.data @stats.open_leads_json
   end
+
+  json.agent_status do
+    json.data @stats.agent_status_json
+  end
 end

@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_18_164617) do
+ActiveRecord::Schema.define(version: 2018_08_16_202256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
 
   create_table "audits", force: :cascade do |t|
-    t.integer "auditable_id"
+    t.uuid "auditable_id"
     t.string "auditable_type"
     t.integer "associated_id"
     t.string "associated_type"
@@ -25,7 +26,7 @@ ActiveRecord::Schema.define(version: 2018_07_18_164617) do
     t.string "user_type"
     t.string "username"
     t.string "action"
-    t.text "audited_changes"
+    t.jsonb "audited_changes"
     t.integer "version", default: 0
     t.string "comment"
     t.string "remote_address"

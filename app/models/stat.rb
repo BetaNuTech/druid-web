@@ -114,7 +114,6 @@ EOS
     skope = apply_skope(Lead)
     skope.
       where(state: 'open').
-      where("leads.created_at <= ?", 1.hour.ago).
       order(created_at: "asc")
   end
 
@@ -134,6 +133,32 @@ EOS
           }
         end
     }
+  end
+
+  def agent_status_json
+    skope = User.includes(:properties)
+    if @user_ids.present?
+      skope = skope.where(id: @user_ids)
+    end
+    if @property_ids.present?
+      skope = skope.where(property_agents: {property_id: @property_ids})
+    end
+
+    return {
+        series: skope.map do |user|
+          {
+            id: user.id,
+            label: user.name,
+            total_score: user.score,
+            weekly_score: user.weekly_score,
+            tasks_completed: user.tasks_completed.count,
+            tasks_pending: user.tasks_pending.count,
+            claimed_leads: user.claimed_leads.count,
+            closed_leads: user.closed_leads.count,
+            url: "/users/#{user.id}"
+          }
+        end
+      }
   end
 
   private
