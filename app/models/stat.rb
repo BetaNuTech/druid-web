@@ -1,5 +1,6 @@
 class Stat
   attr_reader :user_ids, :property_ids, :users, :properties
+  include ActionView::Helpers::DateHelper
 
   def initialize(user:, filters: {})
     @user_ids = get_user_ids(filters.fetch(:user_ids, []))
@@ -120,14 +121,15 @@ EOS
   def open_leads_json
     {
       total: open_leads.count,
-      count: open_leads.limit(10).size,
+      count: open_leads.limit(10).count,
       series: open_leads.limit(10).map do |lead|
           {
             id: lead.id,
             label: lead.name,
-            created_at: lead.created_at,
+            created_at: distance_of_time_in_words(lead.created_at, DateTime.now),
             url: "/leads/#{lead.id}",
             priority: lead.priority,
+            property_id: lead.property_id,
             source: "#{lead.source.name}#{lead.referral.present? ? " " + lead.referral : ''}"
           }
         end

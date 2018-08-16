@@ -5,6 +5,7 @@ import SourcesStats from './SourcesStats.jsx'
 import LeadSources from './LeadSources.jsx'
 import LeadStates from './LeadStates.jsx'
 import PropertyLeads from './PropertyLeads.jsx'
+import OpenLeads from './OpenLeads.jsx'
 import Filters from './Filters.jsx'
 
 class ManagerDashboard extends React.Component {
@@ -16,6 +17,11 @@ class ManagerDashboard extends React.Component {
         filters: {
           properties: [],
           users: []
+        },
+        open_leads: {
+          data: {
+            series: []
+          } 
         },
         lead_states: {
           data: {
@@ -81,6 +87,7 @@ class ManagerDashboard extends React.Component {
       <div className={ Style.ManagerDashboard }>
         <Filters filters={this.state.data.filters}/>
         <div className={Style.ChartContainer} >
+          <OpenLeads data={this.state.data.open_leads} />
           <LeadSources data={this.state.data.lead_sources.data}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
@@ -93,7 +100,7 @@ class ManagerDashboard extends React.Component {
             selectX={datum => datum.label}
             selectY={datum => datum.val}
             height='300'
-            width='400'
+            width='300'
             yAxisLabel='Leads'
             xAxisLabel='Lead State'
           />
