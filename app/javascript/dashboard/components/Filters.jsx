@@ -18,10 +18,10 @@ class Filters extends React.Component {
     if (this.state.filters.properties.length > 0) {
       property_filters = this.state.filters.properties
         .map((property) =>
-          <li>{property.label}</li>
+          <li key={property.val}>{property.label}</li>
         )
     } else {
-      property_filters = <li>All</li>
+      property_filters = <li key='AllUsers'>All</li>
     }
 
     return(
@@ -40,10 +40,10 @@ class Filters extends React.Component {
     if (this.state.filters.users.length > 0) {
       user_filters = this.state.filters.users
         .map((user) =>
-          <li>{user.label}</li>
+          <li key={user.val}>{user.label}</li>
         )
     } else {
-      user_filters = <li>All</li>
+      user_filters = <li key='AllUsers'>All</li>
     }
 
     return(

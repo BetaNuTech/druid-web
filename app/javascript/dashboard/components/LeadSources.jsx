@@ -27,7 +27,19 @@ class LeadSources extends React.Component {
   }
 
   leadSearchLink = (source_id) => {
-    return(`/leads/search?lead_search[sources][]=${source_id}`)
+    let property_filter = ""
+    let user_filter = ""
+    if (this.props.filters != undefined && this.props.filters.properties.length > 0) {
+      for (var p of this.props.filters.properties) {
+        property_filter = property_filter + `&lead_search[property_ids][]=${p.val}`
+      }
+    }
+    if (this.props.filters != undefined && this.props.filters.users.length > 0) {
+      for (var p of this.props.filters.users) {
+        user_filter = user_filter + `&lead_search[user_ids][]=${p.val}`
+      }
+    }
+    return(`/leads/search?lead_search[sources][]=${source_id}${property_filter}${user_filter}`)
   }
 
   openLinkInTab = (link) => {
@@ -35,7 +47,6 @@ class LeadSources extends React.Component {
   }
 
   handleBarMouseUp = (d) => {
-    console.log(d)
     this.openLinkInTab(this.leadSearchLink(d.id))
   }
 
@@ -108,7 +119,7 @@ class LeadSources extends React.Component {
     // Add Horizontal (x) Axis Label
     chart
       .append("text")
-      .attr("transform", `translate(${this.width / 2}, ${this.props.height})`)
+      .attr("transform", `translate(${this.props.width / 2}, ${this.props.height})`)
         .attr("text-anchor", "middle")
         .text(this.xAxisLabel)
 

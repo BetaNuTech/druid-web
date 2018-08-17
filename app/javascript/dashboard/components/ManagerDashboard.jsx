@@ -95,6 +95,7 @@ class ManagerDashboard extends React.Component {
         <Filters filters={this.state.data.filters}/>
         <div className={Style.ChartContainer} >
           <LeadSources data={this.state.data.lead_sources.data}
+            filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
             height='300'
@@ -102,6 +103,7 @@ class ManagerDashboard extends React.Component {
             yAxisLabel='Leads'
             xAxisLabel='Lead Source' />
           <LeadStates data={this.state.data.lead_states.data}
+            filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
             height='300'
@@ -109,6 +111,7 @@ class ManagerDashboard extends React.Component {
             yAxisLabel='Leads'
             xAxisLabel='Lead State' />
           <PropertyLeads data={this.state.data.property_leads.data}
+            filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
             height='300'

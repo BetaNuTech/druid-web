@@ -2,7 +2,7 @@ import React from 'react'
 import Style from './LeadStates.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
-import { schemePaired } from 'd3'
+import { schemeCategory10 } from 'd3'
 
 import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
@@ -26,6 +26,40 @@ class LeadStates extends React.Component {
     this.updateBarChart()
   }
 
+  leadSearchLink = (state_name) => {
+    let property_filter = ""
+    let user_filter = ""
+    if (this.props.filters != undefined && this.props.filters.properties.length > 0) {
+      for (var p of this.props.filters.properties) {
+        property_filter = property_filter + `&lead_search[property_ids][]=${p.val}`
+      }
+    }
+    if (this.props.filters != undefined && this.props.filters.users.length > 0) {
+      for (var p of this.props.filters.users) {
+        user_filter = user_filter + `&lead_search[user_ids][]=${p.val}`
+      }
+    }
+    return(`/leads/search?lead_search[states][]=${state_name}${property_filter}${user_filter}`)
+  }
+
+  openLinkInTab = (link) => {
+    window.open(link, '_blank')
+  }
+
+  handleBarMouseUp = (d) => {
+    this.openLinkInTab(this.leadSearchLink(d.id))
+  }
+
+  handleMouseOver(d,i) {
+    select(this)
+      .attr("opacity", "0.5")
+  }
+
+  handleMouseOut(d,i) {
+    select(this)
+      .attr("opacity", "1.0")
+  }
+
   getYScale = () => {
     // Vertical (y) axis for values
     return(scaleLinear().
@@ -41,7 +75,7 @@ class LeadStates extends React.Component {
   }
 
   getColorScale = () => {
-    return(scaleOrdinal(schemePaired))
+    return(scaleOrdinal(schemeCategory10))
   }
 
   addAxes = () => {
@@ -68,7 +102,7 @@ class LeadStates extends React.Component {
     const chart = select(this.node)
     chart
       .append("text")
-      .attr("transform", `translate(${this.width / 2}, ${this.props.height - 5})`)
+      .attr("transform", `translate(${this.props.width / 2}, ${this.props.height - 5})`)
         .attr("text-anchor", "middle")
         .text(this.xAxisLabel)
     chart
@@ -104,6 +138,9 @@ class LeadStates extends React.Component {
           .attr('y', d => yScale(this.props.selectY(d)))
           .attr('height', d => this.height - yScale(this.props.selectY(d)))
           .attr('width', xScale.bandwidth())
+          .on("mouseup", d => this.handleBarMouseUp(d))
+          .on("mouseover", this.handleMouseOver)
+          .on("mouseout", this.handleMouseOut)
         .append("text")
         .merge(bar)
           .attr('text-anchor', "middle")

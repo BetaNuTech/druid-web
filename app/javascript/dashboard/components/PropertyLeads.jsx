@@ -2,7 +2,7 @@ import React from 'react'
 import Style from './PropertyLeads.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
-import { schemePaired } from 'd3'
+import { schemeCategory10 } from 'd3'
 
 import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
@@ -11,7 +11,7 @@ import { axisBottom, axisLeft} from 'd3-axis'
 class PropertyLeads extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 20, bottom: 100, left: 50, right: 20}
+    this.margin = {top: 20, bottom: 120, left: 50, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
     this.yAxisLabel = this.props.yAxisLabel
@@ -26,6 +26,33 @@ class PropertyLeads extends React.Component {
     this.updateBarChart()
   }
 
+  leadSearchLink = (property_id) => {
+    let user_filter = ""
+    if (this.props.filters != undefined && this.props.filters.users.length > 0) {
+      for (var p of this.props.filters.users) {
+        user_filter = user_filter + `&lead_search[user_ids][]=${p.val}`
+      }
+    }
+    return(`/leads/search?lead_search[property_ids][]=${property_id}${user_filter}`)
+  }
+
+  openLinkInTab = (link) => {
+    window.open(link, '_blank')
+  }
+
+  handleBarMouseUp = (d) => {
+    this.openLinkInTab(this.leadSearchLink(d.id))
+  }
+
+  handleMouseOver(d,i) {
+    select(this)
+      .attr("opacity", "0.5")
+  }
+
+  handleMouseOut(d,i) {
+    select(this)
+      .attr("opacity", "1.0")
+  }
   getYScale = () => {
     // Vertical (y) axis for values
     return(scaleLinear().
@@ -41,7 +68,7 @@ class PropertyLeads extends React.Component {
   }
 
   getColorScale = () => {
-    return(scaleOrdinal(schemePaired))
+    return(scaleOrdinal(schemeCategory10))
   }
 
   addAxes = () => {
@@ -68,7 +95,7 @@ class PropertyLeads extends React.Component {
     const chart = select(this.node)
     chart
       .append("text")
-      .attr("transform", `translate(${this.width / 2}, ${this.props.height - 5})`)
+      .attr("transform", `translate(${this.props.width / 2}, ${this.props.height - 5})`)
         .attr("text-anchor", "middle")
         .text(this.xAxisLabel)
     chart
@@ -104,6 +131,9 @@ class PropertyLeads extends React.Component {
           .attr('y', d => yScale(this.props.selectY(d)))
           .attr('height', d => this.height - yScale(this.props.selectY(d)))
           .attr('width', xScale.bandwidth())
+          .on("mouseup", d => this.handleBarMouseUp(d))
+          .on("mouseover", this.handleMouseOver)
+          .on("mouseout", this.handleMouseOut)
         .append("text")
         .merge(bar)
           .attr('text-anchor', "middle")

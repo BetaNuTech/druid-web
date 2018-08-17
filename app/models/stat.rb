@@ -25,7 +25,7 @@ class Stat
     _lead_states = lead_states
     state_order = Lead.aasm.states.map(&:name).map(&:to_s)
     return state_order.map do |state_name|
-      {label: state_name.humanize, val: ( _lead_states[state_name] || 0 ) }
+      {label: state_name.humanize, val: ( _lead_states[state_name] || 0 ), id: state_name}
     end
   end
 
