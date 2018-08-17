@@ -11,7 +11,7 @@ import { axisBottom, axisLeft} from 'd3-axis'
 class LeadSources extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 50, bottom: 40, left: 50, right: 20}
+    this.margin = {top: 60, bottom: 40, left: 50, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
     this.yAxisLabel = this.props.yAxisLabel
@@ -24,6 +24,29 @@ class LeadSources extends React.Component {
 
   componentDidUpdate() {
     this.updateBarChart()
+  }
+
+  leadSearchLink = (source_id) => {
+    return(`/leads/search?lead_search[sources][]=${source_id}`)
+  }
+
+  openLinkInTab = (link) => {
+    window.open(link, '_blank')
+  }
+
+  handleBarMouseUp = (d) => {
+    console.log(d)
+    this.openLinkInTab(this.leadSearchLink(d.id))
+  }
+
+  handleMouseOver(d,i) {
+    select(this)
+      .attr("opacity", "0.5")
+  }
+
+  handleMouseOut(d,i) {
+    select(this)
+      .attr("opacity", "1.0")
   }
 
   getDataKeys = () => {
@@ -155,7 +178,7 @@ class LeadSources extends React.Component {
           .attr("class", d => `bargroup bargroup--${this.props.selectX(d)}`)
           .attr("transform", d => `translate(${xScaleGroup(this.props.selectX(d))},0)`)
       .selectAll(".bar")
-      .data(d => keys.map(key => ( {key: key, value: this.props.selectY(d)[key], index: keys.indexOf(key)} )))
+      .data(d => keys.map(key => ( {id: d.id, key: key, value: this.props.selectY(d)[key], index: keys.indexOf(key)} )))
       .enter()
         .append("rect")
           .merge(bar)
@@ -166,6 +189,9 @@ class LeadSources extends React.Component {
           .attr("height", d => this.height - yScale(d.value))
           .attr("fill", d => colorScale(d.index))
           .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+          .on("mouseup", d => this.handleBarMouseUp(d))
+          .on("mouseover", this.handleMouseOver)
+          .on("mouseout", this.handleMouseOut)
 
     // Add Values
     bar

@@ -94,32 +94,29 @@ class ManagerDashboard extends React.Component {
       <div className={ Style.ManagerDashboard }>
         <Filters filters={this.state.data.filters}/>
         <div className={Style.ChartContainer} >
-          <OpenLeads data={this.state.data.open_leads} />
-          <AgentStatus data={this.state.data.agent_status} />
           <LeadSources data={this.state.data.lead_sources.data}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
             height='300'
             width='400'
             yAxisLabel='Leads'
-            xAxisLabel='Lead Source'
-          />
+            xAxisLabel='Lead Source' />
           <LeadStates data={this.state.data.lead_states.data}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
             height='300'
             width='300'
             yAxisLabel='Leads'
-            xAxisLabel='Lead State'
-          />
+            xAxisLabel='Lead State' />
           <PropertyLeads data={this.state.data.property_leads.data}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
             height='300'
             width='700'
             yAxisLabel='Leads'
-            xAxisLabel='Property'
-          />
+            xAxisLabel='Property' />
+          <OpenLeads data={this.state.data.open_leads} />
+          <AgentStatus data={this.state.data.agent_status} />
         </div>
       </div>
     )

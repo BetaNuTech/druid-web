@@ -42,17 +42,19 @@ class Stat
 
     sql=<<-EOS
       SELECT
+        total_counts.source_id as source_id,
         total_counts.source_name as source_name,
         total_counts.total_count AS total_count,
         converted_counts.converted_count AS converted_count
       FROM (
         SELECT
+          lead_sources.id AS source_id,
           concat(lead_sources.name, ' ', leads.referral) AS source_name,
           count(*) AS total_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
         #{ "WHERE #{_filter_sql}" if _filter_sql.present?}
-        GROUP BY ( lead_sources.name, leads.referral )
+        GROUP BY ( lead_sources.name, lead_sources.id, leads.referral )
       ) total_counts
       FULL OUTER JOIN (
         SELECT
@@ -73,7 +75,8 @@ EOS
         val: {
                 Total: record["total_count"] || 0,
                 Converted: record["converted_count"] || 0
-             }
+             },
+        id: record["source_id"]
       }
     end
 
