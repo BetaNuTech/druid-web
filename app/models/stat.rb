@@ -10,7 +10,26 @@ class Stat
   end
 
   def filters_json
+    agent_properties = @properties.any? ? @properties.map(&:id) : Property.order("name ASC")
     {
+      options: {
+        _index: ['users', 'properties'],
+        users: {
+          label: 'Agents',
+          param: 'user_ids',
+          options: 
+            PropertyAgent.where(property_id: agent_properties).
+              map(&:user).
+              map{|u| { label: u.name, val: u.id}}
+        },
+        properties: {
+          label: 'Properties',
+          param: 'property_ids',
+          options: Property.where("id NOT IN (?)", @property_ids).order('name ASC').map{|p|
+            {label: p.name, val: p.id}
+          }
+        },
+      },
       users: @users.map{|user| {label: user.name, val: user.id}},
       properties: @properties.map{|property| {label: property.name, val: property.id}}
     }

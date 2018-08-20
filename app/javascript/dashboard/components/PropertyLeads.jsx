@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Style from './PropertyLeads.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
