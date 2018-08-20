@@ -171,5 +171,14 @@ class PropertyLeads extends React.Component {
 
 }
 
+PropertyLeads.defaultProps = {
+  filters: {},
+  selectX: () => {},
+  selectX: () => {},
+  height: 300,
+  width: 300,
+  yAxisLabel: '',
+  xAxisLabel: ''
+}
 
 export default PropertyLeads

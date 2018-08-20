@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Style from './AgentStatus.scss'
 
 class AgentStatus extends React.Component {
@@ -59,6 +60,14 @@ class AgentStatus extends React.Component {
       </div>
     )
   }
+}
+
+AgentStatus.propTypes = {
+  data: PropTypes.object.isRequired
+}
+
+AgentStatus.defaultProps = {
+  data: { data: { series: [] } }
 }
 
 export default AgentStatus

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Style from './OpenLeads.scss'
 
 class OpenLeads extends React.Component {
@@ -46,6 +47,14 @@ class OpenLeads extends React.Component {
       </div>
     )
   }
+}
+
+OpenLeads.propTypes = {
+  data: PropTypes.object.isRequired
+}
+
+OpenLeads.defaultProps = {
+  data: {data: {series: []}}
 }
 
 export default OpenLeads

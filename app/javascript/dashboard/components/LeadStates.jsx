@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Style from './LeadStates.scss'
 
 import { scaleLinear, scaleBand, scaleOrdinal } from 'd3-scale'
@@ -178,5 +179,24 @@ class LeadStates extends React.Component {
 
 }
 
+LeadStates.propTypes = {
+  filters: PropTypes.object.isRequired,
+  selectX: PropTypes.func.isRequired,
+  selectY: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  yAxisLabel: PropTypes.string.isRequired,
+  xAxisLabel: PropTypes.string.isRequired
+}
+
+LeadStates.defaultProps = {
+  filters: {},
+  selectX: () => {},
+  selectX: () => {},
+  height: 300,
+  width: 300,
+  yAxisLabel: '',
+  xAxisLabel: ''
+}
 
 export default LeadStates

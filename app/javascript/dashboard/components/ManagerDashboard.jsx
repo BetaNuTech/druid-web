@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Style from './ManagerDashboard.scss'
 import axios from 'axios'
 import SourcesStats from './SourcesStats.jsx'
@@ -98,24 +99,25 @@ class ManagerDashboard extends React.Component {
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height='300'
-            width='400'
+            height={ 300 }
+            width={ 400 }
             yAxisLabel='Leads'
-            xAxisLabel='Lead Source' />
+            xAxisLabel='Lead Source'
+          />
           <LeadStates data={this.state.data.lead_states.data}
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height='300'
-            width='300'
+            height={ 300 }
+            width={ 300 }
             yAxisLabel='Leads'
             xAxisLabel='Lead State' />
           <PropertyLeads data={this.state.data.property_leads.data}
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height='300'
-            width='700'
+            height={ 300 }
+            width={ 700 }
             yAxisLabel='Leads'
             xAxisLabel='Property' />
           <OpenLeads data={this.state.data.open_leads} />
@@ -125,6 +127,11 @@ class ManagerDashboard extends React.Component {
     )
   }
 
+}
+
+ManagerDashboard.propTypes = {
+  data: PropTypes.object,
+  api_root: PropTypes.string
 }
 
 export default ManagerDashboard
