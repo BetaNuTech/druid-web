@@ -2,7 +2,7 @@
   "name": "druid-web",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "^3.5.3",
+    "@rails/webpacker": "^3.5.5",
     "axios": "^0.17.1",
     "babel-preset-react": "^6.24.1",
     "bootstrap": "^3.3.7",
@@ -11,10 +11,10 @@
     "jquery": "^3.2.1",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
-    "prop-types": "^15.6.1",
+    "prop-types": "^15.6.2",
     "query-string": "^5.1.1",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
   },
   "version": "0.0.1",
   "description": "Druid Web App",
