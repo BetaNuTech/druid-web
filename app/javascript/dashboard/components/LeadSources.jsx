@@ -11,7 +11,7 @@ import { axisBottom, axisLeft} from 'd3-axis'
 class LeadSources extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 60, bottom: 40, left: 50, right: 20}
+    this.margin = {top: 60, bottom: 120, left: 50, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
     this.yAxisLabel = this.props.yAxisLabel
@@ -105,6 +105,9 @@ class LeadSources extends React.Component {
       .attr("class", "axis axis--x")
       .attr("transform", `translate(${this.margin.left},${this.margin.top + this.height})`)
       .call(axisBottom(xScaleGroup))
+      .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end")
 
     // Add Vertical (y) Axis
     chart.append("g")
