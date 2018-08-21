@@ -3,21 +3,9 @@ import PropTypes from 'prop-types'
 import Style from './Filters.scss'
 
 class FilterSection extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      options: this.props.options,
-      selected: this.props.selected
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({options: nextProps.options, selected: nextProps.selected})
-  }
-
 
   selectedListings = () => {
-    let selectedItems = this.state.selected.map( i => {
+    let selectedItems = this.props.selected.map( i => {
       return(
         <li key={i.val}>
           {i.label} &nbsp;
@@ -25,7 +13,7 @@ class FilterSection extends React.Component {
         </li>
       )})
 
-    if (this.state.selected.length == 0) {
+    if (this.props.selected.length == 0) {
       return(<ul><li key='allitems' >All</li></ul>)
     } else {
       return( <ul>{selectedItems}</ul>)
@@ -33,23 +21,23 @@ class FilterSection extends React.Component {
   }
 
   filterSelected = (e) => {
-    let selectedItem = this.state.options.options[e.target.selectedIndex - 1]
-    let isValidSelection = ( selectedItem != undefined ) && ( this.state.selected.indexOf(selectedItem) == -1 )
+    let selectedItem = this.props.options.options[e.target.selectedIndex - 1]
+    let isValidSelection = ( selectedItem != undefined ) && ( this.props.selected.indexOf(selectedItem) == -1 )
     if (isValidSelection) {
-      let newSelected = [...this.state.selected, selectedItem]
+      let newSelected = [...this.props.selected, selectedItem]
       this.props.onFilter(this.props.filterKey, newSelected)
     }
   }
 
   render() {
     return(
-      <div key={ this.state.options.label } className={Style.FilterSection}>
-        <h4>{this.state.options.label}</h4>
+      <div key={ this.props.options.label } className={Style.FilterSection}>
+        <h4>{this.props.options.label}</h4>
         <div>
           <select className="form-control" onChange={this.filterSelected} data-filter={this.props.filterKey}>
             <option value key='defaultselect'>-- Select One --</option>
             {
-              this.state.options.options.map( ( o ) => {
+              this.props.options.options.map( ( o ) => {
                 return(<option key={o.val} value={o.val}>{o.label}</option>)
               })
             }
