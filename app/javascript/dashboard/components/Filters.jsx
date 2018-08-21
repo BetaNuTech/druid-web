@@ -9,7 +9,7 @@ class FilterSection extends React.Component {
       return(
         <li key={i.val}>
           {i.label} &nbsp;
-          X
+          <a href="#" data-value={i.val} onClick={this.removeSelectedFilter}>x</a>
         </li>
       )})
 
@@ -21,11 +21,33 @@ class FilterSection extends React.Component {
   }
 
   filterSelected = (e) => {
-    let selectedItem = this.props.options.options[e.target.selectedIndex - 1]
-    let isValidSelection = ( selectedItem != undefined ) && ( this.props.selected.indexOf(selectedItem) == -1 )
+    const selectedItem = this.props.options.options[e.target.selectedIndex - 1]
+    const isValidSelection = ( selectedItem != undefined ) && (!this.isSelected(selectedItem.val))
     if (isValidSelection) {
-      let newSelected = [...this.props.selected, selectedItem]
+      const newSelected = [...this.props.selected, selectedItem]
       this.props.onFilter(this.props.filterKey, newSelected)
+    }
+    e.target.selectedIndex = 0
+  }
+
+  removeSelectedFilter = (e) => {
+    e.preventDefault()
+    const filterId = e.target.dataset.value
+    if (this.isSelected(filterId)) {
+      const newSelected = this.props.selected.filter( s => s.val != filterId)
+      this.props.onFilter(this.props.filterKey, newSelected)
+    }
+  }
+
+  isSelected = (id) => {
+    return(this.props.selected.map( d => d.val).indexOf(id) != -1)
+  }
+
+  optionElement = (o) => {
+    if (this.isSelected(o.val)) {
+      return(<option key={o.val} value={o.val} disabled>{o.label}</option>)
+    } else {
+      return(<option key={o.val} value={o.val}>{o.label}</option>)
     }
   }
 
@@ -34,11 +56,11 @@ class FilterSection extends React.Component {
       <div key={ this.props.options.label } className={Style.FilterSection}>
         <h4>{this.props.options.label}</h4>
         <div>
-          <select className="form-control" onChange={this.filterSelected} data-filter={this.props.filterKey}>
-            <option value key='defaultselect'>-- Select One --</option>
+          <select className="form-control" onChange={this.filterSelected}>
+            <option value key='defaultselect'>-- Select {this.props.options.label} --</option>
             {
               this.props.options.options.map( ( o ) => {
-                return(<option key={o.val} value={o.val}>{o.label}</option>)
+                return(this.optionElement(o))
               })
             }
           </select>
