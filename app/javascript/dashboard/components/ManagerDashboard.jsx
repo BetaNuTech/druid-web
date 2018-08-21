@@ -15,72 +15,38 @@ class ManagerDashboard extends React.Component {
     super(props)
     this.state = {
       api_root: '/stats/manager.json',
-      data: {
-        filters: {
-          properties: [],
-          users: []
-        },
-        open_leads: {
-          data: {
-            series: []
-          }
-        },
-        agent_status: {
-          data: {
-            series: []
-          }
-        },
-        lead_states: {
-          data: {
-            series: [ ]
-          }
-        },
-        lead_sources: {
-          data: {
-            series: [ ]
-          }
-        },
-        property_leads: {
-          data: {
-            series: [ ]
-          }
-        }
+      filters: {},
+      data: { // Default empty data set
+        filters: { options: { _index: [] } },
+        open_leads: { data: { series: [] } },
+        agent_status: { data: { series: [] } },
+        lead_states: { data: { series: [ ] } },
+        lead_sources: { data: { series: [ ] } },
+        property_leads: { data: { series: [ ] } }
       }
     }
-  }
-
-
-  getInitialUrl() {
-    return( this.state.api_root + window.location.search )
-  }
-
-  urlFromFilters = () => {
-    let url = this.state.api_root + "?filter=true"
-
-    let property_id_params = this.state.data.filters.properties.map(d => `property_id[]=${d}`)
-    let user_id_params = this.state.data.filters.users.map(d => `user_id[]=${d}`)
-
-
-    for (var p of this.state.data.filters.properties) {
-      url = `${url}&property_id[]=${p.val}`
-    }
-
-    for (var p of this.state.data.filters.users) {
-      url = `${url}&user_id[]=${p.val}`
-    }
-
-    return(url)
   }
 
   componentDidMount() {
     this.updateData()
   }
 
+  urlFromFilters = () => {
+    let url = this.state.api_root + "?filter=true"
+    for (var filter of this.state.data.filters.options._index) {
+      for (var p of this.state.data.filters[filter]) {
+        url = `${url}&${this.state.data.filters.options[filter].param}[]=${p.val}`
+      }
+    }
+    return(url)
+  }
+
   updateData = () => {
     window.activateLoader()
-    axios.get(this.getInitialUrl()||this.state.api)
+    axios.get(this.urlFromFilters())
     .then(response => {
-      this.setState({ data: response.data.data })
+      this.setState({ data: response.data.data, filters: response.data.data.filters })
+      console.log(this.urlFromFilters())
       window.disableLoader()
     })
     .catch(error => {
@@ -90,10 +56,19 @@ class ManagerDashboard extends React.Component {
     })
   }
 
+  updateFilter = (filter_name, values) => {
+    console.log('Updating Filter: ', filter_name, values)
+    let filter_data = this.state.filters
+    filter_data[filter_name] = values
+    console.log(filter_data[filter_name])
+    this.setState({filters: filter_data})
+    this.updateData()
+  }
+
   render() {
     return(
       <div className={ Style.ManagerDashboard }>
-        <Filters filters={this.state.data.filters}/>
+        <Filters filters={this.state.data.filters} onFilter={this.updateFilter}/>
         <div className={Style.ChartContainer} >
           <LeadSources data={this.state.data.lead_sources.data}
             filters={this.state.data.filters}

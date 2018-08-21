@@ -20,7 +20,7 @@ class FilterSection extends React.Component {
     let selectedItems = this.state.selected.map( i => {
       return(
         <li key={i.val}>
-          {i.label}
+          {i.label} &nbsp;
           X
         </li>
       )})
@@ -32,12 +32,21 @@ class FilterSection extends React.Component {
     }
   }
 
+  filterSelected = (e) => {
+    let selectedItem = this.state.options.options[e.target.selectedIndex - 1]
+    let isValidSelection = ( selectedItem != undefined ) && ( this.state.selected.indexOf(selectedItem) == -1 )
+    if (isValidSelection) {
+      let newSelected = [...this.state.selected, selectedItem]
+      this.props.onFilter(this.props.filterKey, newSelected)
+    }
+  }
+
   render() {
     return(
       <div key={ this.state.options.label } className={Style.FilterSection}>
         <h4>{this.state.options.label}</h4>
         <div>
-          <select className="form-control">
+          <select className="form-control" onChange={this.filterSelected} data-filter={this.props.filterKey}>
             <option value key='defaultselect'>-- Select One --</option>
             {
               this.state.options.options.map( ( o ) => {
@@ -69,15 +78,16 @@ class Filters extends React.Component {
   }
 
   render() {
-      console.log(this.state)
     return(
       <div className={Style.Filters}>
         {this.filterIndex().map( i => {
           return(
             <FilterSection
               key={i}
+              filterKey={i}
               options={ this.state.filters.options[i] }
               selected={ this.state.filters[i] }
+              onFilter={this.props.onFilter}
             />)
         })}
       </div>

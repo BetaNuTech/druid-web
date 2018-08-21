@@ -19,7 +19,8 @@ class Stat
           param: 'user_ids',
           options: 
             PropertyAgent.where(property_id: agent_properties).
-              map(&:user).
+              map(&:user).uniq.
+              sort{|x,y| x.last_name <=> y.last_name}.
               map{|u| { label: u.name, val: u.id}}
         },
         properties: {
