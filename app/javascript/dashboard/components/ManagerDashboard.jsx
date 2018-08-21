@@ -46,7 +46,6 @@ class ManagerDashboard extends React.Component {
     axios.get(this.urlFromFilters())
     .then(response => {
       this.setState({ data: response.data.data, filters: response.data.data.filters })
-      console.log(this.urlFromFilters())
       window.disableLoader()
     })
     .catch(error => {
@@ -57,10 +56,8 @@ class ManagerDashboard extends React.Component {
   }
 
   updateFilter = (filter_name, values) => {
-    console.log('Updating Filter: ', filter_name, values)
     let filter_data = this.state.filters
     filter_data[filter_name] = values
-    console.log(filter_data[filter_name])
     this.setState({filters: filter_data})
     this.updateData()
   }
