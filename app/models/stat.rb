@@ -26,7 +26,7 @@ class Stat
         properties: {
           label: 'Properties',
           param: 'property_ids',
-          options: Property.where("id NOT IN (?)", @property_ids).order('name ASC').map{|p|
+          options: Property.order('name ASC').map{|p|
             {label: p.name, val: p.id}
           }
         },
