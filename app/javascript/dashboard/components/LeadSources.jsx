@@ -102,7 +102,7 @@ class LeadSources extends React.Component {
     const yScale = this.getYScale()
 
     // Add Horizontal (x) Axis
-    chart.append("g")
+    chart.select("g.axis--x")
       .attr("class", "axis axis--x")
       .attr("transform", `translate(${this.margin.left},${this.margin.top + this.height})`)
       .call(axisBottom(xScaleGroup))
@@ -111,7 +111,7 @@ class LeadSources extends React.Component {
         .style("text-anchor", "end")
 
     // Add Vertical (y) Axis
-    chart.append("g")
+    chart.select("g.axis--y")
       .attr("class", "axis axis--y")
       .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
       .call(axisLeft(yScale))
@@ -122,7 +122,7 @@ class LeadSources extends React.Component {
 
     // Add Horizontal (x) Axis Label
     chart
-      .append("text")
+      .select("text.axis--x-label")
       .attr("transform", `translate(${this.props.width / 2}, ${this.props.height})`)
         .attr("text-anchor", "middle")
         .text(this.xAxisLabel)
@@ -130,7 +130,7 @@ class LeadSources extends React.Component {
     // Add Vertical (y) Axis Label
     chart
       .append("text")
-        .attr("class", "axis-label--y")
+        .select("text.axis--y-label")
         .attr("transform", `translate(20,${( this.props.height) / 2}) rotate(-90)`)
         .attr("text-anchor", "middle")
         .text(this.yAxisLabel)
@@ -142,15 +142,33 @@ class LeadSources extends React.Component {
     const colorScale = this.getColorScale()
 
     // Add Legend
-    const legend = chart.append("g")
-        .attr("class","legend")
-        .attr("font-size", 10)
+     /*
+    const legend = chart.select("g.legend")
       .selectAll("g")
       .data(keys)
       .enter()
         .append("g")
           .attr("class", "legend--key")
           .attr("transform", (d,i) => `translate(0,${i * 20 })`)
+     */
+
+    const legend = chart.select("g.legend")
+    const legendkeycontainers = legend.selectAll("g.legend--keycontainer").data(keys)
+    legendkeycontainers.exit().remove()
+    legendkeycontainers
+      .enter()
+      .append("g")
+      .merge(legendkeycontainers)
+        .attr("class", "legend--keycontainer")
+        .attr("transform", (d,i) => `translate(0,${i * 20 })`)
+      .append("rect")
+        .attr("x", this.margin.left + 10 )
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr("fill", d => colorScale(keys.indexOf(d)))
+
+
+        /*
 
     //// Add Legend Keys
     legend
@@ -167,6 +185,8 @@ class LeadSources extends React.Component {
         .attr("y", 10)
         .attr("dy", "0.1em")
         .text(d => d)
+
+        */
   }
 
   updateBarChart = () => {
@@ -238,11 +258,18 @@ class LeadSources extends React.Component {
   render(){
     return(
       <div className={Style.LeadSources}>
-        <svg ref={node => this.node = node}
-          className="bargraph"
-          height={this.props.height}
-          width={this.props.width}
-        >
+        <svg  ref={node => this.node = node}
+              className="bargraph"
+              height={this.props.height}
+              width={this.props.width} >
+          <g className="axis axis--x"></g>
+          <g className="axis axis--y"></g>
+          <g>
+            <text className="axis--x-label"/>
+            <text className="axis--y-label"/>
+          </g>
+          <g className="legend" fontSize="10">
+          </g>
         </svg>
       </div>
     )
