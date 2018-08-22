@@ -78,7 +78,7 @@ class PropertyLeads extends React.Component {
     const xScale = this.getXScale()
     const colorScale = this.getColorScale()
     // Add Horizontal (x) Axis labels
-    chart.append("g")
+    chart.select("g.axis--x")
       .attr("class", "axis axis--x")
       .attr("transform", `translate(${this.margin.left},${this.margin.top + this.height})`)
       .call(axisBottom(xScale))
@@ -86,7 +86,7 @@ class PropertyLeads extends React.Component {
         .attr("transform", "rotate(-45)")
         .style("text-anchor", "end")
     // Add Vertical (y) Axis labels
-    chart.append("g")
+    chart.select("g.axis--y")
       .attr("class", "axis axis--y")
       .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
       .call(axisLeft(yScale))
@@ -95,12 +95,12 @@ class PropertyLeads extends React.Component {
   addAxesLabels = () => {
     const chart = select(this.node)
     chart
-      .append("text")
+      .select("text.axis--x-label")
       .attr("transform", `translate(${this.props.width / 2}, ${this.props.height - 5})`)
         .attr("text-anchor", "middle")
         .text(this.xAxisLabel)
     chart
-      .append("text")
+      .select("text.axis--y-label")
       .attr("transform", `translate(20,${this.height / 2}) rotate(-90)`)
         .attr("text-anchor", "end")
         .text(this.yAxisLabel)
@@ -113,7 +113,7 @@ class PropertyLeads extends React.Component {
 
   updateBarChart = () => {
     const chart = select(this.node)
-    const bar = chart.selectAll(".bar").data(this.props.data.series)
+    //const bar = chart.selectAll(".bar").data(this.props.data.series)
     const yScale = this.getYScale()
     const xScale = this.getXScale()
     const colorScale = this.getColorScale()
@@ -121,15 +121,16 @@ class PropertyLeads extends React.Component {
     this.addAxes()
 
     // Add Bars
+    const bar = chart.selectAll(".bar").data(this.props.data.series)
+    bar.exit().remove()
     bar
       .enter()
         .append('rect')
         .merge(bar)
-          .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
           .attr('class', 'bar')
           .style('fill', d => colorScale(this.props.selectX(d)))
-          .attr('x', d => xScale(this.props.selectX(d)))
-          .attr('y', d => yScale(this.props.selectY(d)))
+          .attr('x', d => this.margin.left + xScale(this.props.selectX(d)))
+          .attr('y', d => this.margin.top + yScale(this.props.selectY(d)))
           .attr('height', d => this.height - yScale(this.props.selectY(d)))
           .attr('width', xScale.bandwidth())
           .on("mouseup", d => this.handleBarMouseUp(d))
@@ -141,29 +142,35 @@ class PropertyLeads extends React.Component {
           .attr("x", d => this.margin.left + xScale(this.props.selectX(d)) + xScale.bandwidth()/2)
           .attr("y", d => this.margin.top + yScale(this.props.selectY(d)) - 5)
           .text(d => this.props.selectY(d) )
-        .merge(bar)
 
     // Add values to bars
-    bar
+    const barvalues = chart.selectAll(".barvalue").data(this.props.data.series)
+    barvalues.exit().remove()
+    barvalues
       .enter()
         .append("text")
-        .merge(bar)
+        .merge(barvalues)
+          .attr("class", "barvalue")
+          .attr("font-size", 11)
           .attr('text-anchor', "middle")
           .attr("x", d => this.margin.left + xScale(this.props.selectX(d)) + xScale.bandwidth()/2)
           .attr("y", d => this.margin.top + yScale(this.props.selectY(d)) - 5)
           .text(d => this.props.selectY(d) )
-
-    bar.exit().remove()
   }
 
   render(){
     return(
       <div className={Style.PropertyLeads}>
-        <svg ref={node => this.node = node}
-          className="bargraph"
-          height={this.props.height}
-          width={this.props.width}
-        >
+        <svg  ref={node => this.node = node}
+              className="bargraph"
+              height={this.props.height}
+              width={this.props.width} >
+          <g className="axis axis--x"></g>
+          <g className="axis axis--y"></g>
+          <g>
+            <text className="axis--x-label"/>
+            <text className="axis--y-label"/>
+          </g>
         </svg>
       </div>
     )
