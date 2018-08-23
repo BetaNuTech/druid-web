@@ -140,53 +140,32 @@ class LeadSources extends React.Component {
     const chart = select(this.node)
     const keys = this.getDataKeys()
     const colorScale = this.getColorScale()
-
-    // Add Legend
-     /*
     const legend = chart.select("g.legend")
-      .selectAll("g")
-      .data(keys)
-      .enter()
-        .append("g")
-          .attr("class", "legend--key")
-          .attr("transform", (d,i) => `translate(0,${i * 20 })`)
-     */
 
-    const legend = chart.select("g.legend")
-    const legendkeycontainers = legend.selectAll("g.legend--keycontainer").data(keys)
-    legendkeycontainers.exit().remove()
-    legendkeycontainers
+    const legendkeys = legend.selectAll("rect.legend--key").data(keys)
+    legendkeys.exit().remove()
+    legendkeys
       .enter()
-      .append("g")
-      .merge(legendkeycontainers)
-        .attr("class", "legend--keycontainer")
-        .attr("transform", (d,i) => `translate(0,${i * 20 })`)
       .append("rect")
+      .merge(legendkeys)
+        .attr("class", "legend--key")
         .attr("x", this.margin.left + 10 )
+        .attr("y", (d,i) => i * 20 )
         .attr("width", 15)
         .attr("height", 15)
         .attr("fill", d => colorScale(keys.indexOf(d)))
 
-
-        /*
-
-    //// Add Legend Keys
-    legend
-      .append("rect")
-        .attr("x", this.margin.left + 10 )
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr("fill", d => colorScale(keys.indexOf(d)))
-
-    //// Add Legend Key Labels
-    legend
+    const legendkeylabels = legend.selectAll("text.legend--keylabel").data(keys)
+    legendkeylabels.exit().remove()
+    legendkeylabels
+      .enter()
       .append("text")
+      .merge(legendkeylabels)
+        .attr("class", "legend--keylabel")
         .attr("x", this.margin.left + 30)
-        .attr("y", 10)
+        .attr("y", (d,i) => i * 20 + 10 )
         .attr("dy", "0.1em")
         .text(d => d)
-
-        */
   }
 
   updateBarChart = () => {
@@ -200,23 +179,20 @@ class LeadSources extends React.Component {
     this.addAxes()
     this.addLegend()
 
-    // Position Bars
-    const bar = chart.selectAll(".bar")
-      .append("g")
-        .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+    chart.selectAll("g.bargroup").remove()
 
-    // Add Bars
-    bar
-      .data(this.props.data.series)
+    const bargroups = chart.selectAll("g.bargroup").data(this.props.data.series)
+    bargroups.exit().remove()
+    bargroups
       .enter()
-        .append("g")
-          .attr("class", d => `bargroup bargroup--${this.props.selectX(d)}`)
-          .attr("transform", d => `translate(${xScaleGroup(this.props.selectX(d))},0)`)
+      .append("g")
+      .merge(bargroups)
+        .attr("class", "bargroup")
+        .attr("transform", d => `translate(${xScaleGroup(this.props.selectX(d))},0)`)
       .selectAll(".bar")
       .data(d => keys.map(key => ( {id: d.id, key: key, value: this.props.selectY(d)[key], index: keys.indexOf(key)} )))
       .enter()
         .append("rect")
-          .merge(bar)
           .attr("class", ".bar")
           .attr("x", d => xScaleBar(d.key) )
           .attr("y", d => yScale(d.value) )
@@ -228,8 +204,8 @@ class LeadSources extends React.Component {
           .on("mouseover", this.handleMouseOver)
           .on("mouseout", this.handleMouseOut)
 
-    // Add Values
-    bar
+    chart.selectAll("g.bargroup--values").remove()
+    bargroups
       .data(this.props.data.series)
       .enter()
         .append("g")
@@ -239,14 +215,13 @@ class LeadSources extends React.Component {
       .data(d => keys.map(key => ( {key: key, value: this.props.selectY(d)[key]} )))
       .enter()
         .append("text")
-          .merge(bar)
+          .merge(bargroups)
           .attr("class", "label--value")
           .attr('text-anchor', "middle")
           .attr("x", d => xScaleBar(d.key) + xScaleBar.bandwidth()/2 )
           .attr("y", d => yScale(d.value) - 5 )
           .text(d => d.value)
 
-    bar.exit().remove()
   }
 
   createBarChart = () => {
