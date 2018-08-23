@@ -1,3 +1,8 @@
+json.links do
+  json.self request.original_url
+  json.api @stats.url
+end
+
 json.data do
   json.filters @stats.filters_json
 
