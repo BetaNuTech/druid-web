@@ -217,6 +217,7 @@ class LeadSources extends React.Component {
         .append("text")
           .merge(bargroups)
           .attr("class", "label--value")
+          .attr("font-size", "11")
           .attr('text-anchor', "middle")
           .attr("x", d => xScaleBar(d.key) + xScaleBar.bandwidth()/2 )
           .attr("y", d => yScale(d.value) - 5 )
