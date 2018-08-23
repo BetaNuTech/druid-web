@@ -177,7 +177,6 @@ class LeadSources extends React.Component {
     this.addLegend()
 
     chart.selectAll("g.bargroup").remove()
-
     const bargroups = chart.selectAll("g.bargroup").data(this.props.data.series)
     bargroups.exit().remove()
     bargroups
@@ -220,6 +219,23 @@ class LeadSources extends React.Component {
           .attr("y", d => yScale(d.value) - 5 )
           .text(d => d.value)
 
+
+    this.noDataAdvisory()
+
+  }
+
+  noDataAdvisory = () => {
+    const chart = select(this.node)
+    if (this.props.data.series.length == 0) {
+      chart.select("text.advisory")
+        .attr("font-size", 20)
+        .attr("x", this.width / 3)
+        .attr("y", this.props.height / 2)
+        .text("No Data")
+    } else {
+      chart.select("text.advisory")
+        .text("")
+    }
   }
 
   createBarChart = () => {
@@ -240,6 +256,9 @@ class LeadSources extends React.Component {
           <g className="axis--labels">
             <text className="axis--x-label"/>
             <text className="axis--y-label"/>
+          </g>
+          <g className="advisory">
+            <text className="advisory"/>
           </g>
           <g className="legend" fontSize="10">
           </g>

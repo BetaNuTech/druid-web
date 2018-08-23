@@ -156,7 +156,25 @@ class PropertyLeads extends React.Component {
           .attr("x", d => this.margin.left + xScale(this.props.selectX(d)) + xScale.bandwidth()/2)
           .attr("y", d => this.margin.top + yScale(this.props.selectY(d)) - 5)
           .text(d => this.props.selectY(d) )
+
+    this.noDataAdvisory()
   }
+
+
+  noDataAdvisory = () => {
+    const chart = select(this.node)
+    if (this.props.data.series.length == 0) {
+      chart.select("text.advisory")
+        .attr("font-size", 20)
+        .attr("x", this.width / 3)
+        .attr("y", this.props.height / 2)
+        .text("No Data")
+    } else {
+      chart.select("text.advisory")
+        .text("")
+    }
+  }
+
 
   render(){
     return(
@@ -170,6 +188,9 @@ class PropertyLeads extends React.Component {
           <g>
             <text className="axis--x-label"/>
             <text className="axis--y-label"/>
+          </g>
+          <g className="advisory">
+            <text className="advisory"/>
           </g>
         </svg>
       </div>
