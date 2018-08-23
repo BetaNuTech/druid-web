@@ -7,7 +7,7 @@ import { schemePaired } from 'd3'
 
 import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
-import { axisBottom, axisLeft} from 'd3-axis'
+import { axisBottom, axisLeft } from 'd3-axis'
 
 class LeadSources extends React.Component {
   constructor(props) {
@@ -51,12 +51,12 @@ class LeadSources extends React.Component {
     this.openLinkInTab(this.leadSearchLink(d.id))
   }
 
-  handleMouseOver(d,i) {
+  handleMouseOver = (d,i) => {
     select(this)
       .attr("opacity", "0.5")
   }
 
-  handleMouseOut(d,i) {
+  handleMouseOut = (d,i) => {
     select(this)
       .attr("opacity", "1.0")
   }
@@ -70,11 +70,11 @@ class LeadSources extends React.Component {
   }
 
   getYScale = () => {
-    let maxYValue = max(this.props.data.series,
+    const maxYValue = max(this.props.data.series,
                         d => max(this.getDataKeys(),
                                   key => this.props.selectY(d)[key] ))
     return(scaleLinear()
-      .range([this.height, 0])
+      .rangeRound([this.height, 0])
       .domain([0, maxYValue]))
   }
 
@@ -121,19 +121,16 @@ class LeadSources extends React.Component {
     const chart = select(this.node)
 
     // Add Horizontal (x) Axis Label
-    chart
-      .select("text.axis--x-label")
+    chart.select("text.axis--x-label")
       .attr("transform", `translate(${this.props.width / 2}, ${this.props.height})`)
-        .attr("text-anchor", "middle")
-        .text(this.xAxisLabel)
+      .attr("text-anchor", "middle")
+      .text(this.xAxisLabel)
 
     // Add Vertical (y) Axis Label
-    chart
-      .append("text")
-        .select("text.axis--y-label")
-        .attr("transform", `translate(20,${( this.props.height) / 2}) rotate(-90)`)
-        .attr("text-anchor", "middle")
-        .text(this.yAxisLabel)
+    chart.select("text.axis--y-label")
+      .attr("transform", `translate(20,${this.margin.top + ( this.height) / 2}) rotate(-90)`)
+      .attr("text-anchor", "middle")
+      .text(this.yAxisLabel)
   }
 
   addLegend = () => {
@@ -240,7 +237,7 @@ class LeadSources extends React.Component {
               width={this.props.width} >
           <g className="axis axis--x"></g>
           <g className="axis axis--y"></g>
-          <g>
+          <g className="axis--labels">
             <text className="axis--x-label"/>
             <text className="axis--y-label"/>
           </g>

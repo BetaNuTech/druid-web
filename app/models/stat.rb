@@ -44,9 +44,10 @@ class Stat
   def lead_states_json
     _lead_states = lead_states
     state_order = Lead.aasm.states.map(&:name).map(&:to_s)
-    return state_order.map do |state_name|
+    out = state_order.map do |state_name|
       {label: state_name.humanize, val: ( _lead_states[state_name] || 0 ), id: state_name}
     end
+    return out.select{|s| s[:val] > 0}
   end
 
   def lead_sources

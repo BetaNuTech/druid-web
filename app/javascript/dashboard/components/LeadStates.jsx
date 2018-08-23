@@ -106,9 +106,10 @@ class LeadStates extends React.Component {
       .attr("transform", `translate(${this.props.width / 2}, ${this.props.height - 5})`)
         .attr("text-anchor", "middle")
         .text(this.xAxisLabel)
+
     chart
       .select("text.axis--y-label")
-      .attr("transform", `translate(20,${this.height / 2}) rotate(-90)`)
+      .attr("transform", `translate(20,${this.props.height / 2}) rotate(-90)`)
         .attr("text-anchor", "end")
         .text(this.yAxisLabel)
   }
