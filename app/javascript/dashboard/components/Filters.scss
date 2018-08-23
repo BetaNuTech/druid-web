@@ -11,3 +11,27 @@
 .FilterSection {
   padding: 1em;
 }
+
+.FilterListing {
+
+}
+
+.RemoveFilter {
+  color: #337ab7;
+  font-weight: bold;
+
+  &:link {
+    text-decoration: none;
+  }
+
+  &:hover {
+    color: #337ab7;
+    text-decoration: none;
+  }
+
+  &:visited {
+    color: #337ab7;
+  }
+
+}
+

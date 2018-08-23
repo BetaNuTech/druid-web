@@ -13,8 +13,10 @@ import Filters from './Filters.jsx'
 class ManagerDashboard extends React.Component {
   constructor(props) {
     super(props)
+    const container = document.getElementById("Dashboard")
     this.state = {
-      api_root: '/stats/manager.json',
+      api_root: container.dataset.api,
+      initial_data: container.dataset.url,
       filters: {},
       data: { // Default empty data set
         filters: { options: { _index: [] } },
@@ -28,7 +30,7 @@ class ManagerDashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.updateData()
+    this.updateData(this.state.initial_data)
   }
 
   urlFromFilters = () => {
@@ -41,9 +43,9 @@ class ManagerDashboard extends React.Component {
     return(url)
   }
 
-  updateData = () => {
+  updateData = (url) => {
     window.activateLoader()
-    axios.get(this.urlFromFilters())
+    axios.get(url)
     .then(response => {
       this.setState({ data: response.data.data, filters: response.data.data.filters })
       window.disableLoader()
@@ -56,10 +58,12 @@ class ManagerDashboard extends React.Component {
   }
 
   updateFilter = (filter_name, values) => {
-    let filter_data = this.state.filters
+    const filter_data = this.state.filters
     filter_data[filter_name] = values
     this.setState({filters: filter_data})
-    this.updateData()
+    this.updateData(this.urlFromFilters())
+    const newurl = this.urlFromFilters().replace('.json','')
+    window.history.pushState("","Manager Dashboard", newurl)
   }
 
   render() {

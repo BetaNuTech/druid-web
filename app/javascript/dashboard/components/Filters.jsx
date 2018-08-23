@@ -9,14 +9,14 @@ class FilterSection extends React.Component {
       return(
         <li key={i.val}>
           {i.label} &nbsp;
-          <a href="#" data-value={i.val} onClick={this.removeSelectedFilter}>x</a>
+          <a href="#" className={Style.RemoveFilter} data-value={i.val} onClick={this.removeSelectedFilter}>x</a>
         </li>
       )})
 
     if (this.props.selected.length == 0) {
-      return(<ul><li key='allitems' >All</li></ul>)
+      return(<ul className="FilterListing"><li key='allitems' >All</li></ul>)
     } else {
-      return( <ul>{selectedItems}</ul>)
+      return( <ul className="FilterListing">{selectedItems}</ul>)
     }
   }
 

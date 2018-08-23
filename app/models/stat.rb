@@ -1,12 +1,18 @@
 class Stat
-  attr_reader :user_ids, :property_ids, :users, :properties
+  attr_reader :user_ids, :property_ids, :users, :properties, :url
   include ActionView::Helpers::DateHelper
 
-  def initialize(user:, filters: {})
+  def initialize(user:, filters: {}, url:)
+    @url = url
+    @filters = filters
     @user_ids = get_user_ids(filters.fetch(:user_ids, []))
     @property_ids = get_property_ids(filters.fetch(:property_ids, []))
     @users = User.find(@user_ids)
     @properties = Property.find(@property_ids)
+  end
+
+  def json_url
+    return url + "?filter=true&" + @filters.to_a.compact.inject([]){|memo, obj| memo << ( obj[1] || [] ).map{|f| "#{obj[0]}[]=#{f}" }.join('&') ; memo}.join('&')
   end
 
   def filters_json
@@ -17,7 +23,7 @@ class Stat
         users: {
           label: 'Agents',
           param: 'user_ids',
-          options: 
+          options:
             PropertyAgent.where(property_id: agent_properties).
               map(&:user).uniq.
               sort{|x,y| x.last_name <=> y.last_name}.
