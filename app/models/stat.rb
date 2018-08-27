@@ -191,15 +191,68 @@ EOS
       }
   end
 
+  def recent_activity(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
+    tasks = completed_tasks(start_date: start_date, end_date: end_date)
+    notes = notes_created(start_date: start_date, end_date: end_date)
+    messages = messages_sent(start_date: start_date, end_date: end_date)
+    messages_incoming = messages.select{|m| m.incoming?}
+    messages_outgoing = messages.select{|m| m.outgoing?}
+  end
+
+  def notes_created(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
+    notes = Note.where( notable_type: 'Lead', created_at: (start_date..end_date)) 
+    if @user_ids.present?
+      notes = notes.where(user_id: @user_ids)
+    end
+    if @property_ids.present?
+      notes = notes.joins("INNER JOIN property_agents ON property_agents.user_id = notes.user_id AND property_agents.property_id IN #{property_ids_sql}")
+    end
+    return notes
+  end
+
+  def completed_tasks(start_date: 48.hours.ago, end_date: DateTime.now)
+    tasks = EngagementPolicyActionCompliance.
+        where( state: [:completed, :completed_retry],
+               completed_at: (2.weeks.ago..DateTime.now))
+    if @user_ids.present?
+      tasks = tasks.where(user_id: @user_ids)
+    end
+    if @property_ids.present?
+      tasks = tasks.joins("INNER JOIN property_agents ON property_agents.user_id = engagement_policy_action_compliances.user_id AND property_agents.property_id IN #{property_ids_sql}")
+    end
+    return tasks
+  end
+
+  def messages_sent(start_date: 48.hours.ago, end_date: DateTime.now)
+    messages = Message.where(
+      delivered_at: (start_date..end_date),
+      messageable_type: 'Lead')
+    if @user_ids.present?
+      messages = messages.where(user_id: @user_ids)
+    end
+    if @property_ids.present?
+      messages = messages.joins("INNER JOIN property_agents ON property_agents.user_id = messages.user_id AND property_agents.property_id IN #{property_ids_sql}")
+    end
+    return messages
+  end
+
   private
+
+  def property_ids_sql
+    return "(#{@property_ids.map{|i| "'#{i}'"}.join(',')})"
+  end
+
+  def user_ids_sql
+    return "(#{@user_ids.map{|i| "'#{i}'"}.join(',')})"
+  end
 
   def filter_sql
     filters = []
     if @user_ids.present?
-      filters << "leads.user_id in (#{@user_ids.map{|i| "'#{i}'"}.join(',')})"
+      filters << "leads.user_id in #{property_ids_sql}"
     end
     if @property_ids.present?
-      filters << "leads.property_id in (#{@property_ids.map{|i| "'#{i}'"}.join(',')})"
+      filters << "leads.property_id in #{property_ids_sql}"
     end
     return filters.map{|f| "(#{f})"}.join(" AND ")
   end
