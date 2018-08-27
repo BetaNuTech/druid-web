@@ -2,6 +2,23 @@ class Stat
   attr_reader :user_ids, :property_ids, :users, :properties, :url
   include ActionView::Helpers::DateHelper
 
+  class ActivityEntry
+    ATTRS = %w{ agent_id agent_name date description entry_type lead_id lead_name link raw_date }
+
+    attr_accessor *(ATTRS.map(&:to_sym))
+
+    def initialize(**args)
+      args.each do |key, value|
+        instance_variable_set("@#{key}", value) if ATTRS.include?(key.to_s)
+      end
+    end
+
+    def to_h
+      return ATTRS.inject({}){ |memo, obj| memo[obj] = instance_variable_get("@#{obj}"); memo }
+    end
+  end
+
+
   def initialize(user:, filters: {}, url:)
     @url = url
     @filters = filters
@@ -191,16 +208,17 @@ EOS
       }
   end
 
-  def recent_activity(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
+  def recent_activity_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
     tasks = completed_tasks(start_date: start_date, end_date: end_date)
     notes = notes_created(start_date: start_date, end_date: end_date)
     messages = messages_sent(start_date: start_date, end_date: end_date)
     messages_incoming = messages.select{|m| m.incoming?}
     messages_outgoing = messages.select{|m| m.outgoing?}
+    lead_state_audits = lead_state_changed_audits(start_date: start_date, end_date: end_date)
   end
 
   def notes_created(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
-    notes = Note.where( notable_type: 'Lead', created_at: (start_date..end_date)) 
+    notes = Note.where( notable_type: 'Lead', created_at: (start_date..end_date))
     if @user_ids.present?
       notes = notes.where(user_id: @user_ids)
     end
@@ -210,10 +228,29 @@ EOS
     return notes
   end
 
+  def notes_created_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
+    return notes_created(start_date: start_date, end_date: end_date).map{|note|
+      ActivityEntry.new(
+        entry_type: 'Note',
+        raw_date: note.created_at,
+        date: note.created_at.strftime("%h %d %I:%M%p"),
+        description: ("" % [ ]),
+        link: nil,
+        lead_name: note.notable.name,
+        agent_name: note.user.try(:name),
+        agent_id: note.user_id ,
+        lead_id: note.notable.id
+      )
+    }
+  end
+
   def completed_tasks(start_date: 48.hours.ago, end_date: DateTime.now)
     tasks = EngagementPolicyActionCompliance.
+        includes(:scheduled_action).
         where( state: [:completed, :completed_retry],
-               completed_at: (2.weeks.ago..DateTime.now))
+               completed_at: (start_date..end_date),
+               scheduled_actions: {target_type: 'Lead'}
+             )
     if @user_ids.present?
       tasks = tasks.where(user_id: @user_ids)
     end
@@ -221,6 +258,23 @@ EOS
       tasks = tasks.joins("INNER JOIN property_agents ON property_agents.user_id = engagement_policy_action_compliances.user_id AND property_agents.property_id IN #{property_ids_sql}")
     end
     return tasks
+  end
+
+  def completed_tasks_json(start_date: 48.hours.ago, end_date: DateTime.now)
+    return completed_tasks(start_date: start_date, end_date: end_date).map{|task|
+      desc = ( task.scheduled_action.try(:lead_action).try(:description) || '(Unknown Lead Action)' ) + " " + task.memo
+      ActivityEntry.new(
+        entry_type: 'Task',
+        raw_date: task.completed_at,
+        date: task.completed_at.strftime("%h %d %I:%M%p"),
+        link: "/scheduled_actions/#{task.id}/completion_form",
+        description: ( task.scheduled_action.try(:lead_action).try(:description) || '(Unknown Lead Action)' ) + " " + task.memo,
+        lead_name: task.scheduled_action.target.name,
+        lead_id: task.scheduled_action.target_id,
+        agent_name: task.user.try(:name),
+        agent_id: task.user_id
+      ).to_h
+    }
   end
 
   def messages_sent(start_date: 48.hours.ago, end_date: DateTime.now)
@@ -234,6 +288,12 @@ EOS
       messages = messages.joins("INNER JOIN property_agents ON property_agents.user_id = messages.user_id AND property_agents.property_id IN #{property_ids_sql}")
     end
     return messages
+  end
+
+  def lead_state_changed_audits(start_date: 48.hours.ago, end_date: DateTime.now)
+    audits = Audited::Audit.
+      where(auditable_type: 'Lead', created_at: start_date..end_date).
+      where("(audited_changes->'state') IS NOT NULL")
   end
 
   private
