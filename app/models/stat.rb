@@ -290,6 +290,22 @@ EOS
     return messages
   end
 
+  def messages_sent_json(start_date: 48.hours.ago, end_date: DateTime.now)
+    return messages_sent(start_date: start_date, end_date: end_date).map{|message|
+      ActivityEntry.new(
+        entry_type: 'Message',
+        raw_date: message.delivered_at,
+        date: message.delivered_at.strftime("%h %d %I:%M%p"),
+        link: "/messages/#{message.id}",
+        description: 'Correspondence with Lead',
+        lead_name: message.messageable.name,
+        lead_id: message. messageable_id,
+        agent_name: message.user.try(:name),
+        agent_id: message.user_id
+      ).to_h
+    }
+  end
+
   def lead_state_changed_audits(start_date: 48.hours.ago, end_date: DateTime.now)
     audits = Audited::Audit.
       where(auditable_type: 'Lead', created_at: start_date..end_date).
