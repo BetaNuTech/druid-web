@@ -197,8 +197,8 @@ class LeadSources extends React.Component {
           .attr("fill", d => colorScale(d.index))
           .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
           .on("mouseup", d => this.handleBarMouseUp(d))
-          .on("mouseover", this.handleMouseOver)
-          .on("mouseout", this.handleMouseOut)
+          .on("mouseover", d => this.handleMouseOver)
+          .on("mouseout", d => this.handleMouseOut)
 
     chart.selectAll("g.bargroup--values").remove()
     bargroups

@@ -22,7 +22,7 @@ class RecentActivity extends React.Component {
         <td>{d.entry_type}</td>
         <td>
           <a href={d.link} target="_blank">
-            <td>{d.description}</td>
+            {d.description}
           </a>
         </td>
       </tr>
