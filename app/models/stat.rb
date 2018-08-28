@@ -209,12 +209,12 @@ EOS
   end
 
   def recent_activity_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
-    tasks = completed_tasks(start_date: start_date, end_date: end_date)
-    notes = notes_created(start_date: start_date, end_date: end_date)
-    messages = messages_sent(start_date: start_date, end_date: end_date)
-    messages_incoming = messages.select{|m| m.incoming?}
-    messages_outgoing = messages.select{|m| m.outgoing?}
-    lead_state_audits = lead_state_changed_audits(start_date: start_date, end_date: end_date)
+    activity = []
+    activity += completed_tasks_json(start_date: start_date, end_date: end_date)
+    activity += messages_sent_json(start_date: start_date, end_date: end_date)
+    activity += lead_state_changed_audits_json(start_date: start_date, end_date: end_date)
+
+    return activity
   end
 
   def notes_created(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
@@ -310,6 +310,20 @@ EOS
     audits = Audited::Audit.
       where(auditable_type: 'Lead', created_at: start_date..end_date).
       where("(audited_changes->'state') IS NOT NULL")
+
+    if @user_ids.present? || @property_ids.present?
+      audits = audits.joins("INNER JOIN leads on audits.auditable_id = leads.id")
+      if @property_ids.present?
+        audits = audits.
+          joins("INNER JOIN property_agents ON property_agents.user_id = leads.user_id AND property_agents.property_id IN #{property_ids_sql}").
+          where(leads: {property_id: @property_ids})
+      end
+      if @user_ids.present?
+        audits = audits.where(leads: {user_id: @user_ids})
+      end
+    end
+
+    return audits
   end
 
   def lead_state_changed_audits_json(start_date: 48.hours.ago, end_date: DateTime.now)
