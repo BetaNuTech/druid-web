@@ -31,4 +31,8 @@ json.data do
   json.agent_status do
     json.data @stats.agent_status_json
   end
+
+  json.recent_activity do
+    json.data @stats.recent_activity_json
+  end
 end

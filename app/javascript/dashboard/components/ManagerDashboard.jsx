@@ -2,13 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Style from './ManagerDashboard.scss'
 import axios from 'axios'
-import SourcesStats from './SourcesStats.jsx'
-import LeadSources from './LeadSources.jsx'
-import LeadStates from './LeadStates.jsx'
-import PropertyLeads from './PropertyLeads.jsx'
-import OpenLeads from './OpenLeads.jsx'
+
 import AgentStatus from './AgentStatus.jsx'
 import Filters from './Filters.jsx'
+import LeadSources from './LeadSources.jsx'
+import LeadStates from './LeadStates.jsx'
+import OpenLeads from './OpenLeads.jsx'
+import PropertyLeads from './PropertyLeads.jsx'
+import RecentActivity from './RecentActivity.jsx'
+import SourcesStats from './SourcesStats.jsx'
 
 class ManagerDashboard extends React.Component {
   constructor(props) {
@@ -24,7 +26,8 @@ class ManagerDashboard extends React.Component {
         agent_status: { data: { series: [] } },
         lead_states: { data: { series: [ ] } },
         lead_sources: { data: { series: [ ] } },
-        property_leads: { data: { series: [ ] } }
+        property_leads: { data: { series: [ ] } },
+        recent_activity: { data: [] }
       }
     }
   }
@@ -98,6 +101,7 @@ class ManagerDashboard extends React.Component {
             xAxisLabel='Property' />
           <OpenLeads data={this.state.data.open_leads} />
           <AgentStatus data={this.state.data.agent_status} />
+          <RecentActivity data={this.state.data.recent_activity} />
         </div>
       </div>
     )
