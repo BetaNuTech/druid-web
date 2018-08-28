@@ -341,7 +341,7 @@ EOS
         agent_name: ( audit.auditable.user.try(:name) || 'No Agent' ),
         agent_id: audit.auditable.user_id
       ).to_h
-    }
+    }.compact
   end
 
   private
