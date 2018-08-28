@@ -93,7 +93,8 @@ class Stat
       FROM (
         SELECT
           lead_sources.id AS source_id,
-          concat(lead_sources.name, ' ', leads.referral) AS source_name,
+          -- concat(lead_sources.name, ' ', leads.referral) AS source_name,
+          coalesce(leads.referral, lead_sources.name) AS source_name,
           count(*) AS total_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
@@ -102,7 +103,8 @@ class Stat
       ) total_counts
       FULL OUTER JOIN (
         SELECT
-          concat(lead_sources.name, ' ', leads.referral) AS source_name,
+          -- concat(lead_sources.name, ' ', leads.referral) AS source_name,
+          coalesce(leads.referral, lead_sources.name) AS source_name,
           count(*) AS converted_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
@@ -114,8 +116,9 @@ EOS
 
     raw_result = ActiveRecord::Base.connection.execute(sql).to_a
     result = raw_result.map do |record|
+      Rails.logger.warn record.inspect
       {
-        label: record["source_name"].strip,
+        label: ( record["source_name"] || '' ).strip,
         val: {
                 Total: record["total_count"] || 0,
                 Converted: record["converted_count"] || 0
