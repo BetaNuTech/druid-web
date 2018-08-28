@@ -336,7 +336,7 @@ EOS
         description: "Lead Progressed from %s to %s" % ( audit.audited_changes["state"].map(&:humanize) rescue ['?','?']),
         lead_name: audit.auditable.name,
         lead_id: audit.auditable_id,
-        agent_name: audit.auditable.user.name,
+        agent_name: ( audit.auditable.user.try(:name) || 'No Agent' ),
         agent_id: audit.auditable.user_id
       ).to_h
     }
