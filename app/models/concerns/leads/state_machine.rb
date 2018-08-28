@@ -72,7 +72,7 @@ module Leads
 
         event :claim do
           transitions from: [ :open, :exresident, :abandoned ], to: :prospect,
-            after: ->(*args) { event_set_user(*args)}
+            after: ->(*args) { event_set_user(*args); force_complete_all_tasks(*args) }
         end
 
         event :deny do
@@ -123,6 +123,15 @@ module Leads
 
       def event_clear_user(claimant=nil)
         self.user = nil
+      end
+
+      def force_complete_all_tasks(claimant=nil)
+        if claimant.present?
+          scheduled_actions.pending.each do |action|
+            action.user_id = claimant.id
+            action.complete!
+          end
+        end
       end
 
       def set_priority_zero
