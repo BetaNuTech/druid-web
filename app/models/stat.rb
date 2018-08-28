@@ -312,6 +312,22 @@ EOS
       where("(audited_changes->'state') IS NOT NULL")
   end
 
+  def lead_state_changed_audits_json(start_date: 48.hours.ago, end_date: DateTime.now)
+    return lead_state_changed_audits(start_date: start_date, end_date: end_date).map{|audit|
+      ActivityEntry.new(
+        entry_type: 'Lead State',
+        raw_date: audit.created_at,
+        date: audit.created_at.strftime("%h %d %I:%M%p"),
+        link: "/leads/#{audit.auditable_id}",
+        description: "Progressed from %s to %s" % ( audit.audited_changes["state"].map(&:humanize) rescue ['?','?']),
+        lead_name: audit.auditable.name,
+        lead_id: audit.auditable_id,
+        agent_name: audit.auditable.user.name,
+        agent_id: audit.auditable.user_id
+      ).to_h
+    }
+  end
+
   private
 
   def property_ids_sql
