@@ -1,3 +1,3 @@
 module DruidWeb
-  VERSION = "0.5.25"
+  VERSION = "0.6.0"
 end
