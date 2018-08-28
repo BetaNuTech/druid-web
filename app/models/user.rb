@@ -70,12 +70,9 @@ class User < ApplicationRecord
   end
 
   def available_leads
-    if admin?
-      return Lead.open
-    else
-      return Lead.open.where(property_id: properties.map(&:id))
-    end
-
+    return LeadPolicy::Scope.new(self, Lead.open).
+            resolve.
+            order("leads.priority DESC, leads.created_at ASC")
   end
 
   def total_score

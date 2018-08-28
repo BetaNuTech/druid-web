@@ -1,5 +1,17 @@
 class LeadPolicy < ApplicationPolicy
 
+  class Scope < Scope
+    def resolve
+      skope = scope.order("leads.created_at ASC")
+      return case user
+              when ->(u) { u.admin? }
+                skope
+              else
+                skope.where(user_id: user.id).or(where(property_id: properties.map(&:id)))
+              end
+    end
+  end
+
   # All users can view and modify Leads
 
   def index?
