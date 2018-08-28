@@ -15,7 +15,6 @@ class RecentActivity extends React.Component {
   }
 
   activityRows = () => {
-    console.log(this.state.data)
     return(this.state.data.map(d =>
       <tr key={d.raw_date}>
         <td>{d.agent_name}</td>
