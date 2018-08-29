@@ -111,7 +111,7 @@ class EngagementPolicyScheduler
       interval: 1
     )
 
-    description = "%s [%s]" % [originator.description, 'RETRY']
+    description = "%s [%s]" % [originator.description, 'FOLLOW UP']
     action = ScheduledAction.new(
       user: originator.user,
       target: originator.target,
