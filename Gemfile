@@ -60,7 +60,7 @@ group :test do
   gem 'guard-rake', "~> 1.0", require: false
   gem 'rails-controller-testing', '~> 1.0'
   gem 'rspec-rails', '~> 3.7'
-  gem 'selenium-webdriver', '~> 3.12'
+  #gem 'selenium-webdriver', '~> 3.12'
   gem 'simplecov', '~> 0.16'
 end
 
