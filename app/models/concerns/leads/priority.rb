@@ -48,7 +48,6 @@ module Leads
         state_scores = {
           open: 5,
           prospect: 3,
-          appointment: 3,
           application: 2,
           approved: 2,
           denied: 2,

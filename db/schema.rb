@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_16_202256) do
+ActiveRecord::Schema.define(version: 2018_08_29_153438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -238,6 +238,7 @@ ActiveRecord::Schema.define(version: 2018_08_16_202256) do
     t.uuid "read_by_user_id"
     t.index ["messageable_type", "messageable_id"], name: "message_messageable"
     t.index ["state"], name: "index_messages_on_state"
+    t.index ["threadid"], name: "index_messages_on_threadid"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
@@ -304,7 +305,7 @@ ActiveRecord::Schema.define(version: 2018_08_16_202256) do
   create_table "reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.boolean "active"
+    t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

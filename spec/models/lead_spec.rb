@@ -133,13 +133,6 @@ RSpec.describe Lead, type: :model do
       expect(lead.user).to eq(agent)
     end
 
-    it "transitions from prospect to scheduled" do
-      assert lead.open?
-      lead.claim!
-      lead.schedule!
-      assert lead.appointment?
-    end
-
     it "transitions to disqualified" do
       lead.disqualify!
       assert lead.disqualified?
@@ -174,7 +167,7 @@ RSpec.describe Lead, type: :model do
       expect(lead.permitted_states).to eq([:prospect, :disqualified])
       lead.claim!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_states.sort).to eq([:appointment, :application, :abandoned, :disqualified, :open].sort)
+      expect(lead.permitted_states.sort).to eq([:application, :abandoned, :disqualified, :open].sort)
     end
 
     it "lists 'active' leads" do

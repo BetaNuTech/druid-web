@@ -25,6 +25,7 @@ class EngagementPolicyAction < ApplicationRecord
   ### Associations
   belongs_to :engagement_policy
   belongs_to :lead_action
+  has_many :scheduled_actions, dependent: :destroy
 
   ### Scopes
   scope :active, -> { where(active: true)}
