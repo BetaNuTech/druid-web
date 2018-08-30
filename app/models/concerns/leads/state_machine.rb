@@ -6,6 +6,10 @@ module Leads
     CLOSED_STATES = %w{ disqualified abandoned resident exresident }
 
     class_methods do
+      def active
+        where.not(state: CLOSED_STATES)
+      end
+
       def state_names
         Lead.aasm.states.map{|s| s.name.to_s}
       end
@@ -40,7 +44,6 @@ module Leads
       # https://github.com/aasm/aasm
       include AASM
 
-
       aasm column: :state do
         state :open, initial: true
         state :prospect
@@ -62,11 +65,13 @@ module Leads
 
         event :apply do
           transitions from: [:prospect], to: :application,
-            after: -> (*args) { apply_event_callback }
+            after: -> (*args) { apply_event_callback },
+            guard: :may_progress?
         end
 
         event :approve do
-          transitions from: [:application, :denied], to: :approved
+          transitions from: [:application, :denied], to: :approved,
+            guard: :may_progress?
         end
 
         event :claim do
@@ -79,7 +84,8 @@ module Leads
         end
 
         event :discharge do
-          transitions from: [:resident], to: :exresident
+          transitions from: [:resident], to: :exresident,
+            guard: :may_progress?
         end
 
         event :disqualify do
@@ -89,16 +95,19 @@ module Leads
 
         event :lodge do
           transitions from: [:movein], to: :resident,
-            after: ->(*args) { set_conversion_date; set_priority_zero }
+            after: ->(*args) { set_conversion_date; set_priority_zero },
+            guard: :may_progress?
         end
 
         event :move_in do
-          transitions from: [:approved], to: :movein
+          transitions from: [:approved], to: :movein,
+            guard: :may_progress?
         end
 
         event :requalify do
           transitions from: :disqualified, to: :open,
-            after: ->(*args) { event_clear_user; set_priority_low }
+            after: ->(*args) { event_clear_user; set_priority_low },
+            guard: :may_progress?
         end
 
         event :release do
@@ -106,10 +115,6 @@ module Leads
             after: ->(*args) { event_clear_user; set_priority_urgent }
         end
 
-      end
-
-      def self.active
-        where.not(state: CLOSED_STATES)
       end
 
       def event_set_user(claimant=nil)
@@ -127,6 +132,11 @@ module Leads
             action.complete!
           end
         end
+      end
+
+      # Lead is permitted to change state
+      def may_progress?
+        return all_tasks_completed?
       end
 
       def set_priority_zero

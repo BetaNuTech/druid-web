@@ -161,6 +161,8 @@ module Leads
           if Lead.compare_states(new_state, old_state) == 1
             event_name = Lead.event_name_for_transition(from: old_state, to: new_state)
             if event_name
+              # We want to progress the state even if tasks are incomplete
+              lead.ignore_incomplete_tasks = true
               lead.trigger_event(event_name: event_name)
             else
               # no event can transition the Lead

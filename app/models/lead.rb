@@ -54,6 +54,9 @@ class Lead < ApplicationRecord
   ### Enums
   enum priority: { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, _prefix: :priority
 
+  # Attributes
+  attr_accessor :ignore_incomplete_tasks
+
   ### Associations
   has_one :preference, class_name: 'LeadPreference', dependent: :destroy
   accepts_nested_attributes_for :preference
@@ -79,6 +82,10 @@ class Lead < ApplicationRecord
   end
 
   ### Instance Methods
+
+  def all_tasks_completed?
+    return( ignore_incomplete_tasks || !scheduled_actions.pending.exists? )
+  end
 
   def users_for_lead_assignment(default: nil)
     users = ( property.present? ? property.agents : User.agents ).by_name_asc
