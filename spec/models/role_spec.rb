@@ -54,13 +54,13 @@ RSpec.describe Role, type: :model do
       expect(Role.administrator).to eq(administrator_role)
     end
 
-    it "can return the operator instance" do
-      operator_role
-      expect(Role.operator).to eq(operator_role)
+    it "can return the corporate instance" do
+      corporate_role
+      expect(Role.corporate).to eq(corporate_role)
     end
-    it "can return the operator instance" do
-      operator_role
-      expect(Role.operator).to eq(operator_role)
+    it "can return the corporate instance" do
+      corporate_role
+      expect(Role.corporate).to eq(corporate_role)
     end
 
     it "can return the agent instance" do
@@ -73,8 +73,8 @@ RSpec.describe Role, type: :model do
 
     it "should compare other roles" do
       assert administrator_role == administrator_role
-      assert operator_role < administrator_role
-      assert administrator_role > operator_role
+      assert corporate_role < administrator_role
+      assert administrator_role > corporate_role
       assert administrator_role > agent_role
       assert agent_role > nil
     end
@@ -89,23 +89,23 @@ RSpec.describe Role, type: :model do
   describe "identification" do
     it "should return whether the Role is administrator" do
       assert administrator_role.administrator?
-      refute operator_role.administrator?
+      refute corporate_role.administrator?
     end
-    it "should return whether the Role is operator" do
-      assert operator_role.operator?
-      refute agent_role.operator?
+    it "should return whether the Role is corporate" do
+      assert corporate_role.corporate?
+      refute agent_role.corporate?
     end
     it "should return whether the Role is agent" do
       assert agent_role.agent?
-      refute agent_role.operator?
+      refute agent_role.corporate?
     end
     it "should return whether the Role is a type of administrator" do
-      assert operator_role.admin?
+      assert corporate_role.admin?
       assert administrator_role.admin?
       refute agent_role.admin?
     end
     it "should return whether the Role is a unprivileged user" do
-      refute operator_role.user?
+      refute corporate_role.user?
       refute administrator_role.user?
       assert agent_role.user?
     end

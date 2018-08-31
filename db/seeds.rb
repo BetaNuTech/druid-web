@@ -6,7 +6,7 @@
 # Roles
 roles = {
   administrator: "Highest level role",
-  operator: "System Administrator",
+  corporate: "System Administrator",
   manager: "Property Manager",
   agent: "Agent role"
 }

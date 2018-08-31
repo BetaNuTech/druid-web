@@ -21,8 +21,8 @@ RSpec.describe PropertyPolicy do
       expect(policy.allowed_params).to_not be_empty
     end
 
-    it "allows all params for an operator" do
-      policy = PropertyPolicy.new(operator, property)
+    it "allows all params for an corporate" do
+      policy = PropertyPolicy.new(corporate, property)
       expect(policy.allowed_params).to_not be_empty
     end
 

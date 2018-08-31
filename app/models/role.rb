@@ -22,7 +22,7 @@ class Role < ApplicationRecord
 
   HIERARCHY = [
     :administrator,
-    :operator,
+    :corporate,
     :manager,
     :agent
   ]
@@ -38,8 +38,8 @@ class Role < ApplicationRecord
     self.where(slug: 'agent').first
   end
 
-  def self.operator
-    self.where(slug: 'operator').first
+  def self.corporate
+    self.where(slug: 'corporate').first
   end
 
   def self.manager
@@ -60,8 +60,8 @@ class Role < ApplicationRecord
     slug == 'administrator'
   end
 
-  def operator?
-    slug == 'operator'
+  def corporate?
+    slug == 'corporate'
   end
 
   def manager?
@@ -73,7 +73,7 @@ class Role < ApplicationRecord
   end
 
   def admin?
-    administrator? || operator? || manager?
+    administrator? || corporate? || manager?
   end
 
   def user?

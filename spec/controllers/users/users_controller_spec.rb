@@ -34,9 +34,9 @@ RSpec.describe UsersController, type: :controller do
         expect(response).to render_template("users/index")
       end
     end
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         user = User.create! valid_attributes
         get :index, params: {}
         expect(response).to be_successful
@@ -55,9 +55,9 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "GET #show" do
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         user = User.create! valid_attributes
         get :show, params: {id: user.to_param}
         expect(response).to be_successful
@@ -84,9 +84,9 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "GET #new" do
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         get :new, params: {}
         expect(response).to be_successful
       end
@@ -101,9 +101,9 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "GET #edit" do
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         user = User.create! valid_attributes
         get :edit, params: {id: user.to_param}
         expect(response).to be_successful
@@ -120,24 +120,24 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "POST #create" do
-    describe "as an operator" do
+    describe "as an corporate" do
       describe "with valid params" do
         it "creates a new User" do
-          sign_in operator
+          sign_in corporate
           expect {
             post :create, params: {user: valid_attributes}
           }.to change(User, :count).by(1)
         end
 
         it "redirects to the created user" do
-          sign_in operator
+          sign_in corporate
           post :create, params: {user: valid_attributes}
           new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
           expect(response).to redirect_to(new_user)
         end
 
         it "assigns profile information" do
-          sign_in operator
+          sign_in corporate
           post :create, params: {user: valid_attributes}
           new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
           expect(new_user.profile).to be_a(UserProfile)
@@ -146,7 +146,7 @@ RSpec.describe UsersController, type: :controller do
       end
       describe "with invalid params" do
         it "returns a success response (i.e. to display the 'new' template)" do
-          sign_in operator
+          sign_in corporate
           post :create, params: {user: invalid_attributes}
           expect(response).to be_successful
         end
@@ -184,11 +184,11 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       describe "with valid params" do
 
         it "updates the requested user" do
-          sign_in operator
+          sign_in corporate
           user = User.create! valid_attributes
           old_pw = user.encrypted_password
           put :update, params: {id: user.to_param, user: new_attributes}
@@ -197,24 +197,24 @@ RSpec.describe UsersController, type: :controller do
         end
 
         it "redirects to the user" do
-          sign_in operator
+          sign_in corporate
           user = User.create! valid_attributes
           put :update, params: {id: user.to_param, user: valid_attributes}
           expect(response).to redirect_to(edit_user_path(user))
         end
 
         it "can change the user role" do
-          sign_in operator
+          sign_in corporate
           user = User.create! valid_attributes
           user.role = agent_role
           user.save!
           old_role = user.role_id
-          put :update, params: {id: user.to_param, user: {role_id: operator_role.id}}
+          put :update, params: {id: user.to_param, user: {role_id: corporate_role.id}}
           user.reload
         end
 
         it "cannot promote role to administrator" do
-          sign_in operator
+          sign_in corporate
           user = User.create! valid_attributes
           user.role = agent_role
           user.save!
@@ -228,7 +228,7 @@ RSpec.describe UsersController, type: :controller do
 
       describe "with invalid params" do
         it "returns a success response (i.e. to display the 'edit' template)" do
-          sign_in operator
+          sign_in corporate
           user = User.create! valid_attributes
           put :update, params: {id: user.to_param, user: invalid_attributes}
           expect(response).to be_successful
@@ -275,7 +275,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe "DELETE #destroy" do
     it "destroys the requested user" do
-      sign_in operator
+      sign_in corporate
       user = User.create! valid_attributes
       expect {
         delete :destroy, params: {id: user.to_param}
@@ -283,7 +283,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it "redirects to the users list" do
-      sign_in operator
+      sign_in corporate
       user = User.create! valid_attributes
       delete :destroy, params: {id: user.to_param}
       expect(response).to redirect_to(users_url)

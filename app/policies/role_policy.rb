@@ -32,7 +32,7 @@ class RolePolicy < ApplicationPolicy
     case user
     when ->(u) { u.administrator? }
       Role::ALLOWED_PARAMS
-    when ->(u) { u.operator? }
+    when ->(u) { u.corporate? }
       []
     when ->(u) { u.manager? }
       []

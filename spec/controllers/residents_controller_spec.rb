@@ -214,9 +214,9 @@ RSpec.describe ResidentsController, type: :controller do
 
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed" do
-        sign_in operator
+        sign_in corporate
         expect{
           put :update, params: {id: resident.id, resident: valid_new_attributes}
           resident.reload
@@ -259,9 +259,9 @@ RSpec.describe ResidentsController, type: :controller do
 
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed and delete the record" do
-        sign_in operator
+        sign_in corporate
         delete :destroy, params: {id: resident.id}
         expect(Resident.where(id: resident.id).count).to eq(0)
       end

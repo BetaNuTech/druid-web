@@ -5,7 +5,7 @@ RSpec.describe UsersHelper, type: :helper do
   describe "roles_for_select" do
     before do
       administrator
-      operator
+      corporate
       agent
     end
 
@@ -13,31 +13,31 @@ RSpec.describe UsersHelper, type: :helper do
       out = roles_for_select(user: agent, editor: administrator, value: agent.role.id)
       expect(out).to match(administrator_role.id)
       expect(out).to match(administrator_role.name)
-      expect(out).to match(operator_role.id)
-      expect(out).to match(operator_role.name)
+      expect(out).to match(corporate_role.id)
+      expect(out).to match(corporate_role.name)
       expect(out).to match(agent_role.id)
       expect(out).to match(agent_role.name)
     end
 
     it "should return all roles lower than the editor role" do
-      out = roles_for_select(user: agent, editor: operator, value: agent.role.id)
+      out = roles_for_select(user: agent, editor: corporate, value: agent.role.id)
       expect(out).to_not match(administrator_role.id)
       expect(out).to_not match(administrator_role.name)
-      expect(out).to match(operator_role.id)
-      expect(out).to match(operator_role.name)
+      expect(out).to match(corporate_role.id)
+      expect(out).to match(corporate_role.name)
       expect(out).to match(agent_role.id)
       expect(out).to match(agent_role.name)
     end
 
     it "should select the provided role" do
-      out = roles_for_select(user: agent, editor: operator, value: agent.role.id)
+      out = roles_for_select(user: agent, editor: corporate, value: agent.role.id)
       expect(out).to match(("selected=\"selected\" value=\"#{agent.role.id}\""))
     end
 
     it "should return an empty string if the editor has no role" do
-      operator.role = nil
-      operator.save
-      out = roles_for_select(user: agent, editor: operator, value: agent.role.id)
+      corporate.role = nil
+      corporate.save
+      out = roles_for_select(user: agent, editor: corporate, value: agent.role.id)
       expect(out).to be_empty
     end
 

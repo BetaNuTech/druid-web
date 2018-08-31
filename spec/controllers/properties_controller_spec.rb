@@ -30,9 +30,9 @@ RSpec.describe PropertiesController, type: :controller do
 
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         property = Property.create! valid_attributes
         get :index, params: {}, session: valid_session
         expect(response).to be_successful
@@ -51,9 +51,9 @@ RSpec.describe PropertiesController, type: :controller do
   end
 
   describe "GET #show" do
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         property = Property.create! valid_attributes
         get :show, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
@@ -71,9 +71,9 @@ RSpec.describe PropertiesController, type: :controller do
   end
 
   describe "GET #new" do
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         get :new, params: {}, session: valid_session
         expect(response).to be_successful
       end
@@ -98,16 +98,16 @@ RSpec.describe PropertiesController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
       end
 
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
@@ -138,17 +138,17 @@ RSpec.describe PropertiesController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       context "with valid params" do
         it "creates a new Property" do
-          sign_in operator
+          sign_in corporate
           expect {
             post :create, params: {property: valid_attributes}, session: valid_session
           }.to change(Property, :count).by(1)
         end
 
         it "redirects to the created property" do
-          sign_in operator
+          sign_in corporate
           post :create, params: {property: valid_attributes}, session: valid_session
           expect(response).to redirect_to(Property.last)
         end
@@ -156,7 +156,7 @@ RSpec.describe PropertiesController, type: :controller do
 
       context "with invalid params" do
         it "returns a success response (i.e. to display the 'new' template)" do
-          sign_in operator
+          sign_in corporate
           post :create, params: {property: invalid_attributes}, session: valid_session
           expect(response).to be_successful
         end
@@ -181,10 +181,10 @@ RSpec.describe PropertiesController, type: :controller do
       attributes_for(:property, name: 'foobar')
     }
 
-    describe "as an operator" do
+    describe "as an corporate" do
       context "with valid params" do
         it "updates the requested property" do
-          sign_in operator
+          sign_in corporate
           property = Property.create! valid_attributes
           expect{
             put :update, params: {id: property.to_param, property: new_attributes}, session: valid_session
@@ -193,7 +193,7 @@ RSpec.describe PropertiesController, type: :controller do
         end
 
         it "redirects to the property" do
-          sign_in operator
+          sign_in corporate
           property = Property.create! valid_attributes
           put :update, params: {id: property.to_param, property: valid_attributes}, session: valid_session
           expect(response).to redirect_to(property)
@@ -202,7 +202,7 @@ RSpec.describe PropertiesController, type: :controller do
 
       context "with invalid params" do
         it "returns a success response (i.e. to display the 'edit' template)" do
-          sign_in operator
+          sign_in corporate
           property = Property.create! valid_attributes
           put :update, params: {id: property.to_param, property: invalid_attributes}, session: valid_session
           expect(response).to be_successful
@@ -225,9 +225,9 @@ RSpec.describe PropertiesController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    describe "as an operator" do
+    describe "as an corporate" do
       it "destroys the requested property" do
-        sign_in operator
+        sign_in corporate
         property = Property.create! valid_attributes
         expect {
           delete :destroy, params: {id: property.to_param}, session: valid_session
@@ -235,7 +235,7 @@ RSpec.describe PropertiesController, type: :controller do
       end
 
       it "redirects to the properties list" do
-        sign_in operator
+        sign_in corporate
         property = Property.create! valid_attributes
         delete :destroy, params: {id: property.to_param}, session: valid_session
         expect(response).to redirect_to(properties_url)

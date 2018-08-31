@@ -34,9 +34,9 @@ RSpec.describe LeadsController, type: :controller do
   describe "GET #index" do
     include_examples "authenticated action", {params: {}, name: 'index'}
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         lead = Lead.create! valid_attributes
         get :index, params: {}
         expect(response).to be_successful
@@ -102,15 +102,15 @@ RSpec.describe LeadsController, type: :controller do
 
     include_examples "authenticated action", {params: {id: 0 }, name: 'show'}
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         get :show, params: {id: lead.to_param}
         expect(response).to be_successful
       end
 
       it "can return JSON data" do
-        sign_in operator
+        sign_in corporate
         assert(lead.preference.present?)
         get :show, params: {id: lead.to_param}, format: :json
         expect(response).to be_successful
@@ -145,9 +145,9 @@ RSpec.describe LeadsController, type: :controller do
   describe "GET #new" do
     include_examples "authenticated action", {params: {id: 0 }, name: 'new'}
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         get :new, params: {}, session: valid_session
         expect(response).to be_successful
       end
@@ -174,9 +174,9 @@ RSpec.describe LeadsController, type: :controller do
   describe "GET #edit" do
     include_examples "authenticated action", {params: {id: 0 }, name: 'edit'}
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a success response" do
-        sign_in operator
+        sign_in corporate
         lead = Lead.create! valid_attributes
         get :edit, params: {id: lead.to_param}, session: valid_session
         expect(response).to be_successful
@@ -210,10 +210,10 @@ RSpec.describe LeadsController, type: :controller do
       source
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       context "with valid params" do
         it "creates a new Lead" do
-          sign_in operator
+          sign_in corporate
           expect {
             post :create, params: {lead: valid_attributes}, session: valid_session
           }.to change(Lead, :count).by(1)
@@ -305,27 +305,27 @@ RSpec.describe LeadsController, type: :controller do
         lead = Lead.create! valid_attributes
         lead.user = agent
         lead.save!
-        put :update, params: {id: lead.to_param, lead: {user_id: operator.id}}
+        put :update, params: {id: lead.to_param, lead: {user_id: corporate.id}}
         lead.reload
-        expect(lead.user).to eq(operator)
+        expect(lead.user).to eq(corporate)
       end
 
       it "disallows Lead owner from claiming the Lead from another User" do
         sign_in agent
         lead = Lead.create! valid_attributes
-        lead.user = operator
+        lead.user = corporate
         lead.save!
         put :update, params: {id: lead.to_param, lead: {user_id: agent.id}}
         lead.reload
-        expect(lead.user).to eq(operator)
+        expect(lead.user).to eq(corporate)
       end
 
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       context "with valid params" do
         it "updates the requested lead" do
-          sign_in operator
+          sign_in corporate
           lead = Lead.create! valid_attributes
           put :update, params: {id: lead.to_param, lead: new_attributes}, session: valid_session
           lead.reload
@@ -356,9 +356,9 @@ RSpec.describe LeadsController, type: :controller do
       expect(response).to redirect_to(new_user_session_path)
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "destroys the requested lead" do
-        sign_in operator
+        sign_in corporate
         lead = Lead.create! valid_attributes
         expect {
           delete :destroy, params: {id: lead.to_param}, session: valid_session

@@ -216,7 +216,7 @@ The User model is backed by the `devise` gem. Providing numerous capabilities:
 A user may belong to one of three Roles:
 
   * Administrator: fully privilileged users
-  * Operator: site operators
+  * Corporate: Corporate Staff
   * Manager: sales agent manager
   * Agent: sales agents with limit management access
 

@@ -16,9 +16,9 @@ RSpec.shared_context "users" do
     user
   }
 
-  let(:operator) {
+  let(:corporate) {
     user = create(:user)
-    user.role = operator_role
+    user.role = corporate_role
     user.save
     user.confirm
     user

@@ -31,9 +31,9 @@ RSpec.describe ReasonsController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed" do
-        sign_in operator
+        sign_in corporate
         get :index
         expect(response).to be_successful
       end
@@ -73,9 +73,9 @@ RSpec.describe ReasonsController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed" do
-        sign_in operator
+        sign_in corporate
         get :new
         expect(response).to be_successful
       end
@@ -145,9 +145,9 @@ RSpec.describe ReasonsController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       before do
-        sign_in operator
+        sign_in corporate
       end
 
       it "should create a Reason with valid attributes" do
@@ -208,9 +208,9 @@ RSpec.describe ReasonsController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed" do
-        sign_in operator
+        sign_in corporate
         get :show, params: {id: reason.id}
         expect(response).to be_successful
       end
@@ -252,9 +252,9 @@ RSpec.describe ReasonsController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed" do
-        sign_in operator
+        sign_in corporate
         get :edit, params: {id: reason.id}
         expect(response).to be_successful
       end
@@ -310,9 +310,9 @@ RSpec.describe ReasonsController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed" do
-        sign_in operator
+        sign_in corporate
         expect{
           put :update, params: {id: reason.id, reason: updated_attributes}
           expect(response).to be_redirect
@@ -382,9 +382,9 @@ RSpec.describe ReasonsController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "should succeed" do
-        sign_in operator
+        sign_in corporate
         expect {
           delete :destroy, params: {id: reason.id}
           expect(response).to be_redirect

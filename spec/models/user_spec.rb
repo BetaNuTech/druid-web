@@ -116,26 +116,26 @@ RSpec.describe User, type: :model do
       refute agent.administrator?
     end
 
-    it "can be an operator" do
-      assert operator.operator?
-      refute agent.operator?
+    it "can be an corporate" do
+      assert corporate.corporate?
+      refute agent.corporate?
     end
 
     it "can be an agent" do
       assert agent.agent?
-      refute agent.operator?
+      refute agent.corporate?
       refute agent.administrator?
     end
 
     it "can be a type of administrator" do
       assert administrator.admin?
-      assert operator.admin?
+      assert corporate.admin?
       refute agent.admin?
     end
 
     it "can be an unprivileged user" do
       refute administrator.user?
-      refute operator.user?
+      refute corporate.user?
       assert agent.user?
     end
   end

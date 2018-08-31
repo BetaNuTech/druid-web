@@ -61,9 +61,9 @@ RSpec.describe HomeController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       before do
-        sign_in operator
+        sign_in corporate
       end
 
       describe "the navigation bar" do

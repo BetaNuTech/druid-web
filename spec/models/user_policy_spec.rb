@@ -24,16 +24,16 @@ RSpec.describe UserPolicy do
         expect(policy.allowed_params).to_not be_empty
       end
 
-      it "allows all params for an operator" do
-        policy = UserPolicy.new(operator, new_user)
+      it "allows all params for an corporate" do
+        policy = UserPolicy.new(corporate, new_user)
         expect(policy.allowed_params).to_not be_empty
       end
 
     end
 
     describe "assign_to_property?" do
-      it "allows an operator to assign to a property" do
-        policy = UserPolicy.new(operator, new_user)
+      it "allows an corporate to assign to a property" do
+        policy = UserPolicy.new(corporate, new_user)
         assert policy.assign_to_property?
       end
       it "allows an administrator to assign to a property" do

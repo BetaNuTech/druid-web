@@ -35,7 +35,7 @@ class PropertyPolicy < ApplicationPolicy
     case user
     when ->(u) { u.administrator? }
       # NOOP all valid fields allowed
-    when ->(u) { u.operator? }
+    when ->(u) { u.corporate? }
       # NOOP all valid fields allowed
     when ->(u) { u.manager? }
       # NOOP all valid fields allowed

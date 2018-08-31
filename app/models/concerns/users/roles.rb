@@ -9,8 +9,8 @@ module Users
         role.try(:administrator?)
       end
 
-      def operator?
-        role.try(:operator?)
+      def corporate?
+        role.try(:corporate?)
       end
 
       def agent?

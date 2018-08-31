@@ -34,9 +34,9 @@ RSpec.describe RolesController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "denies access" do
-        sign_in operator
+        sign_in corporate
         create(:role)
         get :index, params: {}
         expect(response).to be_redirect
@@ -70,9 +70,9 @@ RSpec.describe RolesController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "denies access" do
-        sign_in operator
+        sign_in corporate
         get :show, params: {id: role.id}
         expect(response).to be_redirect
       end
@@ -91,9 +91,9 @@ RSpec.describe RolesController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "denies access" do
-        sign_in operator
+        sign_in corporate
         get :new, params: {}
         expect(response).to be_redirect
       end
@@ -111,9 +111,9 @@ RSpec.describe RolesController, type: :controller do
       end
     end
 
-    describe "as an operator" do
+    describe "as an corporate" do
       it "returns a successful response" do
-        sign_in operator
+        sign_in corporate
         get :edit, params: {id: role.id}
         expect(response).to be_redirect
       end
@@ -170,10 +170,10 @@ RSpec.describe RolesController, type: :controller do
         end
       end
 
-      describe "as an operator" do
+      describe "as an corporate" do
         describe "with valid attributes" do
           it "should not create the record" do
-            sign_in operator
+            sign_in corporate
             expect {
               post :create, params: {role: valid_attributes}
             }.to change{Role.count}.by(0)
@@ -241,11 +241,11 @@ RSpec.describe RolesController, type: :controller do
         end
       end
 
-      describe "as an operator" do
+      describe "as an corporate" do
         describe "with valid attributes" do
           it "should not update the record" do
             role
-            sign_in operator
+            sign_in corporate
             expect {
               put :update, params: {id: role.id, role: {name: new_name}}
               role.reload
@@ -298,9 +298,9 @@ RSpec.describe RolesController, type: :controller do
         end
       end
 
-      describe "as an operator" do
+      describe "as an corporate" do
         it "should not delete the record" do
-          sign_in operator
+          sign_in corporate
           expect{
             delete :destroy, params: {id: role.id}
           }.to change{Role.count}.by(0)

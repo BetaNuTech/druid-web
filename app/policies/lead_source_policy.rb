@@ -36,7 +36,7 @@ class LeadSourcePolicy < ApplicationPolicy
     case user
     when ->(u) { u.administrator? }
       LeadSource::ALLOWED_PARAMS
-    when ->(u) { u.operator? }
+    when ->(u) { u.corporate? }
       LeadSource::ALLOWED_PARAMS
     when ->(u) { u.manager? }
       LeadSource::ALLOWED_PARAMS
