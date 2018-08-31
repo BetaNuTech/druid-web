@@ -28,8 +28,10 @@ class ScheduledAction < ApplicationRecord
 
   ### Constants
   ALLOWED_PARAMS = [
-    :user_id, :lead_action_id, :reason_id, :description,
-    :completion_message, :completion_action, :completion_retry_delay_value, :completion_retry_delay_unit,
+    :user_id, :lead_action_id, :reason_id,
+    :description, :completion_message, :completion_action,
+    :completion_retry_delay_value, :completion_retry_delay_unit,
+    :target_id, :target_type,
     { schedule_attributes: Schedulable::ScheduleSupport.param_names }
   ]
 
@@ -50,6 +52,7 @@ class ScheduledAction < ApplicationRecord
   validates :state, presence: true, inclusion: ScheduledAction.state_names
 
   ### Callbacks
+  before_save :validate_target
 
   ### Class Methods
 
@@ -83,4 +86,22 @@ class ScheduledAction < ApplicationRecord
   end
 
   private
+
+  def validate_target
+    if user && target_type.present?
+      policy = (Kernel.const_get("::#{target_type}Policy::Scope") rescue false)
+      if policy
+        if ( target == policy.new(user, target.class.where(id: target_id)).resolve.first)
+          return true
+        else
+          errors.add(:target, 'Invalid Target due to access permissions')
+          return false
+        end
+      else
+        return true
+      end
+    else
+      return true
+    end
+  end
 end

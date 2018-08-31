@@ -27,7 +27,7 @@ class ScheduledActionsController < ApplicationController
 
   # GET /scheduled_actions/new
   def new
-    @scheduled_action = ScheduledAction.new
+    @scheduled_action = ScheduledAction.new(new_scheduled_action_params)
     @scheduled_action.schedule = Schedule.new
     authorize @scheduled_action
   end
@@ -54,12 +54,13 @@ class ScheduledActionsController < ApplicationController
   def create
     @scheduled_action = ScheduledAction.new(scheduled_action_params)
     @scheduled_action.user = current_user
-    @scheduled_action.target = @lead || @property || current_user
+    @scheduled_action.target ||= @lead || current_user
     authorize @scheduled_action
 
     respond_to do |format|
       if @scheduled_action.save
-        format.html { redirect_to scheduled_actions_path, notice: 'Scheduled action was successfully created.' }
+        redirectpath = @scheduled_action.target == current_user ? scheduled_actions_path : url_for(@scheduled_action.target)
+        format.html { redirect_to redirectpath, notice: 'Scheduled action was successfully created.' }
         format.json { render :show, status: :created, location: @scheduled_action }
       else
         format.html { render :new }
@@ -74,7 +75,8 @@ class ScheduledActionsController < ApplicationController
     authorize @scheduled_action
     respond_to do |format|
       if @scheduled_action.update(scheduled_action_params)
-        format.html { redirect_to scheduled_actions_path, notice: 'Scheduled action was successfully updated.' }
+        redirectpath = @scheduled_action.target == current_user ? scheduled_actions_path : url_for(@scheduled_action.target)
+        format.html { redirect_to redirectpath, notice: 'Scheduled action was successfully updated.' }
         format.json { render :show, status: :ok, location: @scheduled_action }
       else
         format.html { render :edit }
@@ -87,9 +89,10 @@ class ScheduledActionsController < ApplicationController
   # DELETE /scheduled_actions/1.json
   def destroy
     authorize @scheduled_action
+    redirectpath = @scheduled_action.target == current_user ? scheduled_actions_path : url_for(@scheduled_action.target)
     @scheduled_action.destroy
     respond_to do |format|
-      format.html { redirect_to scheduled_actions_url, notice: 'Scheduled action was successfully destroyed.' }
+      format.html { redirect_to redirectpath, notice: 'Scheduled action was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -112,6 +115,17 @@ class ScheduledActionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def scheduled_action_params
       params.require(:scheduled_action).permit(policy(@scheduled_action || ScheduledAction).allowed_params)
+    end
+
+    def new_scheduled_action_params
+      if params.fetch(:scheduled_action,nil).present?
+        {
+          target_id: params[:scheduled_action][:target_id],
+          target_type: params[:scheduled_action][:target_type]
+        }
+      else
+        {}
+      end
     end
 
     def set_completion_action_and_message

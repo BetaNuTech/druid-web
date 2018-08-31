@@ -1,15 +1,23 @@
 <div class="row scheduled_actions" id="scheduled_actions">
   <div class="col-md-12">
-    <h2>Pending Tasks</h2>
-    <% if lead.scheduled_actions.incomplete.empty? %>
-      <p class="lead">None</p>
-    <% end %>
-    <table class="table">
-      <thead></thead>
-      <tbody>
-        <%= render collection: lead.scheduled_actions.incomplete.sorted_by_due_asc, partial: 'scheduled_action' %>
-      </tbody>
-    </table>
-
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Pending Tasks</h2>
+      </div>
+      <div class="col-md-3">
+        <p>
+          <%= link_to("Schedule a Task", new_scheduled_action_path(scheduled_action: {target_id: lead.id, target_type: 'Lead'}), {class: "btn btn-xs btn-primary"}) %>
+        </p>
+      </div>
+    </div>
   </div>
+  <% if lead.scheduled_actions.incomplete.empty? %>
+    <p class="lead">None</p>
+  <% end %>
+  <table class="table">
+    <thead></thead>
+    <tbody>
+      <%= render collection: lead.scheduled_actions.incomplete.sorted_by_due_asc, partial: 'scheduled_action' %>
+    </tbody>
+  </table>
 </div>

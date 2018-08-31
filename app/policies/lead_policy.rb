@@ -7,7 +7,7 @@ class LeadPolicy < ApplicationPolicy
               when ->(u) { u.admin? }
                 skope
               else
-                skope.where(user_id: user.id).or(where(property_id: properties.map(&:id)))
+                skope.where(user_id: user.id).or(skope.where(property_id: user.properties.map(&:id)))
               end
     end
   end

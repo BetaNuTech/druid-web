@@ -158,7 +158,7 @@ RSpec.describe Lead, type: :model do
       expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify].sort)
       lead.claim!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_state_events.sort).to eq([:abandon, :schedule, :disqualify, :release, :apply].sort)
+      expect(lead.permitted_state_events.sort).to eq([:abandon, :disqualify, :release, :apply].sort)
       lead.disqualify!
       expect(lead.permitted_state_events).to eq([:requalify])
     end

@@ -13,14 +13,16 @@
 
   <%= form.hidden_field :notable_id, id: :scheduled_action_notable_id %>
   <%= form.hidden_field :notable_type, id: :scheduled_action_notable_type %>
+  <%= form.hidden_field :target_id %>
+  <%= form.hidden_field :target_type %>
 
   <div class="fieldset_content">
     <div class="row">
       <div class="col-md-6">
-        <p>
           <strong>Subject</strong><br/>
-          Personal Task
-        </p>
+          <p class="lead">
+            <%= scheduled_action.target.try(:name) || 'Personal Task' %>
+          </p>
       </div>
     </div>
     <div class="row">

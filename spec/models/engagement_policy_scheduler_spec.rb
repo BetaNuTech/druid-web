@@ -52,52 +52,52 @@ RSpec.describe EngagementPolicyScheduler do
       expect(compliance.expires_at.to_date).to eq(schedule.date)
     end
 
-    it "should reassign ScheduledActions to a new agent" do
-      seed_engagement_policy
-      lead = create(:lead, state: initial_state )
-      lead.reload
-      lead.trigger_event(event_name: 'claim', user: agent)
-      lead.reload
+    #it "should reassign ScheduledActions to a new agent" do
+      #seed_engagement_policy
+      #lead = create(:lead, state: initial_state )
+      #lead.reload
+      #lead.trigger_event(event_name: 'claim', user: agent)
+      #lead.reload
 
-      scheduled_actions = lead.scheduled_actions
-      action = scheduled_actions.first
-      compliance = action.engagement_policy_action_compliance
-      expect(action.user).to eq(agent)
-      expect(compliance.user).to eq(agent)
+      #scheduled_actions = lead.scheduled_actions
+      #action = scheduled_actions.first
+      #compliance = action.engagement_policy_action_compliance
+      #expect(action.user).to eq(agent)
+      #expect(compliance.user).to eq(agent)
 
-      scheduler.reassign_lead_agent(lead: lead, agent: agent2)
-      lead.reload
-      scheduled_actions = lead.scheduled_actions
-      action = scheduled_actions.first
-      compliance = action.engagement_policy_action_compliance
-      expect(action.user).to eq(agent2)
-      expect(compliance.user).to eq(agent2)
-    end
+      #scheduler.reassign_lead_agent(lead: lead, agent: agent2)
+      #lead.reload
+      #scheduled_actions = lead.scheduled_actions
+      #action = scheduled_actions.first
+      #compliance = action.engagement_policy_action_compliance
+      #expect(action.user).to eq(agent2)
+      #expect(compliance.user).to eq(agent2)
+    #end
 
-    it "should reassign ScheduledActions if the Lead agent is changed" do
-      seed_engagement_policy
-      lead = create(:lead, state: initial_state )
-      lead.reload
-      lead.trigger_event(event_name: 'claim', user: agent)
-      lead.reload
+    #it "should reassign ScheduledActions if the Lead agent is changed" do
+      #seed_engagement_policy
+      #lead = create(:lead, state: initial_state )
+      #lead.reload
+      #lead.trigger_event(event_name: 'claim', user: agent)
+      #lead.reload
 
-      scheduled_actions = lead.scheduled_actions
-      action = scheduled_actions.first
-      compliance = action.engagement_policy_action_compliance
-      expect(action.user).to eq(agent)
-      expect(compliance.user).to eq(agent)
+      #scheduled_actions = lead.scheduled_actions
+      #action = scheduled_actions.first
+      #compliance = action.engagement_policy_action_compliance
+      #expect(action.user).to eq(agent)
+      #expect(compliance.user).to eq(agent)
 
-      lead.user = agent2
-      lead.save
-      lead.reload
+      #lead.user = agent2
+      #lead.save
+      #lead.reload
 
-      scheduled_actions = lead.scheduled_actions
-      action = scheduled_actions.first
-      compliance = action.engagement_policy_action_compliance
-      expect(action.user).to eq(agent2)
-      expect(compliance.user).to eq(agent2)
+      #scheduled_actions = lead.scheduled_actions
+      #action = scheduled_actions.first
+      #compliance = action.engagement_policy_action_compliance
+      #expect(action.user).to eq(agent2)
+      #expect(compliance.user).to eq(agent2)
 
-    end
+    #end
 
     it "should create retries for ScheduledActions" do
       seed_engagement_policy
