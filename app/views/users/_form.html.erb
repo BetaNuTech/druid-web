@@ -98,6 +98,10 @@
           <%= form.label "Role" %>
           <%= form.select :role_id, roles_for_select(user: @user, editor: current_user, value: @user.role_id),{}, { class: "form-control" }%>
         </div>
+        <div class="col-md-4 form-group">
+          <%= form.label "Team Role" %>
+          <%= form.select :teamrole_id, teamroles_for_select(user: @user, editor: current_user, value: @user.teamrole_id),{include_blank: true}, { class: "form-control" }%>
+        </div>
       </div>
     </fieldset>
   </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_31_162728) do
+ActiveRecord::Schema.define(version: 2018_09_04_143823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -400,6 +400,15 @@ ActiveRecord::Schema.define(version: 2018_08_31_162728) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "teamroles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_teamroles_on_slug", unique: true
+  end
+
   create_table "unit_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.boolean "active", default: true
@@ -481,9 +490,11 @@ ActiveRecord::Schema.define(version: 2018_08_31_162728) do
     t.datetime "updated_at", null: false
     t.uuid "role_id"
     t.string "timezone", default: "UTC"
+    t.uuid "teamrole_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["teamrole_id"], name: "index_users_on_teamrole_id"
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 

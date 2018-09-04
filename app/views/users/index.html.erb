@@ -16,7 +16,8 @@
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
-            <th>Role</th>
+            <th>System Role</th>
+            <th>Team Role</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -38,6 +39,7 @@
                 <% end %>
               </td>
               <td><%= user.role.try(:name) || 'None' %></td>
+              <td><%= user.teamrole.try(:name) || 'None' %></td>
               <td>
                 <%= link_to user do %><%= glyph(:show) %><% end %>&nbsp;
                 <%= link_to edit_user_path(user) do %><%= glyph(:edit) %><% end %>&nbsp;

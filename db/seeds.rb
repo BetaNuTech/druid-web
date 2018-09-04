@@ -21,6 +21,23 @@ roles.each do |name, description|
   end
 end
 
+# Team Roles
+roles = {
+  manager: 'Property Manager',
+  lead: 'Team Lead',
+  agent: 'Agent'
+}
+puts " * Creating Team Roles"
+roles.each do |name, description|
+  print "   - '#{name}' (slug: #{name}) "
+  role = Teamrole.new(name: name.capitalize, slug: name, description: description)
+  if role.save
+    puts "[OK]".green
+  else
+    puts "[FAIL] (#{role.errors.to_a})".red
+  end
+end
+
 ##
 # Lead Sources
 puts " * Creating default Lead Sources"

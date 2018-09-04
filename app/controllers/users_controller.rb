@@ -89,12 +89,18 @@ class UsersController < ApplicationController
     # Determine Allowed User params by Policy
     valid_user_params = policy(User).allowed_params
 
-    # Prevent privilege escalation to Administrator by non-Administrators
-    if ( params[:user].present? && params[:user][:role_id].present? &&
-          !current_user.administrator? &&
-          Role.where(id: params[:user][:role_id]).first.administrator? )
-      valid_user_params = valid_user_params - [:role_id]
-      logger.warn("WARNING: UsersController Prevented Role promotion of User[#{@user.try(:id) || 'NEW'}] to Administrator by User[#{current_user.id}]")
+    if @user.present?
+      # Prevent privilege escalation of Role
+      unless policy(@user).may_change_role?((params[:user][:role_id] rescue nil))
+        valid_user_params = valid_user_params - [:role_id]
+        logger.warn("WARNING: UsersController Prevented Role promotion of User[#{@user.try(:id) || 'NEW'}] by User[#{current_user.id}]")
+      end
+
+      # Prevent privilege escalation of TeamRole
+      unless policy(@user).may_change_teamrole?((params[:user][:teamrole_id] rescue nil))
+        valid_user_params = valid_user_params - [:teamrole_id]
+        logger.warn("WARNING: UsersController Prevented TeamRole promotion of User[#{@user.try(:id) || 'NEW'}] by User[#{current_user.id}]")
+      end
     end
 
     allow_params = params.require(:user).permit(*valid_user_params)

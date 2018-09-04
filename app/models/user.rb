@@ -24,6 +24,7 @@
 #  updated_at             :datetime         not null
 #  role_id                :uuid
 #  timezone               :string           default("UTC")
+#  teamrole_id            :uuid
 #
 
 class User < ApplicationRecord
@@ -36,7 +37,7 @@ class User < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :timezone]
+  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :teamrole_id, :timezone]
 
   ### Associations
   has_many :leads
