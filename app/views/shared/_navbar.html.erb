@@ -190,6 +190,14 @@
                     <% end %>
                   </li>
                   <% end %>
+                  <li role="separator" class="divider"></li>
+                  <% if policy(Team).index? %>
+                  <li>
+                    <%= link_to(teams_path) do %>
+                      <span class="glyphicon glyphicon-user"></span> Teams
+                    <% end %>
+                  </li>
+                  <% end %>
                 </ul>
               </div>
             </li> <!-- Properties -->
