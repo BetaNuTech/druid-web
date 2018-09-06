@@ -15,6 +15,7 @@
           <tr>
             <th>Name</th>
             <th>Description</th>
+            <th>Properties</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -23,6 +24,17 @@
             <tr>
               <td><strong><%= team.name %></strong></td>
               <td><%= team.description %></td>
+              <td>
+                <% if team.properties.present? %>
+                  <ul>
+                    <% team.properties.order(name: 'ASC').each do |property| %>
+                      <li><%= link_to(property.name, property_path(property)) %></li>
+                    <% end %>
+                  </ul>
+                <% else %>
+                  <p>None</p>
+                <% end %>
+              </td>
               <td>
                 <%= link_to team do %><%= glyph(:show) %><% end %>&nbsp;
                 <%= link_to edit_team_path(team) do %><%= glyph(:edit) %><% end %>&nbsp;

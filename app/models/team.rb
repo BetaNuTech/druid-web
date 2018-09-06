@@ -3,8 +3,7 @@ class Team < ApplicationRecord
   ALLOWED_PARAMS = [:name, :description]
 
   ### Associations
-  #has_many :users
-  #has_many :properties
+  has_many :properties
 
   ### Validations
   validates :name, presence: true, uniqueness: true

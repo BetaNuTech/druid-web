@@ -2,38 +2,24 @@
   <div class="row">
     <div class="col-md-8">
       <h1>Team: <%= @team.name %></h1>
+      <p class="lead"><%= @team.description %></p>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Name:</strong>
-        <%= @team.name %>
-      </p>
+    <div class="col-md-4">
+      <h3>Properties</h3>
+      <% if @team.properties.present? %>
+        <ul>
+          <% @team.properties.order(name: 'ASC').each do |property| %>
+            <li><%= link_to(property.name, property_path(property)) %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>None</p>
+      <% end %>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Description:</strong>
-        <%= @team.description %>
-      </p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Created At:</strong>
-        <%= @team.created_at %>
-      </p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Updated At:</strong>
-        <%= @team.updated_at %>
-      </p>
+    <div class="col-md-6">
+      <h3>Members</h3>
     </div>
   </div>
   <div class="row">

@@ -48,6 +48,7 @@ FactoryBot.define do
     school_district { Faker::Company.name }
     amenities { Array.new(rand(10)){Faker::Lorem.word}.join(',') }
     application_url { Faker::Internet.url }
+    team
     active true
   end
 end

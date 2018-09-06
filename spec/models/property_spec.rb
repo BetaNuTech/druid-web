@@ -201,6 +201,17 @@ RSpec.describe Property, type: :model do
         end
 
       end
+
+      describe :teams do
+        let(:team) { create(:team) }
+        let(:property) { create(:property, team: nil) }
+        it "should optionally have a team" do
+          assert(property.valid?)
+          property.team = team
+          property.save!
+          expect(property.team).to be_a(Team)
+        end
+      end
     end
 
     describe "class methods" do

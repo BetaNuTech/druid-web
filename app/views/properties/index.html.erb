@@ -15,6 +15,7 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Team</th>
             <th>Organization</th>
             <th>Contact</th>
             <th>Address</th>
@@ -26,6 +27,7 @@
           <% @properties.each do |property| %>
             <tr class="<%= property_active_table_row_class(property) %>">
               <td class="first-column"><%= property.name %></td>
+              <td><%= property.team.try(:name) || '-' %></td>
               <td><%= property.organization %></td>
               <td>
                 <%= glyph(:person) %> <%= property.contact_name %><br/>
