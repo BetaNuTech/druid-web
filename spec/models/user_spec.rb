@@ -55,6 +55,8 @@ RSpec.describe User, type: :model do
 
   describe "associations" do
     describe "property agents" do
+      before { skip "Property Agents are deprecated" }
+
       let(:property_agent) { create(:property_agent) }
 
       it "has many property agents" do
@@ -137,6 +139,35 @@ RSpec.describe User, type: :model do
       refute administrator.user?
       refute corporate.user?
       assert agent.user?
+    end
+  end
+
+  describe "belonging to a team" do
+    include_context 'team_members'
+
+    it "has a membership" do
+      team1_agent1
+      expect(team1_agent1.membership).to be_a(TeamUser)
+    end
+
+    it "has a team" do
+      team1_agent1
+      expect(team1_agent1.team).to eq(team1)
+    end
+
+    it "has many properties" do
+      team_property1; team_property2
+      expect(team1_agent1.properties.sort_by(&:id)).to eq([team_property1, team_property2].sort_by(&:id))
+    end
+
+    it "returns User records not belonging to a team" do
+      team_property1; team_property2
+      assert(User.count == 0)
+      team1_agent1
+      team1_agent2
+      nonteam_user1 = create(:user)
+      nonteam_user2 = create(:user)
+      expect(User.without_team.sort_by(&:id)).to eq([nonteam_user1, nonteam_user2].sort_by(&:id))
     end
   end
 

@@ -40,6 +40,10 @@ class Teamrole < ApplicationRecord
     self.where(slug: 'lead').first
   end
 
+  def self.none
+    self.where(slug: 'none').first
+  end
+
   ### Instance Methods
 
   def <=>(other)
@@ -59,6 +63,10 @@ class Teamrole < ApplicationRecord
 
   def lead?
     slug == 'lead'
+  end
+
+  def none?
+    slug == 'none'
   end
 
 end

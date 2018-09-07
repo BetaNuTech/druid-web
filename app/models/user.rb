@@ -33,6 +33,7 @@ class User < ApplicationRecord
   include Users::Profile
   include Users::Devise
   include Users::PropertyAgents
+  include Users::Teams
   audited
 
   ### Constants
@@ -61,7 +62,8 @@ class User < ApplicationRecord
     if first_name.nil? && last_name.nil?
       email
     else
-      [name_prefix, first_name, last_name].compact.join(' ')
+      _name = [name_prefix, first_name, last_name].compact.join(' ').strip
+      _name.empty? ? email : _name
     end
   end
 

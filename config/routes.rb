@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :teams
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
@@ -81,6 +80,12 @@ Rails.application.routes.draw do
   namespace :home do
     get 'manager_dashboard', to: 'manager_dashboard'
     get 'dashboard', to: 'dashboard'
+  end
+
+  resources :teams do
+    member do
+      post 'add_member', to: 'add_member'
+    end
   end
 
   get '/messaging/preferences', to: 'home#messaging_preferences', as: 'messaging_preferences'

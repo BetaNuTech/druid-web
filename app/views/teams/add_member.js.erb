@@ -1,0 +1,1 @@
+$("#team_memberships").append("<%= escape_javascript(render(partial: "member_form", locals: {membership: @membership, index: 1000 + rand(10000)}))%>")

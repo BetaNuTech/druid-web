@@ -15,7 +15,7 @@ class TeamUser < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :team_id, :user_id, :teamrole_id]
+  ALLOWED_PARAMS = [:id, :team_id, :user_id, :teamrole_id, :_destroy]
 
   ### Validations
   validates :user_id, uniqueness: true

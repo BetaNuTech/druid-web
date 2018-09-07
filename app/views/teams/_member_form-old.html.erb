@@ -1,0 +1,22 @@
+<div id="team_membership_<%= member_form.object&.id || rand(10000).to_s %>" class="row">
+  <div class="col-md-3">
+    <%= member_form.hidden_field :team_id %>
+    <% if member_form.object.new_record? %>
+      <%= member_form.select :user_id, team_membership_user_select(member_form.object&.user_id), {include_blank: true}, {class: 'form-control'} %>
+    <% else %>
+      <h4>
+        <%= member_form.object.user&.name %>
+      </h4>
+    <% end %>
+  </div>
+  <div class="col-md-3">
+    <%= member_form.label :teamrole_id %>
+    <%= member_form.select :teamrole_id, team_membership_teamrole_select(member_form.object&.teamrole_id), {}, {class: 'form-control'} %>
+  </div>
+  <div class="col-md-3">
+    <div class="form-check-label" style="padding-top: 2em">
+      <%= member_form.check_box :_destroy, {class: "form-check-input"}, '1','0' %>
+      <%= member_form.label :_destroy, "Remove" %>
+    </div>
+  </div>
+</div>

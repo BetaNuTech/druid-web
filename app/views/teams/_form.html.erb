@@ -4,31 +4,60 @@
       <h2><%= pluralize(team.errors.count, "error") %> prohibited this team from being saved:</h2>
 
       <ul>
-      <% team.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% team.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="fieldset_content">
-    <fieldset>
-      <div class="row">
-        <div class="col-md-8 form-group">
-          <%= form.label :name %>
-          <%= form.text_field :name, id: :team_name, class: "form-control" %>
+  <div class="row">
+    <div class="col-md-12">
+      <fieldset>
+        <div class="row">
+          <div class="col-md-8 form-group">
+            <%= form.label :name %>
+            <%= form.text_field :name, id: :team_name, class: "form-control" %>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-8 form-group">
-          <%= form.label :description %>
-          <%= form.text_area :description, id: :team_description, class: "form-control" %>
+        <div class="row">
+          <div class="col-md-8 form-group">
+            <%= form.label :description %>
+            <%= form.text_area :description, id: :team_description, class: "form-control" %>
+          </div>
         </div>
-      </div>
-    </fieldset>
+      </fieldset>
+    </div>
   </div>
 
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Submit</button>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <h3>Members</h3>
+        </div>
+        <div class="col-md-2" style="padding-top: 22px;">
+          <%= link_to("Add", add_member_team_url(team), remote: true, method: :post, class: "btn-sm btn-primary") %>
+        </div>
+      </div>
+      <div class="row">
+        <div id="team_memberships" class="col-md-12">
+        <%= form.fields_for :memberships, team.memberships do |member_form| %>
+          <%#= render partial: "member_form-old", locals: {member_form: member_form} %>
+          <%= render partial: "member_form", locals: {membership: member_form.object, index: member_form.options[:child_index]} %>
+        <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <br/>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <%= link_to('Cancel', team_path(team), class: 'btn btn-xs btn-info') %>
+      </div>
+    </div>
   </div>
 <% end %>

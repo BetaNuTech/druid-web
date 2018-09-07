@@ -12,7 +12,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def edit?
-    create?
+    create? || record.role_for(user)&.manager?
   end
 
   def update?
@@ -27,16 +27,27 @@ class TeamPolicy < ApplicationPolicy
     create?
   end
 
+  def assign_membership?
+    user.administrator? || user.corporate? || record.role_for(user)&.manager?
+  end
+
+  def add_member?
+    assign_membership?
+  end
+
   def allowed_params
     valid_params = []
     valid_team_params = Team::ALLOWED_PARAMS
-    valid_memberships_params = [{membership_attributes: TeamUser::ALLOWED_PARAMS }]
+    valid_memberships_params = [{memberships_attributes: TeamUser::ALLOWED_PARAMS }]
     return case
-    when (user.administrator? || user.corporate?)
-      valid_params = valid_team_params + valid_memberships_params
-    when user.manager?
+    when edit?
+      valid_params = valid_team_params
+      if assign_membership?
+        valid_params += valid_memberships_params
+      end
     else
       # NOOP
+      # No params allowed
     end
     return valid_params
   end

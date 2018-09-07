@@ -3,8 +3,12 @@ RSpec.shared_context "team_members" do
   include_context "roles"
   include_context "teamroles"
 
-  let(:team1) { create(:team) }
+  let(:team1) { team = create(:team) }
+  let(:team2) { create(:team) }
   let(:team_property1) { create(:property, team: team1) }
+  let(:team_property2) { create(:property, team: team1) }
+  let(:team2_property3) { create(:property, team: team2) }
+
   let(:team1_agent1) {
     user = create(:user)
     user.role = agent_role

@@ -7,7 +7,7 @@ module Teams
       has_many :members, through: :memberships, source: :user, class_name: 'User'
 
       accepts_nested_attributes_for :memberships, allow_destroy: true,
-        reject_if: ->(attrs){ attrs['property_id'].blank? }
+        reject_if: ->(attrs){ attrs['user_id'].blank? }
 
       def member?(user)
         return members.where(id: user.id).exists?

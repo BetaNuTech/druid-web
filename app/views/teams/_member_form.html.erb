@@ -1,0 +1,22 @@
+<div id="team_membership_<%= index %>" class="row">
+  <div class="col-md-3">
+    <%= hidden_field_tag "team[memberships_attributes][#{index}][team_id]", membership.team_id %>
+    <%= label_tag "User" %>
+    <% if membership.new_record? %>
+      <%= select_tag "team[memberships_attributes][#{index}][user_id]", team_membership_user_select(membership&.user_id), {include_blank: true, class: 'form-control'} %>
+    <% else %>
+        <%= hidden_field_tag  "team[memberships_attributes][#{index}][user_id]", membership.user_id %>
+      <h4><%= membership.user&.name %></h4>
+    <% end %>
+  </div>
+  <div class="col-md-3">
+    <%= label_tag "Role" %>
+    <%= select_tag "team[memberships_attributes][#{index}][teamrole_id]", team_membership_teamrole_select(membership&.teamrole_id), {class: 'form-control'} %>
+  </div>
+  <div class="col-md-3">
+    <div class="form-check-label" style="padding-top: 2em">
+      <%= check_box_tag "team[memberships_attributes][#{index}][_destroy]", "1", false, {class: "form-check-input"} %>
+      <%= label_tag "Remove" %>
+    </div>
+  </div>
+</div>

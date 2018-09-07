@@ -22,8 +22,8 @@
       <h3>Members</h3>
       <% if @team.members.exists? %>
         <ul>
-          <% @team.members.order(name: 'ASC').each do |member| %>
-            <li><%= member.name %></li>
+          <% @team.members.sort_by(&:name).each do |member| %>
+            <li><%= member.name %> (<%= @team.teamrole_for(member)&.name %>)</li>
           <% end %>
         </ul>
       <% else %>
@@ -34,9 +34,9 @@
   <div class="row">
     <div class="col-md-12">
       <% if policy(@team).edit? %>
-        <%= link_to 'Edit', edit_team_path(@team) %> |
+        <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-sm btn-primary' %>
       <% end %>
-      <%= link_to 'Back', teams_path %>
+      <%= link_to 'Back', teams_path, class: 'btn btn-xs btn-info' %>
     </div>
   </div>
 </div>

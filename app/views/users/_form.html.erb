@@ -4,134 +4,138 @@
       <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
       <ul>
-      <% user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="fieldset_content">
-    <fieldset>
-      <legend>Login Information</legend>
+  <div class="row">
+    <div class="col-md-12">
+      <fieldset>
+        <legend>Login Information</legend>
 
-      <div class="row">
-        <div class="col-md-8 form-group">
-          <%= form.label :email %>
-          <%= form.text_field :email, class: "form-control" %>
-          <% unless user.new_record? %>
-            <small class="bg-info">
-              ( Note that changes here are only applied after email confirmation )
-            </small>
-          <% end %>
+        <div class="row">
+          <div class="col-md-8 form-group">
+            <%= form.label :email %>
+            <%= form.text_field :email, class: "form-control" %>
+            <% unless user.new_record? %>
+              <small class="bg-info">
+                ( Note that changes here are only applied after email confirmation )
+              </small>
+            <% end %>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :timezone %>
-          <%= form.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Pacific Time (US & Canada)" }, {class: "form-control"} %>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <%= form.label :timezone %>
+            <%= form.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Pacific Time (US & Canada)" }, {class: "form-control"} %>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :password %>
-          <%= form.password_field :password, class: "form-control" %>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <%= form.label :password %>
+            <%= form.password_field :password, class: "form-control" %>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :password_confirmation %>
-          <%= form.password_field :password_confirmation, class: "form-control" %>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <%= form.label :password_confirmation %>
+            <%= form.password_field :password_confirmation, class: "form-control" %>
+          </div>
         </div>
-      </div>
-    </fieldset>
+      </fieldset>
+    </div>
   </div>
 
-  <div class="fieldset_content">
-    <fieldset>
-      <legend>Profile</legend>
-      <%= form.fields_for :profile do |profile_form| %>
-        <div class="row">
-           <div class="col-md-2 form-group">
-             <%= profile_form.label "Prefix" %>
-             <%= profile_form.text_field :name_prefix, {class: "form-control"} %>
-           </div>
-           <div class="col-md-4 form-group">
-             <%= profile_form.label "First Name" %>
-             <%= profile_form.text_field :first_name, {class: "form-control"} %>
-           </div>
-           <div class="col-md-4 form-group">
-             <%= profile_form.label "Last Name" %>
-             <%= profile_form.text_field :last_name, {class: "form-control"} %>
-           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-3 form-group">
-            <%= profile_form.label :office_phone %>
-            <%= profile_form.text_field :office_phone, {type: "tel", class: "form-control" } %>
+  <div class="row">
+    <div class="col-md-12">
+      <fieldset>
+        <legend>Profile</legend>
+        <%= form.fields_for :profile do |profile_form| %>
+          <div class="row">
+            <div class="col-md-2 form-group">
+              <%= profile_form.label "Prefix" %>
+              <%= profile_form.text_field :name_prefix, {class: "form-control"} %>
+            </div>
+            <div class="col-md-4 form-group">
+              <%= profile_form.label "First Name" %>
+              <%= profile_form.text_field :first_name, {class: "form-control"} %>
+            </div>
+            <div class="col-md-4 form-group">
+              <%= profile_form.label "Last Name" %>
+              <%= profile_form.text_field :last_name, {class: "form-control"} %>
+            </div>
           </div>
-          <div class="col-md-3 form-group">
-            <%= profile_form.label :cell_phone %>
-            <%= profile_form.text_field :cell_phone, {type: "tel", class: "form-control" } %>
+          <div class="row">
+            <div class="col-md-3 form-group">
+              <%= profile_form.label :office_phone %>
+              <%= profile_form.text_field :office_phone, {type: "tel", class: "form-control" } %>
+            </div>
+            <div class="col-md-3 form-group">
+              <%= profile_form.label :cell_phone %>
+              <%= profile_form.text_field :cell_phone, {type: "tel", class: "form-control" } %>
+            </div>
+            <div class="col-md-3 form-group">
+              <%= profile_form.label :fax %>
+              <%= profile_form.text_field :fax, {type: "tel", class: "form-control" } %>
+            </div>
           </div>
-          <div class="col-md-3 form-group">
-            <%= profile_form.label :fax %>
-            <%= profile_form.text_field :fax, {type: "tel", class: "form-control" } %>
+          <div class="row">
+            <div class="col-md-12">
+              <%= profile_form.label :notes %>
+              <%= profile_form.text_area :notes, {class: "form-control"} %>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <%= profile_form.label :notes %>
-            <%= profile_form.text_area :notes, {class: "form-control"} %>
-          </div>
-        </div>
-      <% end %>
-    </fieldset>
+        <% end %>
+      </fieldset>
+    </div>
   </div>
 
   <% if policy(user).assign_to_role? %>
-  <div class="fieldset_content">
-    <fieldset>
-      <legend>Role and Access</legend>
-      <div class="row">
-        <div class="col-md-4 form-group">
-          <%= form.label "Role" %>
-          <%= form.select :role_id, roles_for_select(user: @user, editor: current_user, value: @user.role_id),{}, { class: "form-control" }%>
-        </div>
-        <div class="col-md-4 form-group">
-          <%= form.label "Team Role" %>
-          <%= form.select :teamrole_id, teamroles_for_select(user: @user, editor: current_user, value: @user.teamrole_id),{include_blank: true}, { class: "form-control" }%>
-        </div>
+    <div class="row">
+      <div class="col-md-12">
+        <fieldset>
+          <legend>Role and Access</legend>
+          <div class="row">
+            <div class="col-md-4 form-group">
+              <%= form.label "Role" %>
+              <%= form.select :role_id, roles_for_select(user: @user, editor: current_user, value: @user.role_id),{}, { class: "form-control" }%>
+            </div>
+          </div>
+        </fieldset>
       </div>
-    </fieldset>
-  </div>
+    </div>
   <% end %>
 
   <% if policy(user).assign_to_property? %>
-  <div class="fieldset_content">
-    <fieldset>
-      <legend>Properties</legend>
-      <%= form.fields_for :property_agents do |agent_form| %>
-        <div id="user_property_agent_<%= agent_form.object.id || rand(10000).to_s %>" class="row">
-          <div class="col-md-6">
-            <%= agent_form.hidden_field :user_id %>
-            <%= agent_form.label :property %>
-            <%= agent_form.select :property_id,
+    <div class="row">
+      <div class="col-md-12">
+        <fieldset>
+          <legend>Properties</legend>
+          <%= form.fields_for :property_agents do |agent_form| %>
+            <div id="user_property_agent_<%= agent_form.object.id || rand(10000).to_s %>" class="row">
+              <div class="col-md-6">
+                <%= agent_form.hidden_field :user_id %>
+                <%= agent_form.label :property %>
+                <%= agent_form.select :property_id,
                   options_from_collection_for_select(Property.active.order("name asc"), 'id', 'name', agent_form.object.property_id),
                   {include_blank: true}, {class: "form-control"} %>
-            <div class="form-check-label">
-              <%= agent_form.check_box :_destroy, {class: "form-check-input"}, '1','0' %>
-              <%= agent_form.label :_destroy, "Remove" %>
+                <div class="form-check-label">
+                  <%= agent_form.check_box :_destroy, {class: "form-check-input"}, '1','0' %>
+                  <%= agent_form.label :_destroy, "Remove" %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <%= agent_form.label :title %>
+                <%= agent_form.text_field :title, {class: "form-control"} %>
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <%= agent_form.label :title %>
-            <%= agent_form.text_field :title, {class: "form-control"} %>
-          </div>
-        </div>
-      <% end %>
-    </fieldset>
-  </div>
+          <% end %>
+        </fieldset>
+      </div>
+    </div>
   <% end %>
 
   <div class="form-group">

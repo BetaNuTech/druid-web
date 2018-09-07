@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: [:show, :edit, :update, :destroy]
+  before_action :set_team, only: [:show, :edit, :update, :destroy, :add_member]
   after_action :verify_authorized
 
   # GET /teams
@@ -69,6 +69,11 @@ class TeamsController < ApplicationController
       format.html { redirect_to teams_url, notice: 'Team was removed.' }
       format.json { head :no_content }
     end
+  end
+
+  def add_member
+    authorize @team
+    @membership = @team.memberships.build
   end
 
   private
