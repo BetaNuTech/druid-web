@@ -25,6 +25,7 @@
 #  school_district :string
 #  amenities       :text
 #  application_url :string
+#  team_id         :uuid
 #
 
 FactoryBot.define do

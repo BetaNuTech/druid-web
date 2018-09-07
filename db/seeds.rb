@@ -25,7 +25,8 @@ end
 roles = {
   manager: 'Property Manager',
   lead: 'Team Lead',
-  agent: 'Agent'
+  agent: 'Agent',
+  none: 'None'
 }
 puts " * Creating Team Roles"
 roles.each do |name, description|

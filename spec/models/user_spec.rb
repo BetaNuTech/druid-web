@@ -24,7 +24,6 @@
 #  updated_at             :datetime         not null
 #  role_id                :uuid
 #  timezone               :string           default("UTC")
-#  teamrole_id            :uuid
 #
 
 require 'rails_helper'

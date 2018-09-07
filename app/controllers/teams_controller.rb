@@ -25,6 +25,7 @@ class TeamsController < ApplicationController
   # GET /teams/1/edit
   def edit
     authorize @team
+    @team.members += [@team.members.build]
   end
 
   # POST /teams

@@ -1,6 +1,19 @@
+# == Schema Information
+#
+# Table name: teams
+#
+#  id          :uuid             not null, primary key
+#  name        :string
+#  description :text
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe Team, type: :model do
+  include_context "team_members"
+
   describe "validations" do
     let(:team) { build(:team)}
 
@@ -31,6 +44,22 @@ RSpec.describe Team, type: :model do
       property1; property2; property3; property4; property5;
       expect(team.properties.sort_by(&:id)).to eq([property2, property3].sort_by(&:id))
       expect(team2.properties.sort_by(&:id)).to eq([property4, property5].sort_by(&:id))
+    end
+
+    describe "team with members" do
+      before do
+        team1_agent1; team1_agent2; team1_lead1
+      end
+
+      it "has many members" do
+        team1.reload
+        expect(team1.members.map(&:id).sort).to eq(
+          [team1_agent1, team1_agent2, team1_lead1].map(&:id).sort)
+      end
+
+      it "can get a member's teamrole" do
+        expect(team1.teamrole_for(team1_lead1)).to eq(lead_teamrole)
+      end
     end
   end
 end
