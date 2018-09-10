@@ -45,8 +45,6 @@ class Property < ApplicationRecord
     class_name: 'PropertyListing',
     dependent: :destroy
   accepts_nested_attributes_for :listings, reject_if: proc{|attributes| attributes['code'].blank? && attributes['description'].blank? }
-  has_many :property_agents, dependent: :destroy
-  has_many :agents, through: :property_agents, class_name: 'User', source: :user
   has_many :unit_types, dependent: :destroy
   has_many :housing_units, class_name: 'Unit', dependent: :destroy
   has_many :residents, dependent: :destroy
@@ -94,21 +92,6 @@ class Property < ApplicationRecord
 
   def occupancy_rate
     (housing_units.occupied.count.to_f / [ housing_units.count || 1].min.to_f).round(1) * 100.0
-  end
-
-  def primary_agent
-    # TODO REFACTOR
-    property_agents.first.try(:user)
-  end
-
-  # Return the first active manager user with an active assignment to the Property
-  def managers
-    User.
-      includes(:role, property_agents: [:property]).
-      where(properties: {id: self.id},
-            property_agents: {active: true},
-            roles: {slug: Role.manager.slug}).
-      order('property_agents.created_at ASC')
   end
 
   def address(line_break="\n\r")

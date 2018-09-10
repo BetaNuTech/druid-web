@@ -14,15 +14,15 @@ module Users
       end
 
       def team_managers
-        includes(:membership).where(team_users: {teamrole_id: Teamrole.manager.id})
+        includes(:membership).where(team_users: {teamrole_id: Teamrole.manager&.id})
       end
 
       def team_leads
-        includes(:membership).where(team_users: {teamrole_id: Teamrole.lead.id})
+        includes(:membership).where(team_users: {teamrole_id: Teamrole.lead&.id})
       end
 
       def team_agents
-        includes(:membership).where(team_users: {teamrole_id: Teamrole.agent.id})
+        includes(:membership).where(team_users: {teamrole_id: Teamrole.agent&.id})
       end
 
     end

@@ -167,50 +167,36 @@ RSpec.describe Property, type: :model do
       end
     end
 
-    describe "property_agents" do
-      describe "manager" do
+    describe :teams do
+      include_context "team_members"
 
-        include_context "users"
-
-        let(:property) { create(:property) }
-        let(:agent) {
-          user = create(:user)
-          user.property_agents = [PropertyAgent.new(user: user, property: property)]
-          user.role = agent_role
-          user.save!
-          user
-        }
-        let(:agent2) {
-          user = create(:user)
-          user.property_agents = [PropertyAgent.new(user: user, property: property)]
-          user.role = manager_role
-          user.save!
-          user
-        }
-        let(:agent3) {
-          user = create(:user)
-          user.property_agents = [PropertyAgent.new(user: user, property: property)]
-          user.role = manager_role
-          user.save!
-          user
-        }
-        let(:agents) { agent3; agent2; agent }
-
-        it "should return the agents with a manager role" do
-          agents
-          expect(property.managers).to eq([agent3, agent2])
-        end
-
+      let(:team) { create(:team) }
+      let(:property) { create(:property, team: nil) }
+      it "should optionally have a team" do
+        assert(property.valid?)
+        property.team = team
+        property.save!
+        expect(property.team).to be_a(Team)
       end
 
-      describe :teams do
-        let(:team) { create(:team) }
-        let(:property) { create(:property, team: nil) }
-        it "should optionally have a team" do
-          assert(property.valid?)
-          property.team = team
+      describe "with a team" do
+        it "should have agents" do
+          team1_agent1; team1_agent2
+          property.team = team1
           property.save!
-          expect(property.team).to be_a(Team)
+          expect(property.agents.to_a.sort_by(&:id)).to eq([team1_agent1, team1_agent2].sort_by(&:id))
+        end
+        it "should have managers" do
+          team1_manager1; team1_manager2
+          property.team = team1
+          property.save!
+          expect(property.managers.to_a.sort_by(&:id)).to eq([team1_manager1, team1_manager2].sort_by(&:id))
+        end
+        it "should have teamleads" do
+          team1_lead1; team1_lead2
+          property.team = team1
+          property.save!
+          expect(property.teamleads.to_a.sort_by(&:id)).to eq([team1_lead1, team1_lead2].sort_by(&:id))
         end
       end
     end

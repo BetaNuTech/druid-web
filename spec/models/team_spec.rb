@@ -78,7 +78,7 @@ RSpec.describe Team, type: :model do
     it "returns the team leads" do
       team1_agent1; team1_lead1; team1_lead2; team1_manager1; team1_manager2
       team1.reload
-      expect(team1.leads.first).to eq(team1_lead1)
+      expect(team1.teamleads.first).to eq(team1_lead1)
     end
 
   end

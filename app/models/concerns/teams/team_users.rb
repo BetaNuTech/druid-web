@@ -18,16 +18,15 @@ module Teams
       end
 
       def managers
-        members.team_managers.order("created_at ASC")
+        members.team_managers.order("team_users.created_at ASC")
       end
 
-      def leads
-        members.team_leads.order("created_at ASC")
+      def teamleads
+        members.team_leads.order("team_users.created_at ASC")
       end
 
       def agents
-        memberships.where(teamrole_id: Teamrole.lead.id).
-          order("created_at ASC").first.try(:user)
+        members.team_agents.order("team_users.created_at ASC")
       end
 
     end
