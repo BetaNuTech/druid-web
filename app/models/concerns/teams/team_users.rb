@@ -16,6 +16,20 @@ module Teams
       def teamrole_for(user)
         memberships.where(user_id: user.id).first.teamrole
       end
+
+      def managers
+        members.team_managers.order("created_at ASC")
+      end
+
+      def leads
+        members.team_leads.order("created_at ASC")
+      end
+
+      def agents
+        memberships.where(teamrole_id: Teamrole.lead.id).
+          order("created_at ASC").first.try(:user)
+      end
+
     end
   end
 end

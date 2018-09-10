@@ -30,7 +30,21 @@ RSpec.shared_context "team_members" do
     user.reload
     user
   }
+  let(:team1_lead2) {
+    user = create(:user)
+    user.role = agent_role
+    TeamUser.create!(team: team1, user: user, teamrole: lead_teamrole)
+    user.reload
+    user
+  }
   let(:team1_manager1) {
+    user = create(:user)
+    user.role = manager_role
+    TeamUser.create!(team: team1, user: user, teamrole: manager_teamrole)
+    user.reload
+    user
+  }
+  let(:team1_manager2) {
     user = create(:user)
     user.role = manager_role
     TeamUser.create!(team: team1, user: user, teamrole: manager_teamrole)

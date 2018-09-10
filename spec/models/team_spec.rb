@@ -62,4 +62,24 @@ RSpec.describe Team, type: :model do
       end
     end
   end
+
+  describe "helper methods" do
+    it "returns a users team role" do
+      team1_agent1
+      expect(team1.teamrole_for(team1_agent1)).to eq(Teamrole.agent)
+    end
+
+    it "returns the team managers" do
+      team1_agent1; team1_lead1; team1_manager1; team1_manager2
+      team1.reload
+      expect(team1.managers.first).to eq(team1_manager1)
+    end
+
+    it "returns the team leads" do
+      team1_agent1; team1_lead1; team1_lead2; team1_manager1; team1_manager2
+      team1.reload
+      expect(team1.leads.first).to eq(team1_lead1)
+    end
+
+  end
 end
