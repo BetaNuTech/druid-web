@@ -25,7 +25,6 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     authorize @user
-    @user.property_agents  += [@user.property_agents.build]
   end
 
   # POST /users

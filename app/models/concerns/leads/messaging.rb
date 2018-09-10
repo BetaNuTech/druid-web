@@ -10,7 +10,7 @@ module Leads
           "lead_name" => name,
           'lead_floorplan' => preference.try(:unit_type_name),
           "agent_name" => user.try(:name),
-          "agent_title" => user.try(:title_for_property, property),
+          "agent_title" => user.try(:team_title),
           "property_name" => property.try(:name),
           "property_address" => property.try(:address),
           "property_address_html" => property.try(:address_html),

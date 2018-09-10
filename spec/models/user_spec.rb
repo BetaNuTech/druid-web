@@ -54,27 +54,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "associations" do
-    describe "property agents" do
-      before { skip "Property Agents are deprecated" }
-
-      let(:property_agent) { create(:property_agent) }
-
-      it "has many property agents" do
-        user = property_agent.user
-        expect(user.property_agents.count).to eq(1)
-      end
-
-      it "has many properties" do
-        user = property_agent.user
-        expect(user.properties.count).to eq(1)
-      end
-
-      it "returns all Users associated with a property" do
-        property_agent
-        expect(User.agents.count).to eq(1)
-      end
-    end
-
     describe "profile" do
       let(:user) { create(:user, profile: build(:user_profile)) }
 

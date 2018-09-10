@@ -6,6 +6,10 @@ module Users
       has_one :membership, class_name: 'TeamUser', dependent: :destroy
       has_one :team, through: :membership
       has_many :properties, through: :team
+
+      def team_title
+        membership.try(:teamrole).try(:name)
+      end
     end
 
     class_methods do

@@ -32,12 +32,12 @@ class User < ApplicationRecord
   include Users::Roles
   include Users::Profile
   include Users::Devise
-  include Users::PropertyAgents
+  #include Users::PropertyAgents # DEPRECATED
   include Users::Teams
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :teamrole_id, :timezone]
+  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :timezone]
 
   ### Associations
   has_many :leads
