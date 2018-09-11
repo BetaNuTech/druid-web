@@ -17,19 +17,31 @@
             <th>Name</th>
             <th>Description</th>
             <th>Properties</th>
+            <th>Members</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <% @teams.each do |team| %>
             <tr>
-              <td><strong><%= team.name %></strong></td>
+              <td class="first-column"><%= team.name %></td>
               <td><%= team.description %></td>
               <td>
                 <% if team.properties.present? %>
                   <ul>
                     <% team.properties.order(name: 'ASC').each do |property| %>
                       <li><%= link_to(property.name, property_path(property)) %></li>
+                    <% end %>
+                  </ul>
+                <% else %>
+                  <p>None</p>
+                <% end %>
+              </td>
+              <td>
+                <% if team.members.present? %>
+                  <ul>
+                    <% team.members.sort_by(&:name).each do |member| %>
+                      <li><%= link_to(member.name, user_path(member)) %> (<%= team.teamrole_for(member).name %>)</li>
                     <% end %>
                   </ul>
                 <% else %>
