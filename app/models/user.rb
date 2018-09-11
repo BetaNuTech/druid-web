@@ -32,7 +32,6 @@ class User < ApplicationRecord
   include Users::Roles
   include Users::Profile
   include Users::Devise
-  #include Users::PropertyAgents # DEPRECATED
   include Users::Teams
   audited
 

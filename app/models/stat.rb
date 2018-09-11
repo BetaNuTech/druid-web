@@ -24,8 +24,10 @@ class Stat
     @filters = filters
     @user_ids = get_user_ids(filters.fetch(:user_ids, []))
     @property_ids = get_property_ids(filters.fetch(:property_ids, []))
+    @team_ids = get_team_ids(filters.fetch(:team_ids,[]))
     @users = User.find(@user_ids)
     @properties = Property.find(@property_ids)
+    @teams = Team.find(@team_ids)
   end
 
   def json_url
@@ -33,29 +35,35 @@ class Stat
   end
 
   def filters_json
-    agent_properties = @properties.any? ? @properties.map(&:id) : Property.order("name ASC")
+    team_properties = @teams.exists? ? Property.where(team_id: @team_ids).order("name ASC") : Property.order("name ASC")
+    filter_properties = @properties.exists? ? @properties : team_properties
+    users = User.includes(:properties).where(properties: {id: filter_properties.map(&:id)}).order("users.last_name ASC")
     {
       options: {
         _index: ['users', 'properties'],
         users: {
           label: 'Agents',
           param: 'user_ids',
-          options:
-            PropertyAgent.where(property_id: agent_properties).
-              map(&:user).uniq.
-              sort{|x,y| x.last_name <=> y.last_name}.
-              map{|u| { label: u.name, val: u.id}}
+          options: users.map{|u| { label: u.name, val: u.id}}
         },
         properties: {
           label: 'Properties',
           param: 'property_ids',
-          options: Property.order('name ASC').map{|p|
+          options: team_properties.map{|p|
             {label: p.name, val: p.id}
           }
         },
+        teams: {
+          label: 'Teams',
+          param: 'team_ids',
+          options: Team.order("name ASC").map{|t|
+            {label: t.name, val: t.id}
+          }
+        }
       },
       users: @users.map{|user| {label: user.name, val: user.id}},
-      properties: @properties.map{|property| {label: property.name, val: property.id}}
+      properties: @properties.map{|property| {label: property.name, val: property.id}},
+      teams: @teams.map{|team| {label: team.name, val: team.id}}
     }
   end
 
@@ -350,8 +358,13 @@ EOS
 
   private
 
+  def property_ids_for_filter
+    return @property_ids.present? ? @property_ids :
+      ( @teams.exists? ? Property.where(team_id: @team_ids).order("name ASC").map(&:id) : [] )
+  end
+
   def property_ids_sql
-    return "(#{@property_ids.map{|i| "'#{i}'"}.join(',')})"
+    return "(#{property_ids_for_filter.map{|i| "'#{i}'"}.join(',')})"
   end
 
   def user_ids_sql
@@ -363,7 +376,7 @@ EOS
     if @user_ids.present?
       filters << "leads.user_id in #{user_ids_sql}"
     end
-    if @property_ids.present?
+    if property_ids_for_filter.present?
       filters << "leads.property_id in #{property_ids_sql}"
     end
     return filters.map{|f| "(#{f})"}.join(" AND ")
@@ -373,8 +386,8 @@ EOS
     if @user_ids.present?
       skope = skope.where(user_id: @user_ids)
     end
-    if @property_ids.present?
-      skope = skope.where(property_id: @property_ids)
+    if property_ids_for_filter.present?
+      skope = skope.where(property_id: property_ids_for_filter)
     end
     return skope
   end
@@ -385,6 +398,10 @@ EOS
 
   def get_property_ids(properties)
     Array(properties).map{|p| p.is_a?(Property) ? p.id : p }
+  end
+
+  def get_team_ids(teams)
+    Array(teams).map{|t| t.is_a?(Team) ? t.id : t }
   end
 
 end
