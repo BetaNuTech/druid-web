@@ -11,3 +11,18 @@ div.team_membership_control {
     color: black !important;
   }
 }
+
+#team-header {
+  padding: 1em 1em 0.3em 1em;
+  position: relative;
+  top: -10px;
+
+  h2 { margin: 0; }
+  h4 { margin: 0; display: inline;}
+  h5 { margin: 0; display: inline;}
+
+  .btn-xs {
+    position: relative;
+    top: -2px;
+  }
+}
