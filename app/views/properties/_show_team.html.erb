@@ -2,17 +2,7 @@
   <div class="col-md-12">
     <h2>
       Team:
-      <%= @property.team.try(:name) || 'None' %>
+      <%= @property.team.present? ? link_to(@property.team.name, team_path(@property.team)) : 'None' %>
     </h2>
-    <% if @property.team.present? %>
-      <ul>
-        <% @property.team.members.each do |member| %>
-          <li><%= link_to(member.name, user_path(member)) %> (<%= member.team_title %>)</li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p>None</p>
-    <% end %>
-
   </div>
 </div>

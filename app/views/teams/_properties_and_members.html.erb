@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-md-4">
+    <h4>Team Properties</h4>
+    <ul>
+      <% team.properties.each do |property| %>
+        <li><%= link_to(property.name, property_path(property)) %></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="col-md-4">
+    <h4>Team Members</h4>
+    <ul>
+      <% team.members.each do |member| %>
+        <li><%= link_to(member.name, user_path(member)) %> (<%= member.team_title %>)</li></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

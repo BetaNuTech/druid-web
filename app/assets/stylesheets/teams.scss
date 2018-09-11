@@ -1,3 +1,13 @@
 // Place all the styles related to the Teams controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+div.team_membership_control {
+  padding: 0.25em;
+
+  h4 {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: black !important;
+  }
+}

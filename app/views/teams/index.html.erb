@@ -41,7 +41,7 @@
                 <% if team.members.present? %>
                   <ul>
                     <% team.members.sort_by(&:name).each do |member| %>
-                      <li><%= link_to(member.name, user_path(member)) %> (<%= team.teamrole_for(member).name %>)</li>
+                      <li><%= link_to(member.name, user_path(member)) %> (<%= member.team_title %>)</li>
                     <% end %>
                   </ul>
                 <% else %>

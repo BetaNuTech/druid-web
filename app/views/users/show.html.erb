@@ -121,24 +121,13 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
-      <h3>Properties</h3>
-      <% if @user.properties.empty? %>
-        <p>
-          None
-        </p>
-      <% end %>
-      <ul>
-        <% @user.properties.each do |property| %>
-          <li><%= link_to(property.name, property_path(property)) %></li>
-        <% end %>
-      </ul>
-    </div>
+    <h3>Team: <%= @user.team.try(:name) %></h3>
+    <%= render partial: 'teams/properties_and_members', locals: {team: @user.team} %>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <%= link_to 'Edit', edit_user_path(@user) %> |
-      <%= link_to 'Back', users_path %>
+      <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-md btn-primary" %>
+      <%= link_to 'Back', users_path, class: "btn btn-xs btn-info" %>
     </div>
   </div>
 </div>
