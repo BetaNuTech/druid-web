@@ -1,7 +1,6 @@
 class EngagementPoliciesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_engagement_policy, only: [:show, :edit, :update, :destroy]
-  before_action :set_property, only: [:show, :edit, :update, :destroy]
   after_action :verify_authorized
 
   # GET /engagement_policies

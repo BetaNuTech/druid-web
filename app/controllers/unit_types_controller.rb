@@ -1,6 +1,5 @@
 class UnitTypesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_property
   before_action :set_unit_type, only: [:show, :edit, :update, :destroy]
   after_action :verify_authorized
 
@@ -78,12 +77,7 @@ class UnitTypesController < ApplicationController
       @unit_type = UnitType.find(params[:id])
     end
 
-    def set_property
-      @property ||= Property.where(id: (params[:property_id] || 0)).first
-    end
-
     def unit_type_scope
-      set_property
       @property.present? ? @property.unit_types : UnitType
     end
 

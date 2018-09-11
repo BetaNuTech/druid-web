@@ -78,7 +78,6 @@ class UnitsController < ApplicationController
     end
 
     def unit_scope
-      set_property
       @property.present? ? @property.housing_units : Unit
     end
 

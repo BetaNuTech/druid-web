@@ -78,7 +78,6 @@ class ResidentsController < ApplicationController
     end
 
     def resident_scope
-      set_property
       @property.present? ? @property.residents : Resident
     end
 
