@@ -1,12 +1,12 @@
-<% if current_user.team.present? %>
+<% if @current_team.present? %>
   <div id="team-header" class="row bg-info">
     <div class="col-md-2 lead">
-      <%= link_to(team_path(current_user.team)) do %>
-        Team: <%= current_user.team.name %>
+      <%= link_to(team_path(@current_team)) do %>
+        Team: <%= @current_team.name %>
       <% end %>
   </div> 
   <div class="col-md-10">
-    <% current_user.team.properties.each do |property| %>
+    <% @current_team.properties.each do |property| %>
       <div class="row">
         <div class="col-md-2">
           <h4><%= link_to(property.name, property_path(property)) %></h4>
