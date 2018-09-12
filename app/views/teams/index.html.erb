@@ -49,6 +49,7 @@
                 <% end %>
               </td>
               <td>
+                <%= link_to(glyph(:object_align_bottom), stats_manager_path(team_ids: [team.id])) %>
                 <%= link_to team do %><%= glyph(:show) %><% end %>&nbsp;
                 <%= link_to edit_team_path(team) do %><%= glyph(:edit) %><% end %>&nbsp;
                 <%= link_to team, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
