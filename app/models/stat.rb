@@ -1,5 +1,5 @@
 class Stat
-  attr_reader :user_ids, :property_ids, :users, :properties, :url
+  attr_reader :user_ids, :property_ids, :team_ids, :users, :properties, :teams, :url
   include ActionView::Helpers::DateHelper
 
   class ActivityEntry
@@ -19,7 +19,7 @@ class Stat
   end
 
 
-  def initialize(user:, filters: {}, url:)
+  def initialize(filters: {}, url: "/stats/manager")
     @url = url
     @filters = filters
     @user_ids = get_user_ids(filters.fetch(:user_ids, []))
@@ -35,12 +35,12 @@ class Stat
   end
 
   def filters_json
-    team_properties = @teams.exists? ? Property.where(team_id: @team_ids).order("name ASC") : Property.order("name ASC")
-    filter_properties = @properties.exists? ? @properties : team_properties
-    users = User.includes(:properties).where(properties: {id: filter_properties.map(&:id)}).order("users.last_name ASC")
-    {
+    team_properties = @teams.present? ? Property.where(team_id: @team_ids).order("name ASC") : Property.order("name ASC")
+    filter_properties = @properties.present? ? @properties : team_properties
+    users = User.includes(:properties).where(properties: {id: filter_properties.map(&:id)}).sort_by(&:last_name)
+    return {
       options: {
-        _index: ['users', 'properties'],
+        _index: ['users', 'properties', 'teams'],
         users: {
           label: 'Agents',
           param: 'user_ids',
@@ -191,33 +191,29 @@ EOS
   end
 
   def agent_status_json
-    return {series: []}
+    skope = User.includes(:properties)
+    if @user_ids.present?
+      skope = skope.where(id: @user_ids)
+    end
+    if filter_by_property?
+      skope = skope.includes(:properties).where(properties: {id: property_ids_for_filter})
+    end
 
-    # TODO REFACTOR
-    #
-    #skope = User.includes(:properties)
-    #if @user_ids.present?
-      #skope = skope.where(id: @user_ids)
-    #end
-    #if @property_ids.present?
-      #skope = skope.where(property_agents: {property_id: @property_ids})
-    #end
-
-    #return {
-        #series: skope.map do |user|
-          #{
-            #id: user.id,
-            #label: user.name,
-            #total_score: user.score,
-            #weekly_score: user.weekly_score,
-            #tasks_completed: user.tasks_completed.count,
-            #tasks_pending: user.tasks_pending.count,
-            #claimed_leads: user.claimed_leads.count,
-            #closed_leads: user.closed_leads.count,
-            #url: "/users/#{user.id}"
-          #}
-        #end
-      #}
+    return {
+        series: skope.map do |user|
+          {
+            id: user.id,
+            label: user.name,
+            total_score: user.score,
+            weekly_score: user.weekly_score,
+            tasks_completed: user.tasks_completed.count,
+            tasks_pending: user.tasks_pending.count,
+            claimed_leads: user.claimed_leads.count,
+            closed_leads: user.closed_leads.count,
+            url: "/users/#{user.id}"
+          }
+        end
+      }
   end
 
   def recent_activity_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
@@ -234,8 +230,8 @@ EOS
     if @user_ids.present?
       notes = notes.where(user_id: @user_ids)
     end
-    if @property_ids.present?
-      notes = notes.joins("INNER JOIN property_agents ON property_agents.user_id = notes.user_id AND property_agents.property_id IN #{property_ids_sql}")
+    if filter_by_property?
+      notes = notes.joins("INNER JOIN team_users ON team_users.user_id = notes.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )")
     end
     return notes
   end
@@ -266,8 +262,11 @@ EOS
     if @user_ids.present?
       tasks = tasks.where(user_id: @user_ids)
     end
-    if @property_ids.present?
-      tasks = tasks.joins("INNER JOIN property_agents ON property_agents.user_id = engagement_policy_action_compliances.user_id AND property_agents.property_id IN #{property_ids_sql}")
+    if property_ids_for_filter.present?
+      tasks = tasks.joins("INNER JOIN team_users ON team_users.user_id = engagement_policy_action_compliances.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )")
+    end
+    if @team_ids.present?
+
     end
     return tasks
   end
@@ -296,8 +295,8 @@ EOS
     if @user_ids.present?
       messages = messages.where(user_id: @user_ids)
     end
-    if @property_ids.present?
-      messages = messages.joins("INNER JOIN property_agents ON property_agents.user_id = messages.user_id AND property_agents.property_id IN #{property_ids_sql}")
+    if filter_by_property?
+      messages = messages.joins("INNER JOIN team_users ON team_users.user_id = messages.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )")
     end
     return messages
   end
@@ -323,11 +322,11 @@ EOS
       where(auditable_type: 'Lead', created_at: start_date..end_date).
       where("(audited_changes->'state') IS NOT NULL")
 
-    if @user_ids.present? || @property_ids.present?
+    if @user_ids.present? || filter_by_property?
       audits = audits.joins("INNER JOIN leads on audits.auditable_id = leads.id")
-      if @property_ids.present?
+      if filter_by_property?
         audits = audits.
-          joins("INNER JOIN property_agents ON property_agents.user_id = leads.user_id AND property_agents.property_id IN #{property_ids_sql}").
+          joins("INNER JOIN team_users ON team_users.user_id = leads.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )").
           where(leads: {property_id: @property_ids})
       end
       if @user_ids.present?
@@ -358,9 +357,13 @@ EOS
 
   private
 
+  def filter_by_property?
+    return (@property_ids.present? || @team_ids.present?)
+  end
+
   def property_ids_for_filter
     return @property_ids.present? ? @property_ids :
-      ( @teams.exists? ? Property.where(team_id: @team_ids).order("name ASC").map(&:id) : [] )
+      ( @teams.present? ? Property.where(team_id: @team_ids).order("name ASC").map(&:id) : [] )
   end
 
   def property_ids_sql
@@ -369,6 +372,10 @@ EOS
 
   def user_ids_sql
     return "(#{@user_ids.map{|i| "'#{i}'"}.join(',')})"
+  end
+
+  def team_ids_sql
+    return "(#{@team_ids.map{|i| "'#{i}'"}.join(',')})"
   end
 
   def filter_sql
