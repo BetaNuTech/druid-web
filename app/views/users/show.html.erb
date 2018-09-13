@@ -121,8 +121,8 @@
     </div>
   </div>
   <div class="row">
-    <h3>Team: <%= @user.team.try(:name) %></h3>
-    <%= render partial: 'teams/properties_and_members', locals: {team: @user.team} %>
+    <h3>Team: <%= @user.team.try(:name) || 'None' %></h3>
+    <%= render( partial: 'teams/properties_and_members', locals: {team: @user.team} ) if @user.team.present? %>
   </div>
   <div class="row">
     <div class="col-md-12">
