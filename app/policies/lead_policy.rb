@@ -2,13 +2,14 @@ class LeadPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      skope = scope.order("leads.created_at ASC")
+      skope = scope
       return case user
-              when ->(u) { u.admin? }
-                skope
-              else
-                skope.where(user_id: user.id).or(skope.where(property_id: user.properties.map(&:id)))
-              end
+        when ->(u) { u.admin? }
+          skope
+        else
+          skope.where(user_id: user.id).
+            or(skope.where(property_id: user.properties.select(:id).map(&:id)))
+        end
     end
   end
 
