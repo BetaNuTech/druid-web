@@ -12,7 +12,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def edit?
-    create? || record.role_for(user)&.manager?
+    create? || record.teamrole_for(user)&.manager?
   end
 
   def update?
@@ -28,7 +28,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def assign_membership?
-    user.administrator? || user.corporate? || record.role_for(user)&.manager?
+    user.administrator? || user.corporate? || record.teamrole_for(user)&.manager?
   end
 
   def add_member?

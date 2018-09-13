@@ -14,7 +14,7 @@ module Teams
       end
 
       def teamrole_for(user)
-        memberships.where(user_id: user.id).first.teamrole
+        memberships.where(user_id: user.id).first&.teamrole
       end
 
       def managers

@@ -13,7 +13,8 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
-    user === record || user.admin?
+    user === record || 
+      (user.admin? && ( user.role >= record.role ))
   end
 
   def update?
@@ -21,7 +22,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
-    edit?
+    edit? || ( record.team.present? && record.team == user.team )
   end
 
   def destroy?
