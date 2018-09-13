@@ -24,7 +24,7 @@ end
 # Team Roles
 roles = {
   manager: 'Property Manager',
-  lead: 'Team Lead',
+  lead: 'Talent Resource Manager',
   agent: 'Agent',
   none: 'None'
 }
