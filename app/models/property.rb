@@ -31,6 +31,7 @@
 class Property < ApplicationRecord
   ### Class Concerns/Extensions
   include Properties::Team
+  include Properties::PhoneNumbers
   audited
 
   ### Constants
@@ -41,9 +42,7 @@ class Property < ApplicationRecord
 
   ## Associations
   has_many :leads
-  has_many :listings,
-    class_name: 'PropertyListing',
-    dependent: :destroy
+  has_many :listings, class_name: 'PropertyListing', dependent: :destroy
   accepts_nested_attributes_for :listings, reject_if: proc{|attributes| attributes['code'].blank? && attributes['description'].blank? }
   has_many :unit_types, dependent: :destroy
   has_many :housing_units, class_name: 'Unit', dependent: :destroy
@@ -68,6 +67,15 @@ class Property < ApplicationRecord
                property_listings: {code: code, active: true}).
         first.try(:property)
     end
+  end
+
+  def self.with_phone(phone)
+    variants = Cdr.number_variants(phone)
+    property_match_id = Property.select(:id, :phone).all.map do |property|
+              {id: property.id, phone: property.phone, variants: Cdr.number_variants(property.phone)}
+            end.select do |property|
+              property[:variants].any?{|pnv| variants.include?(pnv)}
+            end.first.fetch(:id, nil)
   end
 
   ## Instance Methods

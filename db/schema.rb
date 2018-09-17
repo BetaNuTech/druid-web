@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_10_210640) do
+ActiveRecord::Schema.define(version: 2018_09_17_171001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -252,6 +252,19 @@ ActiveRecord::Schema.define(version: 2018_09_10_210640) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id", "notable_id", "notable_type"], name: "index_notes_on_user_id_and_notable_id_and_notable_type"
+  end
+
+  create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "number"
+    t.string "prefix", default: "1"
+    t.integer "category", default: 0
+    t.integer "availability", default: 0
+    t.uuid "phoneable_id"
+    t.string "phoneable_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phoneable_type", "phoneable_id"], name: "index_phone_numbers_on_phoneable_type_and_phoneable_id"
   end
 
   create_table "properties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

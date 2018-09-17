@@ -62,5 +62,17 @@ module Leads
       end
     end
 
+    class_methods do
+
+      def from_recent_calls(start_date:, end_date:)
+        Cdr.possible_leads.map do |incoming_call|
+          Lead.new(
+          
+          )
+        end
+      end
+
+    end
+
   end
 end

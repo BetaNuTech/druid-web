@@ -201,6 +201,27 @@ RSpec.describe Property, type: :model do
       end
     end
 
+    describe "phone numbers" do
+      let(:property) { create(:property) }
+      let(:phone1) { build(:phone_number) }
+
+      it "should have phone_numbers" do
+        property.phone_numbers = [phone1]
+        property.save!
+        property.reload
+        phone1.reload
+        expect(property.phone_numbers).to eq([phone1])
+      end
+
+      it "should have number variants" do
+        property.phone_numbers = [phone1]
+        property.save!
+        property.reload
+        expect(property.number_variants.size).to eq(4)
+
+      end
+    end
+
     describe "class methods" do
       describe "find_by_code_and_source" do
         let(:property1) { create(:property) }

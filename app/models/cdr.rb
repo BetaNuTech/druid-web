@@ -49,13 +49,16 @@ class Cdr < CdrdbModel
   }
 
   ### Class Methods
-  
-  def self.for_leads(start_date:, end_date:)
-    variants = self.number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
-    self.select(:id, :calldate, :src, :dst, :recordingfile).
-      where("recordingfile IS NOT null AND recordingfile != ''").
+
+  def self.for_leads(start_date:, end_date:, recordings: true)
+    variants = number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
+    skope = select(:id, :calldate, :src, :dst, :recordingfile).
       where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
       where("src IN (:src) AND dst IN (:dst)", { dst: variants, src: variants})
+    if recordings
+      skope = skope.where("recordingfile IS NOT null AND recordingfile != ''")
+    end
+    return skope
   end
 
   def self.lead_recordings(start_date:, end_date:)
@@ -64,12 +67,26 @@ class Cdr < CdrdbModel
       sort
   end
 
-  def self.non_leads(start_date:, end_date:)
-    variants = self.number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
-    self.select(:id, :calldate, :src, :dst, :recordingfile).
-      where("recordingfile IS NOT null AND recordingfile != ''").
+  def self.non_leads(start_date:, end_date:, recordings: true)
+    variants = number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
+    skope = select(:id, :calldate, :src, :dst, :recordingfile).
       where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
       where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: variants, src: variants})
+    if recordings
+      skope = skope.where("recordingfile IS NOT null AND recordingfile != ''")
+    end
+    return skope
+  end
+
+  def self.possible_leads(start_date:, end_date:)
+    variants = number_variants(Lead.select(:phone1, :phone2).all.
+                                 map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq) +
+                ["Anonymous", "Restricted"]
+    skope = select(:id, :calldate, :did, :src, :dst, :dcontext, :clid, :cnam).
+      where("dcontext IN (:contexts)", {contexts: ['from-did-direct']}).
+      where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
+      where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: variants, src: variants}).
+      group(:cnam)
   end
 
   def self.non_lead_recordings(start_date:, end_date:)
@@ -101,9 +118,11 @@ class Cdr < CdrdbModel
     # Strip non-digits
     out = ( number || '' ).to_s.gsub(/[^0-9]/,'')
 
-    # Remove country code
-    if (out[0] == '1')
-      out = out[1..-1]
+    if out.length > 10
+      # Remove country code
+      if (out[0] == '1')
+        out = out[1..-1]
+      end
     end
 
     # Truncate number to 10 digits
