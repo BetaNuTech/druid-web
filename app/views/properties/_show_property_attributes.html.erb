@@ -105,13 +105,13 @@
     <div class="col-md-4">
       <p>
         <strong>Phone:</strong>
-        <%= @property.phone %>
+        <%= number_to_phone(@property.phone) if @property.phone.present? %>
       </p>
     </div>
     <div class="col-md-4">
       <p>
         <strong>Fax:</strong>
-        <%= @property.fax %>
+        <%= number_to_phone(@property.fax) if @property.fax.present? %>
       </p>
     </div>
   </div>

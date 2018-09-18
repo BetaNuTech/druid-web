@@ -32,8 +32,8 @@
               <td>
                 <%= glyph(:person) %> <%= property.contact_name %><br/>
                 <%= glyph(:email) %> <%= property.email || '-' %><br/>
-                <%= glyph(:phone) %> <%= property.phone || '-' %><br/>
-                <%= glyph(:fax) %> <%= property.fax || '-' %><br/>
+                <%= glyph(:phone) %> <%= property.phone.present? ? number_to_phone(property.phone) : '-' %><br/>
+                <%= glyph(:fax) %> <%= property.fax.present? ? number_to_phone(property.fax) : '-' %><br/>
               </td>
               <td>
                 <p class="glyph-indent">

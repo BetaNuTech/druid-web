@@ -65,11 +65,29 @@ module Leads
     class_methods do
 
       def from_recent_calls(start_date:, end_date:)
-        Cdr.possible_leads.map do |incoming_call|
+        Cdr.possible_leads(start_date: start_date, end_date: end_date).map do |incoming_call|
+          property = Property.find_by_phone_number(incoming_call.did)
+          next unless property.present?
+
+          #old_lead = property.leads.where(phone1: incoming_call.src).or(where(phone2: incoming_call.src))
+          #next if old_lead
+
+          first_name, last_name = incoming_call.cnam.split(' ')
+          notes = "AUTO-GENERATED: Call from %s (%s) at %s" % [incoming_call.cnam, incoming_call.src, incoming_call.calldate]
+
           Lead.new(
-          
+            property: property,
+            source: LeadSource.default,
+            referral: 'Call',
+            phone1: incoming_call.src,
+            first_name: first_name,
+            last_name: last_name,
+            notes: notes,
+            priority: 'high',
+            first_comm: incoming_call.calldate,
+            last_comm: incoming_call.calldate
           )
-        end
+        end.compact
       end
 
     end

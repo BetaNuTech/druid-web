@@ -75,6 +75,9 @@ class Lead < ApplicationRecord
 	validates :email, presence: true, unless: ->(lead){ lead.phone1.present? || lead.phone2.present? }
   validates :remoteid, uniqueness: { scope: :property_id, case_sensitive: false }, if: -> {remoteid.present?}
 
+  ### Callbacks
+  before_validation :format_phones
+
   ### Class Methods
 
   def self.for_agent(agent)
@@ -119,5 +122,10 @@ class Lead < ApplicationRecord
   end
 
   private
+
+  def format_phones
+    self.phone1 = PhoneNumber.format_phone(self.phone1) if self.phone1.present?
+    self.phone2 = PhoneNumber.format_phone(self.phone2) if self.phone2.present?
+  end
 
 end

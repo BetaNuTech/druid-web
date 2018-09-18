@@ -52,10 +52,13 @@ class Property < ApplicationRecord
   ### Validations
   validates :name, presence: true, uniqueness: true
 
-  ## Scopes
+  ### Scopes
   scope :active, -> { where(active: true) }
 
-  ## Class Methods
+  ### Callbacks
+
+  ### Class Methods
+  before_validation :format_phones
 
   # Lookup by ID or PropertyListing code
   def self.find_by_code_and_source(code:, source_id: nil)
@@ -111,6 +114,13 @@ class Property < ApplicationRecord
 
   def address_html
     address("<BR/>")
+  end
+
+  private
+
+  def format_phones
+    self.phone = PhoneNumber.format_phone(self.phone) if self.phone.present?
+    self.fax = PhoneNumber.format_phone(self.fax) if self.fax.present?
   end
 
 end
