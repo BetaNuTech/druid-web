@@ -1,0 +1,13 @@
+<div class="row">
+  <h3>Marketing Phone Numbers</h3>
+
+  <% @property.phone_numbers.each do |phone| %>
+    <div class="row">
+      <div class="col-md-12">
+        <h4 style="display: inline;"><%= phone.name %>:</h4>
+        +<%= phone.prefix %> <%= number_to_phone(phone.number) %>
+      </div>
+    </div>
+  <% end %>
+
+</div>

@@ -3,7 +3,7 @@ module Properties
     extend ActiveSupport::Concern
 
     included do
-      has_many :phone_numbers, as: :phoneable, dependent: :destroy
+      has_many :phone_numbers, -> { order(name: :asc) }, as: :phoneable, dependent: :destroy 
       accepts_nested_attributes_for :phone_numbers, allow_destroy: true, reject_if: proc{|attributes| attributes['number'].blank? }
 
       def number_variants

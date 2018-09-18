@@ -15,5 +15,6 @@
 //= require jquery/dist/jquery
 //= require bootstrap/dist/js/bootstrap
 //= require ckeditor/init
+//= require nested_form_fields
 //= require_tree .
 

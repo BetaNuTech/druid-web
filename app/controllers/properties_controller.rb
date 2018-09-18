@@ -21,11 +21,13 @@ class PropertiesController < ApplicationController
   def new
     @property = Property.new
     authorize @property
+    @property.phone_numbers += [ @property.phone_numbers.build(category: 'work') ]
   end
 
   # GET /properties/1/edit
   def edit
     authorize @property
+    @property.phone_numbers += [ @property.phone_numbers.build(category: 'work') ]
   end
 
   # POST /properties

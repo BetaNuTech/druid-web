@@ -18,7 +18,7 @@ class PhoneNumber < ApplicationRecord
   ### Class Concerns/Extensions
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :name, :number, :prefix, :category, :availability]
+  ALLOWED_PARAMS = [:id, :name, :number, :prefix, :category, :availability, :_destroy]
 
   ### Enums
   enum category: {cell: 0, home: 1, work: 2, fax: 3}

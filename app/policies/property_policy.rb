@@ -30,7 +30,8 @@ class PropertyPolicy < ApplicationPolicy
 
   def allowed_params
     valid_property_params = Property::ALLOWED_PARAMS
-    valid_listing_params = [{listings_attributes: PropertyListing::ALLOWED_PARAMS}]
+    valid_listing_params = [ { listings_attributes: PropertyListing::ALLOWED_PARAMS } ]
+    valid_phone_number_params = [ { phone_numbers_attributes: PhoneNumber::ALLOWED_PARAMS } ]
     case user
     when ->(u) { u.administrator? }
       # NOOP all valid fields allowed
@@ -42,13 +43,15 @@ class PropertyPolicy < ApplicationPolicy
       valid_property_params = []
       valid_listing_params = []
       valid_property_agent_params = []
+      valid_phone_number_params = []
     else
       valid_property_params = []
       valid_listing_params = []
       valid_property_agent_params = []
+      valid_phone_number_params = []
     end
 
-    return(valid_property_params + valid_listing_params)
+    return(valid_property_params + valid_listing_params + valid_phone_number_params)
 
   end
 

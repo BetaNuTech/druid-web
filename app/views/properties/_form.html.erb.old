@@ -139,34 +139,40 @@
     <fieldset>
       <legend>Marketing Phone Numbers</legend>
       <div class="row">
-        <div class="col-md-4">
-          <%= form.add_nested_fields_link :phone_numbers, 'Add Number',
-            class: 'btn btn-sm btn-primary', role: 'button',
-            data: { insert_into: 'property_phone_numbers' } %>
-        </div>
-      </div>
-      <div class="row">
         <div class="col-md-12" id="property_phone_numbers">
-          <%= form.nested_fields_for :phone_numbers, wrapper_options: { class: 'property_phone_number_entry' } do |phone_form| %>
-            <%= phone_form.hidden_field :id %>
-            <%= phone_form.hidden_field :category, value: 'work' %>
-            <div class="col-md-3">
-              <%= phone_form.label :name %>
-              <%= phone_form.text_field :name, class: "form-control" %>
-            </div>
-            <div class="col-md-1">
-              <%= phone_form.label :prefix %>
-              <%= phone_form.number_field :prefix, class: "form-control" %>
-            </div>
-            <div class="col-md-2">
-              <%= phone_form.label :number %>
-              <%= phone_form.telephone_field :number, class: "form-control" %>
-            </div>
-            <div class="col-md-2" style="padding-top: 2em;">
-              <%= phone_form.check_box :_destroy %>
-              <%= phone_form.label :_destroy, 'Remove' %>
-            </div>
+
+          <% property.phone_numbers.each do |phone| %>
+            <%= form.fields_for :phone_numbers, property.phone_numbers do |phone_form| %>
+              <%= phone_form.hidden_field :id %>
+              <div class="row">
+                <div class="col-md-3">
+                  <%= phone_form.label :name %>
+                  <%= phone_form.text_field :name, class: "form-control" %>
+                </div>
+                <div class="col-md-1">
+                  <%= phone_form.label :prefix %>
+                  <%= phone_form.number_field :prefix, class: "form-control" %>
+                </div>
+                <div class="col-md-2">
+                  <%= phone_form.label :number %>
+                  <%= phone_form.telephone_field :number, class: "form-control" %>
+                </div>
+                <div class="col-md-2">
+                  <%= phone_form.label :category %>
+                  <%= phone_form.select :category, select_phone_number_category(phone_form.object.category), {}, class: "form-control" %>
+                </div>
+                <div class="col-md-2">
+                  <%= phone_form.label :availability %>
+                  <%= phone_form.select :availability, select_phone_number_availability(phone_form.object.availability), {}, class: "form-control" %>
+                </div>
+                <div class="col-md-2" style="padding-top: 2em;">
+                  <%= phone_form.check_box :_destroy %>
+                  <%= phone_form.label :_destroy, "Remove" %>
+                </div>
+              </div>
+            <% end %>
           <% end %>
+
         </div>
       </div>
     </fieldset>
