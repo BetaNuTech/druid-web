@@ -70,19 +70,21 @@ module Leads
         call_leads = Cdr.possible_leads(start_date: start_date, end_date: end_date)
 
         incoming_dids = call_leads.map{|l| l.did}
+        incoming_sources = call_leads.map{|l| l.src}
         incoming_properties = Property.find_all_by_phone_numbers(incoming_dids)
         incoming_properties_numbers = incoming_properties.map{|ip| [ip, ip.all_numbers]}
+        incoming_old_leads = Lead.where(phone1: incoming_sources).or(where(phone2: incoming_sources)).to_a
 
         call_leads.map do |incoming_call|
+          next if incoming_old_leads.any?{|ol| [ol.phone, ol.phone2].includes?(incoming_call.src)}
+
           property = incoming_properties_numbers.
             select{|ipn| ipn[1].include?(incoming_call.did)}.first.try(:first)
           next unless property.present?
 
-          #old_lead = property.leads.where(phone1: incoming_call.src).or(where(phone2: incoming_call.src))
-          #next if old_lead
 
           first_name, last_name = incoming_call.cnam.split(' ')
-          notes = "AUTO-GENERATED: Call from %s (%s) at %s [CDR:%s]" % [incoming_call.cnam, incoming_call.src, incoming_call.calldate, incoming_call.id]
+          notes = "Incoming Call from %s (%s) at %s [CDR:%s]" % [incoming_call.cnam, incoming_call.src, incoming_call.calldate, incoming_call.id]
 
           Lead.new(
             property: property,
