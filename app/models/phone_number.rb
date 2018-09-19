@@ -35,7 +35,9 @@ class PhoneNumber < ApplicationRecord
 
   ### Validations
   validates :number, presence: true
-  validates :name, presence: true, uniqueness: {scope: [:phoneable_id, :phoneable_type]}
+  validates :name,
+    presence: true,
+    uniqueness: {scope: [:phoneable_id, :phoneable_type]}
 
   ### Callbacks
   before_validation :format_number

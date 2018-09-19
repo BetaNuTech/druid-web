@@ -72,14 +72,6 @@ class Property < ApplicationRecord
     end
   end
 
-  def self.with_phone(phone)
-    variants = Cdr.number_variants(phone)
-    property_match_id = Property.select(:id, :phone).all.map do |property|
-              {id: property.id, phone: property.phone, variants: Cdr.number_variants(property.phone)}
-            end.select do |property|
-              property[:variants].any?{|pnv| variants.include?(pnv)}
-            end.first.fetch(:id, nil)
-  end
 
   ## Instance Methods
 

@@ -246,13 +246,13 @@ RSpec.describe Lead, type: :model do
       let(:lead1) { create(:lead,
                            first_name: 'first_name_1', last_name: 'last_name_1',
                            referral: 'referral_1', notes: 'notes_1',
-                           phone1: 'phone1_1', phone2: 'phone2_1', fax: 'fax_1',
+                           phone1: '5555555555', phone2: 'phone2_1', fax: 'fax_1',
                            email: 'email_1', id_number: 'id_number_1'
                           )}
       let(:lead2) { create(:lead,
                            first_name: 'first_name_2', last_name: 'last_name_2',
                            referral: 'referral_2', notes: 'notes_2',
-                           phone1: 'phone1_2', phone2: 'phone2_2', fax: 'fax_2',
+                           phone1: '5555555550', phone2: 'phone2_2', fax: 'fax_2',
                            email: 'email_2', id_number: 'id_number_2'
                           )}
       let(:lead3) { create(:lead,
@@ -311,12 +311,10 @@ RSpec.describe Lead, type: :model do
       end
 
       it "searches by phone1" do
-        results = Lead.search_for("phone1")
-        expect(results.count).to eq(3)
-        results = Lead.search_for('phone1_1')
+        results = Lead.search_for('5555555555')
         expect(results.count).to eq(1)
         expect(results.first.id).to eq(lead1.id)
-        results = Lead.search_for('phone1_2')
+        results = Lead.search_for('5555555550')
         expect(results.count).to eq(1)
         expect(results.first.id).to eq(lead2.id)
       end

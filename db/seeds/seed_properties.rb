@@ -2,19 +2,20 @@ class SeedProperties
   attr_reader :file, :created, :updated, :errors
 
   COLUMNS = {
-    "name" => 0,
-    "phone" => 1,
-    "fax" => 2,
-    "email" => 3,
-    "contact_name" => 4,
-    "units" => 5,
-    "address" => 6,
-    "city" => 7,
-    "state" => 8,
-    "zip" => 9,
-    "listing_id" => 10,
-    "website" => 11,
-    "application" => 12
+    'name' => 0,
+    'phone' => 1,
+    'fax' => 2,
+    'email' => 3,
+    'contact_name' => 4,
+    'units' => 5,
+    'address' => 6,
+    'city' => 7,
+    'state' => 8,
+    'zip' => 9,
+    'listing_id' => 10,
+    'website' => 11,
+    'application' => 12,
+    'marketing_phones' => 13
   }
 
   def initialize(filename=nil)
@@ -32,27 +33,28 @@ class SeedProperties
     @updated = []
     @errors = []
     ActiveRecord::Base.transaction do
-      puts " * Creating Properties"
+      puts ' * Creating Properties'
       begin
       load_data.each do |row|
-        name = row[COLUMNS["name"]]
-        listing_id = row[COLUMNS["listing_id"]]
+        name = row[COLUMNS['name']]
+        listing_id = row[COLUMNS['listing_id']]
 
         property = Property.where(name: name).first || Property.new
         is_new = property.new_record?
 
         property.name = name
-        property.phone = row[COLUMNS["phone"]]
-        property.fax = row[COLUMNS["fax"]]
-        property.email = row[COLUMNS["email"]]
-        property.contact_name = row[COLUMNS["contact_name"]]
-        property.units = row[COLUMNS["units"]]
-        property.address1 = row[COLUMNS["address"]]
-        property.city = row[COLUMNS["city"]]
-        property.state = row[COLUMNS["state"]]
-        property.zip = row[COLUMNS["zip"]]
-        property.website = row[COLUMNS["website"]]
-        property.application_url = row[COLUMNS["application"]]
+        property.phone = row[COLUMNS['phone']]
+        property.fax = row[COLUMNS['fax']]
+        property.email = row[COLUMNS['email']]
+        property.contact_name = row[COLUMNS['contact_name']]
+        property.units = row[COLUMNS['units']]
+        property.address1 = row[COLUMNS['address']]
+        property.city = row[COLUMNS['city']]
+        property.state = row[COLUMNS['state']]
+        property.zip = row[COLUMNS['zip']]
+        property.website = row[COLUMNS['website']]
+        property.application_url = row[COLUMNS['application']]
+        property.phone_numbers = build_phone_numbers(row[COLUMNS['marketing_phones']])
 
         if property.save
           PropertyListing.create(
@@ -90,6 +92,21 @@ class SeedProperties
 
   def load_data
     CSV.read(@file, headers: true)
+  end
+
+  def build_phone_numbers(phones)
+    numbers = []
+    (phones || '').split(',').map(&:strip).
+      select{|p| p.present?}.each_with_index do |phone, index|
+        numbers << PhoneNumber.new(
+          name: "Source #{index + 1}",
+          prefix: '1',
+          number: phone,
+          category: 'work',
+          availability: 'any'
+        )
+      end
+    return numbers
   end
 
 end

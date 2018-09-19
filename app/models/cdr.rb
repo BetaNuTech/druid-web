@@ -83,9 +83,9 @@ class Cdr < CdrdbModel
                                  map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq) +
                 ["Anonymous", "Restricted"]
     skope = select(:id, :calldate, :did, :src, :dst, :dcontext, :clid, :cnam).
-      where("dcontext IN (:contexts)", {contexts: ['from-did-direct']}).
-      where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
+      where("did != ''").
       where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: variants, src: variants}).
+      where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
       group(:cnam)
   end
 
