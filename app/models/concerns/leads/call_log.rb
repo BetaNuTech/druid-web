@@ -76,7 +76,7 @@ module Leads
         incoming_old_leads = Lead.where(phone1: incoming_sources).or(where(phone2: incoming_sources)).to_a
 
         call_leads.map do |incoming_call|
-          next if incoming_old_leads.any?{|ol| [ol.phone, ol.phone2].includes?(incoming_call.src)}
+          next if incoming_old_leads.any?{|ol| [ol.phone1, ol.phone2].compact.include?(incoming_call.src)}
 
           property = incoming_properties_numbers.
             select{|ipn| ipn[1].include?(incoming_call.did)}.first.try(:first)
@@ -96,7 +96,8 @@ module Leads
             notes: notes,
             priority: 'high',
             first_comm: incoming_call.calldate,
-            last_comm: incoming_call.calldate
+            last_comm: incoming_call.calldate,
+            preference: LeadPreference.new
           )
         end.compact
       end

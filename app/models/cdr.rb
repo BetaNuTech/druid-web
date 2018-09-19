@@ -86,7 +86,7 @@ class Cdr < CdrdbModel
       where("did != ''").
       where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: variants, src: variants}).
       where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
-      group(:cnam)
+      group(:cnam, :src, :did)
   end
 
   def self.non_lead_recordings(start_date:, end_date:)
