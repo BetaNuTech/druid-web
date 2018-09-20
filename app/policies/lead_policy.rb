@@ -55,6 +55,10 @@ class LeadPolicy < ApplicationPolicy
     edit?
   end
 
+  def compose_message?
+    show? && record.message_types_available.present?
+  end
+
   def mark_messages_read?
     user.admin? || same_user?
   end

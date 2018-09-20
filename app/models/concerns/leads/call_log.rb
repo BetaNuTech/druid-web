@@ -89,8 +89,9 @@ module Leads
           Lead.new(
             property: property,
             source: default_source,
-            referral: 'Call',
+            referral: 'Incoming Call',
             phone1: incoming_call.src,
+            phone1_type: 'Cell',
             first_name: first_name,
             last_name: last_name,
             notes: notes,
