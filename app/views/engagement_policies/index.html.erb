@@ -19,7 +19,9 @@
               <th>Version</th>
             </thead>
             <tbody>
-              <% policies.each do |policy| %>
+              <% policies.
+                  sort{|x,y| Lead.state_names.index(x.lead_state) <=> Lead.state_names.index(y.lead_state)}.
+                each do |policy| %>
                 <tr>
                   <td> <%= policy.lead_state.capitalize %> </td>
                   <td>
