@@ -15,6 +15,10 @@ module Properties
         return ([phone] + phone_numbers.map(&:number)).flatten.compact.uniq.select{|n| n.present?}
       end
 
+      def name_for_phone_number(number)
+        return phone_numbers.where(number: number).first.try(:name)
+      end
+
     end
 
     class_methods do

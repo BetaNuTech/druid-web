@@ -82,14 +82,14 @@ module Leads
             select{|ipn| ipn[1].include?(incoming_call.did)}.first.try(:first)
           next unless property.present?
 
-
           first_name, last_name = incoming_call.cnam.split(' ')
           notes = "Incoming Call from %s (%s) at %s [CDR:%s]" % [incoming_call.cnam, incoming_call.src, incoming_call.calldate, incoming_call.id]
+          referral = property.name_for_phone_number(incoming_call.did) || 'Call'
 
           Lead.new(
             property: property,
             source: default_source,
-            referral: 'Incoming Call',
+            referral: referral,
             phone1: incoming_call.src,
             phone1_type: 'Cell',
             first_name: first_name,
