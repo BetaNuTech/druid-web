@@ -12,6 +12,7 @@ module Leads
 
       # All Valid CloudMailin Parsers except NullParser
       PARSERS = [
+        AbodoParser,
         ApartmentguideDotComParser,
         ApartmentListDotComParser,
         ApartmentsDotComParser,
