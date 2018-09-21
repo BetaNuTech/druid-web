@@ -61,7 +61,6 @@ module Leads
       # |-----------------------+-------------------------|
       #
       def map(data)
-        Rails.logger.warn data.inspect
         return {
           title: '',
           first_name: sanitize( data[:first_name] || '(not provided)' ),

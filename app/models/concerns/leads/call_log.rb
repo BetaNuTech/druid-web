@@ -69,10 +69,13 @@ module Leads
 
         call_leads = Cdr.possible_leads(start_date: start_date, end_date: end_date)
 
+        # Eager load properties to prevent N+1
         incoming_dids = call_leads.map{|l| l.did}
-        incoming_sources = call_leads.map{|l| l.src}
         incoming_properties = Property.find_all_by_phone_numbers(incoming_dids)
         incoming_properties_numbers = incoming_properties.map{|ip| [ip, ip.all_numbers]}
+
+        # Eager load matching old leads to prevent N+1
+        incoming_sources = call_leads.map{|l| l.src}
         incoming_old_leads = Lead.where(phone1: incoming_sources).or(where(phone2: incoming_sources)).to_a
 
         call_leads.map do |incoming_call|

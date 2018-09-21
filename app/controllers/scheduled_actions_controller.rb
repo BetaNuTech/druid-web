@@ -11,8 +11,14 @@ class ScheduledActionsController < ApplicationController
     authorize ScheduledAction
     set_limit
     if @lead
+      unless LeadPolicy.new(current_user, @lead).show?
+        raise Pundit::NotAuthorizedError, "not allowed to view this Lead's Tasks"
+      end
       @scheduled_actions = @lead.scheduled_actions
     elsif @user
+      unless UserPolicy.new(current_user, @user).show?
+        raise Pundit::NotAuthorizedError, "not allowed to view this User's Tasks"
+      end
       @scheduled_actions = @user.scheduled_actions
     else
       @scheduled_actions = current_user.scheduled_actions

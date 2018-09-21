@@ -1,4 +1,17 @@
 class ScheduledActionPolicy < ApplicationPolicy
+  class Scope < Scope
+    def resolve
+      skope = scope
+
+      return case user
+        when ->(u) {u.admin?}
+          skope
+        else
+          skope.where(user_id: user.id)
+        end
+    end
+  end
+
   def index?
     user.admin? || user.agent?
   end
