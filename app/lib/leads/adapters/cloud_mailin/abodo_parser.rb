@@ -1,6 +1,6 @@
 module Leads
   module Adapters
-    module Cloudmailin
+    module CloudMailin
       class AbodoParser
 
         def self.match?(data)
@@ -10,52 +10,52 @@ module Leads
         end
 
         def self.parse(data)
-          body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
+          Date::DATE_FORMATS[:default] = "%m/%d/%Y"
+          body = data.fetch(:plain,nil) || ''
 
-          name = ( body.match(/Name: (.+)$/)[1] rescue '(None)' ).gsub('*','')
-          name_arr = name.split(' ')
-
+          referral = "Abodo.com"
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
-          title = nil
+          agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
+
+          name = ( body.match(/Name:\* (.+)$/)[1] rescue '(None)' ).gsub('*','')
+          name_arr = name.split(' ')
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
-          referral = "Abodo.com"
-          phone1 = ( body.match(/Phone Number: (.+)$/)[1] rescue '(None)' ).strip
-          phone2 = nil
-          email = ( body.match(/Email: (.+)$/)[1] rescue '(None)' ).strip
-          fax = nil
-          baths = nil
-          beds = nbil
 
-          # TODO
-          notes = '(None)'
-
-          smoker = nil
-          pets = nil
-          move_in = nil
-          agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
+          phone1 = ( body.match(/Phone Number:\*\s+([^\s]+)/)[1] rescue '(None)' ).strip
+          email = ( body.match(/Email:\*\s+([^\s]+)/)[1] rescue '(None)' ).strip
+          notes = (( body.match(/>\s+(\w[\S\s]+[^-])----+/m))[1] rescue '(None)').strip
           raw_data = data.to_json
 
+          phone2 = nil
+          baths = nil
+          beds = nil
+          fax = nil
+          move_in = nil
+          pets = nil
+          smoker = nil
+          title = nil
+
           parsed = {
-            title: title,
+            title: nil,
             first_name: first_name,
             last_name: last_name,
             referral: referral,
             phone1: phone1,
             phone1_type: 'Cell',
-            phone2: phone2,
-            phone2_type: 'Cell',
+            phone2: nil,
+            phone2_type: nil,
             email: email,
-            fax: fax,
+            fax: nil,
             notes: agent_notes,
             preference_attributes: {
-              baths: baths,
-              beds: beds,
+              baths: nil,
+              beds: nil,
               notes: notes,
-              smoker: smoker,
+              smoker: nil,
               raw_data: raw_data,
-              pets: pets,
-              move_in: move_in
+              pets: nil,
+              move_in: nil
             }
           }
 
