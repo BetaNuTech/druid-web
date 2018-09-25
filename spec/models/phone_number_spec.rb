@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: phone_numbers
+#
+#  id             :uuid             not null, primary key
+#  name           :string
+#  number         :string
+#  prefix         :string           default("1")
+#  category       :integer          default("cell")
+#  availability   :integer          default("any")
+#  phoneable_id   :uuid
+#  phoneable_type :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe PhoneNumber, type: :model do

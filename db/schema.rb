@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_18_201131) do
+ActiveRecord::Schema.define(version: 2018_09_25_200414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -137,6 +137,17 @@ ActiveRecord::Schema.define(version: 2018_09_18_201131) do
     t.index ["active", "api_token"], name: "index_lead_sources_on_active_and_api_token"
   end
 
+  create_table "lead_transitions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id", null: false
+    t.string "last_state", null: false
+    t.string "current_state", null: false
+    t.integer "classification"
+    t.text "memo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_id"], name: "index_lead_transitions_on_lead_id"
+  end
+
   create_table "leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "lead_source_id"
@@ -168,6 +179,8 @@ ActiveRecord::Schema.define(version: 2018_09_18_201131) do
     t.datetime "conversion_date"
     t.json "call_log"
     t.datetime "call_log_updated_at"
+    t.integer "classification"
+    t.index ["classification"], name: "index_leads_on_classification"
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"

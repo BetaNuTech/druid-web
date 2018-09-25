@@ -5,9 +5,9 @@
 #  id             :uuid             not null, primary key
 #  name           :string
 #  number         :string
-#  prefix         :string
-#  category       :integer
-#  availability   :integer
+#  prefix         :string           default("1")
+#  category       :integer          default("cell")
+#  availability   :integer          default("any")
 #  phoneable_id   :uuid
 #  phoneable_type :string
 #  created_at     :datetime         not null

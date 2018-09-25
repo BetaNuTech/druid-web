@@ -41,6 +41,8 @@ module Leads
     end
 
     included do
+      has_many :lead_transitions
+
       # https://github.com/aasm/aasm
       include AASM
 
@@ -60,7 +62,7 @@ module Leads
 
         event :abandon do
           transitions from: [ :prospect, :application, :approved, :denied ], to: :abandoned,
-            after: ->(*args) { event_clear_user(*args) }
+            after: ->(*args) { event_clear_user(*args); clear_all_tasks }
         end
 
         event :apply do
@@ -134,6 +136,10 @@ module Leads
         end
       end
 
+      def clear_all_tasks
+        scheduled_actions.destroy_all
+      end
+
       # Lead is permitted to change state
       def may_progress?
         return all_tasks_completed?
@@ -174,11 +180,21 @@ module Leads
       end
 
       def after_all_events_callback
+        create_lead_transition
         create_scheduled_actions # Leads::EngagementPolicy#create_scheduled_actions
       end
 
       def set_conversion_date
         self.conversion_date = DateTime.now
+      end
+
+      def create_lead_transition
+        self.lead_transitions << self.lead_transitions.build(
+          last_state: aasm.from_state,
+          current_state: aasm.to_state,
+          classification: self.classification || 'lead',
+          memo: self.transition_memo
+        )
       end
 
     end

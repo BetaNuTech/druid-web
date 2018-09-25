@@ -33,6 +33,7 @@
 #  conversion_date     :datetime
 #  call_log            :json
 #  call_log_updated_at :datetime
+#  classification      :integer
 #
 
 class Lead < ApplicationRecord
@@ -47,15 +48,15 @@ class Lead < ApplicationRecord
   include Leads::CallLog
 
   ### Constants
-  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority]
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
 
-  ### Enums
-  enum priority: { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, _prefix: :priority
+  ### Attributes
+  attr_accessor :ignore_incomplete_tasks, :transition_memo
 
-  # Attributes
-  attr_accessor :ignore_incomplete_tasks
+  ### Enums
+  enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4 }
 
   ### Associations
   has_one :preference, class_name: 'LeadPreference', dependent: :destroy

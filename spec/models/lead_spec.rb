@@ -33,6 +33,7 @@
 #  conversion_date     :datetime
 #  call_log            :json
 #  call_log_updated_at :datetime
+#  classification      :integer
 #
 
 require 'rails_helper'
@@ -92,6 +93,17 @@ RSpec.describe Lead, type: :model do
     it "returns a list of leads assigned to an agent/user" do
       lead; lead2
       expect(property.leads.for_agent(agent)).to eq([lead])
+    end
+
+  end
+
+  describe "lead transitions" do
+    let(:lead) { create(:lead)}
+
+    it "has many lead transitions" do
+      lead.lead_transitions << build(:lead_transition)
+      assert lead.save
+      expect(lead.lead_transitions.first).to be_a(LeadTransition)
     end
 
   end
@@ -174,6 +186,53 @@ RSpec.describe Lead, type: :model do
       expect(Lead.active).to eq([lead])
     end
 
+    describe "lead_transitions" do
+      let(:memo) { 'Lead transition memo 1'}
+
+      it "creates a lead_transition record upon state change" do
+        expect(lead.lead_transitions.count).to eq (0)
+        lead.transition_memo = memo
+        lead.classification = 'lead'
+        lead.claim!
+        lead.reload
+
+        expect(lead.state).to eq('prospect')
+        expect(lead.lead_transitions.count).to eq(1)
+        lead_transition = lead.lead_transitions.last
+        expect(lead_transition.last_state).to eq('open')
+        expect(lead_transition.current_state).to eq(lead.state)
+        expect(lead_transition.classification).to eq('lead')
+        expect(lead_transition.memo).to eq(memo)
+
+        memo2 = 'Lead transition memo 2'
+        lead_classification = 'vendor'
+        lead.classification = lead_classification
+        lead.transition_memo = memo2
+        expect(lead.state).to eq('prospect')
+        lead.disqualify!
+        lead.reload
+
+        expect(lead.state).to eq('disqualified')
+        expect(lead.lead_transitions.count).to eq(2)
+        lead_transition = lead.lead_transitions.order('created_at desc').first
+        expect(lead_transition.last_state).to eq('prospect')
+        expect(lead_transition.current_state).to eq(lead.state)
+        expect(lead_transition.classification).to eq(lead_classification)
+        expect(lead_transition.memo).to eq(memo2)
+      end
+
+      it "creates a lead_transition record without transition_memo or classification set" do
+        lead.claim!
+        lead.reload
+        expect(lead.lead_transitions.count).to eq(1)
+        lead_transition = lead.lead_transitions.last
+        expect(lead_transition.last_state).to eq('open')
+        expect(lead_transition.current_state).to eq(lead.state)
+        expect(lead_transition.classification).to eq('lead')
+        expect(lead_transition.memo).to be_nil
+      end
+    end
+
     describe "priorities" do
       it "should set priorty to zero when disqualified" do
         lead.priority_low!
@@ -195,6 +254,28 @@ RSpec.describe Lead, type: :model do
         lead.disqualify!
         lead.requalify!
         expect(lead.priority).to eq("low")
+      end
+    end
+
+    describe "scheduled actions" do
+      include_context "engagement_policy"
+      include_context "team_members"
+
+      before(:each) do
+        seed_engagement_policy
+      end
+
+      it "should clear all old tasks when abandoned" do
+        ScheduledAction.destroy_all
+        agent = team1_agent1
+        property = agent.properties.first
+        lead.property = property
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        expect(lead.scheduled_actions.count).to be > 0
+        lead.abandon!
+        lead.reload
+        expect(lead.scheduled_actions.count).to eq(1)
       end
     end
 
