@@ -2,6 +2,11 @@ ul#crumbs {
   list-style: none;
   display: inline-table;
 
+  ul.dropdown-menu {
+    left: 50px;
+    width: 650px;
+  }
+
   li.crumb {
     display: inline;
 
@@ -10,7 +15,7 @@ ul#crumbs {
     }
 
     a.crumb-inactive {
-      background: gray;
+      background: #d9edf7;
     }
 
     a.crumb-link {
@@ -20,7 +25,7 @@ ul#crumbs {
       text-align: center;
       padding: 7px 10px 0 30px;
       position: relative;
-      margin: 0 10px 0 0;
+      margin: 5px 10px 10px 0;
       font-size: 20px;
       text-decoration: none;
       color: #fff;
@@ -40,7 +45,7 @@ ul#crumbs {
     }
 
     a.crumb-inactive:after {
-      border-left: 20px solid gray;
+      border-left: 20px solid #d9edf7;
     }
 
     a.crumb-link:before {
@@ -68,5 +73,14 @@ ul#crumbs {
     }
     a.crumb-link:after { display: none; }
   }
+
+    a.crumb-isolated {
+      padding-right: 30px;
+      background: #ffc107 !important;
+    }
+    a.crumb-isolated:after {
+      border-left: 20px solid #ffc107 !important;
+    }
+
 
 }

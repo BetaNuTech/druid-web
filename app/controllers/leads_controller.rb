@@ -2,7 +2,7 @@ class LeadsController < ApplicationController
   include LeadsHelper
 
   before_action :authenticate_user!
-  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read]
+  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state]
   after_action :verify_authorized
 
   # GET /leads
@@ -90,6 +90,8 @@ class LeadsController < ApplicationController
 
   def trigger_state_event
     authorize @lead
+    @lead.transition_memo = params[:memo] if params[:memo].present?
+    @lead.classification = params[:classification] if params[:classification].present?
     @success = trigger_lead_state_event(lead: @lead, event_name: params[:eventid])
     respond_to do |format|
       format.js
@@ -97,6 +99,25 @@ class LeadsController < ApplicationController
       format.html { redirect_to(@lead)}
     end
   end
+
+  def progress_state
+    authorize @lead
+    @eventid = params[:eventid]
+    if @eventid == 'claim'
+      trigger_lead_state_event(lead: @lead, event_name: @eventid)
+      redirect_to(@lead)
+    end
+  end
+
+  def update_state
+    authorize @lead
+    @lead.transition_memo = params[:memo] if params[:memo].present?
+    @lead.classification = params[:classification] if params[:classification].present?
+    @success = trigger_lead_state_event(lead: @lead, event_name: params[:eventid])
+    redirect_to(@lead)
+  end
+
+
 
   def mark_messages_read
     authorize @lead

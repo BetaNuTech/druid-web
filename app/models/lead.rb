@@ -86,6 +86,10 @@ class Lead < ApplicationRecord
   end
 
   ### Instance Methods
+  
+  def is_lead?
+    classification.nil? || classification == 'lead'
+  end
 
   def all_tasks_completed?
     return( ignore_incomplete_tasks || !scheduled_actions.pending.exists? )

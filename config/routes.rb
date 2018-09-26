@@ -55,6 +55,8 @@ Rails.application.routes.draw do
       post 'trigger_state_event', to: "leads#trigger_state_event"
       post 'mark_messages_read', to: "leads#mark_messages_read"
       get 'call_log_partial', to: "leads#call_log_partial"
+      get 'progress_state', to: "leads#progress_state"
+      post 'update_state', to: "leads#update_state"
     end
     resources :messages do
       post 'deliver', on: :member

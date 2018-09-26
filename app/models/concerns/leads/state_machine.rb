@@ -68,7 +68,7 @@ module Leads
         event :apply do
           transitions from: [:prospect], to: :application,
             after: -> (*args) { apply_event_callback },
-            guard: :may_progress?
+            guard: :may_apply?
         end
 
         event :approve do
@@ -108,8 +108,7 @@ module Leads
 
         event :requalify do
           transitions from: :disqualified, to: :open,
-            after: ->(*args) { event_clear_user; set_priority_low },
-            guard: :may_progress?
+            after: ->(*args) { event_clear_user; set_priority_low }
         end
 
         event :release do
@@ -138,6 +137,10 @@ module Leads
 
       def clear_all_tasks
         scheduled_actions.destroy_all
+      end
+
+      def may_apply?
+        may_progress? && self.email.present?
       end
 
       # Lead is permitted to change state
@@ -181,6 +184,7 @@ module Leads
 
       def after_all_events_callback
         create_lead_transition
+        create_lead_transition_note
         create_scheduled_actions # Leads::EngagementPolicy#create_scheduled_actions
       end
 
@@ -194,6 +198,18 @@ module Leads
           current_state: aasm.to_state,
           classification: self.classification || 'lead',
           memo: self.transition_memo
+        )
+      end
+
+      def create_lead_transition_note
+        self.comments << self.comments.build(
+          user: user,
+          reason: Reason.where(name: "Pipeline Event").last,
+          content: "Lead transitioned from %s to %s.%s" % [
+            ( aasm.from_state&.capitalize || '?' ),
+            ( aasm.to_state&.capitalize || '?' ),
+            (transition_memo.present? ? " -- Memo: #{transition_memo}": '')
+          ]
         )
       end
 

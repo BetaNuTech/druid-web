@@ -55,6 +55,14 @@ class LeadPolicy < ApplicationPolicy
     edit?
   end
 
+  def progress_state?
+    edit?
+  end
+
+  def update_state?
+    progress_state?
+  end
+
   def compose_message?
     show? && record.message_types_available.present?
   end

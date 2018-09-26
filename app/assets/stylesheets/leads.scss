@@ -171,3 +171,8 @@ table#leads-table {
 table.lead_listing tr:nth-child(even) {
   background: #edf2f7;
 }
+
+span.missing_lead_email {
+  font-weight: bold;
+  color: red;
+}

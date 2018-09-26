@@ -31,14 +31,17 @@
     </div>
 
     <div class="controls row">
-      <div class="col-md-12">
+      <div class="col-md-10">
           <%= render partial: "state_toggle", locals: {lead: @lead} %>
+      </div>
+      <div class="col-md-2">
+
       </div>
     </div>
 
     <div class="contact" >
       <span class="lead_name">
-        <%= @lead.name %>
+        <%= @lead.name %> <%= @lead.is_lead? ? '' : "(Not a Lead: #{@lead.classification&.capitalize})" %>
       </span><br/>
       <span class="contact_info" >
         <span title="Primary Phone" class="glyphicon glyphicon-earphone" ></span>&nbsp;
@@ -46,7 +49,11 @@
         <span title="Secondary Phone" class="glyphicon glyphicon-earphone"></span>&nbsp;
         <%= @lead.phone2 %><br/>
         <span title="Email Address" class="glyphicon glyphicon-envelope"></span>&nbsp;
-        <%= @lead.email %><br/>
+        <% if @lead.email.present? %>
+          <%= @lead.email %>
+        <% else %>
+          <span class="missing_lead_email">Email Required</span>
+        <% end %><br/>
         <span title="Fax Number" class="glyphicon glyphicon-file"></span>&nbsp;
         <%= @lead.fax %>
       </span>

@@ -1,0 +1,39 @@
+<div class="container">
+<div class="row">
+  <div class="col-md-12">
+    <h4><%= @eventid.capitalize %> : Progressing <%= @lead.name %> from <%= @lead.state.capitalize %> Stage</h4>
+  </div>
+</div>
+
+<%= form_tag update_state_lead_path(@lead), method: :post, class: "form" do %>
+
+  <div class="row">
+    <div class="col-md-4 form-group">
+      <%= label_tag "Event" %>
+      <%= select_tag :eventid, options_for_select(policy(@lead).permitted_state_events.map{|se| [se.capitalize, se]}, @eventid), class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 form-group">
+      <%= label_tag "Classify As A"%>
+      <%= select_tag :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, @lead.classification ), class: "form-control"%>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 form-group">
+      <%= label_tag "Memo"%>
+      <%= text_area_tag :memo, @lead.transition_memo, rows: 5, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+      <%= link_to('Cancel', :back, {class: "btn btn-xs btn-info"}) %>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  $("#memo").focus();
+</script>
