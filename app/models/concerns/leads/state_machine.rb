@@ -140,7 +140,7 @@ module Leads
       end
 
       def may_apply?
-        may_progress? && self.email.present?
+        is_lead? && may_progress? && self.email.present?
       end
 
       # Lead is permitted to change state

@@ -4,7 +4,7 @@ class HomeController < ApplicationController
   def dashboard
     @page_title = "Druid Dashboard"
 
-    @my_leads = Lead.for_agent(current_user).active
+    @my_leads = Lead.for_agent(current_user).active.is_lead
     @unclaimed_leads = current_user.available_leads.includes(:property)
     @today_actions = ScheduledAction.includes(:schedule, :lead_action, :target).for_agent(current_user).due_today.sorted_by_due_asc
     @upcoming_actions = ScheduledAction.includes(:schedule, :lead_action).for_agent(current_user).upcoming.sorted_by_due_asc

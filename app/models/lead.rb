@@ -48,7 +48,7 @@ class Lead < ApplicationRecord
   include Leads::CallLog
 
   ### Constants
-  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo]
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
 
@@ -69,6 +69,7 @@ class Lead < ApplicationRecord
 
   ### Scopes
   scope :ordered_by_created, -> {order(created_at: "ASC")}
+  scope :is_lead, -> { where(classification: ['lead', nil])}
 
   ### Validations
   validates :first_name, presence: true
@@ -86,7 +87,7 @@ class Lead < ApplicationRecord
   end
 
   ### Instance Methods
-  
+
   def is_lead?
     classification.nil? || classification == 'lead'
   end
@@ -97,6 +98,7 @@ class Lead < ApplicationRecord
 
   def users_for_lead_assignment(default: nil)
     users = ( property.present? ? property.agents : User.team_agents )&.by_name_asc || []
+    users = users.to_a + [user]
     users = [default].compact if users.empty?
     return users
   end
