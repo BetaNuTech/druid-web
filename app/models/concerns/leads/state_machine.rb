@@ -33,7 +33,7 @@ module Leads
         state1 = from
         state2 = to
         return nil if state1.nil? || state2.nil?
-        dummy = Lead.new(state: state1)
+        dummy = Lead.new(state: state1, classification: 'lead', email: 'me@here.com')
         events = dummy.aasm.events(:permitted => true).map{|event| {name: event.name, transitions: event.transitions.map{|t| [t.from, t.to]}}}
         event = events.select{|event| event[:transitions].any?{|transition| transition[0].to_s == state1.to_s && transition[1].to_s == state2.to_s} }.first
         return event.nil? ? nil : event[:name]
@@ -140,7 +140,7 @@ module Leads
       end
 
       def may_apply?
-        is_lead? && may_progress? && self.email.present?
+        is_lead? && may_progress? && email.present?
       end
 
       # Lead is permitted to change state

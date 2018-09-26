@@ -33,7 +33,6 @@ RSpec.describe PropertyListing, type: :model do
       it "is required" do
         listing = PropertyListing.new(valid_attributes)
         listing.validate
-        puts listing.errors.to_a
         assert(listing.valid?)
         listing.code = nil
         refute(listing.valid?)

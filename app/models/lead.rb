@@ -98,7 +98,7 @@ class Lead < ApplicationRecord
 
   def users_for_lead_assignment(default: nil)
     users = ( property.present? ? property.agents : User.team_agents )&.by_name_asc || []
-    users = users.to_a + [user]
+    users = ( users.to_a + [user] ).compact
     users = [default].compact if users.empty?
     return users
   end

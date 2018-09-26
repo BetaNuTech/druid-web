@@ -13,7 +13,7 @@ RSpec.describe Leads::Adapters::YardiVoyager do
   }
   let(:adapter) { Leads::Adapters::YardiVoyager.new(initial_params) }
   let(:lead) {
-    create(:lead, property: property, state: 'prospect', remoteid: 'p123456')
+    create(:lead, property: property, state: 'prospect', remoteid: 'p123456', email: 'me@here.com', classification: 'lead')
   }
 
   describe "initialization" do
