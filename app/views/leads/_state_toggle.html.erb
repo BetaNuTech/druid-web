@@ -1,27 +1,37 @@
 <div class="state_toggle">
-  <div class="row state_toggle-button">
-    <div class="btn-group col-md-12">
-      <button type="button" class="btn dropdown-toggle btn-info" data-toggle="dropdown">
-        <%= ( lead.state || '(None)' ).capitalize %>
-      <% if policy(lead).permitted_state_events.any? %>
-        <span class="caret"></span>
-        <span class="sr-only">Toggle Dropdown</span>
-      <% end %>
-      </button>
-      <% if policy(lead).permitted_state_events.any? %>
-      <ul class="dropdown-menu">
-        <% policy(lead).permitted_state_events.each do |event_name| %>
-          <li>
-            <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: event_name),
-                        remote: true,
-                        method: :post,
-                        data: {confirm: "Are you sure?"} ) do %>
-              <%= event_name.capitalize %>
+  <div class="row" >
+    <div class="col-md-12" class="dropdown">
+      <ul id="crumbs">
+        <li class="crumb">
+          <a role="button" class="crumb-link crumb-active dropdown-toggle" data-toggle="dropdown" href="#">Open</a>
+          <% if policy(lead).permitted_state_events.any? %>
+          <ul class="dropdown-menu">
+            <% policy(lead).permitted_state_events.each do |event_name| %>
+              <li>
+                <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: event_name),
+                            remote: true,
+                            method: :post,
+                            data: {confirm: "Are you sure?"} ) do %>
+                  <%= event_name.capitalize %>
+                <% end %>
+              </li>
             <% end %>
-          </li>
+          </ul>
         <% end %>
+        </li>
+        <li class="crumb">
+          <a class="crumb-link crumb-inactive" href="#">Prospect</a>
+        </li>
+        <li class="crumb">
+          <a class="crumb-link crumb-inactive" href="#">Application</a>
+        </li class="crumb">
+        <li class="crumb">
+          <a class="crumb-link crumb-inactive" href="#">MoveIn</a>
+        </li>
+        <li class="crumb">
+          <a class="crumb-link crumb-inactive" href="#">Resident</a>
+        </li>
       </ul>
-    <% end %>
     </div>
   </div>
   <div class="state_toggle-agent row">

@@ -1,0 +1,72 @@
+ul#crumbs {
+  list-style: none;
+  display: inline-table;
+
+  li.crumb {
+    display: inline;
+
+    a.crumb-active {
+      background: #3498db;
+    }
+
+    a.crumb-inactive {
+      background: gray;
+    }
+
+    a.crumb-link {
+      display: block;
+      float: left;
+      height: 40px;
+      text-align: center;
+      padding: 7px 10px 0 30px;
+      position: relative;
+      margin: 0 10px 0 0;
+      font-size: 20px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    a.crumb-link:after {
+      content: "";
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 20px solid #3498db;
+      position: absolute; right: -20px; top: 0;
+      z-index: 1;
+    }
+
+    a.crumb-active:after {
+      border-left: 20px solid #3498db;
+    }
+
+    a.crumb-inactive:after {
+      border-left: 20px solid gray;
+    }
+
+    a.crumb-link:before {
+      content: "";
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 20px solid #fff;
+      position: absolute; left: 0; top: 0;
+    }
+    a.crumb-active:hover { background: #5bc0de; }
+    a.crumb-active:hover:after { border-left-color: #5bc0de; }
+  }
+
+  li.crumb:first-child {
+    a.crumb-link {
+      border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+    }
+    a.crumb-link:before { display: none; }
+  }
+
+  li.crumb:last-child  {
+    a.crumb-link {
+      padding-right: 30px;
+      border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+    }
+    a.crumb-link:after { display: none; }
+  }
+
+}
