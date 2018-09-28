@@ -72,6 +72,18 @@ sources = {
     slug: 'Costar',
     incoming: true,
     active: true
+  },
+  "forrent": {
+    name: "ForRent",
+    slug: "Zillow",
+    incoming: true,
+    active: true
+  },
+  "rentpath": {
+    name: "RentPath",
+    slug: "Zillow",
+    incoming: true,
+    active: true
   }
 }
 sources.each_pair do |source_name, attrs|
