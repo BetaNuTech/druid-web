@@ -26,4 +26,5 @@ coverage/
 /node_modules
 public/assets/
 spec/examples.txt
-env.staging
+env.staging*
+env.production*
