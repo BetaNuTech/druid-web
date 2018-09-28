@@ -41,6 +41,7 @@ module Leads
       # Fetch New UnitTypes from YardiVoyager
       def processUnitTypes
         @data = fetch_Floorplans(@property_code)
+        unit_types = []
         ActiveRecord::Base.transaction do
           unit_types = collection_from_floorplans(@data)
           unit_types.each{|l| l.save}
