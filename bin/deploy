@@ -19,20 +19,20 @@ staging)
   echo "  - Running Migrations"
   heroku run rake db:migrate --app $staging_app
   git tag -f staging-current
-  git push --tags -f
+  git push origin --tags -f
   ;;
 prod)
   echo "** Deploying to Production"
   tag="prod-$date_str"
   echo "  - Creating tag $tag"
   git tag -f $tag
-  git push --tags -f
+  git push origin --tags -f
   echo "  - Pushing code to Production"
   git push $prod_remote $tag:master
   echo "  - Running Migrations"
   heroku run rake db:migrate --app $production_app
   git tag -f prod-current
-  git push --tags -f
+  git push origin --tags -f
   ;;
 *)
   echo "*** Environment unknown or not provided. Cowardly exiting."
