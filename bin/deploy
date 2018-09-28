@@ -3,9 +3,9 @@
 deploy_env=$1
 date_str=$(date +%y%m%d%H%M)
 staging_remote=heroku-staging
-prod_remote=heroku
+prod_remote=heroku-prod
 staging_app=druid-staging
-production_app=druid
+production_app=druid-prod
 
 case $deploy_env in
 staging)
