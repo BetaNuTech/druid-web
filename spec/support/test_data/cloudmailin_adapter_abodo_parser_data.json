@@ -1,0 +1,46 @@
+{
+    "action": "create",
+    "controller": "api/v1/leads",
+    "envelope": {
+        "from": "bounce-md_4608894.5bb4d56e.v1-7a134a881b4241e6a6fa715abb482cca@mandrillapp.com",
+        "helo_domain": "mail133-23.atl131.mandrillapp.com",
+        "recipients": {
+            "0": "47064e037e5740bbedad+waldenlegacyleasing@cloudmailin.net"
+        },
+        "remote_ip": "198.2.133.23",
+        "spf": {
+            "domain": "mandrillapp.com",
+            "result": "pass"
+        },
+        "tls": "true",
+        "to": "47064e037e5740bbedad+waldenlegacyleasing@cloudmailin.net"
+    },
+    "format": "json",
+    "headers": {
+        "DKIM-Signature": {
+            "0": "v=1; a=rsa-sha256; c=relaxed/relaxed; s=mandrill; d=abodoapts.com; h=From:Subject:Reply-To:To:Message-Id:Date:MIME-Version:Content-Type; i=abodoleads+dqmdrzoyspqg@abodoapts.com; bh=3bcw3Xc5TpHyYRvSyA9AJU6I2eyiaV5bHMLRSiKBnQY=; b=D+zFlK6VosenjkCWnjs/yjjKcgIYhsrX1DQP5ynzg7/eH4Ru0oRSAVsZHpKK0cj+MPmwQswN7H57   J9gYL8c47c0OUu2fzjB0FuNPG9xcp2eF4vU0SkV4SujqPf7MAAg28kOd3Ef6AL6cFqHXA+Rg0arN   kUW7fxDKhVSPiVMp4jQ=",
+            "1": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=mandrillapp.com;  i=@mandrillapp.com; q=dns/txt; s=mandrill; t=1538577774; h=From :  Subject : Reply-To : To : Message-Id : Date : MIME-Version :  Content-Type : From : Subject : Date : X-Mandrill-User :  List-Unsubscribe; bh=3bcw3Xc5TpHyYRvSyA9AJU6I2eyiaV5bHMLRSiKBnQY=;  b=S8theN575Vivua7CnWbPAmsKMnO8gp2qlu80EhsemP4Ewe3Wa0fbTXHvgYEoWHhBgj9jR3 RLM+bNsE87DM/WpBQMOzPFwW4iggb2dbIh/3UJZTufh8K+UfXBkgQ+HeWzy9i+0fHheD27NY CvlYydj/Kk5U0SI5lhYs6tkN2t9yo="
+        },
+        "Date": "Wed, 03 Oct 2018 14:42:54 +0000",
+        "From": "Mehmet Kemal Ecirli via ABODO <abodoleads+dqmdrzoyspqg@abodoapts.com>",
+        "Message-ID": "<5bb4d56c7e3de_12cb3ff86e2730d4774157@ram.mail>",
+        "Mime-Version": "1.0",
+        "Received": {
+            "0": "from pmta02.mandrill.prod.atl01.rsglab.com (127.0.0.1) by mail133-23.atl131.mandrillapp.com id hmjams1sar8g for <47064e037e5740bbedad+waldenlegacyleasing@cloudmailin.net>; Wed, 03 Oct 2018 14:42:54 +0000",
+            "1": "from [54.163.104.5] by mandrillapp.com id 7a134a881b4241e6a6fa715abb482cca; Wed, 03 Oct 2018 14:42:54 +0000"
+        },
+        "Reply-To": "abodoleads+l1oeyjuegldw@abodoapts.com",
+        "Return-Path": "bounce-md_4608894.5bb4d56e.v1-7a134a881b4241e6a6fa715abb482cca@mandrillapp.com",
+        "Subject": "Interested in Walden Legacy Apartments on ABODO",
+        "To": "waldenlegacyleasing@bluestone-prop.com, 47064e037e5740bbedad+waldenlegacyleasing@cloudmailin.net",
+        "X-Mandrill-User": "md_4608894",
+        "X-Report-Abuse": {
+            "0": "Please forward a copy of this message, including all headers, to abuse@mandrill.com",
+            "1": "You can also report abuse here: http://mandrillapp.com/contact/abuse?id=4608894.7a134a881b4241e6a6fa715abb482cca"
+        }
+    },
+    "html": "<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"Content-Type\" />\r\n  </head>\r\n  <body>\r\n    You have an interested renter from ABODO!<br /><br />\r\n    Simply hit reply to respond to the renter\r\n    <br />-------<br /><br />\r\n    <b>Name:</b> Somebody Kemal Ecirli<br />\r\n      <b>Email:</b>&nbsp;\r\n        <a href=\"mailto:abodoleads+l1oeyjuegldw@abodoapts.com\" target=\"_blank\">\r\n          example@icloud.com\r\n        </a>\r\n      <br />\r\n      <b>Phone Number:</b> +15555555555<br />\r\n\r\n        <b>Student:</b>&nbsp;No\r\n        <br />\r\n\r\n\r\n    <br />\r\n    <b>In Regards to Property:</b>\r\n    <a href=\"https://mandrillapp.com/track/click/4608894/www.abodo.com?p=eyJzIjoiQTFFX09ocG9xOTJ0WDFxOENxV2lxRUtkU0JzIiwidiI6MSwicCI6IntcInVcIjo0NjA4ODk0LFwidlwiOjEsXCJ1cmxcIjpcImh0dHA6XFxcL1xcXC93d3cuYWJvZG8uY29tXFxcL2tub3h2aWxsZS10blxcXC9wcm9wZXJ0aWVzXFxcLzI4MjYzNTdcIixcImlkXCI6XCI3YTEzNGE4ODFiNDI0MWU2YTZmYTcxNWFiYjQ4MmNjYVwiLFwidXJsX2lkc1wiOltcImIyMDQ5NjU3ZWEwNjFhMWY2ODI0NTMyZTM5YjE4NDI1MmEzZTRjMTRcIl19In0\">\r\n      1261 Walden Legacy Way\r\n    </a>\r\n    <br />\r\n\r\n\r\n\r\n    <br />\r\n    <br />\r\n\r\n\r\n    Hi, I found your property on ABODO and would like to find out more information. Please let me know when you are available for a viewing. Thank you.\r\n\r\nNumber of bedrooms: 2 Bedroom\r\n\r\n    <br /><br />-------<br />\r\n\r\n      <p><a href=\"https://mandrillapp.com/track/click/4608894/www.abodo.com?p=eyJzIjoiMnR1RnJ0ZGtyLW5DYWk2MFEtLVZIdkM3Q0N3IiwidiI6MSwicCI6IntcInVcIjo0NjA4ODk0LFwidlwiOjEsXCJ1cmxcIjpcImh0dHA6XFxcL1xcXC93d3cuYWJvZG8uY29tXFxcL2xhbmRsb3Jkc1xcXC84MDgyOVxcXC9sZWFkLWluc2lnaHRzXFxcLzEyNDUzOTZcIixcImlkXCI6XCI3YTEzNGE4ODFiNDI0MWU2YTZmYTcxNWFiYjQ4MmNjYVwiLFwidXJsX2lkc1wiOltcIjY5ZTY5ZDk0ODI4Mjg0MzNjYjFlM2IyZjU0MjZmNTZjZGYwMmUyM2JcIl19In0\">View Additional Information</a></p>\r\n      <br />-------<br />\r\n\r\n    <br />\r\n\r\n      <p>Thank you for being a loyal ABODO customer. If you have any feedback, suggestions or praise, we\u2019d love to hear from you!</p>\r\n\r\n      <p>And, if you are looking for new opportunities to gain more exposure to renters in Knoxville and generate more leads, contact your sales executive or call us at (800) 488-0074.</p>\r\n\r\n    Thanks,<br /><br />\r\n    The ABODO Team<br />\r\n    <a href=\"mailto:info@abodo.com\">info@abodo.com</a><br /><br />\r\n    p.s. Responding to a lead in five minutes instead of thirty makes it 2.5x more likely you'll get their business.\r\n\r\n      <img src=\"http://www.abodo.com/track_email_event/open?email_hash=l1oeyjuegldw\" height=\"1\" width=\"1\">\r\n  <img src=\"https://mandrillapp.com/track/open.php?u=4608894&id=7a134a881b4241e6a6fa715abb482cca\" height=\"1\" width=\"1\"></body>\r\n</html>\r\n\r\n\r\n",
+    "plain": "You have an interested renter from ABODO!\n\nSimply hit reply to respond to the renter.\n\n-------\nName: Somebody Kemal Ecirli\nEmail: example@icloud.com\nPhone Number: +15555555555\nStudent: No\n\nIn Regards to Property: 1261 Walden Legacy Way\n\n\nHi, I found your property on ABODO and would like to find out more information. Please let me know when you are available for a viewing. Thank you.\n\nNumber of bedrooms: 2 Bedroom\n\n\n-------\nView Additional Information: http://www.abodo.com/landlords/80829/lead-insights/1245396\n-------\n\nThank you for being a loyal ABODO customer. If you have any feedback, suggestions or praise, we would love to hear from you!\n\nAnd, if you are looking for new opportunities to gain more exposure to renters in Knoxville and generate more leads, contact your sales executive or call us at (800) 488-0074.\n\n\nThanks,\n\n\nThe ABODO Team\n\np.s. Responding to a lead in five minutes instead of thirty makes it 2.5x more likely you'll get their business.\n\n",
+    "reply_plain": "",
+    "token": "9690fc49849c1b844fc1138b5bcdde9c"
+}

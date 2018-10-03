@@ -11,20 +11,20 @@ module Leads
 
         def self.parse(data)
           Date::DATE_FORMATS[:default] = "%m/%d/%Y"
-          body = data.fetch(:plain,nil) || ''
+          body = data.fetch("plain",nil) || ''
 
           referral = "Abodo.com"
-          message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
+          message_id = data.fetch("headers",{}).fetch("Message-ID","").strip
           agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
 
-          name = ( body.match(/Name:\* (.+)$/)[1] rescue '(None)' ).gsub('*','')
+          name = ( body.match(/Name: (.+)Email/m)[1] rescue '(None)' ).gsub('*','').strip
           name_arr = name.split(' ')
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
 
-          phone1 = ( body.match(/Phone Number:\*\s+([^\s]+)/)[1] rescue '(None)' ).strip
-          email = ( body.match(/Email:\*\s+([^\s]+)/)[1] rescue '(None)' ).strip
-          notes = (( body.match(/>\s+(\w[\S\s]+[^-])----+/m))[1] rescue '(None)').strip
+          phone1 = ( body.match(/Phone Number: (.*)Student/m)[1] rescue '(None)' ).strip
+          email = ( body.match(/Email: (.+)Phone Number/m)[1] rescue '(None)' ).strip
+          notes = (( body.match(/Property:[^\n]+(.+)View Additional/m))[1] rescue '(None)').strip
           raw_data = data.to_json
 
           phone2 = nil
