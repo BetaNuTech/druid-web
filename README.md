@@ -444,13 +444,15 @@ Cloudmailin configuration is separate from Heroku and is performed on the Cloudm
 The account email address is 'cobaltcloud@betanutechnologies.com'
 
 ```
-|-------------+----------------+--------------------------------------+--------------------------------------------------------------|
-| Environment | Feature        | Address                              | POST Target                                                  |
-|-------------+----------------+--------------------------------------+--------------------------------------------------------------|
-| Both        | Lead Ingestion | 47064e037e5740bbedad@cloudmailin.net | https://staging.druidsite.com/api/v1/leads.json?token=XXX    |
-| Staging     | Messages       | 1b524cb3122f466ecc5a@cloudmailin.net | https://staging.druidsite.com/api/v1/messages.json?token=XXX |
-| Production  | Messages       | Unconfigured                         | Unconfigured                                                 |
-|-------------+----------------+--------------------------------------+--------------------------------------------------------------|
+|-------------+----------------+--------------------------------------+----------------------------------------------------------|
+| Environment | Feature        | Address                              | POST Target                                              |
+|-------------+----------------+--------------------------------------+----------------------------------------------------------|
+| Production  | Lead Ingestion | 47064e037e5740bbedad@cloudmailin.net | https://www.druidsite.com/api/v1/leads.json?token=XXX    |
+| Staging     | Lead Ingestion | Unconfigured                         | Unconfigured                                             |
+| Production  | Messages       | 1b524cb3122f466ecc5a@cloudmailin.net | https://www.druidsite.com/api/v1/messages.json?token=XXX |
+| Staging     | Messages       | Unconfigured                         | Unconfigured                                             |
+|-------------+----------------+--------------------------------------+----------------------------------------------------------|
+
 ```
 
 ### Twilio
@@ -500,3 +502,19 @@ Usage: `ErrorNotification.send(StandardError.new('error message'), {extra1: 'foo
 EXCEPTION_RECIPIENTS='example@example.com,example2@example.com' # Required or notification gracefully fails
 EXCEPTION_NOTIFIER_ENABLED=true   # Enabled by default
 ```
+
+## Scheduled Tasks
+
+The Heroku Scheduler should be configured to run the following tasks
+
+```
+|-----------+-------------------------------------+-------------------------------------------------------------|
+| Frequency | Task                                | Description                                                 |
+|-----------+-------------------------------------+-------------------------------------------------------------|
+| 10m       | rake leads:calls:generate_leads[60] | Generate leads from incoming calls in the past 60 minutes   |
+| 10m       | rake leads:yardi:send_guestcards    | Send claimed Leads to Yardi Voyager                         |
+| Hourly    | rake leads:yardi:import_guestcards  | Fetch Yardi Voyager Guestcards as Leads                     |
+| Daily     | rake leads:recordings:cleanup       | Delete calll recordings >2wks old not associated with leads |
+|-----------+-------------------------------------+-------------------------------------------------------------|
+```
+
