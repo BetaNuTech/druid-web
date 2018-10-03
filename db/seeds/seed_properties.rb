@@ -15,7 +15,8 @@ class SeedProperties
     'listing_id' => 10,
     'website' => 11,
     'application' => 12,
-    'marketing_phones' => 13
+    'marketing_phones' => 13,
+    'yardi_propertyid' => 14
   }
 
   def initialize(filename=nil)
@@ -24,6 +25,8 @@ class SeedProperties
     puts @file
     @lead_source = LeadSource.where(slug: 'Cloudmailin').first or
       raise "Could not find Lead Source 'Cloudmailin'"
+    @yardi_lead_source = LeadSource.where(slug: 'YardiVoyager').first or
+      raise "Could not find Lead Source 'YardiVoyager'"
   end
 
   def call(filename=nil)
@@ -38,6 +41,7 @@ class SeedProperties
       load_data.each do |row|
         name = row[COLUMNS['name']]
         listing_id = row[COLUMNS['listing_id']]
+        yardiid = row[COLUMNS['yardi_propertyid']]
 
         property = Property.where(name: name).first || Property.new
         is_new = property.new_record?
@@ -57,12 +61,24 @@ class SeedProperties
         property.phone_numbers = build_phone_numbers(row[COLUMNS['marketing_phones']])
 
         if property.save
-          PropertyListing.create(
-            property_id: property.id,
-            source_id: @lead_source.id,
-            code: listing_id,
-            description: "Cloudmailin email +code",
-            active: true)
+
+          if listing_id.present?
+            PropertyListing.create(
+              property_id: property.id,
+              source_id: @lead_source.id,
+              code: listing_id,
+              description: "Cloudmailin email +code",
+              active: true)
+          end
+
+            if yardiid.present?
+              PropertyListing.create(
+                property_id: property.id,
+                code: yardiid,
+                source: @yardi_lead_source,
+                description: 'Yardi Voyager Property ID'
+              )
+            end
 
             if is_new
               @created << "#{property.name}[#{property.id}]"
@@ -107,6 +123,14 @@ class SeedProperties
         )
       end
     return numbers
+  end
+
+  def build_yardi_voyager_listing(code)
+    return PropertyListing.new(
+      code: code,
+      lead_source: LeadSource.where(slug: 'YardiVoyager').first,
+      description: 'Yardi Voyager Property ID'
+    )
   end
 
 end
