@@ -62,6 +62,7 @@ module Leads
 
       # Send new/unsynced Leads to Yardi Voyager
       def sendLeads(leads)
+        updated_leads = []
         ActiveRecord::Base.transaction do
           updated_leads = send_Leads(leads)
           updated_leads.map{|l| l.save }

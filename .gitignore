@@ -28,3 +28,4 @@ public/assets/
 spec/examples.txt
 env.staging*
 env.production*
+latest.dump
