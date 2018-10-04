@@ -260,6 +260,7 @@ MESSAGE_DELIVERY_REPLY_TO="messages@example.com"
 MESSAGE_DELIVERY_TWILIO_PHONE='+15555555555'
 MESSAGE_DELIVERY_TWILIO_SID='XXX'
 MESSAGE_DELIVERY_TWILIO_TOKEN='XXX'
+MESSAGE_WHITELIST_ENABLED='false'
 PAPERTRAIL_API_TOKEN=XXX
 PORT=3000
 RACK_ENV=production
@@ -296,6 +297,11 @@ heroku run --app APPNAME rake db:seed
 Immediately login as `admin@example.com` using the password `ChangeMeNow`, then update the admin account to use a secure password. Then change the admin email address. Delete the `agent@example.com` account afterwards.
 
 ## Services
+
+### Messaging (General)
+
+Delivery of SMS and email messages can be restricted to numbers and email addresses of registered users using the `MESSAGE_WHITELIST_ENABLED` environment flag.
+Set this variable to `1` or `true` to prevent messages from being sent to leads.
 
 ### PostgreSQL
 
@@ -471,6 +477,7 @@ The callback token can be viewed and reset at `LeadSource#Show`.
 MESSAGE_DELIVERY_TWILIO_PHONE=+15126437241
 MESSAGE_DELIVERY_TWILIO_SID=XXX
 MESSAGE_DELIVERY_TWILIO_TOKEN=XXX
+MESSAGE_WHITELIST_ENABLED='false'
 ```
 
 #### Twilio Configuration

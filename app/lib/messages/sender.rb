@@ -2,6 +2,8 @@ module Messages
   class Sender
     class Error < StandardError; end
 
+    WHITELIST_FLAG = "MESSAGE_WHITELIST_ENABLED"
+
     attr_reader :delivery, :adapter
 
     def initialize(delivery)
@@ -40,6 +42,7 @@ module Messages
 
     def deliver
       begin
+        enforce_whitelist!
         @adapter.deliver(
           from: delivery.message.from_address,
           to: delivery.message.to_address,
@@ -60,28 +63,57 @@ module Messages
 
     private
 
+    def enforce_whitelist!
+      if enforce_whitelist?
+        unless message_recipient_whitelist.include?(delivery.message.to_address)
+          msg = "Invalid MessageDelivery #{delivery.id}. Message violates recipient whitelist: #{delivery.message.to_address}"
+          Rails.logger.error msg
+          ErrorNotification.send(StandardError.new(msg))
+          raise Error.new(msg)
+        end
+      end
+    end
+
+    def enforce_whitelist?
+      %w{1 true t yes y}.include?(ENV.fetch("MESSAGE_WHITELIST_ENABLED", false).to_s.downcase)
+    end
+
     def find_adapter!(message)
       self.class.find_adapter(message)
     end
 
     def validate!(delivery)
       unless delivery.message.is_a?(Message) && delivery.message.present?
-        msg = "Invalid MessageDelivery#{delivery.id}. Message not present"
+        msg = "Invalid MessageDelivery #{delivery.id}. Message not present"
         Rails.logger.error msg
         ErrorNotification.send(StandardError.new(msg))
         raise Error.new(msg)
       end
 
       unless delivery.message.valid?
-        msg = "Invalid MessageDelivery#{delivery.id}. Message is invalid: #{delivery.message.errors.to_a}"
+        msg = "Invalid MessageDelivery #{delivery.id}. Message is invalid: #{delivery.message.errors.to_a}"
         Rails.logger.error msg
         ErrorNotification.send(StandardError.new(msg))
         raise Error.new(msg)
       end
-
       return true
     end
 
+    def email_whitelist
+      return User.select('distinct email').
+        map(&:email).
+        select{|p| p.present?}
+    end
+
+    def phone_whitelist
+      return UserProfile.select(:cell_phone, :office_phone, :fax).
+        map{|p| [p.cell_phone, p.office_phone, p.fax]}.
+        flatten.compact.uniq.select{|p| p.present?}
+    end
+
+    def message_recipient_whitelist
+      return (email_whitelist + phone_whitelist)
+    end
 
   end
 end
