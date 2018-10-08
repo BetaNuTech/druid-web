@@ -4,9 +4,9 @@
       <h2><%= pluralize(scheduled_action.errors.count, "error") %> prohibited this scheduled_action from being saved:</h2>
 
       <ul>
-      <% scheduled_action.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% scheduled_action.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
@@ -16,46 +16,45 @@
   <%= form.hidden_field :target_id %>
   <%= form.hidden_field :target_type %>
 
-  <div class="fieldset_content">
-    <div class="row">
-      <div class="col-md-6">
-          <strong>Subject</strong><br/>
-          <p class="lead">
-            <%= scheduled_action.target.try(:name) || 'Personal Task' %>
-          </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4 form-group">
-        <%= form.label :lead_action_id, "Action" %>
-        <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id), {include_blank: true},{id: :scheduled_action_action, class: "form-control"} %>
-      </div>
-      <div class="col-md-4 form-group">
-        <%= form.label :reason_id, "Reason" %>
-        <%= form.select :reason_id, select_reason(scheduled_action.reason_id),{include_blank: true},{id: :scheduled_action_reason, class: "form-control"} %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="scheduled_action_schedule_selection">
-          <%= form.label :schedule %>
-          <%= form.schedule_select :schedule, style: :bootstrap, until: true, input_types: {date: :date_picker, time: :time_picker, datetime: :datetime_picker} %>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-8">
-        <%= form.label :description %>
-        <%= form.text_area :description, id: :scheduled_action_description, class: "form-control", rows: 5%>
-      </div>
-    </div>
-    <div class="form-group">
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-    <% if policy(@scheduled_action).destroy? && !@scheduled_action.new_record? %>
-      <p class="text-right">
-        <%= link_to('Delete', scheduled_action_path(@scheduled_action), class: "btn btn-danger btn-small", method: :delete, data: {confirm: 'Are you sure you want to delete this Task?'} )%>
+  <div class="row">
+    <div class="col-md-6">
+      <strong>Subject</strong><br/>
+      <p class="lead">
+        <%= scheduled_action.target.try(:name) || 'Personal Task' %>
       </p>
-    <% end %>
+    </div>
   </div>
+  <div class="row">
+    <div class="col-md-4 form-group">
+      <%= form.label :lead_action_id, "Action" %>
+      <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id), {include_blank: true},{id: :scheduled_action_action, class: "form-control"} %>
+    </div>
+    <div class="col-md-4 form-group">
+      <%= form.label :reason_id, "Reason" %>
+      <%= form.select :reason_id, select_reason(scheduled_action.reason_id),{include_blank: true},{id: :scheduled_action_reason, class: "form-control"} %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="scheduled_action_schedule_selection">
+        <%= form.label :schedule %>
+        <%= form.schedule_select :schedule, style: :bootstrap, until: true, input_types: {date: :date_picker, time: :time_picker, datetime: :datetime_picker} %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-8">
+      <%= form.label :description %>
+      <%= form.text_area :description, id: :scheduled_action_description, class: "form-control", rows: 5%>
+    </div>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+      <%= link_to 'Cancel', :back, class: "btn btn-xs btn-info"   %>
+  </div>
+  <% if policy(@scheduled_action).destroy? && !@scheduled_action.new_record? %>
+    <p class="text-right">
+      <%= link_to('Delete', scheduled_action_path(@scheduled_action), class: "btn btn-danger btn-small", method: :delete, data: {confirm: 'Are you sure you want to delete this Task?'} )%>
+    </p>
+  <% end %>
 <% end %>
