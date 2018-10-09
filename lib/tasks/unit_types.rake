@@ -5,12 +5,9 @@ namespace :unit_types do
     desc "Import Floorplans"
     task :import_floorplans => :environment do
 
-      properties = [
-        {name: 'Maplebrook', code: 'maplebr'},
-        {name: 'Marble Alley', code: 'marble'},
-      ]
+      Leads::Adapters::YardiVoyager.property_codes.each do |property|
+        # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
 
-      properties.each do |property|
         msg = " * Importing Yardi Voyager FloorPlans for #{property[:name]} [YARDI ID: #{property[:code]}] as UnitTypes"
         puts msg
         Rails.logger.warn msg

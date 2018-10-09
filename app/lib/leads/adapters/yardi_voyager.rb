@@ -6,6 +6,19 @@ module Leads
 
       attr_reader :property, :property_code, :lead_source, :data
 
+      # Returns all active Property ID's defined as PropertyListings in the database
+      #
+      # Returns:
+      # [ { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> } ... ]
+      def self.property_codes
+        PropertyListing.includes(:source, :property).
+            active.
+            where(lead_sources: {slug: 'YardiVoyager'}).
+          map do |pl|
+            {name: pl.property.name, code: pl.code, property: pl.property}
+          end
+      end
+
       # This Class interacts with the YardiVoyager API in the Yardi::Voyager namespace
       # Use it to send Leads to YardiVoyager, or download Leads, UnitTypes, and Units
       #

@@ -59,12 +59,9 @@ namespace :leads do
     desc "Import GuestCards"
     task :import_guestcards => :environment do
 
-      properties = [
-        {name: 'Maplebrook', code: 'maplebr'},
-        {name: 'Marble Alley', code: 'marble'},
-      ]
+      Leads::Adapters::YardiVoyager.property_codes.each do |property|
+        # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
 
-      properties.each do |property|
         msg = " * Importing Yardi Voyager GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}] as Leads"
         puts msg
         Rails.logger.warn msg
@@ -91,18 +88,8 @@ namespace :leads do
     desc "Send GuestCards"
     task :send_guestcards => :environment do
 
-      lead_source = LeadSource.where(slug: 'YardiVoyager').first
-      properties = [
-        { name: 'Maplebrook',
-          code: 'maplebr',
-          property: PropertyListing.where(code: 'maplebr', source_id: lead_source.id).first.property },
-
-        { name: 'Marble Alley',
-          code: 'marble',
-          property: PropertyListing.where(code: 'marble', source_id: lead_source.id).first.property }
-      ]
-
-      properties.each do |property|
+      Leads::Adapters::YardiVoyager.property_codes.each do |property|
+        # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
         msg = " * Sending Leads to Yardi Voyager as GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
