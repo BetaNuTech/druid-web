@@ -58,7 +58,14 @@ namespace :leads do
 
     desc "Import GuestCards"
     task :import_guestcards, [:minutes_ago] => :environment do |t,args|
-      minutes_ago = ( args[:minutes_ago] || 30).to_i
+      start_date = nil
+      if (minutes_ago = args[:minutes_ago]).present?
+        start_date = minutes_ago.to_i.minutes.ago
+      end
+
+      msg = " * Creating Leads from Voyager GuestCards updated #{minutes_ago || '(unlimited)'} minutes ago"
+      puts msg; Rails.logger.warn msg
+
 
       Leads::Adapters::YardiVoyager.property_codes.each do |property|
         # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
@@ -68,7 +75,7 @@ namespace :leads do
         Rails.logger.warn msg
         adapter = Leads::Adapters::YardiVoyager.new({
           property_code: property[:code],
-          start_date: minutes_ago.minutes.ago,
+          start_date: start_date,
           end_date: DateTime.now })
         leads = adapter.processLeads
 
