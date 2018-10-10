@@ -6,6 +6,7 @@ module Yardi
 
         # REJECTED_CUSTOMER_TYPES = %w{guarantor cancelled other}
         ACCEPTED_CUSTOMER_TYPES = %w{applicant approved_applicant future_resident prospect}
+        REMOTE_DATE_FORMAT="%FT%T"
 
         attr_accessor :debug,
           :name_prefix, :first_name, :middle_name, :last_name,
@@ -36,7 +37,14 @@ module Yardi
 
         def self.from_GetYardiGuestActivity(data)
           self.from_api_response(response: data, method: 'GetYardiGuestActivity_Login') do |response_data|
-             response_data["LeadManagement"]["Prospects"]["Prospect"].
+            ( response_data.dig('LeadManagement', 'Prospects', 'Prospect') || [] ).
+               map{|record| GuestCard.from_guestcard_node(record)}.flatten
+          end
+        end
+
+        def self.from_GetYardiGuestActivityDateRange(data)
+          self.from_api_response(response: data, method: 'GetYardiGuestActivity_DateRange') do |response_data|
+            ( response_data.dig('LeadManagement', 'Prospects', 'Prospect') || [] ).
                map{|record| GuestCard.from_guestcard_node(record)}.flatten
           end
         end
@@ -81,11 +89,9 @@ module Yardi
             root_node = data["Envelope"]["Body"]["#{method}Response"]["#{method}Result"]
             messages = root_node.fetch("Messages",false)
             if messages
-              msgs = Array(messages["Message"]).map do |m|
-                [m.fetch("messageType",'Default'), m.fetch("__content__", "Unknown error")].join(': ')
-              end
-              msg = msgs.join(';')
-              Rails.logger.warn("Yardi::Voyager API Messages: #{msg}")
+              message_data = messages["Message"]
+              err_msg = [message_data.fetch("messageType",'Default'), message_data.fetch("__content__", "Unknown error")].join(': ')
+              Rails.logger.warn("Yardi::Voyager API Messages: #{err_msg}")
             end
           rescue => e
             raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data schema: #{e}")
@@ -96,9 +102,19 @@ module Yardi
 
         def self.from_guestcard_node(data)
           prospects = []
-          prospect_record = data['Customers']['Customer']
-          prospect_preferences = data['CustomerPreferences']
-          prospect_events = data['Events']
+
+          # Data schema returned by Yardi Voyager is inconsistent between
+          # GetYardiGuestActivity_Login and GetYardiGuestActivity_DateRange
+          prospect_record = nil
+          if data.is_a?(Array)
+            prospect_record = data[1]['Customer']
+            prospect_preferences = {}
+            prospect_events = {}
+          else
+            prospect_record = data['Customers']['Customer']
+            prospect_preferences = data.fetch( 'CustomerPreferences', {} )
+            prospect_events = data.fetch( 'Events', {} )
+          end
 
           [ prospect_record ].flatten.compact.each do |pr|
             # Abort processing if this is not a wanted Customer type
@@ -253,7 +269,7 @@ module Yardi
                   unless lead.remoteid.present?
                     # New GuestCards in Voyager must provide at least one Event record.
                     xml.Events {
-                      xml.Event('EventType' => 'Other', 'EventDate' => lead.first_comm.strftime("%FT%T") ) {
+                      xml.Event('EventType' => 'Other', 'EventDate' => lead.first_comm.strftime(REMOTE_DATE_FORMAT) ) {
                         xml.EventID('IDValue' => '')
                         xml.Agent {
                           xml.AgentName {

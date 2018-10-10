@@ -57,7 +57,8 @@ namespace :leads do
   namespace :yardi do
 
     desc "Import GuestCards"
-    task :import_guestcards => :environment do
+    task :import_guestcards, [:minutes_ago] => :environment do |t,args|
+      minutes_ago = ( args[:minutes_ago] || 30).to_i
 
       Leads::Adapters::YardiVoyager.property_codes.each do |property|
         # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
@@ -65,7 +66,10 @@ namespace :leads do
         msg = " * Importing Yardi Voyager GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}] as Leads"
         puts msg
         Rails.logger.warn msg
-        adapter = Leads::Adapters::YardiVoyager.new({ property_code: property[:code] })
+        adapter = Leads::Adapters::YardiVoyager.new({
+          property_code: property[:code],
+          start_date: minutes_ago.minutes.ago,
+          end_date: DateTime.now })
         leads = adapter.processLeads
 
         count = leads.size

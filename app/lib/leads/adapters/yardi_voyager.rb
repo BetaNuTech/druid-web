@@ -4,7 +4,7 @@ module Leads
       LEAD_SOURCE_SLUG = 'YardiVoyager'
       DEFAULT_RENTAL_TYPE = 'Residential'
 
-      attr_reader :property, :property_code, :lead_source, :data
+      attr_reader :property, :property_code, :lead_source, :data, :params
 
       # Returns all active Property ID's defined as PropertyListings in the database
       #
@@ -27,15 +27,16 @@ module Leads
       #
       # Ex: { property_code: 'marble'}
       def initialize(params)
+        @params = params
         @lead_source =  get_lead_source
         if @lead_source.nil?
           msg = "Lead Adapter Error! LeadSource record for #{LEAD_SOURCE_SLUG} is missing!"
           err = StandardError.new(msg)
-          ErrorNotification.send(err, params)
+          ErrorNotification.send(err, @params)
           Rails.logger.error msg
           raise err
         end
-        @property_code = get_property_code(params)
+        @property_code = get_property_code(@params)
         @property = property_for_listing_code(@property_code)
       end
 
@@ -260,7 +261,9 @@ module Leads
       def fetch_GuestCards(propertycode)
         adapter = Yardi::Voyager::Api::GuestCards.new
         adapter.debug = true if debug?
-        return adapter.getGuestCards(propertycode)
+        start_date = @params.fetch(:start_date,nil)
+        end_date = @params.fetch(:end_date, DateTime.now)
+        return adapter.getGuestCards(propertycode, start_date: start_date, end_date: end_date)
       end
 
       def fetch_Floorplans(propertycode)
