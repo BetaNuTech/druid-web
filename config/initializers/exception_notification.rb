@@ -1,4 +1,5 @@
 exception_recipients = ENV.fetch('EXCEPTION_RECIPIENTS', '').split(',').map(&:strip)
+exception_host = ENV.fetch('APPLICATION_HOST', 'unknown')
 
 if exception_recipients.empty?
   msg = " *** EXCEPTION_RECIPIENTS envvar is not set. Error notification is disabled!"
@@ -7,8 +8,8 @@ if exception_recipients.empty?
 elsif ErrorNotification.enabled?
 	Rails.application.config.middleware.use ExceptionNotification::Rack,
 		:email => {
-			:email_prefix => "[Druid System Messages] ",
-			:sender_address => %{"Druid Exception Notifier" <druid@bluestone-prop>},
+			:email_prefix => "[Druid System Messages (#{exception_host})]",
+			:sender_address => %{"Druid Exception Notifier (#{exception_host})" <druid@bluestone-prop.com>},
 			:exception_recipients => exception_recipients
 		}
 else
