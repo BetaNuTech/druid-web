@@ -100,22 +100,21 @@ class User < ApplicationRecord
 
   # User's leads which changed state from 'open' to 'prospect'
   def claimed_leads(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
-    all_claimed_lead_audits = audits.
-      where(created_at: start_date..end_date).
-      where("(audited_changes->'state') IS NOT NULL AND (audited_changes->'state' @> '[\"open\", \"prospect\"]')")
-
-    audit_lead_ids = all_claimed_lead_audits.select(:auditable_id).map(&:auditable_id)
-    return leads.where(id: audit_lead_ids)
+    return Lead.includes(:lead_transitions).
+              where(leads: { user_id: self.id }).
+              where(lead_transitions: {
+                      last_state: 'open',
+                      current_state: 'prospect',
+                      created_at: start_date..end_date})
   end
 
-  # User's leads which changed state from 'open' to 'prospect'
+  # User's lead which changed state to 'approved'
   def closed_leads(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
-    all_closed_lead_audits = Audited::Audit.
-      where(auditable_type: 'Lead').
-      where(created_at: start_date..end_date).
-      where("(audited_changes->'state') IS NOT NULL AND (audited_changes->'state' @> '[\"movein\", \"resident\"]')")
-    audit_lead_ids = all_closed_lead_audits.select(:auditable_id).map(&:auditable_id)
-    return leads.where(id: audit_lead_ids)
+    return Lead.includes(:lead_transitions).
+              where(leads: { user_id: self.id } ).
+              where(lead_transitions: {
+                current_state: 'approved',
+                created_at: start_date..end_date })
   end
 
 end

@@ -220,8 +220,8 @@ EOS
     activity = []
     activity += completed_tasks_json(start_date: start_date, end_date: end_date)
     activity += messages_sent_json(start_date: start_date, end_date: end_date)
-    activity += lead_state_changed_audits_json(start_date: start_date, end_date: end_date)
-
+    activity += lead_state_changed_records_json(start_date: start_date, end_date: end_date)
+    activity = activity.sort{|x,y| y["raw_date"] <=> x["raw_date"]}
     return activity
   end
 
@@ -248,7 +248,7 @@ EOS
         agent_name: note.user.try(:name),
         agent_id: note.user_id ,
         lead_id: note.notable.id
-      )
+      ).to_h
     }
   end
 
@@ -262,11 +262,8 @@ EOS
     if @user_ids.present?
       tasks = tasks.where(user_id: @user_ids)
     end
-    if property_ids_for_filter.present?
+    if filter_by_property?
       tasks = tasks.joins("INNER JOIN team_users ON team_users.user_id = engagement_policy_action_compliances.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )")
-    end
-    if @team_ids.present?
-
     end
     return tasks
   end
@@ -317,40 +314,32 @@ EOS
     }
   end
 
-  def lead_state_changed_audits(start_date: 48.hours.ago, end_date: DateTime.now)
-    audits = Audited::Audit.
-      where(auditable_type: 'Lead', created_at: start_date..end_date).
-      where("(audited_changes->'state') IS NOT NULL")
-
+  def lead_state_changed_records(start_date: 48.hours.ago, end_date: DateTime.now)
+    transitions = LeadTransition.where(created_at: start_date..end_date)
     if @user_ids.present? || filter_by_property?
-      audits = audits.joins("INNER JOIN leads on audits.auditable_id = leads.id")
       if filter_by_property?
-        audits = audits.
-          joins("INNER JOIN team_users ON team_users.user_id = leads.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )").
-          where(leads: {property_id: @property_ids})
+        transitions = transitions.includes(lead: [:property]).where(properties: {id: [property_ids_for_filter]})
       end
       if @user_ids.present?
-        audits = audits.where(leads: {user_id: @user_ids})
+        transitions = transitions.includes(:lead).where(leads: {user_id: @user_ids})
       end
     end
 
-    return audits
+    return transitions
   end
 
-  def lead_state_changed_audits_json(start_date: 48.hours.ago, end_date: DateTime.now)
-    return lead_state_changed_audits(start_date: start_date, end_date: end_date).map{|audit|
-      state_change = ( audit.audited_changes["state"].map(&:humanize) rescue nil)
-      next unless state_change
+  def lead_state_changed_records_json(start_date: 48.hours.ago, end_date: DateTime.now)
+    return lead_state_changed_records(start_date: start_date, end_date: end_date).map{|rec|
       ActivityEntry.new(
         entry_type: 'Lead State',
-        raw_date: audit.created_at,
-        date: audit.created_at.strftime("%h %d %I:%M%p"),
-        link: "/leads/#{audit.auditable_id}",
-        description: "Lead Progressed from %s to %s" % state_change,
-        lead_name: audit.auditable.name,
-        lead_id: audit.auditable_id,
-        agent_name: ( audit.auditable.user.try(:name) || 'No Agent' ),
-        agent_id: audit.auditable.user_id
+        raw_date: rec.created_at,
+        date: rec.created_at.strftime("%h %d %I:%M%p"),
+        link: "/leads/#{rec.lead_id}",
+        description: "Lead Progressed from %s to %s" % [rec.last_state.humanize, rec.current_state.humanize],
+        lead_name: rec.lead.name,
+        lead_id: rec.lead_id,
+        agent_name: ( rec.lead.user.try(:name) || 'No Agent' ),
+        agent_id: rec.lead.user_id
       ).to_h
     }.compact
   end

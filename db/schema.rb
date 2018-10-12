@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_09_210122) do
+ActiveRecord::Schema.define(version: 2018_10_12_145258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 2018_10_09_210122) do
     t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["last_state", "current_state", "created_at"], name: "state_xtn"
     t.index ["lead_id"], name: "index_lead_transitions_on_lead_id"
   end
 
