@@ -14,7 +14,11 @@
     "prop-types": "^15.6.2",
     "query-string": "^5.1.1",
     "react": "^16.4.2",
-    "react-dom": "^16.4.2"
+    "react-dom": "^16.4.2",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
   },
   "version": "0.0.1",
   "description": "Druid Web App",

@@ -23,19 +23,19 @@ class Pagination extends React.Component {
     event.preventDefault()
     const page = event.target.dataset.pagenumber
     if (page <= this.totalPages()) {
-      this.props.onGotoPage(page)
+      this.props.onSelect(page)
     }
   }
 
   render() {
-    let maxPages = this.totalPages()
-    let pageArray = Array.apply(null, {length: maxPages}).map(Number.call, Number)
-    let pageNumbers = pageArray.map((p) => {
-        let linkClass = "btn " + (this.currentPage() == p + 1 ? "btn-info" : "btn-default");
-        let linkKey = "LeadsPage" + p
-      return <a href="#" className={linkClass} key={linkKey}
-                data-pagenumber={p + 1} onClick={this.handleClickPageNumber}>
-              {p + 1}</a>
+    const maxPages = this.totalPages()
+    const pageArray = Array.apply(null, {length: maxPages}).map(Number.call, Number)
+    const pageNumbers = pageArray.map((p) => {
+        const linkClass = "btn " + (this.currentPage() == p + 1 ? "btn-info" : "btn-default");
+        const linkKey = "LeadsPage" + p
+        return <a href="#" className={linkClass} key={linkKey}
+                  data-pagenumber={p + 1} onClick={this.handleClickPageNumber}>
+                {p + 1}</a>
       }
     )
 

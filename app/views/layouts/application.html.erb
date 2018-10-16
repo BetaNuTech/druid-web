@@ -17,8 +17,10 @@
     <%= render partial: 'shared/footer' %>
 
     <% if defined?(@webpack) %>
-      <%= javascript_pack_tag @webpack %>
-      <%= stylesheet_pack_tag @webpack %>
+      <% Array(@webpack).each do |pack| %>
+        <%= javascript_pack_tag pack %>
+        <%= stylesheet_pack_tag pack %>
+      <% end %>
     <% end %>
   </body>
 </html>

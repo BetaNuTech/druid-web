@@ -5,16 +5,15 @@ class SearchInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value,
-      onUpdateSearchInput: props.onUpdateSearchInput,
-      onSubmitSearch: props.onSubmitSearch
+      value: props.value
     }
   }
 
   handleUpdateSearchInput = (event) => {
     const new_value = event.target.value
     this.setState({value: new_value})
-    this.state.onUpdateSearchInput(new_value)
+    this.props.onModifyFilter()
+    this.props.onUpdateSearchInput(new_value)
   }
 
   handleInputKeyPress = (event) => {
@@ -24,7 +23,7 @@ class SearchInput extends React.Component {
   }
 
   handleSubmitSearch = () => {
-    this.state.onSubmitSearch()
+    this.props.onSubmitSearch()
   }
 
   componentWillReceiveProps(new_props) {

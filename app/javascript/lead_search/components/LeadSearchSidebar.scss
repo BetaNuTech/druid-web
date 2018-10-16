@@ -1,11 +1,13 @@
 .LeadSearchSidebar {
-  grid-area: LeadSearchSidebar;
-  margin: 1em;
+  //margin: 1em;
 }
 
 .FilterListContainer {
-  padding: 1em;
-  box-shadow: 5px 5px 5px 5px gray;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 1em;
 }
 
 .FilterList {
@@ -13,20 +15,12 @@
 
   ul {
     list-style-position: inside;
-    padding-left: 0.5em;
+    padding: 0.25em;
+    margin: 0;
   }
 }
 
 .FilterListItem {
   font-weight: bold;
-  font-size: 1.2em;
-}
-
-@media(max-width: 765px) {
-  .FilterList {
-    float: left;
-    border: 0px;
-    margin-top: 1em;
-    padding: 0.5em 1em;
-  }
+  font-size: 1.1em;
 }

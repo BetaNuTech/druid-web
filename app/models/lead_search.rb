@@ -18,7 +18,7 @@ class LeadSearch
 
   attr_reader :options, :skope
 
-  def initialize(options={}, skope=Lead)
+  def initialize(options={}, skope=Lead, user=nil)
     @default_skope = skope
     @options = (options || {})
     @options = @options.to_unsafe_h unless @options.is_a?(Hash)
@@ -55,46 +55,56 @@ class LeadSearch
   def full_options
     opts = {
       "Filters" => {
-        "_index" => ["Agents", "Properties", "Priorities", "States", "Sources", "First Name", "Last Name", "ID Number", "Search"],
+        "_index" => ["Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search"],
         "Agents" => {
           param: "user_ids",
-          values: User.where(id: @options[:user_ids]).map{|u| {label: u.name, value: u.id}}
+          values: User.where(id: @options[:user_ids]).map{|u| {label: u.name, value: u.id}},
+          options: User.with_team.by_name_asc.map{ |u| {label: u.name, value: u.id} }
         },
         "Properties" => {
           param: "property_ids",
-          values: Property.where(id: @options[:property_ids]).map{|p| {label: p.name, value: p.id}}
+          values: Property.where(id: @options[:property_ids]).map{|p| {label: p.name, value: p.id}},
+          options: Property.active.order(name: :asc).map{|p| {label: p.name, value: p.id}}
         },
         "Priorities" => {
           param: "priorities",
-          values: Array(@options[:priorities]).map{|p| {label: p.capitalize, value: p}}
+          values: Lead.priorities.select{|k,v| Array(@options[:priorities]).include?(v.to_s) }.map{|p| {label: p[0].capitalize, value: p[1].to_s}},
+          options: Lead.priorities.map{|p| {label: p[0].capitalize, value: p[1].to_s}}
         },
         "States" => {
           param: "states",
-          values: Array(@options[:states]).map{|s| {label: s.capitalize, value: s}}
+          values: Array(@options[:states]).map{|s| {label: s.capitalize, value: s}},
+          options: Lead.state_names.map{|s| {label: s.humanize, value: s}}
         },
         "Sources" => {
           param: "sources",
-          values: LeadSource.where(id: @options[:sources]).map{|s| {label: s.name, value: s.id}}
+          values: LeadSource.where(id: @options[:sources]).map{|s| {label: s.name, value: s.id}},
+          options: LeadSource.active.map{|s| {label: s.name, value: s.id}}
         },
         "Referrals" => {
           param: "referrals",
-          values: Array(@options[:referrals]).map{|r| {label: r, value: r}}
+          values: Array(@options[:referrals]).map{|r| {label: r, value: r}},
+          options: Lead.select("distinct(referral)").order("referral ASC").map{|r| {label: r.referral, value: r.referral}}
         },
         "First Name" => {
           param: "first_name",
-          values: Array(@options[:first_name]).map{|v| {label: v, value: v} }
+          values: Array(@options[:first_name]).map{|v| {label: v, value: v} },
+          options: []
         },
         "Last Name" => {
           param: "last_name",
-          values: Array(@options[:last_name]).map{|v| {label: v, value: v} }
+          values: Array(@options[:last_name]).map{|v| {label: v, value: v} },
+          options: []
         },
         "ID Number" => {
           param: "id_number",
-          values: Array(@options[:id_number]).map{|v| {label: v, value: v} }
+          values: Array(@options[:id_number]).map{|v| {label: v, value: v} },
+          options: []
         },
         "Search" => {
           param: "text",
-          values: Array(@options[:text]).map{|v| {label: v, value: v} }
+          values: Array(@options[:text]).map{|v| {label: v, value: v} },
+          options: []
         }
       },
       "Pagination" => {
@@ -204,8 +214,7 @@ class LeadSearch
     property_ids ||= @options[:property_ids]
     if property_ids.present?
       @skope = @skope.
-        includes(:property).
-        where(properties: {id: property_ids})
+        where(property_id: property_ids)
       @filter_applied = true
     end
     return self

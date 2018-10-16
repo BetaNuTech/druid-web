@@ -13,6 +13,11 @@ module Users
     end
 
     class_methods do
+
+      def with_team
+        User.includes(:membership).where("team_users.id IS NOT null")
+      end
+
       def without_team
         User.includes(:membership).where(team_users: {id: nil})
       end

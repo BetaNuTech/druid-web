@@ -2,19 +2,9 @@ import React from 'react'
 import Style from './LeadSearchSidebar.scss'
 
 class LeadSearchSidebar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      options: props.options
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState( { options: nextProps.options })
-  }
 
   getFilterData = (key) => {
-    const filters = this.state.options.Filters
+    const filters = this.props.options.Filters
     return (filters && filters[key]) ? filters[key].values  : []
   }
 
@@ -63,6 +53,18 @@ class LeadSearchSidebar extends React.Component {
             <span className={Style.FilterListItem}>State</span>
             <ul>
               {this.filterInfo("States")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Referrals</span>
+            <ul>
+              {this.filterInfo("Referrals")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Sources</span>
+            <ul>
+              {this.filterInfo("Sources")}
             </ul>
           </div>
           <div className="clearfix"></div>

@@ -1,0 +1,19 @@
+.SearchSelect {
+  grid-area: SearchSelect;
+
+  fieldset {
+    margin-top: 0.5em;
+  }
+  legend {
+    margin: 0.25em;
+  }
+
+  .FilterOption {
+    padding: 0.5em;
+    input[type="checkbox"] { margin-right: 0.25em;}
+
+    label {
+      font-weight: normal;
+    }
+  }
+}
