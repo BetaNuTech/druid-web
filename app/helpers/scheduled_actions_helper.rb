@@ -5,7 +5,7 @@ module ScheduledActionsHelper
 
     option_labels = {
       complete: 'Mark Complete',
-      retry: 'Mark Complete and Retry Later',
+      retry: 'Mark Complete and Follow Up Later',
       reject: 'Reject (task is not necessary)',
       expire: 'Expire (too late to complete)'
     }
