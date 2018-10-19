@@ -90,7 +90,18 @@ module Yardi
             messages = root_node.fetch("Messages",false)
             if messages
               message_data = messages["Message"]
-              err_msg = [message_data.fetch("messageType",'Default'), message_data.fetch("__content__", "Unknown error")].join(': ')
+              messages_array = []
+              case message_data.class
+              when Array
+                messages_array = message_data
+              when Hash
+                messages_array = [message_data]
+              end
+              err_msg = ""
+              messages_array.each do |m|
+                err_msg += [m.fetch("messageType",'Default'), m.fetch("__content__", "Unknown error")].join(': ')
+              end
+
               Rails.logger.warn("Yardi::Voyager API Messages: #{err_msg}")
             end
           rescue => e
