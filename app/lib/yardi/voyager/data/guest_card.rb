@@ -94,7 +94,7 @@ module Yardi
               Rails.logger.warn("Yardi::Voyager API Messages: #{err_msg}")
             end
           rescue => e
-            raise Yardi::Voyager::Data::Error.new("Invalid GuestCard data schema: #{e}")
+            raise Yardi::Voyager::Data::Error.new("Error encountered processing Voyager Response: #{e} ---- Response Data: #{data}")
           end
 
           return yield(root_node)
