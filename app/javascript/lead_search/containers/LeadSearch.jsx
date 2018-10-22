@@ -19,7 +19,7 @@ class LeadSearch extends React.Component {
     return (
       <div className={Style.LeadSearch}>
         <div className={Style.Header}>
-          <h1>Leads</h1>
+          <h1>Search Leads</h1>
         </div>
         <LeadSearchSidebar options={this.props.search}/>
         <LeadSearchFilter search={this.props.search} />

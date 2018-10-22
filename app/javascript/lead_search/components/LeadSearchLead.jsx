@@ -39,14 +39,14 @@ class LeadSearchLead extends React.Component {
               <span>{this.props.data.user ? this.props.data.user.name : 'None'} </span>
             </li>
             <li>
-              <strong>FC:</strong>
+              <strong>First Contact</strong>
               &nbsp;
-              <span>{this.formatDateTime(this.props.first_comm)}</span>
+              <span>{this.props.data.first_comm != undefined ? this.formatDateTime(this.props.data.first_comm) : '-'}</span>
             </li>
             <li>
-              <strong>LC:</strong>
+              <strong>Last Contact:</strong>
               &nbsp;
-              <span>{this.formatDateTime(this.props.last_comm)}</span>
+              <span>{this.props.data.last_comm != undefined ? this.formatDateTime(this.props.data.last_comm) : '-'}</span>
             </li>
           </ul>
         </div>

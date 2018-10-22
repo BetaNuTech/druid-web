@@ -41,10 +41,12 @@ class Pagination extends React.Component {
 
     return(
       <div className={Style.Pagination}>
-        <p>
-          Page {this.currentPage()} of {this.totalPages()}
-        </p>
-        <a href="#" className="btn btn-default" data-pagenumber={this.currentPage() + 1} onClick={this.handleClickPageNumber}>Next</a>
+        { maxPages > 0 &&
+          <span>
+            Page {this.currentPage()} of {this.totalPages()}<br/>
+            <a href="#" className="btn btn-default" data-pagenumber={this.currentPage() + 1} onClick={this.handleClickPageNumber}>Next</a>
+          </span>
+        }
         {pageNumbers}
       </div>
     )

@@ -7,12 +7,14 @@ import LeadSearchLead from '../components/LeadSearchLead.jsx'
 class LeadList extends React.Component {
 
   renderList() {
-    if (this.props.leads != undefined && this.props.leads.length > 0) {
+    if (this.props.leads == undefined) {
+      return <h3>Please Wait...</h3>
+    } else if (this.props.leads.length == 0) {
+      return <h3>None Found</h3>
+    } else {
       return this.props.leads.map( lead => {
         return <LeadSearchLead data={lead} key={lead.id}/>
       })
-    } else {
-      return <h3>None Found</h3>
     }
   }
 

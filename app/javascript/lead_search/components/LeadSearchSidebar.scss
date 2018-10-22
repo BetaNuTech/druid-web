@@ -7,7 +7,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  margin: 1em;
+  margin: 0 1em 1em 1em;
 }
 
 .FilterList {
@@ -15,12 +15,17 @@
 
   ul {
     list-style-position: inside;
-    padding: 0.25em;
+    padding: 0;
     margin: 0;
+
+    li {
+      margin-left: 0em;
+      padding-left: 0.25em;
+    }
   }
 }
 
 .FilterListItem {
   font-weight: bold;
-  font-size: 1.1em;
+  font-size: 1.2em;
 }
