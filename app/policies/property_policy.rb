@@ -1,5 +1,17 @@
 class PropertyPolicy < ApplicationPolicy
 
+  class Scope < Scope
+    def resolve
+      skope = scope
+      return case user
+      when ->(u) { u.admin?}
+        skope
+      else
+        skope.where(id: user.properties.map(&:id))
+      end
+    end
+  end
+
   def index?
     user.agent? || user.admin?
   end

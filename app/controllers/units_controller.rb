@@ -78,7 +78,7 @@ class UnitsController < ApplicationController
     end
 
     def unit_scope
-      @property.present? ? @property.housing_units : Unit
+      policy_scope(Unit)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

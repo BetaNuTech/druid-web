@@ -5,8 +5,7 @@
     </div>
     <% if policy(Unit).new? %>
       <div class="col-md-6 text-right">
-        <%= glyph(:create) %>
-        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path) %>
+        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path), class: "btn btn-sm btn-primary"  %>
       </div>
     <% end %>
   </div>
@@ -55,8 +54,7 @@
   <div class="row">
     <% if policy(Unit).new? %>
       <div class="col-md-12 text-right">
-        <%= glyph(:create) %>
-        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path) %>
+        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path), class: "btn btn-sm btn-primary"  %>
       </div>
     <% end %>
   </div>
