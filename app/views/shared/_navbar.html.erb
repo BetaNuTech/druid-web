@@ -297,8 +297,10 @@
                   </li>
                 </ul>
               <% else %>
-                <%= link_to(new_user_session_path, class: "btn btn-primary") do %>
-                  <span class="glyphicon glyphicon-off"></span> Login
+                <% if false %>
+                  <%= link_to(new_user_session_path, class: "btn btn-primary") do %>
+                    <span class="glyphicon glyphicon-off"></span> Login
+                  <% end %>
                 <% end %>
               <% end %>
             </div>
