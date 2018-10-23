@@ -9,37 +9,29 @@ div.team_membership_control {
 }
 
 #team-header {
-  padding: 2em 1em 0.3em 1em;
+  padding: 0em 1em 0.3em 1em;
   position: relative;
   top: 10px;
   margin-bottom: 1em;
 
-  h2 { margin: 0; }
-  h4 { margin: 0; display: inline;}
-  h5 { margin: 0; display: inline;}
-
-  .btn-xs {
-    position: relative;
-    top: -2px;
-  }
-}
-
-#team-header {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
 
-  padding: 2em 1em 0em 1em;
-  position: relative;
- // top: 10px;
+  h2 { margin: 0; }
 
   h4 {
-    margin: 0 0 0.25em 0;
+    display: inline;
   }
 
   h5 {
-    margin: 0.25em;
     line-height: 1.5em;
+    display: inline;
+  }
+
+  .btn-xs {
+    position: relative;
+    top: -2px;
   }
 
   .team-header-property {
@@ -50,6 +42,4 @@ div.team_membership_control {
     padding: 0.5em 1em;
     margin-bottom: 0;
   }
-
-
 }
