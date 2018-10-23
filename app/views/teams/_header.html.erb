@@ -1,7 +1,21 @@
 <% if @current_team.present? %>
   <div id="team-header" class="bg-info">
-    <div class="team-header-name lead row text-center">
-      <%= link_to(@current_team.name, team_path(@current_team))%>
+    <div class="team-header-property">
+      <% property_ids = @current_team.properties.select(:id).map(&:id).flatten %>
+      <span class="lead"> <%= link_to(@current_team.name, team_path(@current_team))%></span>
+      <br/>
+      <%= link_to('Leads', search_leads_path({lead_search: {property_ids: property_ids}})) %>
+      &bullet;
+      <span class="text-nowrap">
+        Mine: <%= link_to(search_leads_path({lead_search: {property_ids: property_ids, user_ids: [current_user.id]}})) do %><%= @current_team.leads.for_agent(current_user).count %><% end %>
+      </span>
+ &bullet;
+      <span class="text-nowrap">
+        Open: <%= link_to(search_leads_path({lead_search: {property_ids: property_ids, states: ['open']}})) do %><%= @current_team.leads.open.count %><% end %>
+      </span> &bullet;
+      <span class="text-nowrap">
+        Active: <%= link_to(search_leads_path({lead_search: {property_ids: property_ids, states: ['open', 'claimed']}})) do %><%= @current_team.leads.active.count %><% end %>
+      </span>
     </div>
   <% @current_team.properties.each do |property| %>
     <div class="team-header-property">

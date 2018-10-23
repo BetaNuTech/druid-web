@@ -16,6 +16,7 @@ class Team < ApplicationRecord
 
   ### Associations
   has_many :properties
+  has_many :leads, through: :properties
 
   ### Validations
   validates :name, presence: true, uniqueness: true
