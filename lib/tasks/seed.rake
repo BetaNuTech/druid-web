@@ -28,41 +28,37 @@ namespace :db do
       puts "(press ENTER to continue or CTRL-C to quit)"
       _c = STDIN.gets
 
-      #lead_source_count = 5
-      #puts "= Creating #{lead_source_count} Lead Sources"
-      #lead_source_count.times {
-      #source = FactoryBot.create(:lead_source)
-      #puts "  - #{source.name}"
-      #}
-
-      #property_count = 10
-      #puts "= Creating #{property_count} Properties"
-      #property_count.times {
-      #property = FactoryBot.create(:property)
-      #puts "  - #{property.name}"
-      #}
+      team_count = 5
+      puts "= Creating #{team_count} Teams"
+      team_count.times do
+        team = FactoryBot.create(:team)
+        puts " - #{team.name}"
+        Property.all.each do |property|
+          property.team = Team.order("RANDOM()").first
+          property.save
+        end
+      end
 
       agent_count = 10
       puts "= Creating #{agent_count} Agents"
       agent_count.times {
-        user = FactoryBot.create(:user, role: Role.agent)
-        puts "  - #{user.name}"
-        rand(4).times {
-          property = Property.order("RANDOM()").first
-          PropertyAgent.create(user: user, property: property)
-          puts "    * Agent for #{property.name}"
-        }
+        role = Role.where("slug != 'administrator'").order("RANDOM()").first
+        user = FactoryBot.create(:user, role: role)
+        team = Team.order("RANDOM()").first
+        teamrole = Teamrole.order("RANDOM()").first
+        puts "  - #{user.name} is a member of #{team.name}"
+        TeamUser.create(user: user, team: team, teamrole: teamrole)
       }
 
       lead_count = 200
       puts "= Creating #{lead_count } Leads"
       lead_count.times {
-        property = Property.order("RANDOM()").first
+        agent = TeamUser.order("RANDOM()").first.user
+        property = agent.team.properties.order("RANDOM()").first
         lead_source = LeadSource.order("RANDOM()").first
-        lead = FactoryBot.create(:lead, property: Property.order("RANDOM()").first, source: lead_source)
+        lead = FactoryBot.create(:lead, property: property, source: lead_source)
         puts "  - #{lead.name}: interested in the property #{property.name}"
         if (Faker::Boolean.boolean(0.2))
-          agent = PropertyAgent.order("RANDOM()").first.user
           lead.user = agent
           lead.claim if lead.open?
           puts "    + Claimed by #{agent.name}"

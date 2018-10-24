@@ -11,7 +11,7 @@
 
 FactoryBot.define do
   factory :team do
-    name { Faker::Company.name }
-    description { Faker::Lorem.sentence }
+    name { "Team #{Faker::GameOfThrones.house}" }
+    description { Faker::GameOfThrones.quote }
   end
 end
