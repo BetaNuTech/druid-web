@@ -1,6 +1,6 @@
 ---
 :engagement_policy:
-  :version: 1
+  :version: 2
   :data:
     - :version: 1
       :property_name: null
@@ -146,17 +146,9 @@
           :retry_delay_multiplier: none
           :score: 1
           :active: true
-    - :version: 1
+    - :version: 2
       :property_name: null
       :lead_state: abandoned
       :description: Global Engagement Policy for 'abandoned' Leads
       :active: true
-      :engagement_policy_actions:
-        - :lead_action_name: Process Application
-          :description: Process leasing application
-          :deadline: 48
-          :retry_count: 0
-          :retry_delay: 0
-          :retry_delay_multiplier: none
-          :score: 5
-          :active: true
+      :engagement_policy_actions: []
