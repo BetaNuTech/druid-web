@@ -8,7 +8,7 @@ class PropertiesController < ApplicationController
   # GET /properties.json
   def index
     authorize Property
-    @properties = Property.order("name ASC")
+    @properties = Property.includes(:team).order("name ASC")
   end
 
   # GET /properties/1

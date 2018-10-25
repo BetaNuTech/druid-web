@@ -21,7 +21,7 @@ class ScheduledActionsController < ApplicationController
       end
       @scheduled_actions = @user.scheduled_actions
     else
-      @scheduled_actions = current_user.scheduled_actions
+      @scheduled_actions = current_user.scheduled_actions.includes(:schedule)
     end
   end
 
