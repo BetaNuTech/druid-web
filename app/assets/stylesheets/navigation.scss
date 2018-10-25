@@ -4,10 +4,13 @@ body {
 
 nav {
   background: #fff !important;
-  z-index: 2000;
 }
 
 .navbar {
+  .container {
+    width: auto;
+  }
+
   @media (max-width: 700px) {
     li {
       margin-left: 50px;
@@ -19,14 +22,14 @@ nav {
     }
   }
 
-  a.navbar-brand {
+  .navbar-brand {
     font-size: 1.5em;
   }
 
 
   li .btn {
     margin-top: 10px;
-    font-size: 1.1em;
+    font-size: 0.9em;
   }
 
   a.btn:link, a.btn:visited {
