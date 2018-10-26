@@ -6,6 +6,19 @@ RSpec.describe UnitsController, type: :controller do
 
   let(:valid_attributes) { build(:unit).attributes }
   let(:invalid_attributes) { {description: 'foobar'}}
+  let(:property) { create(:property, team: team)}
+  let(:teamrole) { create(:teamrole)}
+  let(:team) {
+    t = create(:team)
+    TeamUser.create(team: t, user: agent, teamrole: teamrole)
+    t.reload
+    t
+  }
+  let(:unit) { create(:unit, property: property)}
+
+  before(:each) do
+    unit
+  end
 
   describe "GET #index" do
     describe "as an unauthenticated user" do
@@ -55,7 +68,6 @@ RSpec.describe UnitsController, type: :controller do
         unit1 = create(:unit, property: property1)
         unit2 = create(:unit, property: property1)
         unit3 = create(:unit)
-        property2 = unit3.property
         get :index, params: {property_id: property1.id}
         expect(assigns(:property)).to eq(property1)
         expect(assigns(:units).count).to eq(2)
@@ -192,7 +204,6 @@ RSpec.describe UnitsController, type: :controller do
   end
 
   describe "GET #show" do
-    let(:unit) { create(:unit) }
 
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
@@ -204,8 +215,9 @@ RSpec.describe UnitsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        get :show, params: {id: unit.id}
-        expect(response).to be_redirect
+        expect{
+          get :show, params: {id: unit.id}
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
@@ -248,16 +260,18 @@ RSpec.describe UnitsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        get :edit, params: {id: unit.id}
-        expect(response).to be_redirect
+        expect{
+          get :edit, params: {id: unit.id}
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
     describe "as an agent" do
       it "should fail and redirect" do
         sign_in agent
-        get :edit, params: {id: unit.id}
-        expect(response).to be_redirect
+        expect{
+          get :edit, params: {id: unit.id}
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
@@ -302,9 +316,7 @@ RSpec.describe UnitsController, type: :controller do
         sign_in unroled_user
         expect{
           put :update, params: {id: unit.id, unit: updated_attributes}
-          expect(response).to be_redirect
-          unit.reload
-        }.to_not change{unit.unit}
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
@@ -313,9 +325,7 @@ RSpec.describe UnitsController, type: :controller do
         sign_in agent
         expect{
           put :update, params: {id: unit.id, unit: updated_attributes}
-          expect(response).to be_redirect
-          unit.reload
-        }.to_not change{unit.unit}
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
@@ -356,38 +366,27 @@ RSpec.describe UnitsController, type: :controller do
 
   describe "DELETE #destroy" do
 
-    let(:unit) { create(:unit) }
-
-    before do
-      unit
-    end
-
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
-        expect {
-          delete :destroy, params: {id: unit.id}
-          expect(response).to be_redirect
-        }.to_not change{Unit.count}
+        delete :destroy, params: {id: unit.id}
+        expect(response).to be_redirect
       end
     end
 
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect {
+        expect{
           delete :destroy, params: {id: unit.id}
-          expect(response).to be_redirect
-        }.to_not change{Unit.count}
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
     describe "as an agent" do
       it "should fail and redirect" do
         sign_in agent
-        expect {
-          delete :destroy, params: {id: unit.id}
-          expect(response).to be_redirect
-        }.to_not change{Unit.count}
+        delete :destroy, params: {id: unit.id}
+        expect(response).to be_redirect
       end
     end
 

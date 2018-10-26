@@ -7,7 +7,10 @@ class UnitsController < ApplicationController
   # GET /units.json
   def index
     authorize Unit
-    @units = unit_scope.all
+    @units = unit_scope
+    if params[:property_id].present?
+      @units = @units.where(property_id: params[:property_id])
+    end
   end
 
   # GET /units/1
