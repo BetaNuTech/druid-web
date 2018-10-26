@@ -82,7 +82,7 @@ RSpec.describe Stat, type: :model do
     end
 
     it "returns property_leads_json" do
-      expect(stat.lead_state_changed_audits_json).to be_a(Array)
+      expect(stat.lead_state_changed_records_json).to be_a(Array)
     end
   end
 

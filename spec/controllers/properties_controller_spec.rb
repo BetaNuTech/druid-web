@@ -19,11 +19,19 @@ RSpec.describe PropertiesController, type: :controller do
   # PropertiesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
+  let(:property) { create(:property, team: team)}
+  let(:teamrole) { create(:teamrole)}
+  let(:team) {
+    t = create(:team)
+    TeamUser.create(team: t, user: agent, teamrole: teamrole)
+    t.reload
+    t
+  }
+
   describe "GET #index" do
     describe "as an administrator" do
       it "returns a success response" do
         sign_in administrator
-        property = Property.create! valid_attributes
         get :index, params: {}, session: valid_session
         expect(response).to be_successful
       end
@@ -33,7 +41,6 @@ RSpec.describe PropertiesController, type: :controller do
     describe "as an corporate" do
       it "returns a success response" do
         sign_in corporate
-        property = Property.create! valid_attributes
         get :index, params: {}, session: valid_session
         expect(response).to be_successful
       end
@@ -43,7 +50,6 @@ RSpec.describe PropertiesController, type: :controller do
     describe "as an agent" do
       it "returns a success response" do
         sign_in agent
-        property = Property.create! valid_attributes
         get :index, params: {}, session: valid_session
         expect(response).to be_successful
       end
@@ -54,7 +60,6 @@ RSpec.describe PropertiesController, type: :controller do
     describe "as an corporate" do
       it "returns a success response" do
         sign_in corporate
-        property = Property.create! valid_attributes
         get :show, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
       end
@@ -63,7 +68,6 @@ RSpec.describe PropertiesController, type: :controller do
     describe "as an agent" do
       it "returns a success response" do
         sign_in agent
-        property = Property.create! valid_attributes
         get :show, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
       end
@@ -92,7 +96,6 @@ RSpec.describe PropertiesController, type: :controller do
     describe "as an administrator" do
       it "returns a success response" do
         sign_in administrator
-        property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
       end
@@ -101,14 +104,12 @@ RSpec.describe PropertiesController, type: :controller do
     describe "as an corporate" do
       it "returns a success response" do
         sign_in corporate
-        property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
       end
 
       it "returns a success response" do
         sign_in corporate
-        property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
         expect(response).to be_successful
       end
@@ -117,7 +118,6 @@ RSpec.describe PropertiesController, type: :controller do
     describe "as an agent" do
       it "denies access" do
         sign_in agent
-        property = Property.create! valid_attributes
         get :edit, params: {id: property.to_param}, session: valid_session
         expect(response).to be_redirect
       end
@@ -185,7 +185,6 @@ RSpec.describe PropertiesController, type: :controller do
       context "with valid params" do
         it "updates the requested property" do
           sign_in corporate
-          property = Property.create! valid_attributes
           expect{
             put :update, params: {id: property.to_param, property: new_attributes}, session: valid_session
             property.reload
@@ -194,7 +193,6 @@ RSpec.describe PropertiesController, type: :controller do
 
         it "redirects to the property" do
           sign_in corporate
-          property = Property.create! valid_attributes
           put :update, params: {id: property.to_param, property: valid_attributes}, session: valid_session
           expect(response).to redirect_to(property)
         end
@@ -203,7 +201,6 @@ RSpec.describe PropertiesController, type: :controller do
       context "with invalid params" do
         it "returns a success response (i.e. to display the 'edit' template)" do
           sign_in corporate
-          property = Property.create! valid_attributes
           put :update, params: {id: property.to_param, property: invalid_attributes}, session: valid_session
           expect(response).to be_successful
         end
@@ -214,7 +211,6 @@ RSpec.describe PropertiesController, type: :controller do
       context "with valid params" do
         it "does not update the property" do
           sign_in agent
-          property = Property.create! valid_attributes
           expect{
             put :update, params: {id: property.to_param, property: new_attributes}, session: valid_session
             property.reload
@@ -227,16 +223,16 @@ RSpec.describe PropertiesController, type: :controller do
   describe "DELETE #destroy" do
     describe "as an corporate" do
       it "destroys the requested property" do
+        property
         sign_in corporate
-        property = Property.create! valid_attributes
         expect {
           delete :destroy, params: {id: property.to_param}, session: valid_session
         }.to change(Property, :count).by(-1)
       end
 
       it "redirects to the properties list" do
+        property
         sign_in corporate
-        property = Property.create! valid_attributes
         delete :destroy, params: {id: property.to_param}, session: valid_session
         expect(response).to redirect_to(properties_url)
       end
@@ -244,8 +240,8 @@ RSpec.describe PropertiesController, type: :controller do
 
     describe "as an agent" do
       it "does not destroy the record" do
+        property
         sign_in agent
-        property = Property.create! valid_attributes
         expect {
           delete :destroy, params: {id: property.to_param}, session: valid_session
         }.to change(Property, :count).by(0)

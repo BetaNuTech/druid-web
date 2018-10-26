@@ -275,7 +275,7 @@ RSpec.describe Lead, type: :model do
         expect(lead.scheduled_actions.count).to be > 0
         lead.abandon!
         lead.reload
-        expect(lead.scheduled_actions.count).to eq(1)
+        expect(lead.scheduled_actions.count).to eq(0)
       end
     end
 
