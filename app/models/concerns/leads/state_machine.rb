@@ -42,6 +42,7 @@ module Leads
 
     included do
       has_many :lead_transitions
+      attr_accessor :ignore_incomplete_tasks, :transition_memo
 
       # https://github.com/aasm/aasm
       include AASM

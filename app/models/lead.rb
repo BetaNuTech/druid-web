@@ -53,7 +53,6 @@ class Lead < ApplicationRecord
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
 
   ### Attributes
-  attr_accessor :ignore_incomplete_tasks, :transition_memo
 
   ### Enums
   enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4 }
