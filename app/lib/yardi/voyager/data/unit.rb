@@ -55,7 +55,15 @@ module Yardi
           unit = Unit.new
 
           if ( availability = data.fetch('Availability',{}).fetch('MadeReadyDate', nil)).present?
-            unit.available_on = Date.new(availability['Year'].to_i, availability['Month'].to_i, availability['Day'].to_i)
+            begin
+              availability_date =  Date.new(availability['Year'].to_i, availability['Month'].to_i, availability['Day'].to_i)
+            rescue => e
+              availability_date = nil
+              msg = "Invalid Unit data schema: #{availability.inspect}. Error: #{e}"
+              Rails.logger.error msg
+              #raise Yardi::Voyager::Data::Error.new(msg)
+            end
+            unit.available_on = availability_date
           end
 
           data['Units']['Unit'].tap do |unit_data|
