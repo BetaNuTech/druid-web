@@ -11,7 +11,9 @@
 
 FactoryBot.define do
   factory :team do
-    name { "Team #{Faker::GameOfThrones.house}" }
+    sequence :name do |n|
+      n.to_s
+    end
     description { Faker::GameOfThrones.quote }
   end
 end

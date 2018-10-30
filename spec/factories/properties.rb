@@ -30,7 +30,9 @@
 
 FactoryBot.define do
   factory :property do
-    name {rand(1000000)}
+    sequence :name do |n|
+      n.to_s
+    end
     address1 { Faker::Address.street_address }
     address2 { Faker::Address.secondary_address }
     address3 { Faker::Address.building_number }
