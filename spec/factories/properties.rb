@@ -30,7 +30,7 @@
 
 FactoryBot.define do
   factory :property do
-    name { Faker::Company.name }
+    name {rand(1000000)}
     address1 { Faker::Address.street_address }
     address2 { Faker::Address.secondary_address }
     address3 { Faker::Address.building_number }
