@@ -34,12 +34,14 @@
 #  call_log            :json
 #  call_log_updated_at :datetime
 #  classification      :integer
+#  follow_up_at        :datetime
 #
 
 require 'rails_helper'
 
 RSpec.describe Lead, type: :model do
   include_context "users"
+  include_context "engagement_policy"
 
   it "can be initialized" do
     lead = build(:lead)
@@ -167,19 +169,19 @@ RSpec.describe Lead, type: :model do
     end
 
     it "lists valid events" do
-      expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify].sort)
+      expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify, :postpone].sort)
       lead.claim!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_state_events.sort).to eq([:abandon, :disqualify, :release, :apply].sort)
+      expect(lead.permitted_state_events.sort).to eq([:abandon, :disqualify, :release, :apply, :postpone].sort)
       lead.disqualify!
       expect(lead.permitted_state_events).to eq([:requalify])
     end
 
     it "lists valid states" do
-      expect(lead.permitted_states).to eq([:prospect, :disqualified])
+      expect(lead.permitted_states).to eq([:prospect, :disqualified, :followup])
       lead.claim!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_states.sort).to eq([:application, :abandoned, :disqualified, :open].sort)
+      expect(lead.permitted_states.sort).to eq([:application, :abandoned, :disqualified, :open, :followup].sort)
     end
 
     it "lists 'active' leads" do
@@ -230,6 +232,19 @@ RSpec.describe Lead, type: :model do
         expect(lead_transition.current_state).to eq(lead.state)
         expect(lead_transition.classification).to eq('lead')
         expect(lead_transition.memo).to be_nil
+      end
+
+      it "cleans up record tasks and agent association upon 'postpone'" do
+        seed_engagement_policy
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        assert(lead.scheduled_actions.count > 0)
+        expect(lead.user).to eq(agent)
+        lead.postpone!
+        lead.reload
+        expect(lead.scheduled_actions.count).to eq(0)
+        expect(lead.user).to be_nil
+        expect(lead.priority).to eq('low')
       end
     end
 

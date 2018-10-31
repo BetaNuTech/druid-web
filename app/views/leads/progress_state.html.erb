@@ -21,6 +21,15 @@
     </div>
   </div>
 
+  <% if @eventid == 'postpone' %>
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <%= label_tag "Follow Up On" %>
+        <%= date_select :follow_up_at, nil  %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="row">
     <div class="col-md-6 form-group">
       <%= label_tag "Memo"%>

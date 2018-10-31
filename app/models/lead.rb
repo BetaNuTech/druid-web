@@ -34,6 +34,7 @@
 #  call_log            :json
 #  call_log_updated_at :datetime
 #  classification      :integer
+#  follow_up_at        :datetime
 #
 
 class Lead < ApplicationRecord
@@ -48,7 +49,7 @@ class Lead < ApplicationRecord
   include Leads::CallLog
 
   ### Constants
-  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification]
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
 

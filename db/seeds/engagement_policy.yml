@@ -152,3 +152,9 @@
       :description: Global Engagement Policy for 'abandoned' Leads
       :active: true
       :engagement_policy_actions: []
+    - :version: 1
+      :property_name: null
+      :lead_state: followup
+      :description: Global Engagement Policy for 'followup' Leads
+      :active: true
+      :engagement_policy_actions: []

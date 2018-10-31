@@ -3,7 +3,7 @@ module Leads
     extend ActiveSupport::Concern
 
     CLAIMED_STATES = %w{prospect application approved denied movein resident}
-    CLOSED_STATES = %w{ disqualified abandoned resident exresident }
+    CLOSED_STATES = %w{ disqualified abandoned resident exresident followup }
 
     class_methods do
       def active
@@ -58,6 +58,7 @@ module Leads
         state :exresident
         state :disqualified
         state :abandoned
+        state :followup
 
         after_all_events :after_all_events_callback
 
@@ -115,6 +116,16 @@ module Leads
         event :release do
           transitions from: :prospect, to: :open,
             after: ->(*args) { event_clear_user; set_priority_urgent }
+        end
+
+        event :postpone do
+          transitions from: [:open, :prospect, :application], to: :followup,
+            after: -> (*args) {clear_all_tasks; event_clear_user; set_priority_low}
+        end
+
+        event :revisit do
+          transitions from: :followup, to: :open,
+            after: -> (*args) {unset_follow_up_at}
         end
 
       end
@@ -212,6 +223,10 @@ module Leads
             (transition_memo.present? ? " -- Memo: #{transition_memo}": '')
           ]
         )
+      end
+
+      def unset_follow_up_at
+        self.follow_up_at = nil
       end
 
     end

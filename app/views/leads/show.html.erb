@@ -98,6 +98,14 @@
     </span><br/>
   </div>
   <div class="notes">
+    <% if @lead.follow_up_at.present? %>
+      <p class="lead_notes">
+        <strong>Follow Up On: </strong>
+        <span>
+          <%= long_date(@lead.follow_up_at) %>
+        </span>
+      </p>
+    <% end %>
     <p class="lead_notes">
       <strong>Lead Notes: </strong>
       <span>

@@ -111,8 +111,10 @@ class LeadsController < ApplicationController
 
   def update_state
     authorize @lead
+    params.permit!
     @lead.transition_memo = params[:memo] if params[:memo].present?
     @lead.classification = params[:classification] if params[:classification].present?
+    @lead.follow_up_at = params[:follow_up_at] if params[:follow_up_at].present?
     @success = trigger_lead_state_event(lead: @lead, event_name: params[:eventid])
     redirect_to(@lead)
   end

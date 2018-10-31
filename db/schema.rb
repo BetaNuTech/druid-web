@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_12_145258) do
+ActiveRecord::Schema.define(version: 2018_10_30_203415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -182,7 +182,9 @@ ActiveRecord::Schema.define(version: 2018_10_12_145258) do
     t.json "call_log"
     t.datetime "call_log_updated_at"
     t.integer "classification"
+    t.datetime "follow_up_at"
     t.index ["classification"], name: "index_leads_on_classification"
+    t.index ["follow_up_at"], name: "index_leads_on_follow_up_at"
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"
