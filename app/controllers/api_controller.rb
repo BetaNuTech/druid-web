@@ -4,12 +4,12 @@ class ApiController < ApplicationController
   private
 
   def api_token
-    @token = params[:token] || nil
+    @token ||= params[:token] || nil
   end
 
   def validate_source_token(source: , token:)
     @source = api_token.present? ? source.from_token(token) : false
-    if @source.present?
+    if @source.present? && @source.active?
       return true
     else
       render json: {errors: {base: [ 'Invalid Access Token' ]}}, status: :forbidden

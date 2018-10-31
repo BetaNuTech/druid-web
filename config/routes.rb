@@ -8,7 +8,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'docs/swagger.:format', to: "swagger#index"
       get 'docs', to: "swagger#apidocs"
-      resources :leads, only: [:index, :create]
+      resources :leads, only: [:index, :create ]
+      get 'leads/prospect_stats', to: "leads#prospect_stats"
       resources :messages, only: [:create]
     end
   end

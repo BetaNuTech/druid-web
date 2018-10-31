@@ -84,6 +84,12 @@ sources = {
     slug: "Zillow",
     incoming: true,
     active: true
+  },
+  "cobalt": {
+    name: "Cobalt",
+    slug: "Cobalt",
+    incoming: false,
+    active: true
   }
 }
 sources.each_pair do |source_name, attrs|
