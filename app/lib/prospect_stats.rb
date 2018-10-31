@@ -16,14 +16,14 @@ class ProspectStats
           "Prospect30": prospect_count(property, 30),
           "Prospect180": prospect_count(property, 180),
           "Prospect365": prospect_count(property, 365),
-          "Closing10": closing_rate(property, 10),
-          "Closing30": closing_rate(property, 30),
-          "Closing180": closing_rate(property, 180),
-          "Closing365": closing_rate(property, 365),
-          "Conversion10": conversion_rate(property, 10),
-          "Conversion30": conversion_rate(property, 30),
-          "Conversion180": conversion_rate(property, 180),
-          "Conversion365": conversion_rate(property, 365)
+          "Closing10": closing_count(property, 10),
+          "Closing30": closing_count(property, 30),
+          "Closing180": closing_count(property, 180),
+          "Closing365": closing_count(property, 365),
+          "Conversion10": conversion_count(property, 10),
+          "Conversion30": conversion_count(property, 30),
+          "Conversion180": conversion_count(property, 180),
+          "Conversion365": conversion_count(property, 365)
         }
       }
     end.compact
@@ -31,7 +31,7 @@ class ProspectStats
 
   def agent_stats
     User.includes(:profile).order("user_profiles.last_name ASC, user_profiles.first_name ASC").map do |user|
-      #return nil unless user.leads.count > 0
+      next unless user.leads.count > 0
       {
         "Name": user.name,
         "ID": user.id,
@@ -40,14 +40,14 @@ class ProspectStats
           "Prospect30": prospect_count(user, 30),
           "Prospect180": prospect_count(user, 180),
           "Prospect365": prospect_count(user, 365),
-          "Closing10": closing_rate(user, 10),
-          "Closing30": closing_rate(user, 30),
-          "Closing180": closing_rate(user, 180),
-          "Closing365": closing_rate(user, 365),
-          "Conversion10": conversion_rate(user, 10),
-          "Conversion30": conversion_rate(user, 30),
-          "Conversion180": conversion_rate(user, 180),
-          "Conversion365": conversion_rate(user, 365)
+          "Closing10": closing_count(user, 10),
+          "Closing30": closing_count(user, 30),
+          "Closing180": closing_count(user, 180),
+          "Closing365": closing_count(user, 365),
+          "Conversion10": conversion_count(user, 10),
+          "Conversion30": conversion_count(user, 30),
+          "Conversion180": conversion_count(user, 180),
+          "Conversion365": conversion_count(user, 365)
         }
       }
     end.compact
@@ -55,7 +55,7 @@ class ProspectStats
 
   def team_stats
     Team.order(name: 'asc').map do |team|
-      return nil unless team.leads.count > 0
+      next unless team.leads.count > 0
       {
         "Name": team.name,
         "ID": team.id,
@@ -64,14 +64,14 @@ class ProspectStats
           "Prospect30": prospect_count(team, 30),
           "Prospect180": prospect_count(team, 180),
           "Prospect365": prospect_count(team, 365),
-          "Closing10": closing_rate(team, 10),
-          "Closing30": closing_rate(team, 30),
-          "Closing180": closing_rate(team, 180),
-          "Closing365": closing_rate(team, 365),
-          "Conversion10": conversion_rate(team, 10),
-          "Conversion30": conversion_rate(team, 30),
-          "Conversion180": conversion_rate(team, 180),
-          "Conversion365": conversion_rate(team, 365)
+          "Closing10": closing_count(team, 10),
+          "Closing30": closing_count(team, 30),
+          "Closing180": closing_count(team, 180),
+          "Closing365": closing_count(team, 365),
+          "Conversion10": conversion_count(team, 10),
+          "Conversion30": conversion_count(team, 30),
+          "Conversion180": conversion_count(team, 180),
+          "Conversion365": conversion_count(team, 365)
         }
       }
     end.compact
@@ -85,17 +85,25 @@ class ProspectStats
   end
 
   def prospect_count(skope, window)
-    return skope.leads.where(created_at: window.days.ago..DateTime.now).count
+    return skope.leads.
+      where(created_at: window.days.ago..DateTime.now).
+      count
   end
 
-  def conversion_rate(skope, window)
-    # TODO
-    return 1.0
+  def conversion_count(skope, window)
+    return skope.leads.includes(:lead_transitions).
+      where(lead_transitions: {
+        current_state: 'application',
+        created_at: window.days.ago..DateTime.now
+      }).count
   end
 
-  def closing_rate(skope, window)
-    # TODO
-    return 1.0
+  def closing_count(skope, window)
+    return skope.leads.includes(:lead_transitions).
+      where(lead_transitions: {
+        current_state: 'movein',
+        created_at: window.days.ago..DateTime.now
+      }).count
   end
 
 end
