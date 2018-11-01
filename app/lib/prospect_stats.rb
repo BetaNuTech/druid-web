@@ -110,7 +110,7 @@ class ProspectStats
 
   def calculate_lead_pctg(count, skope, window)
     if count > 0
-      rate = ( ( count.to_f / prospect_count(skope,window).to_f ) * 100.0).round(1)
+      rate = (count.to_f / prospect_count(skope,window).to_f).round(3)
     else
       rate = 0.0
     end
