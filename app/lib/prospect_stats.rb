@@ -20,10 +20,10 @@ class ProspectStats
           "Closings30": closing_rate(property, 30),
           "Closings180": closing_rate(property, 180),
           "Closings365": closing_rate(property, 365),
-          "Conversions10": converstion_rate(property, 10),
-          "Conversions30": converstion_rate(property, 30),
-          "Conversions180": converstion_rate(property, 180),
-          "Conversions365": converstion_rate(property, 365)
+          "Conversions10": conversion_rate(property, 10),
+          "Conversions30": conversion_rate(property, 30),
+          "Conversions180": conversion_rate(property, 180),
+          "Conversions365": conversion_rate(property, 365)
         }
       }
     end.compact
@@ -44,10 +44,10 @@ class ProspectStats
           "Closings30": closing_rate(user, 30),
           "Closings180": closing_rate(user, 180),
           "Closings365": closing_rate(user, 365),
-          "Conversions10": converstion_rate(user, 10),
-          "Conversions30": converstion_rate(user, 30),
-          "Conversions180": converstion_rate(user, 180),
-          "Conversions365": converstion_rate(user, 365)
+          "Conversions10": conversion_rate(user, 10),
+          "Conversions30": conversion_rate(user, 30),
+          "Conversions180": conversion_rate(user, 180),
+          "Conversions365": conversion_rate(user, 365)
         }
       }
     end.compact
@@ -68,10 +68,10 @@ class ProspectStats
           "Closings30": closing_rate(team, 30),
           "Closings180": closing_rate(team, 180),
           "Closings365": closing_rate(team, 365),
-          "Conversions10": converstion_rate(team, 10),
-          "Conversions30": converstion_rate(team, 30),
-          "Conversions180": converstion_rate(team, 180),
-          "Conversions365": converstion_rate(team, 365)
+          "Conversions10": conversion_rate(team, 10),
+          "Conversions30": conversion_rate(team, 30),
+          "Conversions180": conversion_rate(team, 180),
+          "Conversions365": conversion_rate(team, 365)
         }
       }
     end.compact
@@ -90,7 +90,7 @@ class ProspectStats
       count
   end
 
-  def converstion_rate(skope, window)
+  def conversion_rate(skope, window)
     count = skope.leads.includes(:lead_transitions).
       where(lead_transitions: {
         current_state: 'application',
