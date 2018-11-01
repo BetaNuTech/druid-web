@@ -12,18 +12,18 @@ class ProspectStats
         "Name": property.name,
         "ID": property_voyager_id(property),
         "Stats": {
-          "Prospect10": prospect_count(property, 10),
-          "Prospect30": prospect_count(property, 30),
-          "Prospect180": prospect_count(property, 180),
-          "Prospect365": prospect_count(property, 365),
-          "Closing10": closing_count(property, 10),
-          "Closing30": closing_count(property, 30),
-          "Closing180": closing_count(property, 180),
-          "Closing365": closing_count(property, 365),
-          "Conversion10": conversion_count(property, 10),
-          "Conversion30": conversion_count(property, 30),
-          "Conversion180": conversion_count(property, 180),
-          "Conversion365": conversion_count(property, 365)
+          "Prospects10": prospect_count(property, 10),
+          "Prospects30": prospect_count(property, 30),
+          "Prospects180": prospect_count(property, 180),
+          "Prospects365": prospect_count(property, 365),
+          "Closings10": closing_rate(property, 10),
+          "Closings30": closing_rate(property, 30),
+          "Closings180": closing_rate(property, 180),
+          "Closings365": closing_rate(property, 365),
+          "Conversions10": converstion_rate(property, 10),
+          "Conversions30": converstion_rate(property, 30),
+          "Conversions180": converstion_rate(property, 180),
+          "Conversions365": converstion_rate(property, 365)
         }
       }
     end.compact
@@ -36,18 +36,18 @@ class ProspectStats
         "Name": user.name,
         "ID": user.id,
         "Stats": {
-          "Prospect10": prospect_count(user, 10),
-          "Prospect30": prospect_count(user, 30),
-          "Prospect180": prospect_count(user, 180),
-          "Prospect365": prospect_count(user, 365),
-          "Closing10": closing_count(user, 10),
-          "Closing30": closing_count(user, 30),
-          "Closing180": closing_count(user, 180),
-          "Closing365": closing_count(user, 365),
-          "Conversion10": conversion_count(user, 10),
-          "Conversion30": conversion_count(user, 30),
-          "Conversion180": conversion_count(user, 180),
-          "Conversion365": conversion_count(user, 365)
+          "Prospects10": prospect_count(user, 10),
+          "Prospects30": prospect_count(user, 30),
+          "Prospects180": prospect_count(user, 180),
+          "Prospects365": prospect_count(user, 365),
+          "Closings10": closing_rate(user, 10),
+          "Closings30": closing_rate(user, 30),
+          "Closings180": closing_rate(user, 180),
+          "Closings365": closing_rate(user, 365),
+          "Conversions10": converstion_rate(user, 10),
+          "Conversions30": converstion_rate(user, 30),
+          "Conversions180": converstion_rate(user, 180),
+          "Conversions365": converstion_rate(user, 365)
         }
       }
     end.compact
@@ -60,18 +60,18 @@ class ProspectStats
         "Name": team.name,
         "ID": team.id,
         "Stats": {
-          "Prospect10": prospect_count(team, 10),
-          "Prospect30": prospect_count(team, 30),
-          "Prospect180": prospect_count(team, 180),
-          "Prospect365": prospect_count(team, 365),
-          "Closing10": closing_count(team, 10),
-          "Closing30": closing_count(team, 30),
-          "Closing180": closing_count(team, 180),
-          "Closing365": closing_count(team, 365),
-          "Conversion10": conversion_count(team, 10),
-          "Conversion30": conversion_count(team, 30),
-          "Conversion180": conversion_count(team, 180),
-          "Conversion365": conversion_count(team, 365)
+          "Prospects10": prospect_count(team, 10),
+          "Prospects30": prospect_count(team, 30),
+          "Prospects180": prospect_count(team, 180),
+          "Prospects365": prospect_count(team, 365),
+          "Closings10": closing_rate(team, 10),
+          "Closings30": closing_rate(team, 30),
+          "Closings180": closing_rate(team, 180),
+          "Closings365": closing_rate(team, 365),
+          "Conversions10": converstion_rate(team, 10),
+          "Conversions30": converstion_rate(team, 30),
+          "Conversions180": converstion_rate(team, 180),
+          "Conversions365": converstion_rate(team, 365)
         }
       }
     end.compact
@@ -90,20 +90,31 @@ class ProspectStats
       count
   end
 
-  def conversion_count(skope, window)
-    return skope.leads.includes(:lead_transitions).
+  def converstion_rate(skope, window)
+    count = skope.leads.includes(:lead_transitions).
       where(lead_transitions: {
         current_state: 'application',
         created_at: window.days.ago..DateTime.now
       }).count
+    return calculate_lead_pctg(count, skope, window)
   end
 
-  def closing_count(skope, window)
-    return skope.leads.includes(:lead_transitions).
+  def closing_rate(skope, window)
+    count = skope.leads.includes(:lead_transitions).
       where(lead_transitions: {
         current_state: 'movein',
         created_at: window.days.ago..DateTime.now
       }).count
+    return calculate_lead_pctg(count, skope, window)
+  end
+
+  def calculate_lead_pctg(count, skope, window)
+    if count > 0
+      rate = ( ( count.to_f / prospect_count(skope,window).to_f ) * 100.0).round(1)
+    else
+      rate = 0.0
+    end
+    return rate
   end
 
 end
