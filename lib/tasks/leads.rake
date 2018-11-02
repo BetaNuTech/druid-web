@@ -16,6 +16,13 @@ namespace :leads do
     LeadPreference.auditing_enabled = true
   end
 
+  desc "Process Follow-Ups"
+  task :process_followups => :environment do
+    pending_count = Lead.pending_revisit.count
+    puts "Processing Lead followups (#{pending_count})"
+    Lead.process_followups
+  end
+
   namespace :recordings do
     desc "Cleanup old non-lead recordings"
     task :cleanup => :environment do

@@ -10,6 +10,11 @@ module Leads
         where.not(state: CLOSED_STATES)
       end
 
+      def pending_revisit
+        where(state: 'followup').
+          where("follow_up_at IS NOT NULL AND follow_up_at <= ?", DateTime.now)
+      end
+
       def state_names
         Lead.aasm.states.map{|s| s.name.to_s}
       end
@@ -37,6 +42,13 @@ module Leads
         events = dummy.aasm.events(:permitted => true).map{|event| {name: event.name, transitions: event.transitions.map{|t| [t.from, t.to]}}}
         event = events.select{|event| event[:transitions].any?{|transition| transition[0].to_s == state1.to_s && transition[1].to_s == state2.to_s} }.first
         return event.nil? ? nil : event[:name]
+      end
+
+      def process_followups
+        pending_revisit.each do |lead|
+          Rails.logger.warn "Lead #{lead.id} is ready to revisit"
+          lead.trigger_event(event_name: 'revisit')
+        end
       end
     end
 

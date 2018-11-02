@@ -425,4 +425,41 @@ RSpec.describe LeadsController, type: :controller do
 
   end
 
+  describe "POST #update_state" do
+    let(:lead) { create(:lead, state: 'open') }
+
+    it "should update the lead state" do
+      sign_in agent
+      post :update_state,
+        params: { id: lead.id,
+                  memo: 'foobar',
+                  classification: 'lead',
+                  eventid: 'claim' }
+      lead.reload
+      expect(response).to be_redirect
+      expect(lead.state).to eq('prospect')
+    end
+
+    it "should assign a follow_up_at when the Lead is 'postponed'" do
+      lead.state = 'prospect'
+      lead.user = agent
+      lead.save
+
+      sign_in agent
+      post :update_state,
+        params: { id: lead.id,
+                  memo: 'foobar',
+                  classification: 'lead',
+                  eventid: 'postpone',
+                  follow_up_at: {'(1i)': 2018, '(2i)': 12, '(3i)': 1}
+                }
+      lead.reload
+      expect(response).to be_redirect
+      expect(lead.state).to eq('followup')
+      expect(lead.follow_up_at).to eq(DateTime.new(2018,12,1))
+    end
+
+
+  end
+
 end
