@@ -96,7 +96,7 @@ class Stat
   def lead_states
     skope = apply_skope(Lead)
     if @start_date.present? && @end_date.present?
-      skope = skope.where(created_at: @start_date..@end_date)
+      skope = skope.where(leads: { created_at: @start_date..@end_date })
     end
     return skope.group(:state).count
   end
@@ -213,7 +213,7 @@ EOS
             url: "/leads/#{lead.id}",
             priority: lead.priority,
             property_id: lead.property_id,
-            source: "#{lead.source.name}#{lead.referral.present? ? " " + lead.referral : ''}"
+            source: [lead.source.name, lead.referral].compact.uniq.join(' ')
           }
         end
     }
@@ -344,7 +344,7 @@ EOS
   end
 
   def lead_state_changed_records(start_date: 48.hours.ago, end_date: DateTime.now)
-    transitions = LeadTransition.where(created_at: start_date..end_date)
+    transitions = LeadTransition.where(created_at: start_date..end_date).where.not(last_state: 'none')
     if @user_ids.present? || filter_by_property?
       if filter_by_property?
         transitions = transitions.includes(lead: [:property]).where(properties: {id: [property_ids_for_filter]})
@@ -405,7 +405,7 @@ EOS
       filters << "leads.property_id in #{property_ids_sql}"
     end
     if @start_date.present? && @end_date.present?
-      filters << "leads.created_at BETWEEN '%s' AND '%s'" % [@start_date.to_s, @end_date.to_s]
+      filters << "leads.created_at BETWEEN '%s' AND '%s'" % [@start_date.utc.to_s, @end_date.utc.to_s]
     end
     return filters.map{|f| "(#{f})"}.join(" AND ")
   end
