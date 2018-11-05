@@ -191,16 +191,25 @@ RSpec.describe Lead, type: :model do
     describe "lead_transitions" do
       let(:memo) { 'Lead transition memo 1'}
 
+      it "creates a lead transtion from nothing to open on create" do
+        expect(LeadTransition.count).to eq(0)
+        lead
+        expect(LeadTransition.count).to eq(1)
+        xtn = lead.lead_transitions.first
+        expect(xtn.last_state).to eq('none')
+        expect(xtn.current_state).to eq('open')
+      end
+
       it "creates a lead_transition record upon state change" do
-        expect(lead.lead_transitions.count).to eq (0)
+        expect(lead.lead_transitions.count).to eq (1)
         lead.transition_memo = memo
         lead.classification = 'lead'
         lead.claim!
         lead.reload
 
         expect(lead.state).to eq('prospect')
-        expect(lead.lead_transitions.count).to eq(1)
-        lead_transition = lead.lead_transitions.last
+        expect(lead.lead_transitions.count).to eq(2)
+        lead_transition = lead.lead_transitions.order(created_at: :desc).first
         expect(lead_transition.last_state).to eq('open')
         expect(lead_transition.current_state).to eq(lead.state)
         expect(lead_transition.classification).to eq('lead')
@@ -215,7 +224,7 @@ RSpec.describe Lead, type: :model do
         lead.reload
 
         expect(lead.state).to eq('disqualified')
-        expect(lead.lead_transitions.count).to eq(2)
+        expect(lead.lead_transitions.count).to eq(3)
         lead_transition = lead.lead_transitions.order('created_at desc').first
         expect(lead_transition.last_state).to eq('prospect')
         expect(lead_transition.current_state).to eq(lead.state)
@@ -226,8 +235,8 @@ RSpec.describe Lead, type: :model do
       it "creates a lead_transition record without transition_memo or classification set" do
         lead.claim!
         lead.reload
-        expect(lead.lead_transitions.count).to eq(1)
-        lead_transition = lead.lead_transitions.last
+        expect(lead.lead_transitions.count).to eq(2)
+        lead_transition = lead.lead_transitions.order(created_at: :desc).first
         expect(lead_transition.last_state).to eq('open')
         expect(lead_transition.current_state).to eq(lead.state)
         expect(lead_transition.classification).to eq('lead')

@@ -56,6 +56,8 @@ module Leads
       has_many :lead_transitions
       attr_accessor :ignore_incomplete_tasks, :transition_memo
 
+      after_create :create_initial_transition
+
       # https://github.com/aasm/aasm
       include AASM
 
@@ -216,10 +218,14 @@ module Leads
         self.conversion_date = DateTime.now
       end
 
-      def create_lead_transition
+      def create_initial_transition
+        create_lead_transition(last_state: 'none', current_state: self.state)
+      end
+
+      def create_lead_transition(last_state: nil, current_state: nil)
         self.lead_transitions << self.lead_transitions.build(
-          last_state: aasm.from_state,
-          current_state: aasm.to_state,
+          last_state: last_state || aasm.from_state,
+          current_state: current_state || aasm.to_state,
           classification: self.classification || 'lead',
           memo: self.transition_memo
         )

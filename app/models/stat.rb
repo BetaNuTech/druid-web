@@ -1,5 +1,5 @@
 class Stat
-  attr_reader :user_ids, :property_ids, :team_ids, :users, :properties, :teams, :url
+  attr_reader :user_ids, :property_ids, :team_ids, :users, :properties, :teams, :url, :start_date, :end_date, :date_range
   include ActionView::Helpers::DateHelper
 
   class ActivityEntry
@@ -18,13 +18,24 @@ class Stat
     end
   end
 
+  DATE_RANGES = {
+    all_time: 'All Time',
+    today: 'Today',
+    week: 'Past Week',
+    '2weeks': 'Past 2 Weeks',
+    month: 'Past Month',
+    '3months': 'Past 3 Months',
+    year: 'Past Year'
+  }
+
 
   def initialize(filters: {}, url: "/stats/manager")
     @url = url
     @filters = filters
-    @user_ids = get_user_ids(filters.fetch(:user_ids, []))
-    @property_ids = get_property_ids(filters.fetch(:property_ids, []))
-    @team_ids = get_team_ids(filters.fetch(:team_ids,[]))
+    @user_ids = get_user_ids(@filters.fetch(:user_ids, []))
+    @property_ids = get_property_ids(@filters.fetch(:property_ids, []))
+    @team_ids = get_team_ids(@filters.fetch(:team_ids,[]))
+    @date_range, @start_date, @end_date = get_date_range(@filters)
     @users = User.find(@user_ids)
     @properties = Property.find(@property_ids)
     @teams = Team.find(@team_ids)
@@ -38,9 +49,16 @@ class Stat
     team_properties = @teams.present? ? Property.where(team_id: @team_ids).order("name ASC") : Property.order("name ASC")
     filter_properties = @properties.present? ? @properties : team_properties
     users = User.includes(:properties).where(properties: {id: filter_properties.map(&:id)}).sort_by(&:last_name)
+    if @date_range.nil?
+      _date_range = []
+    else
+      _date_range_label = DATE_RANGES.fetch(@date_range.to_sym)
+      _date_range = [ {label: _date_range_label, val: @date_range} ]
+    end
+
     return {
       options: {
-        _index: ['users', 'properties', 'teams'],
+        _index: ['users', 'properties', 'teams', 'date_range'],
         users: {
           label: 'Agents',
           param: 'user_ids',
@@ -59,16 +77,27 @@ class Stat
           options: Team.order("name ASC").map{|t|
             {label: t.name, val: t.id}
           }
+        },
+        date_range: {
+          label: 'Date Range',
+          param: 'date_range',
+          options: DATE_RANGES.map{|k,v|
+            {label: v, val: k}
+          }
         }
       },
       users: @users.map{|user| {label: user.name, val: user.id}},
       properties: @properties.map{|property| {label: property.name, val: property.id}},
-      teams: @teams.map{|team| {label: team.name, val: team.id}}
+      teams: @teams.map{|team| {label: team.name, val: team.id}},
+      date_range: _date_range
     }
   end
 
   def lead_states
     skope = apply_skope(Lead)
+    if @start_date.present? && @end_date.present?
+      skope = skope.where(created_at: @start_date..@end_date)
+    end
     return skope.group(:state).count
   end
 
@@ -375,6 +404,9 @@ EOS
     if property_ids_for_filter.present?
       filters << "leads.property_id in #{property_ids_sql}"
     end
+    if @start_date.present? && @end_date.present?
+      filters << "leads.created_at BETWEEN '%s' AND '%s'" % [@start_date.to_s, @end_date.to_s]
+    end
     return filters.map{|f| "(#{f})"}.join(" AND ")
   end
 
@@ -398,6 +430,39 @@ EOS
 
   def get_team_ids(teams)
     Array(teams).map{|t| t.is_a?(Team) ? t.id : t }
+  end
+
+  def get_date_range(filters)
+    date_range = Array(filters.fetch(:date_range, nil))
+    if date_range.length >= 1
+      date_range = date_range.select{|r| r!= 'all_time' }.last
+    else
+      date_range = date_range.last
+    end
+    end_date = DateTime.now
+    case date_range
+    when [], nil, 'all_time'
+      start_date = nil
+      end_date = nil
+      date_range = nil
+    when 'today'
+      start_date = DateTime.now.beginning_of_day
+    when 'week'
+      start_date = DateTime.now - 1.week
+    when '2weeks'
+      start_date = DateTime.now - 2.weeks
+    when 'month'
+      start_date = DateTime.now - 1.month
+    when '3months'
+      start_date = DateTime.now - 3.months
+    when 'year'
+      start_date = DateTime.now - 1.year
+    else
+      date_range = 'custom'
+      start_date = Date.parse(filters.fetch(:start_date, '')) rescue 99.years.ago
+      end_date = Date.parse(filters.fetch(:end_date, '')) rescue DateTime.now
+    end
+    return [date_range, start_date, end_date]
   end
 
 end
