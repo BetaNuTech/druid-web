@@ -56,7 +56,7 @@ namespace :db do
         agent = TeamUser.order("RANDOM()").first.user
         property = agent.team.properties.order("RANDOM()").first
         lead_source = LeadSource.order("RANDOM()").first
-        lead = FactoryBot.create(:lead, property: property, source: lead_source)
+        lead = FactoryBot.create(:lead, property: property, source: lead_source, referral: lead_source.name)
         puts "  - #{lead.name}: interested in the property #{property.name}"
         if (Faker::Boolean.boolean(0.2))
           lead.user = agent
