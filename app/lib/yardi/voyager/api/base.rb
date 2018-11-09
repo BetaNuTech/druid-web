@@ -51,11 +51,23 @@ module Yardi
           body = request_body(options)
           headers = request_headers(method: options[:method], content_length: body.length)
 
-          puts " * Request URL:\n" + url if @debug
-          puts " * Request Headers:\n" + headers.to_a.map{|h| "#{h[0]}: #{h[1]}"}.join("\n") if @debug
-          puts " * Request Body:\n" + body if @debug
+          if @debug
+            msg = " * Request URL:\n" + url
+            puts msg
+            Rails.logger.debug msg
+            msg =  " * Request Headers:\n" + headers.to_a.map{|h| "#{h[0]}: #{h[1]}"}.join("\n")
+            puts msg
+            Rails.logger.debug msg
+            msg = " * Request Body:\n" + body
+            puts msg
+            Rails.logger.debug msg
+          end
           result = fetch_data(url: url, body: body, headers: headers)
-          puts " * Response:\n" + result.to_s if @debug
+          if @debug
+            msg = " * Response:\n" + result.to_s
+            puts msg
+            Rails.logger.debug msg
+          end
           return result
         end
 
