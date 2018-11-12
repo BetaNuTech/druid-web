@@ -8,7 +8,7 @@ module Yardi
         ACCEPTED_CUSTOMER_TYPES = %w{applicant approved_applicant future_resident prospect}
         REMOTE_DATE_FORMAT="%FT%T"
 
-        attr_accessor :debug,
+        ATTRIBUTES = [
           :name_prefix, :first_name, :middle_name, :last_name,
           :prospect_id, :tenant_id, :third_party_id, :property_id,
           :address1, :address2, :city, :state, :postalcode,
@@ -19,6 +19,10 @@ module Yardi
           :preference_comment,
           :events,
           :record_type
+        ]
+
+        attr_accessor :debug
+        attr_accessor *ATTRIBUTES
 
         def self.from_lead(lead, yardi_property_id)
           card = GuestCard.new
@@ -35,10 +39,10 @@ module Yardi
           return card
         end
 
-        def self.from_GetYardiGuestActivity(data)
+        def self.from_GetYardiGuestActivity(data, filter=true)
           self.from_api_response(response: data, method: 'GetYardiGuestActivity_Login') do |response_data|
             ( response_data.dig('LeadManagement', 'Prospects', 'Prospect') || [] ).
-               map{|record| GuestCard.from_guestcard_node(record)}.flatten
+               map{|record| GuestCard.from_guestcard_node(record, filter)}.flatten
           end
         end
 
@@ -111,7 +115,7 @@ module Yardi
           return yield(root_node)
         end
 
-        def self.from_guestcard_node(data)
+        def self.from_guestcard_node(data, filter=true)
           prospects = []
 
           # Data schema returned by Yardi Voyager is inconsistent between
@@ -130,7 +134,7 @@ module Yardi
           [ prospect_record ].flatten.compact.each do |pr|
             # Abort processing if this is not a wanted Customer type
             record_type = pr['Type']
-            next if !ACCEPTED_CUSTOMER_TYPES.include?(record_type)
+            next if filter && !ACCEPTED_CUSTOMER_TYPES.include?(record_type)
 
             prospect = GuestCard.new
             prospect.record_type = record_type

@@ -4,7 +4,7 @@ module Yardi
       class GuestCards < Base
 
         # Return GuestCards for the given property id
-        def getGuestCards(propertyid, start_date: nil, end_date: DateTime.now)
+        def getGuestCards(propertyid, start_date: nil, end_date: DateTime.now, filter: true)
           if start_date.present?
             return getGuestCardsDateRange(propertyid, start_date: start_date, end_date: end_date)
           end
@@ -16,7 +16,7 @@ module Yardi
           }
           begin
             response = getData(request_options)
-            guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response)
+            guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response, filter)
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
