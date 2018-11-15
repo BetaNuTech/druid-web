@@ -1,0 +1,4 @@
+#!/bin/sh
+
+heroku run rails runner "ActiveRecord::Base.logger.level = :fatal; puts Base64.encode64(Lead.find('$2').preference.raw_data)" --app druid-$1 | \
+  ruby -pe 'require "base64"; puts Base64.decode64 $_'
