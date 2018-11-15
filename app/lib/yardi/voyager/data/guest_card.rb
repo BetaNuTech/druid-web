@@ -5,7 +5,7 @@ module Yardi
         require 'nokogiri'
 
         # REJECTED_CUSTOMER_TYPES = %w{guarantor cancelled other}
-        ACCEPTED_CUSTOMER_TYPES = %w{applicant approved_applicant future_resident prospect}
+        ACCEPTED_CUSTOMER_TYPES = %w{applicant approved_applicant future_resident prospect canceled}
         REMOTE_DATE_FORMAT="%FT%T"
 
         ATTRIBUTES = [

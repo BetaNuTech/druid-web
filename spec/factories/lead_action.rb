@@ -3,6 +3,6 @@ FactoryBot.define do
     name { Faker::Lorem.word }
     description { Faker::Lorem.sentence }
     is_contact { false }
-    active true
+    active { true }
   end
 end

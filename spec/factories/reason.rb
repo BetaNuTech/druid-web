@@ -4,6 +4,6 @@ FactoryBot.define do
       "Reason #{n}"
     end
     description { Faker::Lorem.sentence }
-    active true
+    active { true }
   end
 end

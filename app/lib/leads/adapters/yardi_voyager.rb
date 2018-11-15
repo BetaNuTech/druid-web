@@ -180,6 +180,7 @@ module Leads
             if event_name
               # We want to progress the state even if tasks are incomplete
               lead.ignore_incomplete_tasks = true
+              lead.skip_event_notifications = true
               lead.trigger_event(event_name: event_name)
             else
               # no event can transition the Lead
@@ -296,7 +297,9 @@ module Leads
           'applicant' => 'application',
           'approved_applicant' => 'approved',
           'future_resident' => 'movein',
-          'prospect' => 'open' }
+          'prospect' => 'open',
+          'canceled' => 'disqualified'
+        }
         state = record_type_state_map.fetch( guestcard.record_type, 'open' )
         return state
       end
@@ -312,6 +315,8 @@ module Leads
             priority = 'high'
           when 'open'
             priority = 'urgent'
+          when 'disqualified'
+            priority = 'zero'
           else
             priority = 'urgent'
         end

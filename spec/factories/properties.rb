@@ -52,6 +52,6 @@ FactoryBot.define do
     amenities { Array.new(rand(10)){Faker::Lorem.word}.join(',') }
     application_url { Faker::Internet.url }
     team
-    active true
+    active { true }
   end
 end

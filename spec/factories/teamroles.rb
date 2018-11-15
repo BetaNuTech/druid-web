@@ -19,27 +19,27 @@ FactoryBot.define do
     description { Faker::Lorem.sentence }
 
     factory :manager_teamrole do
-      name "Manager"
-      slug "manager"
-      description "Property Manager"
+      name { "Manager" }
+      slug { "manager" }
+      description { "Property Manager" }
     end
 
     factory :lead_teamrole do
-      name "Lead"
-      slug "lead"
-      description "Team Lead"
+      name { "Lead" }
+      slug { "lead" }
+      description { "Team Lead" }
     end
 
     factory :agent_teamrole do
-      name "Agent"
-      slug "agent"
-      description "Agent"
+      name { "Agent" }
+      slug { "agent" }
+      description { "Agent" }
     end
 
     factory :none_teamrole do
-      name "None"
-      slug "none"
-      description "No Role Assigned"
+      name { "None" }
+      slug { "none" }
+      description { "No Role Assigned" }
     end
   end
 end
