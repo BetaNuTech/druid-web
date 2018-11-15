@@ -54,7 +54,7 @@ module Leads
 
     included do
       has_many :lead_transitions
-      attr_accessor :ignore_incomplete_tasks, :transition_memo
+      attr_accessor :ignore_incomplete_tasks, :transition_memo, :skip_event_notifications
 
       after_create :create_initial_transition
 
@@ -187,6 +187,7 @@ module Leads
       end
 
       def apply_event_callback
+        return true if skip_event_notifications
         send_rental_application # Leads::EngagementPolicy#send_application_to_lead
       end
 

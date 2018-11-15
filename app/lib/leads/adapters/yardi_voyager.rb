@@ -180,6 +180,7 @@ module Leads
             if event_name
               # We want to progress the state even if tasks are incomplete
               lead.ignore_incomplete_tasks = true
+              lead.skip_event_notifications = true
               lead.trigger_event(event_name: event_name)
             else
               # no event can transition the Lead
