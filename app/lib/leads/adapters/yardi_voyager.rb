@@ -296,7 +296,9 @@ module Leads
           'applicant' => 'application',
           'approved_applicant' => 'approved',
           'future_resident' => 'movein',
-          'prospect' => 'open' }
+          'prospect' => 'open',
+          'canceled' => 'disqualified'
+        }
         state = record_type_state_map.fetch( guestcard.record_type, 'open' )
         return state
       end
@@ -312,6 +314,8 @@ module Leads
             priority = 'high'
           when 'open'
             priority = 'urgent'
+          when 'disqualified'
+            priority = 'zero'
           else
             priority = 'urgent'
         end

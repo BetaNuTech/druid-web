@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Yardi::Voyager::Data::GuestCard do
-  let(:api_data) { File.read("#{Rails.root}/spec/support/test_data/yardi_voyager_guestcards.json") }
+  let(:yardi_api_data) { File.read("#{Rails.root}/spec/support/test_data/yardi_voyager_guestcards.json") }
   let(:adapter) { Yardi::Voyager::Data::GuestCard }
 
   it "should return GuestCards from a Voyager GetYardiGuestActivity API call and optionally filter unwanted Prospects" do
-    filtered_guestcards = adapter.from_GetYardiGuestActivity(api_data, true)
-    all_guestcards = adapter.from_GetYardiGuestActivity(api_data, false)
+    filtered_guestcards = adapter.from_GetYardiGuestActivity(yardi_api_data, true)
+    all_guestcards = adapter.from_GetYardiGuestActivity(yardi_api_data, false)
 
     all_types = []
     filtered_types = Yardi::Voyager::Data::GuestCard::ACCEPTED_CUSTOMER_TYPES

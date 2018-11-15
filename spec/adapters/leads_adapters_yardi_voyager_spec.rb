@@ -26,12 +26,14 @@ RSpec.describe Leads::Adapters::YardiVoyager do
       expect(adapter.property).to eq(property)
       expect(adapter.lead_source).to eq(lead_source)
     end
+  end
+
+  describe "Guestcard/Lead creation" do
+    let(:yardi_api_data) { File.read("#{Rails.root}/spec/support/test_data/yardi_voyager_guestcards.json") }
+    let(:guestcards) {Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(yardi_api_data)}
 
     it "creates a new lead record from a guestcard (private method)" do
-      guestcard = Yardi::Voyager::Data::GuestCard.from_lead(lead, property_code)
-      lead.remoteid = nil
-      lead.save!
-      guestcard.record_type = 'application'
+      guestcard = guestcards.first
       updated_lead = adapter.send(:lead_from_guestcard, guestcard)
       assert updated_lead.new_record?
       assert updated_lead.valid?
@@ -42,6 +44,16 @@ RSpec.describe Leads::Adapters::YardiVoyager do
       guestcard.record_type = 'applicant'
       updated_lead = adapter.send(:lead_from_guestcard, guestcard)
       expect(updated_lead.id).to eq(lead.id)
+    end
+
+    it "handles the creation of cancelled Guestcards/Disqualified Leads" do
+      guestcard = guestcards.select{|gc| gc.record_type = 'canceled'}.first
+      updated_lead = adapter.send(:lead_from_guestcard, guestcard)
+      assert updated_lead.new_record?
+      assert updated_lead.valid?
+      assert updated_lead.save
+      expect( updated_lead.state ).to eq('disqualified')
+      expect( updated_lead.priority ).to eq('zero')
     end
   end
 
