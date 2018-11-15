@@ -13,8 +13,8 @@ FactoryBot.define do
 
     factory :email_delivery_adapter do
       message_type { MessageType.email || create(:email_message_type)}
-      name 'ActionMailer'
-      slug 'Actionmailer'
+      name { 'ActionMailer' }
+      slug { 'Actionmailer' }
       active { true }
       sequence :api_token do |n|
         "ActionMailer Token#{n}"
@@ -23,8 +23,8 @@ FactoryBot.define do
 
     factory :sms_delivery_adapter do
       message_type { MessageType.sms || create(:sms_message_type)}
-      name 'SMS'
-      slug 'TwilioAdapter'
+      name { 'SMS' }
+      slug { 'TwilioAdapter' }
       active { true }
       sequence :api_token do |n|
         "Twilio Token#{n}"
@@ -33,8 +33,8 @@ FactoryBot.define do
 
     factory :cloudmailin_delivery_adapter do
       message_type { MessageType.email || create(:email_message_type)}
-      name 'CloudMailin'
-      slug 'CloudMailin'
+      name { 'CloudMailin' }
+      slug { 'CloudMailin' }
       active { true }
       sequence :api_token do |n|
         "CloudMailin Token#{n}"

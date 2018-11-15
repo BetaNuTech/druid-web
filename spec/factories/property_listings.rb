@@ -15,9 +15,9 @@
 FactoryBot.define do
   factory :property_listing do
     code { rand.to_s }
-    description "This is a property listing."
+    description { "This is a property listing." }
     property { create(:property) }
     source { create(:lead_source) }
-    active true
+    active { true }
   end
 end

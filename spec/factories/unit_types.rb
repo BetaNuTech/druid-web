@@ -28,6 +28,6 @@ FactoryBot.define do
     bedrooms { Faker::Number.between(1,3) }
     bathrooms { Faker::Number.between(1,3) }
     sqft { Faker::Number.between(600, 2500) }
-    active true
+    active { true }
   end
 end

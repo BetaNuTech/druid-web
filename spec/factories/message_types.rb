@@ -16,19 +16,19 @@ FactoryBot.define do
     sequence :name do |n|
       "Message Type #{n}"
     end
-    description Faker::Lorem.sentence
-    active true
+    description { Faker::Lorem.sentence }
+    active { true }
 
     factory :sms_message_type do
-      name "SMS"
-      description "SMS"
-      active true
+      name { "SMS" }
+      description { "SMS" }
+      active { true }
     end
 
     factory :email_message_type do
-      name "Email"
-      description "Email"
-      active true
+      name { "Email" }
+      description { "Email" }
+      active { true }
     end
   end
 

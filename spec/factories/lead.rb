@@ -33,11 +33,11 @@ FactoryBot.define do
     first_comm { DateTime.now }
     last_comm { DateTime.now }
     phone1 { Faker::PhoneNumber.phone_number }
-    phone1_type 'Work'
-    phone1_tod 'Day'
+    phone1_type { 'Work' }
+    phone1_tod { 'Day' }
     phone2 { Faker::PhoneNumber.phone_number }
-    phone2_type 'Cell'
-    phone2_tod 'Night'
+    phone2_type { 'Cell' }
+    phone2_tod { 'Night' }
     id_number { Faker::Number.number(10) }
     id_state { Faker::Address.state_abbr }
     dob { Faker::Date.birthday(18,99) }

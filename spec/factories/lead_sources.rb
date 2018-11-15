@@ -15,29 +15,29 @@
 FactoryBot.define do
   factory :lead_source do
     name { Faker::Company.name }
-    incoming true
+    incoming { true }
     slug { ['Druid', 'Zillow'][rand(1)] }
-    active true
+    active { true }
 
     factory :druid_source do
-      name 'Druid WebApp'
-      incoming true
-      slug 'Druid'
-      active 'true'
+      name { 'Druid WebApp' }
+      incoming { true }
+      slug { 'Druid' }
+      active { 'true' }
     end
 
     factory :zillow_source do
-      name 'Zillow'
-      incoming true
-      slug 'Zillow'
-      active true
+      name { 'Zillow' }
+      incoming { true }
+      slug { 'Zillow' }
+      active { true }
     end
 
     factory :yardi_voyager_source do
-      name 'YardiVoyager'
-      incoming true
-      slug 'YardiVoyager'
-      active true
+      name { 'YardiVoyager' }
+      incoming { true }
+      slug { 'YardiVoyager' }
+      active { true }
     end
   end
 end
