@@ -107,7 +107,7 @@ module Leads
         end
 
         event :disqualify do
-          transitions from: [ :open, :prospect, :application, :denied, :approved ], to: :disqualified,
+          transitions from: [ :open, :prospect, :application, :denied, :approved, :movein ], to: :disqualified,
             after: ->(*args) { set_priority_zero }
         end
 
