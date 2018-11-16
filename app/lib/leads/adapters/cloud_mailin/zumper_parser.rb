@@ -12,7 +12,8 @@ module Leads
         def self.parse(data)
           body = data.fetch('html','')
           message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
-          _, first_name, last_name, email = (data.fetch("headers", {}).fetch("From","").match(/"(\w+) (\w+) <([^>]+)>/).to_a rescue [nil, '', '', ''])
+          _, full_name, email = (data.fetch("headers", {}).fetch("Reply-To","").match(/\A([^<]+) <([^>]+)>/).to_a rescue [nil, '', '', ''])
+          first_name, last_name = ( full_name || '' ).split
           title = nil
           referral = "Zumper.com"
           phone1 = nil

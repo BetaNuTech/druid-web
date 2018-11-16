@@ -18,7 +18,8 @@ module Leads
         ApartmentsDotComParser,
         RentDotComParser,
         ZillowParser,
-        ForrentDotComParser
+        ForrentDotComParser,
+        ZumperParser
       ]
 
       class Parser

@@ -87,6 +87,19 @@ class Lead < ApplicationRecord
     where(user_id: agent.id)
   end
 
+  def self.reparse(lead)
+    if lead.lead_source_id.present? && lead.property_id.present? && lead.preference.try(:raw_data).present?
+      creator = Leads::Creator.new(
+        data: JSON.parse(lead.preference.raw_data).with_indifferent_access,
+        token: lead.source.api_token )
+      new_lead = creator.execute
+      new_lead.validate
+      return new_lead
+    else
+      return Lead.new
+    end
+  end
+
   ### Instance Methods
 
   def is_lead?
@@ -128,6 +141,7 @@ class Lead < ApplicationRecord
   def agent
     user || property.try(:managers).try(:first)
   end
+
 
   private
 
