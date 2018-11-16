@@ -250,7 +250,9 @@ EOS
     activity += completed_tasks_json(start_date: start_date, end_date: end_date)
     activity += messages_sent_json(start_date: start_date, end_date: end_date)
     activity += lead_state_changed_records_json(start_date: start_date, end_date: end_date)
-    activity = activity.sort{|x,y| y["raw_date"] <=> x["raw_date"]}
+
+    # Sort and limit to 50 results
+    activity = activity.sort{|x,y| y["raw_date"] <=> x["raw_date"]}[0..19]
     return activity
   end
 
