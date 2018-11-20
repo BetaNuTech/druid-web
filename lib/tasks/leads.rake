@@ -134,6 +134,52 @@ namespace :leads do
         Rails.logger.warn msg
       end
     end
+
+    desc 'Voyager GuestCard CSV (rake leads:yardi:guestcard_csv["yardi_id1,yardi_id2, ...",days] ; default: all properties, 90 days)'
+    task :guestcard_csv, [ :property_ids, :days ] => :environment do |t, args|
+
+      property_ids = ( args[:property_ids] || "" ).split(',').map(&:strip)
+      unless property_ids.present?
+        source = LeadSource.where(slug: 'YardiVoyager').first
+        property_ids = source.listings.map(&:code)
+      end
+
+      if (days = args[:days]).present?
+        days = days.to_i
+      else
+        days = nil
+      end
+
+      puts "* Fetching Voyager Guestcards active within #{days} days, for Properties: #{property_ids.join(', ')}"
+
+      adapter = Yardi::Voyager::Api::GuestCards.new
+      all_guestcards = []
+      prefix = DateTime.now.to_i
+      property_ids.each do |property_id|
+        start_time = DateTime.now
+        puts "  - Fetching #{property_id}"
+        if days.present?
+          guestcards = adapter.getGuestCards(property_id,
+                                               start_date: days.days.ago,
+                                               end_date: DateTime.now,
+                                               filter: true)
+        else
+          guestcards = adapter.getGuestCards(property_id, filter: true) 
+        end
+        filename = File.join(Rails.root, "tmp", "#{prefix}_#{property_id}_guestcards.csv")
+        elapsed = DateTime.now.to_i - start_time.to_i
+        puts "  --- [#{elapsed}s]"
+        puts "  --- Output #{guestcards.size} GuestCards to #{filename}"
+        File.open(filename, "wb"){|f| f.puts Yardi::Voyager::Data::GuestCard.to_csv(guestcards)}
+        all_guestcards += guestcards
+      end
+
+      filename = File.join(Rails.root, "tmp", "#{prefix}__guestcards.csv")
+      puts " * Output all #{all_guestcards.size} Guestcards to #{filename}"
+      File.open(filename, "wb"){|f| f.puts Yardi::Voyager::Data::GuestCard.to_csv(all_guestcards)}
+
+    end
+
   end
 
   desc "Calculate and Set Lead Priorities"

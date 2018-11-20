@@ -9,8 +9,9 @@ module Yardi
         REMOTE_DATE_FORMAT="%FT%T"
 
         ATTRIBUTES = [
+          :property_id,
           :name_prefix, :first_name, :middle_name, :last_name,
-          :prospect_id, :tenant_id, :third_party_id, :property_id,
+          :prospect_id, :tenant_id, :third_party_id,
           :address1, :address2, :city, :state, :postalcode,
           :email,
           :phones,
@@ -21,8 +22,8 @@ module Yardi
           :record_type
         ]
 
-        attr_accessor :debug
         attr_accessor *ATTRIBUTES
+        attr_accessor :debug
 
         def self.from_lead(lead, yardi_property_id)
           card = GuestCard.new
@@ -336,6 +337,18 @@ module Yardi
           phones[:office] ||= ( phones[:home] || phones[:cell] )
           phones[:cell] ||= (phones[:home] || phones[:office])
           return phones.to_a
+        end
+
+        def self.to_csv(guestcards)
+          attrs = GuestCard::ATTRIBUTES
+          row = attrs.map(&:to_s)
+          csv_str = CSV.generate do |csv|
+            csv << row
+            guestcards.each{|card|
+              csv << attrs.map{|col| card.send(col) }
+            }
+          end
+          return csv_str
         end
 
         def summary
