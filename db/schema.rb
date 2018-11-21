@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_30_203415) do
+ActiveRecord::Schema.define(version: 2018_11_21_211705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -53,6 +53,13 @@ ActiveRecord::Schema.define(version: 2018_10_30_203415) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "duplicate_leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "reference_id"
+    t.uuid "lead_id"
+    t.index ["reference_id", "lead_id"], name: "index_duplicate_leads_on_reference_id_and_lead_id", unique: true
+    t.index ["reference_id"], name: "index_duplicate_leads_on_reference_id"
   end
 
   create_table "engagement_policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -185,6 +192,7 @@ ActiveRecord::Schema.define(version: 2018_10_30_203415) do
     t.datetime "follow_up_at"
     t.index ["classification"], name: "index_leads_on_classification"
     t.index ["follow_up_at"], name: "index_leads_on_follow_up_at"
+    t.index ["phone1", "phone2", "first_name", "last_name", "email"], name: "lead_dedupe_idx"
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"

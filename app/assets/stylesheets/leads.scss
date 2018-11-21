@@ -124,6 +124,19 @@ table#leads-table {
   }
 }
 
+.Lead .duplicates {
+  grid-area: LeadDuplicates;
+
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
 @media(min-width: 600px) {
   .Lead {
     display: grid;
@@ -135,6 +148,7 @@ table#leads-table {
       "LeadActions LeadActions LeadActions"
       "LeadContact LeadProperty LeadPreferences"
       "LeadNotes LeadNotes LeadNotes"
+      "LeadDuplicates LeadDuplicates LeadDuplicates"
       "LeadScheduledActions LeadScheduledActions LeadScheduledActions"
       "LeadComments LeadComments LeadComments"
       "LeadMessages LeadMessages LeadMessages"

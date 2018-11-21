@@ -1,0 +1,32 @@
+<% if lead.duplicates.present? %>
+  <div class="duplicates">
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Possible Duplicates</h2>
+      </div> 
+    </div> 
+    <div class="row">
+      <table class="table">
+        <thead>
+          <th>Property</th>
+          <th></th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>First Contact</th>
+        </thead>
+
+        <% lead.duplicates.each do |lead_dup| %>
+          <tr>
+            <td><%= lead_dup.property.try(:name) || '(None)' %></td>
+            <th><%= lead.state.humanize %></th>
+            <td><%= link_to lead_dup.name, url_for(lead_dup), target: '_blank' %></td>
+            <td><%= lead_dup.phone1 || '(None)'  %></td>
+            <td><%= lead_dup.email || '(None)' %></td>
+            <td><%= long_date(lead_dup.first_comm) || '(None)' %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+<% end %>

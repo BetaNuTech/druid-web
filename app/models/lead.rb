@@ -47,6 +47,7 @@ class Lead < ApplicationRecord
   include Leads::Search
   include Leads::Messaging
   include Leads::CallLog
+  include Leads::Duplicates
 
   ### Constants
   ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at]
@@ -141,7 +142,6 @@ class Lead < ApplicationRecord
   def agent
     user || property.try(:managers).try(:first)
   end
-
 
   private
 
