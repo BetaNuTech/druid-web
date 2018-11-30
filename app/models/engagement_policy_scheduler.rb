@@ -155,10 +155,15 @@ class EngagementPolicyScheduler
     return true
   end
 
-  def handle_scheduled_action_completion(scheduled_action)
+  def handle_scheduled_action_completion(scheduled_action, user: nil)
     unless (compliance = scheduled_action.engagement_policy_action_compliance).present?
       log_error("Skipping Compliance Record handling of Updated ScheduledAction because there is none")
       return true
+    end
+
+    # Set completion user if provided
+    if user.present?
+      scheduled_action.user_id = compliance.user_id = user.id
     end
 
     scheduled_action.add_subject_completion_note

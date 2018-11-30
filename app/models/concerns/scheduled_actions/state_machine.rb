@@ -27,7 +27,7 @@ module ScheduledActions
         state :expired
         state :rejected
 
-        after_all_events :after_all_events_callback
+        after_all_events -> (*args) { after_all_events_callback(*args) }
 
         event :complete do
           transitions from: [:pending], to: :completed
@@ -52,10 +52,10 @@ module ScheduledActions
         end
       end
 
-      def after_all_events_callback
+      def after_all_events_callback(user=nil)
         self.transaction do
           set_completion_time
-          update_compliance_record
+          update_compliance_record(user: user)
         end
       end
 
@@ -67,10 +67,10 @@ module ScheduledActions
         end
       end
 
-      def trigger_event(event_name:)
+      def trigger_event(event_name:, user: nil)
         event = event_name.to_sym
-        if permitted_state_events.include?(event.to_sym)
-          self.aasm.fire(event)
+        if permitted_state_events.include?(event)
+          self.aasm.fire(event, user)
           return self.save
         else
           return false

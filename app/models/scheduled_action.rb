@@ -89,9 +89,9 @@ class ScheduledAction < ApplicationRecord
 
   def validate_target
     if user && target_type.present?
-      policy = (Kernel.const_get("::#{target_type}Policy::Scope") rescue false)
+      policy = (Object.const_get("#{target_type}Policy::Scope") rescue false)
       if policy
-        if ( target == policy.new(user, target.class.where(id: target_id)).resolve.first)
+        if ( target == policy.new(user, Object.const_get(target_type).where(id: target_id)).resolve.first)
           return true
         else
           errors.add(:target, 'Invalid Target due to access permissions')

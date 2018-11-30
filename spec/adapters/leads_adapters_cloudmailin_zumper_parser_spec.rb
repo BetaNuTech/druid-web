@@ -11,7 +11,6 @@ RSpec.describe Leads::Adapters::CloudMailin::ZumperParser do
       adapter = Leads::Adapters::CloudMailin::ZumperParser
 
       result = adapter.parse(email_data)
-      ap result
       expect(result[:title]).to eq(nil)
       expect(result[:first_name]).to eq('Josh')
       expect(result[:last_name]).to eq('Pannell')

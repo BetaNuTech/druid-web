@@ -193,7 +193,7 @@ module Leads
 
       def trigger_event(event_name:, user: false)
         event = event_name.to_sym
-        if permitted_state_events.include?(event.to_sym)
+        if permitted_state_events.include?(event)
           self.aasm.fire(event, user)
           return self.save
         else

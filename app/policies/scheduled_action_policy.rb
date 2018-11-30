@@ -7,7 +7,12 @@ class ScheduledActionPolicy < ApplicationPolicy
         when ->(u) {u.admin?}
           skope
         else
-          skope.where(user_id: user.id)
+          if user.team.present?
+            user_ids = user.team.memberships.map(&:user_id)
+          else
+            user_ids = [ user.id ]
+          end
+          skope.where(user_id: [ user_ids ])
         end
     end
   end
@@ -26,7 +31,8 @@ class ScheduledActionPolicy < ApplicationPolicy
 
   def edit?
     user.admin? ||
-    ((record.user.present? && record.user === user) && record.personal_task?)
+      same_user? ||
+      (same_team? && !record.personal_task?)
   end
 
   def update?
@@ -43,8 +49,8 @@ class ScheduledActionPolicy < ApplicationPolicy
 
   def completion_form?
     user.admin? ||
-      ( record.user.present? &&
-        record.user === user)
+      same_user? ||
+      (same_team? && !record.personal_task?)
   end
 
   def complete?
@@ -63,5 +69,21 @@ class ScheduledActionPolicy < ApplicationPolicy
         end
     end
     return allowed
+  end
+
+  def same_team?
+    user.try(:team) == record.user.try(:team)
+  end
+
+  def same_user?
+    record.user.present? && record.user === user
+  end
+
+  # Allow event to be issued if valid,
+  #  current_user is admin, ScheduledAction owner, or same team
+  def allow_state_event_by_user?(event_name)
+    event = event_name.to_sym
+    record.permitted_state_events.include?(event) &&
+      (user.admin? || same_user? || same_team? )
   end
 end

@@ -1,4 +1,4 @@
-RSpec.shared_context "unroled user" do
+RSpec.shared_context "unroled_user" do
   let(:unroled_user) {
     user = create(:user)
     user.confirm

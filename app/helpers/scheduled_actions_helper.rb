@@ -64,4 +64,13 @@ module ScheduledActionsHelper
     return options_for_select(options, retry_delay_unit)
   end
 
+
+  def trigger_scheduled_action_state_event(scheduled_action:, event_name:)
+    success = false
+    if policy(scheduled_action).allow_state_event_by_user?(event_name)
+      success = scheduled_action.trigger_event(event_name: event_name, user: current_user)
+    end
+    return success
+  end
+
 end

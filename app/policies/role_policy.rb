@@ -1,5 +1,12 @@
 class RolePolicy < ApplicationPolicy
 
+  class Scope < Scope
+    def resolve
+      scope
+    end
+  end
+
+
   def index?
     user.administrator?
   end

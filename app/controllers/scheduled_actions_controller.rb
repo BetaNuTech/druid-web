@@ -1,4 +1,6 @@
 class ScheduledActionsController < ApplicationController
+  include ScheduledActionsHelper
+
   before_action :authenticate_user!
   before_action :set_scheduled_action, only: [:show, :edit, :update, :destroy, :complete, :completion_form]
   before_action :set_lead, only: [:show, :edit, :update, :destroy, :complete, :completion_form]
@@ -51,8 +53,8 @@ class ScheduledActionsController < ApplicationController
   def complete
     authorize @scheduled_action
     set_completion_action_and_message
-    @scheduled_action.trigger_event(event_name: @scheduled_action.completion_action)
-    redirect_to completion_form_scheduled_action_path(@scheduled_action, scheduled_action: scheduled_action_params)
+    @success = trigger_scheduled_action_state_event(scheduled_action: @scheduled_action, event_name: @scheduled_action.completion_action)
+    redirect_to completion_form_scheduled_action_path(@scheduled_action)
   end
 
   # POST /scheduled_actions

@@ -6,8 +6,8 @@ module ScheduledActions
 
       attr_accessor :completion_message, :completion_action, :completion_retry_delay_value, :completion_retry_delay_unit
 
-      def update_compliance_record
-        EngagementPolicyScheduler.new.handle_scheduled_action_completion(self)
+      def update_compliance_record(user: nil)
+        EngagementPolicyScheduler.new.handle_scheduled_action_completion(self, user: user)
       end
 
       def reset_completion_status
