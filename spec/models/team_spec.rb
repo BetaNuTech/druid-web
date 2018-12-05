@@ -34,6 +34,7 @@ RSpec.describe Team, type: :model do
   describe "associations" do
     let(:team) { create(:team) }
     let(:team2) { create(:team) }
+    let(:team3) { create(:team) }
     let(:property1) { create(:property) }
     let(:property2) { create(:property, team: team) }
     let(:property3) { create(:property, team: team) }
@@ -41,8 +42,12 @@ RSpec.describe Team, type: :model do
     let(:property5) { create(:property, team: team2) }
 
     it "has many properties" do
-      property1; property2; property3; property4; property5;
+      Property.destroy_all
+      property1; property2; property3; property4; property5
+      team.reload; team2.reload
+      expect(team.properties.count).to eq(2)
       expect(team.properties.sort_by(&:id)).to eq([property2, property3].sort_by(&:id))
+      expect(team2.properties.count).to eq(2)
       expect(team2.properties.sort_by(&:id)).to eq([property4, property5].sort_by(&:id))
     end
 
