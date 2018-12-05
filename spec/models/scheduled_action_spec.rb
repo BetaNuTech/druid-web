@@ -16,7 +16,7 @@ RSpec.describe ScheduledAction, type: :model do
       it "should allow the owner agent to complete a task" do
         lead.trigger_event(event_name: 'claim', user: team1_agent1)
         lead.reload
-        scheduled_action = lead.scheduled_actions.first
+        scheduled_action = lead.scheduled_actions.last
         expect(scheduled_action.user).to eq(team1_agent1)
         scheduled_action.trigger_event(event_name: 'complete', user: team1_agent1)
         scheduled_action.reload
@@ -35,7 +35,7 @@ RSpec.describe ScheduledAction, type: :model do
         lead = create(:lead, state: 'open')
         lead.trigger_event(event_name: 'claim', user: team1_agent1)
         lead.reload
-        scheduled_action = lead.scheduled_actions.first
+        scheduled_action = lead.scheduled_actions.pending.last
         expect(scheduled_action.state).to eq('pending')
         expect(scheduled_action.user).to eq(team1_agent1)
         scheduled_action.trigger_event(event_name: 'complete', user: team1_agent2)

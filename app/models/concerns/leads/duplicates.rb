@@ -6,7 +6,8 @@ module Leads
       has_many :duplicate_records, class_name: 'DuplicateLead', foreign_key: 'reference_id', dependent: :destroy
       has_many :duplicates, class_name: 'Lead', foreign_key: 'lead_id', through: :duplicate_records, source: :lead
 
-      after_save :mark_duplicates
+      after_create :mark_duplicates
+      after_save :duplicate_check_on_update
 
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name}
 
@@ -88,8 +89,7 @@ module Leads
       end
 
       def duplicate_attribute_changed?
-        return false unless ( new_record? || changed? )
-        changed_attributes = changes.keys
+        changed_attributes = changes.merge(previous_changes).keys
         return DUPLICATE_ATTRIBUTES.any?{|a| changed_attributes.include?(a.to_s)}
       end
 

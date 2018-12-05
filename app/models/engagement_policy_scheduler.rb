@@ -166,18 +166,23 @@ class EngagementPolicyScheduler
       scheduled_action.user_id = compliance.user_id = user.id
     end
 
-    scheduled_action.add_subject_completion_note
+    # Update Compliance State
+    if scheduled_action.state != compliance.state
+      case scheduled_action.state
+      when 'completed'
+        compliance.complete
+      when 'completed_retry'
+        compliance.retry
+      when 'expired'
+        compliance.expire
+      when 'rejected'
+        compliance.reject
+      end
 
-    case scheduled_action.state
-    when 'completed'
-      compliance.complete!
-    when 'completed_retry'
-      compliance.retry!
-    when 'expired'
-      compliance.expire!
-    when 'rejected'
-      compliance.reject!
+      scheduled_action.add_subject_completion_note
     end
+
+    return true
   end
 
   def reset_completion_status(scheduled_action)
@@ -201,7 +206,7 @@ class EngagementPolicyScheduler
     return reason
   end
 
-  def log_error(msg)
+  def log_error(msg, notification=true)
     message = "EngagementPolicyScheduler ERROR: " + msg
     Rails.logger.error message
     ErrorNotification.send(Error.new(message))

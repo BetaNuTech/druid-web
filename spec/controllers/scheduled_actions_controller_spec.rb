@@ -32,7 +32,7 @@ RSpec.describe ScheduledActionsController, type: :controller do
     describe "as the scheduled action owner" do
 
       it "should mark a scheduled action as complete" do
-        scheduled_action = @lead.scheduled_actions.last
+        scheduled_action = @lead.scheduled_actions.pending.last
         form_attrs = {
           id: scheduled_action.id,
           scheduled_action: {
@@ -47,6 +47,46 @@ RSpec.describe ScheduledActionsController, type: :controller do
         expect(response).to be_redirect
         scheduled_action.reload
         expect(scheduled_action.state).to eq('completed')
+      end
+    end
+
+    describe "as an agent in the owner's team" do
+      it "should mark a scheduled action as complete" do
+        scheduled_action = @lead.scheduled_actions.pending.last
+        form_attrs = {
+          id: scheduled_action.id,
+          scheduled_action: {
+            completion_action: 'complete',
+            completion_message: 'Task Completed'
+          }
+        }
+        expect(scheduled_action.state).to eq('pending')
+
+        sign_in team1_agent2
+        post :complete, params: form_attrs
+        expect(response).to be_redirect
+        scheduled_action.reload
+        expect(scheduled_action.state).to eq('completed')
+      end
+    end
+
+    describe "as an agent in a different team" do
+      it "should not mark a scheduled action as complete" do
+        scheduled_action = @lead.scheduled_actions.pending.last
+        form_attrs = {
+          id: scheduled_action.id,
+          scheduled_action: {
+            completion_action: 'complete',
+            completion_message: 'Task Completed'
+          }
+        }
+        expect(scheduled_action.state).to eq('pending')
+
+        sign_in team2_agent1
+        post :complete, params: form_attrs
+        expect(response).to be_redirect
+        scheduled_action.reload
+        expect(scheduled_action.state).to eq('pending')
       end
     end
   end
