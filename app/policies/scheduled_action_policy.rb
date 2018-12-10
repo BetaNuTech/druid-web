@@ -57,6 +57,10 @@ class ScheduledActionPolicy < ApplicationPolicy
     completion_form?
   end
 
+  def impersonate?
+    !same_user? && (same_team? && user.team_admin?)
+  end
+
   def allowed_params
     allowed = []
     case
@@ -67,6 +71,9 @@ class ScheduledActionPolicy < ApplicationPolicy
         if record.respond_to?(:user) && record.user.present? && record.user != user
           allowed -= [:user_id]
         end
+    end
+    unless impersonate?
+      allowed -= [:impersonate]
     end
     return allowed
   end

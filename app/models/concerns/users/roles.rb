@@ -33,12 +33,20 @@ module Users
 
       ### Team Roles
 
+      def team_admin?
+        team_lead? || team_manager? || team_corporate?
+      end
+
       def team_corporate?
         teamrole.try(:corporate?) || false
       end
 
       def team_manager?
         teamrole.try(:manager?) || false
+      end
+
+      def team_lead?
+        teamrole.try(:lead?) || false
       end
 
       def team_agent?

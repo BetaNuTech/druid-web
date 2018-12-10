@@ -53,7 +53,10 @@ class ScheduledActionsController < ApplicationController
   def complete
     authorize @scheduled_action
     set_completion_action_and_message
-    @success = trigger_scheduled_action_state_event(scheduled_action: @scheduled_action, event_name: @scheduled_action.completion_action)
+    @success = trigger_scheduled_action_state_event(
+      scheduled_action: @scheduled_action,
+      event_name: @scheduled_action.completion_action,
+      user: completion_user)
     redirect_to completion_form_scheduled_action_path(@scheduled_action)
   end
 
@@ -142,6 +145,13 @@ class ScheduledActionsController < ApplicationController
       @scheduled_action.completion_message = params.fetch(:scheduled_action,{}).fetch(:completion_message, params[:message])
       @scheduled_action.completion_retry_delay_value = params.fetch(:scheduled_action,{}).fetch(:completion_retry_delay_value, params[:retry_delay_value])
       @scheduled_action.completion_retry_delay_unit = params.fetch(:scheduled_action,{}).fetch(:completion_retry_delay_unit, params[:retry_delay_unit])
+    end
+
+    def completion_user
+      user = ( policy(@scheduled_action).impersonate? && scheduled_action_params.fetch('impersonate') == "1" ) ?
+        @scheduled_action.user :
+        current_user
+      return user
     end
 
     def set_limit

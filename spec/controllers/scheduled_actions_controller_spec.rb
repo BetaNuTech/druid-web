@@ -31,7 +31,7 @@ RSpec.describe ScheduledActionsController, type: :controller do
 
     describe "as the scheduled action owner" do
 
-      it "should mark a scheduled action as complete" do
+      it "should mark a scheduled action as complete as the owner" do
         scheduled_action = @lead.scheduled_actions.pending.last
         form_attrs = {
           id: scheduled_action.id,
@@ -47,11 +47,12 @@ RSpec.describe ScheduledActionsController, type: :controller do
         expect(response).to be_redirect
         scheduled_action.reload
         expect(scheduled_action.state).to eq('completed')
+        expect(scheduled_action.user).to eq(team1_agent1)
       end
     end
 
-    describe "as an agent in the owner's team" do
-      it "should mark a scheduled action as complete" do
+    describe "as a member of the owner's team" do
+      it "should mark a scheduled action as complete as the current user" do
         scheduled_action = @lead.scheduled_actions.pending.last
         form_attrs = {
           id: scheduled_action.id,
@@ -67,6 +68,27 @@ RSpec.describe ScheduledActionsController, type: :controller do
         expect(response).to be_redirect
         scheduled_action.reload
         expect(scheduled_action.state).to eq('completed')
+        expect(scheduled_action.user).to eq(team1_agent2)
+      end
+
+      it "should allow a team admin to complete the task as the original owner" do
+        scheduled_action = @lead.scheduled_actions.pending.last
+        form_attrs = {
+          id: scheduled_action.id,
+          scheduled_action: {
+            completion_action: 'complete',
+            completion_message: 'Task Completed',
+            impersonate: '1'
+          }
+        }
+        expect(scheduled_action.state).to eq('pending')
+
+        sign_in team1_lead1
+        post :complete, params: form_attrs
+        expect(response).to be_redirect
+        scheduled_action.reload
+        expect(scheduled_action.state).to eq('completed')
+        expect(scheduled_action.user).to eq(@lead.user)
       end
     end
 

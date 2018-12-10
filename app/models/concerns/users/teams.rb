@@ -4,6 +4,7 @@ module Users
 
     included do
       has_one :membership, class_name: 'TeamUser', dependent: :destroy
+      has_one :teamrole, through: :membership
       has_one :team, through: :membership
       has_many :properties, through: :team
 

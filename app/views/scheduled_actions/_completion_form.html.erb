@@ -15,6 +15,14 @@
             <%= form.select(:completion_retry_delay_unit, scheduled_action_completion_retry_delay_select_unit(@scheduled_action), {}, class: 'form-control') %>
           </div>
         </div>
+        <% if ScheduledActionPolicy.new(current_user, @scheduled_action).impersonate? %>
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <%= form.check_box :impersonate, class: "form-check-input"%>
+              <%= form.label "Complete Task as #{@scheduled_action.user.name}", class: "form-check-label" %>
+            </div>
+          </div>
+        <% end %>
         <div class="row">
           <div class="col-md-12 form-group">
             <%= form.label :completion_message, "Memo" %>

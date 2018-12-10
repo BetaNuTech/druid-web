@@ -28,7 +28,7 @@ class ScheduledAction < ApplicationRecord
 
   ### Constants
   ALLOWED_PARAMS = [
-    :user_id, :lead_action_id, :reason_id,
+    :impersonate, :user_id, :lead_action_id, :reason_id,
     :description, :completion_message, :completion_action,
     :completion_retry_delay_value, :completion_retry_delay_unit,
     :target_id, :target_type,
@@ -58,6 +58,8 @@ class ScheduledAction < ApplicationRecord
 
 
   ### Instance Methods
+
+  attr_accessor :impersonate
 
   def start_time
     self.schedule.try(:date)

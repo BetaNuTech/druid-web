@@ -65,10 +65,10 @@ module ScheduledActionsHelper
   end
 
 
-  def trigger_scheduled_action_state_event(scheduled_action:, event_name:)
+  def trigger_scheduled_action_state_event(scheduled_action:, event_name:, user: current_user)
     success = false
     if policy(scheduled_action).allow_state_event_by_user?(event_name)
-      success = scheduled_action.trigger_event(event_name: event_name, user: current_user)
+      success = scheduled_action.trigger_event(event_name: event_name, user: user)
     end
     return success
   end

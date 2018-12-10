@@ -32,7 +32,7 @@ FactoryBot.define do
     property { create(:property) }
     unit_type { create(:unit_type) }
     rental_type { create(:rental_type) }
-    unit { Faker::Number.between(1, 1000) }
+    unit { Faker::Number.between(1, 1000) + Time.now.to_i }
     floor { Faker::Number.between(1,3) }
     sqft { Faker::Number.between(400, 1200) }
     bedrooms { Faker::Number.between(1,3) }
