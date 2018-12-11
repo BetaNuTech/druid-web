@@ -1,5 +1,28 @@
 namespace :leads do
 
+  desc "Export"
+  task :export, [:property_ids] => :environment do |t, args|
+
+    if args[:property_ids].present?
+      property_ids = ( args[:property_ids] || '' ).split(',') 
+      properties = Property.find(property_ids)
+    else
+      properties = Property.all
+      property_ids = properties.map(&:id)
+    end
+
+    filename = File.join("tmp", "leads-#{DateTime.now.strftime("%Y%m%d")}.csv")
+
+    puts "* Exporting CSV for Properties: #{properties.map(&:name).join(', ') || 'All'}"
+    print "** Output to #{filename}"
+
+    File.open(filename, "wb") do |file|
+      file.puts Lead.export_csv(search: 'Property', ids: property_ids)
+    end
+
+    puts " Done."
+  end
+
   desc "Cleanup"
   task :delete_old => :environment do
     puts "! DELETE OPEN LEADS OLDER THAN 1 WEEK AND ALL AUDIT RECORDS!"
@@ -164,7 +187,7 @@ namespace :leads do
                                                end_date: DateTime.now,
                                                filter: true)
         else
-          guestcards = adapter.getGuestCards(property_id, filter: true) 
+          guestcards = adapter.getGuestCards(property_id, filter: true)
         end
         filename = File.join(Rails.root, "tmp", "#{prefix}_#{property_id}_guestcards.csv")
         elapsed = DateTime.now.to_i - start_time.to_i
