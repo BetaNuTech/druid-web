@@ -12,10 +12,10 @@ class ProspectStats
         "Name": property.name,
         "ID": property_voyager_id(property),
         "Stats": {
-          "Prospects10": prospect_count(property, 10),
-          "Prospects30": prospect_count(property, 30),
-          "Prospects180": prospect_count(property, 180),
-          "Prospects365": prospect_count(property, 365),
+          "Prospects10": prospect_count_all(property, 10),
+          "Prospects30": prospect_count_all(property, 30),
+          "Prospects180": prospect_count_all(property, 180),
+          "Prospects365": prospect_count_all(property, 365),
           "Closings10": closing_rate(property, 10),
           "Closings30": closing_rate(property, 30),
           "Closings180": closing_rate(property, 180),
@@ -36,10 +36,10 @@ class ProspectStats
         "Name": user.name,
         "ID": user.id,
         "Stats": {
-          "Prospects10": prospect_count(user, 10),
-          "Prospects30": prospect_count(user, 30),
-          "Prospects180": prospect_count(user, 180),
-          "Prospects365": prospect_count(user, 365),
+          "Prospects10": prospect_count_all(user, 10),
+          "Prospects30": prospect_count_all(user, 30),
+          "Prospects180": prospect_count_all(user, 180),
+          "Prospects365": prospect_count_all(user, 365),
           "Closings10": closing_rate(user, 10),
           "Closings30": closing_rate(user, 30),
           "Closings180": closing_rate(user, 180),
@@ -60,10 +60,10 @@ class ProspectStats
         "Name": team.name,
         "ID": team.id,
         "Stats": {
-          "Prospects10": prospect_count(team, 10),
-          "Prospects30": prospect_count(team, 30),
-          "Prospects180": prospect_count(team, 180),
-          "Prospects365": prospect_count(team, 365),
+          "Prospects10": prospect_count_all(team, 10),
+          "Prospects30": prospect_count_all(team, 30),
+          "Prospects180": prospect_count_all(team, 180),
+          "Prospects365": prospect_count_all(team, 365),
           "Closings10": closing_rate(team, 10),
           "Closings30": closing_rate(team, 30),
           "Closings180": closing_rate(team, 180),
@@ -84,10 +84,18 @@ class ProspectStats
     return property.listing_code(@voyager_source)
   end
 
-  def prospect_count(skope, window)
+  def prospect_count_all(skope, window)
+    return prospect_count_all_scope(skope, window).count
+  end
+
+  def prospect_count_all_scope(skope, window)
     return skope.leads.
-      where(created_at: window.days.ago..DateTime.now).
-      count
+      joins("INNER JOIN lead_transitions ON lead_transitions.lead_id = leads.id").
+      where("( lead_transitions.last_state != 'none' OR ( lead_transitions.last_state = 'none' AND lead_transitions.current_state NOT IN (#{Lead::CLOSED_STATES.map{|s| "'#{s}'"}.join(',')})) ) AND (leads.created_at BETWEEN ? AND ?)", window.days.ago, DateTime.now)
+  end
+
+  def prospect_count(skope, window)
+
   end
 
   def conversion_rate(skope, window)
@@ -110,7 +118,7 @@ class ProspectStats
 
   def calculate_lead_pctg(count, skope, window)
     if count > 0
-      rate = (count.to_f / prospect_count(skope,window).to_f).round(3)
+      rate = (count.to_f / prospect_count_all(skope,window).to_f).round(3)
     else
       rate = 0.0
     end
