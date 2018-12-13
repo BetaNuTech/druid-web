@@ -3,7 +3,7 @@ module Leads
     extend ActiveSupport::Concern
 
     included do
-      has_many :duplicate_records, class_name: 'DuplicateLead', foreign_key: 'lead_id', dependent: :destroy
+      has_many :duplicate_records, class_name: 'DuplicateLead', foreign_key: 'reference_id', dependent: :destroy
       has_many :duplicates, class_name: 'Lead', foreign_key: 'lead_id', through: :duplicate_records, source: :lead
 
       after_create :mark_duplicates
