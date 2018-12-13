@@ -89,9 +89,13 @@ class ProspectStats
   end
 
   def prospect_count_all_scope(skope, window)
+    join_sql = "INNER JOIN lead_transitions ON lead_transitions.lead_id = leads.id"
+    #states_sql = Lead::CLOSED_STATES.map{|s| "'#{s}'"}.join(',')
+    states_sql = %w{resident exresident}.map{|s| "'#{s}'"}.join(',')
+    condition_sql = "(lead_transitions.last_state != 'none' OR ( lead_transitions.last_state = 'none' AND lead_transitions.current_state NOT IN (#{states_sql})) ) AND (leads.created_at BETWEEN ? AND ?)"
     return skope.leads.
-      joins("INNER JOIN lead_transitions ON lead_transitions.lead_id = leads.id").
-      where("( lead_transitions.last_state != 'none' OR ( lead_transitions.last_state = 'none' AND lead_transitions.current_state NOT IN (#{Lead::CLOSED_STATES.map{|s| "'#{s}'"}.join(',')})) ) AND (leads.created_at BETWEEN ? AND ?)", window.days.ago, DateTime.now)
+      joins(join_sql).
+      where(condition_sql, window.days.ago, DateTime.now)
   end
 
   def prospect_count(skope, window)
