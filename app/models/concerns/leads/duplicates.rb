@@ -12,7 +12,7 @@ module Leads
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name}
 
       def possible_duplicates
-        invalid_values = ['Null', '00000000', '0000000000', '(None)', 'None', 'non@aol.zzz', 'non@aol.com']
+        invalid_values = ['Null', '00000000', '0000000000', '(None)', 'None', 'non@aol.zzz', 'non@aol.com', 'none@aol.zzz', 'none@aol.com']
         invalid_values_sql = invalid_values.map{|v| "'#{v}'"}.join(", ")
         sql_template =<<~SQL
 
