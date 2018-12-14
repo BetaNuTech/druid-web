@@ -12,10 +12,14 @@ class ProspectStats
         "Name": property.name,
         "ID": property_voyager_id(property),
         "Stats": {
-          "Prospects10": prospect_count_all(property, 10),
-          "Prospects30": prospect_count_all(property, 30),
-          "Prospects180": prospect_count_all(property, 180),
-          "Prospects365": prospect_count_all(property, 365),
+          "Prospects10": prospect_count(property, 10),
+          "Prospects30": prospect_count(property, 30),
+          "Prospects180": prospect_count(property, 180),
+          "Prospects365": prospect_count(property, 365),
+          "Prospects10_all": prospect_count_all(property, 10),
+          "Prospects30_all": prospect_count_all(property, 30),
+          "Prospects180_all": prospect_count_all(property, 180),
+          "Prospects365_all": prospect_count_all(property, 365),
           "Closings10": closing_rate(property, 10),
           "Closings30": closing_rate(property, 30),
           "Closings180": closing_rate(property, 180),
@@ -36,10 +40,14 @@ class ProspectStats
         "Name": user.name,
         "ID": user.id,
         "Stats": {
-          "Prospects10": prospect_count_all(user, 10),
-          "Prospects30": prospect_count_all(user, 30),
-          "Prospects180": prospect_count_all(user, 180),
-          "Prospects365": prospect_count_all(user, 365),
+          "prospects10": prospect_count(user, 10),
+          "prospects30": prospect_count(user, 30),
+          "prospects180": prospect_count(user, 180),
+          "prospects365": prospect_count(user, 365),
+          "prospects10_all": prospect_count_all(user, 10),
+          "prospects30_all": prospect_count_all(user, 30),
+          "prospects180_all": prospect_count_all(user, 180),
+          "prospects365_all": prospect_count_all(user, 365),
           "Closings10": closing_rate(user, 10),
           "Closings30": closing_rate(user, 30),
           "Closings180": closing_rate(user, 180),
@@ -60,10 +68,14 @@ class ProspectStats
         "Name": team.name,
         "ID": team.id,
         "Stats": {
-          "Prospects10": prospect_count_all(team, 10),
-          "Prospects30": prospect_count_all(team, 30),
-          "Prospects180": prospect_count_all(team, 180),
-          "Prospects365": prospect_count_all(team, 365),
+          "Prospects10": prospect_count(team, 10),
+          "Prospects30": prospect_count(team, 30),
+          "Prospects180": prospect_count(team, 180),
+          "Prospects365": prospect_count(team, 365),
+          "Prospects10_all": prospect_count_all(team, 10),
+          "Prospects30_all": prospect_count_all(team, 30),
+          "Prospects180_all": prospect_count_all(team, 180),
+          "Prospects365_all": prospect_count_all(team, 365),
           "Closings10": closing_rate(team, 10),
           "Closings30": closing_rate(team, 30),
           "Closings180": closing_rate(team, 180),
@@ -88,18 +100,35 @@ class ProspectStats
     return prospect_count_all_scope(skope, window).count
   end
 
+  # Leads for a scope within a time window
+  # Excluding residents, vendors, and duplicates
+  # NOTE Limitations: will not report Leads without an initial LeadTransition
   def prospect_count_all_scope(skope, window)
     join_sql = "INNER JOIN lead_transitions ON lead_transitions.lead_id = leads.id"
-    #states_sql = Lead::CLOSED_STATES.map{|s| "'#{s}'"}.join(',')
     states_sql = %w{resident exresident}.map{|s| "'#{s}'"}.join(',')
-    condition_sql = "(lead_transitions.last_state != 'none' OR ( lead_transitions.last_state = 'none' AND lead_transitions.current_state NOT IN (#{states_sql})) ) AND (leads.created_at BETWEEN ? AND ?)"
+    classifications_sql = %w{duplicate resident vendor}.map{|c| "#{Lead.classifications[c]}"}.join(',')
+    condition_sql=<<~SQL
+
+      ( leads.classification IS NULL
+        OR leads.classification NOT IN (#{classifications_sql}) )
+      AND leads.created_at BETWEEN ? AND ?
+      AND (
+        lead_transitions.last_state != 'none'
+        OR ( lead_transitions.last_state = 'none'
+             AND lead_transitions.current_state NOT IN (#{states_sql}) ) )
+    SQL
+
     return skope.leads.
       joins(join_sql).
       where(condition_sql, window.days.ago, DateTime.now)
   end
 
+  # Approximate prospect count excluding duplicates
   def prospect_count(skope, window)
-
+    prospect_ids = prospect_count_all_scope(skope, window).select(:id).map(&:id)
+    duplicate_count = DuplicateLead.where(lead_id: prospect_ids).
+      select("distinct lead_id").count
+    return prospect_ids.size - (duplicate_count / 2)
   end
 
   def conversion_rate(skope, window)
