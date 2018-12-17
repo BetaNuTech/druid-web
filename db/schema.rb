@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_13_162825) do
+ActiveRecord::Schema.define(version: 2018_12_17_223832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2018_12_13_162825) do
   create_table "duplicate_leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "reference_id"
     t.uuid "lead_id"
+    t.index ["lead_id"], name: "index_duplicate_leads_on_lead_id"
     t.index ["reference_id", "lead_id"], name: "index_duplicate_leads_on_reference_id_and_lead_id", unique: true
     t.index ["reference_id"], name: "index_duplicate_leads_on_reference_id"
   end

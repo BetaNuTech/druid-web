@@ -34,12 +34,23 @@ module Api
         end
       end
 
+      # Return Prospect Stats
+      #
+      # URL Examples:
+      # (all properties): GET /api/v1/prospect_stats.json?token=XXX
+      # (specified properties): GET /api/v1/prospect_stats.json?token=XXX&stats=properties&ids[]=XXX&ids[]=YYY
+      # (all teams): GET /api/v1/prospect_stats.json?token=XXX&stats=teams
+      # (all agents): GET /api/v1/prospect_stats.json?token=XXX&stats=agents
       def prospect_stats
+        @stats_for = ( params[:stats] || 'properties' )
+        @ids = params[:ids]
         unless access_policy.prospect_stats?
           render json: {errors: {base: [ 'Access Denied' ]}}, status: :forbidden
           return
         end
-        @stats = ProspectStats.new
+        logger.info "=== ProspectStats: Controller Params: #{params}"
+        logger.info "=== ProspectStats: params: {stats: #{@stats_for}, ids: #{( @ids || [] ).join(',')}}"
+        @stats = ProspectStats.new(ids: @ids)
       end
 
       private
