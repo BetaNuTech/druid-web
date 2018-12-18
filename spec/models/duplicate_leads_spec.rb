@@ -72,6 +72,27 @@ RSpec.describe DuplicateLead do
         expect(lead3.duplicates.count).to eq(1)
       end
 
+      it "marks duplicates unless lead.skip_duplicates is set to true" do
+        lead1
+        expect(lead1.duplicates.count).to eq(0)
+
+        lead3 = build(:lead, phone1: lead1.phone1)
+        lead3.skip_dedupe = true
+        lead3.save!
+        lead1.reload
+        lead3.reload
+        expect(lead3.duplicates.count).to eq(0)
+
+        lead3.skip_dedupe = nil
+        lead1.phone1 = '5555555555'
+        lead1.save
+        lead3.phone1 = '5555555555'
+        lead3.save!
+        lead3.reload
+
+        expect(lead3.duplicates.count).to eq(1)
+      end
+
       it "marks duplicates on Lead save" do
         lead1
         lead1.reload

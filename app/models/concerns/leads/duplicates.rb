@@ -3,6 +3,9 @@ module Leads
     extend ActiveSupport::Concern
 
     included do
+
+      attr_accessor :skip_dedupe
+
       has_many :duplicate_records, class_name: 'DuplicateLead', foreign_key: 'reference_id', dependent: :destroy
       has_many :duplicates, class_name: 'Lead', foreign_key: 'lead_id', through: :duplicate_records, source: :lead
 
@@ -60,7 +63,10 @@ module Leads
         return Lead.where(id: lead_ids)
       end
 
+      # Find and mark duplicates if self.skip_dedupe is not TRUE
       def mark_duplicates(recurse=true)
+        return if defined?(:skip_dedupe) && self.skip_dedupe
+
         detected = possible_duplicates
         transaction do
           old_duplicates = duplicates.to_a
