@@ -65,7 +65,10 @@ module Leads
 
       # Find and mark duplicates if self.skip_dedupe is not TRUE
       def mark_duplicates(recurse=true)
-        return if defined?(:skip_dedupe) && self.skip_dedupe
+        self.skip_dedupe ||= false
+        if self.skip_dedupe == true
+          return true
+        end
 
         detected = possible_duplicates
         transaction do

@@ -47,7 +47,11 @@ module Leads
         leads = []
         ActiveRecord::Base.transaction do
           leads = collection_from_guestcards(@data)
-          leads.each{|l| l.save}
+          leads.each do |lead|
+            # Skip dedupe on Voyager Sync to prevent an avalanche of dedupe background jobs
+            lead.skip_dedupe = true
+            lead.save
+          end
         end
         return leads
       end
