@@ -10,7 +10,7 @@ class ProspectStats
   def property_stats
     out = []
     skope = Property.active.includes(:listings)
-    skope = skope.where(id: @ids) if @ids.present?
+    skope = skope.where(property_listings: {code: @ids, source_id: @voyager_source.id}) if @ids.present?
     skope.order("properties.name ASC").each do |property|
       out <<
         {
