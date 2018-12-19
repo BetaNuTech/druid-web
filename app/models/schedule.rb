@@ -15,6 +15,8 @@
 #  count            :integer
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  duration         :integer
+#  end_time         :datetime
 #
 
 class Schedule < Schedulable::Model::Schedule

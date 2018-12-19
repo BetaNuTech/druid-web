@@ -32,7 +32,7 @@ class ScheduledAction < ApplicationRecord
     :description, :completion_message, :completion_action,
     :completion_retry_delay_value, :completion_retry_delay_unit,
     :target_id, :target_type,
-    { schedule_attributes: Schedulable::ScheduleSupport.param_names }
+    { schedule_attributes: Schedulable::ScheduleSupport.param_names + [:duration, :end_time] }
   ]
 
   ### Associations

@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: scheduled_actions
+#
+#  id                                     :uuid             not null, primary key
+#  user_id                                :uuid
+#  target_id                              :uuid
+#  target_type                            :string
+#  originator_id                          :uuid
+#  lead_action_id                         :uuid
+#  reason_id                              :uuid
+#  engagement_policy_action_id            :uuid
+#  engagement_policy_action_compliance_id :uuid
+#  description                            :text
+#  completed_at                           :datetime
+#  state                                  :string           default("pending")
+#  attempt                                :integer          default(1)
+#  created_at                             :datetime         not null
+#  updated_at                             :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe ScheduledAction, type: :model do
