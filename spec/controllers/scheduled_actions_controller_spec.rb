@@ -112,4 +112,13 @@ RSpec.describe ScheduledActionsController, type: :controller do
       end
     end
   end
+
+  describe "GET #conflict_check" do
+    it "should return 'true' when no conflict exists for the calling user" do
+    end
+
+    it "should return 'true' when a conflict exists for the calling user" do
+    end
+  end
+
 end

@@ -1,6 +1,11 @@
 <tr>
   <td><%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %></td>
-  <td class="dashboard_item_date"><%= short_datetime(scheduled_action.schedule.to_datetime) %></td>
+  <td class="dashboard_item_date">
+    <%= short_datetime(scheduled_action.schedule.to_datetime) %>
+      <% if scheduled_action.schedule.duration.present? %>
+        to <%= short_time scheduled_action.schedule.end_time_to_datetime %>
+      <% end %>
+  </td>
   <td>
     <%= scheduled_action.description %>
     <% unless scheduled_action.target == current_user %>

@@ -73,4 +73,9 @@ module ScheduledActionsHelper
     return success
   end
 
+  def scheduled_action_schedule_durations(schedule=nil)
+    options = [ ["Free", 0], ["30 minutes",30], ["60 minutes",60], ["90 minutes",90], ["120 minutes", 120] ]
+    return options_for_select(options, ( schedule.try(:duration) || 0 ))
+  end
+
 end

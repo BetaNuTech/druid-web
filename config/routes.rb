@@ -26,7 +26,13 @@ Rails.application.routes.draw do
   root to: redirect('/users/sign_in')
 
   resources :lead_actions
+
+  #post '/scheduled_actions/conflict_check', to: 'scheduled_actions#conflict_check'
+
   resources :scheduled_actions do
+    collection do
+      get :conflict_check, to: 'scheduled_actions#conflict_check'
+    end
     member do
       post 'complete', to: 'scheduled_actions#complete'
       get 'completion_form', to: 'scheduled_actions#completion_form'

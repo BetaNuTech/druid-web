@@ -1,6 +1,8 @@
 class ScheduledActionsController < ApplicationController
+
   include ScheduledActionsHelper
 
+  skip_before_action :verify_authenticity_token, only: [:conflict_check]
   before_action :authenticate_user!
   before_action :set_scheduled_action, only: [:show, :edit, :update, :destroy, :complete, :completion_form]
   before_action :set_lead, only: [:show, :edit, :update, :destroy, :complete, :completion_form]
@@ -36,7 +38,7 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions/new
   def new
     @scheduled_action = ScheduledAction.new(new_scheduled_action_params)
-    @scheduled_action.schedule = Schedule.new
+    @scheduled_action.schedule = Schedule.new(timezone: current_user.timezone)
     authorize @scheduled_action
   end
 
@@ -58,6 +60,28 @@ class ScheduledActionsController < ApplicationController
       event_name: @scheduled_action.completion_action,
       user: completion_user)
     redirect_to completion_form_scheduled_action_path(@scheduled_action)
+  end
+
+  def conflict_check
+    conflicts = false
+    # Find the record or build
+    id = params["scheduled_action"]["id"]
+    @scheduled_action = ScheduledAction.where(id: id).first || ScheduledAction.new
+
+    # Use the submitted Schedule attributes without saving
+    @scheduled_action.schedule ||= Schedule.new
+    @scheduled_action.schedule.attributes = conflict_check_params["schedule_attributes"]
+
+    # Shuffle record ownership temporarily for policy authorization
+    user = @scheduled_action.user || current_user
+    @scheduled_action.user = current_user
+    authorize @scheduled_action
+    @scheduled_action.user = user
+    conflicts = @scheduled_action.conflicting.any?
+
+    respond_to do |format|
+      format.json { render json: conflicts }
+    end
   end
 
   # POST /scheduled_actions
@@ -137,6 +161,12 @@ class ScheduledActionsController < ApplicationController
       else
         {}
       end
+    end
+
+    def conflict_check_params
+      filtered_params = scheduled_action_params
+      filtered_params['schedule_attributes']['id'] = nil
+      return filtered_params
     end
 
     def set_completion_action_and_message

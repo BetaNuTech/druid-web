@@ -5,7 +5,11 @@
     </p>
 
     <p>
-      <strong>Due:</strong> <%= scheduled_action.schedule.long_datetime %> &mdash;
+      <strong>Due:</strong> <%= scheduled_action.schedule.long_datetime %>
+      <% if scheduled_action.schedule.duration.present? %>
+        (until <%= short_time scheduled_action.schedule.end_time_to_datetime %>)
+      <% end %>
+    &mdash;
       <strong>Reason:</strong> <%= scheduled_action.reason.present? ? scheduled_action.reason.description || scheduled_action.reason.name : 'None' %> <br/>
       <strong>Status:</strong> <%= scheduled_action.state.humanize.titlecase %> &mdash;
       <strong>Attempt #:</strong> <%= scheduled_action.attempt %> &mdash;

@@ -25,6 +25,26 @@ RSpec.describe ScheduledAction, type: :model do
   include_context "team_members"
   include_context "engagement_policy"
 
+  describe "scheduling" do
+    include_context "scheduled_actions"
+    it "returns conflicting ScheduledActions, if any" do
+      expect(scheduled_action1.conflicting.any?).to be(false)
+      conflicting_action
+      expect(scheduled_action1.conflicting.to_a).to eq([ conflicting_action ])
+      expect(scheduled_action1.conflicting.any?).to be(true)
+      expect(scheduled_action1.conflicting.count).to eq(1)
+      conflicting_action.destroy
+      expect(scheduled_action1.conflicting.any?).to be(false)
+    end
+
+    it "handles ScheduledActions with a Schedule having no duration" do
+      scheduled_action1.schedule.duration = nil
+      scheduled_action1.schedule.save
+      expect(scheduled_action1.conflicting.any?).to be(false)
+    end
+
+  end
+
   describe "completion" do
 
     describe "by owner" do

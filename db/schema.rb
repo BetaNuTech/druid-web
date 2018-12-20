@@ -431,7 +431,7 @@ ActiveRecord::Schema.define(version: 2018_12_19_215005) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "duration"
-    t.datetime "end_time"
+    t.time "end_time"
   end
 
   create_table "team_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

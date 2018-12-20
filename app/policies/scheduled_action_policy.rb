@@ -83,6 +83,7 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def same_user?
+    return true unless record.respond_to?(:user)
     record.user.present? && record.user === user
   end
 
@@ -92,5 +93,9 @@ class ScheduledActionPolicy < ApplicationPolicy
     event = event_name.to_sym
     record.permitted_state_events.include?(event) &&
       (user.admin? || same_user? || same_team? )
+  end
+
+  def conflict_check?
+    same_user?
   end
 end
