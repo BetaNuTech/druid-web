@@ -22,12 +22,14 @@ FactoryBot.define do
     factory :sms_message_type do
       name { "SMS" }
       description { "SMS" }
+      html { false }
       active { true }
     end
 
     factory :email_message_type do
       name { "Email" }
       description { "Email" }
+      html { true }
       active { true }
     end
   end

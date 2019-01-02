@@ -20,7 +20,7 @@ RSpec.describe MessageTemplate, type: :model do
   end
 
   describe :validations do
-    let(:message_template) { create(:message_template)}
+    let(:message_template) { create(:message_template, message_type: create(:email_message_type))}
 
     it "requires a name" do
       assert message_template.valid?
@@ -54,18 +54,21 @@ RSpec.describe MessageTemplate, type: :model do
     let(:template_body_string) { "Body {{user}}. ID: {{id}}" }
     let(:message_template) {
       create(:message_template,
+             message_type: create(:email_message_type),
              name: 'Test',
              subject: template_subject_string,
              body: template_body_string)
     }
     let(:invalid_body_message_template) {
       create(:message_template,
+             message_type: create(:email_message_type),
              name: 'Test',
              subject: template_subject_string,
              body: "{{foobar")
     }
     let(:invalid_subject_message_template) {
       create(:message_template,
+             message_type: create(:email_message_type),
              name: 'Test',
              subject: "{{foobar",
              body: template_body_string)
@@ -74,6 +77,7 @@ RSpec.describe MessageTemplate, type: :model do
 
     it "renders the template subject with variable substitution" do
       output = message_template.render(template_data)
+      #binding.pry
       refute output.errors?
       expect(output.subject).to eq("Subject JohnSmith. ID: 42")
     end
@@ -81,7 +85,7 @@ RSpec.describe MessageTemplate, type: :model do
     it "renders the template body with variable substitution" do
       output = message_template.render(template_data)
       refute output.errors?
-      expect(output.body).to eq("Body JohnSmith. ID: 42")
+      expect(output.body).to match("Body JohnSmith. ID: 42")
     end
 
     it "returns errors in the body template" do
@@ -100,6 +104,41 @@ RSpec.describe MessageTemplate, type: :model do
       output = message_template.render({'id' => 42}) # missing user
       refute output.errors?
       expect(output.subject).to eq("Subject . ID: 42")
+    end
+
+    describe "using a layout" do
+      let(:html_message_template) {
+        create( :message_template,
+                message_type: create(:email_message_type),
+                subject: template_subject_string,
+                body: template_body_string
+              ) }
+      let(:text_message_template) {
+        create( :message_template,
+                message_type: create(:sms_message_type),
+                subject: template_subject_string,
+                body: template_body_string
+              ) }
+
+      describe "for an HTML-supporting MessageType " do
+        it "should use a pre-defined HTML layout" do
+          output = html_message_template.render(template_data)
+          refute output.errors?
+          expect(output.layout).to eq('email.html.erb')
+          expect(output.body).to match('html')
+        end
+      end
+
+      describe "for a plain text MessageType" do
+        it "should use a pre-defined text layout" do
+          output = text_message_template.render(template_data)
+          refute output.errors?
+          expect(output.layout).to eq('sms.text.erb')
+          expect(output.body).to_not match('html')
+          expect(output.body).to match("Body JohnSmith. ID: 42")
+        end
+      end
+
     end
   end
 

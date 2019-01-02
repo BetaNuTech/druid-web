@@ -13,15 +13,18 @@
 #
 
 class MessageTemplate < ApplicationRecord
+  require 'erb'
+
   ### Class Concerns/Extensions
   include Seeds::Seedable
 
   class Rendered
-    attr_reader :subject, :body, :errors
+    attr_reader :subject, :body, :layout, :errors
 
-    def initialize(subject: '', body: '', errors: {})
+    def initialize(subject: '', body: '', layout: '', errors: {})
       @subject = subject
       @body = body
+      @layout = layout
       @errors = OpenStruct.new(
         subject: errors.fetch(:subject, []),
         body: errors.fetch(:body, []))
@@ -71,13 +74,20 @@ class MessageTemplate < ApplicationRecord
   ### Instance Methods
 
   def render(data={})
-    output = {subject: nil, body: nil, errors: {subject: [], body: []}}
+    output = {subject: nil, body: nil, layout: nil, errors: {subject: [], body: []}}
     parts = {subject: subject, body: body}
 
     parts.each_pair do |part, content|
       template = nil
       begin
-        template = Liquid::Template.parse(content)
+        template_content = case part
+          when :body
+            output[:layout] = message_template_layout_filename
+            ERB.new(message_template_layout).result(binding)
+          else
+            content
+          end
+        template = Liquid::Template.parse(template_content)
         output[part] = template.render(data)
       rescue => e
         if template.nil?
@@ -96,12 +106,28 @@ class MessageTemplate < ApplicationRecord
       end
     end
 
-    result = Rendered.new(subject: output[:subject], body: output[:body], errors: output[:errors])
+    result = Rendered.new( subject: output[:subject],
+                          body: output[:body],
+                          layout: output[:layout],
+                          errors: output[:errors])
     return result
   end
 
   def shared?
     return !user_id.present?
+  end
+
+  private
+
+  def message_template_layout_filename
+    filename = "%s.%s.erb" % [(message_type&.name&.downcase || 'default'), (message_type&.html? ? 'html' : 'text')]
+  end
+
+  def message_template_layout
+    default_layout = '<%= content %>'
+    layout_full_filename = File.join(Rails.root, 'app', 'views', 'layouts', 'message_templates', message_template_layout_filename)
+    template_content =  File.read(layout_full_filename)# rescue default_layout
+    return template_content
   end
 
 end
