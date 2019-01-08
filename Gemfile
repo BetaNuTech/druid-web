@@ -43,6 +43,8 @@ gem 'scout_apm', "~> 2.4"
 gem 'exception_notification', "~> 4.2"
 gem 'aws-sdk-s3', "~> 1.23"
 gem 'nested_form_fields', "~> 0.8"
+gem 'dalli', "~> 2.7"
+gem 'connection_pool', "~> 2.2"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.13'

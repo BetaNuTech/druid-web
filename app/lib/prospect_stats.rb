@@ -1,22 +1,41 @@
 class ProspectStats
-  attr_reader :ids, :cache_data
+  CACHE_DURATION = 1.hour
+
+  attr_reader :ids
+  attr_accessor :caching
 
   def initialize(ids: nil)
-    @voyager_source = LeadSource.where(slug: 'YardiVoyager').first
-    @cache_data = {}
     @ids = ids
+    @caching = true
+    @refresh = false
+    @cache_data = {}
+    @voyager_source = LeadSource.where(slug: 'YardiVoyager').first
+  end
+
+  def refresh_cache
+    old_cache_setting = @caching
+    @caching = true
+    @refresh = true
+    property_stats
+    team_stats
+    agent_stats
+    @refresh = false
+    @caching = old_cache_setting
+    return true
   end
 
   def property_stats
-    out = []
-    skope = Property.active.includes(:listings)
-    skope = skope.where(property_listings: {code: @ids, source_id: @voyager_source.id}) if @ids.present?
-    skope.order("properties.name ASC").each do |property|
-      out <<
+    with_cache('property_stats') do
+      out = []
+      skope = Property.active.includes(:listings)
+      skope = skope.where(property_listings: {code: @ids, source_id: @voyager_source.id}) if @ids.present?
+      skope.order("properties.name ASC").each do |property|
+        out <<
         {
           "Name": property.name,
           "ID": property_voyager_id(property),
           "DruidID": property.id,
+          "ReportDate": DateTime.now,
           "Stats": {
             "Prospects365_all": prospect_count_all(property, 365),
             "Prospects365": prospect_count(property, 365),
@@ -36,17 +55,20 @@ class ProspectStats
             "Closings10": closing_rate(property, 10)
           }
         }
+      end
+      out
     end
-    return out
   end
 
+
   def agent_stats
-    out = []
-    skope = User.includes(:profile).order("user_profiles.last_name ASC, user_profiles.first_name ASC")
-    skope = skope.where(users: {id: @ids}) if @ids.present?
-    skope.each do |user|
-      next unless user.leads.count > 0
-      out <<
+    with_cache('agent_stats') do
+      out = []
+      skope = User.includes(:profile).order("user_profiles.last_name ASC, user_profiles.first_name ASC")
+      skope = skope.where(users: {id: @ids}) if @ids.present?
+      skope.each do |user|
+        next unless user.leads.count > 0
+        out <<
         {
           "Name": user.name,
           "ID": user.id,
@@ -70,17 +92,19 @@ class ProspectStats
             "Closings10": closing_rate(user, 10)
           }
         }
+      end
+      out
     end
-    return out
   end
 
   def team_stats
-    out = []
-    skope = Team.order(name: 'asc')
-    skope = skope.where(id: @ids) if @ids.present?
-    skope.each do |team|
-      next unless team.leads.count > 0
-      out <<
+    with_cache('team_stats') do
+      out = []
+      skope = Team.order(name: 'asc')
+      skope = skope.where(id: @ids) if @ids.present?
+      skope.each do |team|
+        next unless team.leads.count > 0
+        out <<
         {
           "Name": team.name,
           "ID": team.id,
@@ -104,8 +128,9 @@ class ProspectStats
             "Closings10": closing_rate(team, 10),
           }
         }
+      end
+      out
     end
-    return out
   end
 
   private
@@ -130,14 +155,15 @@ class ProspectStats
     states_sql = %w{resident exresident}.map{|s| "'#{s}'"}.join(',')
     classifications_sql = %w{duplicate resident vendor}.map{|c| "#{Lead.classifications[c]}"}.join(',')
     condition_sql=<<~SQL
-
       ( leads.classification IS NULL
-        OR leads.classification NOT IN (#{classifications_sql}) )
-      AND leads.created_at BETWEEN ? AND ?
-      AND (
-        lead_transitions.last_state != 'none'
-        OR ( lead_transitions.last_state = 'none'
-             AND lead_transitions.current_state NOT IN (#{states_sql}) ) )
+       OR leads.classification NOT IN (#{classifications_sql}) )
+       AND leads.created_at BETWEEN ? AND ?
+       AND (
+         lead_transitions.last_state != 'none'
+         OR ( lead_transitions.last_state = 'none'
+               AND lead_transitions.current_state NOT IN (#{states_sql})
+             )
+       )
     SQL
 
     return skope.leads.
@@ -185,9 +211,9 @@ class ProspectStats
     return cache(stat: 'closing_rate', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
-          current_state: 'movein',
-          created_at: window.days.ago..DateTime.now
-        }).count
+        current_state: 'movein',
+        created_at: window.days.ago..DateTime.now
+      }).count
       calculate_lead_pctg(count, skope, window)
     end
   end
@@ -197,9 +223,9 @@ class ProspectStats
     return cache(stat: 'closing_rate_all', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
-          current_state: 'movein',
-          created_at: window.days.ago..DateTime.now
-        }).count
+        current_state: 'movein',
+        created_at: window.days.ago..DateTime.now
+      }).count
       calculate_lead_pctg_all(count, skope, window)
     end
   end
@@ -223,22 +249,33 @@ class ProspectStats
   end
 
   def cache(stat:, skope:, window:, &block)
-    key = cache_key(stat: stat, skope: skope, window: window)
+    key = cached_data_key(stat: stat, skope: skope, window: window)
     data = @cache_data[key]
     if data.nil?
-      data = @cache_data[cache_key(stat: stat, skope: skope, window: window)] = yield
-      Rails.logger.info "=== ProspectStats: CACHE MISS: #{key}:#{data}"
-    else
-      Rails.logger.info "=== ProspectStats: CACHE HIT: #{key}:#{data}"
+      data = @cache_data[cached_data_key(stat: stat, skope: skope, window: window)] = yield
     end
     return data
-    #return ( @cache_data[cache_key(stat: stat, skope: skope, window: window)] ||= yield )
   end
 
-  def cache_key(stat:, skope:, window:)
+  def cached_data_key(stat:, skope:, window:)
     klass = skope.try(:class_name) || skope.class.to_s
     identifier = skope.try(:id) || 'all'
     return [klass, identifier, stat, window].join(':')
+  end
+
+  def cache_key(stat='')
+    id_hash = Digest::SHA2.hexdigest(stat + ( @ids || [] ).join(','))
+    "ProspectStats-%s" % [id_hash]
+  end
+
+  def with_cache(stat, &block)
+    if @caching
+      Rails.cache.fetch(cache_key(stat), force: @refresh, expires_in: CACHE_DURATION) do
+        block.call
+      end
+    else
+      block.call
+    end
   end
 
 end
