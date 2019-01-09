@@ -73,6 +73,7 @@ class ProspectStats
           "Name": user.name,
           "ID": user.id,
           "DruidID": user.id,
+          "ReportDate": DateTime.now,
           "Stats": {
             "Prospects365_all": prospect_count_all(user, 365),
             "Prospects365": prospect_count(user, 365),
@@ -109,6 +110,7 @@ class ProspectStats
           "Name": team.name,
           "ID": team.id,
           "DruidID": team.id,
+          "ReportDate": DateTime.now,
           "Stats": {
             "Prospects365_all": prospect_count_all(team, 365),
             "Prospects365": prospect_count(team, 365),
