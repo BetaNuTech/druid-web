@@ -15,8 +15,7 @@ Rails.application.configure do
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
-    # Memcached servers set in ENV['MEMCACHE_SERVERS']
-    config.cache_store = :dalli_store, nil, { :namespace => 'druid', :expires_in => 1.day, :compress => true, pool_size: ENV.fetch('RAILS_MAX_THREADS', 5) }
+    config.cache_store = :memory_store
     config.public_file_server.headers = {
       'Cache-Control' => "public, max-age=#{2.days.seconds.to_i}"
     }
