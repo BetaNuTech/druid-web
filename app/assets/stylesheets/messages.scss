@@ -6,3 +6,10 @@ div.send_new_message_callout {
 tr.message_unread {
   font-weight: bold;
 }
+
+iframe#message_preview {
+  width: 100%;
+  scrolling: no;
+  border: 0;
+  margin: 1em;
+}

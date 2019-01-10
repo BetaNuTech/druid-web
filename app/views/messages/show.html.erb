@@ -51,10 +51,8 @@
             <%= @message.subject %>
           </p>
           <p>
-            <b>Body</b>
-            <blockquote>
-              <%= simple_format @message.body %>
-            </blockquote>
+            <b>Body</b><br/>
+            <iframe id="message_preview" onload="resizeIframe(this)" srcdoc="<%= @message.body_with_layout %>">
           </p>
         </div>
       </div>

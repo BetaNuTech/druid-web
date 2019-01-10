@@ -3,3 +3,10 @@ dl.autofill_help dt {
   font-weight: bold;
   font-style: italic;
 }
+
+iframe#message_template_preview {
+  width: 100%;
+  scrolling: no;
+  border: 0;
+  margin: 1em;
+}

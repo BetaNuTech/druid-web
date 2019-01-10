@@ -117,7 +117,7 @@ class Message < ApplicationRecord
       message.recipientid = message.incoming_recipientid
     end
 
-    message.fill if !message.body.present? && !message.subject.present?
+    message.load_template if !message.body.present? && !message.subject.present?
 
     return message
   end
@@ -127,6 +127,10 @@ class Message < ApplicationRecord
   def read?
     return true if outgoing?
     return incoming? && !read_at.nil?
+  end
+
+  def body_missing?
+    (body || '').empty?
   end
 
   def fill
@@ -152,10 +156,20 @@ class Message < ApplicationRecord
     return !any_errors
   end
 
+  def load_template
+    if !body.present? && message_template.present?
+      self.subject = message_template.subject_with_data(template_data)
+      self.body = message_template.body_with_data(template_data)
+    end
+  end
+
+  def body_with_layout
+    (message_template || MessageTemplate.new).apply_layout(body)
+  end
+
   def template_data
     return (messageable.present? && messageable.respond_to?(:message_template_data)) ? messageable.message_template_data : {}
   end
-
 
   def new_message_reply
     reject_attrs = [:id, :created_at, :updated_at, :delivered_at, :state, :message_template_id, :body ]
@@ -250,7 +264,7 @@ class Message < ApplicationRecord
   end
 
   def html?
-    return message_type.try(:html) ? true : false
+    message_type.present? ? message_type.html : true
   end
 
   def rich_editor?

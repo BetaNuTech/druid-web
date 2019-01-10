@@ -47,7 +47,7 @@ module Messages
           from: delivery.message.from_address,
           to: delivery.message.to_address,
           subject: delivery.message.subject,
-          body: delivery.message.body
+          body: delivery.message.body_with_layout
         )
         delivery.delivered_at = DateTime.now
         delivery.status = MessageDelivery::SUCCESS

@@ -11,7 +11,6 @@ RSpec.describe Leads::Adapters::CloudMailin::AbodoParser do
       adapter = Leads::Adapters::CloudMailin::AbodoParser
 
       result = adapter.parse(email_data)
-      ap result
       expect(result[:title]).to eq(nil)
       expect(result[:first_name]).to eq('Somebody')
       expect(result[:last_name]).to eq('Ecirli')

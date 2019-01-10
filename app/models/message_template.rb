@@ -14,6 +14,7 @@
 
 class MessageTemplate < ApplicationRecord
   require 'erb'
+  require 'premailer'
 
   ### Class Concerns/Extensions
   include Seeds::Seedable
@@ -83,11 +84,13 @@ class MessageTemplate < ApplicationRecord
         template_content = case part
           when :body
             output[:layout] = message_template_layout_filename
-            ERB.new(message_template_layout).result(binding)
+            apply_layout(content)
           else
             content
           end
         template = Liquid::Template.parse(template_content)
+        rendered_part = template.render(data)
+        output[part] = Premailer.new(rendered_part, with_html_string: true).to_inline_css
         output[part] = template.render(data)
       rescue => e
         if template.nil?
@@ -113,8 +116,36 @@ class MessageTemplate < ApplicationRecord
     return result
   end
 
+  def apply_layout(content)
+    rendered = ERB.new(message_template_layout).result(binding)
+    Premailer.new(rendered, with_html_string: true).to_inline_css
+  end
+
+  def body_with_data(template_data)
+    template = Liquid::Template.parse(body)
+    template.render(template_data)
+  end
+
+  def subject_with_data(template_data)
+    template = Liquid::Template.parse(subject)
+    template.render(template_data)
+  end
+
+  def body_preview
+    content = body
+    Premailer.new(ERB.new(message_template_layout).result(binding), with_html_string: true).to_inline_css
+  end
+
   def shared?
     return !user_id.present?
+  end
+
+  def html?
+    message_type.present? ? message_type.try(:html) : true
+  end
+
+  def rich_editor?
+    html?
   end
 
   private
@@ -126,7 +157,12 @@ class MessageTemplate < ApplicationRecord
   def message_template_layout
     default_layout = '<%= content %>'
     layout_full_filename = File.join(Rails.root, 'app', 'views', 'layouts', 'message_templates', message_template_layout_filename)
-    template_content =  File.read(layout_full_filename)# rescue default_layout
+    begin
+      template_content = File.read(layout_full_filename)
+    rescue => e
+      Rails.logger.error "Could not find MessageTemplate layout at #{layout_full_filename}"
+      template_content = default_layout
+    end
     return template_content
   end
 
