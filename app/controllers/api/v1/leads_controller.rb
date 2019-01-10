@@ -48,8 +48,6 @@ module Api
           render json: {errors: {base: [ 'Access Denied' ]}}, status: :forbidden
           return
         end
-        logger.info "=== ProspectStats: Controller Params: #{params}"
-        logger.info "=== ProspectStats: params: {stats: #{@stats_for}, ids: #{( @ids || [] ).join(',')}}"
         @stats = ProspectStats.new(ids: @ids)
       end
 

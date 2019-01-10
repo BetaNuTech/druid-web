@@ -256,6 +256,10 @@ MAILGUN_SMTP_LOGIN=XXX
 MAILGUN_SMTP_PASSWORD=XXX
 MAILGUN_SMTP_PORT=XXX
 MAILGUN_SMTP_SERVER=XXX
+MEMCACHE_SERVERS=localhost
+MEMCACHIER_SERVERS=XXX (production only)
+MEMCACHIER_USERNAME=XXX (production only)
+MEMCACHIER_PASSWORD=XXX (production only)
 MESSAGE_DELIVERY_REPLY_TO="messages@example.com"
 MESSAGE_DELIVERY_TWILIO_PHONE='+15555555555'
 MESSAGE_DELIVERY_TWILIO_SID='XXX'
@@ -297,6 +301,17 @@ heroku run --app APPNAME rake db:seed
 Immediately login as `admin@example.com` using the password `ChangeMeNow`, then update the admin account to use a secure password. Then change the admin email address. Delete the `agent@example.com` account afterwards.
 
 ## Services
+
+### Cache
+
+Memcached is used for `ActiveSupport::Cache::Store`
+
+#### Druid Configuration
+
+```
+# Environment Variables
+MEMCACHE_SERVERS=XXX (automatically set by addon configuration)
+```
 
 ### Messaging (General)
 
