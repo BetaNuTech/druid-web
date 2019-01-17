@@ -145,7 +145,7 @@ class MessageTemplate < ApplicationRecord
   end
 
   def html?
-    message_type.present? ? message_type.try(:html) : true
+    message_type.present? ? message_type.try(:html) : false
   end
 
   def rich_editor?
