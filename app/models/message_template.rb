@@ -118,7 +118,11 @@ class MessageTemplate < ApplicationRecord
 
   def apply_layout(content)
     rendered = ERB.new(message_template_layout).result(binding)
-    Premailer.new(rendered, with_html_string: true).to_inline_css
+    output = rendered
+    if html?
+      output = Premailer.new(rendered, with_html_string: true).to_inline_css
+    end
+    return output
   end
 
   def body_with_data(template_data)
