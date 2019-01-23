@@ -22,6 +22,9 @@ module Leads
       private
 
       def get_property_code(params)
+        property_id = Property.where(id: params[:property_id]).
+          or(Property.where(name: params[:property_id])).
+          first.try(:id)
         return params[:property_id]
       end
 
