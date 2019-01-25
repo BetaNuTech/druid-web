@@ -5,7 +5,7 @@
     "@rails/webpacker": "^3.5.5",
     "axios": "^0.17.1",
     "babel-preset-react": "^6.24.1",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.0",
     "coffeescript": "1.12.7",
     "d3": "^5.5.0",
     "jquery": "^3.2.1",
@@ -27,6 +27,7 @@
   "author": "BlueStone Properties",
   "license": "ProprietaryConfidential",
   "devDependencies": {
+    "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^2.11.2"
   }
 }
