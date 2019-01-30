@@ -12,7 +12,24 @@ $(document).on("turbolinks:load", function(){
     }
   });
 
+  $("#html_editor_toggle").on('click', toggleHTMLEditor);
+
 });
+
+function toggleHTMLEditor(e) {
+  console.log('hello');
+  e.preventDefault();
+  if ( $("#html_editor")[0] != undefined ) {
+    $("#html_editor").attr("id", "plain_editor");
+    CKEDITOR.instances["html_editor"].destroy();
+  } else {
+    if ( $("#plain_editor")[0] != undefined ) {
+      $("#plain_editor").attr("id", "html_editor");
+      CKEDITOR.replace("html_editor");
+    }
+  }
+  return(false);
+}
 
 function resizeIframe(obj){
    obj.style.height = 0;

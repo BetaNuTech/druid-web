@@ -11,7 +11,7 @@
     </div>
   <% end %>
 
-  <div class="fieldset_content">
+  <div>
     <div class="row">
       <div class="col-md-3 form-group">
         <%= form.label "Visibility" %>
@@ -38,12 +38,14 @@
     <div class="row">
       <div class="col-md-12 form-group">
         <%= form.label :body %>
+        <%= link_to("Toggle Rich Editor", "#", {id: "html_editor_toggle", class: "btn btn-xs btn-info"}) %>
         <%= form.text_area :body, { rows: 20, id: (message_template.rich_editor? ? 'html_editor' : 'plain_editor'), class: 'form-control' } %>
       </div>
     </div>
 
     <div class="form-group">
       <button type="submit" class="btn btn-primary">Submit</button>
+      <%= link_to('Back', :back, class: "btn btn-xs btn-info")  %>
     </div>
 
     <%= render partial: "template_help" %>
