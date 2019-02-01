@@ -1,0 +1,12 @@
+<% if lead.duplicates.present? %>
+  <div class="duplicates">
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Possible Duplicates</h2>
+      </div>
+    </div>
+    <div class="row">
+      <%= render partial: "duplicates", locals: {duplicates: lead.duplicate_records} %>
+    </div>
+  </div>
+<% end %>

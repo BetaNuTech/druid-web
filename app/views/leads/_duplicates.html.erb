@@ -1,32 +1,62 @@
-<% if lead.duplicates.present? %>
-  <div class="duplicates">
-    <div class="row">
-      <div class="col-md-4">
-        <h2>Possible Duplicates</h2>
-      </div> 
-    </div> 
-    <div class="row">
-      <table class="table">
-        <thead>
-          <th>Property</th>
-          <th></th>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>First Contact</th>
-        </thead>
+<% duplicate_groups = duplicates.groups_annotated %>
 
-        <% lead.duplicates.each do |lead_dup| %>
-          <tr>
-            <td><%= lead_dup.property.try(:name) || '(None)' %></td>
-            <th><%= lead.state.humanize %></th>
-            <td><%= link_to lead_dup.name, url_for(lead_dup), target: '_blank' %></td>
-            <td><%= lead_dup.phone1 || '(None)'  %></td>
-            <td><%= lead_dup.email || '(None)' %></td>
-            <td><%= long_date(lead_dup.first_comm) || '(None)' %></td>
-          </tr>
+<table class="table lead_duplicates">
+  <thead>
+    <tr>
+      <th>
+        <% if duplicate_groups.size > 1 %>
+          <span class="master_group_toggler group_closed group_toggler glyphicon glyphicon-chevron-right"></span>
         <% end %>
-      </table>
-    </div>
-  </div>
-<% end %>
+      </th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Property</th>
+      <th>Source</th>
+      <th>State</th>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% duplicate_groups.each_with_index do |leads, group_index| %>
+      <% row_bgclass = cycle('', 'bg-info') %>
+      <% row_bgclass = '' %>
+      <% leads.each_with_index do |lead_record, index| %>
+        <% lead = lead_record[:record] %>
+        <% row_class = index == 0 ? 'group_primary' : 'group_secondary' %>
+        <% group_id = "lead_group-#{group_index}" %>
+        <tr class="<%= group_id %> <%= row_class %> <%= row_bgclass %>">
+          <td class="group_toggle">
+            <% if index == 0 %>
+              <span class="group_toggler group_closed glyphicon glyphicon-chevron-right" data-lead_group="<%= group_id %>"></span>
+              (<%= leads.count  %>)
+            <% end %>
+          </td>
+          <td>
+            <span class="<%= lead_record[:flags][:name] ? 'highlight' : '' %>">
+              <%= link_to(lead.name, lead_path(lead), target: '_blank') %>
+            </span>
+          </td>
+          <td>
+            <span class="<%= lead_record[:flags][:email] ? 'highlight' : '' %>">
+              <%= lead.email %>
+            </span>
+          </td>
+          <td>
+            <span class="<%= lead_record[:flags][:phone] ? 'highlight' : '' %>">
+              <%= [ lead.phone1, lead.phone2 ].compact.uniq.join(' ') %>
+            </span>
+          </td>
+          <td>
+            <%= lead.property.name %>
+          </td>
+          <td>
+            <%= lead.referral %>
+          </td>
+          <td><%= lead.state.humanize %></td>
+          <td><%= short_date(lead.created_at) %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

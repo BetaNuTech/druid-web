@@ -108,6 +108,10 @@ class Property < ApplicationRecord
     address("<BR/>")
   end
 
+  def duplicate_groups
+    DuplicateLead.includes("lead").where(leads: {property_id: self.id}).groups
+  end
+
   private
 
   def format_phones

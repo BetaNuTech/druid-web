@@ -36,3 +36,37 @@ tr.property-table-row-inactive td {
 .property_phone_number_entry {
   padding: 0.5em;
 }
+
+
+table.lead_duplicates {
+  span.group_toggler {
+    cursor: pointer;
+  }
+  span.highlight {
+    background-color: #FFFFC7;
+  }
+
+  td.group_toggle {
+    white-space: nowrap;
+  }
+
+  tr.group_primary {
+    td {
+      padding-top: 1em;
+      padding-bottom: 0.2em;
+    }
+
+  }
+
+  tr.group_secondary {
+    display: none;
+    td {
+      padding-top: 0.2em;
+      padding-bottom: 0.2em;
+    }
+    td.group_toggle {
+      border: none;
+    }
+  }
+}
+

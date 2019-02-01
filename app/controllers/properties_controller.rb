@@ -1,7 +1,7 @@
 class PropertiesController < ApplicationController
   #http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
   before_action :authenticate_user!
-  before_action :set_property, only: [:show, :edit, :update, :destroy]
+  before_action :set_property, only: [:show, :edit, :update, :destroy, :duplicate_leads]
   after_action :verify_authorized
 
   # GET /properties
@@ -71,6 +71,12 @@ class PropertiesController < ApplicationController
       format.html { redirect_to properties_url, notice: 'Property was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def duplicate_leads
+    authorize @property
+    @grouped_duplicates = DuplicateLead.
+      for_property_accessible_by_user(@property, current_user)
   end
 
   private

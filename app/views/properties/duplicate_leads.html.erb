@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>
+        Possible Duplicate Leads for <%= @property.name %>
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= render partial: "leads/duplicates", locals: {duplicates: @grouped_duplicates} %>
+    </div>
+  </div>
+</div>

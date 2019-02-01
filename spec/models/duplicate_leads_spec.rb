@@ -128,6 +128,9 @@ RSpec.describe DuplicateLead do
     end
   end
 
+  describe "grouping" do
+    it "groups duplicates for reporting"
+  end
 
   describe "validations" do
     let(:lead1) { create(:lead)}

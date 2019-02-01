@@ -123,7 +123,8 @@
     <% end %>
   </div>
 
-  <%= render partial: 'duplicates', locals: {lead: @lead} %>
+  <a name="#duplicates">&nbsp;</a>
+  <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
   <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
   <%= render partial: 'comments', locals: {lead: @lead} %>
   <%= render partial: 'messages', locals: {lead: @lead} %>

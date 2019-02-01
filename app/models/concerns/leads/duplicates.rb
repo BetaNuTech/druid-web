@@ -13,10 +13,11 @@ module Leads
       after_save :duplicate_check_on_update
 
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name}
+      DUPLICATE_IGNORED_VALUES = %w{ Null 00000000 0000000000 (None) None non@aol.zzz non@aol.com none@aol.zzz none@aol.com noemail@bluestone.com noemail@xyz.zzz noemail@noemail.zzz }
 
       def possible_duplicates
-        invalid_values = ['Null', '00000000', '0000000000', '(None)', 'None', 'non@aol.zzz', 'non@aol.com', 'none@aol.zzz', 'none@aol.com']
-        invalid_values_sql = invalid_values.map{|v| "'#{v}'"}.join(", ")
+        invalid_values_sql = DUPLICATE_IGNORED_VALUES.map{|v| "'#{v}'"}.join(', ')
+
         sql_template =<<~SQL
 
           SELECT leads.id
@@ -59,7 +60,7 @@ module Leads
         sql = Lead.sanitize_sql_array(query_array)
         result = ActiveRecord::Base.connection.execute(sql)
 
-        lead_ids = result.to_a.map{|r| r["id"]}
+        lead_ids = result.to_a.map{|r| r['id']}
         return Lead.where(id: lead_ids)
       end
 

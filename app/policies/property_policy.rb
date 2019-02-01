@@ -40,6 +40,10 @@ class PropertyPolicy < ApplicationPolicy
     edit?
   end
 
+  def duplicate_leads?
+    show?
+  end
+
   def allowed_params
     valid_property_params = Property::ALLOWED_PARAMS
     valid_listing_params = [ { listings_attributes: PropertyListing::ALLOWED_PARAMS } ]
