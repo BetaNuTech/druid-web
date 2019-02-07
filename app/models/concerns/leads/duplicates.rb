@@ -13,7 +13,7 @@ module Leads
       after_save :duplicate_check_on_update
 
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name}
-      DUPLICATE_IGNORED_VALUES = %w{ Null 00000000 0000000000 (None) None non@aol.zzz non@aol.com none@aol.zzz none@aol.com noemail@bluestone.com noemail@xyz.zzz noemail@noemail.zzz }
+      DUPLICATE_IGNORED_VALUES = %w{ none@gmail.com Null 00000000 0000000000 (None) None non@aol.zzz non@aol.com none@aol.zzz none@aol.com noemail@bluestone.com noemail@xyz.zzz noemail@noemail.zzz }
 
       def possible_duplicates
         invalid_values_sql = DUPLICATE_IGNORED_VALUES.map{|v| "'#{v}'"}.join(', ')
