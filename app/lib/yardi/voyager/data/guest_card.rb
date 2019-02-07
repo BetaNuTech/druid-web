@@ -19,6 +19,7 @@ module Yardi
           :actual_move_in, :floorplan, :unit, :rent, :bedrooms,
           :preference_comment,
           :events,
+          :first_comm,
           :record_type
         ]
 
@@ -203,6 +204,9 @@ module Yardi
 
             if (events = prospect_events.try(:first).try(:last))
               prospect.events = [ events ].flatten.compact.map{|e| [e["EventType"], e["EventDate"], e["Comments"]] }
+              # Lacking a GuestCard creation date, use the first recorded EventDate as the first_comm date
+              first_comm = prospect.events.sort_by{|e| e[1] || ''}.first
+              prospect.first_comm = ( DateTime.parse(first_comm[1]) rescue nil )
             end
 
             prospects << prospect

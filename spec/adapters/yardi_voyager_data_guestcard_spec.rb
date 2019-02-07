@@ -18,7 +18,16 @@ RSpec.describe Yardi::Voyager::Data::GuestCard do
 
     # Includes canceled [sic] GuestCards
     expect(all_guestcards.map(&:record_type).sort.index("canceled")).to_not eq(nil)
+  end
 
+  it "should fetch guestcard attributes" do
+    all_guestcards = adapter.from_GetYardiGuestActivity(yardi_api_data, false)
+    guestcard = all_guestcards.first
+
+    refute(guestcard.first_comm.nil?)
+    refute(guestcard.first_name.nil?)
+    refute(guestcard.last_name.nil?)
+    refute(guestcard.property_id.nil?)
   end
 
 end

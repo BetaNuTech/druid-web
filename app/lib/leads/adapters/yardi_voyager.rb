@@ -148,6 +148,7 @@ module Leads
 
         if lead.new_record?
           lead.remoteid = remoteid
+          lead.first_comm = guestcard.first_comm
           lead.title = guestcard.name_prefix
           lead.first_name = guestcard.first_name
           lead.middle_name = guestcard.middle_name
@@ -173,6 +174,13 @@ module Leads
           lead.preference = preference
           lead.property = @property
         else
+          # Set first_comm if it was not set before
+          if guestcard.first_comm.present? &&
+              lead.first_comm.to_date == lead.created_at.to_date
+            lead.first_comm = guestcard.first_comm
+            lead.save
+          end
+
           # Update Lead State from Yardi Data
           # We will not merge changes from Voyager into Druid
           old_state = lead.state
