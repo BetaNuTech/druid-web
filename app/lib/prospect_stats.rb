@@ -4,12 +4,14 @@ class ProspectStats
   attr_reader :ids
   attr_accessor :caching
 
-  def initialize(ids: nil)
+  def initialize(ids: nil, filters: {})
     @ids = ids
     @caching = true
     @refresh = false
     @cache_data = {}
-    @voyager_source = LeadSource.where(slug: 'YardiVoyager').first
+    @voyager_source = voyager_source
+    @filters = filters
+    @end_date = ( DateTime.parse(filters[:date]).end_of_day rescue DateTime.now )
   end
 
   def refresh_cache
@@ -35,7 +37,7 @@ class ProspectStats
           "Name": property.name,
           "ID": property_voyager_id(property),
           "DruidID": property.id,
-          "ReportDate": DateTime.now,
+          "ReportDate": @end_date.to_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(property, 365),
             "Prospects365": prospect_count(property, 365),
@@ -137,6 +139,18 @@ class ProspectStats
 
   private
 
+  def time_window_range(window)
+    return time_window_start(window)..@end_date
+  end
+
+  def time_window_start(window)
+    return @end_date - window.days
+  end
+
+  def voyager_source
+    return LeadSource.where(slug: 'YardiVoyager').first
+  end
+
   def property_voyager_id(property)
     raise "Missing LeadSource: 'YardiVoyager'" unless @voyager_source.present?
     return property.listing_code(@voyager_source)
@@ -170,7 +184,7 @@ class ProspectStats
 
     return skope.leads.
       joins(join_sql).
-      where(condition_sql, window.days.ago, DateTime.now)
+      where(condition_sql, time_window_start(window), @end_date)
   end
 
   # Approximate prospect count excluding duplicates
@@ -190,7 +204,7 @@ class ProspectStats
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
         current_state: 'application',
-        created_at: window.days.ago..DateTime.now
+        created_at: time_window_range(window)
       }).count
       calculate_lead_pctg(count, skope, window)
     end
@@ -202,7 +216,7 @@ class ProspectStats
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
         current_state: 'application',
-        created_at: window.days.ago..DateTime.now
+        created_at: time_window_range(window)
       }).count
       calculate_lead_pctg_all(count, skope, window)
     end
@@ -214,7 +228,7 @@ class ProspectStats
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
         current_state: 'movein',
-        created_at: window.days.ago..DateTime.now
+        created_at: time_window_range(window)
       }).count
       calculate_lead_pctg(count, skope, window)
     end
@@ -226,7 +240,7 @@ class ProspectStats
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
         current_state: 'movein',
-        created_at: window.days.ago..DateTime.now
+        created_at: time_window_range(window)
       }).count
       calculate_lead_pctg_all(count, skope, window)
     end
@@ -262,11 +276,11 @@ class ProspectStats
   def cached_data_key(stat:, skope:, window:)
     klass = skope.try(:class_name) || skope.class.to_s
     identifier = skope.try(:id) || 'all'
-    return [klass, identifier, stat, window].join(':')
+    return [klass, identifier, stat, window, @end_date.to_date.to_s].join(':')
   end
 
   def cache_key(stat='')
-    id_hash = Digest::SHA2.hexdigest(stat + ( @ids || [] ).join(','))
+    id_hash = Digest::SHA2.hexdigest(stat + @end_date.to_date.to_s + ( @ids || [] ).join(','))
     "ProspectStats-%s" % [id_hash]
   end
 

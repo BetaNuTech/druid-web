@@ -48,7 +48,7 @@ module Api
           render json: {errors: {base: [ 'Access Denied' ]}}, status: :forbidden
           return
         end
-        @stats = ProspectStats.new(ids: @ids)
+        @stats = ProspectStats.new(ids: @ids, filters: {date: params[:date]})
       end
 
       private
