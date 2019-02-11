@@ -58,6 +58,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'rspec', "~> 3.8"
   gem 'warden-rspec-rails', '~> 0.2'
   gem 'capybara', '~> 2.18'
   gem 'guard-rspec', '~> 4.7', require: false
@@ -66,6 +67,7 @@ group :test do
   gem 'rspec-rails', '~> 3.8'
   #gem 'selenium-webdriver', '~> 3.12'
   gem 'simplecov', '~> 0.16'
+  gem 'rspec_junit_formatter', "~> 0.4"
 end
 
 group :development do

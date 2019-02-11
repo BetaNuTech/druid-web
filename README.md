@@ -525,6 +525,23 @@ EXCEPTION_RECIPIENTS='example@example.com,example2@example.com' # Required or no
 EXCEPTION_NOTIFIER_ENABLED=true   # Enabled by default
 ```
 
+### CircleCI
+
+Automated tests are performed by CircleCI.
+
+#### Configuration
+
+See `.circleci/config.yml` for configuration.
+
+#### Local Testing
+
+Test build using:
+
+```
+circleci local execute --job build
+```
+
+
 ## Scheduled Tasks
 
 The Heroku Scheduler should be configured to run the following tasks

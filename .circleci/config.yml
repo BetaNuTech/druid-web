@@ -8,6 +8,8 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: circleci-druid
           RAILS_ENV: test
+          MESSAGE_DELIVERY_REPLY_TO: messages@example.com
+          MESSAGE_DELIVERY_TWILIO_PHONE: "+5555555555"
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: circleci-druid
@@ -24,11 +26,11 @@ jobs:
             - druid-bundle-v2-
       - run:
           name: Bundle Install
-          command: bundle check || bundle install
+          command: bundle check || bundle install --jobs=4 --path vendor/bundle
       - save_cache:
           key: druid-bundle-v2-{{ checksum "Gemfile.lock" }}
           paths:
-            - vendor/bundle
+            - ./vendor/bundle
       - restore_cache:
           keys:
             - druid-yarn-{{ checksum "yarn.lock" }}
@@ -49,10 +51,14 @@ jobs:
       - run:
           name: Run Rspec
           command: |
+            mkdir -p ./tmp/test_results && \
             bundle exec rspec --profile 10 \
-                              -- format RspecJunitFormatter \
-                              --out test_results/rspec.xml \
+                              --format RspecJunitFormatter \
+                              --out /tmp/test_results/rspec.xml \
                               --format progress \
                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
       - store_test_results:
-          path: test_results
+          path: ./tmp/test_results
+      - store_artifacts:
+          path: ./tmp/test_results
+          destination: test-results
