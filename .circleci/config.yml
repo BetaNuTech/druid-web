@@ -27,7 +27,7 @@ jobs:
             - druid-bundle-v2-
       - run:
           name: Bundle Install
-          command: bundle check || bundle install --jobs=4 --path vendor/bundle
+          command: bundle install --jobs=4 --path vendor/bundle
       - save_cache:
           key: druid-bundle-v2-{{ checksum "Gemfile.lock" }}
           paths:
