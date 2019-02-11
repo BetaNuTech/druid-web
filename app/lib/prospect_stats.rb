@@ -1,7 +1,7 @@
 class ProspectStats
   CACHE_DURATION = 1.hour
 
-  attr_reader :ids
+  attr_reader :ids, :filters, :end_date
   attr_accessor :caching
 
   def initialize(ids: nil, filters: {})

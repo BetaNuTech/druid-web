@@ -1,5 +1,5 @@
 json.Meta do
-  json.ReportDate DateTime.now
+  json.ReportDate @stats.end_date
   json.Version "1.2"
 end
 
