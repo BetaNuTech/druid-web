@@ -10,6 +10,7 @@ jobs:
           RAILS_ENV: test
           MESSAGE_DELIVERY_REPLY_TO: messages@example.com
           MESSAGE_DELIVERY_TWILIO_PHONE: "+5555555555"
+          MESSAGE_WHITELIST_ENABLED: false
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: circleci-druid
