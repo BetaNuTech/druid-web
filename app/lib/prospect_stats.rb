@@ -173,13 +173,13 @@ class ProspectStats
     condition_sql=<<~SQL
       ( leads.classification IS NULL
        OR leads.classification NOT IN (#{classifications_sql}) )
-       AND leads.created_at BETWEEN ? AND ?
-       AND (
-         lead_transitions.last_state != 'none'
-         OR ( lead_transitions.last_state = 'none'
-               AND lead_transitions.current_state NOT IN (#{states_sql})
-             )
-       )
+      AND leads.first_comm BETWEEN ? AND ?
+      AND (
+       lead_transitions.last_state != 'none'
+       OR ( lead_transitions.last_state = 'none'
+             AND lead_transitions.current_state NOT IN (#{states_sql})
+           )
+      )
     SQL
 
     return skope.leads.
