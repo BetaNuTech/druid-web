@@ -96,7 +96,7 @@ class Stat
   def lead_states
     skope = apply_skope(Lead)
     if @start_date.present? && @end_date.present?
-      skope = skope.where(leads: { created_at: @start_date..@end_date })
+      skope = skope.where(leads: { first_comm: @start_date..@end_date })
     end
     return skope.group(:state).count
   end
@@ -198,7 +198,7 @@ EOS
     skope = apply_skope(Lead)
     skope.
       where(state: 'open').
-      order(created_at: "asc")
+      order(first_comm: "asc")
   end
 
   def open_leads_json
@@ -209,7 +209,7 @@ EOS
           {
             id: lead.id,
             label: lead.name,
-            created_at: distance_of_time_in_words(lead.created_at, DateTime.now),
+            created_at: distance_of_time_in_words(lead.first_comm, DateTime.now),
             url: "/leads/#{lead.id}",
             priority: lead.priority,
             property_id: lead.property_id,
@@ -407,7 +407,7 @@ EOS
       filters << "leads.property_id in #{property_ids_sql}"
     end
     if @start_date.present? && @end_date.present?
-      filters << "leads.created_at BETWEEN '%s' AND '%s'" % [@start_date.utc.to_s, @end_date.utc.to_s]
+      filters << "leads.first_comm BETWEEN '%s' AND '%s'" % [@start_date.utc.to_s, @end_date.utc.to_s]
     end
     return filters.map{|f| "(#{f})"}.join(" AND ")
   end

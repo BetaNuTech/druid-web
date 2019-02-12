@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateSearchString, submitSearch, updateFilter, resetFilters } from '../actions'
+import { updateSearchString, submitSearch, updateFilter, resetFilters, gotoPage, updateSortKey, updateSortDirection } from '../actions'
 import Style from './LeadSearchFilter.scss'
 import FilterDropdown from '../components/FilterDropdown.jsx'
 import SearchInput from '../components/SearchInput.jsx'
 import SearchSelect from '../components/SearchSelect.jsx'
+import SearchSort from '../components/SearchSort.jsx'
 
 class LeadSearchFilter extends React.Component {
 
@@ -83,6 +84,12 @@ class LeadSearchFilter extends React.Component {
           onUpdateSearchInput={this.props.onUpdateSearchString(this.props.search)}
           onSubmitSearch={this.onSubmitSearch}
           value={this.searchStringValue()} />
+        <SearchSort 
+          search={this.props.search}
+          onModifyFilter={this.onModifyFilter}
+          onUpdateSortDirection={this.props.onUpdateSortDirection(this.props.search)}
+          onUpdateSortKey={this.props.onUpdateSortKey(this.props.search)}
+        />
         <div className={Style.LeadSearchAdvancedFilters}>
           <button type="button" className={advancedOptionsClassName}
             onClick={this.onToggleAdvanced} >Filters</button>
@@ -120,7 +127,9 @@ function mapDispatchToProps(dispatch) {
     onUpdateSearchString: updateSearchString,
     onSubmitSearch: submitSearch,
     onUpdateFilter: updateFilter,
-    onResetFilters: resetFilters
+    onResetFilters: resetFilters,
+    onUpdateSortKey: updateSortKey,
+    onUpdateSortDirection: updateSortDirection
   }, dispatch)
 }
 

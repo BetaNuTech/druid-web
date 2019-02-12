@@ -46,7 +46,8 @@ RSpec.describe LeadSearch do
              state: 'prospect', priority: 'medium', first_name: "AaaBBbCC", last_name: "DdEeFFGgJJ",
              user: agent,
              property: property1,
-             source: lead_source1
+             source: lead_source1,
+             first_comm: 1.day.ago
             )
     }
 
@@ -54,11 +55,12 @@ RSpec.describe LeadSearch do
       create(:lead,
              state: 'disqualified', priority: 'low', id_number: "11223344",
              property: property2,
-             source: lead_source2
+             source: lead_source2,
+             first_comm: 2.days.ago
             )
     }
 
-    let(:lead3) { create(:lead, state: 'open', priority: 'high') }
+    let(:lead3) { create(:lead, state: 'open', priority: 'high', first_comm: 3.days.ago) }
 
     let(:property1) { create(:property) }
     let(:property2) { create(:property) }
@@ -147,7 +149,7 @@ RSpec.describe LeadSearch do
       end
 
       it "is sorted by most recent" do
-        search = LeadSearch.new({sort_by: 'recent', sort_dir: 'desc'})
+        search = LeadSearch.new({sort_by: 'first_contact', sort_dir: 'asc'})
         expect(search.collection.to_a).to eq([lead3, lead2, lead1])
       end
 

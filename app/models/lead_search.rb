@@ -1,16 +1,16 @@
 class LeadSearch
   ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir ]
   LEAD_TABLE = Lead.table_name
-  DEFAULT_SORT = [:priority, :desc]
   DEFAULT_PER_PAGE = 10
   MAX_PER_PAGE = 100
+  DEFAULT_SORT = [:priority, :desc]
   SORT_OPTIONS = {
     priority: {
-      asc: "#{LEAD_TABLE}.priority ASC, #{LEAD_TABLE}.created_at ASC",
-      desc: "#{LEAD_TABLE}.priority DESC, #{LEAD_TABLE}.created_at DESC" },
-    recent: {
-      asc: "#{LEAD_TABLE}.created_at ASC",
-      desc: "#{LEAD_TABLE}.created_at DESC" },
+      asc: "#{LEAD_TABLE}.priority ASC, #{LEAD_TABLE}.first_comm ASC",
+      desc: "#{LEAD_TABLE}.priority DESC, #{LEAD_TABLE}.first_comm DESC" },
+    first_contact: {
+      asc: "#{LEAD_TABLE}.first_comm ASC",
+      desc: "#{LEAD_TABLE}.first_comm DESC" },
     lead_name: {
       asc: "#{LEAD_TABLE}.last_name ASC, #{LEAD_TABLE}.first_name ASC",
       desc: "#{LEAD_TABLE}.last_name DESC, #{LEAD_TABLE}.first_name DESC" }
@@ -108,23 +108,25 @@ class LeadSearch
         }
       },
       "Pagination" => {
-        "_index" => ["Page", "Per Page", "Sort By", "Sort Dir"],
+        "_index" => ["Page", "PerPage", "SortBy", "SortDir"],
         "_total_pages" => total_pages,
         "Page" => {
           param: "page",
           values: [ {label: "Page", value: query_page} ]
         },
-        "Per Page" => {
+        "PerPage" => {
           param: "per_page",
           values: [{ label: "Per Page", value: query_limit }]
         },
-        "Sort By" => {
+        "SortBy" => {
           param: "sort_by",
-          values: [ { label: "Sort By", value: query_sort_by }]
+          values: [ { label: "Sort By", value: query_sort_by }],
+          options: [ {label: 'Priority', value: 'priority'}, {label: 'First Contact', value: 'first_contact'}, {label: 'Name', value: 'lead_name'} ]
         },
-        "Sort Dir" => {
+        "SortDir" => {
           param: "sort_dir",
-          values: [ { label: "Sort Direction", value: query_sort_dir }]
+          values: [ { label: "Sort Direction", value: query_sort_dir }],
+          options: [ {label: 'Ascending', value: 'asc'}, {label: 'Descending', value: 'desc'} ]
         }
       }
     }

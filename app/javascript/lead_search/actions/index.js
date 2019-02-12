@@ -86,6 +86,44 @@ export function gotoPage(search) {
   }
 }
 
+export function updateSortKey(search) {
+  return function(dispatch) {
+    return function(value) {
+      const newSearch = {
+        ...search,
+        Pagination: {
+          ...search.Pagination,
+          SortBy: {
+            ...search.Pagination.SortBy,
+            values: [{label: 'Sort By', value: value}]
+          }
+        }
+      }
+      dispatch(updateSearch(newSearch))
+      dispatch(fetchLeads(newSearch))
+    }
+  }
+}
+
+export function updateSortDirection(search) {
+  return function(dispatch) {
+    return function(value) {
+      const newSearch = {
+        ...search,
+        Pagination: {
+          ...search.Pagination,
+          SortDir: {
+            ...search.Pagination.SortDir,
+            values: [{label: 'Sort Direction', value: value}]
+          }
+        }
+      }
+      dispatch(updateSearch(newSearch))
+      dispatch(fetchLeads(newSearch))
+    }
+  }
+}
+
 export function updateFilter(search) {
   return function(dispatch) {
     return function(filter,values) {
