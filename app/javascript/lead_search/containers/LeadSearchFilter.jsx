@@ -7,6 +7,7 @@ import FilterDropdown from '../components/FilterDropdown.jsx'
 import SearchInput from '../components/SearchInput.jsx'
 import SearchSelect from '../components/SearchSelect.jsx'
 import SearchSort from '../components/SearchSort.jsx'
+import LeadSearchSidebar from '../components/LeadSearchSidebar.jsx'
 
 class LeadSearchFilter extends React.Component {
 
@@ -84,12 +85,11 @@ class LeadSearchFilter extends React.Component {
           onUpdateSearchInput={this.props.onUpdateSearchString(this.props.search)}
           onSubmitSearch={this.onSubmitSearch}
           value={this.searchStringValue()} />
-        <SearchSort 
+        <SearchSort
           search={this.props.search}
           onModifyFilter={this.onModifyFilter}
           onUpdateSortDirection={this.props.onUpdateSortDirection(this.props.search)}
-          onUpdateSortKey={this.props.onUpdateSortKey(this.props.search)}
-        />
+          onUpdateSortKey={this.props.onUpdateSortKey(this.props.search)} />
         <div className={Style.LeadSearchAdvancedFilters}>
           <button type="button" className={advancedOptionsClassName}
             onClick={this.onToggleAdvanced} >Filters</button>
@@ -99,6 +99,7 @@ class LeadSearchFilter extends React.Component {
           }
           {this.renderSelects()}
         </div>
+        <LeadSearchSidebar options={this.props.search}/>
       </div>
     )
   }

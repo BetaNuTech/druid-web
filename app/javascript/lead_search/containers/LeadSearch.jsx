@@ -21,7 +21,6 @@ class LeadSearch extends React.Component {
         <div className={Style.Header}>
           <h1>Search Leads</h1>
         </div>
-        <LeadSearchSidebar options={this.props.search}/>
         <LeadSearchFilter search={this.props.search} />
         <LeadList leads={this.props.collection} />
         <Pagination search={this.props.search} onSelect={this.props.gotoPage(this.props.search)} />
