@@ -4,7 +4,7 @@ namespace :leads do
   task :export, [:property_ids] => :environment do |t, args|
 
     if args[:property_ids].present?
-      property_ids = ( args[:property_ids] || '' ).split(',') 
+      property_ids = ( args[:property_ids] || '' ).split(',')
       properties = Property.find(property_ids)
     else
       properties = Property.all
@@ -102,8 +102,16 @@ namespace :leads do
       msg = " * Creating Leads from Voyager GuestCards updated #{minutes_ago || '(unlimited)'} minutes ago"
       puts msg; Rails.logger.warn msg
 
+      properties = Leads::Adapters::YardiVoyager.property_codes
 
-      Leads::Adapters::YardiVoyager.property_codes.each do |property|
+      if ( env_property = ENV.fetch('PROPERTY', nil) ).present?
+        property = properties.select{|p| p[:code] == env_property}
+        if property.present?
+          properties = property
+        end
+      end
+
+      properties.each do |property|
         # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
 
         msg = " * Importing Yardi Voyager GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}] as Leads"
@@ -135,7 +143,16 @@ namespace :leads do
     desc "Send GuestCards"
     task :send_guestcards => :environment do
 
-      Leads::Adapters::YardiVoyager.property_codes.each do |property|
+      properties = Leads::Adapters::YardiVoyager.property_codes
+
+      if ( env_property = ENV.fetch('PROPERTY', nil) ).present?
+        property = properties.select{|p| p[:code] == env_property}
+        if property.present?
+          properties = property
+        end
+      end
+
+      properties.each do |property|
         # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
         msg = " * Sending Leads to Yardi Voyager as GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg

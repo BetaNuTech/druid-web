@@ -71,4 +71,21 @@ RSpec.describe Leads::Adapters::YardiVoyager do
       expect(lead.state).to eq('application')
     end
   end
+
+  describe "data parsing" do
+    describe "GuestCard" do
+
+      let(:yardi_api_data) { JSON.parse(File.read("#{Rails.root}/spec/support/test_data/yardi_voyager_guestcards.json")) }
+      let(:prospect_data) {
+        yardi_api_data.dig("Envelope", "Body", "GetYardiGuestActivity_LoginResponse", "GetYardiGuestActivity_LoginResult", "LeadManagement", "Prospects", "Prospect")
+      }
+
+      let(:prospect_record) { prospect_data.first }
+
+      it "should return a guestcard from a prospect data hash" do
+        guestcard = Yardi::Voyager::Data::GuestCard.from_guestcard_node(prospect_record, false).first
+        expect(guestcard).to be_a(Yardi::Voyager::Data::GuestCard)
+      end
+    end
+  end
 end
