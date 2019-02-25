@@ -84,7 +84,9 @@ class LeadSearch
         "Referrals" => {
           param: "referrals",
           values: Array(@options[:referrals]).map{|r| {label: r, value: r}},
-          options: Lead.select("distinct(referral)").order("referral ASC").map{|r| {label: r.referral, value: r.referral}}
+          options: Lead.select("distinct(referral)").order("referral ASC").
+            map{|r| {label: r.referral, value: r.referral}}.
+            select{|r| r[:label].present? }
         },
         "First Name" => {
           param: "first_name",
