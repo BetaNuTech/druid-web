@@ -3,7 +3,12 @@
 }
 
 .ResultsTableHeader {
-
+  padding-left: 2em;
+  .resultCount {
+    font-size: 1em;
+    font-weight: bold;
+    font-style: italic;
+  }
 }
 
 .ResultsTable {

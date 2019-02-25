@@ -12,6 +12,7 @@ export default function(state, action){
       return Object.assign({}, state, {
         search: action.payload.search,
         collection: action.payload.collection,
+        meta: action.payload.meta,
         loading: false,
         pending_update: false
       })

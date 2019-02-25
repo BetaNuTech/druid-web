@@ -18,22 +18,36 @@ class LeadList extends React.Component {
     }
   }
 
+  renderCount() {
+    if (this.props.meta == undefined) {
+      return <span />
+    } else {
+      if (this.props.meta.total_count > 0) {
+        return <span className={Style.resultCount}>Displaying {this.props.meta.count} of {this.props.meta.total_count} matching leads</span>
+      } else {
+        return <span />
+      }
+    }
+  }
+
   render() {
     return(
       <div className={Style.LeadSearchLeads}>
-        <div className={Style.ResultsTableHeader}> </div>
+        <div className={Style.ResultsTableHeader}>
+          {this.renderCount()}
+        </div>
         <div className={Style.ResultsTable}>
           {this.renderList()}
         </div>
       </div>
     );
   }
-
 }
 
 function mapStateToProps(state = {collection: []}) {
   return {
-    leads: state.collection
+    leads: state.collection,
+    meta: state.meta
   }
 }
 

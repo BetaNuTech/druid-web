@@ -22,7 +22,7 @@ class LeadSearch extends React.Component {
           <h1>Search Leads</h1>
         </div>
         <LeadSearchFilter search={this.props.search} />
-        <LeadList leads={this.props.collection} />
+        <LeadList leads={this.props.collection} meta={this.props.meta} />
         <Pagination search={this.props.search} onSelect={this.props.gotoPage(this.props.search)} />
       </div>
     )
@@ -38,13 +38,15 @@ function mapStateToProps(currentState) {
     state = {
       loading: false,
       collection: [],
+      meta: { version: '0', count: 0, total_count: 0},
       search: { url: search_url, base_url: base_url }
     }
   }
   return {
     loading: state.loading,
     search: state.search,
-    collection: state.collection
+    collection: state.collection,
+    meta: state.meta
   }
 }
 

@@ -43,7 +43,7 @@ export function receiveLeads(data) {
     url: data.url }
   return {
     type: RECEIVE_LEADS,
-    payload: {search: search_data, collection: data.data}
+    payload: {search: search_data, collection: data.data, meta: data.meta}
   }
 }
 
