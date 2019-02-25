@@ -8,10 +8,13 @@ class LeadList extends React.Component {
 
   renderList() {
     if (this.props.leads == undefined) {
-      return <h3>Please Wait...</h3>
+      window.Loader.start()
+      return <h4>Please Wait...</h4>
     } else if (this.props.leads.length == 0) {
+      window.Loader.stop()
       return <h3>None Found</h3>
     } else {
+      window.Loader.stop()
       return this.props.leads.map( lead => {
         return <LeadSearchLead data={lead} key={lead.id}/>
       })
@@ -23,7 +26,11 @@ class LeadList extends React.Component {
       return <span />
     } else {
       if (this.props.meta.total_count > 0) {
-        return <span className={Style.resultCount}>Displaying {this.props.meta.count} of {this.props.meta.total_count} matching leads</span>
+        if (this.props.meta.count == this.props.meta.total_count) {
+          return <span className={Style.resultCount}>Displaying {this.props.meta.count} matching leads</span>
+        } else {
+          return <span className={Style.resultCount}>Displaying {this.props.meta.count} of {this.props.meta.total_count} matching leads</span>
+        }
       } else {
         return <span />
       }
