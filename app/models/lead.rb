@@ -116,6 +116,7 @@ class Lead < ApplicationRecord
     users = ( property.present? ? property.agents : User.team_agents )&.by_name_asc || []
     users = ( users.to_a + [user] ).compact
     users = [default].compact if users.empty?
+    users.uniq!
     return users
   end
 
