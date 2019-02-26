@@ -10,6 +10,8 @@ module Leads
         [ "First Name" , -> (lead) { lead.first_name } ],
         [ "Last Name" , -> (lead) { lead.last_name } ],
         [ "Created" , -> (lead) { lead.created_at } ],
+        [ "First Contact" , -> (lead) { lead.first_comm } ],
+        [ "Last Contact" , -> (lead) { lead.last_comm } ],
         [ "Referral" , -> (lead) { lead.referral } ],
         [ "Email" , -> (lead) { lead.email } ],
         [ "Phone" , -> (lead) { lead.phone1 } ],
@@ -31,7 +33,7 @@ module Leads
         when 'Property'
           skope = Lead.where(property_id: ids)
         when 'Lead', nil
-          skope = Lead
+          skope = self
         end
 
         skope = skope.includes(:preference, :property)
