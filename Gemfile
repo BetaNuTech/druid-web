@@ -87,4 +87,6 @@ group :development do
   gem 'flamegraph', '~> 0.9'
   gem 'stackprof', '~> 0.2'
   gem 'fast_stack', '~> 0.2'
+
+  gem 'derailed_benchmarks', "~> 1.3"
 end
