@@ -17,6 +17,11 @@ class LeadsController < ApplicationController
     authorize Lead
     @search = LeadSearch.new(params[:lead_search])
     @webpack = 'lead_search'
+    respond_to do |format|
+      format.html
+      format.json
+      format.csv { send_data @search.collection.export_csv, filename: 'leads.csv'  }
+    end
   end
 
   # GET /leads/1
