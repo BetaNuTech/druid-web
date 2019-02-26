@@ -21,6 +21,17 @@
     <!-- Listing -->
     <div class="row">
       <div class="col-md-12">
+        <span class="text-nowrap lead">
+          <% if @limit_leads != @unclaimed_leads.count %>
+            <%= @limit_leads %> of
+            <%= @unclaimed_leads.count %> Unclaimed Leads
+            <span>
+              <%= link_to("Show All", root_path(limit_leads: 999), class: "btn btn-xs btn-primary") %>
+            </span>
+          <% else %>
+            <%= @unclaimed_leads.count %> Unclaimed Leads
+          <% end %>
+        </span>
         <table class="table lead_listing">
           <thead></thead>
           <tbody>
@@ -28,29 +39,18 @@
             <!-- Unclaimed Leads -->
             <tr>
               <td colspan="4">
-                <span class="text-nowrap lead">
-                  <% if @limit_leads != @unclaimed_leads.count %>
-                    <%= @limit_leads %> of
-                    <%= @unclaimed_leads.count %> Unclaimed Leads
-                    <span>
-                      <%= link_to("Show All", root_path(limit_leads: 999), class: "btn btn-xs btn-primary") %>
-                    </span>
-                  <% else %>
-                    <%= @unclaimed_leads.count %> Unclaimed Leads
-                  <% end %>
-                </span>
               </td>
             </tr>
             <%= render collection: @unclaimed_leads.limit(@limit_leads), partial: 'lead' %>
+          </tbody>
+        </table>
 
-            <!-- ScheduledActions for today -->
-            <tr>
-              <td colspan="4">
-                <span class="text-nowrap lead">
-                  <%= @today_actions.count %> Tasks Due Today
-                </span>
-              </td>
-            </tr>
+        <span class="text-nowrap lead">
+          <%= @today_actions.count %> Tasks Due Today
+        </span>
+        <table class="table">
+          <thead></thead>
+          <tbody>
             <%= render collection: @today_actions, partial: 'scheduled_action' %>
           </tbody>
         </table>
