@@ -19,6 +19,14 @@ module Leads
           end
       end
 
+      def self.property_code(property=nil)
+        return nil unless property.present?
+        PropertyListing.includes(:source).
+            active.
+            where(property_id: property.id, lead_sources: {slug: LEAD_SOURCE_SLUG}).
+            first.try(:code)
+      end
+
       # This Class interacts with the YardiVoyager API in the Yardi::Voyager namespace
       # Use it to send Leads to YardiVoyager, or download Leads, UnitTypes, and Units
       #

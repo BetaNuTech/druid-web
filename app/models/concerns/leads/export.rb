@@ -5,10 +5,10 @@ module Leads
     included do
 
       CSV_COLUMNS = [
+        [ "Yardi ID" , -> (lead) { Leads::Adapters::YardiVoyager.property_code(lead.property) } ],
         [ "Property" , -> (lead) { lead.property.try(:name) } ],
         [ "Last Name" , -> (lead) { lead.last_name } ],
         [ "First Name" , -> (lead) { lead.first_name } ],
-        [ "Last Name" , -> (lead) { lead.last_name } ],
         [ "Created" , -> (lead) { lead.created_at } ],
         [ "First Contact" , -> (lead) { lead.first_comm } ],
         [ "Last Contact" , -> (lead) { lead.last_comm } ],

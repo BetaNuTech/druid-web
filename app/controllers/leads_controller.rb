@@ -20,7 +20,10 @@ class LeadsController < ApplicationController
     respond_to do |format|
       format.html
       format.json
-      format.csv { send_data @search.collection.export_csv, filename: 'leads.csv'  }
+      format.csv {
+        filename = DateTime.now.strftime("leads-%Y-%m-%d-%H%M.csv") 
+        send_data @search.collection.export_csv, filename: filename
+      }
     end
   end
 

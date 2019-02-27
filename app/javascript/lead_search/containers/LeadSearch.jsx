@@ -15,23 +15,6 @@ class LeadSearch extends React.Component {
     this.props.initialFetchLeads(this.props.search)
   }
 
-  csvUrl() {
-    if (this.props.search != undefined && this.props.search.url != undefined) {
-      return(this.props.search.url.replace(/.json/,'.csv'))
-    } else {
-      return('#')
-    }
-  }
-
-  csvDownloadLink() {
-    let link_div = ''
-    if (this.props.collection != undefined && this.props.collection.length > 0) {
-      return(<div><a className="btn btn-xs btn-info" href={this.csvUrl()} target="_blank" rel="alternate">Download CSV</a></div>)
-    } else {
-      return(<div/>)
-    }
-  }
-
   render() {
     return (
       <div className={Style.LeadSearch}>
@@ -39,9 +22,8 @@ class LeadSearch extends React.Component {
           <h1>Search Leads</h1>
         </div>
         <LeadSearchFilter search={this.props.search} />
-        <LeadList leads={this.props.collection} meta={this.props.meta} />
+        <LeadList leads={this.props.collection} meta={this.props.meta} search={this.props.search}/>
         <Pagination search={this.props.search} onSelect={this.props.gotoPage(this.props.search)} />
-        {this.csvDownloadLink()}
       </div>
     )
   }

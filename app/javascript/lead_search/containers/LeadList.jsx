@@ -23,17 +23,42 @@ class LeadList extends React.Component {
 
   renderCount() {
     if (this.props.meta == undefined) {
-      return <span />
+      return("")
     } else {
       if (this.props.meta.total_count > 0) {
         if (this.props.meta.count == this.props.meta.total_count) {
-          return <span className={Style.resultCount}>Displaying {this.props.meta.count} matching leads</span>
+          return(
+            <p className={Style.resultCount}>
+              Displaying {this.props.meta.count} matching leads
+            </p>
+          )
         } else {
-          return <span className={Style.resultCount}>Displaying {this.props.meta.count} of {this.props.meta.total_count} matching leads</span>
+          return(
+            <p className={Style.resultCount}>
+              Displaying {this.props.meta.count} of {this.props.meta.total_count} matching leads
+            </p>
+          )
         }
       } else {
-        return <span />
+        return("")
       }
+    }
+  }
+
+  csvUrl() {
+    if (this.props.search != undefined && this.props.search.url != undefined) {
+      return(this.props.search.url.replace(/.json/,'.csv'))
+    } else {
+      return("#")
+    }
+  }
+
+  csvDownloadLink() {
+    let link_div = ''
+    if (this.props.leads != undefined && this.props.leads.length > 0) {
+      return(<p><a className="btn btn-xs btn-info" href={this.csvUrl()} target="_blank" rel="alternate">Download</a></p>)
+    } else {
+      return("")
     }
   }
 
@@ -41,6 +66,7 @@ class LeadList extends React.Component {
     return(
       <div className={Style.LeadSearchLeads}>
         <div className={Style.ResultsTableHeader}>
+          {this.csvDownloadLink()}
           {this.renderCount()}
         </div>
         <div className={Style.ResultsTable}>
@@ -51,8 +77,9 @@ class LeadList extends React.Component {
   }
 }
 
-function mapStateToProps(state = {collection: []}) {
+function mapStateToProps(state = {collection: [], search: {}}, meta: {}) {
   return {
+    search: state.search,
     leads: state.collection,
     meta: state.meta
   }
