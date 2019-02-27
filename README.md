@@ -62,7 +62,6 @@ And add the `CDRDB_URL` environment variable to `.env`:
 CDRDB_URL='mysql2://cdrdb:cdrdb_Password@localhost/asteriskcdrdb'
 ```
 
-
 #### CDR Recordings
 
 Call recordings in WAV format are synchronized from the Asterisk phone system to an S3 bucket on Amazon.
@@ -235,6 +234,10 @@ vary from what is shown below.
 
 ```
 # Environment Variables
+ACTIVESTORAGE_S3_BUCKET
+ACTIVESTORAGE_S3_REGION
+ACTIVESTORAGE_S3_ACCESS_KEY
+ACTIVESTORAGE_S3_SECRET_KEY
 APPLICATION_HOST=www.druidapp.com
 CDRDB_S3_ACCESS_KEY=''
 CDRDB_S3_BUCKET='druidaudio'
@@ -373,6 +376,42 @@ On Heroku, this service is provisioned as an addon using the 'Choklad' (free) ti
 # Environment Variables
 RAILS_LOG_TO_STDOUT=enabled
 PAPERTRAIL_API_TOKEN=XXX (automatically set by addon configuration)
+```
+
+### ActiveStorage
+
+In staging and production we use ActiveStorage backed by Amazon S3 to store binary attachments.
+
+#### Druid Configuration
+
+```
+# Environment Variables
+ACTIVESTORAGE_S3_BUCKET="druid-prod-activestorage"
+ACTIVESTORAGE_S3_REGION="us-east-2"
+ACTIVESTORAGE_S3_ACCESS_KEY="XXX"
+ACTIVESTORAGE_S3_SECRET_KEY="XXX"
+```
+
+#### Amazon Configuration
+
+The access key and secret are credentials assocated with the `druid-staging-activestorage` or `druid-prod-activestorage` IAM users.
+
+Example Access Policy:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "DruidActiveStorage",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::druid-prod-activestorage"
+            ]
+        }
+    ]
+}
 ```
 
 ### ScoutApp

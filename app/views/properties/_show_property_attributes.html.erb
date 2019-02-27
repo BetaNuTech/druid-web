@@ -1,5 +1,14 @@
 <div class="row" >
-  <h2>Property Information</h2>
+  <h2><%= @property.name %></h2>
+  <% if @property.logo.attached? %>
+    <div class="row">
+      <div class="col-md-12">
+        <%= link_to(url_for(@property.logo), target: "_blank") do %>
+          <%= image_tag(@property.logo.variant(resize: "200x200"), alt: "#{@property.name} logo" ) if @property.logo.attached? %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <div class="row">
     <div class="col-md-4">

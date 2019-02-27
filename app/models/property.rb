@@ -32,13 +32,15 @@ class Property < ApplicationRecord
   ### Class Concerns/Extensions
   include Properties::Team
   include Properties::PhoneNumbers
+  include Properties::Logo
   audited
 
   ### Constants
 
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
                     :country, :organization, :contact_name, :phone, :fax, :email,
-                    :website, :units, :notes, :school_district, :amenities, :active, :application_url, :team_id ]
+                    :website, :units, :notes, :school_district, :amenities, :active,
+                    :application_url, :team_id, :logo, :remove_logo ]
 
   ## Associations
   has_many :leads

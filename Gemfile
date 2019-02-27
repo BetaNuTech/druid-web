@@ -46,6 +46,8 @@ gem 'nested_form_fields', "~> 0.8"
 gem 'dalli', "~> 2.7"
 gem 'connection_pool', "~> 2.2"
 gem 'premailer', "~> 1.11"
+gem "image_processing"
+gem "mini_magick"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.13'

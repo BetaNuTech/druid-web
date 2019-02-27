@@ -58,12 +58,10 @@ class PropertyPolicy < ApplicationPolicy
     when ->(u) { u.agent? }
       valid_property_params = []
       valid_listing_params = []
-      valid_property_agent_params = []
       valid_phone_number_params = []
     else
       valid_property_params = []
       valid_listing_params = []
-      valid_property_agent_params = []
       valid_phone_number_params = []
     end
 
