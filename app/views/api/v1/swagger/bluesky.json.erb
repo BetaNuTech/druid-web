@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Druid Lead Management App",
+    "title": "BlueSky Lead Management App",
     "description": "Lead API for data source: '<%= @source.name %>'",
-    "version": "<%= DruidWeb::VERSION %>",
+    "version": "<%= Bluesky::VERSION %>",
     "contact": {
       "email": "patrick@bluestone-prop.com"
     },
@@ -29,7 +29,7 @@
         "tags": [
           "lead"
         ],
-        "summary": "Post a Lead to Druid",
+        "summary": "Post a Lead to BlueSky",
         "description": "POST a JSON document containing Lead data. Include a ?token= param in the URL for authentication.",
         "operationId": "addLead",
         "consumes": [
@@ -258,7 +258,7 @@
       "property": {
         "id": "203c343b-f546-4d31-b1e2-246cb6393e5d",
         "name": "Test Property",
-        "source": "Druid WebApp",
+        "source": "BlueSky WebApp",
         "remoteid": "XXX"
       },
       "url": "http://localhost:3000/leads/6ddcb08b-bf5a-42eb-9617-e836521089bf.json"
@@ -295,7 +295,7 @@
         "property": {
           "id": "203c343b-f546-4d31-b1e2-246cb6393e5d",
           "name": "Test Property",
-          "source": "Druid WebApp",
+          "source": "BlueSky WebApp",
           "remoteid": "XXX"
         },
         "url": "http://localhost:3000/leads/6ddcb08b-bf5a-42eb-9617-e836521089bf.json"

@@ -46,7 +46,7 @@ RSpec.describe LeadsHelper, type: :helper do
   describe "sources_for_select" do
     let(:sources) {
       [
-        create(:lead_source, slug: LeadSource::DEFAULT_SLUG, name: 'Druid WebApp'),
+        create(:lead_source, slug: LeadSource::DEFAULT_SLUG, name: 'BlueSky WebApp'),
         create(:lead_source, slug: 'Other', name: 'Other Source'),
       ]
     }

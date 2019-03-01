@@ -1,5 +1,5 @@
 {
-  "name": "druid-web",
+  "name": "bluesky-web",
   "private": true,
   "dependencies": {
     "@rails/webpacker": "^3.5.5",
@@ -21,7 +21,7 @@
     "redux-thunk": "^2.3.0"
   },
   "version": "0.0.1",
-  "description": "Druid Web App",
+  "description": "BlueSky Web App",
   "main": "index.js",
   "repository": "git@github.com:BetaNuTech/druid-web.git",
   "author": "BlueStone Properties",

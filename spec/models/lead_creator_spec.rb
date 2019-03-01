@@ -83,10 +83,10 @@ RSpec.describe Lead, type: :model do
     listing
   end
 
-  it "can be initialized with valid data and the Druid adapter" do
+  it "can be initialized with valid data and the BlueSky adapter" do
     creator = Leads::Creator.new(**valid_attributes)
     expect(creator.source).to be_a(LeadSource)
-    expect(creator.parser).to eq(Leads::Adapters::Druid)
+    expect(creator.parser).to eq(Leads::Adapters::Bluesky)
     lead = creator.execute
     refute(creator.errors.any?)
     assert(lead.valid?)
@@ -161,7 +161,7 @@ RSpec.describe Lead, type: :model do
     it "will create a lead with valid attributes and source if the token matches the source token" do
       creator = Leads::Creator.new(**valid_attributes_with_valid_token)
       expect(creator.source).to be_a(LeadSource)
-      expect(creator.parser).to eq(Leads::Adapters::Druid)
+      expect(creator.parser).to eq(Leads::Adapters::Bluesky)
       lead = creator.execute
       refute(creator.errors.any?)
       assert(lead.valid?)

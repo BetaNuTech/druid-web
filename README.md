@@ -1,6 +1,6 @@
 # README
 
-This is the Druid Web Application created by and for BlueStone Properties.
+This is the BlueSky Web Application created by and for BlueStone Properties.
 
 # License
 
@@ -188,7 +188,7 @@ For example: `bin/deploy staging` will use the current branch, create a staging-
 
 ## Users
 
-The `User` model corresponds to User identities in Druid.
+The `User` model corresponds to User identities in BlueSky.
 
 User login and authentication is powered by Devise. Run the `db:seed` task or create a new user via the console.  For example:
 
@@ -309,7 +309,7 @@ Immediately login as `admin@example.com` using the password `ChangeMeNow`, then 
 
 Memcached is used for `ActiveSupport::Cache::Store`
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 ```
 # Environment Variables
@@ -327,7 +327,7 @@ PostgreSQL is the primary relational database, used by ActiveRecord.
 
 On Heroku, this service is provisioned as an addon using the 'standard-0' tier.
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 ```
 # Environment Variables
@@ -355,7 +355,7 @@ This problem can identified in logs with the following error message:
 Mysql2::Error::ConnectionError: Can't connect to MySQL server on 'asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com'
 ```
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 # Environment Variables
 The `CDRDB_URL` for production should look like this:
@@ -370,7 +370,7 @@ Papertrail provides log aggregation services.
 
 On Heroku, this service is provisioned as an addon using the 'Choklad' (free) tier.
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 ```
 # Environment Variables
@@ -382,7 +382,7 @@ PAPERTRAIL_API_TOKEN=XXX (automatically set by addon configuration)
 
 In staging and production we use ActiveStorage backed by Amazon S3 to store binary attachments.
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 ```
 # Environment Variables
@@ -437,7 +437,7 @@ ScoutApp provides performance analysis.
 
 On Heroku, this service is provisioned as an addon using the 'Chairlift' (free) tier.
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 * Gem: `scout_apm`
 
@@ -454,7 +454,7 @@ Mailgun provides outgoing email service for the application, used by ActionMaile
 
 On Heroku, this service is provisioned as an addon using the 'Starter' (free) tier.
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 ```
 # Environment Variables
@@ -475,11 +475,11 @@ Validate the `mail.druidsite.com` domain.
 
 Yardi is (historically) used by leasing agents and other employees to manage leads and residents.
 
-An hourly background job imports Lead information into Druid. Ensure that the following job is configured:
+An hourly background job imports Lead information into BlueSky. Ensure that the following job is configured:
 
 Hourly: `rake leads:yardi:import_guestcards`
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 ```
 # Environment Variables
@@ -500,7 +500,7 @@ Cloudmailin provides incoming mail via webhooks. Incoming mail is used by the fo
   * Lead import from Internet Listing Services
   * Incoming (email) Messages for the Lead Messaging feature
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 Webhook requests are authorized and validated with a `token` param. Go to `LeadSource#Show` to view and/or reset the `token`
 
@@ -539,7 +539,7 @@ Twilio provides outgoing and incoming SMS messaging for the Lead Messaging featu
  * Outgoing SMS messages utilize the Twilio API.
  * Incoming SMS messages are ingested using a webhook.
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 The callback token can be viewed and reset at `LeadSource#Show`.
 
@@ -573,7 +573,7 @@ The `ErrorNotification` class is exposed to allow easy notification of errors fr
 
 Usage: `ErrorNotification.send(StandardError.new('error message'), {extra1: 'foo', extra2: 'bar'})`
 
-#### Druid Configuration
+#### BlueSky Configuration
 
 ```
 # Environment Variables

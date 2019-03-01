@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "Druid Lead Management Application"
+  description: "BlueSky Lead Management Application"
   version: "0.0.1"
   title: "Swagger Petstore"
   termsOfService: ""

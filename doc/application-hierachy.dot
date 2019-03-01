@@ -1,5 +1,5 @@
-digraph DruidAppHierarchy {
-  label="Druid Features";
+digraph BlueSkyAppHierarchy {
+  label="BlueSky Features";
   labelloc="t";
   node[shape="rect"];
   splines="ortho";
@@ -7,9 +7,9 @@ digraph DruidAppHierarchy {
   subgraph cluster0 {
     label="User Flow";
 
-    Druid[label="Druid Login"];
+    BlueSky[label="BlueSky Login"];
 
-    Druid->ViewDashboard[style="solid"];
+    BlueSky->ViewDashboard[style="solid"];
     ViewDashboard->ListUnclaimedLeads[style="dotted"];
     ViewDashboard->ListMyLeads[style="dotted"];
     ViewDashboard->ViewStats[style="dotted"];

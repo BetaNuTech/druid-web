@@ -1,5 +1,5 @@
 common: &defaults
-  name: 'Druid Lead Management'
+  name: 'BlueSky Lead Management'
 development:
   dev_trace: true
   monitor: true

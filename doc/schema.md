@@ -1,4 +1,4 @@
-# Druid Data Schema
+# BlueSky Data Schema
 
 ## ActiveRecord Models
 

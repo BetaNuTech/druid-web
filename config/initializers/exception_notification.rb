@@ -12,8 +12,8 @@ if exception_recipients.empty?
 elsif ErrorNotification.enabled?
   Rails.application.config.middleware.use ExceptionNotification::Rack,
     :email => {
-    :email_prefix => "[Druid System Messages (#{exception_host})]",
-      :sender_address => %{"Druid Exception Notifier (#{exception_host})" <druid@bluestone-prop.com>},
+    :email_prefix => "[BlueSky System Messages (#{exception_host})]",
+      :sender_address => %{"BlueSky Exception Notifier (#{exception_host})" <bluesky@bluestone-prop.com>},
       :exception_recipients => exception_recipients,
       :sections => %w{request environment backtrace}
   }

@@ -49,7 +49,7 @@ module Leads
       end
 
       # Fetch New Leads from YardiVoyager
-      # or progress Lead state if the Lead is already in Druid
+      # or progress Lead state if the Lead is already in BlueSky
       def processLeads
         @data = fetch_GuestCards(@property_code)
         leads = []
@@ -190,7 +190,7 @@ module Leads
           end
 
           # Update Lead State from Yardi Data
-          # We will not merge changes from Voyager into Druid
+          # We will not merge changes from Voyager into BlueSky
           old_state = lead.state
           new_state = lead_state_for(guestcard)
 

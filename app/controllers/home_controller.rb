@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :messaging_preferences, :unsubscribe]
 
   def dashboard
-    @page_title = "Druid Dashboard"
+    @page_title = "BlueSky Dashboard"
 
     @my_leads = Lead.for_agent(current_user).active.is_lead
     @unclaimed_leads = current_user.available_leads.includes(:property)

@@ -36,7 +36,7 @@ class ProspectStats
         {
           "Name": property.name,
           "ID": property_voyager_id(property),
-          "DruidID": property.id,
+          "BlueskyID": property.id,
           "ReportDate": @end_date.to_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(property, 365),
@@ -74,7 +74,7 @@ class ProspectStats
         {
           "Name": user.name,
           "ID": user.id,
-          "DruidID": user.id,
+          "BlueskyID": user.id,
           "ReportDate": DateTime.now,
           "Stats": {
             "Prospects365_all": prospect_count_all(user, 365),
@@ -111,7 +111,7 @@ class ProspectStats
         {
           "Name": team.name,
           "ID": team.id,
-          "DruidID": team.id,
+          "BlueskyID": team.id,
           "ReportDate": DateTime.now,
           "Stats": {
             "Prospects365_all": prospect_count_all(team, 365),

@@ -7,19 +7,19 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
     create(:lead_source, slug: LeadSource::DEFAULT_SLUG)
   }
 
-  let(:valid_attributes_for_druid) {
+  let(:valid_attributes_for_bluesky) {
     base_attrs = attributes_for(:lead)
     base_attrs[:token] = source.api_token
     base_attrs
   }
 
-  let(:valid_attributes_for_druid_invalid_token) {
+  let(:valid_attributes_for_bluesky_invalid_token) {
     base_attrs = attributes_for(:lead)
     base_attrs[:token] = 'not valid'
     base_attrs
   }
 
-  let(:invalid_attributes_for_druid) {
+  let(:invalid_attributes_for_bluesky) {
     base_attrs = attributes_for(:lead)
     base_attrs[:first_name] = nil
     base_attrs[:token] = source.api_token
@@ -27,7 +27,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
   }
 
   describe "POST #create" do
-    describe "using the Druid Adapter" do
+    describe "using the BlueSky Adapter" do
       before do
         source
       end
@@ -35,7 +35,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
       context "with valid params" do
         it "creates a new Lead" do
           expect {
-            post :create, params: valid_attributes_for_druid, format: :json
+            post :create, params: valid_attributes_for_bluesky, format: :json
           }.to change(Lead, :count).by(1)
           new_lead = Lead.last
           response_json = JSON.parse(response.body)
@@ -45,7 +45,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
 
         it "fails to create a new Lead with an invalid token" do
           expect {
-            post :create, params: valid_attributes_for_druid_invalid_token, format: :json
+            post :create, params: valid_attributes_for_bluesky_invalid_token, format: :json
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response).to have_http_status(:forbidden)
@@ -58,7 +58,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
       context "with invalid params" do
         it "does not create a new lead" do
           expect {
-            post :create, params: invalid_attributes_for_druid, format: :json
+            post :create, params: invalid_attributes_for_bluesky, format: :json
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response_json["errors"]).to_not be_nil
@@ -75,7 +75,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
       context "with valid params" do
         it "creates a new Lead" do
           expect {
-            post :create, params: valid_attributes_for_druid, format: :json
+            post :create, params: valid_attributes_for_bluesky, format: :json
           }.to change(Lead, :count).by(1)
           new_lead = Lead.last
           response_json = JSON.parse(response.body)
@@ -86,7 +86,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
 
         it "fails to create a new Lead with an invalid token" do
           expect {
-            post :create, params: valid_attributes_for_druid_invalid_token, format: :json
+            post :create, params: valid_attributes_for_bluesky_invalid_token, format: :json
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response).to have_http_status(:forbidden)
@@ -99,7 +99,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
       context "with invalid params" do
         it "does not create a new lead" do
           expect {
-            post :create, params: invalid_attributes_for_druid, format: :json
+            post :create, params: invalid_attributes_for_bluesky, format: :json
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response_json["errors"]).to_not be_nil

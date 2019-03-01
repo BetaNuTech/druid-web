@@ -32,7 +32,7 @@ RSpec.describe HomeController, type: :controller do
         it "displays a link to User Management" do
           get :dashboard
           expect(response).to be_successful
-          expect(response.body).to match("Manage Druid Users")
+          expect(response.body).to match("Manage BlueSky Users")
         end
 
         it "displays a link to Role Management" do
@@ -70,7 +70,7 @@ RSpec.describe HomeController, type: :controller do
         it "displays a link to User Management" do
           get :dashboard
           expect(response).to be_successful
-          expect(response.body).to match("Manage Druid Users")
+          expect(response.body).to match("Manage BlueSky Users")
         end
 
         it "does not display a link to Role Management" do
@@ -109,7 +109,7 @@ RSpec.describe HomeController, type: :controller do
         it "does not display a link to User Management" do
           get :dashboard
           expect(response).to be_successful
-          expect(response.body).to_not match("Manage Druid Users")
+          expect(response.body).to_not match("Manage BlueSky Users")
         end
 
         it "does not display a link to Role Management" do

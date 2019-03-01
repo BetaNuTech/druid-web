@@ -1,13 +1,13 @@
-digraph DruidAppHierarchy {
-  label="Druid Features and User Flow";
+digraph BlueSkyAppHierarchy {
+  label="BlueSky Features and User Flow";
   labelloc="t";
   node[shape="rect",style=filled,color=black,fillcolor=white];
   splines="ortho";
   rankdir="LR";
 
-  Druid[label="Druid Login"];
+  BlueSky[label="BlueSky Login"];
 
-  Druid->ViewDashboard[style="solid"];
+  BlueSky->ViewDashboard[style="solid"];
   ViewDashboard->ListUnclaimedLeads[style="dotted"];
   ViewDashboard->ListMyLeads[style="dotted"];
   ViewDashboard->ViewStats[style="dotted"];

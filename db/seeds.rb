@@ -44,8 +44,8 @@ end
 puts " * Creating default Lead Sources"
 sources = {
   "druid webapp": {
-    name: 'Druid Webapp',
-    slug: 'Druid',
+    name: 'BlueSky Webapp',
+    slug: 'Bluesky',
     incoming: true,
     active: true
   },

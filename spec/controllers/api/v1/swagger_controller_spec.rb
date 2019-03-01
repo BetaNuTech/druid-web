@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe Api::V1::SwaggerController, type: :controller do
   render_views
 
-  let(:druid_source) { create(:druid_source) }
+  let(:bluesky_source) { create(:bluesky_source) }
   let(:zillow_source) { create(:zillow_source) }
 
   describe "GET #index" do
-    it "should render swagger JSON for druid" do
+    it "should render swagger JSON for bluesky" do
       get :index, params: { token: druid_source.api_token }, format: :json
       expect(response).to be_successful
     end

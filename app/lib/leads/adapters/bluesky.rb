@@ -1,9 +1,9 @@
 module Leads
   module Adapters
     # Reference passthrough data adapter
-    # This class corresponds to a LeadSource record with the slug value 'Druid'
-    class Druid
-      LEAD_SOURCE_SLUG = 'Druid'
+    # This class corresponds to a LeadSource record with the slug value 'Bluesky'
+    class Bluesky
+      LEAD_SOURCE_SLUG = 'Bluesky'
 
       def initialize(params)
         @property_code = get_property_code(params)
