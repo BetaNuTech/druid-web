@@ -14,7 +14,7 @@ jobs:
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: circleci-druid
-          POSTGRES_DB: druid-web_test
+          POSTGRES_DB: bluesky-web_test
           POSTGRES_PASSWORD: ""
     steps:
       - checkout
