@@ -30,6 +30,7 @@ class LeadPreference < ApplicationRecord
   ALLOWED_PARAMS = [:baths, :beds, :min_price, :max_price, :min_area, :max_area,
                     :move_in, :pets, :smoker, :washerdryer, :notes, :raw_data,
                     :unit_type_id, :optout_email]
+  PRIVILEGED_PARAMS = [:id, :optout_email, :raw_data]
   NO_UNIT_PREFERENCE='(no preference)'
 
   ### Class Concerns/Extensions

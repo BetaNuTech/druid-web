@@ -29,8 +29,8 @@ module Leads
       #
       # (extracted from LeadsController)
       def filter_params(params)
-        valid_lead_params = Lead::ALLOWED_PARAMS
-        valid_preference_params = [{preference_attributes: LeadPreference::ALLOWED_PARAMS }]
+        valid_lead_params = Lead::ALLOWED_PARAMS - Lead::PRIVILEGED_PARAMS
+        valid_preference_params = [{preference_attributes: LeadPreference::ALLOWED_PARAMS - LeadPreference::PRIVILEGED_PARAMS }]
         filterable_params = params.is_a?(ActionController::Parameters) ? params : ActionController::Parameters.new(params)
         return filterable_params.permit(*(valid_lead_params + valid_preference_params))
       end
