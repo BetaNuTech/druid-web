@@ -6,9 +6,9 @@ class ScheduledActionPolicy < ApplicationPolicy
       return case user
         when ->(u) {u.admin?}
           skope
-        else
-          if user.team.present?
-            user_ids = user.team.memberships.map(&:user_id)
+        when ->(u) { u.user? }
+          if user.property.present?
+            user_ids = user.properties.map{|p| p.users}.flatten.map(&:id).uniq
           else
             user_ids = [ user.id ]
           end
@@ -18,11 +18,11 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def new?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def create?
@@ -32,7 +32,8 @@ class ScheduledActionPolicy < ApplicationPolicy
   def edit?
     user.admin? ||
       same_user? ||
-      (same_team? && !record.personal_task?)
+      (user.user? &&
+       (for_lead_in_same_property? && !record.personal_task?))
   end
 
   def update?
@@ -48,9 +49,10 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def completion_form?
-    user.admin? ||
-      same_user? ||
-      (same_team? && !record.personal_task?)
+    same_user? ||
+      user.manager? ||
+      user.admin? ||
+      (user.user? && (for_lead_in_same_property? && !record.personal_task?))
   end
 
   def complete?
@@ -58,7 +60,7 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def impersonate?
-    !same_user? && (same_team? && user.team_admin?)
+    !same_user? && property_manager_for_lead?
   end
 
   def allowed_params
@@ -66,7 +68,7 @@ class ScheduledActionPolicy < ApplicationPolicy
     case
       when user.admin?
         allowed = ScheduledAction::ALLOWED_PARAMS
-      when user.agent?
+      when user.user?
         allowed = ScheduledAction::ALLOWED_PARAMS
         if record.respond_to?(:user) && record.user.present? && record.user != user
           allowed -= [:user_id]
@@ -78,8 +80,14 @@ class ScheduledActionPolicy < ApplicationPolicy
     return allowed
   end
 
-  def same_team?
-    user.try(:team) == record.user.try(:team)
+  def for_lead_in_same_property?
+    record.target_type == 'Lead' && user.properties.map(&:id).include?(record.target.property.id)
+  end
+
+  def property_manager_for_lead?
+    record.target_type == 'Lead' &&
+    record.target.property.present? &&
+    user.property_manager?(record.target.property)
   end
 
   def same_user?
@@ -92,7 +100,7 @@ class ScheduledActionPolicy < ApplicationPolicy
   def allow_state_event_by_user?(event_name)
     event = event_name.to_sym
     record.permitted_state_events.include?(event) &&
-      (user.admin? || same_user? || same_team? )
+      (user.admin? || same_user? || for_lead_in_same_property? )
   end
 
   def conflict_check?

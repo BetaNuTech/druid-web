@@ -1,13 +1,14 @@
 <div class="row">
-  <h3>Marketing Phone Numbers</h3>
+  <div class="col-md-12">
+    <h2>Marketing Phone Numbers</h2>
 
-  <% @property.phone_numbers.each do |phone| %>
-    <div class="row">
-      <div class="col-md-12">
-        <h4 style="display: inline;"><%= phone.name %>:</h4>
-        +<%= phone.prefix %> <%= number_to_phone(phone.number) %>
+    <% @property.phone_numbers.each do |phone| %>
+      <div class="row">
+        <div class="col-md-12">
+          <h4 style="display: inline;"><%= phone.name %>:</h4>
+          +<%= phone.prefix %> <%= number_to_phone(phone.number) %>
+        </div>
       </div>
-    </div>
-  <% end %>
-
+    <% end %>
+  </div>
 </div>

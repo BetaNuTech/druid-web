@@ -53,5 +53,8 @@ FactoryBot.define do
     application_url { Faker::Internet.url }
     team
     active { true }
+    after(:create) do |property|
+      PropertyUser.create(user: create(:user), property: property, role: 'agent')
+    end
   end
 end

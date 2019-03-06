@@ -7,7 +7,7 @@ RSpec.describe ScheduledActionsController, type: :controller do
   before(:each) do
     seed_engagement_policy
     Lead.destroy_all
-    @lead = create(:lead, state: 'open', property: team1.properties.first)
+    @lead = create(:lead, state: 'open', property_id: team1_agent1.property.id)
     @lead.trigger_event(event_name: 'claim', user: team1_agent1)
     @lead.reload
   end
@@ -51,9 +51,10 @@ RSpec.describe ScheduledActionsController, type: :controller do
       end
     end
 
-    describe "as a member of the owner's team" do
+    describe "as a member of the owner's property" do
       it "should mark a scheduled action as complete as the current user" do
         scheduled_action = @lead.scheduled_actions.pending.last
+        assert(@lead.property == team1_agent3.property)
         form_attrs = {
           id: scheduled_action.id,
           scheduled_action: {
@@ -63,16 +64,17 @@ RSpec.describe ScheduledActionsController, type: :controller do
         }
         expect(scheduled_action.state).to eq('pending')
 
-        sign_in team1_agent2
+        sign_in team1_agent3
         post :complete, params: form_attrs
         expect(response).to be_redirect
         scheduled_action.reload
         expect(scheduled_action.state).to eq('completed')
-        expect(scheduled_action.user).to eq(team1_agent2)
+        expect(scheduled_action.user).to eq(team1_agent3)
       end
 
-      it "should allow a team admin to complete the task as the original owner" do
+      it "should allow the property manager to complete the task as the original owner" do
         scheduled_action = @lead.scheduled_actions.pending.last
+        assert(@lead.property == team1_manager1.property)
         form_attrs = {
           id: scheduled_action.id,
           scheduled_action: {
@@ -83,7 +85,7 @@ RSpec.describe ScheduledActionsController, type: :controller do
         }
         expect(scheduled_action.state).to eq('pending')
 
-        sign_in team1_lead1
+        sign_in team1_manager1
         post :complete, params: form_attrs
         expect(response).to be_redirect
         scheduled_action.reload

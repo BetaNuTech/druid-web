@@ -4,7 +4,6 @@ module Users
 
     included do
       belongs_to :role, required: false
-      belongs_to :teamrole, required: false
 
       ### System Roles
       def administrator?
@@ -15,12 +14,16 @@ module Users
         role.try(:corporate?) || false
       end
 
-      def agent?
-        role.try(:agent?) || false
+      def admin?
+        administrator? || corporate?
       end
 
-      def admin?
-        role.try(:admin?) || false
+      def property?
+        role.try(:property?) || false
+      end
+
+      def agent?
+        property?
       end
 
       def manager?
@@ -29,28 +32,6 @@ module Users
 
       def user?
         role.try(:user?)
-      end
-
-      ### Team Roles
-
-      def team_admin?
-        team_lead? || team_manager? || team_corporate?
-      end
-
-      def team_corporate?
-        teamrole.try(:corporate?) || false
-      end
-
-      def team_manager?
-        teamrole.try(:manager?) || false
-      end
-
-      def team_lead?
-        teamrole.try(:lead?) || false
-      end
-
-      def team_agent?
-        teamrole.try(:agent?) || false
       end
 
     end

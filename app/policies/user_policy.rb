@@ -57,7 +57,7 @@ class UserPolicy < ApplicationPolicy
       # NOOP all valid fields allowed
     when ->(u) { u.manager? }
       # NOOP all valid fields allowed
-    when ->(u) { u.agent? }
+    when ->(u) { u.property? }
       valid_user_params = valid_user_params - [:role_id, :teamrole_id]
     else
       valid_user_params = []

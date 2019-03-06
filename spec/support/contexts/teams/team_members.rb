@@ -17,25 +17,51 @@ RSpec.shared_context "team_members" do
 
   let(:team1_agent1) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team1, user: user, teamrole: agent_teamrole )
     user.reload
     user.confirm
+    team_property1.assign_user(user: user, role: 'agent')
+    user.reload
     user
   }
   let(:team1_agent2) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team1, user: user, teamrole: agent_teamrole)
     user.reload
     user.confirm
+    team_property2.assign_user(user: user, role: 'agent')
+    user.reload
+    user
+  }
+  let(:team1_agent3) {
+    user = create(:user)
+    user.role = property_role
+    user.save
+    TeamUser.create!(team: team1, user: user, teamrole: agent_teamrole)
+    user.reload
+    user.confirm
+    team_property1.assign_user(user: user, role: 'agent')
+    user.reload
+    user
+  }
+  let(:team1_manager1) {
+    user = create(:user)
+    user.role = manager_role
+    user.save
+    TeamUser.create!(team: team1, user: user, teamrole: agent_teamrole)
+    user.reload
+    user.confirm
+    team_property1.assign_user(user: user, role: 'manager')
+    user.reload
     user
   }
   let(:team1_lead1) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team1, user: user, teamrole: lead_teamrole)
     user.reload
@@ -44,27 +70,9 @@ RSpec.shared_context "team_members" do
   }
   let(:team1_lead2) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team1, user: user, teamrole: lead_teamrole)
-    user.reload
-    user.confirm
-    user
-  }
-  let(:team1_manager1) {
-    user = create(:user)
-    user.role = manager_role
-    user.save
-    TeamUser.create!(team: team1, user: user, teamrole: manager_teamrole)
-    user.reload
-    user.confirm
-    user
-  }
-  let(:team1_manager2) {
-    user = create(:user)
-    user.role = manager_role
-    user.save
-    TeamUser.create!(team: team1, user: user, teamrole: manager_teamrole)
     user.reload
     user.confirm
     user
@@ -80,25 +88,29 @@ RSpec.shared_context "team_members" do
   }
   let(:team2_agent1) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team2, user: user, teamrole: agent_teamrole )
     user.reload
     user.confirm
+    team2_property3.assign_user(user: user, role: 'agent')
+    user.reload
     user
   }
   let(:team2_agent2) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team2, user: user, teamrole: agent_teamrole)
     user.reload
     user.confirm
+    team2_property3.assign_user(user: user, role: 'agent')
+    user.reload
     user
   }
   let(:team2_lead1) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team2, user: user, teamrole: lead_teamrole)
     user.reload
@@ -107,7 +119,7 @@ RSpec.shared_context "team_members" do
   }
   let(:team2_lead2) {
     user = create(:user)
-    user.role = agent_role
+    user.role = property_role
     user.save
     TeamUser.create!(team: team2, user: user, teamrole: lead_teamrole)
     user.reload
@@ -121,6 +133,8 @@ RSpec.shared_context "team_members" do
     TeamUser.create!(team: team2, user: user, teamrole: manager_teamrole)
     user.reload
     user.confirm
+    team2_property3.assign_user(user: user, role: 'manager')
+    user.reload
     user
   }
   let(:team2_manager2) {
@@ -130,6 +144,8 @@ RSpec.shared_context "team_members" do
     TeamUser.create!(team: team2, user: user, teamrole: manager_teamrole)
     user.reload
     user.confirm
+    team2_property3.assign_user(user: user, role: 'manager')
+    user.reload
     user
   }
   let(:team2_corporate1) {

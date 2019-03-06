@@ -7,6 +7,6 @@ class StatPolicy < ApplicationPolicy
   end
 
   def manager?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 end

@@ -20,6 +20,7 @@ class MessageDelivery < ApplicationRecord
   ### Constants
   SUCCESS='OK'
   FAILED='FAILED'
+  ALREADY_SENT_MESSAGE='Message already sent successfully'
 
   ### Associations
   belongs_to :message
@@ -29,6 +30,9 @@ class MessageDelivery < ApplicationRecord
   validates :attempt, :attempted_at, presence: true
 
   ### Scopes
+  scope :successful, -> { where(status: SUCCESS) }
+  scope :failed, -> { where(status: FAILED) }
+
   ### Callbacks
   before_validation :set_attempt, on: :create
 
@@ -52,11 +56,17 @@ class MessageDelivery < ApplicationRecord
   ### Instance Methods
 
   def perform
-    sender = Messages::Sender.new(self)
-    sender.deliver
-    reload
-    return delivered?
+    if message.deliveries.successful.exists?
+      refuse_delivery(ALREADY_SENT_MESSAGE)
+      return false
+    else
+      sender = Messages::Sender.new(self)
+      sender.deliver
+      reload
+      return delivered?
+    end
   end
+
 
   def delivered?
     return delivered_at.present?
@@ -70,6 +80,15 @@ class MessageDelivery < ApplicationRecord
     self.attempt ||= MessageDelivery.previous_attempt_number(message) + 1
     self.attempted_at ||= DateTime.now
     return true
+  end
+
+  private
+
+  def refuse_delivery(log_message)
+    self.attempted_at = DateTime.now
+    self.status = FAILED
+    self.log = log_message
+    self.save
   end
 
 end

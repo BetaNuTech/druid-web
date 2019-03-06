@@ -178,13 +178,14 @@ class Message < ApplicationRecord
   end
 
   def perform_delivery
+    return false if deliveries.successful.exists?
     delivery = MessageDelivery.create!( message: self, message_type: message_type )
     delivery.perform
     delivery.reload
     self.delivered_at = delivery.delivered_at
     save!
-    unless delivery.success?
-      self.fail!
+    if !delivery.success?
+      self.fail! unless failed?
     end
   end
 

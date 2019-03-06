@@ -12,11 +12,11 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def new?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def create?
@@ -24,14 +24,12 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def show?
-    is_owner? ||
-      user.administrator? ||
-      (user.admin? && same_property?)
+    is_owner? || user.admin? || property_manager?
   end
 
   def edit?
     (record.respond_to?(:draft?) ? record.draft? : true ) &&
-      ( user.administrator? || is_owner? )
+      (is_owner? || property_manager? || user.admin?)
   end
 
   def update?
@@ -51,8 +49,13 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def same_property?
-    record.try(:messageable).try(:present?) &&
+    record&.messageable&.present? &&
       user.properties.include?(record.messageable.property)
+  end
+
+  def property_manager?
+    record&.messageable&.present? &&
+      user.property_manager?(record.messageable.property)
   end
 
   def allowed_params

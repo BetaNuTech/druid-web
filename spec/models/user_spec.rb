@@ -91,19 +91,19 @@ RSpec.describe User, type: :model do
   end
 
   describe "role" do
-    it "can be an administrator" do
+    it "can be an administrator user" do
       assert administrator.administrator?
-      refute administrator.agent?
+      refute administrator.property?
       refute agent.administrator?
     end
 
-    it "can be an corporate" do
+    it "can be a corporate user" do
       assert corporate.corporate?
       refute agent.corporate?
     end
 
-    it "can be an agent" do
-      assert agent.agent?
+    it "can be a property user" do
+      assert agent.property?
       refute agent.corporate?
       refute agent.administrator?
     end
@@ -134,19 +134,47 @@ RSpec.describe User, type: :model do
       expect(team1_agent1.team).to eq(team1)
     end
 
-    it "has many properties" do
-      team_property1; team_property2
-      expect(team1_agent1.properties.sort_by(&:id)).to eq([team_property1, team_property2].sort_by(&:id))
-    end
-
     it "returns User records not belonging to a team" do
       team_property1; team_property2
+      User.destroy_all
       assert(User.count == 0)
       team1_agent1
       team1_agent2
       nonteam_user1 = create(:user)
       nonteam_user2 = create(:user)
       expect(User.without_team.sort_by(&:id)).to eq([nonteam_user1, nonteam_user2].sort_by(&:id))
+    end
+  end
+
+  describe "belonging to property" do
+    let(:property1) { create(:property) }
+    let(:property2) { create(:property) }
+    let(:property3) { create(:property) }
+    let(:property1_role) { 'agent' }
+    let(:property2_role) { 'manager' }
+    let(:user) {
+      agent
+      agent.assignments = [PropertyUser.new(user: agent, property: property1, role:  property1_role )]
+      agent.save!
+      agent
+    }
+
+    it "belongs to a property via a PropertyUser" do
+      expect(user.properties.count).to eq(1)
+      expect(user.property).to eq(property1)
+    end
+
+    it "has a property role" do
+      expect(user.property_role).to eq(property1_role)
+    end
+
+    it "returns the user's role for a specific property" do
+      user.assignments << PropertyUser.new(user: user, property: property2, role: property2_role)
+      user.save!
+
+      expect(user.property_role(property1)).to eq(property1_role)
+      expect(user.property_role(property2)).to eq(property2_role)
+      expect(user.property_role(property3)).to be_nil
     end
   end
 

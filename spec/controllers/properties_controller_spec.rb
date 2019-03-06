@@ -19,11 +19,11 @@ RSpec.describe PropertiesController, type: :controller do
   # PropertiesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  let(:property) { create(:property, team: team)}
+  let(:property) { default_property }
   let(:teamrole) { create(:teamrole)}
   let(:team) {
     t = create(:team)
-    TeamUser.create(team: t, user: agent, teamrole: teamrole)
+    #TeamUser.create(team: t, user: agent, teamrole: teamrole)
     t.reload
     t
   }

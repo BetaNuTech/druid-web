@@ -12,27 +12,28 @@ class UnitPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def new?
-    user.admin?
+    user.admin? || user.manager?
   end
 
   def create?
     new?
   end
 
+  def show?
+    user.admin? ||
+      (user.user? && same_property?)
+  end
+
   def edit?
-    new?
+    user.admin? || property_manager?
   end
 
   def update?
     edit?
-  end
-
-  def show?
-    user.admin? || user.agent?
   end
 
   def destroy?
@@ -40,12 +41,21 @@ class UnitPolicy < ApplicationPolicy
   end
 
   def allowed_params
-    return case
-    when user.admin?
-      Unit::ALLOWED_PARAMS
-    else
-      []
-    end
+    return case user
+      when ->(u) { user.admin? || property_manager? }
+        Unit::ALLOWED_PARAMS
+      else
+        []
+      end
+  end
+
+  def same_property?
+    record.property.present? &&
+      ( user.property_manager?(record.property) || user.property_agent?(record.property))
+  end
+
+  def property_manager?
+    user.manager?
   end
 
 end

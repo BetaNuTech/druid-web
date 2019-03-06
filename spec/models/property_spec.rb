@@ -178,27 +178,6 @@ RSpec.describe Property, type: :model do
         property.save!
         expect(property.team).to be_a(Team)
       end
-
-      describe "with a team" do
-        it "should have agents" do
-          team1_agent1; team1_agent2
-          property.team = team1
-          property.save!
-          expect(property.agents.to_a.sort_by(&:id)).to eq([team1_agent1, team1_agent2].sort_by(&:id))
-        end
-        it "should have managers" do
-          team1_manager1; team1_manager2
-          property.team = team1
-          property.save!
-          expect(property.managers.to_a.sort_by(&:id)).to eq([team1_manager1, team1_manager2].sort_by(&:id))
-        end
-        it "should have teamleads" do
-          team1_lead1; team1_lead2
-          property.team = team1
-          property.save!
-          expect(property.teamleads.to_a.sort_by(&:id)).to eq([team1_lead1, team1_lead2].sort_by(&:id))
-        end
-      end
     end
 
     describe "phone numbers" do
@@ -219,6 +198,50 @@ RSpec.describe Property, type: :model do
         property.reload
         expect(property.number_variants.size).to eq(4)
 
+      end
+    end
+
+    describe "users" do
+      let(:property) { create(:property) }
+      let(:property2) { create(:property) }
+
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+      let(:user3) { create(:user) }
+      let(:user4) { create(:user) }
+
+      before do
+        property; property2
+        User.destroy_all
+        user1; user2; user3; user4
+        PropertyUser.destroy_all
+      end
+
+      it "has agents" do
+        property.assign_user(user: user1, role: 'agent')
+        property.assign_user(user: user2, role: 'agent')
+        property.assign_user(user: user3, role: 'manager')
+        property2.assign_user(user: user4, role: 'manager')
+        property.reload
+        expect(property.agents.count).to eq(2)
+        expect(property.agents.to_a.sort).to eq([user1, user2].sort)
+      end
+
+      it "has managers" do
+        property.assign_user(user: user1, role: 'manager')
+        property.assign_user(user: user2, role: 'manager')
+        property.assign_user(user: user3, role: 'agent')
+        expect(property.managers.count).to eq(2)
+        expect(property.managers.to_a.sort).to eq([user1, user2].sort)
+      end
+
+      it "lists users available for assignment" do
+        property.assign_user(user: user1, role: 'agent')
+        property2.assign_user(user: user2, role: 'agent')
+        user3
+        user_count = User.count
+        #binding.pry
+        expect(property.users_available_for_assignment.count).to eq(user_count - 2)
       end
     end
 

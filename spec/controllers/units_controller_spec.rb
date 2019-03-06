@@ -6,14 +6,8 @@ RSpec.describe UnitsController, type: :controller do
 
   let(:valid_attributes) { build(:unit).attributes }
   let(:invalid_attributes) { {description: 'foobar'}}
-  let(:property) { create(:property, team: team)}
+  let(:property) { default_property }
   let(:teamrole) { create(:teamrole)}
-  let(:team) {
-    t = create(:team)
-    TeamUser.create(team: t, user: agent, teamrole: teamrole)
-    t.reload
-    t
-  }
   let(:unit) { create(:unit, property: property)}
 
   before(:each) do

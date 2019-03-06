@@ -18,12 +18,6 @@ FactoryBot.define do
     end
     description { Faker::Lorem.sentence }
 
-    factory :manager_teamrole do
-      name { "Manager" }
-      slug { "manager" }
-      description { "Property Manager" }
-    end
-
     factory :lead_teamrole do
       name { "Lead" }
       slug { "lead" }

@@ -29,7 +29,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def show?
-    index?
+    user.admin? || same_user? || same_property?
   end
 
   def call_log_partial?
@@ -45,15 +45,15 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def edit?
-    index?
+    show?
   end
 
   def update?
-    index?
+    edit?
   end
 
   def destroy?
-    index?
+    user.admin? || same_user? || property_manager?
   end
 
   def trigger_state_event?
@@ -96,13 +96,21 @@ class LeadPolicy < ApplicationPolicy
     record.user === user
   end
 
+  def same_property?
+    user.properties.map(&:id).include?(record.property_id)
+  end
+
+  def property_manager?
+    record.property.present? && user.property_manager?(record.property)
+  end
+
   def allowed_params
     reject_params = []
 
     case user
     when ->(u) { u.admin? }
       # NOOP: Full permissions
-    when ->(u) { u.agent? }
+    when ->(u) { u.user? }
       # Only limit params on existing Leads
       if record.is_a?(Lead) && !record.new_record?
         # Disallow reassignment of lead source
@@ -123,6 +131,6 @@ class LeadPolicy < ApplicationPolicy
   # Allow admin or Lead owner to reassign Lead to another User
   #  but disallow claiming another Agent's Lead
   def change_user?
-    user.admin? || user.manager? || same_user?
+    same_user? || user.manager? || user.admin?
   end
 end

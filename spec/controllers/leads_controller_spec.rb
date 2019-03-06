@@ -12,7 +12,7 @@ RSpec.describe LeadsController, type: :controller do
   # Lead. As you add validations to Lead, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    attributes_for(:lead).merge(state: 'open')
+    attributes_for(:lead).merge(state: 'open', property_id: agent.property.id, lead_source_id: source.id)
   }
 
   let(:invalid_attributes) {
@@ -367,20 +367,55 @@ RSpec.describe LeadsController, type: :controller do
     end
 
     describe "as an agent" do
-      it "destroys the requested lead" do
-        sign_in agent
-        lead = Lead.create! valid_attributes
-        expect {
+
+      describe "as the owner" do
+        let(:lead) {Lead.create! valid_attributes.merge(user_id: agent.id)}
+        it "destroys the requested lead" do
+          sign_in agent
+          lead
+          expect {
+            delete :destroy, params: {id: lead.to_param}, session: valid_session
+          }.to change(Lead, :count).by(-1)
+        end
+
+        it "redirects to the leads list" do
+          sign_in agent
+          lead
           delete :destroy, params: {id: lead.to_param}, session: valid_session
-        }.to change(Lead, :count).by(-1)
+          expect(response).to redirect_to(leads_url)
+        end
       end
 
-      it "redirects to the leads list" do
-        sign_in agent
-        lead = Lead.create! valid_attributes
-        delete :destroy, params: {id: lead.to_param}, session: valid_session
-        expect(response).to redirect_to(leads_url)
+      describe "as an admin" do
+        it "destroys the requested lead" do
+          sign_in corporate
+          lead = Lead.create! valid_attributes.merge(user_id: agent.id)
+          expect {
+            delete :destroy, params: {id: lead.to_param}, session: valid_session
+          }.to change(Lead, :count).by(-1)
+        end
       end
+
+      describe "as the property manager" do
+        it "destroys the requested lead" do
+          sign_in manager
+          lead = Lead.create! valid_attributes.merge(user_id: agent.id)
+          expect {
+            delete :destroy, params: {id: lead.to_param}, session: valid_session
+          }.to change(Lead, :count).by(-1)
+        end
+      end
+
+      describe "as an agent from another property" do
+        it "does not destroy the requested lead" do
+          sign_in agent2
+          lead = Lead.create! valid_attributes.merge(user_id: agent.id)
+          expect {
+            delete :destroy, params: {id: lead.to_param}, session: valid_session
+          }.to change(Lead, :count).by(0)
+        end
+      end
+
     end
 
     describe "as an unroled user" do
@@ -395,7 +430,7 @@ RSpec.describe LeadsController, type: :controller do
   end
 
   describe "POST #trigger_state_event" do
-    let(:lead) { create(:lead, state: 'open') }
+    let(:lead) { create(:lead, state: 'open', user_id: agent.id) }
 
     it "should deny access if unauthorized" do
       # POST without any authentication
@@ -426,7 +461,7 @@ RSpec.describe LeadsController, type: :controller do
   end
 
   describe "POST #update_state" do
-    let(:lead) { create(:lead, state: 'open') }
+    let(:lead) { create(:lead, state: 'open', property_id: agent.property.id) }
 
     it "should update the lead state" do
       sign_in agent

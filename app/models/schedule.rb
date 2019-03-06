@@ -17,7 +17,6 @@
 #  updated_at       :datetime         not null
 #  duration         :integer
 #  end_time         :time
-#  timezone         :string
 #
 
 class Schedule < Schedulable::Model::Schedule

@@ -33,6 +33,7 @@ class User < ApplicationRecord
   include Users::Profile
   include Users::Devise
   include Users::Teams
+  include Users::Properties
   audited
 
   ### Constants

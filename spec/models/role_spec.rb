@@ -63,9 +63,9 @@ RSpec.describe Role, type: :model do
       expect(Role.corporate).to eq(corporate_role)
     end
 
-    it "can return the agent instance" do
-      agent_role
-      expect(Role.agent).to eq(agent_role)
+    it "can return the property instance" do
+      property_role
+      expect(Role.property).to eq(property_role)
     end
   end
 
@@ -75,13 +75,13 @@ RSpec.describe Role, type: :model do
       assert administrator_role == administrator_role
       assert corporate_role < administrator_role
       assert administrator_role > corporate_role
-      assert administrator_role > agent_role
-      assert agent_role > nil
+      assert administrator_role > property_role
+      assert property_role > nil
     end
 
     it "should compare unrecognized roles" do
-      assert agent_role == agent_role
-      assert agent_role > other_role
+      assert property_role == property_role
+      assert property_role > other_role
       assert administrator_role > other_role
     end
   end
@@ -93,21 +93,21 @@ RSpec.describe Role, type: :model do
     end
     it "should return whether the Role is corporate" do
       assert corporate_role.corporate?
-      refute agent_role.corporate?
+      refute property_role.corporate?
     end
-    it "should return whether the Role is agent" do
-      assert agent_role.agent?
-      refute agent_role.corporate?
+    it "should return whether the Role is property" do
+      assert property_role.property?
+      refute property_role.corporate?
     end
     it "should return whether the Role is a type of administrator" do
       assert corporate_role.admin?
       assert administrator_role.admin?
-      refute agent_role.admin?
+      refute property_role.admin?
     end
     it "should return whether the Role is a unprivileged user" do
       refute corporate_role.user?
       refute administrator_role.user?
-      assert agent_role.user?
+      assert property_role.user?
     end
   end
 

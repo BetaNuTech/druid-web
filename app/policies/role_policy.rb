@@ -43,7 +43,7 @@ class RolePolicy < ApplicationPolicy
       []
     when ->(u) { u.manager? }
       []
-    when ->(u) { u.agent? }
+    when ->(u) { u.property? }
       []
     else
       []

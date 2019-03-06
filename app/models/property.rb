@@ -31,6 +31,7 @@
 class Property < ApplicationRecord
   ### Class Concerns/Extensions
   include Properties::Team
+  include Properties::Users
   include Properties::PhoneNumbers
   include Properties::Logo
   audited

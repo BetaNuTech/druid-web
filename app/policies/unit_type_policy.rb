@@ -7,7 +7,7 @@ class UnitTypePolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def new?

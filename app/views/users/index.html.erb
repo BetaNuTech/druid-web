@@ -13,10 +13,8 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>System Role</th>
-            <th>Team</th>
+            <th>Contact</th>
+            <th>Role and Membership</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -25,8 +23,8 @@
           <% @users.each do |user| %>
             <tr>
               <td><%= user.name %></td>
-              <td><%= user.email %></td>
               <td>
+                <%= glyph(:email) %> <%= user.email %><br/>
                 <% if user.office_phone.present? %>
                   <%= glyph(:phone) %> <strong>Office:</strong> <%= user.office_phone || '-' %><br/>
                 <% end %>
@@ -37,11 +35,21 @@
                   <%= glyph(:fax) %> <strong>Fax:</strong> <%= user.fax || '-' %><br/>
                 <% end %>
               </td>
-              <td><%= user.role.try(:name) || 'None' %></td>
               <td>
-                <% if user.team.present? %>
-                  <%= link_to(user.team.name, team_path(user.team)) %> (<%= user.team_title %>)
-                <% end %>
+                <b>System Role:</b> <%= user.role.try(:name) || 'None' %>
+                <ul>
+                  <% if user.team.present? %>
+                    <li>
+                      <%= user.team_title %> in Team <%= link_to(user.team.name, team_path(user.team)) %>
+                    </li>
+                    <% user.assignments.each do |assignment| %>
+                      <li>
+                        <%= assignment.role.capitalize %> at <%= link_to(assignment.property.name, property_url(assignment.property)) %>
+                      </li>
+                    <% end %>
+                  <% end %>
+                </ul>
+              </td>
               <td>
                 <%= link_to user do %><%= glyph(:show) %><% end if policy(user).show? %>&nbsp;
                 <%= link_to edit_user_path(user) do %><%= glyph(:edit) %><% end if policy(user).edit? %>&nbsp;

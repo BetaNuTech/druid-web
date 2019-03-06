@@ -4,10 +4,11 @@ RSpec.describe UnitPolicy do
   include_context "users"
 
   describe "policy" do
-    let(:unit) { create(:unit) }
 
     describe "for admins" do
-      let(:policy) { UnitPolicy.new(administrator, unit) }
+      let(:unit) { create(:unit, property: agent.property) }
+
+      let(:policy) { UnitPolicy.new(corporate, unit) }
 
       it "allows #index" do
         assert policy.index?
@@ -44,6 +45,7 @@ RSpec.describe UnitPolicy do
     end
 
     describe "for agents" do
+      let(:unit) { create(:unit, property: agent.property) }
       let(:policy) { UnitPolicy.new(agent, unit) }
 
       it "allows #index" do
@@ -78,9 +80,12 @@ RSpec.describe UnitPolicy do
         allowed_params = Unit::ALLOWED_PARAMS
         expect(policy.allowed_params).to be_empty
       end
+
     end
 
     describe "for unroled users" do
+      let(:unit) { create(:unit, property: agent.property) }
+
       let(:policy) { UnitPolicy.new(unroled_user, unit) }
 
       it "disallows #index" do

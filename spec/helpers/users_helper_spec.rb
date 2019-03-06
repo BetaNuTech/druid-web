@@ -15,8 +15,8 @@ RSpec.describe UsersHelper, type: :helper do
       expect(out).to match(administrator_role.name)
       expect(out).to match(corporate_role.id)
       expect(out).to match(corporate_role.name)
-      expect(out).to match(agent_role.id)
-      expect(out).to match(agent_role.name)
+      expect(out).to match(property_role.id)
+      expect(out).to match(property_role.name)
     end
 
     it "should return all roles lower than the editor role" do
@@ -25,8 +25,8 @@ RSpec.describe UsersHelper, type: :helper do
       expect(out).to_not match(administrator_role.name)
       expect(out).to match(corporate_role.id)
       expect(out).to match(corporate_role.name)
-      expect(out).to match(agent_role.id)
-      expect(out).to match(agent_role.name)
+      expect(out).to match(property_role.id)
+      expect(out).to match(property_role.name)
     end
 
     it "should select the provided role" do

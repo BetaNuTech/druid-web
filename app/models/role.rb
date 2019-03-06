@@ -19,7 +19,7 @@ class Role < ApplicationRecord
   ### Constants
 
   ALLOWED_PARAMS = [:id, :name, :slug, :description]
-  HIERARCHY = [ :administrator, :corporate, :manager, :agent ]
+  HIERARCHY = [ :administrator, :corporate, :manager, :property ]
 
 
   ### Validations
@@ -35,7 +35,12 @@ class Role < ApplicationRecord
   end
 
   def self.agent
-    self.where(slug: 'agent').first
+    raise "Agent User Role is deprecated"
+    #self.where(slug: 'agent').first
+  end
+
+  def self.property
+    self.where(slug: 'property').first
   end
 
   def self.corporate
@@ -68,15 +73,20 @@ class Role < ApplicationRecord
   end
 
   def agent?
+    raise "Agent User Role is deprecated"
     slug == 'agent'
   end
 
+  def property?
+    slug == 'property'
+  end
+
   def admin?
-    administrator? || corporate? || manager?
+    administrator? || corporate?
   end
 
   def user?
-    agent?
+    manager? || property?
   end
 
 end

@@ -206,7 +206,7 @@ RSpec.describe UsersController, type: :controller do
         it "can change the user role" do
           sign_in corporate
           user = User.create! valid_attributes
-          user.role = agent_role
+          user.role = property_role
           user.save!
           old_role = user.role_id
           put :update, params: {id: user.to_param, user: {role_id: corporate_role.id}}
@@ -216,7 +216,7 @@ RSpec.describe UsersController, type: :controller do
         it "cannot promote role to administrator" do
           sign_in corporate
           user = User.create! valid_attributes
-          user.role = agent_role
+          user.role = property_role
           user.save!
           old_role = user.role_id
           put :update, params: {id: user.to_param, user: {role_id: administrator_role.id}}

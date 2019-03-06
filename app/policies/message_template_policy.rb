@@ -9,11 +9,11 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def new?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def create?
@@ -21,7 +21,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
 
   def edit?
-    new?
+    user.admin? || same_user? || property_manager?
   end
 
   def update?
@@ -29,7 +29,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def destroy?
@@ -42,7 +42,7 @@ class MessageTemplatePolicy < ApplicationPolicy
     case user
     when ->(u) { u.admin? }
       # NOOP: Full permissions
-    when ->(u) { u.agent? }
+    when ->(u) { u.user? }
       # Only limit params on existing MessageTemplates
       if record.is_a?(MessageTemplate) && !record.new_record?
         # Guard changing users
@@ -58,6 +58,11 @@ class MessageTemplatePolicy < ApplicationPolicy
 
   def same_user?
     record.user === user
+  end
+
+  def property_manager?
+    record.user.present? &&
+    record.user.properties.to_a.any?{|p| user.property_manager?(p)}
   end
 
   # Allow admin or MessageTemplate owner to reassign MessageTemplate to another User

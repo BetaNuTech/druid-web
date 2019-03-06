@@ -1,6 +1,6 @@
 class LeadActionPolicy < ApplicationPolicy
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def new?
@@ -20,7 +20,7 @@ class LeadActionPolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def destroy?

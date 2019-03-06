@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_04_210808) do
+ActiveRecord::Schema.define(version: 2019_03_13_182432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -353,6 +353,15 @@ ActiveRecord::Schema.define(version: 2019_03_04_210808) do
     t.datetime "updated_at", null: false
     t.index ["active", "code"], name: "index_property_listings_on_active_and_code"
     t.index ["property_id", "source_id", "active"], name: "index_property_listings_on_property_id_and_source_id_and_active"
+  end
+
+  create_table "property_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "property_id"
+    t.uuid "user_id"
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["property_id", "user_id"], name: "index_property_users_on_property_id_and_user_id", unique: true
   end
 
   create_table "reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

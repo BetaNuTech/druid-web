@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-md-12">
+    <ul>
+    <% user.assignments.each do |assignment| %>
+      <li>
+        <%= assignment.role.capitalize %> at <%= link_to(assignment.property.name, property_url(assignment.property)) %>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+</div>

@@ -9,10 +9,6 @@ RSpec.describe ScheduledActionPolicy do
     it 'allows access to any admin' do
       scheduled_action = ScheduledAction.create(user: team1_agent1)
       scheduled_action2 = ScheduledAction.create(user: team2_agent1)
-      collection = ScheduledActionPolicy::Scope.new(team1_manager1, ScheduledAction).resolve
-      expect(collection.count).to eq(2)
-      collection = ScheduledActionPolicy::Scope.new(team2_manager1, ScheduledAction).resolve
-      expect(collection.count).to eq(2)
       collection = ScheduledActionPolicy::Scope.new(team2_corporate1, ScheduledAction).resolve
       expect(collection.count).to eq(2)
     end
@@ -34,9 +30,9 @@ RSpec.describe ScheduledActionPolicy do
       expect(collection.count).to eq(0)
     end
 
-    it 'allows access to agents within the same team' do
+    it 'allows access to agents within the same property' do
       scheduled_action = ScheduledAction.create(user: team1_agent1)
-      collection = ScheduledActionPolicy::Scope.new(team1_agent2, ScheduledAction).resolve
+      collection = ScheduledActionPolicy::Scope.new(team1_agent3, ScheduledAction).resolve
       expect(collection.count).to eq(1)
     end
   end
@@ -44,7 +40,7 @@ RSpec.describe ScheduledActionPolicy do
   describe 'policy' do
     describe 'index?' do
       it 'should allow admin access' do
-        assert(ScheduledActionPolicy.new(team1_manager1, ScheduledAction).index?)
+        assert(ScheduledActionPolicy.new(team1_corporate1, ScheduledAction).index?)
       end
 
       it 'should allow agent access' do
@@ -58,7 +54,7 @@ RSpec.describe ScheduledActionPolicy do
 
     describe 'show?' do
       it 'should allow admin access' do
-        assert(ScheduledActionPolicy.new(team1_manager1, ScheduledAction).show?)
+        assert(ScheduledActionPolicy.new(team1_corporate1, ScheduledAction).show?)
       end
 
       it 'should allow agent access' do
@@ -72,13 +68,13 @@ RSpec.describe ScheduledActionPolicy do
 
     describe 'edit?' do
       let(:task_owner) { team1_agent1 }
-      let(:lead) { create(:lead, user: task_owner, property: task_owner.team.properties.first)}
+      let(:lead) { create(:lead, user: task_owner, property: task_owner.properties.first)}
 
       describe 'a personal task' do
         let(:scheduled_action) { ScheduledAction.create(user: task_owner, target: task_owner )}
 
         it 'should allow admin access' do
-          assert(ScheduledActionPolicy.new(team1_manager1, scheduled_action).edit?)
+          assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).edit?)
         end
 
         it 'should allow owner acces' do
@@ -86,7 +82,7 @@ RSpec.describe ScheduledActionPolicy do
         end
 
         it 'should disallow nonowner access by same team' do
-          refute(ScheduledActionPolicy.new(team1_agent2, scheduled_action).edit?)
+          refute(ScheduledActionPolicy.new(team1_agent3, scheduled_action).edit?)
         end
 
         it 'should disallow nonowner access outside of team' do
@@ -104,19 +100,20 @@ RSpec.describe ScheduledActionPolicy do
         let(:scheduled_action) { lead.scheduled_actions.first }
 
         it 'should allow admin access' do
-          assert(ScheduledActionPolicy.new(team1_manager1, scheduled_action).edit?)
+          assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).edit?)
         end
 
         it 'should allow owner acces' do
           assert(ScheduledActionPolicy.new(task_owner, scheduled_action).edit?)
         end
 
-        it 'should allow nonowner access by same team' do
+        it 'should allow nonowner access by agent within same property' do
           refute(scheduled_action.personal_task?)
-          assert(ScheduledActionPolicy.new(team1_agent2, scheduled_action).edit?)
+          assert(ScheduledActionPolicy.new(team1_agent3, scheduled_action).edit?)
         end
 
-        it 'should disallow nonowner access outside of team' do
+        it 'should disallow nonowner access outside of property' do
+          refute(ScheduledActionPolicy.new(team2_agent1, scheduled_action).edit?)
           refute(ScheduledActionPolicy.new(team2_agent1, scheduled_action).edit?)
         end
       end
@@ -126,13 +123,13 @@ RSpec.describe ScheduledActionPolicy do
     describe 'completion_form?' do
 
       let(:task_owner) { team1_agent1 }
-      let(:lead) { create(:lead, user: task_owner, property: task_owner.team.properties.first)}
+      let(:lead) { create(:lead, user: task_owner, property_id: task_owner.property.id)}
 
       describe 'a personal task' do
         let(:scheduled_action) { ScheduledAction.create(user: task_owner, target: task_owner )}
 
         it 'should allow admin access' do
-          assert(ScheduledActionPolicy.new(team1_manager1, scheduled_action).completion_form?)
+          assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).completion_form?)
         end
 
         it 'should allow owner acces' do
@@ -158,20 +155,20 @@ RSpec.describe ScheduledActionPolicy do
         let(:scheduled_action) { lead.scheduled_actions.first }
 
         it 'should allow admin access' do
-          assert(ScheduledActionPolicy.new(team1_manager1, scheduled_action).completion_form?)
+          assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).completion_form?)
         end
 
         it 'should allow owner acces' do
           assert(ScheduledActionPolicy.new(task_owner, scheduled_action).completion_form?)
         end
 
-        it 'should allow nonowner access by same team' do
+        it 'should allow nonowner access by same property' do
           refute(scheduled_action.personal_task?)
-          assert(ScheduledActionPolicy.new(team1_agent2, scheduled_action).completion_form?)
+          assert(ScheduledActionPolicy.new(team1_agent3, scheduled_action).completion_form?)
         end
 
-        it 'should disallow nonowner access outside of team' do
-          refute(ScheduledActionPolicy.new(team2_agent1, scheduled_action).completion_form?)
+        it 'should disallow nonowner access outside of property' do
+          refute(ScheduledActionPolicy.new(team1_agent2, scheduled_action).completion_form?)
         end
       end
     end
@@ -179,13 +176,13 @@ RSpec.describe ScheduledActionPolicy do
     describe 'complete?' do
 
       let(:task_owner) { team1_agent1 }
-      let(:lead) { create(:lead, user: task_owner, property: task_owner.team.properties.first)}
+      let(:lead) { create(:lead, user: task_owner, property_id: task_owner.property.id)}
 
       describe 'a personal task' do
         let(:scheduled_action) { ScheduledAction.create(user: task_owner, target: task_owner )}
 
         it 'should allow admin access' do
-          assert(ScheduledActionPolicy.new(team1_manager1, scheduled_action).complete?)
+          assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).complete?)
         end
 
         it 'should allow owner acces' do
@@ -211,19 +208,19 @@ RSpec.describe ScheduledActionPolicy do
         let(:scheduled_action) { lead.scheduled_actions.first }
 
         it 'should allow admin access' do
-          assert(ScheduledActionPolicy.new(team1_manager1, scheduled_action).complete?)
+          assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).complete?)
         end
 
         it 'should allow owner acces' do
           assert(ScheduledActionPolicy.new(task_owner, scheduled_action).complete?)
         end
 
-        it 'should allow nonowner access by same team' do
+        it 'should allow nonowner access within property' do
           refute(scheduled_action.personal_task?)
-          assert(ScheduledActionPolicy.new(team1_agent2, scheduled_action).complete?)
+          assert(ScheduledActionPolicy.new(team1_agent3, scheduled_action).complete?)
         end
 
-        it 'should disallow nonowner access outside of team' do
+        it 'should disallow nonowner access outside of property' do
           refute(ScheduledActionPolicy.new(team2_agent1, scheduled_action).complete?)
         end
       end

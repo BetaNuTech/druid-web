@@ -17,7 +17,7 @@ class Teamrole < ApplicationRecord
 
   ### Constants
   ALLOWED_PARAMS = [:id, :name, :slug, :description]
-  HIERARCHY = [ :manager, :lead, :agent ]
+  HIERARCHY = [ :lead, :agent, :none]
 
   ### Validations
   validates :name, :slug,
@@ -33,7 +33,8 @@ class Teamrole < ApplicationRecord
   end
 
   def self.manager
-    self.where(slug: 'manager').first
+    raise "Manager Teamrole is deprecated"
+    #self.where(slug: 'manager').first
   end
 
   def self.lead
@@ -58,7 +59,8 @@ class Teamrole < ApplicationRecord
   end
 
   def manager?
-    slug == 'manager'
+    raise "Manager Teamrole is deprecated"
+    #slug == 'manager'
   end
 
   def lead?

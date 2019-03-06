@@ -9,10 +9,4 @@
       <%= render 'form', user: @user %>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to 'Show', @user %> |
-      <%= link_to 'Back', policy(User).index? ? users_path : :back %>
-    </div>
-  </div>
 </div>

@@ -23,4 +23,14 @@ module PropertiesHelper
   def select_property(val)
     options_for_select(Property.order(name: 'ASC').map{|p| [p.name, p.id]}, val)
   end
+
+  def select_property_user(property:, selected:)
+    available_users = property.users_available_for_assignment
+    selected_user = selected.present? ? [ User.find(selected) ] : []
+    options_for_select((selected_user + available_users).map{|u| [u.name, u.id]}, selected)
+  end
+
+  def select_user_role(selected)
+    options_for_select(PropertyUser.roles.to_a.map{|r| [r[0].capitalize, r[0]]}, selected)
+  end
 end

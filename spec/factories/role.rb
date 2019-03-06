@@ -23,10 +23,10 @@ FactoryBot.define do
       description { 'corporate role' }
     end
 
-    factory :agent_role do
-      name { 'agent' }
-      slug { 'agent' }
-      description { 'agent role' }
+    factory :property_role do
+      name { 'property' }
+      slug { 'property' }
+      description { 'property role' }
     end
 
     factory :other_role do

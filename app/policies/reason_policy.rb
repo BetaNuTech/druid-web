@@ -7,7 +7,7 @@ class ReasonPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def new?
@@ -27,7 +27,7 @@ class ReasonPolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || user.agent?
+    user.admin? || user.user?
   end
 
   def destroy?

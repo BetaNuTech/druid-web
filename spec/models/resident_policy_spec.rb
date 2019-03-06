@@ -4,7 +4,7 @@ RSpec.describe ResidentPolicy do
   include_context "users"
 
   describe "policy" do
-    let(:resident) { create(:resident) }
+    let(:resident) { create(:resident, property_id: agent.property.id) }
 
     describe "for admins" do
       let(:policy) { ResidentPolicy.new(administrator, resident) }

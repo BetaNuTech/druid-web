@@ -144,18 +144,25 @@ RSpec.describe Messages::Sender do
 
         it "should send an sms message to a recipient with a whitelisted phone number" do
           whitelisted_sms_message.deliver!
+          whitelisted_sms_message.reload
           assert(whitelisted_sms_message.sent?)
         end
 
-        it "should fail to send an email to a recipient with an uwhitelisted email address" do
+        it "should fail to send an email to a recipient with an unwhitelisted email address" do
           other_email_message.deliver!
-          other_email_message.save
+          other_email_message.reload
+          refute(other_email_message.deliveries.successful.exists?)
+          assert(other_email_message.deliveries.failed.exists?)
+          other_email_message.perform_delivery # only necessary when running without background job
           refute(other_email_message.sent?)
         end
 
         it "should fail to send an sms message to a recipient with an unwhitelisted phone number" do
           other_sms_message.deliver!
-          other_sms_message.save
+          other_sms_message.reload
+          refute(other_sms_message.deliveries.successful.exists?)
+          assert(other_sms_message.deliveries.failed.exists?)
+          other_sms_message.perform_delivery # only necessary when running without background job
           refute(other_sms_message.sent?)
         end
 
@@ -168,23 +175,25 @@ RSpec.describe Messages::Sender do
 
         it "should send an email to a recipient with a whitelisted email address" do
           whitelisted_email_message1.deliver!
+          whitelisted_email_message1.reload
           assert(whitelisted_email_message1.sent?)
         end
 
         it "should send an sms message to a recipient with a whitelisted phone number" do
           whitelisted_sms_message.deliver!
+          whitelisted_sms_message.reload
           assert(whitelisted_sms_message.sent?)
         end
 
         it "should send an email to a recipient with an unwhitelisted email address" do
           other_email_message.deliver!
-          other_email_message.save
+          other_email_message.reload
           assert(other_email_message.sent?)
         end
 
         it "should send an sms message to a recipient with an unwhitelisted phone number" do
           other_sms_message.deliver!
-          other_sms_message.save
+          other_sms_message.reload
           assert(other_sms_message.sent?)
         end
 

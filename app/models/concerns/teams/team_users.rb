@@ -18,6 +18,7 @@ module Teams
       end
 
       def managers
+        raise "Team Manager Role is Deprecated"
         members.team_managers.order("team_users.created_at ASC")
       end
 

@@ -102,9 +102,12 @@ RSpec.describe MessageDelivery, type: :model do
       message.deliver!
       message.reload
       assert(message.sent?)
+      assert(message.deliveries.successful.exists?)
       delivery.reload
       assert(delivery.message.sent?)
       refute delivery.perform
+      refute(delivery.success?)
+      expect(delivery.log).to eq(MessageDelivery::ALREADY_SENT_MESSAGE)
     end
   end
 

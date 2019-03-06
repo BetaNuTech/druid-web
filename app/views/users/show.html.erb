@@ -120,10 +120,16 @@
       </p>
     </div>
   </div>
+
+  <%= render partial: "property_assignments", locals: {user: @user} %>
+
   <div class="row">
-    <h3>Team: <%= @user.team.try(:name) || 'None' %></h3>
-    <%= render( partial: 'teams/properties_and_members', locals: {team: @user.team} ) if @user.team.present? %>
+    <div class="col-md-12">
+      <h3>Team: <%= @user.team.try(:name) || 'None' %></h3>
+      <%= render( partial: 'teams/properties_and_members', locals: {team: @user.team} ) if @user.team.present? %>
+    </div>
   </div>
+
   <div class="row">
     <div class="col-md-12">
       <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-md btn-primary" %>

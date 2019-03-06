@@ -6,24 +6,45 @@ module Users
       has_one :membership, class_name: 'TeamUser', dependent: :destroy
       has_one :teamrole, through: :membership
       has_one :team, through: :membership
-      has_many :properties, through: :team
 
       def team_title
-        membership.try(:teamrole).try(:name)
+        membership&.teamrole&.name
+      end
+
+      def team_admin?
+        team_lead? || team_corporate?
+      end
+
+      def team_corporate?
+        teamrole.try(:corporate?) || false
+      end
+
+      def team_manager?
+        raise "Manager Teamrole is deprecated"
+        #teamrole.try(:manager?) || false
+      end
+
+      def team_lead?
+        teamrole.try(:lead?) || false
+      end
+
+      def team_agent?
+        teamrole.try(:agent?) || false
       end
     end
 
     class_methods do
 
       def with_team
-        User.includes(:membership).where("team_users.id IS NOT null")
+        includes(:membership).where("team_users.id IS NOT null")
       end
 
       def without_team
-        User.includes(:membership).where(team_users: {id: nil})
+        includes(:membership).where(team_users: {id: nil})
       end
 
       def team_managers
+        raise "Manager Teamrole is deprecated"
         includes(:membership).where(team_users: {teamrole_id: Teamrole.manager&.id})
       end
 

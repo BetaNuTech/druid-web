@@ -27,7 +27,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || user.agent?
+    user.admin? || user.property?
   end
 
   def destroy?
