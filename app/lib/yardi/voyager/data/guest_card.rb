@@ -88,9 +88,8 @@ module Yardi
 
           begin
             # Handle Server Error
-            if data["Envelope"]["Body"].fetch("Fault", false)
-              err_msg = data["Envelope"]["Body"]["Fault"].to_s
-              raise Yardi::Voyager::Data::Error.new(err_msg)
+            if (err_msg = data.dig("Envelope", "Body", "Fault")).present?
+              raise Yardi::Voyager::Data::Error.new(err_msg.to_s)
             end
 
             root_node = data.dig("Envelope", "Body", "#{method}Response", "#{method}Result")
