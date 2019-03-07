@@ -95,9 +95,11 @@ module Yardi
             root_node = data.dig("Envelope", "Body", "#{method}Response", "#{method}Result")
             if root_node.nil?
               Rails.logger.warn("Voyager Response contains no results ---- Response Data: #{data}")
+              return yield({})
             end
 
-            if root_node && (messages = root_node.fetch("Messages",false))
+            messages = root_node.fetch("Messages",false)
+            if messages
               message_data = messages["Message"]
               messages_array = []
               case message_data.class
