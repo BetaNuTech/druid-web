@@ -93,7 +93,7 @@ module Yardi
               raise Yardi::Voyager::Data::Error.new(err_msg)
             end
 
-            root_node = data["Envelope"]["Body"]["#{method}Response"].fetch("#{method}Result", nil)
+            root_node = data.dig("Envelope", "Body", "#{method}Response", "#{method}Result")
             if root_node.nil?
               raise Yardi::Voyager::Data::Error.new("Voyager Response contains no results ---- Response Data: #{data}")
             end
