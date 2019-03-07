@@ -92,7 +92,12 @@ module Yardi
               err_msg = data["Envelope"]["Body"]["Fault"].to_s
               raise Yardi::Voyager::Data::Error.new(err_msg)
             end
-            root_node = data["Envelope"]["Body"]["#{method}Response"]["#{method}Result"]
+
+            root_node = data["Envelope"]["Body"]["#{method}Response"].fetch("#{method}Result", nil)
+            if root_node.nil?
+              raise Yardi::Voyager::Data::Error.new("Voyager Response contains no results ---- Response Data: #{data}")
+            end
+
             messages = root_node.fetch("Messages",false)
             if messages
               message_data = messages["Message"]
