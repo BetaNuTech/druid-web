@@ -95,7 +95,7 @@ module Yardi
 
             root_node = data.dig("Envelope", "Body", "#{method}Response", "#{method}Result")
             if root_node.nil?
-              raise Yardi::Voyager::Data::Error.new("Voyager Response contains no results ---- Response Data: #{data}")
+              Rails.logger.warn("Voyager Response contains no results ---- Response Data: #{data}")
             end
 
             messages = root_node.fetch("Messages",false)
