@@ -97,8 +97,7 @@ module Yardi
               Rails.logger.warn("Voyager Response contains no results ---- Response Data: #{data}")
             end
 
-            messages = root_node.fetch("Messages",false)
-            if messages
+            if root_node && (messages = root_node.fetch("Messages",false))
               message_data = messages["Message"]
               messages_array = []
               case message_data.class
