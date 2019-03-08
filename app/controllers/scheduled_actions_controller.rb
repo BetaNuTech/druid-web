@@ -38,7 +38,7 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions/new
   def new
     @scheduled_action = ScheduledAction.new(new_scheduled_action_params)
-    @scheduled_action.schedule = Schedule.new(timezone: current_user.timezone)
+    @scheduled_action.schedule = Schedule.new()
     authorize @scheduled_action
   end
 
