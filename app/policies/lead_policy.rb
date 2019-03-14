@@ -11,9 +11,9 @@ class LeadPolicy < ApplicationPolicy
           # Belonging to User
           skope.where(user_id: user.id).
             # or Belonging to User's Team
-            or(skope.where(property_id: user.properties.select(:id).map(&:id))).
+            or(skope.where(property_id: user.properties.select(:id).map(&:id)))
             # or Open Leads older than EXCLUSIVITY_LIMIT
-            or(skope.where(state: 'open').where("leads.created_at < ?", EXCLUSIVITY_LIMIT.hours.ago))
+            #or(skope.where(state: 'open').where("leads.created_at < ?", EXCLUSIVITY_LIMIT.hours.ago))
         end
     end
   end
