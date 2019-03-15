@@ -104,7 +104,7 @@ module Leads
         return DUPLICATE_ATTRIBUTES.any?{|a| changed_attributes.include?(a.to_s)}
       end
 
-      handle_asynchronously :mark_duplicates
+      handle_asynchronously :mark_duplicates, queue: :lead_dedupe
     end
   end
 end

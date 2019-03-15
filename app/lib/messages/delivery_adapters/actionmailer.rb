@@ -15,7 +15,7 @@ module Messages
           subject: subject,
           body: body,
           content_type: 'text/html'
-        ).deliver
+        ).deliver_later
       end
 
     end

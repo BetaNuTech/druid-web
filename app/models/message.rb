@@ -180,7 +180,7 @@ class Message < ApplicationRecord
 
   def perform_delivery
     delivery = MessageDelivery.create!( message: self, message_type: message_type )
-    delivery.perform
+    delivery.delay(queue: :messages).perform
     delivery.reload
     self.delivered_at = delivery.delivered_at
     save!

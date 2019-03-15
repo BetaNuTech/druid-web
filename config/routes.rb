@@ -4,6 +4,10 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
+  authenticated :user, -> user { user.admin? }  do
+    mount DelayedJobWeb, at: "/delayed_job"
+  end
+
   namespace :api do
     namespace :v1 do
       get 'docs/swagger.:format', to: "swagger#index"

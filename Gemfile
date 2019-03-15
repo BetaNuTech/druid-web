@@ -34,7 +34,7 @@ gem 'ice_cube', '~> 0.16'
 gem 'schedulable', "~> 0.0"
 gem 'simple_calendar', "~> 2.3"
 gem 'httparty', "~> 0.16"
-gem 'nokogiri', "~> 1.8"
+gem 'nokogiri', "~> 1.10"
 gem 'liquid', "~> 4.0"
 gem 'twilio-ruby', "~> 5.15"
 gem 'kaminari', "~> 1.1"
@@ -46,8 +46,10 @@ gem 'nested_form_fields', "~> 0.8"
 gem 'dalli', "~> 2.7"
 gem 'connection_pool', "~> 2.2"
 gem 'premailer', "~> 1.11"
-gem "image_processing"
-gem "mini_magick"
+gem 'image_processing', "~> 1.8"
+gem 'mini_magick', "~> 4.9"
+gem 'delayed_job_web', "~> 1.4"
+
 
 group :development, :test do
   gem 'pry-doc', '~> 0.13'
