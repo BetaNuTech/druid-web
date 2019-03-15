@@ -35,7 +35,7 @@
             <th></th>
           </thead>
           <tbody>
-            <% lead.messages.order("delivered_at DESC").each do |message| %>
+            <% lead.messages.order("updated_at DESC").each do |message| %>
               <tr class="<%= message.read? ? '' : 'message_unread' %>">
                 <td>
                   <span class="text-nowrap">
@@ -43,7 +43,7 @@
                       <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn-sm btn-primary" }) %>
                     <% else %>
                       <span class="dashboard_item_date">
-                        <%= short_datetime(message.delivered_at) %>
+                        <%= short_datetime(message.delivered_at || message.updated_at) %>
                       </span>
                     <% end %>
                   </span>
