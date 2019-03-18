@@ -52,14 +52,10 @@ class MessageDelivery < ApplicationRecord
   ### Instance Methods
 
   def perform
-    if message.draft? || message.failed?
-      sender = Messages::Sender.new(self)
-      sender.deliver
-      reload
-      return delivered?
-    else
-      return false
-    end
+    sender = Messages::Sender.new(self)
+    sender.deliver
+    reload
+    return delivered?
   end
 
   def delivered?
