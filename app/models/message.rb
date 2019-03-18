@@ -45,7 +45,6 @@ class Message < ApplicationRecord
 
   ### Callbacks
   before_validation :set_meta
-  after_save :fail_on_delivery_failure
 
   ### Class Methods
 
@@ -180,22 +179,16 @@ class Message < ApplicationRecord
 
   def perform_delivery
     delivery = MessageDelivery.create!( message: self, message_type: message_type )
-    delivery.delay(queue: :messages).perform
+    delivery.perform
     delivery.reload
     self.delivered_at = delivery.delivered_at
     save!
+    unless delivery.success?
+      self.fail!
+    end
   end
 
-  def fail_on_delivery_failure
-    reload
-    return true if failed?
-    if (last_delivery = deliveries.order(created_at: 'desc').first).present?
-      unless last_delivery.success?
-        self.fail!
-      end
-    end
-    return true
-  end
+  handle_asynchronously :perform_delivery, queue: :messages
 
   def from_address
     if message_type.email? && outgoing?
