@@ -31,24 +31,5 @@ RSpec.describe UserPolicy do
 
     end
 
-    describe "assign_to_property?" do
-      it "allows an corporate to assign to a property" do
-        policy = UserPolicy.new(corporate, new_user)
-        assert policy.assign_to_property?
-      end
-      it "allows an administrator to assign to a property" do
-        policy = UserPolicy.new(administrator, new_user)
-        assert policy.assign_to_property?
-      end
-      it "disallows an agent to assign to a property" do
-        policy = UserPolicy.new(agent, new_user)
-        refute policy.assign_to_property?
-      end
-      it "disallows an unroled user to assign to a property" do
-        policy = UserPolicy.new(unroled_user, new_user)
-        refute policy.assign_to_property?
-      end
-    end
-
   end
 end

@@ -121,7 +121,12 @@
     </div>
   </div>
 
-  <%= render partial: "property_assignments", locals: {user: @user} %>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Property Assignments</h3>
+      <%= render partial: "property_assignments", locals: {user: @user} %>
+    </div>
+  </div>
 
   <div class="row">
     <div class="col-md-12">

@@ -6,6 +6,8 @@ class PropertyPolicy < ApplicationPolicy
       return case user
       when ->(u) { u.admin?}
         skope
+      when ->(u) { u.manager? }
+        skope
       else
         skope.where(id: user.properties.map(&:id))
       end
@@ -33,7 +35,7 @@ class PropertyPolicy < ApplicationPolicy
   end
 
   def show?
-    index?
+    user.admin? || user.manager? || same_property?
   end
 
   def destroy?
@@ -58,7 +60,7 @@ class PropertyPolicy < ApplicationPolicy
       # NOOP all valid fields allowed
     when ->(u) { u.corporate? }
       # NOOP all valid fields allowed
-    when ->(u) { u.property_manager?(record) }
+    when ->(u) { u.manager? }
       # NOOP all valid fields allowed
     when ->(u) { u.user? }
       valid_property_params = []

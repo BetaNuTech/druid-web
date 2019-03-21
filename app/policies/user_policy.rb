@@ -7,7 +7,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin?
+    user.user?
   end
 
   def new?
@@ -19,8 +19,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
-    user === record || 
-      (user.admin? && ( user.role >= record.role ))
+    user === record ||
+      (user.admin? && ( user.role >= record.role )) ||
+      ( ( user.role >= record.role ) &&
+        ( !record.manager? && property_manager? )
+      )
   end
 
   def update?
@@ -28,15 +31,13 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
-    edit? || ( record.team.present? && record.team == user.team )
+    user === record ||
+      user.admin? ||
+      property_manager?
   end
 
   def destroy?
-    edit?
-  end
-
-  def assign_to_property?
-    user.admin?
+    user != record && edit?
   end
 
   def assign_to_role?
@@ -77,6 +78,18 @@ class UserPolicy < ApplicationPolicy
 
   def may_change_teamrole?(new_role_id=nil)
     return user.admin?
+  end
+
+  def same_property?
+    record.properties.any?{|rp| user.properties.include?(rp)}
+  end
+
+  def property_manager?
+    record.properties.any?{|rp| user.property_manager?(rp) }
+  end
+
+  def user_is_a_manager?
+    record.assignments.where(role: PropertyUser::MANAGER_ROLE).exists?
   end
 
 end

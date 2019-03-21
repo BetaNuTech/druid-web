@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     authorize User
-    @users = User.all
+    @users = User.includes(:profile).order('user_profiles.last_name ASC, user_profiles.first_name ASC')
   end
 
   # GET /users/1

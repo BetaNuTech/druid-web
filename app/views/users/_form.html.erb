@@ -109,6 +109,7 @@
     </div>
   <% end %>
 
+  <% unless @user.new_record? %>
   <div class="row">
     <div class="col-md-12">
       <fieldset>
@@ -117,6 +118,7 @@
       </fieldset>
     </div>
   </div>
+  <% end %>
 
   <div class="form-group">
     <button type="submit" class="btn btn-primary">Submit</button>

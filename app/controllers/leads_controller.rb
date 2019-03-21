@@ -9,7 +9,7 @@ class LeadsController < ApplicationController
   # GET /leads.json
   def index
     authorize Lead
-    @search = LeadSearch.new(params[:lead_search])
+    @search = LeadSearch.new(params[:lead_search], policy_scope(Lead))
     @leads = @search.paginated
   end
 
