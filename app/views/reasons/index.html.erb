@@ -29,9 +29,9 @@
               <td><%= reason.description %></td>
               <td><%= reason.active ? "Yes" : "No" %></td>
               <td>
-                <%= link_to reason do %><%= glyph(:show) %><% end %>&nbsp;
-                <%= link_to edit_reason_path(reason) do %><%= glyph(:edit) %><% end %>&nbsp;
-                <%= link_to reason, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                <%= link_to reason do %><%= glyph(:show) %><% end if policy(reason).show? %>&nbsp;
+                <%= link_to edit_reason_path(reason) do %><%= glyph(:edit) %><% end if policy(reason).edit? %>&nbsp;
+                <%= link_to reason, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(reason).destroy? %>
               </td>
             </tr>
           <% end %>

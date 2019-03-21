@@ -9,19 +9,19 @@ class LeadsController < ApplicationController
   # GET /leads.json
   def index
     authorize Lead
-    @search = LeadSearch.new(params[:lead_search], policy_scope(Lead))
+    @search = LeadSearch.new(params[:lead_search], policy_scope(Lead), current_user)
     @leads = @search.paginated
   end
 
   def search
     authorize Lead
-    @search = LeadSearch.new(params[:lead_search])
+    @search = LeadSearch.new(params[:lead_search], policy_scope(Lead), current_user)
     @webpack = 'lead_search'
     respond_to do |format|
       format.html
       format.json
       format.csv {
-        filename = DateTime.now.strftime("leads-%Y-%m-%d-%H%M.csv") 
+        filename = DateTime.now.strftime("leads-%Y-%m-%d-%H%M.csv")
         send_data @search.collection.export_csv, filename: filename
       }
     end

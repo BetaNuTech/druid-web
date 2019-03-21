@@ -25,6 +25,7 @@ class LeadSearch
     @skope = @default_skope
     @filter_applied = false
     @perform_sort = true
+    @user = user
   end
 
   def collection
@@ -52,6 +53,7 @@ class LeadSearch
     end
   end
 
+
   def full_options
     opts = {
       "Filters" => {
@@ -59,12 +61,12 @@ class LeadSearch
         "Agents" => {
           param: "user_ids",
           values: User.where(id: @options[:user_ids]).map{|u| {label: u.name, value: u.id}},
-          options: User.with_team.by_name_asc.map{ |u| {label: u.name, value: u.id} }
+          options: agent_options
         },
         "Properties" => {
           param: "property_ids",
           values: Property.where(id: @options[:property_ids]).map{|p| {label: p.name, value: p.id}},
-          options: Property.active.order(name: :asc).map{|p| {label: p.name, value: p.id}}
+          options: property_options
         },
         "Priorities" => {
           param: "priorities",
@@ -86,7 +88,7 @@ class LeadSearch
           values: Array(@options[:referrals]).map{|r| {label: r, value: r}},
           options: Lead.select("distinct(referral)").order("referral ASC").
             map{|r| {label: r.referral, value: r.referral}}.
-            select{|r| r[:label].present? }
+            select{|r| r[:label].present? && r[:label] != 'Null' }
         },
         "First Name" => {
           param: "first_name",
@@ -338,5 +340,16 @@ class LeadSearch
 
   def ids_from(skope)
     skope.select("#{LEAD_TABLE}.id").map(&:id)
+  end
+
+  def property_options
+    properties = @user ?  @user.properties : Property.active
+    return properties.active.map{|p| {label: p.name, value: p.id}}
+  end
+
+  def agent_options
+    agents = @user ? @user.properties.map{|p| p.users.to_a}.flatten.compact.uniq.sort_by{|u| u.profile.try(:last_name) } :
+      User.with_team.by_name_asc
+    return agents.map{ |u| {label: u.name, value: u.id} }
   end
 end

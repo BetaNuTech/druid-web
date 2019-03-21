@@ -38,9 +38,9 @@
                 <%= unit_type.description %>
               </td>
               <td>
-                <%= link_to property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:show) %><% end %>&nbsp;
-                <%= link_to edit_property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:edit) %><% end %>&nbsp;
-                <%= link_to unit_type, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                <%= link_to property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:show) %><% end if policy(unit_type).show? %>&nbsp;
+                <%= link_to edit_property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:edit) %><% end if policy(unit_type).edit? %>&nbsp;
+                <%= link_to unit_type, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit_type).destroy? %>
               </td>
             </tr>
           <% end %>

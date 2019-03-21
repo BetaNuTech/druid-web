@@ -11,7 +11,7 @@ class UnitTypePolicy < ApplicationPolicy
   end
 
   def new?
-    user.admin?
+    user.admin? || user.manager?
   end
 
   def create?
@@ -19,11 +19,12 @@ class UnitTypePolicy < ApplicationPolicy
   end
 
   def show?
-    index?
+    user.admin? || same_property?
   end
 
   def edit?
-    new?
+    user.admin? ||
+      property_manager?
   end
 
   def update?
@@ -41,6 +42,14 @@ class UnitTypePolicy < ApplicationPolicy
     else
       []
     end
+  end
+
+  def property_manager?
+    user.property_manager?(record.property)
+  end
+
+  def same_property?
+    user.assignments.where(property_id: record.property_id).exists?
   end
 
 end
