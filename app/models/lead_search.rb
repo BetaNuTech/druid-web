@@ -65,7 +65,7 @@ class LeadSearch
         },
         "Properties" => {
           param: "property_ids",
-          values: Property.where(id: @options[:property_ids]).map{|p| {label: p.name, value: p.id}},
+          values: property_values,
           options: property_options
         },
         "Priorities" => {
@@ -342,14 +342,33 @@ class LeadSearch
     skope.select("#{LEAD_TABLE}.id").map(&:id)
   end
 
+  def property_values
+    property_ids = @options[:property_ids]
+    properties = Property.active.where(id: property_ids)
+    return properties.map{|p| {label: p.name, value: p.id}}
+  end
+
   def property_options
-    properties = @user ?  @user.properties : Property.active
-    return properties.active.map{|p| {label: p.name, value: p.id}}
+    if @user
+      property_ids = LeadPolicy::Scope.new(@user, @skope).resolve.
+                      select("distinct property_id").
+                      map(&:property_id)
+      properties = Property.where(id: property_ids)
+    else
+      properties = Property.active
+    end
+    return properties.map{|p| {label: p.name, value: p.id}}
   end
 
   def agent_options
-    agents = @user ? @user.properties.map{|p| p.users.to_a}.flatten.compact.uniq.sort_by{|u| u.profile.try(:last_name) } :
-      User.with_team.by_name_asc
+    if @user
+      agents = PropertyPolicy::Scope.new(@user, Property).resolve.all.
+        to_a.map{|p| p.users.to_a}.
+        flatten.compact.uniq
+    else
+      agents = PropertyUser.select("distinct user_id").map(&:user)
+    end
+    sorted_agents = agents.sort_by{|u| u.profile.try(:last_name) }
     return agents.map{ |u| {label: u.name, value: u.id} }
   end
 end
