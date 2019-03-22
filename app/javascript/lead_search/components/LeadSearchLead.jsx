@@ -53,7 +53,7 @@ class LeadSearchLead extends React.Component {
         { false && <LeadActions lead_id={this.props.data.id} /> }
         <div className={Style.contact} >
           <span className={Style.lead_name}>
-            <a href={this.props.data.web_url} target="_blank">
+            <a href={this.props.data.web_url}>
             {this.props.data.title}&nbsp;
             {this.props.data.first_name}&nbsp;
             {this.props.data.last_name}
@@ -76,7 +76,7 @@ class LeadSearchLead extends React.Component {
             <React.Fragment>
               <span>
                 <span className="glyphicon glyphicon-home" />&nbsp;
-                <a href={this.props.data.property.web_url} target="_blank">
+                <a href={this.props.data.property.web_url} >
                   {this.props.data.property.name}
                 </a>
               </span><br/>
