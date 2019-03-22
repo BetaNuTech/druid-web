@@ -106,10 +106,10 @@ RSpec.describe HomeController, type: :controller do
       end
 
       describe "the navigation bar" do
-        it "does not display a link to User Management" do
+        it "displays a link to User Management" do
           get :dashboard
           expect(response).to be_successful
-          expect(response.body).to_not match("Manage BlueSky Users")
+          expect(response.body).to match("Manage BlueSky Users")
         end
 
         it "does not display a link to Role Management" do

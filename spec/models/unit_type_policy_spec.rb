@@ -4,7 +4,7 @@ RSpec.describe UnitTypePolicy do
   include_context "users"
 
   describe "policy" do
-    let(:unit_type) { create(:unit_type) }
+    let(:unit_type) { create(:unit_type, property: default_property) }
 
     describe "for admins" do
       let(:policy) { UnitTypePolicy.new(administrator, unit_type) }

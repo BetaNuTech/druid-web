@@ -197,7 +197,7 @@ RSpec.describe UnitTypesController, type: :controller do
   end
 
   describe "GET #show" do
-    let(:unit_type) { create(:unit_type) }
+    let(:unit_type) { create(:unit_type, property: default_property) }
 
     describe "as an unauthenticated user" do
       it "should fail and redirect" do
@@ -215,10 +215,20 @@ RSpec.describe UnitTypesController, type: :controller do
     end
 
     describe "as an agent" do
-      it "should succeed" do
-        sign_in agent
-        get :show, params: {id: unit_type.id}
-        expect(response).to be_successful
+      describe "in the same property" do
+        it "should succeed" do
+          sign_in agent
+          get :show, params: {id: unit_type.id}
+          expect(response).to be_successful
+        end
+      end
+      describe "of a different property" do
+        let(:unit_type2) {create(:unit_type, property: create(:property))}
+        it "should fail" do
+          sign_in agent
+          get :show, params: {id: unit_type2.id}
+          expect(response).to be_redirect
+        end
       end
     end
 

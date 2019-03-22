@@ -64,12 +64,13 @@ RSpec.describe LeadsController, type: :controller do
     end
 
     describe "using search" do
-      let(:lead1) { create(:lead, first_name: "YYY LeadPerson")}
-      let(:lead2) { create(:lead, first_name: "ZZZ LeadPerson")}
+      let(:lead1) { create(:lead, first_name: "YYY LeadPerson", property: agent.property)}
+      let(:lead2) { create(:lead, first_name: "ZZZ LeadPerson", property: agent.property)}
+      let(:lead3) { create(:lead, first_name: "ZZZ LeadPerson", property: create(:property))}
 
       describe "with a text query" do
         it "searches against a full text field" do
-          lead1; lead2
+          lead1; lead2; lead3
           sign_in agent
           get :index, params: {lead_search: {text: "LeadPerson"}}
           expect(response.body).to match("2 records found")

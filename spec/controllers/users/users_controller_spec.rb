@@ -44,12 +44,11 @@ RSpec.describe UsersController, type: :controller do
       end
     end
     describe "as an agent" do
-      it "denies access" do
+      it "allows access" do
         sign_in agent
         user = User.create! valid_attributes
         get :index, params: {}
-        expect(response).to be_redirect
-        expect(response).to_not render_template("users/index")
+        expect(response).to be_successful
       end
     end
   end
@@ -84,9 +83,23 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "GET #new" do
-    describe "as an corporate" do
+    describe "as an admin" do
       it "returns a success response" do
         sign_in corporate
+        get :new, params: {}
+        expect(response).to be_successful
+      end
+    end
+    describe "as a corporate user" do
+      it "returns a success response" do
+        sign_in corporate
+        get :new, params: {}
+        expect(response).to be_successful
+      end
+    end
+    describe "as a manager" do
+      it "returns a success response" do
+        sign_in manager
         get :new, params: {}
         expect(response).to be_successful
       end

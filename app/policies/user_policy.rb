@@ -7,11 +7,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def index?
-    user.user?
+    user.admin? || user.user?
   end
 
   def new?
-    index?
+    user.admin? || user.manager?
   end
 
   def create?
