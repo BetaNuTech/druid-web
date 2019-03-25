@@ -6,6 +6,11 @@ module Leads
     CLOSED_STATES = %w{ disqualified abandoned resident exresident followup }
 
     class_methods do
+
+      def early_pipeline
+        where(state: ['open', 'prospect', 'application'])
+      end
+
       def active
         where.not(state: CLOSED_STATES)
       end

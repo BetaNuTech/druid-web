@@ -1,0 +1,29 @@
+<% if @current_user.present? && @current_user.properties.exists? %>
+  <% cache([ @current_user, 'property_header'  ], expires_in: 5.minutes) do%>
+    <div id="team-header" class="row bg-info">
+    <% @current_user.properties.each do |property| %>
+      <div class="team-header-property">
+        <% if property.logo.attached? %>
+          <%= link_to image_tag(property.logo.variant(resize: 'x30')), property_path(property) %><br/>
+        <% else %>
+          <h4><%= link_to(property.name, property_path(property)) %></h4><br/>
+        <% end %>
+        <%= link_to('Leads', search_leads_path({lead_search: {property_ids: [property.id]}})) %>
+        <%= link_to('Create', new_lead_path(property_id: property.id), {class: "btn btn-xs btn-primary" }) %> &bullet;
+          <span class="text-nowrap">
+            Mine: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], user_ids: [current_user.id]}})) do %><%= property.leads.for_agent(current_user).count %><% end %>
+          </span> &bullet;
+          <span class="text-nowrap">
+            Open: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open']}})) do %><%= property.leads.open.count %><% end %>
+          </span> &bullet;
+          <span class="text-nowrap">
+            Active: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'claimed']}})) do %><%= property.leads.active.count %><% end %>
+          </span>
+          <span class="text-nowrap">
+            Other: <%= link_to("Duplicates", duplicate_leads_property_path(id: property.id)) %>
+          </span>
+      </div>
+    <% end %>
+  </div>
+  <% end %>
+<% end %>

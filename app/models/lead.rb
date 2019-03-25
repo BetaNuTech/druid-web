@@ -74,6 +74,7 @@ class Lead < ApplicationRecord
   ### Scopes
   scope :ordered_by_created, -> {order(created_at: "ASC")}
   scope :is_lead, -> { where(classification: ['lead', nil])}
+  scope :high_priority, -> { order(priority: 'desc').limit(5) }
 
   ### Validations
   validates :first_name, presence: true
