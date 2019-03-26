@@ -86,11 +86,11 @@ module Yardi
               retries += 1
               msg = "Yardi::Voyager::Api encountered a timeout fetching data from #{url}. Retry #{retries} of 3 #{format_request_id}"
               Rails.logger.error msg
-              ErrorNotification.send(StandardError.new(msg))
+              #ErrorNotification.send(StandardError.new(msg))
               sleep(5)
               retry
             else
-              msg = "Yardi::Voyager::Api giving up #{format_request_id}"
+              msg = "Yardi::Voyager::Api giving up fetching data from #{url} #{format_request_id}"
               Rails.logger.error msg
               ErrorNotification.send(StandardError.new(msg))
               raise e
