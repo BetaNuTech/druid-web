@@ -505,18 +505,42 @@ RSpec.describe Lead, type: :model do
       expect(lead.message_email_destination).to eq(lead.email)
     end
 
-    it "returns a Cell phone number as the  message_sms_destination" do
-      lead.phone1 = "555-555-5511"
-      lead.phone2 = "555-555-5512"
-      lead.phone1_type = 'Cell'
-      lead.phone2_type = 'Home'
-      expect(lead.message_sms_destination).to eq(Message.format_phone(lead.phone1))
-      lead.phone1_type = 'Home'
-      lead.phone2_type = 'Cell'
-      expect(lead.message_sms_destination).to eq(Message.format_phone( lead.phone2 ))
-      lead.phone1_type = 'Home'
-      lead.phone2_type = 'Home'
-      expect(lead.message_sms_destination).to be_nil
+    describe "returning message_sms_destination" do
+      describe "with a Cell number" do
+        it "returns a Cell phone number as the  message_sms_destination" do
+          lead.phone1 = "555-555-5511"
+          lead.phone2 = "555-555-5512"
+          lead.phone1_type = 'Cell'
+          lead.phone2_type = 'Home'
+          expect(lead.message_sms_destination).to eq(Message.format_phone(lead.phone1))
+          lead.phone1_type = 'Home'
+          lead.phone2_type = 'Cell'
+          expect(lead.message_sms_destination).to eq(Message.format_phone( lead.phone2 ))
+        end
+
+      end
+
+      describe "with only a non-cell number" do
+        it "returns the first known phone number" do
+          lead.phone1 = nil
+          lead.phone1_type = nil
+          lead.phone2 = "555-555-5512"
+          lead.phone2_type = 'Home'
+          expect(lead.message_sms_destination).to eq(Message.format_phone(lead.phone2))
+        end
+
+      end
+
+      describe "without any phone number" do
+        it "returns nil" do
+          lead.phone1 = nil
+          lead.phone1_type = nil
+          lead.phone2 = nil
+          lead.phone2_type = nil
+          expect(lead.message_sms_destination).to be_nil
+        end
+      end
+
     end
 
     it "returns the message_recipientid based on message_type" do

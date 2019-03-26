@@ -28,13 +28,14 @@ module Leads
       end
 
       def message_recipientid(message_type:)
-        if message_type.email?
-          return message_email_destination
-        end
-
-        if message_type.sms?
-          return message_sms_destination
-        end
+        return case message_type
+          when -> (mt) { mt.email? }
+            message_email_destination
+          when -> (mt) { mt.sms? }
+            message_sms_destination
+          else
+            'unknown'
+          end
       end
 
       def message_sms_destination
@@ -47,6 +48,8 @@ module Leads
           destination = phone
         elsif !respond_to?(:phone_type) && respond_to?(:phone)
           destination = phone
+        else
+          destination = [self&.phone1, self&.phone2].compact.first
         end
         destination = Message.format_phone(destination)
         return destination
