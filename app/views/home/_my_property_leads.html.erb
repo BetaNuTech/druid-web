@@ -7,31 +7,41 @@
           Property Leads
         </h3>
       </div>
-      <div class="col-md-6" style="padding-top: 22px;">
-        <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id]}}), class: "btn btn-xs btn-primary") %>
-      </div>
+      <% if current_user.property.present? %>
+        <div class="col-md-6" style="padding-top: 22px;">
+          <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id]}}), class: "btn btn-xs btn-primary") %>
+        </div>
+      <% end %>
     </div>
     <table class="table lead_listing">
       <thead></thead>
       <tbody>
-        <% current_user.property.leads.early_pipeline.high_priority.each do |lead| %>
+        <% if current_user.property.present? %>
+          <% current_user.property.leads.early_pipeline.high_priority.each do |lead| %>
+            <tr>
+              <td>
+                <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
+                <% if lead.property.present? %>
+                  for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
+                <% end %>
+                <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+              </td>
+              <td>
+                <%= lead_state_label(lead) %>
+                <%= lead_priority_icon(lead) %>
+                <br>
+                <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
+                <br>
+                <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+                <br>
+                <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
           <tr>
             <td>
-              <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
-              <% if lead.property.present? %>
-                for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
-              <% end %>
-              <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
-            </td>
-            <td>
-              <%= lead_state_label(lead) %>
-              <%= lead_priority_icon(lead) %>
-              <br>
-              <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
-              <br>
-              <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
-              <br>
-              <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
+              <p class="lead">None</p>
             </td>
           </tr>
         <% end %>
