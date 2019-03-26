@@ -3,7 +3,7 @@ module Leads
     extend ActiveSupport::Concern
 
     CLAIMED_STATES = %w{prospect application approved denied movein resident}
-    CLOSED_STATES = %w{ disqualified abandoned resident exresident followup }
+    CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
 
     class_methods do
 
@@ -16,7 +16,7 @@ module Leads
       end
 
       def pending_revisit
-        where(state: 'followup').
+        where(state: 'future').
           where("follow_up_at IS NOT NULL AND follow_up_at <= ?", DateTime.now)
       end
 
@@ -77,7 +77,7 @@ module Leads
         state :exresident
         state :disqualified
         state :abandoned
-        state :followup
+        state :future
 
         after_all_events :after_all_events_callback
 
@@ -138,12 +138,12 @@ module Leads
         end
 
         event :postpone do
-          transitions from: [:open, :prospect, :application], to: :followup,
+          transitions from: [:open, :prospect, :application], to: :future,
             after: -> (*args) {clear_all_tasks; event_clear_user; set_priority_low}
         end
 
         event :revisit do
-          transitions from: :followup, to: :open,
+          transitions from: :future, to: :open,
             after: -> (*args) {unset_follow_up_at}
         end
 

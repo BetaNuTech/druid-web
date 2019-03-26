@@ -491,7 +491,7 @@ RSpec.describe LeadsController, type: :controller do
                 }
       lead.reload
       expect(response).to be_redirect
-      expect(lead.state).to eq('followup')
+      expect(lead.state).to eq('future')
       expect(lead.follow_up_at).to eq(DateTime.new(2018,12,1))
     end
 

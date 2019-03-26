@@ -154,7 +154,7 @@
       :engagement_policy_actions: []
     - :version: 1
       :property_name: null
-      :lead_state: followup
-      :description: Global Engagement Policy for 'followup' Leads
+      :lead_state: future
+      :description: Global Engagement Policy for 'future' Leads
       :active: true
       :engagement_policy_actions: []

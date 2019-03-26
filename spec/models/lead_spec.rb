@@ -178,10 +178,10 @@ RSpec.describe Lead, type: :model do
     end
 
     it "lists valid states" do
-      expect(lead.permitted_states).to eq([:prospect, :disqualified, :followup])
+      expect(lead.permitted_states).to eq([:prospect, :disqualified, :future])
       lead.claim!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_states.sort).to eq([:application, :abandoned, :disqualified, :open, :followup].sort)
+      expect(lead.permitted_states.sort).to eq([:application, :abandoned, :disqualified, :open, :future].sort)
     end
 
     it "lists 'active' leads" do
