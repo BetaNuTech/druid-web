@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Lead, type: :model do
 
+  include_context "users"
+
   let(:source) { create(:lead_source, slug: LeadSource::DEFAULT_SLUG) }
-  let(:property) { create(:property) }
+  let(:property) { agent.property }
   let(:listing) { create(:property_listing, source_id: source.id, property_id: property.id) }
 
   let(:valid_attributes) {
@@ -104,6 +106,13 @@ RSpec.describe Lead, type: :model do
     assert(lead.valid?)
     expect(creator.lead).to eq(lead)
     expect(Lead.last).to eq(lead)
+  end
+
+  it "will create a Lead with the agent assigned" do
+    attrs = valid_attributes.merge({agent: agent})
+    creator = Leads::Creator.new(**attrs)
+    lead = creator.execute
+    expect(lead.user).to eq(agent)
   end
 
   it "can be initialized with an invalid source" do
