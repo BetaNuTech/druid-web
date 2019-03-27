@@ -243,6 +243,8 @@ RSpec.describe LeadsController, type: :controller do
           post :create, params: {lead: valid_attributes}, session: valid_session
           new_lead = Lead.order(created_at: :desc).limit(1).last
           expect(new_lead.user).to eq(agent)
+          expect(new_lead.property).to eq(agent.property)
+          assert(new_lead.prospect?)
         end
       end
     end
