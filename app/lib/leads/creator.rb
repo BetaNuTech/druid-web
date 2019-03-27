@@ -18,7 +18,8 @@ module Leads
       :parser,
       :saved,
       :source,
-      :token
+      :token,
+      :agent
 
     def initialize(data:, agent: nil, token: )
       @lead = Lead.new
@@ -28,6 +29,7 @@ module Leads
       @token = token
       @source = get_source(@token)
       @parser = get_parser(@source)
+      @agent = agent
     end
 
     # Create lead from provided data using detected Source adapter
@@ -52,6 +54,7 @@ module Leads
       parse_result = @parser.new(@data).parse
 
       @lead = Lead.new(parse_result.lead)
+      @lead.user = @agent
       @lead.priority = "urgent"
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source

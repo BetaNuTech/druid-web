@@ -219,6 +219,31 @@ RSpec.describe LeadsController, type: :controller do
             post :create, params: {lead: valid_attributes}, session: valid_session
           }.to change(Lead, :count).by(1)
         end
+
+        it "creates a new Lead" do
+          sign_in corporate
+          post :create, params: {lead: valid_attributes}, session: valid_session
+          new_lead = Lead.order(created_at: :desc).limit(1).last
+          expect(new_lead.user).to eq(corporate)
+        end
+      end
+    end
+
+    describe "as an agent" do
+      context "with valid params" do
+        it "creates a new Lead" do
+          sign_in agent
+          expect {
+            post :create, params: {lead: valid_attributes}, session: valid_session
+          }.to change(Lead, :count).by(1)
+        end
+
+        it "creates a new Lead" do
+          sign_in agent
+          post :create, params: {lead: valid_attributes}, session: valid_session
+          new_lead = Lead.order(created_at: :desc).limit(1).last
+          expect(new_lead.user).to eq(agent)
+        end
       end
     end
 
