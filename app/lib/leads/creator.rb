@@ -81,7 +81,13 @@ module Leads
 
     def assign_property(lead:, property_code: )
       if property_code.present?
-        if (property = Property.find_by_code_and_source(code: property_code, source_id: @lead.source.id)).present?
+        property = Property.find_by_code_and_source(code: property_code, source_id: @lead.source.id)
+        if @lead.source == LeadSource.default
+          # Fail over to finding Property By ID if using the default LeadSource (BlueSky WebApp)
+          # for compatibility when creating a Lead via the Web UI
+          property ||= Property.where(id: property_code).first
+        end
+        if property.present?
           @lead.property_id = property.id
           err_message = nil
         end

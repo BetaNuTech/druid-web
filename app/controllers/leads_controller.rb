@@ -60,6 +60,7 @@ class LeadsController < ApplicationController
 
     respond_to do |format|
       if !@lead.errors.any?
+        @lead.trigger_event(event_name: 'claim', user: current_user) if current_user
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
       else
