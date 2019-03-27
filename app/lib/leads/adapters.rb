@@ -7,7 +7,7 @@ module Leads
     # List valid/enabled adapter classes Here
     ### IMPORTANT: Values in the VALID array correspond directly to
     # the LeadSource record "slug"s
-    SUPPORTED = [ 'Bluesky', 'Zillow', 'Cloudmailin', 'YardiVoyager', 'Costar' ]
+    SUPPORTED = [ 'Bluesky', 'Zillow', 'Cloudmailin', 'YardiVoyager', 'Costar', 'CallCenter']
 
 
     # Does the provided source match a valid Lead Adapter Source
