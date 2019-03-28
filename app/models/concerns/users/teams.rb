@@ -25,11 +25,11 @@ module Users
       end
 
       def team_lead?
-        teamrole.try(:lead?) || false
+        teamrole&.lead?
       end
 
       def team_agent?
-        teamrole.try(:agent?) || false
+        teamrole&.agent?
       end
     end
 

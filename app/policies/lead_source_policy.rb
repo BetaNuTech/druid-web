@@ -45,7 +45,7 @@ class LeadSourcePolicy < ApplicationPolicy
     when ->(u) { u.corporate? }
       LeadSource::ALLOWED_PARAMS
     when ->(u) { u.manager? }
-      LeadSource::ALLOWED_PARAMS
+      []
     when ->(u) { u.property? }
       []
     end

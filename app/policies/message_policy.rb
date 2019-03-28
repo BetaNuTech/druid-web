@@ -1,13 +1,20 @@
 class MessagePolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      skope = scope.display_order
-      return case user
-      when ->(u) { u.admin? }
-        skope
-      else
-        skope.where(user_id: user.id)
-      end
+      skope = scope
+      skope = case user
+        when ->(u) { u.admin? }
+          skope
+        # TODO: the following does not return expected Messages in MessagesController#index
+        #when ->(u) { u.manager? }
+          #skope.includes(user: :properties).
+            #where(user_id: user.id).
+            #or(skope.includes(user: :properties).
+               #where(property_users: {property_id: user.properties.map(&:id)}))
+        else
+          skope.where(user_id: user.id)
+        end
+      return skope.display_order
     end
   end
 
@@ -32,7 +39,7 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def edit?
-    (record.respond_to?(:draft?) ? record.draft? : true ) &&
+    record&.draft? &&
       (is_owner? || property_manager? || user.admin?)
   end
 
@@ -41,11 +48,11 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def destroy?
-    record.draft? && edit?
+    edit?
   end
 
   def deliver?
-    record.draft? && edit?
+    edit?
   end
 
   def mark_read?
@@ -54,12 +61,12 @@ class MessagePolicy < ApplicationPolicy
 
   def same_property?
     record&.messageable&.present? &&
-      user.properties.include?(record.messageable.property)
+      user&.properties&.include?(record.messageable.property)
   end
 
   def property_manager?
     record&.messageable&.property&.present? &&
-      user.property_manager?(record.messageable.property)
+      user&.property_manager?(record.messageable.property)
   end
 
   def allowed_params

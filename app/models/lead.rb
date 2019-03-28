@@ -66,6 +66,7 @@ class Lead < ApplicationRecord
   accepts_nested_attributes_for :preference
   belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id', required: false
   belongs_to :property, required: false
+  has_one :team, through: :property
   belongs_to :user, required: false
   has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
   has_many :scheduled_actions, as: :target, dependent: :destroy
@@ -75,6 +76,10 @@ class Lead < ApplicationRecord
   scope :ordered_by_created, -> {order(created_at: "ASC")}
   scope :is_lead, -> { where(classification: ['lead', nil])}
   scope :high_priority, -> { order(priority: 'desc').limit(5) }
+  scope :for_team, -> (team) {
+      join_sql = "INNER JOIN properties on leads.property_id = properties.id INNER JOIN teams on properties.team_id = teams.id"
+      joins(join_sql).where(teams: {id: team.id})
+  }
 
   ### Validations
   validates :first_name, presence: true

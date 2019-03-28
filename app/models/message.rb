@@ -81,10 +81,12 @@ class Message < ApplicationRecord
       return Lead.find(params[:lead_id])
     elsif messageable_id.present? && messageable_type.present?
       begin
-      klass = Kernel.const_get(messageable_type)
-      if klass.new.respond_to?(:messages)
-        return klass.find(messageable_id)
-      end
+        klass = Kernel.const_get(messageable_type)
+        if klass.new.respond_to?(:messages)
+          return klass.find(messageable_id)
+        else
+          return nil
+        end
       rescue
         raise ActiveRecord::RecordNotFound
       end

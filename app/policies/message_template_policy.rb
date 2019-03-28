@@ -13,7 +13,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
 
   def new?
-    user.admin? || user.user?
+    index?
   end
 
   def create?
@@ -21,7 +21,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
 
   def edit?
-    user.admin? || same_user? || property_manager?
+    user.admin? || is_owner? || ( record.shared? && property_manager? )
   end
 
   def update?
@@ -29,7 +29,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || user.user?
+    index?
   end
 
   def destroy?
@@ -56,19 +56,15 @@ class MessageTemplatePolicy < ApplicationPolicy
     return valid_params
   end
 
-  def same_user?
-    record.user === user
-  end
-
   def property_manager?
-    record.user.present? &&
-    record.user.properties.to_a.any?{|p| user.property_manager?(p)}
+    record&.user&.present? &&
+      record.user.properties.to_a.any?{|p| user.property_manager?(p)}
   end
 
   # Allow admin or MessageTemplate owner to reassign MessageTemplate to another User
   #  but disallow claiming another Agent's MessageTemplate
   def change_user?
-    user.admin? || same_user?
+    user.admin? || is_owner?
   end
 
 end

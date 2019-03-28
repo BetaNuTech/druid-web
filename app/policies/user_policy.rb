@@ -22,7 +22,9 @@ class UserPolicy < ApplicationPolicy
     user === record ||
       (user.admin? && ( user.role >= record.role )) ||
       ( ( user.role >= record.role ) &&
-        ( !record.manager? && property_manager? )
+        ( ( !record.manager? && property_manager? ) ||
+          ( !record.manager? && team_lead? )
+        )
       )
   end
 
@@ -33,7 +35,8 @@ class UserPolicy < ApplicationPolicy
   def show?
     user === record ||
       user.admin? ||
-      property_manager?
+      property_manager? ||
+      team_lead?
   end
 
   def destroy?
@@ -86,6 +89,10 @@ class UserPolicy < ApplicationPolicy
 
   def property_manager?
     record.properties.any?{|rp| user.property_manager?(rp) }
+  end
+
+  def team_lead?
+    user.team_lead? && record.team == user.team
   end
 
   def user_is_a_manager?

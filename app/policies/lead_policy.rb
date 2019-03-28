@@ -7,6 +7,8 @@ class LeadPolicy < ApplicationPolicy
       return case user
         when ->(u) { u.admin? }
           skope
+        when -> (u) { u.team_lead?}
+          skope.for_team(user.team)
         else
           # Belonging to User
           skope.where(user_id: user.id).
@@ -29,7 +31,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || same_user? || same_property?
+    user.admin? || is_owner? || same_property? || team_lead?
   end
 
   def call_log_partial?
@@ -53,7 +55,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.admin? || same_user? || property_manager?
+    user.admin? || is_owner? || property_manager? || team_lead?
   end
 
   def trigger_state_event?
@@ -73,7 +75,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def mark_messages_read?
-    user.admin? || same_user?
+    user.admin? || is_owner?
   end
 
   # Allow event to be issued if valid,
@@ -82,7 +84,8 @@ class LeadPolicy < ApplicationPolicy
   def allow_state_event_by_user?(event_name)
     event = event_name.to_sym
     record.permitted_state_events.include?(event) &&
-      (user.admin? || !record.user.present? || same_user? )
+      (!record.user.present? || is_owner? ||
+       user.admin? || property_manager? || team_lead?)
   end
 
   # Return an array of state events that the User can issue
@@ -90,18 +93,6 @@ class LeadPolicy < ApplicationPolicy
   def permitted_state_events
     record.permitted_state_events.
       select{|e| allow_state_event_by_user?(e) }
-  end
-
-  def same_user?
-    record.user === user
-  end
-
-  def same_property?
-    user.properties.map(&:id).include?(record.property_id)
-  end
-
-  def property_manager?
-    record.property.present? && user.property_manager?(record.property)
   end
 
   def allowed_params
@@ -131,6 +122,6 @@ class LeadPolicy < ApplicationPolicy
   # Allow admin or Lead owner to reassign Lead to another User
   #  but disallow claiming another Agent's Lead
   def change_user?
-    same_user? || user.manager? || user.admin?
+    is_owner? || user.manager? || user.admin?
   end
 end
