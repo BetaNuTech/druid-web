@@ -45,7 +45,7 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def mark_read?
-    user.admin? || same_user
+    user.admin? || is_owner?
   end
 
   def same_property?
