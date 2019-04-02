@@ -2,18 +2,17 @@
   <div class="row">
     <div class="col-md-12">
       <p class="lead">
-        Edit
+        <% if @message.draft? %>
+          Draft
+        <% end %>
         <%= @message_type.name %>
         Message for
         <%= @messageable.name %>
+        <%= link_to('Discard', @message, method: :delete, data: { confirm: 'Discard this message without sending?' }, class: 'btn btn-xs btn-primary' ) if @message.draft? %>
+      </p>
+      <p>
       </p>
       <%= render partial: 'form', locals: { message: @message, message_type: @message_type }  %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <br/>
-      <%= link_to 'Back', url_for(@messageable), class: "btn btn-xs btn-info" %>
     </div>
   </div>
 </div>

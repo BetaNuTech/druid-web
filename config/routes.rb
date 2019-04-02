@@ -85,6 +85,7 @@ Rails.application.routes.draw do
   resources :messages do
     post 'deliver', on: :member
     post 'mark_read', to: "messages#mark_read"
+    get 'body_preview', to: "messages#body_preview"
   end
 
   resources :message_templates

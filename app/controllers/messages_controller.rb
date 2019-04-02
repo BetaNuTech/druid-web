@@ -8,7 +8,7 @@ class MessagesController < ApplicationController
   # GET /messages.json
   def index
     authorize Message
-    @messages = record_scope
+    @messages = record_scope.includes([:messageable, :message_type, :deliveries])
     @messages = @messages.page(params[:page])
   end
 
@@ -16,9 +16,16 @@ class MessagesController < ApplicationController
   # GET /messages/1.json
   def show
     authorize @message
+    Message.mark_read!(@message, current_user) if !@message.read? && policy(@message).mark_read?
     set_messageable
     set_message_type
     set_message_template
+  end
+
+  def body_preview
+    set_message
+    authorize @message
+    render plain: @message.body_for_html_preview, content_type: 'text/html'
   end
 
   # GET /messages/new
@@ -113,6 +120,7 @@ class MessagesController < ApplicationController
     Message.mark_read!(@message, current_user)
     redirect_to messages_path, notice: 'Marked message as read'
   end
+
 
   private
 
