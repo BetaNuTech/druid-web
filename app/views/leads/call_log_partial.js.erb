@@ -1,3 +1,3 @@
-$("#lead_call_log").fadeOut();
-$("#lead_call_log").html('<%= escape_javascript(render(partial: 'call_log', locals: {lead: @lead})) %>')
-$("#lead_call_log").fadeIn();
+$("#lead_call_log_<%= @lead.id %>").fadeOut();
+$("#lead_call_log_<%= @lead.id %>").html('<%= escape_javascript(render(partial: 'call_log', locals: {lead: @lead})) %>')
+$("#lead_call_log_<%= @lead.id %>").fadeIn();
