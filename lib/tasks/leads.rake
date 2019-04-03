@@ -82,6 +82,12 @@ namespace :leads do
 
       puts "Done."
     end
+
+    desc "Check CDR database health"
+    task :db_check => :environment do
+      status = Cdr.check_replication_status
+      puts "=== CDR Replication Check [#{DateTime.now.to_s}]: #{status ? "OK" : "FAILED"}"
+    end
   end
 
   namespace :yardi do
