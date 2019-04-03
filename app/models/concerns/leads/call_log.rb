@@ -4,7 +4,7 @@ module Leads
 
     included do
 
-      CALL_LOG_FREQUENCY = 10 # minutes
+      CALL_LOG_FREQUENCY = 5 # minutes
 
       scope :recent_recordings, -> (start_time=1.week.ago) {
         leads = {}
@@ -40,11 +40,14 @@ module Leads
         if should_update_call_log?
           transaction do
             self.call_log = Cdr.calls_for([phone1, phone2]).
+              to_a.
+              uniq{|l| l.calldate}.
               map{|cdr|
               { id: cdr.id,
                 date: cdr.calldate,
                 src: cdr.src,
                 dst: cdr.dst,
+                cnam: cdr.cnam,
                 disposition: cdr.disposition,
                 recordingfile: cdr.recordingfile,
                 recording_path: cdr.recording_path,
