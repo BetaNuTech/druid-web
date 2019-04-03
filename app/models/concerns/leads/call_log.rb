@@ -4,7 +4,7 @@ module Leads
 
     included do
 
-      CALL_LOG_FREQUENCY = 5 # minutes
+      CALL_LOG_FREQUENCY = 1 # minutes
 
       scope :recent_recordings, -> (start_time=1.week.ago) {
         leads = {}
@@ -30,9 +30,6 @@ module Leads
 
       # Return Hash of cached call information
       def calls
-        #if should_update_call_log?
-          #delay.update_call_log
-        #end
         return JSON.parse(call_log || '[]')
       end
 
