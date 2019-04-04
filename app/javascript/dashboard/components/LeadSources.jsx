@@ -12,7 +12,7 @@ import { axisBottom, axisLeft } from 'd3-axis'
 class LeadSources extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 60, bottom: 120, left: 50, right: 20}
+    this.margin = {top: 60, bottom: 120, left: 65, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
     this.yAxisLabel = this.props.yAxisLabel
@@ -51,12 +51,12 @@ class LeadSources extends React.Component {
     this.openLinkInTab(this.leadSearchLink(d.id))
   }
 
-  handleMouseOver = (d,i) => {
+  handleMouseOver(d,i) {
     select(this)
       .attr("opacity", "0.5")
   }
 
-  handleMouseOut = (d,i) => {
+  handleMouseOut(d,i) {
     select(this)
       .attr("opacity", "1.0")
   }
@@ -197,8 +197,8 @@ class LeadSources extends React.Component {
           .attr("fill", d => colorScale(d.index))
           .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
           .on("mouseup", d => this.handleBarMouseUp(d))
-          .on("mouseover", d => this.handleMouseOver)
-          .on("mouseout", d => this.handleMouseOut)
+          .on("mouseover", this.handleMouseOver)
+          .on("mouseout", this.handleMouseOut)
 
     chart.selectAll("g.bargroup--values").remove()
     bargroups

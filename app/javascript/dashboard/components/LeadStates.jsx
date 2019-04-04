@@ -12,7 +12,7 @@ import { axisBottom, axisLeft} from 'd3-axis'
 class LeadStates extends React.Component {
   constructor(props) {
     super(props)
-    this.margin = {top: 20, bottom: 70, left: 50, right: 20}
+    this.margin = {top: 20, bottom: 70, left: 65, right: 20}
     this.width = +this.props.width - this.margin.left - this.margin.right
     this.height = +this.props.height - this.margin.top - this.margin.bottom
     this.yAxisLabel = this.props.yAxisLabel
