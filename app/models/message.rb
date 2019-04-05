@@ -46,6 +46,9 @@ class Message < ApplicationRecord
   ### Callbacks
   before_validation :set_meta
 
+  ### Delegates
+  delegate :sms?, :email?, to: :message_type, allow_nil: true
+
   ### Class Methods
 
   def self.unread
@@ -124,8 +127,7 @@ class Message < ApplicationRecord
   ### Instance Methods
 
   def read?
-    return true if outgoing?
-    return incoming? && !read_at.nil?
+    return outgoing? || !read_at.nil?
   end
 
   def body_missing?
@@ -163,7 +165,19 @@ class Message < ApplicationRecord
   end
 
   def body_with_layout
-    (message_template || MessageTemplate.new).apply_layout(body)
+    (message_template || MessageTemplate.default(self)).apply_layout(body)
+  end
+
+  def body_for_html_preview
+    formatted_body = body
+    tag_regex = /(<div>|<span>|<p>|<b>|<i>)/
+    body_is_html = formatted_body.match(tag_regex).present?
+    if !body_is_html
+      formatted_body = ActionController::Base.helpers.word_wrap(
+        formatted_body, line_width: 80)
+      formatted_body = "<pre>" + formatted_body + "</pre>"
+    end
+    return ActionController::Base.helpers.sanitize(formatted_body)
   end
 
   def template_data

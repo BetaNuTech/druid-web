@@ -4,9 +4,13 @@
       <div class="row">
         <div class="col-md-6">
         <p class="lead">
+          <% if @message.draft? %>
+            Draft
+          <% end %>
           <%= @message_type.name %>
           Message for
           <%= @messageable.name %>
+          <%= link_to('Discard', @message, method: :delete, data: { confirm: 'Discard this message without sending?' }, class: 'btn btn-xs btn-primary' ) if @message.draft? %>
         </p>
         </div>
       </div>
@@ -14,13 +18,9 @@
       <div class="row">
         <div class="col-md-12">
           <p>
-            <span class="btn btn-xs btn-<%= @message.draft? ? 'default' : 'success' %>">
-              <%= @message.incoming? ? 'Incoming' : 'Outgoing' %>
-            </span>
-            <% if @message.failed? %>
-              <span class="btn btn-xs btn-danger">Delivery Failed</span>
-            <% end %>
-            <b> <%= short_datetime(@message.delivered_at) %> </b>
+            <%= message_delivery_indicator(@message) %>
+            <%= message_type_indicator(@message) %>
+            <%= short_datetime(@message.delivered_at) if @message.delivered_at.present? %>
           </p>
         </div>
       </div>
@@ -50,17 +50,14 @@
             <b>Subject:</b>
             <%= @message.subject %>
           </p>
-          <p>
-            <b>Body</b><br/>
-            <iframe id="message_preview" onload="resizeIframe(this)" srcdoc="<%= @message.body_with_layout %>">
-          </p>
+          <iframe id="message_preview" onload="resizeIframe(this)" src="<%= message_body_preview_path(@message) %>"> </iframe>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-4">
           <%= link_to(  'Edit', edit_message_path(@message), class: "btn btn-primary" ) if policy(@message).edit? %>
-          <%= link_to 'Back', url_for(@message.messageable), class: "btn btn-xs btn-info"%>
+          <%= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn-xs btn-info" if @message.messageable.present? %>
         </div>
       </div>
 

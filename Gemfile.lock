@@ -388,7 +388,7 @@ GEM
     schedulable (0.0.10)
       ice_cube
       rails (>= 4.0.3)
-    scout_apm (2.4.20)
+    scout_apm (2.4.24)
     secure_headers (5.0.5)
       useragent (>= 0.15.0)
     shellany (0.0.1)
@@ -538,4 +538,4 @@ RUBY VERSION
    ruby 2.4.5p335
 
 BUNDLED WITH
-   1.17.1
+   1.17.3

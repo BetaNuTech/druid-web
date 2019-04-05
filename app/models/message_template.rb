@@ -72,6 +72,19 @@ class MessageTemplate < ApplicationRecord
     return skope
   end
 
+  def self.default(message=nil)
+    default_template = MessageTemplate.new(
+      name: 'default'
+    )
+    message_type = message&.message_type || MessageType.new(
+      active: true,
+      html: true,
+      name: 'default'
+    )
+    default_template.message_type = message_type
+    return default_template
+  end
+
   ### Instance Methods
 
   def render(data={})

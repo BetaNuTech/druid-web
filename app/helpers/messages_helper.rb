@@ -26,4 +26,48 @@ module MessagesHelper
     return true if message.nil?
     return message.message_type.has_subject?
   end
+
+  def message_body_preview_content(message, line_width: 60, preview_length: 200)
+    body_text = word_wrap(sanitize(message.body || '', tags: []), line_width: line_width)
+    truncate(body_text, length: preview_length, omission: "\n\n... (continued)")
+  end
+
+  def message_body_preview(message, line_width: 60)
+    content_tag(:pre, class: 'message_body_preview') do
+      message_body_preview_content(message, line_width: line_width)
+    end
+  end
+
+  def message_delivery_indicator(message)
+    if message.failed?
+      delivery_status_class = 'btn-danger'
+      title = 'Delivery Failure'
+    else
+      if message.draft?
+        delivery_status_class = 'btn-default'
+        title = 'Draft'
+      else
+        delivery_status_class = 'btn-success'
+        title = 'Sent'
+      end
+    end
+    container_class = 'btn btn-xs ' + delivery_status_class
+    content_tag(:span, class: container_class, title: title) do
+      message.incoming? ? glyph(:share_alt) : glyph(:send)
+    end
+  end
+
+  def message_type_indicator(message)
+    container_class = "btn btn-xs btn-default"
+    content_tag(:span, class: container_class) do
+      case message
+        when -> (m) { m.sms? }
+          glyph(:phone)
+        when -> (m) { m.email? }
+          glyph(:envelope)
+        else
+          glyph(:envelope)
+      end
+    end
+  end
 end
