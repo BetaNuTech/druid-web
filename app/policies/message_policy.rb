@@ -27,6 +27,10 @@ class MessagePolicy < ApplicationPolicy
     is_owner? || user.admin? || property_manager?
   end
 
+  def body_preview?
+    show?
+  end
+
   def edit?
     (record.respond_to?(:draft?) ? record.draft? : true ) &&
       (is_owner? || property_manager? || user.admin?)
@@ -54,7 +58,7 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def property_manager?
-    record&.messageable&.present? &&
+    record&.messageable&.property&.present? &&
       user.property_manager?(record.messageable.property)
   end
 

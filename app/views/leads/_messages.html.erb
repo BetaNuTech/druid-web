@@ -26,9 +26,8 @@
         <% if lead.messages.empty? %>
           <p class="lead">None</p>
         <% end %>
-        <table class="table">
+        <table class="table message_list">
           <thead>
-            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -36,39 +35,45 @@
           </thead>
           <tbody>
             <% lead.messages.order("updated_at DESC").each do |message| %>
-              <tr class="<%= message.read? ? '' : 'message_unread' %>">
+              <% next unless policy(message).show? %>
+              <tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
                 <td>
                   <span class="text-nowrap">
                     <% if message.draft? %>
+                      <%= link_to(glyph(:edit), edit_message_path(message), class: 'btn btn-xs btn-primary') if policy(message).edit? %>
+                      <%= message_type_indicator(message) %>
                       <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn-sm btn-primary" }) %>
                     <% else %>
                       <span class="dashboard_item_date">
+                        <%= message_delivery_indicator(message) %>
+                        <%= message_type_indicator(message) %>
                         <%= short_datetime(message.delivered_at || message.updated_at) %>
                       </span>
                     <% end %>
                   </span>
                 </td>
                 <td>
-                  <span class="btn btn-xs btn-<%= message.draft? ? 'default' : 'success' %>">
-                    <%= message.incoming? ? 'Incoming' : 'Outgoing' %>
-                  </span>
-                  <% if message.failed? %>
-                    <span class="btn btn-xs btn-danger">Delivery Failed</span>
+                  <%= link_to(message_path(message)) do %>
+                    <span class="text-nowrap">
+                      <%= message.subject %>
+                    </span>
                   <% end %>
                 </td>
-                <td><span class="text-nowrap"><%= message.subject %></span></td>
-                <td>
-                  <%= truncate(sanitize(message.body || '', tags: []), length: Message::PREVIEW_LENGTH, omission: '... (continued)') %>
-                </td>
-                <td class="text-nowrap">
+                <td class="message_body_preview">
                   <% if message.draft? %>
-                    <%= link_to(glyph(:edit), edit_message_path(message)) if policy(message).edit? %>
-                    <%= link_to(message, method: :delete, data: { confirm: 'Are you sure?' } ) do %>
-                      <%= glyph(:delete) %>
-                    <% end if policy(message).destroy? %>
+                    <%= link_to(edit_message_path(message)) do %>
+                      <%= message_body_preview(message) %>
+                    <% end %>
                   <% else %>
-                    <%= link_to(glyph(:show), message_path(message)) if policy(message).show? %>
+                    <%= link_to(message_path(message)) do %>
+                      <%= message_body_preview(message) %>
+                    <% end %>
                   <% end %>
+                </td>
+                <td>
+                  <%= link_to(message, method: :delete, data: { confirm: 'Discard this message without sending?' } ) do %>
+                    <%= glyph(:delete) %>
+                  <% end if policy(message).destroy? %>
                 </td>
               </tr>
             <% end %>
