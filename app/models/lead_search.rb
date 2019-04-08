@@ -344,7 +344,7 @@ class LeadSearch
 
   def property_values
     property_ids = @options[:property_ids]
-    properties = Property.active.where(id: property_ids)
+    properties = Property.active.where(id: property_ids).order(name: :asc)
     return properties.map{|p| {label: p.name, value: p.id}}
   end
 
@@ -357,7 +357,7 @@ class LeadSearch
     else
       properties = Property.active
     end
-    return properties.map{|p| {label: p.name, value: p.id}}
+    return properties.order(name: :asc).map{|p| {label: p.name, value: p.id}}
   end
 
   def agent_options

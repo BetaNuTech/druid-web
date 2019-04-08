@@ -198,7 +198,7 @@ export function resetFilters(search) {
 function updateUrl(url) {
   let new_url = url.replace("search.json","search")
   history.popState();
-  history.replaceState({}, "Search", new_url)
+  history.pushState({}, "Search", new_url)
 }
 
 function urlParamsFromSearch(search) {
