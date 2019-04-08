@@ -79,7 +79,7 @@ module Messages
     end
 
     def create_delivery_record(message)
-      return MessageDelivery.create(
+      delivery = MessageDelivery.create(
         message: message,
         message_type: message.message_type,
         attempt: 1,
@@ -87,6 +87,8 @@ module Messages
         status: MessageDelivery::SUCCESS,
         delivered_at: message.delivered_at
       )
+      message.handle_message_delivery(delivery)
+      return delivery
     end
 
     def get_source(token)

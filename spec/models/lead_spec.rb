@@ -496,9 +496,9 @@ RSpec.describe Lead, type: :model do
                                property_phone property_school_district property_application_url
                                html_email_header_image email_bluestone_logo email_housing_logo
                                email_unsubscribe_link }
-      attrs = lead.message_template_data
-      assert attrs.is_a?(Hash)
-      expect(attrs.keys).to eq(expected_data_keys)
+                               attrs = lead.message_template_data
+                               assert attrs.is_a?(Hash)
+                               expect(attrs.keys).to eq(expected_data_keys)
     end
 
     it "returns the preferred message_email_destination" do
@@ -576,5 +576,106 @@ RSpec.describe Lead, type: :model do
       lead.optout!
       assert(lead.optout?)
     end
+
+    describe "handling message delivery" do
+      include_context "messaging"
+      include_context "users"
+
+      let(:lead) { create(:lead, user: agent) }
+      let(:outgoing_email_message) {
+        message = Message.new_message(
+          from: agent, to: lead, message_type: email_message_type,
+          subject: 'Test EMAIL Message1', body: 'This is a test EMAIL message')
+        message.save!; message }
+      let(:outgoing_sms_message) {
+        message = Message.new_message(
+          from: agent, to: lead, message_type: sms_message_type,
+          subject: 'Test SMS Message1', body: 'This is a test SMS message')
+        message.save!; message }
+      let(:incoming_email_message) {
+        message = Message.create!(
+          messageable: lead,
+          user: agent,
+          state: 'sent',
+          senderid: lead.email,
+          recipientid: 'incomingemailaddress@example.com',
+          subject: 'Test Incoming EMAIL Message1',
+          body: 'Test incoming EMAIL message',
+          delivered_at: DateTime.now,
+          message_type: email_message_type
+        )
+        delivery = MessageDelivery.create(
+          message: message,
+          message_type: message.message_type,
+          attempt: 1,
+          attempted_at: message.delivered_at,
+          status: "OK",
+          delivered_at: message.delivered_at
+        )
+        message.handle_message_delivery(delivery)
+        message.reload
+        message
+      }
+
+      let(:incoming_sms_message) {
+        message = Message.create!(
+          messageable: lead,
+          user: agent,
+          state: 'sent',
+          senderid: lead.phone1,
+          recipientid: 'incomingsms',
+          subject: 'Test Incoming SMS Message1',
+          body: 'Test incoming SMS message',
+          delivered_at: DateTime.now,
+          message_type: sms_message_type
+        )
+        delivery = MessageDelivery.create(
+          message: message,
+          message_type: message.message_type,
+          attempt: 1,
+          attempted_at: message.delivered_at,
+          status: "OK",
+          delivered_at: message.delivered_at
+        )
+        message.handle_message_delivery(delivery)
+        message.reload
+        message
+      }
+
+      it "should update last_contact upon delivery of an email message" do
+        last_contact = lead.last_comm
+        outgoing_email_message.deliver!
+        lead.reload
+        outgoing_email_message.reload
+        expect(lead.last_comm).to_not eq(last_contact)
+        expect(lead.last_comm).to eq(outgoing_email_message.delivered_at)
+      end
+
+      it "should update last_contact upon delivery of an sms message" do
+        last_contact = lead.last_comm
+        outgoing_sms_message.deliver!
+        lead.reload
+        expect(lead.last_comm).to_not eq(last_contact)
+        expect(lead.last_comm).to eq(outgoing_sms_message.delivered_at)
+      end
+
+      it "should update last_contact upon receipt of an email message" do
+        last_contact = lead.last_comm
+        incoming_email_message
+        lead.reload
+        expect(lead.last_comm).to_not eq(last_contact)
+        expect(lead.last_comm).to eq(incoming_email_message.delivered_at)
+      end
+
+      it "should update last_contact upon receipt of an sms message" do
+        last_contact = lead.last_comm
+        incoming_sms_message
+        lead.reload
+        expect(lead.last_comm).to_not eq(last_contact)
+        expect(lead.last_comm).to eq(incoming_sms_message.delivered_at)
+      end
+
+    end
+
   end
 end

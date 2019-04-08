@@ -279,4 +279,9 @@ class Message < ApplicationRecord
     html? && !( body || '' ).match(/<html>/)
   end
 
+  def handle_message_delivery(delivery)
+    messageable&.handle_message_delivery(delivery)
+    return true
+  end
+
 end
