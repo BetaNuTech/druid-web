@@ -7,13 +7,9 @@
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-
-    <% if @webpack %>
-      <meta name="turbolinks-visit-control" content="reload">
-    <% end %>
   </head>
 
-  <body>
+  <body<%- if @webpack %> data-no-turbolink data-no-transition-cache<% end %>>
     <%= render partial: 'shared/trackjs' unless Rails.env.test? %>
     <%= render partial: 'shared/navbar' %>
     <%= render partial: 'properties/header' %>
