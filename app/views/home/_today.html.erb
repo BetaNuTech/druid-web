@@ -26,7 +26,7 @@
             <%= @limit_leads %> of
             <%= @unclaimed_leads.count %> Unclaimed Leads
             <span>
-              <%= link_to("Show All", root_path(limit_leads: 999), class: "btn btn-xs btn-primary") %>
+              <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn-xs btn-primary") %>
             </span>
           <% else %>
             <%= @unclaimed_leads.count %> Unclaimed Leads
