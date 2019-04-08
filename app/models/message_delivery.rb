@@ -63,10 +63,10 @@ class MessageDelivery < ApplicationRecord
       sender = Messages::Sender.new(self)
       sender.deliver
       reload
+      message.handle_message_delivery(self) if delivered?
       return delivered?
     end
   end
-
 
   def delivered?
     return delivered_at.present?

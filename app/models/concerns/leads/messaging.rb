@@ -108,6 +108,13 @@ module Leads
         )
       end
 
+      def handle_message_delivery(message_delivery)
+        if message_delivery&.delivered_at.present?
+          self.last_comm = message_delivery.delivered_at
+          save
+        end
+      end
+
     end
   end
 end
