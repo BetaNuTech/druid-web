@@ -103,6 +103,13 @@ RSpec.describe LeadsController, type: :controller do
 
     include_examples "authenticated action", {params: {id: 0 }, name: 'show'}
 
+    describe "when unauthenticated" do
+      it "should redirect to login" do
+        get :show, params: {id: lead.to_param}
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
     describe "as an corporate" do
       it "returns a success response" do
         sign_in corporate
@@ -137,7 +144,7 @@ RSpec.describe LeadsController, type: :controller do
       it "denies access" do
         sign_in unroled_user
         get :show, params: {id: lead.to_param}
-        expect(response).to be_redirect
+        expect(response).to redirect_to(root_path)
       end
     end
 
