@@ -10,6 +10,7 @@ production_app=druid-prod
 case $deploy_env in
 staging)
   echo "*** Deploying to Staging"
+  last_tag=$(git rev-list -n 1 staging-current)
   tag="staging-$date_str"
   echo "  - Creating tag $tag"
   git tag -f $tag
@@ -20,9 +21,13 @@ staging)
   heroku run rake db:migrate --app $staging_app
   git tag -f staging-current
   git push origin --tags -f
+  echo " - Deploy Complete"
+  echo " - Changelog"
+  git log $last_tag.. --oneline
   ;;
 prod)
   echo "** Deploying to Production"
+  last_tag=$(git rev-list -n 1 prod-current)
   tag="prod-$date_str"
   echo "  - Creating tag $tag"
   git tag -f $tag
@@ -33,6 +38,9 @@ prod)
   heroku run rake db:migrate --app $production_app
   git tag -f prod-current
   git push origin --tags -f
+  echo " - Deploy Complete"
+  echo " - Changelog"
+  git log $last_tag.. --oneline
   ;;
 *)
   echo "*** Environment unknown or not provided. Cowardly exiting."
