@@ -14,6 +14,7 @@
 class MessageType < ApplicationRecord
   ### Class Concerns/Extensions
   include Seeds::Seedable
+  audited
 
   ### Constants
   SMS_TYPE_NAME = 'SMS'

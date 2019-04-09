@@ -24,6 +24,7 @@
 class Message < ApplicationRecord
   ### Class Concerns/Extensions
   include Messages::StateMachine
+  audited
 
   ### Constants
   ALLOWED_PARAMS = [:message_template_id, :subject, :body, :message_type_id]

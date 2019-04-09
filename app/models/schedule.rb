@@ -20,6 +20,7 @@
 #
 
 class Schedule < Schedulable::Model::Schedule
+  audited
   CUSTOM_PARAMS = [:duration, :end_time]
   ALLOWED_PARAMS = Schedulable::ScheduleSupport.param_names + CUSTOM_PARAMS
 

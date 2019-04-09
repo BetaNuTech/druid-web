@@ -14,6 +14,7 @@
 
 class LeadAction < ApplicationRecord
   ### class concerns/extensions
+  audited
   include Seeds::Seedable
 
   ### Constants

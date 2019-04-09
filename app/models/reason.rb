@@ -12,6 +12,7 @@
 
 class Reason < ApplicationRecord
   ### class concerns/extensions
+  audited
   include Seeds::Seedable
 
   ### Constants

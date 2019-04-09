@@ -10,6 +10,7 @@
 #
 
 class Team < ApplicationRecord
+  audited
   ### Constants
   include Teams::TeamUsers
   ALLOWED_PARAMS = [:name, :description]

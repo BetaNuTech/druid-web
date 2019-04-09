@@ -21,6 +21,7 @@
 
 class ScheduledAction < ApplicationRecord
   ### Class Concerns/Extensions
+  audited
   acts_as_schedulable :schedule
   include ScheduledActions::Schedule
   include ScheduledActions::EngagementPolicy

@@ -17,6 +17,7 @@ class MessageTemplate < ApplicationRecord
   require 'premailer'
 
   ### Class Concerns/Extensions
+  audited
   include Seeds::Seedable
 
   class Rendered

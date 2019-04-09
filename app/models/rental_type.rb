@@ -10,6 +10,7 @@
 
 class RentalType < ApplicationRecord
   ### Class Concerns/Extensions
+  audited
 
   ### Constants
 
