@@ -18,6 +18,7 @@
 
 class UnitType < ApplicationRecord
   ### Class Concerns/Extensions
+  audited
 
   ### Constants
   ALLOWED_PARAMS = [:id, :name, :description, :property_id, :bathrooms, :bedrooms, :market_rent, :sqft, :active]
