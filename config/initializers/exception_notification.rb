@@ -7,18 +7,18 @@ exception_host = ENV.fetch('APPLICATION_HOST', 'unknown')
 
 if exception_recipients.empty?
   msg = " *** EXCEPTION_RECIPIENTS envvar is not set. Error notification is disabled!"
-  Rails.logger.warn msg
+  Rails.logger.error msg
   puts msg
 elsif ErrorNotification.enabled?
   Rails.application.config.middleware.use ExceptionNotification::Rack,
     :email => {
-    :email_prefix => "[BlueSky System Messages (#{exception_host})]",
-      :sender_address => %{"BlueSky Exception Notifier (#{exception_host})" <bluesky@bluestone-prop.com>},
+    :email_prefix => "Exception raised on #{exception_host}",
+      :sender_address => %{"BlueSky Errors (#{exception_host})" <bluesky@bluestone-prop.com>},
       :exception_recipients => exception_recipients,
       :sections => %w{request environment backtrace}
   }
 else
   msg = " *** Exception notification is disabled. Set envvar EXCEPTION_NOTIFIER_ENABLED=true"
-  Rails.logger.warn msg
+  Rails.logger.error msg
   puts msg
 end
