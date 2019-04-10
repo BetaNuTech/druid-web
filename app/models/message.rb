@@ -43,6 +43,13 @@ class Message < ApplicationRecord
 
   ### Scopes
   scope :for_thread, ->(threadid) { where(threadid: threadid)}
+  scope :read, ->() { where.not(read_at: nil)}
+  scope :unread, ->() { where(read_at: nil)}
+  scope :display_order, ->() {
+    order("CASE messages.state='draft' WHEN true THEN 0 ELSE 1 END,
+          CASE messages.read_at IS NULL WHEN true THEN 0 ELSE 1 END,
+          messages.updated_at DESC")
+  }
 
   ### Callbacks
   before_validation :set_meta
@@ -51,11 +58,6 @@ class Message < ApplicationRecord
   delegate :sms?, :email?, to: :message_type, allow_nil: true
 
   ### Class Methods
-
-  def self.unread
-    where(read_at: nil).
-      select{|r| r.incoming?}
-  end
 
   # Mark collection as read by user
   def self.mark_read!(collection,user=nil)
@@ -128,7 +130,7 @@ class Message < ApplicationRecord
   ### Instance Methods
 
   def read?
-    return outgoing? || !read_at.nil?
+    return !read_at.nil?
   end
 
   def body_missing?
