@@ -46,9 +46,9 @@ class Message < ApplicationRecord
   scope :read, ->() { where.not(read_at: nil)}
   scope :unread, ->() { where(read_at: nil)}
   scope :display_order, ->() {
-    order("CASE messages.state='draft' WHEN true THEN 0 ELSE 1 END,
+    order(Arel.sql("CASE messages.state='draft' WHEN true THEN 0 ELSE 1 END,
           CASE messages.read_at IS NULL WHEN true THEN 0 ELSE 1 END,
-          messages.updated_at DESC")
+          messages.updated_at DESC"))
   }
 
   ### Callbacks
