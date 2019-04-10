@@ -28,7 +28,7 @@ module MessagesHelper
   end
 
   def message_body_preview_content(message, line_width: 60, preview_length: 200)
-    body_text = word_wrap(sanitize(message.body || '', tags: []), line_width: line_width)
+    body_text = word_wrap(strip_tags(message.body || ''), line_width: line_width).gsub('&amp;', '&')
     truncate(body_text, length: preview_length, omission: "\n\n... (continued)")
   end
 
