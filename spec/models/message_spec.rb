@@ -292,5 +292,28 @@ RSpec.describe Message, type: :model do
       expect(Message.where(read_at: nil).count).to eq(messages.count - 1)
     end
 
+    describe "scope" do
+      let(:read_messages) {
+        read_messages = messages[0..1]
+        read_messages.each{|m| m.read_at = DateTime.now; m.save}
+        read_messages
+      }
+      let(:unread_messages) {
+        unread_messages = messages[2..4]
+        unread_messages.each{|m| m.read_at = nil; m.save}
+        unread_messages
+      }
+
+      it "should return read messages" do
+        read_messages
+        expect(Message.read).to eq(read_messages)
+      end
+
+      it "should return unread messages" do
+        read_messages
+        expect(Message.unread).to eq(unread_messages)
+      end
+    end
+
   end
 end

@@ -208,6 +208,7 @@ GLYPHS = {
   'send' => ['send', 'glyphicon glyphicon-send'],
   'share' => ['share', 'glyphicon glyphicon-share'],
   'share-alt' => ['share-alt', 'glyphicon glyphicon-share-alt'],
+  'share-alt-left' => ['share-alt-left', 'glyphicon glyphicon-share-alt-left'],
   'shopping-cart' => ['shopping-cart', 'glyphicon glyphicon-shopping-cart'],
   'show' => ['Show', 'glyphicon glyphicon-eye-open'],
   'signal' => ['signal', 'glyphicon glyphicon-signal'],

@@ -1,7 +1,7 @@
 class MessagePolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      skope = scope.order("created_at DESC")
+      skope = scope.display_order
       return case user
       when ->(u) { u.admin? }
         skope
