@@ -53,7 +53,7 @@ module MessagesHelper
     end
     container_class = 'btn btn-xs ' + delivery_status_class
     content_tag(:span, class: container_class, title: title) do
-      message.incoming? ? glyph(:share_alt) : glyph(:send)
+      message.incoming? ? glyph(:share_alt_left) : glyph(:send)
     end
   end
 
