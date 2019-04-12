@@ -1,4 +1,14 @@
-#!/bin/bash
-[ -e .env ] && source .env
-echo "S3 Bucket Usage for $CDRDB_S3_BUCKET"
-aws s3api list-objects --output json --query "{size: sum(Contents[].Size), records: length(Contents[])}" --bucket $CDRDB_S3_BUCKET --profile $CDRDB_AWSCLI_PROFILE
+#!/usr/bin/env ruby
+
+require 'json'
+
+cli_command = <<-EOL
+[ -e .env ] && source .env; aws s3api list-objects --output json --query "{size: sum(Contents[].Size), records: length(Contents[])}" --bucket $CDRDB_S3_BUCKET --profile $CDRDB_AWSCLI_PROFILE
+EOL
+
+out = `#{ cli_command }`
+
+data = JSON.parse(out)
+data["size_mb"] = (data["size"].to_f/1024.0/1024.0).round(2)
+
+puts "Records #{data['records']}\nTotal(MB) #{data['size_mb']}"
