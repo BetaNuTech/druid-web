@@ -7,7 +7,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin?
+    user.admin? || user.user?
   end
 
   def new?
@@ -27,7 +27,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || user.property?
+    index?
   end
 
   def destroy?

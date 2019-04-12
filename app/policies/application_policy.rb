@@ -1,5 +1,5 @@
 class ApplicationPolicy
-  
+
   class Scope
     attr_reader :user, :scope
 
@@ -18,7 +18,19 @@ class ApplicationPolicy
   end
 
   def is_owner?
-    record.user == user
+    record.user === user
   end
 
+  def team_lead?
+    user.team_lead? &&
+      user.team&.properties&.map(&:id)&.include?(record&.property_id)
+  end
+
+  def same_property?
+    user&.properties.map(&:id)&.include?(record&.property_id)
+  end
+
+  def property_manager?
+    record&.property&.present? && user.property_manager?(record.property)
+  end
 end

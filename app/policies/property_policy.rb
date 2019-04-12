@@ -8,6 +8,8 @@ class PropertyPolicy < ApplicationPolicy
         skope
       when ->(u) { u.manager? }
         skope
+      when ->(u) { u.team_lead? }
+        skope
       else
         skope.where(id: user.properties.map(&:id))
       end
@@ -47,7 +49,11 @@ class PropertyPolicy < ApplicationPolicy
   end
 
   def same_property?
-    user.property_manager?(record) || user.property_agent?(record)
+    user.property_manager?(record) || user.property_agent?(record) || team_lead?
+  end
+
+  def team_lead?
+    user.team_lead? && record.team == user.team
   end
 
   def allowed_params
