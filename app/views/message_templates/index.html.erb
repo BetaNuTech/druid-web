@@ -20,6 +20,7 @@
             <th>Type</th>
             <th>Name</th>
             <th>Owner</th>
+            <th>Visibility</th>
             <th>Actions</th>
           </thead>
           <tbody>
@@ -27,7 +28,8 @@
               <tr>
                 <td><%= message_template.message_type.name %></td>
                 <td><%= message_template.name %></td>
-                <td><%= message_template.user.present? ? message_template.user.name : 'Shared' %></td>
+                <td><%= message_template.user&.name || 'System' %></td>
+                <td><%= message_template.shared? ? 'Shared' : 'Private' %></td>
                 <td>
                   <%= link_to message_template do %><%= glyph(:show) %><% end if policy(message_template).show? %>&nbsp;
                   <%= link_to edit_message_template_path(message_template) do %><%= glyph(:edit) %><% end if policy(message_template).edit? %>&nbsp;

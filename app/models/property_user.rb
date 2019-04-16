@@ -28,6 +28,10 @@ class PropertyUser < ApplicationRecord
   validates :role, presence: true
   validates :user_id, uniqueness: { scope: :property_id }
 
+  ### Scopes
+  scope :management_assignments, -> { where(role: MANAGER_ROLE)}
+  scope :agent_assignments, -> { where(role: AGENT_ROLE)}
+
   ### Public methods
 
   def agent?

@@ -20,7 +20,7 @@
         <div class="col-md-12">
           <p>
             <strong>Visibility:</strong>
-            <%= @message_template.user.present? ? 'Personal' : 'Everyone' %>
+            <%= @message_template.shared? ? 'Shared' : 'Private' %>
           </p>
         </div>
       </div>
