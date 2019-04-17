@@ -2,6 +2,11 @@ module Leads
   module EngagementPolicy
     extend ActiveSupport::Concern
 
+    APPLICATION_EMAIL_NAME_WALKIN = 'Invite to Online Application - Walkin - HTML'
+    APPLICATION_EMAIL_NAME_ONLINE = 'Invite to Online Application - Online Lead - HTML'
+    APPLICATION_COMMENT_ACTION_NAME = 'Email Rental Application'
+    APPLICATION_COMMENT_REASON_NAME = 'Pipeline Event'
+
     included do
       after_create :create_scheduled_actions
       after_save :ensure_scheduled_action_ownership
@@ -21,22 +26,23 @@ module Leads
       end
 
       def send_rental_application
-        if walk_in?
-          message_template_name = 'Invite to Online Application - Walkin - HTML'
-        else
-          message_template_name = 'Invite to Online Application - Online Lead - HTML'
-        end
+        #if walk_in?
+          #message_template_name = APPLICATION_EMAIL_NAME_WALKIN
+        #else
+          message_template_name = APPLICATION_EMAIL_NAME_ONLINE
+        #end
 
         message_template = MessageTemplate.where(name: message_template_name).first
         errors = {errors: []}
 
-        if !optout? && message_template && agent
+        if message_template && agent
           message = Message.new_message(
             from: agent,
             to: self,
             message_type: MessageType.email,
             message_template: message_template,
           )
+          message.save
           message.deliver!
           message.reload
           comment_content = "SENT: #{message_template_name}"
@@ -46,9 +52,6 @@ module Leads
           error_message = "Lead Pipeline: Could not send application to Lead[#{self.id}]"
           errors[:errors] << error_message
           error = StandardError.new(error_message)
-          if optout?
-            errors[:errors] << "Rental application was not emailed to Lead[#{id}] due to opt-out."
-          end
           if message_template.nil?
             errors[:errors] << "Missing Message Template: '#{message_template_name}'"
           end
@@ -65,9 +68,9 @@ module Leads
       end
 
       def create_rental_application_comment(content:, agent:)
-        note_lead_action = LeadAction.where(name: 'Email Rental Application').first
-        note_reason = Reason.where(name: 'Pipeline Event').first
-        note = Note.create(
+        note_lead_action = LeadAction.where(name: APPLICATION_COMMENT_ACTION_NAME).first
+        note_reason = Reason.where(name: APPLICATION_COMMENT_REASON_NAME).first
+        note = Note.create!(
           user: agent,
           lead_action: note_lead_action,
           notable: self,

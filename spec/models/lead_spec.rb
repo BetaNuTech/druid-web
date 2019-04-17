@@ -42,6 +42,9 @@ require 'rails_helper'
 RSpec.describe Lead, type: :model do
   include_context "users"
   include_context "engagement_policy"
+  include_context "messaging"
+  include_context "engagement_policy"
+  include_context "team_members"
 
   it "can be initialized" do
     lead = build(:lead)
@@ -282,8 +285,6 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "scheduled actions" do
-      include_context "engagement_policy"
-      include_context "team_members"
 
       before(:each) do
         seed_engagement_policy
@@ -548,8 +549,8 @@ RSpec.describe Lead, type: :model do
       lead.phone2 = "555-555-5512"
       lead.phone1_type = 'Home'
       lead.phone2_type = 'Cell'
-      sms_message_type = create(:sms_message_type)
-      email_message_type = create(:email_message_type)
+      sms_message_type = MessageType.sms || create(:sms_message_type)
+      email_message_type = MessageType.email || create(:email_message_type)
       expect(lead.message_recipientid(message_type: sms_message_type)).to eq(Message.format_phone(lead.phone2))
       expect(lead.message_recipientid(message_type: email_message_type)).to eq(lead.email)
     end
@@ -578,8 +579,6 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "handling message delivery" do
-      include_context "messaging"
-      include_context "users"
 
       let(:lead) { create(:lead, user: agent) }
       let(:outgoing_email_message) {
@@ -675,6 +674,88 @@ RSpec.describe Lead, type: :model do
         expect(lead.last_comm).to eq(incoming_sms_message.delivered_at)
       end
 
+    end
+
+    describe "transitioning to the application state" do
+      let(:application_email_walkin) {
+        MessageTemplate.create(
+          name: Lead::APPLICATION_EMAIL_NAME_WALKIN,
+          subject: 'Walkin Rental Application',
+          body: 'Walkin Rental Application',
+          message_type: email_message_type,
+        )
+      }
+      let(:application_email_online) {
+        MessageTemplate.create(
+          name: Lead::APPLICATION_EMAIL_NAME_ONLINE,
+          subject: 'Walkin Rental Application',
+          body: 'Walkin Rental Application',
+          message_type: email_message_type
+        )
+      }
+
+      let(:email_lead_action) { create(:lead_action, name: Lead::APPLICATION_COMMENT_ACTION_NAME)}
+      let(:email_lead_reason) { create(:reason, name: Lead::APPLICATION_COMMENT_REASON_NAME)}
+
+      let(:lead) { create(:lead, user: agent, property: agent.property)}
+
+      before(:each) do
+        email_lead_action
+        email_lead_reason
+        application_email_walkin
+        application_email_online
+        lead.state = 'prospect'
+        lead.save!
+      end
+
+      it "sends a rental application" do
+        message_count = lead.messages.count
+        comment_count = lead.comments.count
+        lead.trigger_event(event_name: :apply, user: agent)
+        lead.save!
+        lead.reload
+        latest_message = lead.messages.order(created_at: :desc).first
+        first_comment = lead.comments.order(created_at: :asc).first
+        expect(lead.messages.count).to eq(message_count + 1)
+        expect(latest_message).to eq(lead.messages.order(created_at: :desc).first)
+        expect(latest_message.subject).to eq(application_email_online.subject)
+        expect(lead.comments.count).to eq(comment_count + 2)
+        expect(first_comment.content).to eq("SENT: #{application_email_online.name}")
+      end
+
+      it "does not send a rental application if the template is missing" do
+        template_name = application_email_online.name
+        application_email_online.destroy
+        application_email_walkin.destroy
+        message_count = lead.messages.count
+        comment_count = lead.comments.count
+        lead.trigger_event(event_name: :apply, user: agent)
+        lead.save!
+        lead.reload
+        latest_message = lead.messages.order(created_at: :desc).first
+        first_comment = lead.comments.order(created_at: :asc).first
+        expect(lead.messages.count).to eq(message_count)
+        expect(lead.comments.count).to eq(comment_count + 2)
+        expect(first_comment.content).to match("NOT SENT: #{template_name}")
+        expect(first_comment.content).to match("Missing Message Template")
+      end
+
+      it "does not send a rental application of there is no agent" do
+        template_name = application_email_online.name
+        lead.user = nil
+        lead.save!
+        message_count = lead.messages.count
+        comment_count = lead.comments.count
+        lead.trigger_event(event_name: :apply, user: agent)
+        lead.save!
+        lead.reload
+        latest_message = lead.messages.order(created_at: :desc).first
+        first_comment = lead.comments.order(created_at: :asc).first
+        expect(lead.messages.count).to eq(message_count)
+        expect(lead.comments.count).to eq(comment_count + 2)
+        expect(first_comment.content).to match("NOT SENT: #{template_name}")
+        expect(first_comment.content).to match("Lead has no agent")
+      end
     end
 
   end
