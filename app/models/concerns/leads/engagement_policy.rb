@@ -26,11 +26,11 @@ module Leads
       end
 
       def send_rental_application
-        if walk_in?
-          message_template_name = APPLICATION_EMAIL_NAME_WALKIN
-        else
+        #if walk_in?
+          #message_template_name = APPLICATION_EMAIL_NAME_WALKIN
+        #else
           message_template_name = APPLICATION_EMAIL_NAME_ONLINE
-        end
+        #end
 
         message_template = MessageTemplate.where(name: message_template_name).first
         errors = {errors: []}
@@ -52,9 +52,6 @@ module Leads
           error_message = "Lead Pipeline: Could not send application to Lead[#{self.id}]"
           errors[:errors] << error_message
           error = StandardError.new(error_message)
-          if optout?
-            errors[:errors] << "Rental application was not emailed to Lead[#{id}] due to opt-out."
-          end
           if message_template.nil?
             errors[:errors] << "Missing Message Template: '#{message_template_name}'"
           end
