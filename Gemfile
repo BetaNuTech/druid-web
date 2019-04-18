@@ -53,7 +53,6 @@ gem 'delayed_job_web', "~> 1.4"
 
 group :development, :test do
   gem 'pry-doc', '~> 0.13'
-  gem 'pry-stack_explorer', '~> 0.4'
   gem 'pry-byebug', '~> 3.5'
   gem 'byebug', '~> 9.1', platforms: [:mri, :mingw, :x64_mingw]
   gem 'bundler-audit', "~> 0.6"

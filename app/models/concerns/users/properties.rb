@@ -27,6 +27,16 @@ module Users
           first&.manager?
       end
 
+      def managed_properties
+        property_ids = assignments.management_assignments.map(&:property_id)
+        return Property.where(id: property_ids)
+      end
+
+      def subordinates
+        return User.includes(:assignments, :profile).
+          where(property_users: {property: managed_properties})
+      end
+
     end
   end
 end

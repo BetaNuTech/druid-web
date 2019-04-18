@@ -10,6 +10,7 @@
 #  body            :text             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  shared          :boolean          default(TRUE)
 #
 
 class MessageTemplate < ApplicationRecord
@@ -46,7 +47,7 @@ class MessageTemplate < ApplicationRecord
   end
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :message_type_id, :user_id, :name, :subject, :body]
+  ALLOWED_PARAMS = [:id, :message_type_id, :user_id, :shared, :name, :subject, :body]
 
   ### Associations
   belongs_to :user, optional: true
@@ -152,10 +153,6 @@ class MessageTemplate < ApplicationRecord
   def body_preview
     content = body
     Premailer.new(ERB.new(message_template_layout).result(binding), with_html_string: true).to_inline_css
-  end
-
-  def shared?
-    return !user_id.present?
   end
 
   def html?

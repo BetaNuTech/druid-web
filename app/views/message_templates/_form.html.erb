@@ -14,13 +14,21 @@
   <div>
     <div class="row">
       <div class="col-md-3 form-group">
-        <%= form.label "Visibility" %>
-        <%= form.select :user_id, select_message_template_user(message_template.user_id), {}, { class: 'form-control' } %>
-
-      </div>
-      <div class="col-md-3 form-group">
         <%= form.label :message_type_id %>
         <%= form.select :message_type_id, select_message_type(message_template.message_type_id), {}, {id: :message_template_message_type, class: 'form-control'} %>
+      </div>
+      <div class="col-md-3 form-group">
+        <%= form.label :user_id, 'Owner' %>
+        <% if policy(message_template).change_user? %>
+          <%= form.select :user_id, select_message_template_user(message_template), {include_blank: true}, { class: 'form-control' } %>
+        <% else %>
+          <%= message_template.user&.name || 'System' %>
+        <% end %>
+      </div>
+      <div class="col-md-3 form-group">
+        <br/>
+        <%= form.check_box :shared, class: 'form-check-input' %>
+        <%= form.label 'Shared', 'Shared?', class: 'form-check-label' %>
       </div>
     </div>
     <div class="row">
