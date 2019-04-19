@@ -14,6 +14,6 @@ FactoryBot.define do
     sequence :name do |n|
       n.to_s
     end
-    description { Faker::GameOfThrones.quote }
+    description { Faker::TvShows::GameOfThrones.quote }
   end
 end
