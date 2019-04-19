@@ -48,6 +48,7 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
 
   describe "Twilio Adapter" do
     describe "POST #create" do
+      pending "WARNING: actual RAW POST from Twilio not tested due to RSpec limitations"
       it "should create a new message" do
         sms_message
         message_count = Message.count
