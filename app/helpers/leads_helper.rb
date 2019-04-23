@@ -93,4 +93,18 @@ module LeadsHelper
     return last_updated_message
   end
 
+  def select_lead_comment_action(lead, val=nil)
+    all_actions = LeadAction.order(name: 'ASC').to_a.map{|a| [a.name, a.id]}
+    next_actions = lead.scheduled_actions.pending.
+      includes(:engagement_policy_action_compliance).
+      order("engagement_policy_action_compliances.expires_at ASC").
+      map(&:lead_action).to_a.map{|a| [a.name, a.id]}
+    options = {
+      'Pending Tasks' => next_actions,
+      'All' => all_actions - next_actions
+    }
+    val ||= next_actions.first
+    grouped_options_for_select(options, val)
+  end
+
 end
