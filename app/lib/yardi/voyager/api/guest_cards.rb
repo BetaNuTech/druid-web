@@ -48,7 +48,7 @@ module Yardi
           return guestcards
         end
 
-        def sendGuestCard(propertyid:, lead:)
+        def sendGuestCard(propertyid:, lead:, dry_run: false)
           request_options = {
             method: 'ImportYardiGuest_Login',
             resource: 'ItfILSGuestCard.asmx',
@@ -56,8 +56,13 @@ module Yardi
             xml: Yardi::Voyager::Data::GuestCard.to_xml(lead: lead, propertyid: propertyid)
           }
           begin
-            response = getData(request_options)
-            updated_lead = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response: response.parsed_response, lead: lead)
+            if dry_run
+              response = getData(request_options, dry_run: true)
+              updated_lead = lead
+            else
+              response = getData(request_options, dry_run: false)
+              updated_lead = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response: response.parsed_response, lead: lead)
+            end
             if updated_lead.present?
               Rails.logger.warn "Yardi::Voyager::Api Submitted Lead:#{updated_lead.id} as Voyager GuestCard:#{updated_lead.remoteid}"
             else

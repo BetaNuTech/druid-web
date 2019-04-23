@@ -46,7 +46,7 @@ module Yardi
           return body_template
         end
 
-        def getData(options)
+        def getData(options, dry_run: false)
           url = "%{api_root}/%{resource}" % {api_root: api_root, resource: options[:resource]}
           body = request_body(options)
           headers = request_headers(method: options[:method], content_length: body.length)
@@ -62,7 +62,11 @@ module Yardi
             puts msg
             Rails.logger.debug msg
           end
-          result = fetch_data(url: url, body: body, headers: headers)
+          if dry_run
+            result = 'Dry Run: no request sent'
+          else
+            result = fetch_data(url: url, body: body, headers: headers)
+          end
           if @debug
             msg = " * Response:\n" + result.to_s
             puts msg
