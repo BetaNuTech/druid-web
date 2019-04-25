@@ -1,23 +1,25 @@
 <div class="row scheduled_actions" id="scheduled_actions">
   <div class="col-md-12">
     <div class="row">
-      <div class="col-md-4">
-        <h2>Pending Tasks</h2>
+      <div class="col-md-2">
+        <h2>Tasks</h2>
       </div>
       <div class="col-md-3">
         <p>
-          <%= link_to("Schedule a Task", new_scheduled_action_path(scheduled_action: {target_id: lead.id, target_type: 'Lead'}), {class: "btn btn-xs btn-primary"}) %>
+          <%= link_to('Schedule a Task', new_scheduled_action_path(scheduled_action: {target_id: lead.id, target_type: 'Lead'}), {class: 'btn btn-xs btn-primary'}) %>
+          <%= link_to('Show All', '#', {id: 'lead_task_toggle_completed', class: 'btn btn-xs btn-default'}) %>
         </p>
       </div>
     </div>
   </div>
-  <% if lead.scheduled_actions.incomplete.empty? %>
-    <p class="lead">None</p>
-  <% end %>
-  <table class="table">
+  <table class="table" id="lead_task_table">
     <thead></thead>
     <tbody>
+      <% if lead.scheduled_actions.incomplete.empty? %>
+        <tr><td><p class="lead">No Pending Tasks</p></td></tr>
+      <% end %>
       <%= render collection: lead.scheduled_actions.incomplete.sorted_by_due_asc, partial: 'scheduled_action' %>
+      <%= render collection: lead.scheduled_actions.completed.sorted_by_due_asc, partial: 'scheduled_action' %>
     </tbody>
   </table>
 </div>

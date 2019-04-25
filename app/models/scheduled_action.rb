@@ -127,6 +127,10 @@ class ScheduledAction < ApplicationRecord
     return found
   end
 
+  def completed?
+    return completed_at.present?
+  end
+
   private
 
   def validate_target
