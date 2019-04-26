@@ -1,0 +1,20 @@
+---
+:lead_referral_sources:
+  :version: 1
+  :key: :name
+  :data:
+  - :name: Abodo.com
+  - :name: ApartmentGuide.com
+  - :name: Apartments.com
+  - :name: Call
+  - :name: CoStar.com
+  - :name: Drive By
+  - :name: ForRent.com
+  - :name: Google.com
+  - :name: RentPath.com
+  - :name: YardiVoyager
+  - :name: Zillow.com
+  - :name: Zumper.com
+  - :name: Resident
+  - :name: WOM
+  - :name: Portal

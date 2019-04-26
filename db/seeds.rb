@@ -166,4 +166,5 @@ puts " * Creating Engagement Policy"
 Rake::Task["db:seed:engagement_policy"].invoke
 puts ' * Creating Message Delivery Adapters'
 Rake::Task["db:seed:message_delivery_adapters"].invoke
+Rake::Task["db:seed:lead_referral_sources"].invoke
 

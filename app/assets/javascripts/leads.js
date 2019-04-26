@@ -17,4 +17,13 @@ $(document).on('turbolinks:load', function() {
     $(e.target).hide();
     $("tr.lead_task_completed").show();
   });
+
+  $(".selectize").selectize(
+    {
+      create: true,
+      createOnBlur: true,
+      allowEmptyOption: true,
+      selectOnTab: true,
+      maxItems: 1
+    });
 });

@@ -91,6 +91,11 @@ namespace :db do
       MessageDeliveryAdapter.load_seed_data
     end
 
+    desc "Load Lead Referral Sources"
+    task :lead_referral_sources => :environment do
+      LeadReferralSource.load_seed_data
+    end
+
   end # namespace :seed
 
 end # namespace :db
