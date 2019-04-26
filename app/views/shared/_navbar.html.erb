@@ -234,6 +234,13 @@
                     <% end %>
                   </li>
                   <% end %>
+                  <% if policy(LeadReferralSource).edit? %>
+                  <li>
+                    <%= link_to(lead_referral_sources_path) do %>
+                      <span class="glyphicon glyphicon-hand-right"></span> Lead Referral Sources
+                    <% end %>
+                  </li>
+                  <% end %>
                   <% if policy(LeadAction).index? %>
                   <li>
                     <%= link_to(lead_actions_path) do %>

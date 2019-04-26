@@ -1,0 +1,25 @@
+<%= form_with(model: lead_referral_source, local: true) do |form| %>
+  <% if lead_referral_source.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(lead_referral_source.errors.count, "error") %> prohibited this lead_referral_source from being saved:</h2>
+
+      <ul>
+      <% lead_referral_source.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-4 form-group">
+      <%= form.label :name %>
+      <%= form.text_field :name, id: :lead_referral_source_name, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <%= link_to('Back', :back, class: "btn btn-xs btn-info")  %>
+  </div>
+<% end %>

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :lead_referral_sources
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end

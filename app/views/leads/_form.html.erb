@@ -45,7 +45,7 @@
       <div class="row">
         <div class="col-md-6 form-group">
           <%= form.label 'Property'%><br/>
-          <%= form.select :property_id, properties_for_select(@lead.property_id), { include_blank: true }, { class: "form-control" } %>
+          <%= form.select :property_id, properties_for_select(lead.property_id), { include_blank: true }, { class: "form-control" } %>
         </div>
         <%= form.hidden_field :lead_source_id, value: LeadSource.default.id %>
       </div>
@@ -53,14 +53,15 @@
       <div class="row">
         <div class="col-md-6 form-group">
           <%= form.label :referral, 'Referral/Origin' %>
-          <%= form.text_field :referral, id: :lead_referral, class: "form-control" %>
+          <%#= form.text_field :referral, id: :lead_referral, class: "form-control" %>
+          <%= form.select :referral, select_lead_referral_source(lead.referral), {}, { id: :lead_referral, class: "form-control selectize" } %>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-2 form-group">
           <%= form.label :title %><br/>
-          <%= form.select :title, titles_for_select(@lead.title), { include_blank: true }, { id: :lead_title, class: 'form-control' } %>
+          <%= form.select :title, titles_for_select(lead.title), { include_blank: true }, { id: :lead_title, class: 'form-control' } %>
         </div>
         <div class="col-md-3 form-group">
           <%= form.label :first_name %>

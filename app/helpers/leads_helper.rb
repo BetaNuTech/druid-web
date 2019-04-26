@@ -107,4 +107,12 @@ module LeadsHelper
     grouped_options_for_select(options, val)
   end
 
+  def select_lead_referral_source(val)
+    options = LeadReferralSource.order(name: :asc).map do |referral|
+      [ referral.name, referral.name ]
+    end
+    options = ['None', 'None'] + options
+    options_for_select(options, val)
+  end
+
 end
