@@ -23,7 +23,14 @@
 
       <div class="row">
         <div class="col-md-2 form-group">
-          <h3><%= lead.state.try(:capitalize) %></h3>
+          <h3 id="lead_state_name"><%= lead.state&.capitalize %></h3>
+          <% if policy(lead).manually_change_state? %>
+            <%= link_to("Change", "#", {id: "lead_toggle_change_state", class: "btn btn-xs btn-default"}) %>
+            <div id="lead_force_state" style="display: none;">
+              <%= form.label :state %>
+              <%= form.select :state, options_for_select(lead.aasm.states.map{|s| [s.human_name, s.name.to_s]}, lead.state), {}, {class: "form-control"} %>
+            </div>
+          <% end %>
         </div>
         <div class="col-md-4 form-group">
           <%= form.label "Agent" %>
