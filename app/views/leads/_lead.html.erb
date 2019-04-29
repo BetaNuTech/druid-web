@@ -27,9 +27,6 @@
   </td>
   <td>
     <p>
-      <strong>Agent:</strong> <%= lead.notes || 'None' %>
-    </p>
-    <p>
       <strong>Lead:</strong> <%= lead.preference.try(:notes) || 'None' %>
     </p>
   </td>

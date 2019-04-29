@@ -111,12 +111,6 @@ class LeadSearchLead extends React.Component {
               {this.props.data.preference.notes}
             </span>
           </p>
-          <p className={Style.notes.lead_notes}>
-            <strong>Agent Notes: </strong>
-            <span>
-              {this.props.data.notes}
-            </span>
-          </p>
         </div>
         { false && <LeadComments lead_id={this.props.data.id} /> }
       </div>
