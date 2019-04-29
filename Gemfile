@@ -16,13 +16,13 @@ gem 'secure_headers', "~> 5.0"
 
 gem 'turbolinks', '~> 5.2'
 gem 'jbuilder', '~> 2.8'
-gem 'dotenv', '~> 2.5', '>= 2.1.1'
+gem 'dotenv', '~> 2.7', '>= 2.1.1'
 gem 'foreman', '~> 0.85'
 gem 'delayed_job_active_record', '~> 4.1'
 gem 'awesome_print', '~> 1.8'
 gem 'pry-rails', '~> 0.3'
 gem 'pry-coolline', '~> 0.2'
-gem 'webpacker', '~> 3.5'
+gem 'webpacker', '~> 3.6'
 gem 'devise', '~> 4.6'
 gem 'colorize', '~> 0.8'
 gem 'pundit', '~> 1.1'
@@ -36,17 +36,17 @@ gem 'simple_calendar', "~> 2.3"
 gem 'httparty', "~> 0.16"
 gem 'nokogiri', "~> 1.10"
 gem 'liquid', "~> 4.0"
-gem 'twilio-ruby', "~> 5.15"
+gem 'twilio-ruby', "~> 5.22"
 gem 'kaminari', "~> 1.1"
-gem 'ckeditor', "~> 4.2"
+gem 'ckeditor', "~> 4.3"
 gem 'scout_apm', "~> 2.4"
-gem 'exception_notification', "~> 4.2"
-gem 'aws-sdk-s3', "~> 1.23"
+gem 'exception_notification', "~> 4.3"
+gem 'aws-sdk-s3', "~> 1.36"
 gem 'nested_form_fields', "~> 0.8"
 gem 'dalli', "~> 2.7"
 gem 'connection_pool', "~> 2.2"
 gem 'premailer', "~> 1.11"
-gem 'image_processing', "~> 1.8"
+gem 'image_processing', "~> 1.9"
 gem 'mini_magick', "~> 4.9"
 gem 'delayed_job_web', "~> 1.4"
 
@@ -75,14 +75,14 @@ group :test do
 end
 
 group :development do
-  gem 'rubocop', '~> 0.60', require: false
+  gem 'rubocop', '~> 0.67', require: false
   gem 'web-console', '~> 3.7'
   gem 'listen', '~> 3.1', '< 3.2'
   gem 'spring', '~> 2.0'
   gem 'spring-watcher-listen', '~> 2.0'
   gem 'annotate', '~> 2.7'
   gem 'pessimize', '~> 0.4'
-  gem 'letter_opener', '~> 1.6'
+  gem 'letter_opener', '~> 1.7'
   gem 'letter_opener_web', '~> 1.3'
 
   # Profiler
