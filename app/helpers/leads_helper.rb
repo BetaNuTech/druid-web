@@ -98,7 +98,7 @@ module LeadsHelper
     next_actions = lead.scheduled_actions.pending.
       includes(:engagement_policy_action_compliance).
       order("engagement_policy_action_compliances.expires_at ASC").
-      map(&:lead_action).to_a.map{|a| [a.name, a.id]}
+      map(&:lead_action).compact.to_a.map{|a| [a.name, a.id]}
     options = {
       'Pending Tasks' => next_actions,
       'All' => all_actions - next_actions
