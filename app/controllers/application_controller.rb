@@ -24,17 +24,17 @@ class ApplicationController < ActionController::Base
   end
 
   def set_property
+    return nil unless current_user
     @property = @current_property ||= Property.where(id: (params[:property_id] || 0)).first || current_user.try(:properties).try(:first)
   end
 
   def current_team
-    @current_team ||= current_user.try(:team)
+    return nil unless current_user
+    @current_team ||= current_user&.team
   end
 
   def prepare_exception_notifier
-    request.env["exception_notifier.exception_data"] = {
-      current_user: current_user
-    }
+    request.env["exception_notifier.exception_data"] = { current_user: current_user }
   end
 
 end
