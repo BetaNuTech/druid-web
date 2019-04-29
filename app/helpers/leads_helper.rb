@@ -108,10 +108,9 @@ module LeadsHelper
   end
 
   def select_lead_referral_source(val)
-    options = LeadReferralSource.order(name: :asc).map do |referral|
-      [ referral.name, referral.name ]
-    end
-    options = ['None', 'None'] + options
+    default_options = LeadReferralSource.order(name: :asc).pluck(:name)
+    current_option = val.present? ? [val] : ['None']
+    options = (current_option + default_options).uniq.map{|o| [o,o]}
     options_for_select(options, val)
   end
 

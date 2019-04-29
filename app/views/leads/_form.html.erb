@@ -53,8 +53,8 @@
       <div class="row">
         <div class="col-md-6 form-group">
           <%= form.label :referral, 'Referral/Origin' %>
-          <%#= form.text_field :referral, id: :lead_referral, class: "form-control" %>
-          <%= form.select :referral, select_lead_referral_source(lead.referral), {}, { id: :lead_referral, class: "form-control selectize" } %>
+          <small>Select or enter a referral source</small>
+          <%= form.select :referral, select_lead_referral_source(lead.referral), {include_blank: true}, { id: :lead_referral, class: "form-control selectize" } %>
         </div>
       </div>
 
