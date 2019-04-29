@@ -112,12 +112,14 @@
         <%= @lead.preference.notes %>
       </span>
     </p>
-    <p class="lead_notes">
-      <strong>Agent Notes: </strong>
-      <span>
-        <%= @lead.notes %>
-      </span>
-    </p>
+    <% if policy(@lead).show_import_notes? %>
+      <p class="lead_notes">
+        <strong>Import Notes: </strong>
+        <span>
+          <%= @lead.notes %>
+        </span>
+      </p>
+    <% end %>
     <% if @lead.optout? %>
       <h3>This lead has opted out of automatic notifications.</h3>
     <% end %>

@@ -78,6 +78,10 @@ class LeadPolicy < ApplicationPolicy
     user.admin? || is_owner?
   end
 
+  def show_import_notes?
+    user.admin?
+  end
+
   # Allow event to be issued if valid,
   #  current_user is admin, no user is associated with lead,
   #  or current_user owns lead
