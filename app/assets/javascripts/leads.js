@@ -25,4 +25,13 @@ $(document).on('turbolinks:load', function() {
       selectOnTab: true,
       maxItems: 1
     });
+
+  $('#lead_toggle_change_state').on('click', function(e){
+    e.preventDefault();
+    if (confirm('Only change the Lead state manually if absolutely necessary. Are you sure?')) {
+      $(e.target).hide();
+      $('#lead_state_name').hide();
+      $('#lead_force_state').show();
+    }
+  });
 });

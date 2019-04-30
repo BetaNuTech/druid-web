@@ -92,6 +92,10 @@ class LeadPolicy < ApplicationPolicy
        user.admin? || property_manager? || team_lead?)
   end
 
+  def manually_change_state?
+    user.admin? || property_manager?
+  end
+
   # Return an array of state events that the User can issue
   # to the Record
   def permitted_state_events
@@ -115,6 +119,12 @@ class LeadPolicy < ApplicationPolicy
         unless change_user?
           reject_params << :user_id
         end
+
+        # Guard manually changing state
+        unless manually_change_state?
+          reject_params << :state
+        end
+
       end
     end
 
@@ -128,4 +138,5 @@ class LeadPolicy < ApplicationPolicy
   def change_user?
     is_owner? || user.manager? || user.admin?
   end
+
 end
