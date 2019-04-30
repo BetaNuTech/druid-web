@@ -70,11 +70,6 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def allowed_params
-    return case
-      when update?
-        Message::ALLOWED_PARAMS
-      else
-        []
-      end
+    Message::ALLOWED_PARAMS
   end
 end

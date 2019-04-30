@@ -156,6 +156,7 @@ class MessagesController < ApplicationController
     end
 
     def message_params
-      params.require(:message).permit(policy(Message).allowed_params)
+      allowed_params = policy(@message||Message).allowed_params
+      params.require(:message).permit(*allowed_params)
     end
 end
