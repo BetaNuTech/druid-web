@@ -3,18 +3,19 @@ class LeadsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state]
+  before_action :conditional_redirect_to_default_search, only: [:index, :search]
   after_action :verify_authorized
 
   # GET /leads
   # GET /leads.json
   def index
-    authorize Lead
+    # authorization performed by conditional_redirect_to_default_search
     @search = LeadSearch.new(params[:lead_search], policy_scope(Lead), current_user)
     @leads = @search.paginated
   end
 
   def search
-    authorize Lead
+    # authorization performed by conditional_redirect_to_default_search
     @search = LeadSearch.new(params[:lead_search], policy_scope(Lead), current_user)
     @webpack = 'lead_search'
     respond_to do |format|
@@ -165,6 +166,40 @@ class LeadsController < ApplicationController
     def lead_params
       allowed_params = policy(@lead||Lead).allowed_params
       params.require(:lead).permit(*allowed_params)
+    end
+
+    def lead_search_params
+      if params[:lead_search]&.to_h&.keys&.any?
+        return params[:lead_search]
+      else
+        return { lead_search: search_defaults }
+      end
+    end
+
+    def search_defaults
+      defaults = { states: Lead::PENDING_STATES }
+      if current_user.property.present?
+        defaults.merge!({property_ids: current_user.properties.map(&:id)})
+      end
+      return defaults
+    end
+
+    def default_search_url
+      "/leads/search?" + lead_search_params.to_query
+    end
+
+    def redirect_to_default_search?
+      params.permit!
+      return params[:lead_search]&.to_h.nil?
+    end
+
+    def conditional_redirect_to_default_search
+      authorize Lead
+      if redirect_to_default_search?
+        redirect_to default_search_url
+      else
+        return true
+      end
     end
 
 end

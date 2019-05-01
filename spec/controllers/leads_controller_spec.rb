@@ -38,7 +38,7 @@ RSpec.describe LeadsController, type: :controller do
       it "returns a success response" do
         sign_in corporate
         lead = Lead.create! valid_attributes
-        get :index, params: {}
+        get :index, params: {lead_search: {states: ['open']}}
         expect(response).to be_successful
       end
 
@@ -48,7 +48,7 @@ RSpec.describe LeadsController, type: :controller do
       it "returns a success response" do
         sign_in agent
         lead = Lead.create! valid_attributes
-        get :index, params: {}
+        get :index, params: {lead_search: {states: ['open']}}
         expect(response).to be_successful
       end
 
@@ -58,7 +58,7 @@ RSpec.describe LeadsController, type: :controller do
       it "access is rejected" do
         sign_in unroled_user
         lead = Lead.create! valid_attributes
-        get :index, params: {}
+        get :index, params: {lead_search: {states: ['open']}}
         expect(response).to be_redirect
       end
     end
@@ -90,9 +90,9 @@ RSpec.describe LeadsController, type: :controller do
     describe "as an agent" do
       it "returns a success reponse" do
         sign_in agent
-        get :search, params: {}
+        get :index, params: {lead_search: {states: ['open']}}
         expect(response).to be_successful
-        get :search, params: {}, format: :json
+        get :index, params: {lead_search: {states: ['open']}}, format: :json
         expect(response).to be_successful
       end
     end
