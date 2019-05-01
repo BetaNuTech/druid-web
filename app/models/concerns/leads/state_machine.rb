@@ -2,6 +2,7 @@ module Leads
   module StateMachine
     extend ActiveSupport::Concern
 
+    PENDING_STATES = %w{open prospect application}
     CLAIMED_STATES = %w{prospect application approved denied movein resident}
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
 
