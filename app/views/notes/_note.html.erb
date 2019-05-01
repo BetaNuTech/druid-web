@@ -10,13 +10,7 @@
           <% end %>
         </div>
         <div class="col-md-6">
-          <%= note.lead_action&.name %>
-          <% if note.reason.present? %>
-            <% if note.lead_action.present? %>
-              &rarr;
-            <% end %>
-            <%= note.reason.name %>
-          <% end %>
+          <%= action_and_reason(note) %>
         </div>
       </div>
 

@@ -16,12 +16,6 @@
 
   <div class="fieldset_content">
     <div class="row">
-      <div class="form-group col-md-8">
-        <%= form.label :content, "New Comment" %>
-        <%= form.text_area :content, id: :note_content, class: "form-control", rows: 5%>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-md-4 form-group">
         <%= form.label :lead_action_id, "Action" %>
         <%= form.select :lead_action_id, select_lead_comment_action(note.notable, note.lead_action_id), {include_blank: true},{id: :note_action, class: "form-control"} %>
@@ -29,6 +23,12 @@
       <div class="col-md-4 form-group">
         <%= form.label :reason_id, "Reason" %>
         <%= form.select :reason_id, select_reason(note.reason_id),{include_blank: true},{id: :note_reason, class: "form-control"} %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-8">
+        <%= form.label :content, "New Comment" %>
+        <%= form.text_area :content, id: :note_content, class: "form-control", rows: 5%>
       </div>
     </div>
     <div class="row">
