@@ -43,4 +43,19 @@ module ApplicationHelper
   def navbar_cache_key
     [current_user, current_user.try(:messages).try(:unread).try(:size)]
   end
+
+  def action_and_reason(record)
+    return "" unless record.present?
+    content_tag(:small) do
+      content_tag(:span) do
+        concat content_tag(:span, record&.lead_action&.name)
+        if record&.reason&.present?
+          if record&.lead_action&.present?
+            concat content_tag(:span, ' &rarr; '.html_safe)
+          end
+          concat content_tag(:span, record&.reason&.name)
+        end
+      end
+    end
+  end
 end

@@ -10,6 +10,7 @@
       <% end %>
   </td>
   <td>
+    <%= action_and_reason(scheduled_action) %><br/>
     <%= scheduled_action.description %>
     <% unless scheduled_action.target == current_user %>
       : <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span>
