@@ -11,6 +11,7 @@ class SearchSelect extends React.Component {
     }
     this.state = {
       selected: selected,
+      allSelected: this.isAllOptionsSelected(selected),
       pending: false
     }
   }
@@ -35,6 +36,11 @@ class SearchSelect extends React.Component {
     return(this.state.selected.find((opt) => { return( opt.value === value ) }) != undefined)
   }
 
+  isAllOptionsSelected(selected) {
+    let allOptions = this.props.search.Filters[this.props.filter].options
+    return(allOptions.length == selected.length)
+  }
+
   isPending() {
     return(this.state.pending)
   }
@@ -42,6 +48,22 @@ class SearchSelect extends React.Component {
   handleToggleSelection = (e) => {
     this.toggleSelection({ label: e.target.name, value: e.target.value })
     return false
+  }
+
+  handleToggleEntireSelection = (e) => {
+    let allOptions = this.props.search.Filters[this.props.filter].options
+    var newSelection
+    switch(this.state.selected.length) {
+      case 0:
+        newSelection = allOptions
+        break;
+      case allOptions.length:
+        newSelection = []
+        break;
+      default:
+        newSelection = allOptions
+    }
+    this.commitSelection(newSelection)
   }
 
   handleClickApply = () => {
@@ -59,9 +81,17 @@ class SearchSelect extends React.Component {
     } else {
       newSelection = [...this.state.selected, option]
     }
-    this.setState({pending: true})
+    this.commitSelection(newSelection)
+  }
+
+  commitSelection(selection) {
+    this.setState({
+      pending: true,
+      allSelected: this.isAllOptionsSelected(selection)
+    })
     this.props.onModifyFilter()
-    this.props.onUpdateFilter(this.props.filter, newSelection)
+    this.props.onUpdateFilter(this.props.filter, selection)
+    return selection;
   }
 
   renderOptions() {
@@ -90,6 +120,11 @@ class SearchSelect extends React.Component {
   render() {
     return(
       <div className={Style.SearchSelect}>
+        <div className={Style.FilterToggle}>
+          <input type="checkbox"
+            checked={this.state.allSelected}
+            onChange={ e => this.handleToggleEntireSelection(e)} />
+        </div>
         <fieldset>
           <legend>{this.props.filter}</legend>
           {this.renderOptions()}
