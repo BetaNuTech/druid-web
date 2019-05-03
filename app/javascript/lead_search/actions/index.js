@@ -216,7 +216,12 @@ function paramsFromSearchNode(segment) {
   segment._index.forEach(function(key) {
     let param = segment[key]["param"]
     segment[key]["values"].forEach(function(val) {
-      let value = val["value"]
+      let value = ''
+      if (val["value"] != undefined) {
+        value = val["value"]
+      } else {
+        value = val
+      }
       if (value.length > 0) {
         let safeVal = encodeURIComponent(value)
         params.push(`${search_param}[${param}][]=${safeVal}`)

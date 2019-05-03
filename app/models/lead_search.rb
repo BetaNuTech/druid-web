@@ -1,9 +1,10 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir ]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date ]
   LEAD_TABLE = Lead.table_name
   DEFAULT_PER_PAGE = 10
   MAX_PER_PAGE = 100
   DEFAULT_SORT = [:priority, :desc]
+  DEFAULT_START_DATE = 99.years.ago
   SORT_OPTIONS = {
     priority: {
       asc: "#{LEAD_TABLE}.priority ASC, #{LEAD_TABLE}.first_comm ASC",
@@ -43,6 +44,7 @@ class LeadSearch
       filter_by_first_name.
       filter_by_last_name.
       filter_by_id_number.
+      filter_by_date.
       finalize.
       search_by_text
 
@@ -57,34 +59,40 @@ class LeadSearch
   def full_options
     opts = {
       "Filters" => {
-        "_index" => ["Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search"],
+        "_index" => ["Start Date", "End Date", "Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search"],
         "Agents" => {
           param: "user_ids",
+          type: "select",
           values: User.where(id: @options[:user_ids]).map{|u| {label: u.name, value: u.id}},
           options: agent_options
         },
         "Properties" => {
           param: "property_ids",
+          type: "select",
           values: property_values,
           options: property_options
         },
         "Priorities" => {
           param: "priorities",
+          type: "select",
           values: Lead.priorities.select{|k,v| Array(@options[:priorities]).include?(v.to_s) }.map{|p| {label: p[0].capitalize, value: p[1].to_s}},
           options: Lead.priorities.map{|p| {label: p[0].capitalize, value: p[1].to_s}}
         },
         "States" => {
           param: "states",
+          type: "select",
           values: Array(@options[:states]).map{|s| {label: s.capitalize, value: s}},
           options: Lead.state_names.map{|s| {label: s.humanize, value: s}}
         },
         "Sources" => {
           param: "sources",
+          type: "select",
           values: LeadSource.where(id: @options[:sources]).map{|s| {label: s.name, value: s.id}},
           options: LeadSource.active.map{|s| {label: s.name, value: s.id}}
         },
         "Referrals" => {
           param: "referrals",
+          type: "select",
           values: Array(@options[:referrals]).map{|r| {label: r, value: r}},
           options: Lead.select("distinct(referral)").order("referral ASC").
             map{|r| {label: r.referral, value: r.referral}}.
@@ -92,22 +100,38 @@ class LeadSearch
         },
         "First Name" => {
           param: "first_name",
+          type: "text",
           values: Array(@options[:first_name]).map{|v| {label: v, value: v} },
           options: []
         },
         "Last Name" => {
           param: "last_name",
+          type: "text",
           values: Array(@options[:last_name]).map{|v| {label: v, value: v} },
           options: []
         },
         "ID Number" => {
           param: "id_number",
+          type: "text",
           values: Array(@options[:id_number]).map{|v| {label: v, value: v} },
           options: []
         },
         "Search" => {
           param: "text",
-          values: Array(@options[:text]).map{|v| {label: v, value: v} },
+          type: "text",
+          values: Array(@options[:text]),
+          options: []
+        },
+        "Start Date" => {
+          param: "start_date",
+          type: "date",
+          values: Array(@options[:start_date]),
+          options: []
+        },
+        "End Date" => {
+          param: "end_date",
+          type: "date",
+          values: Array(@options[:end_date]),
           options: []
         }
       },
@@ -182,6 +206,33 @@ class LeadSearch
     opts = @options.dup
     opts[:page] = total_pages
     return opts
+  end
+
+  def filter_by_date(start_date=nil, end_date=nil)
+    start_date ||= @options[:start_date]
+    end_date ||= @options[:end_date]
+    end_date = Array(end_date).compact.first
+    if ( start_date || end_date ).present?
+      if start_date.present?
+        start_date = Array(start_date).compact.first
+        if start_date.is_a?(String)
+          start_date = DateTime.parse(start_date).beginning_of_day rescue nil
+        else
+          start_date = start_date.beginning_of_day
+        end
+      end
+      if end_date.present?
+        if end_date.is_a?(String)
+          end_date = DateTime.parse(end_date).end_of_day rescue nil
+        else
+          end_date = end_date.end_of_day
+        end
+      end
+      @skope = @skope.
+        where(first_comm: ( start_date || DEFAULT_START_DATE )..( end_date || DateTime.now ))
+      @filter_applied = true
+    end
+    return self
   end
 
   def filter_by_state(states=nil)

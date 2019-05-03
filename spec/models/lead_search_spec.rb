@@ -121,6 +121,22 @@ RSpec.describe LeadSearch do
       expect(search.collection.to_a).to eq([lead2])
     end
 
+    it "searches by date" do
+      date_format = "%Y-%m-%d"
+      search = LeadSearch.new(
+        { start_date: ( lead3.first_comm - 2.days ).strftime(date_format),
+          end_date: ( lead3.first_comm - 1.days).strftime(date_format)})
+      expect(search.collection.to_a).to be_empty
+      search = LeadSearch.new(
+        { start_date: ( lead3.first_comm - 1.hour ).strftime(date_format),
+          end_date: ( lead2.first_comm + 1.hour).strftime(date_format)})
+      expect(search.collection.to_a.sort).to eq([lead2,lead3].sort)
+      search = LeadSearch.new( { start_date: 5.days.ago.strftime(date_format) })
+      expect(search.collection.to_a.sort).to eq([lead1, lead2, lead3].sort)
+      search = LeadSearch.new( { end_date: (lead3.first_comm + 1.hour).strftime(date_format) })
+      expect(search.collection.to_a).to eq([lead3])
+    end
+
     describe "options" do
       it "are returned by full_options" do
         property = create(:property)
