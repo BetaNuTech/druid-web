@@ -8,6 +8,7 @@ import SearchInput from '../components/SearchInput.jsx'
 import SearchSelect from '../components/SearchSelect.jsx'
 import SearchSort from '../components/SearchSort.jsx'
 import LeadSearchSidebar from '../components/LeadSearchSidebar.jsx'
+import SearchDateSelect from '../components/SearchDateSelect.jsx'
 
 class LeadSearchFilter extends React.Component {
 
@@ -54,12 +55,25 @@ class LeadSearchFilter extends React.Component {
     if (this.showAdvanced() && this.hasFilters()) {
       return this.props.search.Filters._index.map((filtername) => {
         const filter = this.props.search.Filters[filtername]
-        if (this.hasFilters() && filter.options.length > 0) {
-          return <SearchSelect key={filtername}
-            search={this.props.search} filter={filtername}
-            onModifyFilter={this.onModifyFilter}
-            onUpdateFilter={this.props.onUpdateFilter(this.props.search)}
-            onSubmitSearch={this.props.onSubmitSearch(this.props.search)} />
+        if (this.hasFilters()) {
+          switch(filter.type){
+            case "select":
+              return <SearchSelect key={filtername}
+                search={this.props.search} filter={filtername}
+                onModifyFilter={this.onModifyFilter}
+                onUpdateFilter={this.props.onUpdateFilter(this.props.search)}
+                onSubmitSearch={this.props.onSubmitSearch(this.props.search)} />
+               break;
+            case "date":
+              return <SearchDateSelect key={filtername}
+                search={this.props.search} filter={filtername}
+                onModifyFilter={this.onModifyFilter}
+                onUpdateFilter={this.props.onUpdateFilter(this.props.search)}
+                onSubmitSearch={this.props.onSubmitSearch(this.props.search)} />
+            default:
+              return ""
+              break;
+          }
          }
       })
     }

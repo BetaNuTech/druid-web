@@ -13,7 +13,7 @@ class LeadSearchSidebar extends React.Component {
     let output = ""
     if (values.length > 0) {
       output = values.map((value) => {
-        return <li key={value.value}>{value.label}</li>
+        return <li key={key + "_" + ( value.label || value )}>{value.label || value}</li>
       })
     } else {
       output = <li>Any</li>
@@ -29,6 +29,14 @@ class LeadSearchSidebar extends React.Component {
             <span className={Style.FilterListItem}>Search</span>
             <ul>
               {this.filterInfo("Search")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Date Range</span>
+            <ul>
+              {this.filterInfo("Start Date")}
+              <span className={Style.startToEndLabel} key="start_to_end_label"><small>to</small></span>
+              {this.filterInfo("End Date")}
             </ul>
           </div>
           <div className={Style.FilterList}>
