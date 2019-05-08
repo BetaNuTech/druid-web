@@ -57,6 +57,14 @@ module MessagesHelper
     end
   end
 
+  def message_delivery_indicator_link(message)
+    if message.incoming?
+      return link_to(message_delivery_indicator(message), new_message_path(reply_to: message.id))
+    else
+      return message_delivery_indicator(message)
+    end
+  end
+
   def message_type_indicator(message)
     container_class = "btn btn-xs btn-default"
     content_tag(:span, class: container_class) do

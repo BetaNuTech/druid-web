@@ -1,7 +1,9 @@
 class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_message, only: [:show, :edit, :update, :destroy]
-  before_action :set_messageable, only: [:index, :new, :show, :edit, :update, :destroy]
+  before_action :set_message_type, only: [:show, :new, :edit, :create ]
+  before_action :set_message_template, only: [:show, :new, :edit, :create ]
+  before_action :set_messageable, only: [:index, :new, :show, :edit, :update, :create]
   after_action :verify_authorized
 
   # GET /messages
@@ -17,9 +19,6 @@ class MessagesController < ApplicationController
   def show
     authorize @message
     Message.mark_read!(@message, current_user) if !@message.read? && policy(@message).mark_read?
-    set_messageable
-    set_message_type
-    set_message_template
   end
 
   def body_preview
@@ -30,24 +29,24 @@ class MessagesController < ApplicationController
 
   # GET /messages/new
   def new
-    set_message_type
-    set_message_template
-    @message = Message.new(
-      user: current_user,
-      message_type: @message_type,
-      message_type_id: @message_type.try(:id),
-      message_template_id: @message_template.try(:id),
-      messageable: @messageable
-    )
+    if (reply_to_id = params[:reply_to]).present?
+      origin = Message.find(reply_to_id)
+      @message = origin.new_reply(user: current_user)
+    else
+      @message = Message.new(
+        user: current_user,
+        message_type: @message_type,
+        message_type_id: @message_type.try(:id),
+        message_template_id: @message_template.try(:id),
+        messageable: @messageable
+      )
+    end
     authorize @message
     @message.load_template
   end
 
   # GET /messages/1/edit
   def edit
-    set_messageable
-    set_message_type
-    set_message_template
     authorize @message
   end
 
@@ -55,11 +54,6 @@ class MessagesController < ApplicationController
   # POST /messages.json
   def create
     authorize Message.new
-
-    set_messageable
-    set_message_type
-    set_message_template
-
     @message = Message.new_message(
       from: current_user,
       to: @messageable,

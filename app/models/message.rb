@@ -131,6 +131,18 @@ class Message < ApplicationRecord
 
   ### Instance Methods
 
+  def new_reply(user:)
+    new_body = rich_editor? ? " <br/><br/>----------<br/>" + body : body
+    return Message.new_message(
+      from: user,
+      to: messageable,
+      message_type: message_type,
+      threadid: threadid,
+      subject: 'RE: ' + ( subject || ''),
+      body: new_body
+    )
+  end
+
   def read?
     return !read_at.nil?
   end

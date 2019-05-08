@@ -203,6 +203,63 @@ RSpec.describe Message, type: :model do
     end
   end
 
+  describe "using the Message.new_reply helper" do
+    let(:lead) { create(:lead, user: user)}
+    let(:user) { create(:user)}
+    let(:user2) { create(:user)}
+    let(:message_type) { create(:email_message_type)}
+    let(:message_template) { create(:message_template, message_type: message_type)}
+    let(:source_message) {
+      message = Message.new_message(from: lead, to: user, message_type: message_type, subject: 'Email from Lead', body: 'Body content' )
+      message.save!
+      message
+    }
+
+    it "assigns a user" do
+      message = source_message.new_reply(user: user2)
+      expect(message.user).to eq(user2)
+    end
+
+    it "assigns the messageable" do
+      message = source_message.new_reply(user: user2)
+      expect(message.messageable).to eq(source_message.messageable)
+    end
+
+    it "assigns the message_type" do
+      message = source_message.new_reply(user: user2)
+      expect(message.message_type).to eq(message_type)
+    end
+
+    it "assigns no message_template" do
+      message = source_message.new_reply(user: user2)
+      message = source_message.new_reply(user: user2)
+      expect(message.message_template).to be_nil
+    end
+
+    it "optionally assigns the threadid" do
+      message = source_message.new_reply(user: user2)
+      expect(message.threadid).to eq(source_message.threadid)
+    end
+
+    it "initializes body including quote of the original" do
+      message = source_message.new_reply(user: user2)
+      expect(message.body).to match("----------")
+      expect(message.body).to match(source_message.body)
+    end
+
+    it "initializes the subject to be a RE:" do
+      message = source_message.new_reply(user: user2)
+      expect(message.subject).to eq("RE: " + source_message.subject)
+    end
+
+    it "assigns meta information" do
+      message = source_message.new_reply(user: user2)
+      expect(message.recipientid).to eq(source_message.senderid)
+      expect(message.senderid).to eq(source_message.recipientid)
+      expect(message.threadid).to eq(source_message.threadid)
+    end
+  end
+
   describe "callbacks" do
     let(:message) { create(:message)}
     let(:phone) { "555-555-5555" }

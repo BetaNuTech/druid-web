@@ -37,7 +37,7 @@
                       <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn-sm btn-primary" }) %>
                     <% else %>
                       <span class="dashboard_item_date">
-                        <%= message_delivery_indicator(message) %>
+                        <%= message_delivery_indicator_link(message) %>
                         <%= message_type_indicator(message) %>
                         <%= short_datetime(message.delivered_at || message.updated_at) %>
                       </span>
