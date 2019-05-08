@@ -15,9 +15,11 @@
   <%= form.hidden_field :messageable_id %>
   <%= form.hidden_field :messageable_type %>
 
-  <%= form.hidden_field :recipientid %>
-  <%= form.hidden_field :senderid %>
-  <%= form.hidden_field :threadid %>
+  <% unless message.new_record? %>
+    <%= form.hidden_field :recipientid %>
+    <%= form.hidden_field :senderid %>
+    <%= form.hidden_field :threadid %>
+  <% end %>
 
   <% if message.new_record? || message.body_missing? %>
     <div class='row'>
