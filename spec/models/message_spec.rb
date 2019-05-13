@@ -247,9 +247,9 @@ RSpec.describe Message, type: :model do
       expect(message.body).to match(source_message.body)
     end
 
-    it "initializes the subject to be a RE:" do
+    it "uses the same subject as the original message" do
       message = source_message.new_reply(user: user2)
-      expect(message.subject).to eq("RE: " + source_message.subject)
+      expect(message.subject).to eq(source_message.subject)
     end
 
     it "assigns meta information" do
