@@ -138,7 +138,7 @@ class Message < ApplicationRecord
       to: messageable,
       message_type: message_type,
       threadid: threadid,
-      subject: 'RE: ' + ( subject || ''),
+      subject: subject || '',
       body: new_body
     )
   end
