@@ -4,9 +4,9 @@ class UnitPolicy < ApplicationPolicy
       skope = scope
       return case user
       when ->(u) { u.admin?}
-        skope
+        skope.includes(:property, :unit_type, :rental_type)
       else
-        skope.where(property_id: user.properties.map(&:id))
+        skope.includes(:property, :unit_type, :rental_type).where(property_id: user.properties.map(&:id))
       end
     end
   end

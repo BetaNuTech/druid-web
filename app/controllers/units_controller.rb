@@ -8,8 +8,11 @@ class UnitsController < ApplicationController
   def index
     authorize Unit
     @units = unit_scope
-    if params[:property_id].present?
-      @units = @units.where(property_id: params[:property_id])
+    property_id = params[:property_id] || current_user.property&.id
+    if property_id.present?
+      @units = @units.where(property_id: property_id)
+    else
+      @units = Unit.where("1=0")
     end
   end
 
