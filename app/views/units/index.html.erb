@@ -9,8 +9,14 @@
       </div>
     <% end %>
   </div>
+
   <div class="row">
     <div class"col-md-12">
+    <% unless @units.present? %>
+      <p class="lead">
+        No Units found
+      </p>
+    <% end %>
       <table class="table">
         <thead>
           <tr>
