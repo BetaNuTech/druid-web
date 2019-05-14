@@ -6,7 +6,7 @@ class EngagementPolicyScheduler
   def create_scheduled_actions(lead:)
     unless lead.is_a?(Lead)
       msg = "Must Provide a Lead"
-      log_error(msg)
+      log_error(msg, {lead: lead})
       return false
     end
 
@@ -22,7 +22,7 @@ class EngagementPolicyScheduler
 
     unless policy.present?
       msg = "No EngagementPolicy found for Lead[#{ lead.try(:id) }] with state #{lead.state} assigned to Property #{property.try(:name)}"
-      log_error(msg)
+      log_error(msg, {lead: lead})
       return true
     end
 
@@ -157,7 +157,7 @@ class EngagementPolicyScheduler
 
   def handle_scheduled_action_completion(scheduled_action, user: nil)
     unless (compliance = scheduled_action.engagement_policy_action_compliance).present?
-      log_error("Skipping Compliance Record handling of Updated ScheduledAction because there is none")
+      log_error("Skipping Compliance Record handling of Updated ScheduledAction because there is none", {scheduled_action: scheduled_action, user: user})
       return true
     end
 
