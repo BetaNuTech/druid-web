@@ -9,7 +9,7 @@ This code is proprietary and distribution is strictly prohibited.
 
 # Dependencies
 
-* Ruby version: 2.4.3 (in Gemfile)
+* Ruby version: 2.6.3 (in Gemfile)
 * System dependencies
   * Typical Rails 5 dependencies
   * Node.js 8
@@ -62,38 +62,6 @@ And add the `CDRDB_URL` environment variable to `.env`:
 CDRDB_URL='mysql2://cdrdb:cdrdb_Password@localhost/asteriskcdrdb'
 ```
 
-#### CDR Recordings
-
-Call recordings in WAV format are synchronized from the Asterisk phone system to an S3 bucket on Amazon.
-
-Integration with this S3 bucket requires the following environment variables to be set:
-
-```
-CDRDB_S3_BUCKET='druidaudio'
-CDRDB_S3_REGION='us-east-2'
-CDRDB_S3_ACCESS_KEY=XXX
-CDRDB_S3_SECRET_KEY=XXX
-```
-
-#### Determine CDR Recording Bucket Usage
-
-A helpful script at `bin/bucket_size` can be used to determine S3 bucket usage. This tool requires the `awscli` tools to be installed, and configuration placed in `~/.aws/credentials`
-
-```
-# ~/.aws/credentials
-
-[asterisk-druidaudio]
-aws_access_key_id = XXX
-aws_secret_access_key = XXX
-region = us-east-2
-```
-
-The following environment variables must be set in `.env`:
-
-```
-CDRDB_S3_BUCKET='druidaudio'
-CDRDB_AWSCLI_PROFILE='asterisk-druidaudio'
-```
 
 ## Running
 
@@ -163,6 +131,8 @@ be run in a standalone fashion as well using the pattern `rake docs:compile:dot[
 ## DelayedJob
 
 DelayedJob is started by Foreman, or can be started manually with: `bundle exec rails jobs:work`
+
+A web interface is provided at `/delayed_job` which is accessible by Administrator users.
 
 ## Source Code Management
 
@@ -239,6 +209,7 @@ ACTIVESTORAGE_S3_REGION
 ACTIVESTORAGE_S3_ACCESS_KEY
 ACTIVESTORAGE_S3_SECRET_KEY
 APPLICATION_HOST=www.druidapp.com
+APPLICATION_DOMAIN=druidapp.com
 CDRDB_S3_ACCESS_KEY=''
 CDRDB_S3_BUCKET='druidaudio'
 CDRDB_S3_REGION='us-east-2'
@@ -355,13 +326,93 @@ This problem can identified in logs with the following error message:
 Mysql2::Error::ConnectionError: Can't connect to MySQL server on 'asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com'
 ```
 
+#### Scheduled Tasks
+
+Leads should be automatically created based on incoming calls. A rake task should be run every 10 minutes to create Leads: `rake leads:calls:generate_leads[60]`  The parameter to this task indicates how recent call records should be in minutes. Always provide a parameter to this rake task to prevent long running times.
+
+Problems with replication can magnify beyond repair if they are not corrected in a timely fashion. A scheduled rake task performs checks on the CDR database and sends notifications if any problems are found: `rake leads:calls:db_check`
+
 #### BlueSky Configuration
 
-# Environment Variables
 The `CDRDB_URL` for production should look like this:
 
 ```
 CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'
+```
+
+### CDR Recordings
+
+Call recordings in WAV format are synchronized from the Asterisk phone system to an S3 bucket on Amazon.
+
+#### BlueSky Configuration
+
+Integration with this S3 bucket requires the following environment variables to be set:
+
+```
+CDRDB_S3_BUCKET='druidaudio'
+CDRDB_S3_REGION='us-east-2'
+CDRDB_S3_ACCESS_KEY=XXX
+CDRDB_S3_SECRET_KEY=XXX
+```
+
+#### Determine CDR Recording Bucket Usage
+
+A helpful script at `bin/bucket_size` can be used to determine S3 bucket usage. This tool requires the `awscli` tools to be installed, and configuration placed in `~/.aws/credentials`
+
+```
+# ~/.aws/credentials
+
+[asterisk-druidaudio]
+aws_access_key_id = XXX
+aws_secret_access_key = XXX
+region = us-east-2
+```
+
+The following environment variables must be set in `.env`:
+
+```
+CDRDB_S3_BUCKET='druidaudio'
+CDRDB_AWSCLI_PROFILE='asterisk-druidaudio'
+```
+
+#### Amazon Configuration
+
+The access key and secret are credentials assocated with the `asterisk-druidaudio` IAM user.
+
+Access Policy (`druid-S3-druidaudio`):
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucketMultipartUploads",
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "arn:aws:s3:::druidaudio"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObjectAcl",
+                "s3:GetObject",
+                "s3:AbortMultipartUpload",
+                "s3:DeleteObjectVersion",
+                "s3:GetObjectVersionAcl",
+                "s3:DeleteObject",
+                "s3:PutObjectAcl",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::druidaudio/*"
+        }
+    ]
+}
 ```
 
 ### Papertrail
@@ -387,12 +438,14 @@ In staging and production we use ActiveStorage backed by Amazon S3 to store bina
 ```
 # Environment Variables
 ACTIVESTORAGE_S3_BUCKET="druid-prod-activestorage"
-ACTIVESTORAGE_S3_REGION="us-east-2"
+ACTIVESTORAGE_S3_REGION="us-east-1"
 ACTIVESTORAGE_S3_ACCESS_KEY="XXX"
 ACTIVESTORAGE_S3_SECRET_KEY="XXX"
 ```
 
 #### Amazon Configuration
+
+The S3 bucket is configured to block all public access.
 
 The access key and secret are credentials assocated with the `druid-staging-activestorage` or `druid-prod-activestorage` IAM users.
 
@@ -473,11 +526,22 @@ Validate the `mail.druidsite.com` domain.
 
 ### Yardi
 
-Yardi is (historically) used by leasing agents and other employees to manage leads and residents.
+Yardi Voyager  is (historically) used by leasing agents and other employees to manage leads and residents.
 
-An hourly background job imports Lead information into BlueSky. Ensure that the following job is configured:
+Several scheduled jobs import/export information from Yardi Voyager:
 
-Hourly: `rake leads:yardi:import_guestcards`
+```
+|-----------+-----------------------------------------+-------------------------------------------------------------|
+| Frequency | Task                                    | Description                                                 |
+|-----------+-----------------------------------------+-------------------------------------------------------------|
+| 10m       | rake leads:yardi:send_guestcards        | Send claimed Leads to Yardi Voyager                         |
+| Hourly    | rake leads:yardi:import_guestcards[30]  | Fetch New (<30m) Yardi Voyager Guestcards as Leads          |
+| Hourly    | rake unit_types:yardi:import_floorplans | Import/Update Voyager Floorplans                            |
+| Hourly    | rake units:yardi:import_units           | Import/Update Voyager Units                                 |
+| Daily     | rake leads:yardi:import_guestcards      | Fetch all Yardi Voyager Guestcards as Leads                 |
+|-----------+-----------------------------------------+-------------------------------------------------------------|
+```
+
 
 #### BlueSky Configuration
 
@@ -581,35 +645,24 @@ EXCEPTION_RECIPIENTS='example@example.com,example2@example.com' # Required or no
 EXCEPTION_NOTIFIER_ENABLED=true   # Enabled by default
 ```
 
-### CircleCI
-
-Automated tests are performed by CircleCI.
-
-#### Configuration
-
-See `.circleci/config.yml` for configuration.
-
-#### Local Testing
-
-Test build using:
-
-```
-circleci local execute --job build
-```
-
-
 ## Scheduled Tasks
 
 The Heroku Scheduler should be configured to run the following tasks
 
 ```
-|-----------+-------------------------------------+-------------------------------------------------------------|
-| Frequency | Task                                | Description                                                 |
-|-----------+-------------------------------------+-------------------------------------------------------------|
-| 10m       | rake leads:calls:generate_leads[60] | Generate leads from incoming calls in the past 60 minutes   |
-| 10m       | rake leads:yardi:send_guestcards    | Send claimed Leads to Yardi Voyager                         |
-| Hourly    | rake leads:yardi:import_guestcards  | Fetch Yardi Voyager Guestcards as Leads                     |
-| Daily     | rake leads:recordings:cleanup       | Delete calll recordings >2wks old not associated with leads |
-|-----------+-------------------------------------+-------------------------------------------------------------|
+|-----------+-----------------------------------------+-------------------------------------------------------------|
+| Frequency | Task                                    | Description                                                 |
+|-----------+-----------------------------------------+-------------------------------------------------------------|
+| 10m       | rake leads:calls:generate_leads[60]     | Generate leads from incoming calls in the past 60 minutes   |
+| 10m       | rake leads:yardi:send_guestcards        | Send claimed Leads to Yardi Voyager                         |
+| Hourly    | rake cache:warm:all                     | Warm cache for Prospect Stats                               |
+| Hourly    | rake leads:calls:db_check               | Check CDR database for replication issues                   |
+| Hourly    | rake leads:process_followups            | Convert scheduled Follow-ups to Leads                       |
+| Hourly    | rake leads:yardi:import_guestcards[30]  | Fetch New (<30m) Yardi Voyager Guestcards as Leads          |
+| Hourly    | rake unit_types:yardi:import_floorplans | Import/Update Voyager Floorplans                            |
+| Hourly    | rake units:yardi:import_units           | Import/Update Voyager Units                                 |
+| Daily     | rake leads:recordings:cleanup           | Delete calll recordings >2wks old not associated with leads |
+| Daily     | rake leads:yardi:import_guestcards      | Fetch all Yardi Voyager Guestcards as Leads                 |
+|-----------+-----------------------------------------+-------------------------------------------------------------|
 ```
 
