@@ -758,5 +758,34 @@ RSpec.describe Lead, type: :model do
       end
     end
 
+    describe "comments" do
+      describe "contact comments" do
+        let(:lead) {create(:lead)}
+        let(:contact_lead_action) {create(:lead_action, is_contact: true)}
+        let(:non_contact_lead_action) {create(:lead_action, is_contact: false)}
+        let(:reason) { create(:reason)}
+        let(:contact_note) {
+          Note.create!(notable: lead, lead_action: contact_lead_action, reason: reason,
+                      content: "Contact event")
+        }
+        let(:non_contact_note) {
+          Note.create!(notable: lead, lead_action: non_contact_lead_action, reason: reason,
+                      content: "Non-Contact event")
+        }
+
+        it "should update the Lead.last_comm when a contact comment is created" do
+          lead
+          last_contact = lead.last_comm
+          non_contact_note
+          lead.reload
+          expect(lead.last_comm).to eq(last_contact)
+          contact_note
+          lead.reload
+          expect(lead.last_comm).to_not eq(last_contact)
+        end
+
+      end
+    end
+
   end
 end
