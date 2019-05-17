@@ -27,7 +27,7 @@ $(document).on('turbolinks:load', function() {
   var retry_delay_selector_container = $('.retry_delay_selector');
   retry_delay_selector_container.hide();
 
-  var schedule_selectors = $("select[name^='scheduled_action[schedule_attributes]'");
+  var schedule_selectors = $("select[name^='scheduled_action[schedule_attributes]']");
   schedule_selectors.on('change', schedule_conflict_check);
 
   var scheduled_action_completion_action_selector = $('#scheduled_action_completion_action');
