@@ -4,6 +4,7 @@ body {
 
 nav {
   background: #fff !important;
+  border: none !important;
 }
 
 .navbar {
@@ -38,7 +39,7 @@ nav {
 
 
   li .btn-group {
-    margin-right: 5px;
+    margin-right: 0px;
   }
 
   li > .btn {
@@ -46,7 +47,12 @@ nav {
   }
 
   .btn-group .btn {
-    color: white !important;
+    color: #000 !important;
+  }
+
+  .btn-group .btn-primary {
+    background: #fff !important;
+    border: none;
   }
 
 }
