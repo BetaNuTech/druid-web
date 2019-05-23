@@ -1,5 +1,5 @@
 body {
-  padding-top: 60px;
+  padding-top: 135px;
 }
 
 nav {
@@ -7,12 +7,29 @@ nav {
   border: none !important;
 }
 
+#main_navbar {
+  background: url(asset_path("header-background-desktop")) repeat top left !important;
+  background-size: auto;
+  height: 115px;
+  top: -2px;
+  border: 0;
+  margin: 0;
+}
+
+#navbar {
+  position: absolute;
+  bottom: 0;
+}
+
 .navbar {
+  padding-left: 50px;
+
   .container {
     width: auto;
   }
 
   @media (max-width: 700px) {
+
     li {
       margin-left: 50px;
       width: 90%;
@@ -23,18 +40,26 @@ nav {
     }
   }
 
-  .navbar-brand {
-    font-size: 1.5em;
+  li:first-child a.btn {
+    border-top-left-radius: 1em !important;
   }
 
+  li:last-child button.btn {
+    border-top-right-radius: 1em !important;
+  }
 
   li .btn {
     margin-top: 10px;
     font-size: 0.9em;
+    border-radius: 0;
   }
 
   a.btn:link, a.btn:visited {
     color: #000;
+  }
+
+  a.btn, button.btn {
+    margin-top: 0;
   }
 
 
