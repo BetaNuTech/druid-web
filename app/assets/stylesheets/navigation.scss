@@ -1,44 +1,149 @@
-body {
-  padding-top: 60px;
+@media (max-width: 680px) {
+  body {
+    padding-top: 100px;
+  }
 }
 
-nav {
+@media (min-width: 680px) {
+  body {
+    padding-top: 70px;
+  }
+}
+
+@media (min-width: 768px){
+  body {
+    padding-top: 120px;
+  }
+}
+
+#main_navbar {
   background: #fff !important;
+  border: none !important;
+  top: -2px;
+  margin: 0;
+
+  @media (min-width: 768px){
+    height: 115px;
+    background: url(asset_path("header-background-desktop")) repeat top left !important;
+    background-size: auto;
+  }
+
+  @media (max-width: 767px) {
+    background: #aaa !important;
+    background: url(asset_path("header-background-tablet")) repeat top left !important;
+    background-size: auto;
+  }
+
+  .navbar-collapse {
+    max-height: 999px;
+  }
+
+  .navbar-toggle {
+    border: none;
+    padding-top: 20px;
+    background: none;
+    @media (max-width: 680px) {
+      padding-top: 35px;
+    }
+  }
+
+  .navbar-toggle:focus {
+    background: none;
+  }
+
+  .navbar-header {
+    .navbar-branding {
+      float: left;
+      margin: 0;
+      padding: 10px;
+
+      @media (min-width:768px) {
+        padding-top: 20px;
+      }
+
+      .logo {
+        @media (min-width: 680px) {
+          float: left;
+        }
+      }
+
+      .appname {
+        color: white;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 16pt;
+        text-transform: uppercase;
+
+        @media (min-width: 680px) {
+          float: left;
+          border-left: 0.2px solid #fff;
+          margin-left: 30px;
+          padding: 10px 0 0 30px;
+          height: 50px;
+        }
+
+        .part-1 {
+          letter-spacing: 6px;
+          font-weight: bold;
+        }
+
+        .part-2 {
+          letter-spacing: 4px;
+          font-weight: lighter;
+        }
+      }
+
+
+    }
+  }
 }
 
-.navbar {
+#navbar {
+  @media (min-width: 768px){
+    height: 115px;
+    position: absolute;
+    bottom: 0;
+  }
+
+  @media (min-width: 768px){
+    li:first-child a.btn {
+      border-top-left-radius: 1em !important;
+    }
+
+    li:last-child button.btn {
+      border-top-right-radius: 1em !important;
+    }
+  }
+
+
+  .btn-group-vertical {
+    li {
+      border: 1px solid red;
+    }
+  }
+
+  padding-left: 20px;
+
   .container {
     width: auto;
   }
 
-  @media (max-width: 700px) {
-    li {
-      margin-left: 50px;
-      width: 90%;
-    }
-    li a.btn {
-      display: block;
-      width: 250px;
-    }
-  }
-
-  .navbar-brand {
-    font-size: 1.5em;
-  }
-
-
   li .btn {
     margin-top: 10px;
     font-size: 0.9em;
+    border-radius: 0;
   }
 
   a.btn:link, a.btn:visited {
     color: #000;
   }
 
+  a.btn, button.btn {
+    margin-top: 0;
+  }
+
 
   li .btn-group {
-    margin-right: 5px;
+    margin-right: 0px;
   }
 
   li > .btn {
@@ -46,7 +151,31 @@ nav {
   }
 
   .btn-group .btn {
-    color: white !important;
+    color: #000;
   }
 
+  .btn-group .btn-primary {
+    background: #fff;
+    border: none;
+  }
+
+  .dropdown-menu {
+    border: none;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .btn-primary {
+      background: none !important;
+      color: white !important;
+      font-size: 1.2em !important;
+    }
+
+    .dropdown-menu li a {
+      color: white !important;
+      font-size: 1em !important;
+      font-weight: normal !important;
+      line-height: 1em !important;
+    }
+  }
 }
