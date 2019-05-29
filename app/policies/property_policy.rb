@@ -44,6 +44,10 @@ class PropertyPolicy < ApplicationPolicy
     create?
   end
 
+  def create_lead?
+    user.admin? || same_property?
+  end
+
   def duplicate_leads?
     user.admin? || same_property?
   end

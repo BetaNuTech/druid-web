@@ -70,3 +70,30 @@ table.lead_duplicates {
   }
 }
 
+.property_quicklinks {
+  padding: 0.5em 1.5em;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  h2 { margin: 0; }
+
+  h4 {
+    display: inline;
+  }
+
+  h5 {
+    line-height: 1.5em;
+    display: inline;
+  }
+
+  .btn-xs {
+    position: relative;
+    top: -2px;
+  }
+
+  .property_quicklinks-property {
+    padding: 0.25em;
+  }
+
+}
