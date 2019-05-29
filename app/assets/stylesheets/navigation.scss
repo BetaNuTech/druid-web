@@ -24,13 +24,13 @@
 
   @media (min-width: 768px){
     height: 115px;
-    background: url(asset_path("header-background-desktop")) repeat top left !important;
+    background: url(asset_path("header-background-desktop.svg")) repeat top left !important;
     background-size: auto;
   }
 
   @media (max-width: 767px) {
     background: #aaa !important;
-    background: url(asset_path("header-background-tablet")) repeat top left !important;
+    background: url(asset_path("header-background-tablet.svg")) repeat top left !important;
     background-size: auto;
   }
 
