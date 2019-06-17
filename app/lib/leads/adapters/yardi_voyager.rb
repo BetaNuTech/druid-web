@@ -223,10 +223,10 @@ module Leads
 
       def notes_from_guestcard_events(lead:, events: [])
         return ( events || [] ).map do |event|
-          event_type, event_date, event_comment = event
-          event_date_parsed = (DateTime.parse(event_date) rescue nil)
-					event_lead_action_id = lead_action_from_event_type(event_type).try(:id)
-          event_content = event_comment
+          #event_type, event_date, event_comment = event
+          event_date_parsed = (DateTime.parse(event.date) rescue nil)
+					event_lead_action_id = lead_action_from_event_type(event.event_type).try(:id)
+          event_content = event.comments
           if event_date_parsed.nil?
             event_content += " [#{event_date_parsed}]"
           end
@@ -248,6 +248,7 @@ module Leads
 					end
         end.compact
       end
+
 
       def lead_action_from_event_type(event_type)
         action_name = {
