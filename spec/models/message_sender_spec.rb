@@ -22,6 +22,7 @@ RSpec.describe Messages::Sender do
 
   it "sets status and delivery attributes upon delivery of a message" do
     message.deliver
+    refute(message.incoming)
   end
 
 end

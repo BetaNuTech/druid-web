@@ -49,11 +49,11 @@ module Messages
       parse_result = @parser.new(@data).parse
 
       @message = Message.new(parse_result.message)
+      @message.incoming = true
 
       case parse_result.status
       when :ok
-        @message.save
-        create_delivery_record(@message)
+        @message.save && create_delivery_record(@message)
       else
         @message.validate
         parse_result.errors.each do |err|
@@ -88,6 +88,18 @@ module Messages
         delivered_at: message.delivered_at
       )
       message.handle_message_delivery(delivery)
+      return delivery
+    end
+
+    def create_failed_delivery_record(message)
+      delivery = MessageDelivery.create(
+        message: message,
+        message_type: message.message_type,
+        attempt: 1,
+        attempted_at: message.delivered_at,
+        status: MessageDelivery::FAILED,
+        log: message.errors.to_a.join(';')
+      )
       return delivery
     end
 

@@ -19,6 +19,8 @@
 #  threadid            :string
 #  read_at             :datetime
 #  read_by_user_id     :uuid
+#  incoming            :boolean
+#  since_last          :decimal(, )
 #
 
 class Message < ApplicationRecord
@@ -213,7 +215,6 @@ class Message < ApplicationRecord
     delivery = MessageDelivery.create!( message: self, message_type: message_type )
     delivery.perform
     delivery.reload
-    self.delivered_at = delivery.delivered_at
     save!
     if !delivery.success?
       self.fail! unless failed?
@@ -272,14 +273,6 @@ class Message < ApplicationRecord
     return true
   end
 
-  def incoming?
-    return recipientid == outgoing_senderid
-  end
-
-  def outgoing?
-    return senderid == outgoing_senderid
-  end
-
   def sender_name
     return outgoing? ? user.name : messageable.name
   end
@@ -300,5 +293,71 @@ class Message < ApplicationRecord
     messageable&.handle_message_delivery(delivery)
     return true
   end
+
+  def set_missing_incoming_flag
+    return true unless incoming.nil?
+    detect_incoming_from_recipient || detect_outgoing_from_recipient
+    save
+  end
+
+  def outgoing?
+    !incoming?
+  end
+
+  def calculate_time_since_last_message
+    return nil unless messageable.present?
+    # find delivered messages which are of the opposite source
+    skope = messageable.messages.sent.
+      where.not(delivered_at: nil).
+      where("delivered_at < ?", delivered_at)
+    if id.present?
+      skope = skope.where.not(id: id)
+    end
+    last_messages = skope.order(delivered_at: :desc)
+    if last_messages.first&.incoming == incoming
+      return nil
+    else
+      last_message = last_messages.select{|m| m.incoming != incoming}.first
+    end
+    if last_message.present?
+      if self.incoming != last_message.incoming
+        return self.delivered_at.to_i - last_message.delivered_at.to_i
+      else
+        return nil
+      end
+    else
+      return nil
+    end
+  end
+
+  def set_time_since_last_message
+    self.since_last ||= calculate_time_since_last_message
+    return self.since_last
+  end
+
+  private
+
+  def detect_incoming_from_recipient
+    if recipientid.present? && outgoing_senderid.present?
+      if recipientid == outgoing_senderid
+        self.incoming = true
+      end
+      return true
+    else
+      return false
+    end
+  end
+
+  def detect_outgoing_from_recipient
+    if senderid.present? && outgoing_senderid.present?
+      if senderid == outgoing_senderid
+        self.incoming = false
+      end
+      return true
+    else
+      return false
+    end
+  end
+
 
 end

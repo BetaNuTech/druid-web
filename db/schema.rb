@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_26_154132) do
+ActiveRecord::Schema.define(version: 2019_06_18_235701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -293,6 +293,8 @@ ActiveRecord::Schema.define(version: 2019_04_26_154132) do
     t.string "threadid"
     t.datetime "read_at"
     t.uuid "read_by_user_id"
+    t.boolean "incoming"
+    t.integer "since_last"
     t.index ["messageable_type", "messageable_id"], name: "message_messageable"
     t.index ["state"], name: "index_messages_on_state"
     t.index ["threadid"], name: "index_messages_on_threadid"
