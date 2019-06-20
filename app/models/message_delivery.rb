@@ -60,8 +60,7 @@ class MessageDelivery < ApplicationRecord
       refuse_delivery(ALREADY_SENT_MESSAGE)
       return false
     else
-      sender = Messages::Sender.new(self)
-      sender.deliver
+      Messages::Sender.new(self).deliver
       reload
       message.handle_message_delivery(self) if delivered?
       return delivered?

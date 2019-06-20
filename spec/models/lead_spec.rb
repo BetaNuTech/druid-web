@@ -655,7 +655,7 @@ RSpec.describe Lead, type: :model do
         outgoing_sms_message.deliver!
         lead.reload
         expect(lead.last_comm).to_not eq(last_contact)
-        expect(lead.last_comm).to eq(outgoing_sms_message.delivered_at)
+        expect(lead.last_comm.to_i).to eq(outgoing_sms_message.delivered_at.to_i)
       end
 
       it "should update last_contact upon receipt of an email message" do
@@ -778,7 +778,7 @@ RSpec.describe Lead, type: :model do
           last_contact = lead.last_comm
           non_contact_note
           lead.reload
-          expect(lead.last_comm).to eq(last_contact)
+          expect(lead.last_comm.to_i).to eq(last_contact.to_i)
           contact_note
           lead.reload
           expect(lead.last_comm).to_not eq(last_contact)
