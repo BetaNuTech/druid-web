@@ -715,11 +715,11 @@ RSpec.describe Lead, type: :model do
         lead.save!
         lead.reload
         latest_message = lead.messages.order(created_at: :desc).first
-        first_comment = lead.comments.order(created_at: :asc).first
+        first_comment = lead.comments.order(created_at: :asc).to_a[1]
         expect(lead.messages.count).to eq(message_count + 1)
         expect(latest_message).to eq(lead.messages.order(created_at: :desc).first)
         expect(latest_message.subject).to eq(application_email_online.subject)
-        expect(lead.comments.count).to eq(comment_count + 2)
+        expect(lead.comments.count).to eq(comment_count + 3)
         expect(first_comment.content).to eq("SENT: #{application_email_online.name}")
       end
 

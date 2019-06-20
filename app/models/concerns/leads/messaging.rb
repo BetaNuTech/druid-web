@@ -2,7 +2,10 @@ module Leads
   module Messaging
     extend ActiveSupport::Concern
 
+    MESSAGE_DELIVERY_COMMENT_REASON = 'Other'
+
     included do
+
       has_many :messages, as: :messageable, dependent: :destroy
 
       def message_template_data
@@ -108,8 +111,25 @@ module Leads
         )
       end
 
+      def create_message_delivery_comment(message_delivery)
+        msg = message_delivery.message
+        note_content = "%{direction} a %{message_type} message %{tofrom} the Lead" % {
+          direction: msg.incoming? ? "Received" : "Sent",
+          message_type: msg.message_type.name,
+          tofrom: msg.incoming? ? "from" : "to"
+        }
+        note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
+        Note.create(
+          user: user,
+          notable: self,
+          reason: note_reason,
+          content: note_content
+        )
+      end
+
       def handle_message_delivery(message_delivery)
         if message_delivery&.delivered_at.present?
+          create_message_delivery_comment(message_delivery)
           self.last_comm = message_delivery.delivered_at
           save
         end
