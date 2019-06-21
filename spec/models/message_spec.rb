@@ -219,6 +219,18 @@ RSpec.describe Message, type: :model do
     end
   end
 
+  describe "activity" do
+    let(:lead) { create(:lead, user: user)}
+    let(:user) { create(:user)}
+    let(:message1) { Message.new_message(from: user, to: lead, message_type: message_type, body: 'body', subject: 'subject') }
+    it "creates a comment on parent Lead, if present" do
+      expect(Note.count).to eq(0)
+      message1.save
+      message1.deliver
+      expect(Note.count).to eq(1)
+    end
+  end
+
   describe "time since last message" do
     let(:lead) { create(:lead, user: user)}
     let(:user) { create(:user)}
