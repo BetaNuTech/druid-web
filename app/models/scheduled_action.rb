@@ -81,7 +81,7 @@ class ScheduledAction < ApplicationRecord
   def summary
     parts = {
       desc: ( compliance_task? ? "Engagement Policy Task" : "Personal Task" ),
-      action: lead_action.description || lead_action.name,
+      action: lead_action&.description || lead_action&.name,
       schedule: schedule.try(:long_datetime),
       state: state.try(:upcase) || '',
     }
