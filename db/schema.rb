@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_26_154132) do
+ActiveRecord::Schema.define(version: 2019_06_18_235701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(version: 2019_04_26_154132) do
     t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "remoteid"
     t.index ["last_state", "current_state", "created_at"], name: "state_xtn"
     t.index ["last_state", "current_state"], name: "index_lead_transitions_on_last_state_and_current_state"
     t.index ["lead_id"], name: "index_lead_transitions_on_lead_id"
@@ -292,6 +293,8 @@ ActiveRecord::Schema.define(version: 2019_04_26_154132) do
     t.string "threadid"
     t.datetime "read_at"
     t.uuid "read_by_user_id"
+    t.boolean "incoming"
+    t.integer "since_last"
     t.index ["messageable_type", "messageable_id"], name: "message_messageable"
     t.index ["state"], name: "index_messages_on_state"
     t.index ["threadid"], name: "index_messages_on_threadid"
@@ -450,6 +453,7 @@ ActiveRecord::Schema.define(version: 2019_04_26_154132) do
     t.integer "attempt", default: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "remoteid"
     t.index ["originator_id"], name: "index_scheduled_actions_on_originator_id"
     t.index ["target_id", "target_type"], name: "scheduled_action_target"
     t.index ["user_id"], name: "index_scheduled_actions_on_user_id"

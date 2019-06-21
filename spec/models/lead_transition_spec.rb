@@ -10,6 +10,7 @@
 #  memo           :text
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  remoteid       :string
 #
 
 require 'rails_helper'

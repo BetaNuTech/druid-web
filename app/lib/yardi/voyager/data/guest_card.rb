@@ -16,7 +16,7 @@ module Yardi
           :email,
           :phones,
           :expected_move_in, :lease_from, :lease_to,
-          :actual_move_in, :floorplan, :unit, :rent, :bedrooms,
+          :actual_move_in, :floorplan, :unit, :rent, :bedrooms, :bathrooms,
           :preference_comment,
           :events,
           :first_comm,
@@ -36,8 +36,12 @@ module Yardi
           card.property_id = yardi_property_id
           card.email = lead.email
           card.phones = self.voyager_phones_from_lead(lead)
-          card.expected_move_in = lead.preference.move_in.strftime("%Y-%m-%d")
+          card.expected_move_in = lead.preference.move_in.strftime("%Y-%m-%d") rescue nil
+					card.first_comm = lead.first_comm
+					card.bedrooms = lead&.preference&.beds
+					card.bathrooms = lead&.preference&.baths
           card.preference_comment = lead.preference.notes
+          card.events = Yardi::Voyager::Data::GuestCardEvent.from_lead_events(lead)
           return card
         end
 
@@ -45,6 +49,13 @@ module Yardi
           self.from_api_response(response: data, method: 'GetYardiGuestActivity_Login') do |response_data|
             ( response_data.dig('LeadManagement', 'Prospects', 'Prospect') || [] ).
                map{|record| GuestCard.from_guestcard_node(record, filter)}.flatten
+          end
+        end
+
+        def self.from_GetYardiGuestActivitySearch(data, filter=true)
+          self.from_api_response(response: data, method: 'GetYardiGuestActivity_Search') do |response_data|
+            record = response_data.dig('LeadManagement', 'Prospects', 'Prospect') 
+            GuestCard.from_guestcard_node(record, filter)
           end
         end
 
@@ -60,9 +71,23 @@ module Yardi
           self.from_api_response(response: response, method: 'ImportYardiGuest_Login') do |response_data|
             messages = response_data.fetch("Messages",false)
             if messages
-              msgs = Array(messages["Message"]).map do |m|
-                [m.fetch("messageType",'Default'), m.fetch("__content__", "Default")]
+              if messages['Message'].is_a?(Hash)
+                msgs = [messages['Message']]
+              else
+                msgs = messages['Message']
               end
+
+              msgs.map! do |m|
+                next if m.is_a?(String)
+                [m.fetch('messageType','Default'), m.fetch('__content__', 'Default')]
+              end
+              msgs.compact!
+
+              if msgs.any?{|m| m[0] == 'Error'}
+                error_messages = msgs.map{|m| "#{m[0]}: #{m[1]}"}.join(';')
+                raise "ImportYardiGuest server error: #{error_messages}"
+              end
+
               remoteid = msgs.map{|m| m[1].match(/CustomerID: ([a-z0-9]+)$/)[1] rescue nil}.compact.first
             end
             lead.remoteid = remoteid if remoteid.present?
@@ -208,10 +233,20 @@ module Yardi
             end if prospect_preferences['Comment']
 
             if (events = prospect_events.try(:first).try(:last))
-              prospect.events = [ events ].flatten.compact.map{|e| [e["EventType"], e["EventDate"], e["Comments"]] }
+              prospect.events = [events].flatten.compact.map do |e|
+                event = GuestCardEvent.new
+                event.remoteid = e["EventID"]["IDValue"]
+                event.event_type = e["EventType"]
+                event.date = e["EventDate"]
+                event.reasons = e["EventReasons"]
+                event.first_contact = e["FirstContact"]
+                event.comments = e["Comments"]
+                event
+              end
+
               # Lacking a GuestCard creation date, use the first recorded EventDate as the first_comm date
-              first_comm = prospect.events.sort_by{|e| e[1] || ''}.first
-              prospect.first_comm = ( DateTime.parse(first_comm[1]) rescue nil )
+              first_comm = prospect.events.sort_by{|e| e.date}.first
+              prospect.first_comm = ( DateTime.parse(first_comm.date) rescue nil )
             end
 
             prospects << prospect
@@ -220,7 +255,162 @@ module Yardi
           return prospects
         end
 
-        def self.to_xml(lead:, propertyid:)
+        def self.to_xml_2(lead:, propertyid:, include_events: false)
+          organization = Yardi::Voyager::Api::Configuration.new.vendorname
+          agent = lead.user ||
+            lead.property.primary_agent ||
+            User.new(profile: UserProfile.new(first_name: 'None', last_name: 'None'))
+          customer = GuestCard.from_lead(lead, propertyid)
+          builder = Nokogiri::XML::Builder.new do |xml|
+            xml.LeadManagement('xmlns' => '') {
+              xml.Prospects {
+                xml.Prospect {
+                  xml.Customers {
+                    xml.Customer('Type' => 'prospect') {
+                      if lead.remoteid.present?
+                        xml.Identification('IDType' => 'ProspectID', 'IDValue' => lead.remoteid)
+                      else
+                        xml.Identification('IDType' => 'ThirdPartyID', 'IDValue' => lead.shortid, 'OrganizationName' => organization)
+                      end
+
+                      xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => 'Yardi')
+
+                      xml.Name {
+                        xml.NamePrefix customer.name_prefix
+                        xml.FirstName customer.first_name || ' '
+                        xml.MiddleName customer.middle_name
+                        xml.LastName customer.last_name || ' '
+                      }
+
+                      customer.phones.compact.each do |phone|
+                        if phone.first.present?
+                          xml.Phone('PhoneType' => phone[0]) {
+                            xml.PhoneNumber phone[1]
+                          } if phone[1].present?
+                        end
+                      end
+
+                      xml.Email customer.email
+                      if customer.expected_move_in.present? && customer.expected_move_in > ( lead.first_comm + 1.week )
+                        xml.Lease {
+                          xml.ExpectedMoveInDate customer.expected_move_in
+                        }
+                      end
+                    }
+                  }
+
+                  xml.CustomerPreferences {
+                    if customer.expected_move_in.present? &&
+                      customer.expected_move_in > ( lead.first_comm + 1.week )
+                      xml.TargetMoveInDate customer.expected_move_in
+                    end
+                    if ( customer.bedrooms || 0 ) > 0
+                      xml.DesiredNumBedrooms('Exact' => customer.bedrooms.to_i.to_s)
+                    end
+                    if ( customer.bathrooms || 0 ) > 0
+                      xml.DesiredNumBathrooms('Exact' => customer.bathrooms.round.to_s)
+                    end
+                  } if customer.has_preferences?
+
+                  xml.Events {
+                    customer.events.each do |event|
+                      xml.Event('EventType' =>event.event_type, 'EventDate' => event.date.strftime(REMOTE_DATE_FORMAT) ) {
+                        xml.EventID('IDValue' => event.remoteid)
+                        xml.Agent {
+                          xml.AgentName {
+                            xml.FirstName event.agent.fetch(:first_name, '')
+                            xml.LastName event.agent.fetch(:last_name, '')
+                          }
+                        }
+                        xml.EventReasons event.reasons
+                        xml.FirstContact event.first_contact
+                        xml.Comments event.comments
+                        xml.TransactionSource event.transaction_source
+                      }
+                    end
+                  } if include_events
+
+                } # end xml.Prospect
+              } # end xml.Prospects
+            } # end xml.LeadManagement
+          end # Builder
+
+          # Return XML without XML doctype or carriage returns
+          return builder.doc.root.serialize(save_with:0)
+        end
+
+        def self.voyager_phones_from_lead(lead)
+          phones = {office: nil, home: nil, cell: nil}
+          [[lead.phone1, lead.phone1_type],[lead.phone2, lead.phone2_type]].each do |phone|
+            pn, pt = phone
+            next unless pn.present?
+            case pt
+            when 'Cell'
+              phones[:cell] = pn
+            when 'Home'
+              phones[:home] = pn
+            when 'Work'
+              phones[:office] = pn
+            else
+              if phones[:home].present?
+                phones[:office] ||= pn
+              else
+                phones[:home] ||= pn
+              end
+            end
+          end
+          phones[:office] ||= ( phones[:home] || phones[:cell] )
+          phones[:cell] ||= (phones[:home] || phones[:office])
+          phones[:home] ||= (phones[:cell] || phones[:office])
+          return phones.to_a
+        end
+
+        def self.to_csv(guestcards)
+          attrs = GuestCard::ATTRIBUTES
+          row = attrs.map(&:to_s)
+          csv_str = CSV.generate do |csv|
+            csv << row
+            guestcards.each{|card|
+              csv << attrs.map{|col| card.send(col) }
+            }
+          end
+          return csv_str
+        end
+
+				def has_preferences?
+					( expected_move_in.present? &&
+						expected_move_in > ( first_comm + 1.week ) ) ||
+					bathrooms.present? || bedrooms.present?
+				end
+
+        def summary
+          <<~EOS
+            == Yardi Voyager GuestCard ==
+            * Type: #{@record_type}
+            * Name: #{@name_prefix} #{@first_name} #{@middle_name} #{@last_name}
+            * Address: #{@address1} #{@address2} #{@city}, #{@state} #{@postalcode}
+            * Phones: #{@phones.inspect}
+            * Property ID: #{@property_id}
+            * Prospect ID: #{@prospect_id}
+            * Tenant ID: #{@tenant_id}
+            * Third Party ID: #{@third_party_id}
+            * Preferences:
+              - Expected Move In: #{@expected_move_in}
+              - Lease From:       #{@lease_from}
+              - Lease To:         #{@lease_to}
+              - Actual Move In:   #{@actual_move_in}
+              - FloorPlan:        #{@flooplan}
+              - Unit:             #{@unit}
+              - Rent:             #{@rent}
+              - Bedrooms:         #{@bedrooms}
+            * Comment: #{@preference_comment}
+            * Events: #{@events.inspect}
+          EOS
+        end
+
+
+
+        def self.to_xml_1(lead:, propertyid:)
           organization = Yardi::Voyager::Api::Configuration.new.vendorname
           agent = lead.user ||
                   lead.property.primary_agent ||
@@ -317,76 +507,9 @@ module Yardi
           # Return XML without XML doctype or carriage returns
           return builder.doc.root.serialize(save_with:0)
         end
-
-        def self.voyager_phones_from_lead(lead)
-          phones = { office: nil, cell: nil, home: nil, fax: nil }
-          convert_phone_type = lambda { |phone_type|
-            case phone_type
-            when 'Cell'
-              'cell'
-            when 'Home'
-              'home'
-            when 'Work'
-              'office'
-            else
-              'home'
-            end
-          }
-          [[lead.phone1, lead.phone1_type],[lead.phone2, lead.phone2_type]].each do |phone|
-            pn, pt = phone
-            case pt
-            when 'Cell'
-              phones[:cell] = pn
-            when 'Home'
-              phones[:home] = pn
-            when 'Work'
-              phones[:office] = pn
-            end
-          end
-          phones[:office] ||= ( phones[:home] || phones[:cell] )
-          phones[:cell] ||= (phones[:home] || phones[:office])
-          return phones.to_a
-        end
-
-        def self.to_csv(guestcards)
-          attrs = GuestCard::ATTRIBUTES
-          row = attrs.map(&:to_s)
-          csv_str = CSV.generate do |csv|
-            csv << row
-            guestcards.each{|card|
-              csv << attrs.map{|col| card.send(col) }
-            }
-          end
-          return csv_str
-        end
-
-        def summary
-          <<~EOS
-            == Yardi Voyager GuestCard ==
-            * Type: #{@record_type}
-            * Name: #{@name_prefix} #{@first_name} #{@middle_name} #{@last_name}
-            * Address: #{@address1} #{@address2} #{@city}, #{@state} #{@postalcode}
-            * Phones: #{@phones.inspect}
-            * Property ID: #{@property_id}
-            * Prospect ID: #{@prospect_id}
-            * Tenant ID: #{@tenant_id}
-            * Third Party ID: #{@third_party_id}
-            * Preferences:
-              - Expected Move In: #{@expected_move_in}
-              - Lease From:       #{@lease_from}
-              - Lease To:         #{@lease_to}
-              - Actual Move In:   #{@actual_move_in}
-              - FloorPlan:        #{@flooplan}
-              - Unit:             #{@unit}
-              - Rent:             #{@rent}
-              - Bedrooms:         #{@bedrooms}
-            * Comment: #{@preference_comment}
-            * Events: #{@events.inspect}
-          EOS
-        end
-
-
       end
     end
+
+
   end
 end

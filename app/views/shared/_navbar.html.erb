@@ -1,20 +1,28 @@
 <% cache_if current_user.present?, navbar_cache_key do %>
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav id="main_navbar" class="navbar navbar-default navbar-fixed-top">
   <div class="container">
 
     <div class="navbar-header">
 
+      <div class="navbar-branding">
+        <div class="logo">
+          <%= link_to image_tag("bluestone-logo-white.png"), root_path %>
+        </div>
+
+        <div class="appname">
+          <span class="part-1">BlueSky</span>
+          <span class="part-2">Lead Management</span>
+        </div>
+      </div>
+
       <button type="button" class="navbar-toggle collapsed"
-        data-toggle="collapse" data-target="#navbar"
-        aria-expanded="false" aria-controls="navbar">
+          data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-
-      <a class="navbar-brand" href="/"> <span class="glyphicon glyphicon-tree-deciduous" /> </a>
-      <a class="navbar-brand" href="/"> BlueSky LM</a>
 
 			<div id="loader">
 				<div class="cssload-loader">

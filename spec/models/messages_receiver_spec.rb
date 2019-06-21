@@ -27,6 +27,7 @@ RSpec.describe Messages::Receiver do
         expect(new_message.user).to eq(message_user)
         expect(new_message.messageable).to eq(message_lead)
         expect(new_message.threadid).to eq(message_threadid)
+        expect(new_message.incoming?).to be true
 
         expect(Message.count).to eq(message_count + 1)
         expect(MessageDelivery.count).to eq(delivery_count + 1)

@@ -655,7 +655,7 @@ RSpec.describe Lead, type: :model do
         outgoing_sms_message.deliver!
         lead.reload
         expect(lead.last_comm).to_not eq(last_contact)
-        expect(lead.last_comm).to eq(outgoing_sms_message.delivered_at)
+        expect(lead.last_comm.to_i).to eq(outgoing_sms_message.delivered_at.to_i)
       end
 
       it "should update last_contact upon receipt of an email message" do
@@ -715,11 +715,11 @@ RSpec.describe Lead, type: :model do
         lead.save!
         lead.reload
         latest_message = lead.messages.order(created_at: :desc).first
-        first_comment = lead.comments.order(created_at: :asc).first
+        first_comment = lead.comments.order(created_at: :asc).to_a[1]
         expect(lead.messages.count).to eq(message_count + 1)
         expect(latest_message).to eq(lead.messages.order(created_at: :desc).first)
         expect(latest_message.subject).to eq(application_email_online.subject)
-        expect(lead.comments.count).to eq(comment_count + 2)
+        expect(lead.comments.count).to eq(comment_count + 3)
         expect(first_comment.content).to eq("SENT: #{application_email_online.name}")
       end
 
@@ -778,7 +778,7 @@ RSpec.describe Lead, type: :model do
           last_contact = lead.last_comm
           non_contact_note
           lead.reload
-          expect(lead.last_comm).to eq(last_contact)
+          expect(lead.last_comm.to_i).to eq(last_contact.to_i)
           contact_note
           lead.reload
           expect(lead.last_comm).to_not eq(last_contact)

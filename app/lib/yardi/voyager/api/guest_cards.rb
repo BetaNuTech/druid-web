@@ -26,6 +26,44 @@ module Yardi
           return guestcards
         end
 
+        # Find a GuestCard
+        #
+        # Ex: getGuestCard('maplebr', params: {third_party_id: "XXX"}, options: {full_params: true})
+        #
+        # Supported Params: {third_party_id:, first_name:, last_name:, email_address:, phone_number:, date_of_birth:, federal_id: }
+        def getGuestCard(propertyid, params: {}, options: {full_params: true} )
+          all_search_params = {third_party_id: nil, first_name: nil, last_name: nil, email_address: nil, phone_number: nil, date_of_birth: nil, federal_id: nil }
+          search_params = params
+          if options[:full_params] == true
+            search_params = all_search_params.merge(params)
+          end
+
+          if (invalid_params = search_params.keys - all_search_params.keys).present?
+            raise "Invalid param for Yardi::Voyager::Api::GuestCards.getGuestCard: #{invalid_params}"
+          end
+
+          xml_params = search_params.to_a.inject("") do |memo, obj|
+            memo << "<%{key}>%{value}</%{key}>" % {key: obj[0].to_s.classify, value: obj[1]}
+            memo
+          end
+          request_options = {
+            method: 'GetYardiGuestActivity_Search',
+            resource: 'ItfILSGuestCard.asmx',
+            propertyid: propertyid,
+            xml_params: xml_params
+          }.merge(search_params)
+          begin
+            response = getData(request_options)
+            guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivitySearch(response.parsed_response)
+          rescue => e
+            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
+            Rails.logger.error msg
+            ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
+            return []
+          end
+          return guestcards
+        end
+
         # Return GuestCards for the given property id and date window
         def getGuestCardsDateRange(propertyid, start_date: nil, end_date: DateTime.now)
           request_options = {
@@ -48,12 +86,21 @@ module Yardi
           return guestcards
         end
 
-        def sendGuestCard(propertyid:, lead:, dry_run: false)
+        def sendGuestCard(propertyid:, lead:, dry_run: false, include_events: false, version: 2)
+          case version
+          when 2
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, propertyid: propertyid, include_events: include_events)
+          when 1
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_1(lead: lead, propertyid: propertyid)
+          else
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, propertyid: propertyid, include_events: include_events)
+          end
+
           request_options = {
             method: 'ImportYardiGuest_Login',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid,
-            xml: Yardi::Voyager::Data::GuestCard.to_xml(lead: lead, propertyid: propertyid)
+            xml: payload
           }
           begin
             if dry_run
@@ -62,6 +109,9 @@ module Yardi
             else
               response = getData(request_options, dry_run: false)
               updated_lead = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(response: response.parsed_response, lead: lead)
+              if include_events
+                updated_lead = updateLeadEvents(propertyid: propertyid, lead: updated_lead)
+              end
             end
             if updated_lead.present?
               Rails.logger.warn "Yardi::Voyager::Api Submitted Lead:#{updated_lead.id} as Voyager GuestCard:#{updated_lead.remoteid}"
@@ -69,12 +119,73 @@ module Yardi
               Rails.logger.error "Yardi::Voyager::Api Submission of Lead[#{lead.id}] as Voyager GuestCard did not return a Lead as expected"
             end
           rescue => e
-            msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
+            msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            full_msg = msg + " -- #{e.backtrace}"
+            Rails.logger.error msg
+            ErrorNotification.send(StandardError.new(full_msg), {lead_id: lead.id, property_id: lead.property_id})
+            return lead
+          end
+          return updated_lead
+        end
+
+        def updateLeadEvents(propertyid:, lead:)
+          # Do not update associated events if there are issues with the lead
+          unless lead.valid?
+            msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards declines to update events due to Lead validation errors: #{lead.errors.to_a.join('; ')}"
             Rails.logger.error msg
             ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
-          return updated_lead
+
+          guestcard = getGuestCard(propertyid, params: {third_party_id: lead.shortid}).first
+          unless guestcard.present?
+            msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find associated GuestCard for Lead[#{lead.id}]"
+            Rails.logger.error msg
+            ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
+            return lead
+          end
+
+          msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards will update Lead[#{lead.id}] event remote ids"
+          Rails.logger.warn msg
+
+          event_re = /\[([A-Za-z]+):([^\]]+)\]/
+          guestcard.events.each do |guestcard_event|
+            event = nil
+            if (bluesky_event_id = guestcard_event.comments.match(event_re))
+              event_reference, event_class, event_id = bluesky_event_id.to_a
+              begin
+                case event_class
+                when 'LeadTransition'
+                  event = LeadTransition.find event_id
+                when 'ScheduledAction'
+                  event = ScheduledAction.find event_id
+                else
+                  raise ActiveRecord::RecordNotFound
+                end
+              rescue ActiveRecord::RecordNotFound
+                msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find #{event_reference} for GuestCard[#{guestcard.prospect_id}] Event[#{guestcard_event.remoteid}] for BlueSky Lead[#{lead.id}]"
+                Rails.logger.error msg
+              end
+            end
+
+            if event.nil?
+              msg = "#{format_request_id} Voyager Event[#{guestcard_event.remoteid}] for Guestcard[#{guestcard.prospect_id}] does not reference a valid BlueSky Event"
+              Rails.logger.info msg
+              next
+            end
+
+            event.remoteid = guestcard_event.remoteid
+            if event.save
+              msg = "#{format_request_id} #{event.class.name}[#{event.id}] remoteid set to '#{event.remoteid}'"
+              Rails.logger.info msg
+            else
+              msg = "#{format_request_id} #{event.class.name}[#{event.id}] could not be saved: #{event.errors.to_a.join('; ')}"
+              Rails.logger.warn msg
+            end
+
+          end
+
+          return lead
         end
 
         # Call template method depending on method
@@ -84,11 +195,40 @@ module Yardi
             template_GetYardiGuestActivity_Login
           when 'GetYardiGuestActivity_DateRange'
             template_GetYardiGuestActivity_DateRange
+          when 'GetYardiGuestActivity_Search'
+            template_GetYardiGuestActivity_Search
           when 'ImportYardiGuest_Login'
             template_ImportYardiGuest_Login
           else
             template_GetYardiGuestActivity_Login
           end
+        end
+
+        def template_GetYardiGuestActivity_Search
+          body_template = <<~EOS
+            <?xml version="1.0" encoding="utf-8"?>
+            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+              <soap:Body>
+                <%{method} xmlns="http://tempuri.org/YSI.Interfaces.WebServices/ItfILSGuestCard">
+                  <UserName>%{username}</UserName>
+                  <Password>%{password}</Password>
+                  <ServerName>%{servername}</ServerName>
+                  <Database>%{database}</Database>
+                  <Platform>%{platform}</Platform>
+                  <YardiPropertyId>%{propertyid}</YardiPropertyId>
+                  <InterfaceEntity>%{vendorname}</InterfaceEntity>
+                  <InterfaceLicense>%{license}</InterfaceLicense>
+                  %{xml_params}
+                </%{method}>
+              </soap:Body>
+            </soap:Envelope>
+          EOS
+
+          body_template = cleanup_xml(body_template)
+
+          return body_template
         end
 
         def template_GetYardiGuestActivity_Login

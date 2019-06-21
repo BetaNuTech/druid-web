@@ -52,8 +52,11 @@ module Messages
         delivery.delivered_at = DateTime.now
         delivery.status = MessageDelivery::SUCCESS
         delivery.save!
+        delivery.message.incoming = false
+        delivery.message.delivered_at = delivery.delivered_at
         delivery.message.read_at = delivery.delivered_at
         delivery.message.read_by_user_id = delivery.message.user_id
+        delivery.message.set_time_since_last_message
         delivery.message.save
       rescue => e
         delivery.status = MessageDelivery::FAILED

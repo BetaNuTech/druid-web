@@ -12,7 +12,7 @@ class EngagementPolicyScheduler
 
     property = lead.property
     state = lead.state
-    agent = lead.user || lead.property.try(:primary_agent)
+    agent = lead.user || lead.property&.primary_agent
 
     policy = EngagementPolicy.
       latest_version.

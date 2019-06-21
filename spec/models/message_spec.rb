@@ -19,6 +19,8 @@
 #  threadid            :string
 #  read_at             :datetime
 #  read_by_user_id     :uuid
+#  incoming            :boolean
+#  since_last          :decimal(, )
 #
 
 require 'rails_helper'
@@ -201,6 +203,89 @@ RSpec.describe Message, type: :model do
       expect(message.senderid).to_not be_nil
       expect(message.threadid).to_not be_nil
     end
+  end
+
+  describe "message incoming status" do
+    let(:lead) { create(:lead, user: user)}
+    let(:user) { create(:user)}
+    let(:message_type) { create(:email_message_type)}
+    let(:message_template) { create(:message_template, message_type: message_type)}
+    let(:message1) { Message.new_message(from: user, to: lead, message_type: message_type) }
+    let(:message2) { Message.new}
+
+    it "defaults to outgoing" do
+      expect(message1.outgoing?).to be true
+      expect(message2.outgoing?).to be true
+    end
+  end
+
+  describe "activity" do
+    let(:lead) { create(:lead, user: user)}
+    let(:user) { create(:user)}
+    let(:message1) { Message.new_message(from: user, to: lead, message_type: message_type, body: 'body', subject: 'subject') }
+    it "creates a comment on parent Lead, if present" do
+      expect(Note.count).to eq(0)
+      message1.save
+      message1.deliver
+      expect(Note.count).to eq(1)
+    end
+  end
+
+  describe "time since last message" do
+    let(:lead) { create(:lead, user: user)}
+    let(:user) { create(:user)}
+    let(:message1) { Message.new_message(from: user, to: lead, message_type: message_type, body: 'body', subject: 'subject') }
+    let(:message2) { Message.new_message(from: user, to: lead, message_type: message_type, body: 'body', subject: 'subject2') }
+    let(:message_type) { create(:email_message_type)}
+    let(:message_template) { create(:message_template, message_type: message_type)}
+    let(:incoming_message) { create(:message, incoming: true)}
+    let(:outgoing_message) { create(:message, incoming: false)}
+    let(:first_message_delivered) { 1.hour.ago }
+
+    describe "when this is the first message" do
+      it "should set message.since_last to nil" do
+        message1.save
+        message1.deliver
+        message1.reload
+        assert(message1.since_last.nil?)
+      end
+    end
+
+    describe "when this is a reply" do
+      it "should set message.since_last" do
+        first_message = Message.new_message(from: lead, to: user, message_type: message_type, body: 'body', subject: 'subject')
+        first_message.save
+        first_message.state = 'sent'
+        first_message.delivered_at = first_message_delivered
+        first_message.incoming = true
+        first_message.save!
+        message1.save
+        message1.deliver
+        message1.reload
+        refute(message1.incoming)
+        refute(message1.since_last.nil?)
+        expect(message1.since_last).to eq(( message1.delivered_at.to_i - first_message.delivered_at.to_i ))
+      end
+      describe "when this is a second reply" do
+        it "should not set message.since_last" do
+          first_message = Message.new_message(from: lead, to: user, message_type: message_type, body: 'body', subject: 'subject')
+          first_message.save
+          first_message.state = 'sent'
+          first_message.delivered_at = first_message_delivered
+          first_message.incoming = true
+          first_message.save!
+          message1.save
+          message1.deliver
+          message1.save
+          message1.reload
+          message2.save
+          message2.deliver
+          message2.reload
+          assert(message2.since_last.nil?)
+        end
+      end
+    end
+
   end
 
   describe "using the Message.new_reply helper" do
