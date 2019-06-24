@@ -175,7 +175,7 @@ RSpec.describe Lead, type: :model do
       expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify, :postpone].sort)
       lead.claim!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_state_events.sort).to eq([:abandon, :disqualify, :release, :apply, :postpone].sort)
+      expect(lead.permitted_state_events.sort).to eq([:abandon, :disqualify, :release, :apply, :postpone, :show].sort)
       lead.disqualify!
       expect(lead.permitted_state_events).to eq([:requalify])
     end
@@ -184,7 +184,7 @@ RSpec.describe Lead, type: :model do
       expect(lead.permitted_states).to eq([:prospect, :disqualified, :future])
       lead.claim!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_states.sort).to eq([:application, :abandoned, :disqualified, :open, :future].sort)
+      expect(lead.permitted_states.sort).to eq([:showing, :application, :abandoned, :disqualified, :open, :future].sort)
     end
 
     it "lists 'active' leads" do

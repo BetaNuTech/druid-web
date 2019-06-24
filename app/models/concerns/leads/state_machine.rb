@@ -2,8 +2,8 @@ module Leads
   module StateMachine
     extend ActiveSupport::Concern
 
-    PENDING_STATES = %w{open prospect application}
-    CLAIMED_STATES = %w{prospect application approved denied movein resident}
+    PENDING_STATES = %w{open prospect showing application}
+    CLAIMED_STATES = %w{prospect showing application approved denied movein resident}
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
 
     class_methods do
@@ -70,6 +70,7 @@ module Leads
       aasm column: :state do
         state :open, initial: true
         state :prospect
+        state :showing
         state :application
         state :approved
         state :denied
@@ -83,12 +84,16 @@ module Leads
         after_all_events :after_all_events_callback
 
         event :abandon do
-          transitions from: [ :prospect, :application, :approved, :denied ], to: :abandoned,
+          transitions from: [ :prospect, :application, :showing, :approved, :denied ], to: :abandoned,
             after: ->(*args) { event_clear_user(*args); clear_all_tasks }
         end
 
+        event :show do
+          transitions from: [:prospect], to: :showing
+        end
+
         event :apply do
-          transitions from: [:prospect], to: :application,
+          transitions from: [:prospect, :showing], to: :application,
             after: -> (*args) { apply_event_callback },
             guard: :may_apply?
         end
@@ -113,7 +118,7 @@ module Leads
         end
 
         event :disqualify do
-          transitions from: [ :open, :prospect, :application, :denied, :approved, :movein, :resident ], to: :disqualified,
+          transitions from: [ :open, :prospect, :showing, :application, :denied, :approved, :movein, :resident ], to: :disqualified,
             after: ->(*args) { set_priority_zero }
         end
 
