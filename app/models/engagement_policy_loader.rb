@@ -67,7 +67,7 @@ class EngagementPolicyLoader
           active: active
         )
 
-        actions = policy_record[:engagement_policy_actions].map do |action_record|
+        actions = ( policy_record[:engagement_policy_actions] || []).map do |action_record|
           lead_action_name = action_record[:lead_action_name]
           lead_action = LeadAction.where(name: lead_action_name).last
           raise "EngagementPolicyLoader: Invalid LeadAction '#{lead_action_name}'" if lead_action.nil?

@@ -55,7 +55,6 @@ class LeadsController < ApplicationController
   def create
     authorize Lead
     set_lead_source
-    #TODO assign current_user to agent
     lead_creator = Leads::Creator.new(data: lead_params, agent: current_user, token: @lead_source.api_token)
     @lead = lead_creator.execute
 

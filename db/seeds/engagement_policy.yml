@@ -1,6 +1,6 @@
 ---
 :engagement_policy:
-  :version: 2
+  :version: 3
   :data:
     - :version: 1
       :property_name: null
@@ -38,6 +38,12 @@
           :retry_delay_multiplier: none
           :score: 5
           :active: true
+    - :version: 1
+      :property_name: null
+      :lead_state: showing
+      :description: Global Engagement Policy for 'showing' Leads
+      :active: true
+      :engagement_policy_actions:
     - :version: 2
       :property_name: null
       :lead_state: application
