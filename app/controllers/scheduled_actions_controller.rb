@@ -132,6 +132,12 @@ class ScheduledActionsController < ApplicationController
     end
   end
 
+  def update_action_article_options
+    @scheduled_action = ScheduledAction.where(id: params[:scheduled_action_id]).first || ScheduledAction.new
+    authorize @scheduled_action
+    @lead_action = LeadAction.where(id: params[:lead_action_id]).first
+  end
+
   private
     def set_scheduled_action
       @scheduled_action = ScheduledAction.find(params[:id])

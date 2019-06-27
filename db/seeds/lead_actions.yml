@@ -53,8 +53,8 @@
     :glyph: phone
     :is_contact: true
     :active: true
-  - :name: Tour Units
-    :description: Tour units with Lead
+  - :name: Show Unit
+    :description: Show unit to Lead
     :glyph: user
     :is_contact: true
     :active: true

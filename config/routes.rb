@@ -32,17 +32,17 @@ Rails.application.routes.draw do
 
   resources :lead_actions
 
-  #post '/scheduled_actions/conflict_check', to: 'scheduled_actions#conflict_check'
-
   resources :scheduled_actions do
     collection do
       get :conflict_check, to: 'scheduled_actions#conflict_check'
+      get 'update_action_article_options', to: 'scheduled_actions#update_action_article_options'
     end
     member do
       post 'complete', to: 'scheduled_actions#complete'
       get 'completion_form', to: 'scheduled_actions#completion_form'
     end
   end
+
   resources :notes
   resources :reasons
   resources :roles

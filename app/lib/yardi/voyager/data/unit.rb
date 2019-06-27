@@ -4,7 +4,7 @@ module Yardi
       class Unit
         require 'nokogiri'
 
-        attr_accessor :remoteid, :name, :unit_type, :bedrooms, :bathrooms, :sqft, :occupancy, :lease_status, :available_on, :market_rent, :floorplan_name, :floorplan_id
+        attr_accessor :remoteid, :name, :unit_type, :bedrooms, :bathrooms, :sqft, :occupancy, :lease_status, :available_on, :market_rent, :floorplan_name, :floorplan_id, :model
 
         def self.from_UnitAvailability_Login(data)
           self.from_api_response(response: data, method: 'UnitAvailability_Login')
@@ -77,6 +77,7 @@ module Yardi
             unit.market_rent = unit_data['MarketRent'].to_f
             unit.occupancy = unit_data['UnitOccupancyStatus']
             unit.lease_status = unit_data['UnitLeasedStatus']
+            unit.model = unit_data['UnitEconomicStatus'] == 'model'
           end
 
           return unit

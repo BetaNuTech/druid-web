@@ -1,0 +1,4 @@
+<% if @lead_action.present? %>
+  $('div#scheduled_action_article').html('<%= escape_javascript scheduled_action_article_select(scheduled_action: @scheduled_action, action: @lead_action) %>');
+  window.enableSelectize();
+<% end %>

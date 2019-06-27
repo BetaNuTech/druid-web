@@ -18,6 +18,8 @@
 #  created_at                             :datetime         not null
 #  updated_at                             :datetime         not null
 #  remoteid                               :string
+#  article_id                             :uuid
+#  article_type                           :string
 #
 
 class ScheduledAction < ApplicationRecord
@@ -25,26 +27,42 @@ class ScheduledAction < ApplicationRecord
   audited
   acts_as_schedulable :schedule
   include ScheduledActions::Schedule
+  include ScheduledActions::Article
   include ScheduledActions::EngagementPolicy
   include ScheduledActions::StateMachine
 
   ### Constants
   ALLOWED_PARAMS = [
+    :id,
     :impersonate, :user_id, :lead_action_id, :reason_id,
     :description, :completion_message, :completion_action,
     :completion_retry_delay_value, :completion_retry_delay_unit,
-    :target_id, :target_type,
+    :target_id, :target_type, :article_id, :article_type,
     { schedule_attributes: Schedule::ALLOWED_PARAMS }
   ]
 
   ### Associations
+
+  # Owner/responsible party
   belongs_to :user, optional: true
+
+  # Target, usually a Lead
   belongs_to :target, polymorphic: true, optional: true
+
+  # Optional origination ScheduledAction, if this is a follow-up
   belongs_to :originator, class_name: 'ScheduledAction', optional: true
+
+  # Context and Reason for this ScheduledAction
   belongs_to :lead_action, optional: true
   belongs_to :reason, optional: true
+
+  # Optional Policy Action that required this ScheduledAction
   belongs_to :engagement_policy_action, optional: true
+
+  # Policy Action compliance record
   belongs_to :engagement_policy_action_compliance, optional: true, dependent: :destroy
+
+  # Notes/Comments
   has_many :notes, as: :notable, dependent: :destroy
 
   ### Scopes
@@ -87,6 +105,18 @@ class ScheduledAction < ApplicationRecord
       state: state.try(:upcase) || '',
     }
     return "%{desc}: %{action} by %{schedule} [%{state}] " % parts
+  end
+
+  def activity_summary
+    parts = {
+      action: lead_action&.name,
+      article: article.present? ? ( ' ' + article.name ) : '',
+      target: target&.name,
+      desc: description.present? ? ": #{description}" : '',
+      state: state&.upcase
+    }
+    summary = "%{action}%{article} for %{target}%{desc} [%{state}]" % parts
+    return summary.gsub('  ',' ')
   end
 
   def conflicting

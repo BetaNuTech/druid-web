@@ -38,12 +38,28 @@
           :retry_delay_multiplier: none
           :score: 5
           :active: true
-    - :version: 1
+    - :version: 2
       :property_name: null
       :lead_state: showing
       :description: Global Engagement Policy for 'showing' Leads
       :active: true
       :engagement_policy_actions:
+        - :lead_action_name: Schedule Appointment
+          :description: Schedule showing appointment with Lead
+          :deadline: 24
+          :retry_count: 4
+          :retry_delay: 12
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+        - :lead_action_name: Show Unit
+          :description: Show unit to Lead
+          :deadline: 48
+          :retry_count: 4
+          :retry_delay: 4
+          :retry_delay_multiplier: none
+          :score: 5
+          :active: true
     - :version: 2
       :property_name: null
       :lead_state: application

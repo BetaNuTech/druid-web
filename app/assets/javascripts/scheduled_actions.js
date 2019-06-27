@@ -40,5 +40,18 @@ $(document).on('turbolinks:load', function() {
       retry_delay_selector_container.hide();
     }
   });
+
+  var scheduled_action_lead_action_selector = $("select[name='scheduled_action[lead_action_id]']");
+  scheduled_action_lead_action_selector.on('change', function(e){
+    var scheduled_action_id = $('#scheduled_action_id').val();
+    var lead_action_id = $('#scheduled_action_lead_action_id').val();
+    var url = '/scheduled_actions/update_action_article_options.js&scheduled_action_id=' + scheduled_action_id + '?lead_action_id=' + lead_action_id;
+    $.ajax({
+      url: url,
+      dataType: 'script',
+      success: ''
+    })
+  })
+
   schedule_conflict_check();
 });

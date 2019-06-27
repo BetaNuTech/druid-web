@@ -78,4 +78,38 @@ module ScheduledActionsHelper
     return options_for_select(options, ( schedule.try(:duration) || 0 ))
   end
 
+  def scheduled_action_article_select(scheduled_action:, action: nil)
+    config = scheduled_action.article_select_config(action: action)
+    return '' unless config
+    content_tag(:div, id: 'scheduled_action_article_select') do
+      concat hidden_field_tag('scheduled_action[article_type]', config[:class])
+
+      if config[:options_grouped]
+        select_options = scheduled_action_article_grouped_select_options( scheduled_action: scheduled_action, action: action)
+      else
+        select_options = scheduled_action_article_select_options( scheduled_action: scheduled_action, action: action)
+      end
+      concat select_tag('scheduled_action[article_id]',
+                 select_options,
+                 class: 'form-control selectize-nocreate',
+                 prompt: config[:prompt])
+    end
+  end
+
+  def scheduled_action_article_select_options(scheduled_action:, action:)
+    config = scheduled_action.article_select_config(action: action)
+    collection = config[:options].call( current_user: current_user, target: scheduled_action.target)
+    options_from_collection_for_select(collection, 'id', config[:record_descriptor], scheduled_action.article&.id)
+  end
+
+  def scheduled_action_article_grouped_select_options(scheduled_action:, action:)
+    config = scheduled_action.article_select_config(action: action)
+    collection = config[:options].call( current_user: current_user, target: scheduled_action.target, grouped: true)
+    collection_for_select = collection.keys.inject({}) do |memo, key|
+      memo[key] = collection[key].map{|a| [a.send(config[:record_descriptor]), a.id] }
+      memo
+    end
+    grouped_options_for_select(collection_for_select, scheduled_action.article&.id)
+  end
+
 end

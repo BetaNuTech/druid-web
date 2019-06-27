@@ -18,6 +18,8 @@
 #  created_at                             :datetime         not null
 #  updated_at                             :datetime         not null
 #  remoteid                               :string
+#  article_id                             :uuid
+#  article_type                           :string
 #
 
 require 'rails_helper'

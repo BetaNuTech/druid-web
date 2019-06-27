@@ -221,7 +221,7 @@ EOS
 
   def agent_status_json
     skope = User.includes(:properties)
-    if @user_ids.present?
+    if filter_by_agent?
       skope = skope.where(id: @user_ids)
     end
     if filter_by_property?
@@ -258,7 +258,7 @@ EOS
 
   def notes_created(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
     notes = Note.where( notable_type: 'Lead', created_at: (start_date..end_date))
-    if @user_ids.present?
+    if filter_by_agent?
       notes = notes.where(user_id: @user_ids)
     end
     if filter_by_property?
@@ -283,35 +283,36 @@ EOS
     }
   end
 
+
   def completed_tasks(start_date: 48.hours.ago, end_date: DateTime.now)
-    tasks = EngagementPolicyActionCompliance.
-        includes(:scheduled_action).
+    # Completed Lead tasks
+    tasks = ScheduledAction.
         where( state: [:completed, :completed_retry],
                completed_at: (start_date..end_date),
-               scheduled_actions: {target_type: 'Lead'}
+               target_type: 'Lead'
              )
-    if @user_ids.present?
+    if filter_by_agent?
       tasks = tasks.where(user_id: @user_ids)
     end
     if filter_by_property?
-      tasks = tasks.joins("INNER JOIN team_users ON team_users.user_id = engagement_policy_action_compliances.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )")
+      tasks = tasks.joins("INNER JOIN leads ON leads.user_id = scheduled_actions.user_id AND leads.property_id IN #{property_ids_sql}")
     end
     return tasks
   end
 
   def completed_tasks_json(start_date: 48.hours.ago, end_date: DateTime.now)
-    return completed_tasks(start_date: start_date, end_date: end_date).map{|task|
-      desc = ( task.scheduled_action.try(:lead_action).try(:description) || '(Unknown Lead Action)' ) + " " + task.memo
+    return completed_tasks(start_date: start_date, end_date: end_date).map{|scheduled_action|
+      desc = scheduled_action.activity_summary
       ActivityEntry.new(
         entry_type: 'Task',
-        raw_date: task.completed_at,
-        date: task.completed_at.strftime("%h %d %I:%M%p"),
-        link: "/scheduled_actions/#{task.scheduled_action_id}/completion_form",
-        description: ( task.scheduled_action.try(:lead_action).try(:description) || '(Unknown Lead Action)' ) + " " + task.memo,
-        lead_name: task.scheduled_action.target.name,
-        lead_id: task.scheduled_action.target_id,
-        agent_name: task.user.try(:name),
-        agent_id: task.user_id
+        raw_date: scheduled_action.completed_at,
+        date: scheduled_action.completed_at.strftime("%h %d %I:%M%p"),
+        link: "/scheduled_actions/#{scheduled_action.id}/completion_form",
+        description: desc,
+        lead_name: scheduled_action.target.name,
+        lead_id: scheduled_action.target_id,
+        agent_name: scheduled_action.user.try(:name),
+        agent_id: scheduled_action.user_id
       ).to_h
     }
   end
@@ -320,7 +321,7 @@ EOS
     messages = Message.where(
       delivered_at: (start_date..end_date),
       messageable_type: 'Lead')
-    if @user_ids.present?
+    if filter_by_agent?
       messages = messages.where(user_id: @user_ids)
     end
     if filter_by_property?
@@ -351,7 +352,7 @@ EOS
       if filter_by_property?
         transitions = transitions.includes(lead: [:property]).where(properties: {id: [property_ids_for_filter]})
       end
-      if @user_ids.present?
+      if filter_by_agent?
         transitions = transitions.includes(:lead).where(leads: {user_id: @user_ids})
       end
     end
@@ -379,6 +380,10 @@ EOS
 
   def filter_by_property?
     return (@property_ids.present? || @team_ids.present?)
+  end
+
+  def filter_by_agent?
+    return @user_ids.present?
   end
 
   def property_ids_for_filter
