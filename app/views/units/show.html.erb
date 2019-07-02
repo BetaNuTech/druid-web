@@ -38,10 +38,19 @@
               <%= @unit.rental_type_name %>
             </p>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <p>
               <strong>Unit Type:</strong>
               <%= @unit.unit_type_name %>
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <p>
+              <strong>Model Unit?:</strong>
+              <%= @unit.model? ? 'Yes' : 'No' %>
             </p>
           </div>
         </div>
@@ -147,8 +156,8 @@
 
         <div class="row">
           <div class="col-md-4">
-            <%= link_to 'Edit', edit_property_unit_path(@unit.property, @unit) %> |
-            <%= link_to 'Back', property_units_path(property_id: @unit.property.id) %>
+            <%= link_to 'Edit', edit_property_unit_path(@unit.property, @unit), class: 'btn btn-sm btn-primary' %>
+            <%= link_to 'Back', :back, class: 'btn btn-xs btn-info' %>
           </div>
         </div>
 

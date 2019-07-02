@@ -20,7 +20,7 @@
 #  read_at             :datetime
 #  read_by_user_id     :uuid
 #  incoming            :boolean
-#  since_last          :decimal(, )
+#  since_last          :integer
 #
 
 FactoryBot.define do

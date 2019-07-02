@@ -2,7 +2,7 @@
   <div class="row" >
     <div class="col-md-12" class="dropdown">
       <ul id="crumbs">
-        <% state_options = %w{open prospect application movein resident} %>
+        <% state_options = %w{open prospect showing application movein resident} %>
         <% is_other_state = (! state_options.include?(lead.state)) %>
         <% if is_other_state %>
           <li class="crumb">

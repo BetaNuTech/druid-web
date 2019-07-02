@@ -25,11 +25,12 @@
 #  lease_status   :string           default("available")
 #  available_on   :date
 #  market_rent    :decimal(, )      default(0.0)
+#  model          :boolean          default(FALSE)
 #
 
 class Unit < ApplicationRecord
   ### Constants
-  ALLOWED_PARAMS = [:id, :property_id, :unit_type_id, :rental_type_id, :unit, :floor, :sqft, :bedrooms, :address1, :address2, :city, :state, :zipcode, :country, :bathrooms, :occupancy, :lease_status, :available_on, :market_rent]
+  ALLOWED_PARAMS = [:id, :property_id, :unit_type_id, :rental_type_id, :unit, :floor, :sqft, :bedrooms, :address1, :address2, :city, :state, :zipcode, :country, :bathrooms, :occupancy, :lease_status, :available_on, :market_rent, :model]
   OCCUPANCY_STATUSES = ['occupied', 'vacant']
   LEASE_STATUSES = ['available', 'leased', 'leased_reserved', 'on_notice', 'other', 'nosale']
 
@@ -53,6 +54,9 @@ class Unit < ApplicationRecord
   validates :unit, presence: true, uniqueness: { case_sensitive: false, scope: :property_id }
   validates :floor, numericality: {greater_than_or_equal_to: 1}, if: Proc.new{|unit| unit.floor.present?}
 
+  ### Scopes
+  scope :vacant, -> { where(occupancy: 'vacant').order(model: :desc, occupancy: :desc, unit: :asc) }
+
   ### Class Methods
 
   def self.occupied
@@ -60,4 +64,13 @@ class Unit < ApplicationRecord
   end
 
   ### Instance Methods
+
+  def name
+    unit
+  end
+
+  def display_name
+    model_str = model? ? ' Model' : ''
+    "%s%s %s" % [unit, model_str, unit_type&.name]
+  end
 end

@@ -2,9 +2,10 @@
   <td><%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %></td>
   <td class="dashboard_item_date"><%= short_datetime(scheduled_action.schedule.to_datetime) %></td>
   <td>
-    <%= scheduled_action.description %>
+    <%= action_and_reason(scheduled_action) %><br/>
+     <%= scheduled_action.description %>
     <% unless scheduled_action.target == current_user %>
-      : <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span>
+      <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span>
     <% end %>
   </td>
   <td class="text-nowrap">

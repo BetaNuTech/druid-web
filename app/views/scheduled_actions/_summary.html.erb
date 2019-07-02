@@ -1,8 +1,15 @@
 <div class="row">
   <div class="col-md-12">
     <p class="lead">
-      <%= scheduled_action.description %>
+      <%= scheduled_action.lead_action.name %>
+      <% if scheduled_action.article.present? %>
+        <%= link_to(scheduled_action.article.name, url_for(scheduled_action.article)) %>
+      <% end %>
     </p>
+
+    <blockquote>
+      <%= scheduled_action.description %>
+    </blockquote>
 
     <p>
       <strong>Due:</strong> <%= scheduled_action.schedule.long_datetime %>

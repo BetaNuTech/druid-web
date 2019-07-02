@@ -9,8 +9,11 @@ class UnitsController < ApplicationController
     authorize Unit
     @units = unit_scope
     property_id = params[:property_id] || current_user.property&.id
-    if property_id.present?
-      @units = @units.where(property_id: property_id)
+    @property = Property.where(id: property_id).first
+    if @property.present?
+      @units = @units.where(property_id: property_id).
+        joins("right outer join unit_types on unit_types.id = units.unit_type_id").
+        order("units.model desc, units.occupancy desc, unit_types.name asc, units.lease_status asc, units.unit asc")
     else
       @units = Unit.where("1=0")
     end

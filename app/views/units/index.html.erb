@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6">
-      <h1>Units</h1>
+      <h1>Units at <%= @property.name %></h1>
     </div>
     <% if policy(Unit).new? %>
       <div class="col-md-6 text-right">
@@ -17,35 +17,31 @@
         No Units found
       </p>
     <% end %>
-      <table class="table">
+      <table class="table dataTable">
         <thead>
           <tr>
-            <th>Property</th>
-            <th></th>
-            <th>Unit Type</th>
-            <th>Rental Type</th>
             <th>Unit</th>
-            <th>Sqft</th>
-            <th>Bedrooms</th>
-            <th>Address</th>
+            <th>Unit Type / Floorplan</th>
+            <th>Occupancy</th>
+            <th>Availability</th>
+            <th>Size</th>
+            <th>Beds</th>
             <th></th>
           </tr>
         </thead>
 
         <tbody>
-          <% @units.all.each do |unit| %>
+          <% @units.each do |unit| %>
             <tr class="<%= unit_occupancy_class(unit) %>">
-              <td><%= link_to(unit.property_name, property_path(unit.property)) %></td>
+              <td><%= unit.unit %> <b><%= "MODEL" if unit.model? %></b></td>
+              <td><%= unit.unit_type_name %></td>
               <td>
                 <%= unit_occupancy_icon(unit) %>
                 <%= unit.occupancy.try(:humanize) %>:<%= unit.lease_status.try(:humanize) %>
               </td>
-              <td><%= unit.unit_type_name %></td>
-              <td><%= unit.rental_type_name %></td>
-              <td><%= unit.unit %></td>
-              <td><%= unit.sqft %></td>
+              <td><%= unit.available_on %></td>
+              <td><%= unit.sqft %> ft<sup>2</sup></td>
               <td><%= unit.bedrooms %></td>
-              <td><%= unit.address1 %></td>
               <td>
                 <%= link_to unit do %><%= glyph(:show) %><% end if policy(unit).show? %>&nbsp;
                 <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end if policy(unit).edit? %>&nbsp;
@@ -56,13 +52,6 @@
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="row">
-    <% if policy(Unit).new? %>
-      <div class="col-md-12 text-right">
-        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path), class: "btn btn-sm btn-primary"  %>
-      </div>
-    <% end %>
   </div>
 </div>
 

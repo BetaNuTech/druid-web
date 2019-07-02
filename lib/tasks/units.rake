@@ -3,8 +3,16 @@ namespace :units do
     desc "Import Units"
     task :import_units => :environment do
 
-      Leads::Adapters::YardiVoyager.property_codes.each do |property|
-        # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
+      properties = Leads::Adapters::YardiVoyager.property_codes
+
+      if ( env_property = ENV.fetch('PROPERTY', nil) ).present?
+        property = properties.select{|p| p[:code] == env_property}
+        if property.present?
+          properties = property
+        end
+      end
+
+      properties.each do |property|
 
         msg = " * Importing Yardi Voyager Units for #{property[:name]} [YARDI ID: #{property[:code]}] as Units"
         puts msg

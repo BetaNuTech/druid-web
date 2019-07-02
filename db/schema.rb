@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_18_235701) do
+ActiveRecord::Schema.define(version: 2019_07_01_185206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -454,6 +454,9 @@ ActiveRecord::Schema.define(version: 2019_06_18_235701) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "remoteid"
+    t.uuid "article_id"
+    t.string "article_type"
+    t.index ["article_type", "article_id"], name: "scheduled_actions_article_idx"
     t.index ["originator_id"], name: "index_scheduled_actions_on_originator_id"
     t.index ["target_id", "target_type"], name: "scheduled_action_target"
     t.index ["user_id"], name: "index_scheduled_actions_on_user_id"
@@ -540,6 +543,7 @@ ActiveRecord::Schema.define(version: 2019_06_18_235701) do
     t.string "lease_status", default: "available"
     t.date "available_on"
     t.decimal "market_rent", default: "0.0"
+    t.boolean "model", default: false
     t.index ["property_id", "unit"], name: "index_units_on_property_id_and_unit", unique: true
     t.index ["remoteid"], name: "index_units_on_remoteid"
   end

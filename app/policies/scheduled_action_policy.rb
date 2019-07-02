@@ -49,6 +49,10 @@ class ScheduledActionPolicy < ApplicationPolicy
     edit?
   end
 
+  def update_action_article_options?
+    edit?
+  end
+
   def completion_form?
     same_user? ||
       user.manager? ||

@@ -119,6 +119,7 @@ module Leads
         unit.lease_status = yardi_unit.lease_status
         unit.occupancy = yardi_unit.occupancy
         unit.available_on = yardi_unit.available_on
+        unit.model = yardi_unit.model
 
         return unit
       end

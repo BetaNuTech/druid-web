@@ -49,6 +49,19 @@ module ApplicationHelper
     content_tag(:small) do
       content_tag(:span) do
         concat content_tag(:span, record&.lead_action&.name)
+        if record.respond_to?(:article_selectable?)
+          if record.article.present?
+            concat ": "
+            concat(content_tag(:span) do
+              link_to(record.article.name, url_for(record.article))
+            end)
+          else
+            if record.article_selectable? && policy(record).edit?
+              concat '&nbsp;'.html_safe
+              concat link_to("Select", url_for(action: :edit, controller: record.class.name.pluralize.underscore, id: record.id), class: "btn btn-xs btn-primary")
+            end
+          end
+        end
         if record&.reason&.present?
           if record&.lead_action&.present?
             concat content_tag(:span, ' &rarr; '.html_safe)

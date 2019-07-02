@@ -22,13 +22,22 @@
       </div>
 
       <div class="row">
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-4">
           <%= form.label :unit_type_id %>
           <%= form.select :unit_type_id, select_unit_type(@unit.unit_type_id), {include_blank: true}, { id: :unit_unit_type_id, class: "form-control" } %>
         </div>
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-4">
           <%= form.label :rental_type_id %>
           <%= form.select :rental_type_id, select_rental_type(@unit.rental_type_id), {include_blank: false}, { id: :unit_rental_type_id, class: "form-control" } %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group col-md-4">
+          <div class="form-check-label">
+            <%= form.label :model, 'Model Unit?' %>
+            <%= form.check_box :model, class: 'form-check-input' %>
+          </div>
         </div>
       </div>
 

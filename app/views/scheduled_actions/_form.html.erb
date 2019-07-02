@@ -11,9 +11,7 @@
     </div>
   <% end %>
 
-  <%#= form.hidden_field :notable_id, id: :scheduled_action_notable_id %>
-  <%#= form.hidden_field :notable_type, id: :scheduled_action_notable_type %>
-  <%= form.hidden_field :id %>
+  <%= form.hidden_field :id, id: 'scheduled_action_id' %>
   <%= form.hidden_field :target_id %>
   <%= form.hidden_field :target_type %>
 
@@ -21,14 +19,21 @@
     <div class="col-md-6">
       <strong>Subject</strong><br/>
       <p class="lead">
-        <%= scheduled_action.target.try(:name) || 'Personal Task' %>
+        <% if scheduled_action.target.present? %>
+          <%= scheduled_action.target.name %> <i>(<%= scheduled_action.target_type.humanize %>)</i>
+        <% else %>
+          Personal Task
+        <% end %>
       </p>
     </div>
   </div>
   <div class="row">
     <div class="col-md-4 form-group">
       <%= form.label :lead_action_id, "Action" %>
-      <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id), {include_blank: true},{id: :scheduled_action_action, class: "form-control"} %>
+      <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id), {include_blank: true},{id: :scheduled_action_lead_action_id, class: "form-control"} %>
+      <div id="scheduled_action_article">
+        <%= scheduled_action_article_select(scheduled_action: scheduled_action, action: scheduled_action.lead_action) if scheduled_action.lead_action.present? %>
+      </div>
     </div>
     <div class="col-md-4 form-group">
       <%= form.label :reason_id, "Reason" %>
