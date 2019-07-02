@@ -16,16 +16,12 @@ module ScheduledActions
           options_grouped: true,
           options: -> ( current_user:, target:, vacant: true, grouped: false ) {
             units = []
-            policy_scope = UnitPolicy::Scope.new(current_user, Unit).resolve
+            skope = Unit
             case target
-            when User
-              skope = policy_scope
             when Lead
-              skope = policy_scope.where(property_id: target.property_id)
+              skope = skope.where(property_id: target.property_id)
             when Property
-              skope = policy_scope.where(property_id: target.id)
-            else
-              skope = policy_scope
+              skope = skope.where(property_id: target.id)
             end
             if vacant
               collection = skope.vacant

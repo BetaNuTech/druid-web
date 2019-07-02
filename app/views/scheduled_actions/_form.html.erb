@@ -12,8 +12,8 @@
   <% end %>
 
   <%= form.hidden_field :id, id: 'scheduled_action_id' %>
-  <%= form.hidden_field :target_id %>
-  <%= form.hidden_field :target_type %>
+  <%= form.hidden_field :target_id, id: 'scheduled_action_target_id' %>
+  <%= form.hidden_field :target_type, id: 'scheduled_action_target_type' %>
 
   <div class="row">
     <div class="col-md-6">
