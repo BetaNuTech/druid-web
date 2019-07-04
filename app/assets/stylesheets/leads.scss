@@ -145,7 +145,6 @@ table#leads-table {
     grid-template-areas:
       "LeadPriority LeadPriority LeadPriority"
       "LeadControls LeadControls LeadControls"
-      "LeadActions LeadActions LeadActions"
       "LeadContact LeadProperty LeadPreferences"
       "LeadNotes LeadNotes LeadNotes"
       "LeadDuplicates LeadDuplicates LeadDuplicates"
@@ -193,4 +192,9 @@ span.missing_lead_email {
 
 h3#lead_state_name {
   margin-bottom: 3px;
+}
+
+div.state_toggle {
+  //width: 620px;
+  margin: 0px auto;
 }

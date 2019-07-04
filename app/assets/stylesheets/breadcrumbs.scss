@@ -1,6 +1,7 @@
 ul#crumbs {
   list-style: none;
   display: inline-table;
+  padding: 0;
 
   ul.dropdown-menu {
     left: 50px;
@@ -21,21 +22,21 @@ ul#crumbs {
     a.crumb-link {
       display: block;
       float: left;
-      height: 40px;
+      height: 25px;
       text-align: center;
-      padding: 7px 10px 0 30px;
+      padding: 2px 6px 0 26px;
       position: relative;
-      margin: 5px 10px 10px 0;
-      font-size: 20px;
+      margin: 5px 10px 0 0;
+      font-size: 14px;
       text-decoration: none;
       color: #fff;
     }
 
     a.crumb-link:after {
       content: "";
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-left: 20px solid #3498db;
+      border-top: 13px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-left: 12px solid #3498db;
       position: absolute; right: -20px; top: 0;
       z-index: 1;
     }
@@ -50,8 +51,8 @@ ul#crumbs {
 
     a.crumb-link:before {
       content: "";
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
+      border-top: 13px solid transparent;
+      border-bottom: 12px solid transparent;
       border-left: 20px solid #fff;
       position: absolute; left: 0; top: 0;
     }
@@ -61,15 +62,18 @@ ul#crumbs {
 
   li.crumb:first-child {
     a.crumb-link {
-      border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+      border-top-left-radius: 16px;
+      border-bottom-left-radius: 16px;
+      padding-left: 12px;
     }
     a.crumb-link:before { display: none; }
   }
 
   li.crumb:last-child  {
     a.crumb-link {
-      padding-right: 30px;
-      border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+      padding-right: 12px;
+      border-top-right-radius: 16px;
+      border-bottom-right-radius: 16px;
     }
     a.crumb-link:after { display: none; }
   }
