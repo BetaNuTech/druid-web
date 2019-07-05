@@ -1,5 +1,7 @@
 class ProspectStats
   CACHE_DURATION = 1.hour
+  CLOSING_STATE = 'application'
+  CONVERSION_STATE = 'showing'
 
   attr_reader :ids, :filters, :end_date
   attr_accessor :caching
@@ -203,7 +205,7 @@ class ProspectStats
     return cache(stat: 'conversion_rate', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
-        current_state: 'application',
+        current_state: CONVERSION_STATE,
         created_at: time_window_range(window)
       }).count
       calculate_lead_pctg(count, skope, window)
@@ -215,7 +217,7 @@ class ProspectStats
     return cache(stat: 'conversion_rate_all', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
-        current_state: 'application',
+        current_state: CONVERSION_STATE,
         created_at: time_window_range(window)
       }).count
       calculate_lead_pctg_all(count, skope, window)
@@ -227,7 +229,7 @@ class ProspectStats
     return cache(stat: 'closing_rate', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
-        current_state: 'movein',
+        current_state: CLOSING_STATE,
         created_at: time_window_range(window)
       }).count
       calculate_lead_pctg(count, skope, window)
@@ -239,7 +241,7 @@ class ProspectStats
     return cache(stat: 'closing_rate_all', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
         where(lead_transitions: {
-        current_state: 'movein',
+        current_state: CLOSING_STATE,
         created_at: time_window_range(window)
       }).count
       calculate_lead_pctg_all(count, skope, window)
