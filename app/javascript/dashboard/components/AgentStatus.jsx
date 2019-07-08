@@ -29,6 +29,7 @@ class AgentStatus extends React.Component {
         <td>
           <em>Completed:</em> {d.tasks_completed}<br/>
           <em>Pending:</em> {d.tasks_pending}<br/>
+          <em>On Time:</em> {d.task_completion_rate * 100}%<br/>
         </td>
         <td>
           <em>Claimed:</em>&nbsp;

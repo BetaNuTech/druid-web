@@ -237,6 +237,7 @@ EOS
             weekly_score: user.weekly_score,
             tasks_completed: user.tasks_completed.count,
             tasks_pending: user.tasks_pending.count,
+            task_completion_rate: user.task_completion_rate,
             claimed_leads: user.claimed_leads.count,
             closed_leads: user.closed_leads.count,
             url: "/users/#{user.id}"
