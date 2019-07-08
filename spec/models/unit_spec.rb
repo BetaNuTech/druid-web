@@ -62,7 +62,7 @@ RSpec.describe Unit, type: :model do
   end
 
   it "has ALLOWED_PARAMS" do
-    expect(Unit::ALLOWED_PARAMS.sort).to eq([:id, :property_id, :unit_type_id, :rental_type_id, :unit, :floor, :sqft, :bedrooms, :bathrooms, :occupancy, :lease_status, :available_on, :market_rent,  :address1, :address2, :city, :state, :zipcode, :country].sort)
+    expect(Unit::ALLOWED_PARAMS.sort).to eq([:id, :property_id, :unit_type_id, :rental_type_id, :unit, :floor, :sqft, :bedrooms, :bathrooms, :occupancy, :lease_status, :available_on, :market_rent,  :address1, :address2, :city, :state, :zipcode, :country, :model].sort)
   end
 
   describe "associations" do

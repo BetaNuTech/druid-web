@@ -40,6 +40,8 @@ RSpec.describe UnitsController, type: :controller do
 
     describe "as an corporate" do
       it "should succeed" do
+        property.assign_user(user: corporate, role: 'manager')
+        corporate.reload
         sign_in corporate
         get :index
         expect(response).to be_successful
@@ -49,6 +51,8 @@ RSpec.describe UnitsController, type: :controller do
     describe "as an administrator" do
       it "should succeed" do
         sign_in administrator
+        property.assign_user(user: administrator, role: 'manager')
+        corporate.reload
         get :index
         expect(response).to be_successful
       end
