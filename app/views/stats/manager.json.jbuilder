@@ -18,6 +18,18 @@ json.data do
     end
   end
 
+  json.agent_conversion_rates do
+    json.data do
+      json.series @stats.agent_conversion_rates_json
+    end
+  end
+
+  json.referral_conversion_rates do
+    json.data do
+      json.series @stats.referral_conversion_rates_json
+    end
+  end
+
   json.property_leads do
     json.data do
       json.series @stats.property_leads_json

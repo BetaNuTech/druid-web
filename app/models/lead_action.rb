@@ -19,8 +19,12 @@ class LeadAction < ApplicationRecord
 
   ### Constants
   ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active, :is_contact]
+  SHOWING_ACTION_NAME = 'Show Unit'
 
   ### Associations
+
+  ### Scopes
+  scope :active, -> {where(active: true)}
 
   ### Validations
   validates :name,
@@ -31,6 +35,16 @@ class LeadAction < ApplicationRecord
   before_destroy :check_for_use
 
   ### Class Methods
+
+  def self.showing
+    if (record = self.active.where(name: SHOWING_ACTION_NAME).first).present?
+      return record
+    else
+      err_msg = 'LeadAction with Name "Show Unit" is missing!'
+      ErrorNotification.send(StandardError.new(err_msg))
+      return nil
+    end
+  end
 
   ### Instance Methods
 

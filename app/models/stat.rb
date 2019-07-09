@@ -93,6 +93,162 @@ class Stat
     }
   end
 
+  def agent_conversion_rates_json
+    _lead_filter_sql = filter_sql
+    _lead_transition_filter_sql = lead_transition_filter_sql
+    sql=<<-EOS
+    SELECT
+      total_counts.user_id AS agent_id,
+      total_counts.user_name AS agent_name,
+      total_counts.lead_count AS prospects,
+      disqualified_counts.lead_count AS disqualified,
+      conversion_counts.lead_count AS conversions,
+      closing_counts.lead_count AS closes,
+      floor(100.0 * conversion_counts.lead_count::float / total_counts.lead_count::float)::integer AS conversion_rate,
+      floor(100.0 * closing_counts.lead_count::float / total_counts.lead_count::float) AS closing_rate
+    FROM (
+      SELECT
+        users.id AS user_id,
+        concat(user_profiles.first_name, ' ', user_profiles.last_name) AS user_name,
+        count(leads.id) AS lead_count
+      FROM leads
+      INNER JOIN users
+        ON leads.user_id = users.id
+      INNER JOIN user_profiles
+        ON user_profiles.user_id = users.id
+      INNER JOIN lead_transitions
+        ON lead_transitions.lead_id = leads.id
+          AND lead_transitions.current_state = 'prospect'
+      #{ "WHERE #{_lead_filter_sql}" if _lead_filter_sql.present?}
+      GROUP BY users.id, user_name
+    ) total_counts
+    FULL OUTER JOIN (
+      SELECT
+        users.id AS user_id,
+        concat(user_profiles.first_name, ' ', user_profiles.last_name) AS user_name,
+        count(leads.id) AS lead_count
+      FROM leads
+      INNER JOIN users
+        ON leads.user_id = users.id
+      INNER JOIN user_profiles
+        ON user_profiles.user_id = users.id
+      INNER JOIN lead_transitions
+        ON lead_transitions.lead_id = leads.id
+          AND lead_transitions.current_state IN ('disqualified', 'future')
+      #{ "WHERE #{_lead_filter_sql}" if _lead_filter_sql.present?}
+      GROUP BY users.id, user_name
+    ) disqualified_counts
+      ON total_counts.user_id = disqualified_counts.user_id
+    FULL OUTER JOIN (
+      SELECT
+        users.id AS user_id,
+        count(leads.id) AS lead_count
+      FROM leads
+      INNER JOIN users
+        ON leads.user_id = users.id
+      INNER JOIN lead_transitions
+        ON lead_transitions.lead_id = leads.id
+          AND lead_transitions.current_state = 'showing'
+      #{ "WHERE #{_lead_transition_filter_sql}" if _lead_transition_filter_sql.present?}
+      GROUP BY users.id
+    ) conversion_counts
+      ON total_counts.user_id = conversion_counts.user_id
+    FULL OUTER JOIN (
+      SELECT
+        users.id AS user_id,
+        count(leads.id) AS lead_count
+      FROM leads
+      INNER JOIN users
+        ON leads.user_id = users.id
+      INNER JOIN lead_transitions
+        ON lead_transitions.lead_id = leads.id
+          AND lead_transitions.current_state = 'application'
+      #{ "WHERE #{_lead_transition_filter_sql}" if _lead_transition_filter_sql.present?}
+      GROUP BY users.id
+    ) closing_counts ON
+      total_counts.user_id = closing_counts.user_id
+    ORDER BY agent_name ASC
+EOS
+
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      {
+        label: ( record["agent_name"].empty? ? 'Unknown' : record["agent_name"] ).strip,
+        val: {
+                "Conversion Rate": record["conversion_rate"] || 0,
+                "Closing Rate": record["closing_rate"] || 0
+             },
+        id: record["agent_id"]
+      }
+    end
+
+    return result
+  end
+
+  def referral_conversion_rates_json
+    _lead_filter_sql = filter_sql
+    _lead_transition_filter_sql = lead_transition_filter_sql
+    sql=<<-EOS
+    SELECT
+      ( total_counts.referral_name ) AS referral_name,
+      total_counts.lead_count AS prospects,
+      conversion_counts.lead_count AS conversions,
+      closing_counts.lead_count AS closes,
+      floor(100.0 * conversion_counts.lead_count::float / total_counts.lead_count::float)::integer AS conversion_rate,
+      floor(100.0 * closing_counts.lead_count::float / total_counts.lead_count::float)::integer AS closing_rate
+    FROM (
+      SELECT
+        leads.referral AS referral_name,
+        count(leads.id) AS lead_count
+      FROM leads
+      INNER JOIN lead_transitions
+        ON lead_transitions.lead_id = leads.id
+          AND lead_transitions.current_state = 'prospect'
+      #{ "WHERE #{_lead_filter_sql}" if _lead_filter_sql.present?}
+      GROUP BY leads.referral
+    ) total_counts
+    FULL OUTER JOIN (
+      SELECT
+        leads.referral AS referral_name,
+        count(leads.id) AS lead_count
+      FROM leads
+      INNER JOIN lead_transitions
+        ON lead_transitions.lead_id = leads.id
+          AND lead_transitions.current_state = 'showing'
+      #{ "WHERE #{_lead_transition_filter_sql}" if _lead_transition_filter_sql.present?}
+      GROUP BY referral_name
+    ) conversion_counts
+      ON total_counts.referral_name = conversion_counts.referral_name
+    FULL OUTER JOIN (
+      SELECT
+        leads.referral AS referral_name,
+        count(leads.id) AS lead_count
+      FROM leads
+      INNER JOIN lead_transitions
+        ON lead_transitions.lead_id = leads.id
+          AND lead_transitions.current_state = 'application'
+      #{ "WHERE #{_lead_transition_filter_sql}" if _lead_transition_filter_sql.present?}
+      GROUP BY leads.referral
+    ) closing_counts ON
+      total_counts.referral_name = closing_counts.referral_name
+    ORDER BY referral_name ASC
+EOS
+
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      {
+        label: ( ( record["referral_name"] || '' ).empty? ? 'Unknown' : record["referral_name"] ).strip,
+        val: {
+                "Conversion Rate": record["conversion_rate"] || 0,
+                "Closing Rate": record["closing_rate"] || 0
+             },
+        id: record["referral_name"]
+      }
+    end
+
+    return result
+  end
+
   def lead_states
     skope = apply_skope(Lead)
     if @start_date.present? && @end_date.present?
@@ -414,6 +570,20 @@ EOS
     end
     if @start_date.present? && @end_date.present?
       filters << "leads.first_comm BETWEEN '%s' AND '%s'" % [@start_date.utc.to_s, @end_date.utc.to_s]
+    end
+    return filters.map{|f| "(#{f})"}.join(" AND ")
+  end
+
+  def lead_transition_filter_sql
+    filters = []
+    if @user_ids.present?
+      filters << "leads.user_id in #{user_ids_sql}"
+    end
+    if property_ids_for_filter.present?
+      filters << "leads.property_id in #{property_ids_sql}"
+    end
+    if @start_date.present? && @end_date.present?
+      filters << "lead_transitions.created_at BETWEEN '%s' AND '%s'" % [@start_date.utc.to_s, @end_date.utc.to_s]
     end
     return filters.map{|f| "(#{f})"}.join(" AND ")
   end
