@@ -4,8 +4,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-  before_action :current_team, :set_property
   around_action :user_timezone, if: :current_user
+  before_action :current_team, :set_property
   before_action :prepare_exception_notifier
 
   private
@@ -29,8 +29,12 @@ class ApplicationController < ActionController::Base
   end
 
   def current_team
-    return nil unless current_user
-    @current_team ||= current_user&.team
+    begin
+      @current_team ||= current_user.present? ? current_user.team : nil
+      return @current_team
+    rescue
+      return nil
+    end
   end
 
   def prepare_exception_notifier
