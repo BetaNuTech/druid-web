@@ -11,6 +11,7 @@ import OpenLeads from './OpenLeads.jsx'
 import PropertyLeads from './PropertyLeads.jsx'
 import RecentActivity from './RecentActivity.jsx'
 import SourcesStats from './SourcesStats.jsx'
+import ConversionRates from './ConversionRates.jsx'
 
 class ManagerDashboard extends React.Component {
   constructor(props) {
@@ -25,6 +26,8 @@ class ManagerDashboard extends React.Component {
         open_leads: { data: { series: [] } },
         agent_status: { data: { series: [] } },
         lead_states: { data: { series: [ ] } },
+        agent_conversion_rates: { data: { series: [ ] } },
+        referral_conversion_rates: { data: { series: [ ] } },
         lead_sources: { data: { series: [ ] } },
         property_leads: { data: { series: [ ] } },
         recent_activity: { data: [] }
@@ -99,6 +102,26 @@ class ManagerDashboard extends React.Component {
             width={ 700 }
             yAxisLabel='Leads'
             xAxisLabel='Property' />
+          <ConversionRates data={this.state.data.agent_conversion_rates.data}
+            filters={this.state.data.filters}
+            selectX={datum => datum.label}
+            selectY={datum => datum.val}
+            height={ 300 }
+            width={ 400 }
+            yAxisLabel='Rate (%)'
+            xAxisLabel='Agent'
+            rateParameter='user_ids'
+          />
+          <ConversionRates data={this.state.data.referral_conversion_rates.data}
+            filters={this.state.data.filters}
+            selectX={datum => datum.label}
+            selectY={datum => datum.val}
+            height={ 300 }
+            width={ 400 }
+            yAxisLabel='Rate (%)'
+            xAxisLabel='Referral'
+            rateParameter='referrals'
+          />
           <OpenLeads data={this.state.data.open_leads} />
           <AgentStatus data={this.state.data.agent_status} />
           <RecentActivity data={this.state.data.recent_activity} />

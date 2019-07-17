@@ -11,7 +11,7 @@ module ScheduledActions
         {
           class: 'Unit',
           record_descriptor: :display_name,
-          action: 'Show Unit',
+          action: LeadAction.showing&.name,
           prompt: '-- Select Unit to Show --',
           options_grouped: true,
           options: -> ( current_user:, target:, vacant: true, grouped: false ) {

@@ -39,6 +39,7 @@ module Users
         completed_actions = skope.
           where(engagement_policy_action_compliances: { completed_at: start_date..end_date}).
           where('engagement_policy_action_compliances.completed_at <= engagement_policy_action_compliances.expires_at')
+
         if due_actions == 0
           return 1.0
         else
@@ -46,7 +47,28 @@ module Users
             return 0.0
           end
         end
+
         return (completed_actions.count.to_f / due_actions.count.to_f).round(2)
+      end
+
+      def showing_rate(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+        claimed_leads_count = self.leads.includes(:transitions).
+          where(lead_transitions: {created_at: start_date..end_date, current_state: 'prospect'}).
+          count.to_f
+        showings = self.scheduled_actions.includes(:engagement_policy_action_compliance).
+          where(scheduled_actions: {lead_action_id: LeadAction.showing&.id},
+                engagement_policy_action_compliances: { completed_at: start_date..end_date}).
+          count.to_f
+
+        if claimed_leads_count == 0
+          return 1.0
+        else
+          if showings < 1
+            return 0.0
+          end
+        end
+
+        return (showings/claimed_leads_count).round(2)
       end
 
     end
