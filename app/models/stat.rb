@@ -173,7 +173,7 @@ EOS
     raw_result = ActiveRecord::Base.connection.execute(sql).to_a
     result = raw_result.map do |record|
       {
-        label: ( record["agent_name"].empty? ? 'Unknown' : record["agent_name"] ).strip,
+        label: ( ( record["agent_name"] || '' ).empty? ? 'Unknown' : record["agent_name"] ).strip,
         val: {
                 "Conversion Rate": record["conversion_rate"] || 0,
                 "Closing Rate": record["closing_rate"] || 0
@@ -308,7 +308,7 @@ EOS
     raw_result = ActiveRecord::Base.connection.execute(sql).to_a
     result = raw_result.map do |record|
       {
-        label: ( record["source_name"].empty? ? 'Unknown' : record["source_name"] ).strip,
+        label: ( ( record["source_name"] || '' ).empty? ? 'Unknown' : record["source_name"] ).strip,
         val: {
                 Total: record["total_count"] || 0,
                 Converted: record["converted_count"] || 0
