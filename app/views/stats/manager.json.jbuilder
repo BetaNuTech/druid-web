@@ -30,6 +30,12 @@ json.data do
     end
   end
 
+  json.response_times do
+    json.data do
+      json.series @stats.response_times_json
+    end
+  end
+
   json.property_leads do
     json.data do
       json.series @stats.property_leads_json

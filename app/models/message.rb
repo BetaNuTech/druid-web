@@ -315,6 +315,7 @@ class Message < ApplicationRecord
     end
     last_messages = skope.order(delivered_at: :desc)
     if last_messages.first&.incoming == incoming
+      # The last message was from the same sender, so ignore
       return nil
     else
       last_message = last_messages.select{|m| m.incoming != incoming}.first
@@ -323,9 +324,14 @@ class Message < ApplicationRecord
       if self.incoming != last_message.incoming
         return self.delivered_at.to_i - last_message.delivered_at.to_i
       else
+        # The last message was from the same sender, so ignore
         return nil
       end
     else
+      if !incoming && messageable.present? && messageable.respond_to?(:first_comm) && messageable.first_comm.present?
+        # If this is the first outgoing message to a Lead, then return the time since the Lead was acquired
+        return self.delivered_at.to_i - messageable.first_comm.to_i
+      end
       return nil
     end
   end
