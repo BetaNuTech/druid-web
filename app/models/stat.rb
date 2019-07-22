@@ -533,6 +533,65 @@ EOS
     }.compact
   end
 
+  def response_times_json(start_date: 48.hours.ago, end_date: DateTime.now)
+    _filter_sql = filter_sql
+    sql=<<-EOS
+      SELECT
+        agent_id,
+        agent_name,
+        count(CASE WHEN since_last <= 60 * 5 THEN 1 END) AS "5 minutes",
+     -- count(CASE WHEN since_last > 60 * 5 AND since_last <= 60 * 10 THEN 1 END) AS "10 minutes",
+        count(CASE WHEN since_last > 60 * 10 AND since_last <= 60 * 30 THEN 1 END) AS "30 minutes",
+        count(CASE WHEN since_last > 60 * 30 AND since_last <= 3600 THEN 1 END) AS "1 hour",
+     -- count(CASE WHEN since_last > 3600 AND since_last <= 3600 * 2 THEN 1 END) AS "2 hours",
+        count(CASE WHEN since_last > 3600 * 2 AND since_last <= 3600 * 4 THEN 1 END) AS "4 hours",
+     -- count(CASE WHEN since_last > 3600 * 4 AND since_last <= 3600 * 8 THEN 1 END) AS "8 hours",
+        count(CASE WHEN since_last > 3600 * 8 AND since_last <= 3600 * 24 THEN 1 END) AS "1 day",
+     -- count(CASE WHEN since_last > 86400 AND since_last <= 86400 * 2 THEN 1 END) AS "2 days",
+        count(CASE WHEN since_last > 86400 * 2 THEN 1 END) AS ">2 days"
+      FROM (
+        SELECT
+          messages.user_id AS agent_id,
+          concat(user_profiles.first_name, ' ', user_profiles.last_name) AS agent_name,
+          user_profiles.last_name,
+          user_profiles.first_name,
+          messages.since_last
+        FROM messages
+        INNER JOIN users
+          ON messages.user_id = users.id
+        INNER JOIN user_profiles
+          ON user_profiles.user_id = users.id
+        INNER JOIN leads
+          ON messages.messageable_id = leads.id AND messages.messageable_type = 'Lead'
+        #{ "WHERE #{_filter_sql}" if _filter_sql.present?}
+      ) AS responsetimes
+      GROUP BY agent_id, agent_name
+      ORDER BY agent_name ASC
+EOS
+
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      {
+        label: ( ( record["agent_name"] || '' ).empty? ? 'Unknown' : record["agent_name"] ).strip,
+        val: {
+              "5 minutes": record["5 minutes"],
+              #"10 minutes": record["10 minutes"],
+              "30 minutes": record["30 minutes"],
+              "1 hour": record["1 hour"],
+            #  "2 hours": record["2 hours"],
+              "4 hours": record["4 hours"],
+              #"8 hours": record["8 hours"],
+              "1 day": record["1 day"],
+              #"2 days": record["2 days"],
+              ">2 days": record[">2 days"],
+             },
+        id: record["agent_id"]
+      }
+    end
+
+    return result
+  end
+
   private
 
   def filter_by_property?

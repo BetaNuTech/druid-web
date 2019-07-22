@@ -12,6 +12,7 @@ import PropertyLeads from './PropertyLeads.jsx'
 import RecentActivity from './RecentActivity.jsx'
 import SourcesStats from './SourcesStats.jsx'
 import ConversionRates from './ConversionRates.jsx'
+import MessageResponse  from './MessageResponse.jsx'
 
 class ManagerDashboard extends React.Component {
   constructor(props) {
@@ -30,7 +31,8 @@ class ManagerDashboard extends React.Component {
         referral_conversion_rates: { data: { series: [ ] } },
         lead_sources: { data: { series: [ ] } },
         property_leads: { data: { series: [ ] } },
-        recent_activity: { data: [] }
+        recent_activity: { data: [] },
+        response_times: { data: { series: [ ] } }
       }
     }
   }
@@ -121,6 +123,15 @@ class ManagerDashboard extends React.Component {
             yAxisLabel='Rate (%)'
             xAxisLabel='Referral'
             rateParameter='referrals'
+          />
+          <MessageResponse data={this.state.data.response_times.data}
+            filters={this.state.data.filters}
+            selectX={datum => datum.label}
+            selectY={datum => datum.val}
+            height={ 400 }
+            width={ 700 }
+            yAxisLabel='Messages (Response in under...)'
+            xAxisLabel='Agent'
           />
           <OpenLeads data={this.state.data.open_leads} />
           <AgentStatus data={this.state.data.agent_status} />
