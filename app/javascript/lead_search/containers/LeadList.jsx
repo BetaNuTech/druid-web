@@ -77,7 +77,7 @@ class LeadList extends React.Component {
   }
 }
 
-function mapStateToProps(state = {collection: [], search: {}}, meta: {}) {
+function mapStateToProps(state = {collection: [], search: {}}, meta = {}) {
   return {
     search: state.search,
     leads: state.collection,
