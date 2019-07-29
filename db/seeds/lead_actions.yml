@@ -108,3 +108,7 @@
     :description: The Lead used the Email Unsubscribe Link to opt back into email messages
     :is_contact: true
     :active: true
+  - :name: Resident Referral
+    :glyph: user
+    :is_contact: false
+    :active: true

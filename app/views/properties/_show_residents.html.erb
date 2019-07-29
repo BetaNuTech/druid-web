@@ -12,7 +12,7 @@
     </p>
     <ul>
       <strong><%= link_to("View All", property_residents_path(@property)) %> </strong>
-      <% @property.residents.order(last_name: 'ASC', first_name: 'ASC').limit(10).each do |resident| %>
+      <% @property.residents.includes(:unit).order("units.unit ASC, residents.last_name ASC, residents.first_name ASC").limit(10).each do |resident| %>
         <li>
           <%= link_to(resident.name, property_resident_path(@property, resident)) %>
           (<%= link_to(resident.unit.unit, property_unit_path(@property, resident.unit)) %>)

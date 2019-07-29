@@ -2,7 +2,7 @@ class LeadsController < ApplicationController
   include LeadsHelper
 
   before_action :authenticate_user!
-  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state]
+  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state, :update_referrable_options]
   before_action :conditional_redirect_to_default_search, only: [:index, :search]
   after_action :verify_authorized
 
@@ -144,6 +144,11 @@ class LeadsController < ApplicationController
     respond_to do |format|
       format.js
     end
+  end
+
+  def update_referrable_options
+    authorize @lead
+    @referral = params[:referral]
   end
 
   private

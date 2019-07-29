@@ -788,4 +788,66 @@ RSpec.describe Lead, type: :model do
     end
 
   end
+
+  describe "lead_referrals" do
+    let(:property) { create(:property) }
+    let(:lead) { build(:lead, property: property)}
+    let(:resident) { create(:resident, property: property)}
+    let(:lead_referral_source) { create(:lead_referral_source)}
+
+    describe "inferring a lead_referral record" do
+      before(:each) do
+        LeadReferral.destroy_all
+      end
+
+      it "should create a record using a standard lead_referral_source" do
+        lead.referral = lead_referral_source.name
+        lead.save!
+        lead.infer_referral_record
+        lead.reload
+        expect(lead.referrals.count).to eq(1)
+        referral = lead.referrals.first
+        expect(referral.referrable).to eq(lead_referral_source)
+        expect(referral.note).to eq(lead_referral_source.name)
+      end
+
+      it "should create a record without an existing lead_referral_source" do
+        lead.save!
+        lead.infer_referral_record
+        lead.reload
+        expect(lead.referrals.count).to eq(1)
+        referral = lead.referrals.first
+        expect(referral.referrable).to be_nil
+        expect(referral.note).to eq(lead.referral)
+      end
+
+      it "wont create a record if there are errors" do
+        lead.referral = 'Test'
+        lead.save!
+        lead.errors.add(:base, 'test')
+        assert lead.errors.any?
+        lead.infer_referral_record
+        lead.reload
+        expect(lead.referrals.count).to eq(0)
+      end
+
+      it "wont create a record if there is no referral data" do
+        lead.referral = nil
+        lead.save!
+        lead.infer_referral_record
+        lead.reload
+        expect(lead.referrals.count).to eq(0)
+      end
+
+      it "wont create a record if there are exising referrals" do
+        lead.save!
+        lead.infer_referral_record
+        lead.reload
+        expect(lead.referrals.count).to eq(1)
+        lead.infer_referral_record
+        lead.reload
+        expect(lead.referrals.count).to eq(1)
+      end
+    end
+  end
 end

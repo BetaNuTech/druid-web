@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="row fieldset_content">
+  <div class="row">
     <div class="col-md-10">
 
       <div class="row">
@@ -148,9 +148,34 @@
   </div>
 
   <div class="row">
+    <div class="col-md-12">
+      <h3>Referrals</h3>
+    </div>
+
+    <% if @resident.lead_referrals.any? %>
+      <ul>
+        <% @resident.lead_referrals.order(created_at: :desc).each do |referral| %>
+          <li>
+            <span>
+              Referred <%= link_to(referral.lead.name, referral.lead) %> to <%= referral.lead.property&.name || 'Unknown' %> on <%= long_date referral.created_at %>
+            <br/>
+            </span>
+            <span class="small">
+              <%= referral.note %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>None</p>
+    <% end %>
+
+  </div>
+
+  <div class="row">
     <div class="col-md-4">
-      <%= link_to 'Edit', edit_property_resident_path(@resident.property, @resident) %> |
-      <%= link_to 'Back', property_residents_path(@resident.property) %>
+      <%= link_to 'Edit', edit_property_resident_path(@resident.property, @resident), class: "btn btn-primary" %>
+      <%= link_to 'Back', property_residents_path(@resident.property), class: "btn btn-default" %>
     </div>
   </div>
 </div>

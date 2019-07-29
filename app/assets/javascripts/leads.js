@@ -26,4 +26,16 @@ $(document).on('turbolinks:load', function() {
       $('#lead_force_state').show();
     }
   });
+
+  var lead_referrable_selector = $("select[name='lead[referral]']");
+  lead_referrable_selector.on('change', function(e){
+    var lead_id = $('#lead_id').val();
+    var referral = $('#lead_referral').val();
+    var url = '/leads/' + lead_id + '/update_referrable_options.js?referral=' + referral;
+    $.ajax({
+      url: url,
+      dataType: 'script',
+      success: ''
+    })
+  })
 });

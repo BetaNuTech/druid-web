@@ -38,6 +38,7 @@ class Resident < ApplicationRecord
   belongs_to :unit
   has_one :detail, class_name: 'ResidentDetail', dependent: :destroy
   accepts_nested_attributes_for :detail
+  has_many :lead_referrals, as: :referrable
 
   ### Validations
   validates :first_name, :last_name,
@@ -49,7 +50,7 @@ class Resident < ApplicationRecord
   validate :unit_belongs_to_property
 
   ### Callbacks
-  after_initialize :assign_detail
+  #after_initialize :assign_detail
   before_validation :assign_residentid
 
   ### Class Methods
@@ -72,10 +73,14 @@ class Resident < ApplicationRecord
     [title, last_name].join(" ")
   end
 
+  def name_and_unit
+    "#{name} (#{unit&.name || '?'})"
+  end
 
   private
 
   def unit_belongs_to_property
+    return unless unit.present?
     if unit.property_id != property_id
       errors[:base] << INVALID_UNIT_PROPERTY_ERROR
     end

@@ -6,6 +6,7 @@ module Yardi
 
         # REJECTED_CUSTOMER_TYPES = %w{guarantor cancelled other}
         ACCEPTED_CUSTOMER_TYPES = %w{applicant approved_applicant future_resident prospect canceled}
+        RESIDENT_TYPES = %w{current_resident former_resident roommate spouse}
         REMOTE_DATE_FORMAT="%FT%T"
 
         ATTRIBUTES = [
@@ -54,7 +55,7 @@ module Yardi
 
         def self.from_GetYardiGuestActivitySearch(data, filter=true)
           self.from_api_response(response: data, method: 'GetYardiGuestActivity_Search') do |response_data|
-            record = response_data.dig('LeadManagement', 'Prospects', 'Prospect') 
+            record = response_data.dig('LeadManagement', 'Prospects', 'Prospect')
             GuestCard.from_guestcard_node(record, filter)
           end
         end
@@ -382,6 +383,14 @@ module Yardi
 						expected_move_in > ( first_comm + 1.week ) ) ||
 					bathrooms.present? || bedrooms.present?
 				end
+
+        def prospect?
+          ACCEPTED_CUSTOMER_TYPES.include?(record_type)
+        end
+
+        def resident?
+          RESIDENT_TYPES.include?(record_type)
+        end
 
         def summary
           <<~EOS

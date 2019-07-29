@@ -96,6 +96,10 @@ class LeadPolicy < ApplicationPolicy
     user.admin? || property_manager?
   end
 
+  def update_referrable_options?
+    edit?
+  end
+
   # Return an array of state events that the User can issue
   # to the Record
   def permitted_state_events
@@ -138,5 +142,6 @@ class LeadPolicy < ApplicationPolicy
   def change_user?
     is_owner? || user.manager? || user.admin?
   end
+
 
 end

@@ -86,10 +86,10 @@ RSpec.describe Resident, type: :model do
   end
 
   describe "associations" do
-    it "has a detail (ResidentDetail) which is assigned on initialization" do
-      resident = Resident.new
-      expect(resident.detail).to be_a(ResidentDetail)
-    end
+    #it "has a detail (ResidentDetail) which is assigned on initialization" do
+      #resident = Resident.new
+      #expect(resident.detail).to be_a(ResidentDetail)
+    #end
 
     it "accepts nested attributes for ResidentDetail" do
       params = {

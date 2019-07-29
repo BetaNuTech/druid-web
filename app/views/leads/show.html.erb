@@ -63,14 +63,20 @@
         </span><br/>
         <span>
           <span class="glyphicon glyphicon-filter"></span>&nbsp;
-          <%= @lead.source.name %>
+          <%= @lead.referral %>
         </span><br/>
       <% else %>
         <span>No Property<br/></span>
       <% end %>
       <span>
-        <span class="glyphicon glyphicon-user"></span>&nbsp;
-        <%= @lead.referral %>
+        <% @lead.referrals.each do |referral| %>
+          <% if ( referrable = referral.referrable ).present? %>
+            <span title="<%= referral.note %>">
+              <span class="glyphicon glyphicon-user"></span>&nbsp;
+              <%= link_to referrable.name, url_for(referrable) + "?override_scope=true" %><br/>
+            </span>
+          <% end %>
+        <% end %>
       </span>
       <span>
         <em>Yardi ID:</em> <%= @lead.remoteid || 'None' %>

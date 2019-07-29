@@ -65,6 +65,7 @@ module Leads
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
           property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
+          @lead.infer_referral_record
         else
           @lead.validate
           parse_result.errors.each do |err|
