@@ -93,6 +93,36 @@ class Stat
     }
   end
 
+  def daily_referral_stats_json
+    _filters = []
+    _lead_filter_sql = filter_sql
+    _filters << _lead_filter_sql if _lead_filter_sql.present?
+    if @start_date.nil?
+      _filters << "leads.first_comm BETWEEN '%s' AND '%s'" % [
+        7.days.ago.strftime("%Y-%m-%d"),
+        (Date.today + 1.day).strftime("%Y-%m-%d"),
+      ]
+    end
+    sql=<<-EOS
+      SELECT properties.name, properties.id, leads.referral, date(leads.created_at) as lead_day, count(leads.id) as lead_count
+      FROM properties
+      INNER JOIN leads on leads.property_id = properties.id
+      #{" WHERE #{_filters.join(' AND ' )}" if _filters.any?}
+      GROUP BY
+        properties.id, leads.referral, lead_day
+      ORDER BY
+        lead_day DESC, properties.name ASC, leads.referral ASC
+    EOS
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.inject({}) do |memo, obj|
+      memo[obj['lead_day']] ||= {}
+      memo[obj['lead_day']][obj['name']] ||= {}
+      memo[obj['lead_day']][obj['name']][obj['referral']] = obj['lead_count']
+      memo
+    end
+    return result
+  end
+
   def agent_conversion_rates_json
     _lead_filter_sql = filter_sql
     _lead_transition_filter_sql = lead_transition_filter_sql

@@ -1,5 +1,60 @@
 namespace :leads do
 
+  namespace :stats do
+    desc "Referral Stats (USAGE: rake leads:stats:referrals[DAYS] PROPERTY=propertycode1,propertycode2)"
+    task :referrals, [:days] => :environment do |t, args|
+      properties = Leads::Adapters::YardiVoyager.property_codes
+
+      if ( env_property = ENV.fetch('PROPERTY', nil) ).present?
+        property_codes = env_property.split(',').map(&:downcase)
+        property = properties.select{|p| property_codes.include?(p[:code])}
+        if property.present?
+          properties = property
+        end
+      end
+
+      start_date = nil
+      if (days_ago = args[:days]).present?
+        start_date = days_ago.to_i.days.ago
+      else
+        start_date = 7.days.ago
+      end
+      start_date = start_date.strftime("%Y-%m-%d")
+      end_date = ( Date.today + 1.day ).strftime("%Y-%m-%d")
+      data = ActiveRecord::Base.connection.execute("
+        SELECT properties.name, properties.id, leads.referral, date(leads.created_at) as lead_day, count(leads.id) as lead_count
+        FROM properties
+        INNER JOIN leads on leads.property_id = properties.id
+        WHERE
+         properties.id IN (#{properties.map{|p| "'#{p[:property].id}'" }.join(', ')})
+         AND leads.created_at BETWEEN '#{start_date}' AND '#{end_date}'
+        GROUP BY
+         properties.id, leads.referral, lead_day
+        ORDER BY
+         lead_day DESC").to_a
+
+       last_property = nil
+       last_day = nil
+       puts "= Bluesky Lead Referrals: #{start_date} to #{end_date}"
+       puts "+------------+--------------------------------+----------------------+-------+"
+       puts "| %-10s | %-30s | %-20s | %-5s |" % [ "Day", "Property", "Referral", "Leads"]
+       data.each do |record|
+         if last_day != record["lead_day"]
+           puts "+------------+--------------------------------+----------------------+-------+"
+           last_property = nil
+         end
+        puts "| %-10s | %-30s | %-20s | %-5i |" % [
+          last_day == record["lead_day"] ? '' : record["lead_day"],
+          last_property == record["name"] ? '' : record["name"],
+          record["referral"], record["lead_count"] || 0]
+        last_day = record["lead_day"]
+        last_property = record["name"]
+       end
+       puts "+------------+--------------------------------+----------------------+-------+"
+
+    end
+  end
+
   desc "Export"
   task :export, [:property_ids] => :environment do |t, args|
 
