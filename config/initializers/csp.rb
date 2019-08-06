@@ -15,6 +15,6 @@ SecureHeaders::Configuration.default do |config|
     object_src: %w('none'),
     media_src: %w(https://druidaudio.s3.us-east-2.amazonaws.com),
     script_src: Rails.env.production? ? %w(https: 'unsafe-inline') :  %w(http: 'unsafe-eval' 'unsafe-inline' ),
-    style_src: Rails.env.production? ? %w(https: blob: 'self' 'unsafe-inline ) :  %w(http: blob: 'self' 'unsafe-inline')
+    style_src: Rails.env.production? ? %w(https: blob: 'self' 'unsafe-inline' ) :  %w(http: blob: 'self' 'unsafe-inline')
   }
 end
