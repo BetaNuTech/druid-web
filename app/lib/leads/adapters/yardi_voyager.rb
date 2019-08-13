@@ -310,7 +310,7 @@ module Leads
         adapter.debug = true if debug?
 
         return leads.map do |lead|
-          adapter.sendGuestCard(propertyid: @property_code, lead: lead)
+          adapter.sendGuestCard(propertyid: @property_code, lead: lead, include_events: true)
         end
       end
 
