@@ -49,9 +49,10 @@ class Lead < ApplicationRecord
   include Leads::CallLog
   include Leads::Duplicates
   include Leads::Export
+  include Leads::Referrals
 
   ### Constants
-  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at]
+  ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at, { referrals_attributes: LeadReferral::ALLOWED_PARAMS }]
   PRIVILEGED_PARAMS = [:lead_source_id, :user_id, :state, :id, :property_id]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
@@ -64,6 +65,7 @@ class Lead < ApplicationRecord
   ### Associations
   has_one :preference, class_name: 'LeadPreference', dependent: :destroy
   accepts_nested_attributes_for :preference
+
   belongs_to :source, class_name: 'LeadSource', foreign_key: 'lead_source_id', required: false
   belongs_to :property, required: false
   has_one :team, through: :property
@@ -109,6 +111,7 @@ class Lead < ApplicationRecord
     end
   end
 
+
   ### Instance Methods
 
   def is_lead?
@@ -151,6 +154,7 @@ class Lead < ApplicationRecord
   def agent
     user || property.try(:managers).try(:first)
   end
+
 
   private
 

@@ -51,10 +51,10 @@ module Leads
       # Fetch New Leads from YardiVoyager
       # or progress Lead state if the Lead is already in BlueSky
       def processLeads
-        @data = fetch_GuestCards(@property_code)
+        @data ||= fetch_GuestCards(@property_code, filter: false)
         leads = []
         ActiveRecord::Base.transaction do
-          leads = collection_from_guestcards(@data)
+          leads = lead_collection_from_guestcards(@data)
           leads.each do |lead|
             # Skip dedupe on Voyager Sync to prevent an avalanche of dedupe background jobs
             lead.skip_dedupe = true
@@ -62,6 +62,18 @@ module Leads
           end
         end
         return leads
+      end
+
+      # Fetch New Leads from YardiVoyager
+      # or progress Lead state if the Lead is already in BlueSky
+      def processResidents
+        @data ||= fetch_GuestCards(@property_code, filter: false)
+        residents = []
+        ActiveRecord::Base.transaction do
+          residents = resident_collection_from_guestcards(@data)
+          residents.map(&:save)
+        end
+        return residents
       end
 
       # Fetch New UnitTypes from YardiVoyager
@@ -143,8 +155,16 @@ module Leads
       end
 
       # Return Lead records based on the provided [ Vardi::Voyager::Data::GuestCard ]
-      def collection_from_guestcards(guestcards)
-        return guestcards.map{|guestcard| lead_from_guestcard(guestcard)}
+      def lead_collection_from_guestcards(guestcards)
+        return guestcards.
+          select{|g| Yardi::Voyager::Data::GuestCard::ACCEPTED_CUSTOMER_TYPES.include?(g.record_type) }.
+          map{|guestcard| lead_from_guestcard(guestcard)}
+      end
+
+      def resident_collection_from_guestcards(guestcards)
+        return guestcards.
+          select{|g| Yardi::Voyager::Data::GuestCard::RESIDENT_TYPES.include?(g.record_type) }.
+          map{|guestcard| resident_from_guestcard(guestcard)}
       end
 
       # Return a Lead record based on the provided Vardi::Voyager::Data::GuestCard
@@ -222,6 +242,36 @@ module Leads
         return lead
       end
 
+      def resident_from_guestcard(guestcard)
+        remoteid = guestcard.tenant_id || guestcard.prospect_id
+        resident = Resident.where(property_id: @property.id, residentid: remoteid).first || Resident.new
+        unit = @property.housing_units.where(unit: guestcard.unit).first
+        status = case guestcard.record_type
+                 when 'former_resident'
+                  'former'
+                 else
+                   'current'
+                 end
+
+        resident.property = @property
+        resident.unit = unit if unit.present?
+        resident.residentid = remoteid
+        resident.status = status
+        resident.title = guestcard.name_prefix
+        resident.first_name = guestcard.first_name
+        resident.middle_name = guestcard.middle_name
+        resident.last_name = guestcard.last_name
+
+        resident.detail ||= ResidentDetail.new
+        resident.detail.email = guestcard.email
+        unless guestcard.phones.nil?
+          resident.detail.phone1 = guestcard.phones.first.try(:last)
+          resident.detail.phone2 = guestcard.phones.last.try(:last) if guestcard.phones.size > 1
+        end
+
+        return resident
+      end
+
       def notes_from_guestcard_events(lead:, events: [])
         return ( events || [] ).map do |event|
           #event_type, event_date, event_comment = event
@@ -281,12 +331,12 @@ module Leads
           return LeadAction.where(name: action_name).first || LeadAction.where(name: 'Other').first
       end
 
-      def fetch_GuestCards(propertycode)
+      def fetch_GuestCards(propertycode, filter: false)
         adapter = Yardi::Voyager::Api::GuestCards.new
         adapter.debug = true if debug?
         start_date = @params.fetch(:start_date,nil)
         end_date = @params.fetch(:end_date, DateTime.now)
-        return adapter.getGuestCards(propertycode, start_date: start_date, end_date: end_date)
+        return adapter.getGuestCards(propertycode, start_date: start_date, end_date: end_date, filter: filter)
       end
 
       def fetch_Floorplans(propertycode)

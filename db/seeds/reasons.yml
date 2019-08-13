@@ -13,11 +13,14 @@
     :description: Scheduled by Engagement Policy
     :active: true
   - :name: Other
-    :description: 
+    :description:
     :active: true
   - :name: Pipeline Event
     :description:
     :active: true
   - :name: Lead Preference Set
     :description: Caused by a Lead making preference changes
+    :active: true
+  - :name: Referral
+    :description: Lead Referral
     :active: true

@@ -199,6 +199,14 @@
                   </li>
                   <% end %>
                   <li role="separator" class="divider"></li>
+                  <% if policy(Resident).index? %>
+                  <li>
+                    <%= link_to(residents_path) do %>
+                      <span class="glyphicon glyphicon-user"></span> Residents
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
                   <% if policy(Team).index? %>
                   <li>
                     <%= link_to(teams_path) do %>

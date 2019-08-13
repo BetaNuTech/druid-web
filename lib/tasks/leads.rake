@@ -169,27 +169,44 @@ namespace :leads do
       properties.each do |property|
         # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
 
-        msg = " * Importing Yardi Voyager GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}] as Leads"
+        msg = " * Importing Yardi Voyager GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
         adapter = Leads::Adapters::YardiVoyager.new({
           property_code: property[:code],
           start_date: start_date,
           end_date: DateTime.now })
-        leads = adapter.processLeads
 
-        count = leads.size
-        succeeded = leads.select{|l| l.id.present? }.size
-        failures = leads.select{|l| !l.errors.empty?}.map do |record|
+        msg = " * Processing Leads for #{property[:name]} [YARDI ID: #{property[:code]}]"
+        puts msg
+        Rails.logger.warn msg
+        leads = adapter.processLeads
+        msg = " * Processing Residents for #{property[:name]} [YARDI ID: #{property[:code]}]"
+        puts msg
+        Rails.logger.warn msg
+        residents = adapter.processResidents
+
+        lead_count = leads.size
+        lead_succeeded = leads.select{|l| l.id.present? }.size
+        lead_failures = leads.select{|l| !l.errors.empty?}.map do |record|
           "FAIL: #{record.name} [Yardi ID: #{record.remoteid}]: #{record.errors.to_a.join(', ')}"
+        end
+        resident_count = residents.size
+        resident_succeeded = residents.select{|l| l.id.present? }.size
+        resident_failures = residents.select{|l| !l.errors.empty?}.map do |record|
+          "FAIL: #{record.name} [Yardi ID: #{record.residentid}]: #{record.errors.to_a.join(', ')}"
         end
 
         msg=<<~EOS
-        - Processed #{leads.size} Records
-        - #{succeeded} Records saved
-          - #{failures.size} Failed
-          EOS
-        msg += failures.join("\n")
+        - Processed #{leads.size} Lead Records
+        - #{lead_succeeded} Lead Records saved
+          - #{lead_failures.size} Failed
+          - #{lead_failures.join("\n")}
+        - Processed #{residents.size} Resident Records
+        - #{resident_succeeded} Resident Records saved
+          - #{resident_failures.size} Failed
+          - #{resident_failures.join("\n")}
+        EOS
         puts msg
         Rails.logger.warn msg
       end
@@ -289,5 +306,12 @@ namespace :leads do
     puts " * Setting Lead Priorities"
     Lead.set_priorities
     puts "Done."
+  end
+
+  namespace :referrals do
+    desc "Infer/Create Referral Records"
+    task :infer => :environment do
+
+    end
   end
 end

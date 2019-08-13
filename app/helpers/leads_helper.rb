@@ -114,4 +114,67 @@ module LeadsHelper
     options_for_select(options, val)
   end
 
+  def lead_referrable_select(lead:, referral:)
+    lead_referral_source = LeadReferralSource.where(name: referral).first
+    recognized_source = lead_referral_source.present?
+
+    if recognized_source
+      config = lead.referral_select_config(referral: referral)
+      display_selector = config.present?
+
+      referrals = lead.referrals.where(lead_referral_source_id: lead_referral_source.id).to_a
+      if referrals.empty?
+        referrals << LeadReferral.new(lead_id: lead.id, lead_referral_source_id: lead_referral_source&.id)
+      end
+    end
+
+    content_tag(:div, id: 'lead_referral_referrable_select') do
+      ( referrals || [] ).each_with_index do |lead_referral, index|
+        param_base = "lead[referrals_attributes][#{index}]"
+        if recognized_source
+          concat hidden_field_tag("#{param_base}[lead_referral_source_id]", lead_referral_source.id)
+
+          if display_selector
+            if config[:options_grouped]
+              select_options = lead_referrable_grouped_select_options(lead: lead, referral: lead_referral)
+            else
+              select_options = lead_referrable_select_options(lead: lead, referral: lead_referral)
+            end
+
+            concat hidden_field_tag("#{param_base}[id]", lead_referral.id) if lead_referral.id.present?
+            concat hidden_field_tag("#{param_base}[referrable_type]", config[:referral])
+            concat label_tag("Referrer")
+            concat select_tag("#{param_base}[referrable_id]",
+                              select_options,
+                              class: 'form-control selectize-nocreate',
+                              prompt: config[:prompt])
+            concat text_field_tag("#{param_base}[note]", lead_referral.note, class: "form-control", placeholder: "Notes")
+            if lead_referral.id?
+              concat check_box_tag("#{param_base}[_destroy]")
+              concat label_tag("#{param_base}[_destroy]", "Remove")
+            end
+          end # display_selector?
+        end # recognized_source?
+      end # each
+    end # content_tag
+
+  end
+
+  def lead_referrable_select_options(lead:, referral:)
+    config = lead.referral_select_config(referral: referral)
+    collection = config[:options].call(current_user: current_user, property: lead.property, grouped: false)
+    options_from_collection_for_select(collection, 'id', config[:record_descriptor], referral.referrable&.id)
+  end
+
+  def lead_referrable_grouped_select_options(lead:, referral:)
+    config = lead.referral_select_config(referral: referral)
+    return [] unless config.present?
+    collection = config[:options].call(current_user: current_user, property: lead.property, grouped: true)
+    collection_for_select = collection.keys.inject({}) do |memo, key|
+      memo[key] = collection[key].map{|a| [a.send(config[:record_descriptor]), a.id] }
+      memo
+    end
+    grouped_options_for_select(collection_for_select, referral.referrable&.id)
+  end
+
 end

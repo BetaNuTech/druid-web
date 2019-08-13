@@ -5,7 +5,16 @@ namespace :unit_types do
     desc "Import Floorplans"
     task :import_floorplans => :environment do
 
-      Leads::Adapters::YardiVoyager.property_codes.each do |property|
+      properties = Leads::Adapters::YardiVoyager.property_codes
+
+      if ( env_property = ENV.fetch('PROPERTY', nil) ).present?
+        property = properties.select{|p| p[:code] == env_property}
+        if property.present?
+          properties = property
+        end
+      end
+
+      properties.each do |property|
         # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
 
         msg = " * Importing Yardi Voyager FloorPlans for #{property[:name]} [YARDI ID: #{property[:code]}] as UnitTypes"

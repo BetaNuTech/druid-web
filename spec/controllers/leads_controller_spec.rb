@@ -301,6 +301,31 @@ RSpec.describe LeadsController, type: :controller do
       end
     end
 
+    context "creating a Lead and referral" do
+      include_context 'residents'
+      let(:valid_lead_attributes_for_create_with_valid_referral) {
+        { lead: attributes_for(:lead, property: agent.property, user: agent).
+          merge(valid_lead_attributes_with_valid_referral[:lead]) }
+      }
+
+      context "with valid lead and referral attributes" do
+        it "should create the lead and referral" do
+          LeadReferral.destroy_all
+          sign_in agent
+          post :create, params: valid_lead_attributes_for_create_with_valid_referral
+          lead = assigns(:lead)
+          assert lead.valid?
+          expect(lead.referrals.count).to eq(1)
+        end
+
+      end
+      context "with valid lead attributes and invalid referral attributes" do
+        it "should create the lead but not a referral" do
+
+        end
+      end
+    end
+
   end
 
   describe "PUT #update" do
@@ -353,6 +378,87 @@ RSpec.describe LeadsController, type: :controller do
         put :update, params: {id: lead.to_param, lead: {user_id: agent.id}}
         lead.reload
         expect(lead.user).to eq(corporate)
+      end
+
+      describe "assigning/modifying a referral from a resident" do
+        include_context 'residents'
+
+        context "with valid attributes" do
+          it "should create a valid associated LeadReferral" do
+            sign_in agent
+            lead.referrals.destroy_all
+            put :update, params: valid_lead_attributes_with_valid_referral
+            lead.reload
+            expect(lead.referrals.count).to eq(1)
+            referral = lead.referrals.first
+            expect(referral.lead_id).to eq(lead.id)
+            expect(referral.note).to eq(referral_note)
+            expect(referral.referrable).to eq(property1_resident1)
+            expect(referral.lead_referral_source).to eq(lead_referral_source)
+          end
+        end
+
+        context "with invalid attributes" do
+          it "should not create an associated LeadReferral if both note and lead_referral_source_id are missing" do
+            sign_in agent
+            lead.referrals.destroy_all
+            put :update, params: valid_lead_attributes_with_invalid_referral
+            lead.reload
+            expect(lead.referrals.count).to eq(0)
+          end
+        end
+
+        context "deleting a lead referral" do
+          it "should delete the referral when the _destroy option is set" do
+            lead.referrals.destroy_all
+            lead.referrals.create!(referrable: property1_resident1, lead_referral_source: lead_referral_source)
+            lead.reload
+            expect(lead.referrals.count).to eq(1)
+            sign_in agent
+            referral = lead.referrals.first
+            delete_referral_params = {
+              id: lead.to_param,
+              lead: {
+                referrals_attributes: [
+                  {
+                    id: referral.id,
+                    _destroy: true
+                  }
+                ]
+              }
+            }
+            put :update, params: delete_referral_params
+            expect(response).to be_redirect
+            lead.reload
+            expect(lead.referrals.count).to eq(0)
+          end
+        end
+
+        context "updating a lead referral" do
+          it "should update the referral note" do
+            lead.referrals.destroy_all
+            lead.referrals.create!(referrable: property1_resident1, lead_referral_source: lead_referral_source)
+            lead.reload
+            sign_in agent
+            referral = lead.referrals.first
+            updated_referral_note = 'Updated note'
+            update_referral_params = {
+              id: lead.to_param,
+              lead: {
+                referrals_attributes: [
+                  {
+                    id: referral.id,
+                    note: updated_referral_note
+                  }
+                ]
+              }
+            }
+            put :update, params: update_referral_params
+            lead.reload
+            referral = lead.referrals.first
+            expect(referral.note).to eq(updated_referral_note)
+          end
+        end
       end
 
     end

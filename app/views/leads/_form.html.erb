@@ -1,4 +1,6 @@
 <%= form_with(model: lead, local: true) do |form| %>
+  <%= hidden_field_tag 'lead[id]', lead.id, id: 'lead_id' %>
+
   <% if lead.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(lead.errors.count, "error") %> prohibited this lead from being saved:</h2>
@@ -58,10 +60,15 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :referral, 'Referral/Origin' %>
+        <div class="col-md-4 form-group">
+          <%= form.label :referral, 'Lead Source/Referral Origin' %>
           <small>Select or enter a referral source</small>
           <%= form.select :referral, select_lead_referral_source(lead.referral), {include_blank: true}, { id: :lead_referral, class: "form-control selectize" } %>
+        </div>
+        <div class="col-md-6 form-group">
+          <div id="lead_referrable">
+            <%= lead_referrable_select(lead: lead, referral: lead.referral) %>
+          </div>
         </div>
       </div>
 

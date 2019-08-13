@@ -7,7 +7,8 @@ class ResidentsController < ApplicationController
   # GET /residents.json
   def index
     authorize Resident
-    @residents = resident_scope.all
+    @property ||= current_user.property
+    @residents = resident_scope.includes(:unit).order("units.unit ASC, residents.last_name ASC, residents.first_name ASC")
   end
 
   # GET /residents/1
@@ -78,7 +79,12 @@ class ResidentsController < ApplicationController
     end
 
     def resident_scope
-      @property.present? ? @property.residents : Resident
+      default_skope = policy_scope(Resident)
+      if params[:override_scope]
+        return default_skope
+      else
+        @property.present? ? @property.residents : default_skope
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

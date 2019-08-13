@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_01_185206) do
+ActiveRecord::Schema.define(version: 2019_07_30_213948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -160,6 +160,18 @@ ActiveRecord::Schema.define(version: 2019_07_01_185206) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "lead_referrals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id", null: false
+    t.uuid "lead_referral_source_id"
+    t.uuid "referrable_id"
+    t.string "referrable_type"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_id"], name: "index_lead_referrals_on_lead_id"
+    t.index ["referrable_id", "referrable_type"], name: "idx_referrable"
   end
 
   create_table "lead_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

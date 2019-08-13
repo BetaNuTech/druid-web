@@ -41,7 +41,7 @@ class Unit < ApplicationRecord
   belongs_to :property
   belongs_to :rental_type
   belongs_to :unit_type
-  has_one :resident
+  has_many :residents
   delegate :name, to: :property, prefix: true
   delegate :name, to: :unit_type, prefix: true
   delegate :name, to: :rental_type, prefix: true
@@ -73,4 +73,17 @@ class Unit < ApplicationRecord
     model_str = model? ? ' Model' : ''
     "%s%s %s" % [unit, model_str, unit_type&.name]
   end
+
+  def resident
+    return residents.where(status: 'current').first
+  end
+
+  def former_residents
+    return residents.where(status: 'former')
+  end
+
+  def current_residents
+    return residents.where(status: 'current')
+  end
+
 end

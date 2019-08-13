@@ -5,19 +5,18 @@
     </div>
   <% if policy(Resident).new? %>
     <div class="col-md-6 text-right">
-      <%= glyph(:create) %>
       <% if @property.present? %>
-        <%= link_to 'Create Resident', new_property_resident_path(@property) %>
+        <%= link_to 'Create Resident', new_property_resident_path(@property), class: "btn btn-xs btn-primary" %>
       <% else %>
-        <%= link_to 'Create Resident', new_resident_path %>
+        <%= link_to 'Create Resident', new_resident_path, class: "btn btn-xs btn-primary" %>
       <% end %>
     </div>
   <% end %>
   </div>
 
-  <div class="row fieldset_content">
+  <div class="row">
     <div class="col-md-12">
-      <table id="residents-table" class="table">
+      <table id="residents-table" class="table dataTable">
         <thead>
           <th>Resident ID</th>
           <th>Status</th>
@@ -59,18 +58,6 @@
 
       </table>
     </div>
-  </div>
-  <div class="row">
-  <% if policy(Resident).new? %>
-    <div class="col-md-12 text-right">
-      <%= glyph(:create) %>
-      <% if @property.present? %>
-        <%= link_to 'Create Resident', new_property_resident_path(@property) %>
-      <% else %>
-        <%= link_to 'Create Resident', new_resident_path %>
-      <% end %>
-    </div>
-  <% end %>
   </div>
 
 </div>

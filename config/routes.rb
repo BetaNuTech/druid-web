@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   resources :units
   resources :users do
   end
-  #resources :residents
+  resources :residents
   resources :engagement_policies
 
   resources :properties do
@@ -72,6 +72,7 @@ Rails.application.routes.draw do
       get 'call_log_partial', to: "leads#call_log_partial"
       get 'progress_state', to: "leads#progress_state"
       post 'update_state', to: "leads#update_state"
+      get 'update_referrable_options', to: 'leads#update_referrable_options'
     end
     resources :messages do
       post 'deliver', on: :member

@@ -1,0 +1,14 @@
+<% if @referral.present? %>
+  $('div#lead_referrable').
+    html('<%= escape_javascript lead_referrable_select(lead: @lead, referral: @referral) %>').
+    find('.selectize-nocreate').
+    selectize(
+        {
+          create: false,
+          createOnBlur: false,
+          allowEmptyOption: true,
+          selectOnTab: true,
+          maxItems: 1
+        });
+<% end %>
+

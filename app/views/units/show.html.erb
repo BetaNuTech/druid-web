@@ -21,9 +21,29 @@
         <div class="row">
           <div class="col-md-6">
             <p>
-              <strong>Current Resident:</strong>
-              <% if @unit.resident.present? %>
-                <%= link_to(@unit.resident.name, property_resident_path(@unit.property, @unit.resident)) %>
+              <strong>Current Resident(s):</strong>
+              <% if @unit.current_residents.any? %>
+                <ul>
+                  <% @unit.current_residents.each do |resident| %>
+                    <li>
+                      <%= link_to(resident.name, property_resident_path(@unit.property, resident)) %>
+                    </li>
+                  <% end %>
+                </ul>
+              <% else %>
+                <strong>None</strong>
+              <% end %>
+            </p>
+            <p>
+              <strong>Former Resident(s):</strong>
+              <% if @unit.former_residents.any? %>
+                <ul>
+                  <% @unit.former_residents.each do |resident| %>
+                    <li>
+                      <%= link_to(resident.name, property_resident_path(@unit.property, resident)) %>
+                    </li>
+                  <% end %>
+                </ul>
               <% else %>
                 <strong>None</strong>
               <% end %>
