@@ -198,12 +198,13 @@ namespace :leads do
     desc "Send GuestCards"
     task :send_guestcards => :environment do
 
-      properties = Leads::Adapters::YardiVoyager.property_codes
+      property_codes = Leads::Adapters::YardiVoyager.property_codes
 
-      if ( env_property = ENV.fetch('PROPERTY', nil) ).present?
-        property = properties.select{|p| p[:code] == env_property}
-        if property.present?
-          properties = property
+      if ( env_properties = ENV.fetch('PROPERTY', nil) ).present?
+        env_properties = env_properties.split(',')
+        properties = property_codes.select{|p| env_properties.include?(p[:code])}
+        if properties.empty?
+          properties = property_codes
         end
       end
 
@@ -222,7 +223,7 @@ namespace :leads do
         count = leads.size
         succeeded = leads.select{|l| l.remoteid.present? }.size
         failures = leads.select{|l| !l.errors.empty? || !l.remoteid.present? }.map do |record|
-          "FAIL: #{record.name} [Lead ID: #{record.id}]: #{record.errors.to_a.join(', ')}"
+          "FAIL: #{property[:name]}: #{record.name} [Lead ID: #{record.id}]: #{record.errors.to_a.join(', ')}"
         end
 
         msg=<<~EOS
