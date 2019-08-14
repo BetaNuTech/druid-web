@@ -154,17 +154,31 @@ end
 
 puts " * Creating Message Types"
 Rake::Task["db:seed:message_types"].invoke
+
 puts " * Creating Message Templates"
 Rake::Task["db:seed:message_templates"].invoke
+
 puts " * Creating Properties"
 Rake::Task["db:seed:properties"].invoke
+
 puts " * Creating Reasons"
 Rake::Task["db:seed:reasons"].invoke
+
 puts " * Creating Lead Actions"
 Rake::Task["db:seed:lead_actions"].invoke
+
 puts " * Creating Engagement Policy"
 Rake::Task["db:seed:engagement_policy"].invoke
+
 puts ' * Creating Message Delivery Adapters'
 Rake::Task["db:seed:message_delivery_adapters"].invoke
+
+puts ' * Creating Lead Referral Sources'
 Rake::Task["db:seed:lead_referral_sources"].invoke
+
+puts ' * Creating Teams'
+Rake::Task["db:seed:teams"].invoke
+
+puts ' * Assigning Property Team Membership'
+Rake::Task["db:seed:team_membership"].invoke
 

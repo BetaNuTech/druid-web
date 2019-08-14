@@ -19,6 +19,11 @@ namespace :db do
       Reason.load_seed_data
     end
 
+    desc "Seed Teams"
+    task :teams => :environment do
+      Team.load_seed_data
+    end
+
     desc "Seed Development Environment with random data"
     task :development => :environment do
       require 'factory_bot_rails'
