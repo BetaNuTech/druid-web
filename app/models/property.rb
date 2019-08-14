@@ -115,6 +115,12 @@ class Property < ApplicationRecord
     DuplicateLead.includes("lead").where(leads: {property_id: self.id}).groups
   end
 
+  def leads_for_sync
+    return leads.
+      where(remoteid: nil, state: 'prospect').
+      where.not(user_id: nil)
+  end
+
   private
 
   def format_phones

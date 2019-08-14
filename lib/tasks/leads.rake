@@ -234,8 +234,7 @@ namespace :leads do
 
         # Send only assigned leads without a remoteid (new to Yardi Voyager)
         # At this time UPDATES ARE NOT SUPPORTED by BlueSky
-        leads_for_transfer = property[:property].leads.select{|l| l.remoteid.nil? && !l.user_id.nil? }
-        leads = adapter.sendLeads(leads_for_transfer)
+        leads = adapter.sendLeads(property[:property].leads_for_sync)
 
         count = leads.size
         succeeded = leads.select{|l| l.remoteid.present? }.size

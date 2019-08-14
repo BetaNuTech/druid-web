@@ -32,7 +32,7 @@ module Yardi
             event.agent = agent
 
             if (xtn.last_state == 'none' && xtn.current_state == 'open')
-              event.comments = "Lead created in Druid originating from #{lead.referral || 'Unknown'}"
+              event.comments = "Lead created in Bluesky originating from #{lead.referral || 'Unknown'}"
               event.transaction_source = 'Referral'
               event.first_contact = true
 
