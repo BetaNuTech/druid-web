@@ -1,0 +1,13 @@
+---
+:teams:
+  :version: 1
+  :key: :name
+  :data:
+  - :name: Blue Ridge
+    :description:
+  - :name: Derby
+    :description:
+  - :name: Lone Star
+    :description:
+  - :name: Outback
+    :description:

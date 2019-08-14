@@ -11,8 +11,10 @@
 
 class Team < ApplicationRecord
   audited
-  ### Constants
   include Teams::TeamUsers
+  include Seeds::Seedable
+
+  ### Constants
   ALLOWED_PARAMS = [:name, :description]
 
   ### Associations
