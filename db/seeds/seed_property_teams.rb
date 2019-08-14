@@ -35,15 +35,15 @@ class SeedPropertyTeams
         puts " * Assigned Properties to Team #{team.name}:"
         matched_properties.each do |property|
           property.team_id = team.id
-          property.save!
+          property.save || raise("Error saving Property[#{property.id}] #{property.name}: #{property.errors.to_a}")
           puts "   - #{property.name}"
         end
 
       end
     end
     return true
-  rescue
-    puts "*** An error occurred. Rolling back all changes.\n\n"
+  rescue => e
+    puts "*** An error occurred. #{e} \n\n***Rolling back all changes.\n\n"
     return false
   end
 
