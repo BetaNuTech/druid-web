@@ -20,7 +20,7 @@ class SeedProperties
   }
 
   def initialize(filename=nil)
-    @file = ( File.dirname(__FILE__) + '/properties_latest.csv' )
+    @file = filename || ( File.dirname(__FILE__) + '/properties_latest.csv' )
     raise "#{@file} not FOUND" unless File.exist?(@file)
     puts @file
     @lead_source = LeadSource.where(slug: 'Cloudmailin').first or
@@ -99,6 +99,10 @@ class SeedProperties
       end
       print_summary
     end
+  end
+
+  def self.load_seed_data
+    SeedProperties.new.call
   end
 
   private

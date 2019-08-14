@@ -1,3 +1,5 @@
+require_relative '../../db/seeds/seed_property_teams.rb'
+
 namespace :db do
 
   namespace :seed do
@@ -21,7 +23,9 @@ namespace :db do
 
     desc "Seed Teams"
     task :teams => :environment do
+
       Team.load_seed_data
+      SeedPropertyTeams.load_seed_data
     end
 
     desc "Seed Development Environment with random data"

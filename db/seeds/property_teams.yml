@@ -1,0 +1,43 @@
+---
+- :name: Blue Ridge
+  :properties:
+  - levee
+  - marble
+  - nashhick
+  - peyton
+  - reserve
+  - vantage
+  - villas
+- :name: Derby
+  :properties:
+  - brooklyn
+  - eagles
+  - glenmary
+  - legends
+  - maplebr
+  - orchard
+  - overlook
+  - paddock
+  - prinwood
+  - summwood
+  - woodland
+- :name: Lone Star
+  :properties:
+  - brook
+  - emerson
+  - estates
+  - gulf
+  - ranch
+  - stone
+  - summer
+  - townwest
+  - tuscany
+  - walnut
+- :name: Outback
+  :properties:
+  - ethan
+  - invern
+  - lakeside
+  - northriv
+  - oakhill
+
