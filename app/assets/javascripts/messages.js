@@ -17,5 +17,10 @@ $(document).on('turbolinks:load', function() {
     }
   });
 
+  $("#send_now_button").on('click', function(){
+    $("#send_now").val("true").
+      form.submit()
+  })
+
 });
 

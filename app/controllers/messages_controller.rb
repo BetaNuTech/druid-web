@@ -65,7 +65,13 @@ class MessagesController < ApplicationController
 
     respond_to do |format|
       if @message.save
-        format.html { redirect_to @message.messageable, notice: 'Message was successfully created.' }
+        format.html do
+          if params[:send_now].present?
+            deliver_message
+          else
+            redirect_to @message, notice: 'Message was successfully created.'
+          end
+        end
         format.json { render :show, status: :created, location: @message }
       else
         format.html { render :new }
@@ -80,7 +86,13 @@ class MessagesController < ApplicationController
     respond_to do |format|
       authorize @message
       if @message.update(message_params)
-        format.html { redirect_to @message.messageable, notice: 'Message was successfully updated.' }
+        format.html do
+          if params[:send_now].present?
+            deliver_message
+          else
+            redirect_to @message, notice: 'Message was successfully updated.'
+          end
+        end
         format.json { render :show, status: :ok, location: @message }
       else
         format.html { render :edit }
@@ -104,8 +116,7 @@ class MessagesController < ApplicationController
   def deliver
     set_message
     authorize @message
-    @message.deliver!
-    redirect_to @message.messageable, notice: 'Message Sent'
+    deliver_message
   end
 
   def mark_read
@@ -117,6 +128,11 @@ class MessagesController < ApplicationController
 
 
   private
+
+    def deliver_message
+      @message.deliver!
+      redirect_to @message.messageable, notice: 'Message Sent'
+    end
 
     def record_scope
       return @messageable.present? ?

@@ -50,13 +50,14 @@
             <b>Subject:</b>
             <%= @message.subject %>
           </p>
-          <iframe id="message_preview" onload="resizeIframe(this)" src="<%= message_body_preview_path(@message) %>"> </iframe>
+          <iframe id="message_preview" srcdoc="<%= @message.body_with_layout %>" style="height: 500px;"> </iframe>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-4">
           <%= link_to(  'Edit', edit_message_path(@message), class: "btn btn-primary" ) if policy(@message).edit? %>
+          <%= link_to('Send Now', deliver_message_path(@message), method: :post, class: "btn btn-primary") if policy(@message).deliver? %>
           <%= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn-xs btn-info" if @message.messageable.present? %>
         </div>
       </div>

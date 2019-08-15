@@ -243,11 +243,14 @@ RSpec.describe Message, type: :model do
     let(:first_message_delivered) { 1.hour.ago }
 
     describe "when this is the first message" do
-      it "should set message.since_last to nil" do
+      it "should set message.since_last to the time since the Lead was created" do
+        lead.first_comm = 1.day.ago
+        lead.save
         message1.save
         message1.deliver
         message1.reload
-        assert(message1.since_last.nil?)
+        timespan = message1.delivered_at.to_i - lead.first_comm.to_i
+        expect(message1.since_last).to eq(timespan)
       end
     end
 
