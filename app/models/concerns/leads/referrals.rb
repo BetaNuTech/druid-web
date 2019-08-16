@@ -12,11 +12,14 @@ module Leads
           class: 'Resident',
           record_descriptor: :name_and_unit,
           referral: 'Resident',
-          prompt: '-- Select Current or Former Resident --',
-          options_grouped: true,
+          prompt: '-- Select Resident --',
+          options_grouped: false,
           options: -> ( current_user:, property:, grouped: true ) {
             return [] unless property.present?
-            collection = property.residents.includes(:unit).order(last_name: :asc, first_name: :asc)
+            collection = property.residents.
+              includes(:unit).
+              where(residents: {status: 'current'}). # We are only listing current residents
+              order(last_name: :asc, first_name: :asc)
             if grouped
               return collection.group_by{|r| r.status.capitalize }
             else
