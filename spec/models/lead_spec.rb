@@ -258,6 +258,19 @@ RSpec.describe Lead, type: :model do
         expect(lead.user).to be_nil
         expect(lead.priority).to eq('low')
       end
+
+      it "cleans up record tasks and agent association upon 'disqualify'" do
+        seed_engagement_policy
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        assert(lead.scheduled_actions.count > 0)
+        expect(lead.user).to eq(agent)
+        lead.disqualify!
+        lead.reload
+        expect(lead.scheduled_actions.count).to eq(1)
+        expect(lead.user).to eq(agent)
+        expect(lead.priority).to eq('zero')
+      end
     end
 
     describe "priorities" do

@@ -119,7 +119,7 @@ module Leads
 
         event :disqualify do
           transitions from: [ :open, :prospect, :showing, :application, :denied, :approved, :movein, :resident ], to: :disqualified,
-            after: ->(*args) { set_priority_zero }
+            after: ->(*args) { set_priority_zero; clear_all_tasks }
         end
 
         event :lodge do
