@@ -23,5 +23,8 @@
     <% if policy(scheduled_action).edit? %>
       <%= link_to(glyph(:edit), edit_scheduled_action_path(scheduled_action)) %>
     <% end %>
+    <% if policy(scheduled_action).complete? %>
+      <%= link_to(glyph(:ok), complete_scheduled_action_path(id: scheduled_action.id, scheduled_action: {completion_action: 'complete'}), method: :post, rel: 'nofollow' ) %>&nbsp;
+    <% end unless scheduled_action.completed? %>
   </td>
 </tr>
