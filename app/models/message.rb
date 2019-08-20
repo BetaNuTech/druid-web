@@ -119,11 +119,13 @@ class Message < ApplicationRecord
       message.messageable = to
       message.senderid = message.outgoing_senderid
       message.recipientid = message.outgoing_recipientid
+      message.incoming = false
     elsif to.is_a?(User)
       message.user = to
       message.messageable = from
       message.senderid = message.incoming_senderid
       message.recipientid = message.incoming_recipientid
+      message.incoming = true
     end
 
     message.load_template if !message.body.present? && !message.subject.present?

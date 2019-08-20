@@ -593,7 +593,7 @@ RSpec.describe Lead, type: :model do
 
     describe "handling message delivery" do
 
-      let(:lead) { create(:lead, user: agent) }
+      let(:lead) { create(:lead, user: agent, property: agent.property) }
       let(:outgoing_email_message) {
         message = Message.new_message(
           from: agent, to: lead, message_type: email_message_type,
@@ -614,7 +614,8 @@ RSpec.describe Lead, type: :model do
           subject: 'Test Incoming EMAIL Message1',
           body: 'Test incoming EMAIL message',
           delivered_at: DateTime.now,
-          message_type: email_message_type
+          message_type: email_message_type,
+          incoming: true
         )
         delivery = MessageDelivery.create(
           message: message,
@@ -639,7 +640,8 @@ RSpec.describe Lead, type: :model do
           subject: 'Test Incoming SMS Message1',
           body: 'Test incoming SMS message',
           delivered_at: DateTime.now,
-          message_type: sms_message_type
+          message_type: sms_message_type,
+          incoming: true
         )
         delivery = MessageDelivery.create(
           message: message,
@@ -685,6 +687,27 @@ RSpec.describe Lead, type: :model do
         lead.reload
         expect(lead.last_comm).to_not eq(last_contact)
         expect(lead.last_comm).to eq(incoming_sms_message.delivered_at)
+      end
+
+      describe "creating a reply task upon message receipt" do
+        include_context "engagement_policy"
+
+        it "should create a reply task for incoming messages" do
+          seed_engagement_policy
+          initial_task_count = lead.scheduled_actions.count
+          assert(incoming_email_message.incoming?)
+          lead.reload
+          expect(lead.scheduled_actions.count).to eq(initial_task_count + 1)
+        end
+
+        it "should create a reply task for outgoing messages" do
+          seed_engagement_policy
+          initial_task_count = lead.scheduled_actions.count
+          refute(outgoing_email_message.incoming?)
+          lead.reload
+          expect(lead.scheduled_actions.count).to eq(initial_task_count)
+        end
+
       end
 
     end

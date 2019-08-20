@@ -127,9 +127,18 @@ module Leads
         )
       end
 
+      def create_message_delivery_task(message_delivery)
+        message = message_delivery.message
+        if message.incoming?
+          EngagementPolicyScheduler.new.
+            create_lead_incoming_message_reply_task(message)
+        end
+      end
+
       def handle_message_delivery(message_delivery)
         if message_delivery&.delivered_at.present?
           create_message_delivery_comment(message_delivery)
+          create_message_delivery_task(message_delivery)
           self.last_comm = message_delivery.delivered_at
           save
         end
