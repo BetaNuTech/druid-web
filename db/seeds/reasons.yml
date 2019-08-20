@@ -24,3 +24,6 @@
   - :name: Referral
     :description: Lead Referral
     :active: true
+  - :name: Message Response
+    :description: Respond to an incoming message from a lead
+    :active: true

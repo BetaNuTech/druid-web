@@ -199,6 +199,86 @@ class EngagementPolicyScheduler
     end
   end
 
+  # Create a new 'orphan' EngagementPolicyAction, EngagementPolicyActionCompliance, ScheduledAction, and Schedule
+  #   so that completion will award points
+  def create_lead_incoming_message_reply_task(message)
+    deadline_hours = 2
+
+    lead = message.messageable
+    return nil unless lead.is_a?(Lead)
+
+    lead_action = LeadAction.active.where(name: 'Send Email').first
+    if lead_action.nil?
+      raise EngagementPolicyScheduler::Error.new("Lead Action 'Send Email' is missing. Can't create message reply task.")
+    end
+
+    reason = Reason.where(name: 'Message Response').first
+    if reason.nil?
+      raise EngagementPolicyScheduler::Error.new("Reason 'Message Response' is missing. Can't create message reply task.")
+    end
+
+    due = message.delivered_at.utc + deadline_hours.hours
+
+    action = nil
+
+    ActiveRecord::Base.transaction do
+
+      policy_action = EngagementPolicyAction.new(
+        engagement_policy_id: nil,
+        lead_action_id: lead_action.id,
+        description: 'Require response to incoming message',
+        deadline: deadline_hours,
+        score: 2.0
+      )
+
+      policy_action.save or
+        raise EngagementPolicyScheduler::Error.new("Could not create Engagement Policy Action: #{policy_action.errors}")
+
+      schedule = Schedule.new(
+        date: due.to_date,
+        time: due.to_time,
+        rule: 'singular',
+        interval: 1
+      )
+
+      action = ScheduledAction.new(
+        target: lead,
+        originator_id: nil,
+        lead_action: lead_action,
+        reason: reason,
+        schedule: schedule,
+        engagement_policy_action: policy_action,
+        description: "Respond to incoming Message from #{lead.name}"
+      )
+
+      action.save or
+        raise EngagementPolicyScheduler::Error.new("Could not create Scheduled Action: #{policy_action.errors}")
+
+      compliance = EngagementPolicyActionCompliance.new(
+        scheduled_action: action,
+        expires_at: due
+      )
+
+      action.engagement_policy_action_compliance = compliance
+      action.save or
+        raise EngagementPolicyScheduler::Error.new("Could not create Scheduled Action: #{policy_action.errors}")
+
+      action.reload
+    end
+
+    return action
+
+  rescue EngagementPolicyScheduler::Error => e
+    error_data = {
+      property: lead.property&.name,
+      lead: lead.id,
+      lead_name: lead.name,
+      message: message.id
+    }
+    ErrorNotification.send(e, error_data)
+    return nil
+  end
+
   private
 
   def default_reason

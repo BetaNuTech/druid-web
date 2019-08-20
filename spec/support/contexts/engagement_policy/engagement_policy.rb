@@ -1,6 +1,6 @@
 RSpec.shared_context "engagement_policy" do
   let(:seed_reasons) {
-    create(:reason, name: 'Scheduled', active: true)
+    Reason.load_seed_data
     true
   }
 

@@ -192,6 +192,45 @@ RSpec.describe EngagementPolicyScheduler do
 
     end
 
+    describe "creating a message reply task for the message's associated Lead" do
+      include_context "messaging"
+
+      let(:lead) { create(:lead) }
+      let(:message) { create(:message,
+                              messageable: lead,
+                              message_type: email_message_type,
+                              user_id: agent.id,
+                              state: 'sent',
+                              senderid: lead.email,
+                              recipientid: 'incoming@example.com',
+                              delivered_at: DateTime.now
+                            )}
+
+      it "given a Message record it should create a message reply task assigned to the associated Lead" do
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        message
+        task = EngagementPolicyScheduler.new.create_lead_incoming_message_reply_task(message)
+        expect(message.user).to eq(agent)
+        expect(lead.scheduled_actions).to include(task)
+        expect(task.lead_action.name).to eq('Send Email')
+        expect(task.reason.name).to eq('Message Response')
+        expect(task.engagement_policy_action.description).to eq('Require response to incoming message')
+        expect(task.engagement_policy_action.deadline).to eq(2.0)
+        expect(task.engagement_policy_action_compliance.expires_at).to eq(message.delivered_at + 2.hours)
+      end
+
+      it "should award points to the agent if the task is completed" do
+        initial_score = agent.score
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        task = EngagementPolicyScheduler.new.create_lead_incoming_message_reply_task(message)
+        task.trigger_event(event_name: 'complete', user: agent)
+        agent.reload
+        expect(agent.score).to eq(initial_score + 2)
+      end
+    end
+
   end
 
 

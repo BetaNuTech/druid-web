@@ -23,7 +23,7 @@ class EngagementPolicyAction < ApplicationRecord
   VALID_DELAY_MULTIPLIERS = %w{ none double nonlinear }
 
   ### Associations
-  belongs_to :engagement_policy
+  belongs_to :engagement_policy, optional: true
   belongs_to :lead_action
   has_many :scheduled_actions, dependent: :destroy
 
