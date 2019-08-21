@@ -185,7 +185,7 @@ class ScheduledActionsController < ApplicationController
     end
 
     def completion_user
-      user = ( policy(@scheduled_action).impersonate? && scheduled_action_params.fetch('impersonate') == "1" ) ?
+      user = ( policy(@scheduled_action).impersonate? && scheduled_action_params.fetch('impersonate', false) == "1" ) ?
         @scheduled_action.user :
         current_user
       return user
