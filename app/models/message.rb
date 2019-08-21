@@ -186,7 +186,11 @@ class Message < ApplicationRecord
   end
 
   def body_with_layout
-    (message_template || MessageTemplate.default(self)).apply_layout(body)
+    if incoming?
+      "<pre>" + body + "</pre>"
+    else
+      (message_template || MessageTemplate.default(self)).apply_layout(body)
+    end
   end
 
   def body_for_html_preview
