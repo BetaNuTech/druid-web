@@ -2,14 +2,15 @@
 #
 # Table name: lead_actions
 #
-#  id          :uuid             not null, primary key
-#  name        :string
-#  description :string
-#  active      :boolean          default(TRUE)
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  glyph       :string
-#  is_contact  :boolean          default(FALSE)
+#  id             :uuid             not null, primary key
+#  name           :string
+#  description    :string
+#  active         :boolean          default(TRUE)
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  glyph          :string
+#  is_contact     :boolean          default(FALSE)
+#  state_affinity :string           default("all")
 #
 
 require 'rails_helper'
@@ -49,7 +50,7 @@ RSpec.describe LeadAction, type: :model do
   end
 
   it "has ALLOWED_PARAMS" do
-    expect(LeadAction::ALLOWED_PARAMS.sort).to eq([:id, :name, :glyph, :description,:active, :is_contact].sort)
+    expect(LeadAction::ALLOWED_PARAMS.sort).to eq([:id, :name, :glyph, :description,:active, :is_contact, :state_affinity].sort)
   end
 
 end

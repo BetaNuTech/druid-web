@@ -5,8 +5,7 @@
     </div>
     <% if policy(LeadAction).new? %>
       <div class="col-md-6 text-right">
-        <%= glyph(:create) %>
-        <%= link_to 'Create New Lead Action', new_lead_action_path %>
+        <%= link_to 'Create New Lead Action', new_lead_action_path, class: "btn btn-xs btn-primary" %>
       </div>
     <% end %>
   </div>
@@ -20,6 +19,7 @@
             <th>Description</th>
             <th>Active?</th>
             <th>Is Contact?</th>
+            <th>State Affinity</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -31,6 +31,7 @@
               <td><%= lead_action.description %></td>
               <td><%= lead_action.active ? "Yes" : "No" %></td>
               <td><%= lead_action.is_contact ? "Yes" : "No" %></td>
+              <td><%= lead_action.state_affinity&.capitalize %></td>
               <td class="text-nowrap">
                 <%= link_to lead_action do %><%= glyph(:show) %><% end if policy(lead_action).show? %>&nbsp;
                 <%= link_to edit_lead_action_path(lead_action) do %><%= glyph(:edit) %><% end if policy(lead_action).edit? %>&nbsp;
@@ -45,8 +46,7 @@
   <div classs="row">
     <% if policy(LeadAction).new? %>
       <div class="col-md-12 text-right">
-        <%= glyph(:create) %>
-        <%= link_to 'Create New Lead Action', new_lead_action_path %>
+        <%= link_to 'Create New Lead Action', new_lead_action_path, class: "btn btn-xs btn-primary" %>
       </div>
     <% end %>
   </div>

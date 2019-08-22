@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_30_213948) do
+ActiveRecord::Schema.define(version: 2019_08_22_183420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -133,6 +133,8 @@ ActiveRecord::Schema.define(version: 2019_07_30_213948) do
     t.datetime "updated_at", null: false
     t.string "glyph"
     t.boolean "is_contact", default: false
+    t.string "state_affinity", default: "all"
+    t.index ["state_affinity"], name: "index_lead_actions_on_state_affinity"
   end
 
   create_table "lead_preferences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
