@@ -171,10 +171,8 @@ class ProspectStats
   def prospect_count_all_scope(skope, window)
     join_sql = "INNER JOIN lead_transitions ON lead_transitions.lead_id = leads.id"
     states_sql = %w{resident exresident}.map{|s| "'#{s}'"}.join(',')
-    classifications_sql = %w{duplicate resident vendor}.map{|c| "#{Lead.classifications[c]}"}.join(',')
     condition_sql=<<~SQL
-      ( leads.classification IS NULL
-       OR leads.classification NOT IN (#{classifications_sql}) )
+      ( leads.classification IS NULL OR leads.classification = 0)
       AND leads.first_comm BETWEEN ? AND ?
       AND (
        lead_transitions.last_state != 'none'
