@@ -8,107 +8,129 @@
     :glyph: flag
     :active: true
     :is_contact: false
+    :state_affinity: 'open'
   - :name: First Contact
     :description: Contact Lead for the first time (Phone/SMS/Email)
     :glyph: user
     :active: true
     :is_contact: true
+    :state_affinity: 'prospect'
   - :name: Request Appointment
     :description: Request to schedule an appointment with the Lead (Phone/SMS/Email)
     :glyph: question-sign
     :is_contact: true
     :active: true
+    :state_affinity: 'prospect'
   - :name: Schedule Appointment
     :description: Schedule appointment with Lead
     :glyph: calendar
     :is_contact: true
     :active: true
+    :state_affinity: 'all'
   - :name: Prepare Application
     :description: Prepare leasing application
     :glyph: inbox
     :is_contact: false
     :active: true
+    :state_affinity: 'application'
   - :name: Deliver Application
     :glyph: share
     :description: Prepare leasing application and provide to Lead
     :is_contact: true
     :active: true
+    :state_affinity: 'application'
   - :name: Process Application
     :description: Push through the approval process
     :glyph: wrench
     :is_contact: false
     :active: true
+    :state_affinity: 'application'
   - :name: Make Call
     :glyph: phone-alt
     :description:
     :is_contact: true
     :active: true
+    :state_affinity: 'all'
   - :name: Send Email
     :glyph: envelope
     :description:
     :is_contact: true
     :active: true
+    :state_affinity: 'all'
   - :name: Send SMS
     :description:
     :glyph: phone
     :is_contact: true
     :active: true
+    :state_affinity: 'all'
   - :name: Show Unit
     :description: Show unit to Lead
     :glyph: user
     :is_contact: true
     :active: true
+    :state_affinity: 'showing'
   - :name: Unit Inspection
     :description: Inspect units before tours
     :glyph: search
     :is_contact: false
     :active: true
+    :state_affinity: 'showing'
   - :name: Other
     :description: Catch-all action. Use sparingly.
     :glyph: ok
     :is_contact: false
     :active: true
+    :state_affinity: 'all'
   - :name: Make Appointment Notes
     :description: Record notes from appointment with Lead
     :glyph: pencil
     :is_contact: false
     :active: true
+    :state_affinity: 'all'
   - :name: Assign New Resident Tasks
     :description: Assign New Resident Tasks
     :glyph: indent-left
     :is_contact: false
     :active: true
+    :state_affinity: 'approved'
   - :name: Move-In Task
     :description: Generic move-in tasks
     :glyph: tasks
     :is_contact: false
     :active: true
+    :state_affinity: 'approved'
   - :name: Transition to Disqualified
     :glyph: thumbs-down
     :description: Make notes and transition lead to 'disqualified' state
     :is_contact: false
     :active: true
+    :state_affinity: 'none'
   - :name: Make Contact Notes
     :glyph: pencil
     :description: Record notes from a Lead contact and update Last Contact timestamp
     :is_contact: true
     :active: true
+    :state_affinity: 'all'
   - :name: Email Rental Application
     :glyph: envelope
     :description: Email Property.application_url to Lead (upon transition to 'Appointment' state)
     :is_contact: true
     :active: true
+    :state_affinity: 'prospect'
   - :name: Lead Email Opt-Out
     :glyph: envelope
     :description: The Lead used the Email Unsubscribe Link to opt out of email messages
     :is_contact: true
     :active: true
+    :state_affinity: 'none'
   - :name: Lead Email Opt-In
     :glyph: envelope
     :description: The Lead used the Email Unsubscribe Link to opt back into email messages
     :is_contact: true
     :active: true
+    :state_affinity: 'none'
   - :name: Resident Referral
     :glyph: user
     :is_contact: false
     :active: true
+    :state_affinity: 'none'
