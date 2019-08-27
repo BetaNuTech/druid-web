@@ -20,10 +20,10 @@
             <%= render partial: "scheduled_actions/target_name", locals: {scheduled_action: scheduled_action} %>
           </td>
           <td class="text-nowrap">
-            <%= scheduled_action.lead_action.name %>
+            <%= scheduled_action.lead_action&.name %>
           </td>
           <td>
-            <%= scheduled_action.reason.name %><br/>
+            <%= scheduled_action.reason&.name %><br/>
             <small><%= short_datetime(scheduled_action.schedule.to_datetime) if scheduled_action.schedule.present? %></small>
           </td>
           <td width="33%">
