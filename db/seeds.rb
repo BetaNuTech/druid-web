@@ -178,7 +178,3 @@ Rake::Task["db:seed:lead_referral_sources"].invoke
 
 puts ' * Creating Teams'
 Rake::Task["db:seed:teams"].invoke
-
-puts ' * Assigning Property Team Membership'
-Rake::Task["db:seed:team_membership"].invoke
-
