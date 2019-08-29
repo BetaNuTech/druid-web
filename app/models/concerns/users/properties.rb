@@ -12,6 +12,17 @@ module Users
         properties.first
       end
 
+      def assigned_to_property?(property)
+        case property
+        when String
+          return assignments.where(property_id: property).any?
+        when Property
+          return assigned_to_property?(property.id)
+        else
+          return false
+        end
+      end
+
       def property_role(property_scope=nil)
         assignments.where(property: ( property_scope || property )).
           first&.role

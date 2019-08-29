@@ -50,6 +50,7 @@ class Lead < ApplicationRecord
   include Leads::Duplicates
   include Leads::Export
   include Leads::Referrals
+  include Leads::Broadcasts
 
   ### Constants
   ALLOWED_PARAMS = [:lead_source_id, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at, { referrals_attributes: LeadReferral::ALLOWED_PARAMS }]
@@ -103,7 +104,7 @@ class Lead < ApplicationRecord
       creator = Leads::Creator.new(
         data: JSON.parse(lead.preference.raw_data).with_indifferent_access,
         token: lead.source.api_token )
-      new_lead = creator.execute
+      new_lead = creator.call
       new_lead.validate
       return new_lead
     else

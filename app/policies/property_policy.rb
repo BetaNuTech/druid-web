@@ -53,6 +53,7 @@ class PropertyPolicy < ApplicationPolicy
   end
 
   def same_property?
+    return false if record.nil?
     user.property_manager?(record) || user.property_agent?(record) || team_lead?
   end
 
@@ -86,6 +87,10 @@ class PropertyPolicy < ApplicationPolicy
 
     return(valid_property_params + valid_listing_params + valid_phone_number_params + valid_property_user_params)
 
+  end
+
+  def subscribe_incoming_leads_channel?
+    user.admin? || same_property?
   end
 
 end

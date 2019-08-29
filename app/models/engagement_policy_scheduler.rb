@@ -147,9 +147,10 @@ class EngagementPolicyScheduler
       lead.scheduled_actions.where(state: incomplete_states).each do |action|
         action.user = agent
         action.save
-        compliance = action.engagement_policy_action_compliance
-        compliance.user = agent
-        compliance.save
+        if (compliance = action.engagement_policy_action_compliance).present?
+          compliance.user = agent
+          compliance.save
+        end
       end
     end
     return true

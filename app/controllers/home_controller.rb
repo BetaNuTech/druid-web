@@ -37,4 +37,8 @@ class HomeController < ApplicationController
       redirect_to(messaging_preferences_path(id: :lead_id))
     end
   end
+
+  def insert_unclaimed_lead
+    @lead = current_user.available_leads.find(params[:id])
+  end
 end

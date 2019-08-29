@@ -329,12 +329,6 @@ RSpec.describe Message, type: :model do
       expect(message.threadid).to eq(source_message.threadid)
     end
 
-    it "initializes body including quote of the original" do
-      message = source_message.new_reply(user: user2)
-      expect(message.body).to match("----------")
-      expect(message.body).to match(source_message.body)
-    end
-
     it "uses the same subject as the original message" do
       message = source_message.new_reply(user: user2)
       expect(message.subject).to eq(source_message.subject)

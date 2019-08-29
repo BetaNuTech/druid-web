@@ -229,7 +229,7 @@ RSpec.describe LeadsController, type: :controller do
 
         it "creates a new Lead" do
           sign_in corporate
-          post :create, params: {lead: valid_attributes}, session: valid_session
+          post :create, params: {lead: valid_attributes.merge(user_id: corporate.id)}, session: valid_session
           new_lead = Lead.order(created_at: :desc).limit(1).last
           expect(new_lead.user).to eq(corporate)
         end
@@ -247,7 +247,7 @@ RSpec.describe LeadsController, type: :controller do
 
         it "creates a new Lead" do
           sign_in agent
-          post :create, params: {lead: valid_attributes}, session: valid_session
+          post :create, params: {lead: valid_attributes.merge(user_id: agent.id)}, session: valid_session
           new_lead = Lead.order(created_at: :desc).limit(1).last
           expect(new_lead.user).to eq(agent)
           expect(new_lead.property).to eq(agent.property)
