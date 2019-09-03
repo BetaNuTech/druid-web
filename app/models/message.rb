@@ -136,7 +136,8 @@ class Message < ApplicationRecord
   ### Instance Methods
 
   def new_reply(user:)
-    new_body = rich_editor? ? " <br/><br/>----------<br/>" + body : body
+    #new_body = rich_editor? ? " <br/><br/>----------<br/>" + body : body
+    new_body = '' # No quote
     return Message.new_message(
       from: user,
       to: messageable,
