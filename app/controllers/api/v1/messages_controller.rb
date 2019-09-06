@@ -8,7 +8,7 @@ module Api
         message_data = get_post_data
         log_message_data(message_data)
         receiver = Messages::Receiver.new(data: message_data, token: api_token)
-        @message = receiver.execute
+        @message = receiver.call
         response_data = receiver.response
         render plain: response_data[:body],
                status: response_data[:status],

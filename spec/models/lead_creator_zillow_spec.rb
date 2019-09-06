@@ -66,7 +66,7 @@ RSpec.describe Leads::Adapters::Zillow do
   it "should create a lead with valid data" do
     creator = Leads::Creator.new(**valid_data)
     expect(creator.source).to be_a(LeadSource)
-    lead = creator.execute
+    lead = creator.call
     refute(creator.errors.any?)
     assert(lead.valid?)
     expect(creator.lead).to eq(lead)
@@ -80,7 +80,7 @@ RSpec.describe Leads::Adapters::Zillow do
     expect(creator.source).to be_a(LeadSource)
     lead = nil
     expect {
-      lead = creator.execute
+      lead = creator.call
     }.to_not change{Lead.count}
     assert(creator.errors.any?)
     refute(lead.valid?)

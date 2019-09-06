@@ -12,6 +12,8 @@ module Leads
       end
     end
 
+    DEFAULT_TOKEN = '(NONE)'
+
     attr_reader :data,
       :errors,
       :lead,
@@ -21,7 +23,7 @@ module Leads
       :token,
       :agent
 
-    def initialize(data:, agent: nil, token: )
+    def initialize(data:, agent: nil, token: DEFAULT_TOKEN)
       @lead = Lead.new
       @saved = false
       @errors = ActiveModel::Errors.new(Lead)
@@ -33,7 +35,7 @@ module Leads
     end
 
     # Create lead from provided data using detected Source adapter
-    def execute
+    def call
 
       # Validate Access Token for Lead Source
       unless ( @source.present? && @token.present? )
@@ -54,7 +56,7 @@ module Leads
       parse_result = @parser.new(@data).parse
 
       @lead = Lead.new(parse_result.lead)
-      @lead.user = @agent
+      @lead.user = @agent if @agent.present?
       @lead.priority = "urgent"
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
@@ -66,6 +68,7 @@ module Leads
           @lead.save
           property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
           @lead.infer_referral_record
+          @lead.delay.broadcast_to_streams if @lead.user_id.nil? && @lead.valid?
         else
           @lead.validate
           parse_result.errors.each do |err|
@@ -108,6 +111,7 @@ module Leads
 
     # Lookup Source by slug or default
     def get_source(token)
+      return LeadSource.default if token == DEFAULT_TOKEN
       return LeadSource.active.where(api_token: token).first
     end
 

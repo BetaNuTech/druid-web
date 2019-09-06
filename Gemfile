@@ -73,6 +73,7 @@ group :test do
   #gem 'selenium-webdriver', '~> 3.12'
   gem 'simplecov', '~> 0.16'
   gem 'rspec_junit_formatter', "~> 0.4"
+  gem 'action-cable-testing', "~> 0.6"
 end
 
 group :development do

@@ -30,7 +30,7 @@ module Messages
       @parser = get_parser(@source)
     end
 
-    def execute
+    def call
 
       # Validate Access Token for MessageDeliveryAdapter
       unless ( @source.present? && @token.present? )

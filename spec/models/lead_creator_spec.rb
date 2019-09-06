@@ -2,37 +2,27 @@ require 'rails_helper'
 
 RSpec.describe Lead, type: :model do
 
-  include_context "users"
+  include_context "lead_creator"
 
-  let(:source) { create(:lead_source, slug: LeadSource::DEFAULT_SLUG) }
-  let(:property) { agent.property }
-  let(:listing) { create(:property_listing, source_id: source.id, property_id: property.id) }
+  let(:valid_lead_attributes) { valid_lead_creator_attributes }
 
-  let(:valid_attributes) {
+  let(:valid_lead_attributes_with_valid_token) {
     {
       data: FactoryBot.attributes_for(:lead),
-      token: source.api_token,
+      token: default_lead_source.api_token,
       agent: nil
     }
   }
 
-  let(:valid_attributes_with_valid_token) {
-    {
-      data: FactoryBot.attributes_for(:lead),
-      token: source.api_token,
-      agent: nil
-    }
-  }
-
-  let(:valid_attributes_with_valid_property) {
-    # valid_attributes_with_valid_token with property_id present
+  let(:valid_lead_attributes_with_valid_property) {
+    # valid_lead_attributes_with_valid_token with property_id present
     # in the [:data] Hash of attributes
-    valid_attributes_with_valid_token.
-      merge(data: valid_attributes_with_valid_token[:data].
-                    merge({ property_id: listing.code }))
+    valid_lead_attributes_with_valid_token.
+      merge(data: valid_lead_attributes_with_valid_token[:data].
+                    merge({ property_id: lead_creator_property_listing.code }))
   }
 
-  let(:valid_attributes_with_invalid_token) {
+  let(:valid_lead_attributes_with_invalid_token) {
     {
       data: FactoryBot.attributes_for(:lead),
       token: 'bad_token',
@@ -43,7 +33,7 @@ RSpec.describe Lead, type: :model do
   let(:invalid_lead_attributes) {
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
-      token: source.api_token,
+      token: default_lead_source.api_token,
       agent: nil
     }
   }
@@ -51,7 +41,7 @@ RSpec.describe Lead, type: :model do
   let(:invalid_lead_attributes_with_valid_token) {
     {
       data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
-      token: source.api_token,
+      token: default_lead_source.api_token,
       agent: nil
     }
   }
@@ -60,7 +50,7 @@ RSpec.describe Lead, type: :model do
     {
       data: FactoryBot.attributes_for(:lead).
         merge(preference_attributes: {max_area: 100, min_area: 1000}),
-      token: source.api_token,
+      token: default_lead_source.api_token,
       agent: nil
     }
   }
@@ -82,14 +72,14 @@ RSpec.describe Lead, type: :model do
   }
 
   before do
-    listing
+    lead_creator_property_listing
   end
 
   it "can be initialized with valid data and the BlueSky adapter" do
-    creator = Leads::Creator.new(**valid_attributes)
+    creator = Leads::Creator.new(**valid_lead_attributes)
     expect(creator.source).to be_a(LeadSource)
     expect(creator.parser).to eq(Leads::Adapters::Bluesky)
-    lead = creator.execute
+    lead = creator.call
     refute(creator.errors.any?)
     assert(lead.valid?)
     expect(creator.lead).to eq(lead)
@@ -97,11 +87,11 @@ RSpec.describe Lead, type: :model do
   end
 
   it "can create a lead with a default source" do
-    attrs = valid_attributes
+    attrs = valid_lead_attributes
     attrs.delete(:source)
-    creator = Leads::Creator.new(**valid_attributes)
+    creator = Leads::Creator.new(**valid_lead_attributes)
     expect(creator.source).to be_a(LeadSource)
-    lead = creator.execute
+    lead = creator.call
     refute(creator.errors.any?)
     assert(lead.valid?)
     expect(creator.lead).to eq(lead)
@@ -109,9 +99,9 @@ RSpec.describe Lead, type: :model do
   end
 
   it "will create a Lead with the agent assigned" do
-    attrs = valid_attributes.merge({agent: agent})
+    attrs = valid_lead_attributes.merge({agent: agent})
     creator = Leads::Creator.new(**attrs)
-    lead = creator.execute
+    lead = creator.call
     expect(lead.user).to eq(agent)
   end
 
@@ -119,8 +109,8 @@ RSpec.describe Lead, type: :model do
     creator = Leads::Creator.new(**invalid_source_attributes)
     expect(creator.source).to be_nil
     expect(creator.parser).to be_nil
-    expect{creator.execute}.to_not change{Lead.count}
-    assert(creator.execute.errors.any?)
+    expect{creator.call}.to_not change{Lead.count}
+    assert(creator.call.errors.any?)
     expect(creator.errors.messages[:base].first).to match('Invalid Access Token')
     expect(creator.lead).to be_a(Lead)
     assert(creator.lead.errors.any?)
@@ -130,21 +120,21 @@ RSpec.describe Lead, type: :model do
     creator = Leads::Creator.new(**invalid_source_attributes)
     expect(creator.source).to be_nil
     expect(creator.parser).to be_nil
-    expect{creator.execute}.to_not change{Lead.count}
-    assert(creator.execute.errors.any?)
+    expect{creator.call}.to_not change{Lead.count}
+    assert(creator.call.errors.any?)
     expect(creator.errors.messages[:base].first).to match('Invalid Access Token')
     expect(creator.lead).to be_a(Lead)
     assert(creator.lead.errors.any?)
   end
 
   it "can be initialized with an invalid source parser" do
-    source.slug = 'Foobar'
-    source.save!
-    creator = Leads::Creator.new(**valid_attributes)
-    expect(creator.source).to eq(source)
+    default_lead_source.slug = 'Foobar'
+    default_lead_source.save!
+    creator = Leads::Creator.new(**valid_lead_attributes)
+    expect(creator.source).to eq(default_lead_source)
     expect(creator.parser).to be_nil
-    expect{creator.execute}.to_not change{Lead.count}
-    assert(creator.execute.errors.any?)
+    expect{creator.call}.to_not change{Lead.count}
+    assert(creator.call.errors.any?)
     expect(creator.errors.messages[:base].first).to match('Parser for Lead Source not found')
     expect(creator.lead).to be_a(Lead)
     assert(creator.lead.errors.any?)
@@ -152,7 +142,7 @@ RSpec.describe Lead, type: :model do
 
   it "can be initialized with invalid lead attributes" do
     creator = Leads::Creator.new(**invalid_lead_attributes)
-    lead = creator.execute
+    lead = creator.call
     assert(lead.errors.any?)
     assert(creator.errors.any?)
     expect(creator.lead).to eq(lead)
@@ -160,7 +150,7 @@ RSpec.describe Lead, type: :model do
 
   it "can be initialized with invalid lead preference attributes" do
     creator = Leads::Creator.new(**invalid_lead_preference_attributes)
-    lead = creator.execute
+    lead = creator.call
     assert(lead.errors.any?)
     assert(creator.errors.any?)
     expect(creator.lead).to eq(lead)
@@ -168,10 +158,10 @@ RSpec.describe Lead, type: :model do
 
   describe "when initialized with a token" do
     it "will create a lead with valid attributes and source if the token matches the source token" do
-      creator = Leads::Creator.new(**valid_attributes_with_valid_token)
+      creator = Leads::Creator.new(**valid_lead_attributes_with_valid_token)
       expect(creator.source).to be_a(LeadSource)
       expect(creator.parser).to eq(Leads::Adapters::Bluesky)
-      lead = creator.execute
+      lead = creator.call
       refute(creator.errors.any?)
       assert(lead.valid?)
       expect(creator.lead).to eq(lead)
@@ -180,34 +170,34 @@ RSpec.describe Lead, type: :model do
 
     it "will fail to create a lead with invalid attributes and valid source if the token matches the source token" do
       creator = Leads::Creator.new(**invalid_lead_attributes_with_valid_token)
-      lead = creator.execute
+      lead = creator.call
       assert(lead.errors.any?)
       assert(creator.errors.any?)
       expect(creator.lead).to eq(lead)
     end
 
     it "will fail to create a lead with valid attributes and valid source if the token doesn't match the source token" do
-      creator = Leads::Creator.new(**valid_attributes_with_invalid_token)
+      creator = Leads::Creator.new(**valid_lead_attributes_with_invalid_token)
       expect(creator.source).to be_nil
       expect(creator.parser).to be_nil
       lead = nil
       expect {
-        lead = creator.execute
+        lead = creator.call
       }.to_not change(Lead, :count)
       assert(lead.errors.any?)
       assert(creator.errors.any?)
     end
 
     it "will have the property set if the property param is provided" do
-      creator = Leads::Creator.new(**valid_attributes_with_valid_token)
-      lead = creator.execute
+      creator = Leads::Creator.new(**valid_lead_attributes_with_valid_token)
+      lead = creator.call
     end
 
     it "will create a lead associated with the provided listing property code" do
-      creator = Leads::Creator.new(**valid_attributes_with_valid_property)
-      lead = creator.execute
+      creator = Leads::Creator.new(**valid_lead_attributes_with_valid_property)
+      lead = creator.call
       assert(lead.valid?)
-      expect(lead.property).to eq(property)
+      expect(lead.property).to eq(lead_creator_property)
     end
   end
 end

@@ -38,7 +38,7 @@
           <% if current_user.present? %>
             <li>
               <div class="btn-group">
-                <%= link_to(root_path, class: "btn btn-primary") do %>
+                <%= link_to(root_path, class: "btn btn-primary", id: "navigation_dashboard_menu_link") do %>
                   <span class="glyphicon glyphicon-th-large"></span> Dashboard
                 <% end %>
                 <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">

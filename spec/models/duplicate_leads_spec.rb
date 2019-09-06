@@ -2,22 +2,22 @@ require 'rails_helper'
 
 RSpec.describe DuplicateLead do
 
-  let(:lead_name_dup1) { create(:lead, first_name: 'Foobar', last_name: 'Quux') }
-  let(:lead_name_dup2) { create(:lead, first_name: 'Foobar', last_name: 'Quux') }
-  let(:lead_name_dup3) { create(:lead, first_name: 'Foobar', last_name: 'Quux') }
-  let(:lead_phone1_dup1) { create(:lead, phone1: '5555555555') }
-  let(:lead_phone1_dup2) { create(:lead, phone1: '5555555555') }
-  let(:lead_phone1_dup3) { create(:lead, phone1: '5555555555') }
-  let(:lead_phone2_dup1) { create(:lead, phone2: '5555555556') }
-  let(:lead_phone2_dup2) { create(:lead, phone2: '5555555556') }
-  let(:lead_phone2_dup3) { create(:lead, phone2: '5555555556') }
-  let(:lead_email_dup1) { create(:lead, email: 'me@here.com') }
-  let(:lead_email_dup2) { create(:lead, email: 'me@here.com') }
-  let(:lead_email_dup3) { create(:lead, email: 'me@here.com') }
+  let(:lead_name_dup1) { create(:lead, first_name: 'Foobar', last_name: 'Quux', state: 'open') }
+  let(:lead_name_dup2) { create(:lead, first_name: 'Foobar', last_name: 'Quux', state: 'open') }
+  let(:lead_name_dup3) { create(:lead, first_name: 'Foobar', last_name: 'Quux', state: 'open') }
+  let(:lead_phone1_dup1) { create(:lead, phone1: '5555555555', state: 'open') }
+  let(:lead_phone1_dup2) { create(:lead, phone1: '5555555555', state: 'open') }
+  let(:lead_phone1_dup3) { create(:lead, phone1: '5555555555', state: 'open') }
+  let(:lead_phone2_dup1) { create(:lead, phone2: '5555555556', state: 'open') }
+  let(:lead_phone2_dup2) { create(:lead, phone2: '5555555556', state: 'open') }
+  let(:lead_phone2_dup3) { create(:lead, phone2: '5555555556', state: 'open') }
+  let(:lead_email_dup1) { create(:lead, email: 'me@here.com', state: 'open') }
+  let(:lead_email_dup2) { create(:lead, email: 'me@here.com', state: 'open') }
+  let(:lead_email_dup3) { create(:lead, email: 'me@here.com', state: 'open') }
 
   describe "duplicate detection" do
-    let(:lead1) { create(:lead) }
-    let(:lead2) { create(:lead) }
+    let(:lead1) { create(:lead, state: 'open') }
+    let(:lead2) { create(:lead, state: 'open') }
 
     it "detects dupes by name" do
       lead_name_dup1

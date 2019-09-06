@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
-  resources :lead_referral_sources
+  mount ActionCable.server => '/cable'
+
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
@@ -31,6 +32,7 @@ Rails.application.routes.draw do
   root to: redirect('/users/sign_in')
 
   resources :lead_actions
+  resources :lead_referral_sources
 
   resources :scheduled_actions do
     collection do
@@ -99,6 +101,7 @@ Rails.application.routes.draw do
   namespace :home do
     get 'manager_dashboard', to: 'manager_dashboard'
     get 'dashboard', to: 'dashboard'
+    get 'insert_unclaimed_lead', to: 'insert_unclaimed_lead'
   end
 
   resources :teams do

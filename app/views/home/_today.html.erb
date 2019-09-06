@@ -32,15 +32,11 @@
             <%= @unclaimed_leads.count %> Unclaimed Leads
           <% end %>
         </span>
-        <table class="table lead_listing">
+        <table class="table lead_listing" id="unclaimed_lead_listing">
           <thead></thead>
           <tbody>
 
             <!-- Unclaimed Leads -->
-            <tr>
-              <td colspan="4">
-              </td>
-            </tr>
             <%= render collection: @unclaimed_leads.limit(@limit_leads), partial: 'lead' %>
           </tbody>
         </table>

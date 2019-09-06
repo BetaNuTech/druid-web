@@ -15,13 +15,13 @@ RSpec.describe Messages::Receiver do
       expect(receiver.parser).to eq(Messages::DeliveryAdapters::CloudMailin)
     end
 
-    describe "execute" do
+    describe "call" do
       it "creates a Message and Delivery" do
         message
         message_count = Message.count
         delivery_count = MessageDelivery.count
 
-        new_message = receiver.execute
+        new_message = receiver.call
         expect(new_message.valid?).to eq(true)
 
         expect(new_message.user).to eq(message_user)
@@ -47,13 +47,13 @@ RSpec.describe Messages::Receiver do
       expect(receiver.parser).to eq(Messages::DeliveryAdapters::TwilioAdapter)
     end
 
-    describe "execute" do
+    describe "call" do
       it "creates a Message and Delivery" do
         sms_message
         message_count = Message.count
         delivery_count = MessageDelivery.count
 
-        new_message = receiver.execute
+        new_message = receiver.call
         expect(new_message.valid?).to eq(true)
 
         expect(new_message.user).to eq(sms_message_user)

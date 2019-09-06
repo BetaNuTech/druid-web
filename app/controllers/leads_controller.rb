@@ -55,12 +55,13 @@ class LeadsController < ApplicationController
   def create
     authorize Lead
     set_lead_source
-    lead_creator = Leads::Creator.new(data: lead_params, agent: current_user, token: @lead_source.api_token)
-    @lead = lead_creator.execute
+    assign_user = lead_params['user_id'].present? ? User.find(lead_params['user_id']) : nil
+    lead_creator = Leads::Creator.new(data: lead_params, agent: assign_user, token: @lead_source.api_token)
+    @lead = lead_creator.call
 
     respond_to do |format|
       if !@lead.errors.any?
-        @lead.trigger_event(event_name: 'claim', user: current_user) if current_user
+        @lead.trigger_event(event_name: 'claim', user: assign_user) if assign_user.present?
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
       else

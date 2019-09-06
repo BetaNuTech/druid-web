@@ -1,0 +1,4 @@
+$("#unclaimed_lead_listing tbody").
+  prepend('<%= escape_javascript(render(partial: "lead", locals: { lead: @lead })) %>');
+
+$("#unclaimed_lead_listing tbody tr:first").hide().fadeIn('slow');
