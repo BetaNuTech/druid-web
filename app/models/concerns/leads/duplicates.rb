@@ -49,6 +49,8 @@ module Leads
                  )
             )
 
+          ORDER BY created_at DESC
+
         SQL
 
         query_array = [
@@ -72,7 +74,10 @@ module Leads
           return true
         end
 
-        detected = possible_duplicates
+        # Processing more than 10 duplicate candidates is a waste of resources
+        # and consistently causes backlogs in the queue
+        detected = possible_duplicates.limit(10)
+
         transaction do
           old_duplicates = duplicates.to_a
 
