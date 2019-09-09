@@ -1,12 +1,13 @@
 $(document).on('turbolinks:load', function() {
 
   if (App.incoming_leads_channels == null) {
+    // State initialization
     App.incoming_leads_channels = [];
-    App.incoming_leads_last_notified = Date.now();
+    App.incoming_leads_last_notified = Date.now() - 100000;
 
-    var properties = [];
 
     // Get list of properties to subscribe
+    var properties = [];
     $.ajax("/properties.json",{
       error: function(jqXHR, status, err) { },
       success: function(data) {
@@ -14,6 +15,12 @@ $(document).on('turbolinks:load', function() {
         properties.forEach(function(e){ subscribeIncomingLeads(App.incoming_leads_channels, e) })
       }
     })
+
+    // Initialize sound effect
+    App.incoming_lead_sound = document.createElement('audio');
+    App.incoming_lead_sound.setAttribute('id', 'incoming_lead_notification_sound');
+    App.incoming_lead_sound.setAttribute('src', '/cha-ching.mp3');
+    App.incoming_lead_sound.load();
   }
 });
 
@@ -50,6 +57,9 @@ function issueIncomingLeadNotifications(lead) {
     var notification_body = "New incoming Lead! " + lead['name'];
     sendBrowserNotification("BlueSky", notification_body);
     App.incoming_leads_last_notified = Date.now();
+
+    App.incoming_lead_sound.load();
+    App.incoming_lead_sound.play().catch(function(err){console.log(err)});
   } else {
     console.log("Skipping incoming Lead browser notification")
   }
