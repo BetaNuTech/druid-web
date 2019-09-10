@@ -60,6 +60,7 @@ group :development, :test do
   gem 'bundler-audit', "~> 0.6"
   gem 'faker', '~> 1.9'
   gem 'factory_bot_rails', '~> 4.11', require: false
+  gem 'immigrant', "~> 0.3"
 end
 
 group :test do
