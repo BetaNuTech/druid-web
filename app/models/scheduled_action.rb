@@ -153,7 +153,7 @@ class ScheduledAction < ApplicationRecord
 
     found = user.scheduled_actions.
       joins(join_sql).
-      where("#{id_filter} AND #{date_filter} AND #{availability_filter}", params)
+      where("state = 'pending' AND #{id_filter} AND #{date_filter} AND #{availability_filter}", params)
 
     return found
   end
