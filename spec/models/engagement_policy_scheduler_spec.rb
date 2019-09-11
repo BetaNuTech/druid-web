@@ -33,7 +33,7 @@ RSpec.describe EngagementPolicyScheduler do
       expect(compliance.expires_at.min).to eq(schedule.time.min)
       expect(compliance.expires_at.to_date).to eq(schedule.date)
 
-      lead.scheduled_actions.destroy_all
+      lead.scheduled_actions.update_all(state: 'rejected')
       lead.reload
       lead.trigger_event(event_name: 'claim', user: agent)
       lead.reload
@@ -41,7 +41,7 @@ RSpec.describe EngagementPolicyScheduler do
       scheduled_actions = lead.scheduled_actions
 
       #scheduled_actions = scheduler.create_scheduled_actions(lead: lead)
-      expect(scheduled_actions.size).to eq(policy.actions.count)
+      expect(scheduled_actions.pending.size).to eq(policy.actions.count)
 
       scheduled_action = scheduled_actions.first
       schedule = scheduled_action.schedule

@@ -142,7 +142,7 @@ class EngagementPolicyScheduler
 
   # Re-assign incomplete ScheduledActions
   def reassign_lead_agent(lead:, agent:)
-    incomplete_states = [:pending, :expired]
+    incomplete_states = [:pending]
     lead.transaction do
       lead.scheduled_actions.where(state: incomplete_states).each do |action|
         action.user = agent

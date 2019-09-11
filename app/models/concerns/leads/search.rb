@@ -4,7 +4,7 @@ module Leads
 
     included do
       # https://github.com/Casecommons/pg_search
-      include PgSearch
+      include PgSearch::Model
 
       pg_search_scope :search_for,
         against: %i{first_name last_name referral notes phone1 phone2 fax email id_number},

@@ -250,11 +250,11 @@ RSpec.describe Lead, type: :model do
         seed_engagement_policy
         lead.trigger_event(event_name: 'claim', user: agent)
         lead.reload
-        assert(lead.scheduled_actions.count > 0)
+        assert(lead.scheduled_actions.pending.count > 0)
         expect(lead.user).to eq(agent)
         lead.postpone!
         lead.reload
-        expect(lead.scheduled_actions.count).to eq(0)
+        expect(lead.scheduled_actions.pending.count).to eq(0)
         expect(lead.user).to be_nil
         expect(lead.priority).to eq('low')
       end
@@ -263,11 +263,11 @@ RSpec.describe Lead, type: :model do
         seed_engagement_policy
         lead.trigger_event(event_name: 'claim', user: agent)
         lead.reload
-        assert(lead.scheduled_actions.count > 0)
+        assert(lead.scheduled_actions.pending.count > 0)
         expect(lead.user).to eq(agent)
         lead.disqualify!
         lead.reload
-        expect(lead.scheduled_actions.count).to eq(1)
+        expect(lead.scheduled_actions.pending.count).to eq(1)
         expect(lead.user).to eq(agent)
         expect(lead.priority).to eq('zero')
       end
@@ -310,10 +310,10 @@ RSpec.describe Lead, type: :model do
         lead.property = property
         lead.trigger_event(event_name: 'claim', user: agent)
         lead.reload
-        expect(lead.scheduled_actions.count).to be > 0
+        expect(lead.scheduled_actions.pending.count).to be > 0
         lead.abandon!
         lead.reload
-        expect(lead.scheduled_actions.count).to eq(0)
+        expect(lead.scheduled_actions.pending.count).to eq(0)
       end
     end
 
