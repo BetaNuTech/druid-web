@@ -88,12 +88,42 @@ RSpec.describe LeadsController, type: :controller do
 
   describe "GET #search" do
     describe "as an agent" do
+      let(:lead) { create(:lead, property: agent.property) }
       it "returns a success reponse" do
         sign_in agent
-        get :index, params: {lead_search: {states: ['open']}}
+        get :search
+        expect(response).to be_redirect
+        get :search, params: {lead_search: {states: ['open']}}
         expect(response).to be_successful
-        get :index, params: {lead_search: {states: ['open']}}, format: :json
+        get :search, params: {lead_search: {states: ['open']}}, format: :json
         expect(response).to be_successful
+      end
+    end
+  end
+
+  describe "GET #call_log_partial" do
+    describe "as an agent" do
+      it "returns a success response" do
+        sign_in agent
+        get :call_log_partial, params: {id: lead.id }
+      end
+    end
+  end
+
+  describe "GET #progress_state" do
+    let(:lead) { Lead.create! valid_attributes }
+
+    describe "as an agent" do
+      it "returns a successful response" do
+        sign_in agent
+        get :progress_state, params: {id: lead.id, eventid: 'abandon' }
+        expect(response).to be_successful
+      end
+
+      it "redirects to the lead if this is a 'claim'" do
+        sign_in agent
+        get :progress_state, params: {id: lead.id, eventid: 'claim' }
+        expect(response).to redirect_to(lead_url(lead))
       end
     end
   end
