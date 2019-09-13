@@ -102,10 +102,11 @@ RSpec.describe LeadsController, type: :controller do
   end
 
   describe "GET #call_log_partial" do
+    let(:lead) { create(:lead, property: agent.property) }
     describe "as an agent" do
       it "returns a success response" do
         sign_in agent
-        get :call_log_partial, params: {id: lead.id }
+        get :call_log_partial, xhr: true, params: {id: lead.id }, format: :js
       end
     end
   end
