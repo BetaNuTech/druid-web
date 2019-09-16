@@ -130,7 +130,7 @@ RSpec.describe LeadSearch do
       search = LeadSearch.new(
         { start_date: ( lead3.first_comm - 1.hour ).strftime(date_format),
           end_date: ( lead2.first_comm + 1.hour).strftime(date_format)})
-      expect(search.collection.to_a.sort).to eq([lead2,lead3].sort)
+      expect(search.collection.to_a.map(&:id).sort).to eq([lead2,lead3].map(&:id).sort)
       search = LeadSearch.new( { start_date: 5.days.ago.strftime(date_format) })
       expect(search.collection.to_a.sort).to eq([lead1, lead2, lead3].sort)
       search = LeadSearch.new( { end_date: (lead3.first_comm + 1.hour).strftime(date_format) })
