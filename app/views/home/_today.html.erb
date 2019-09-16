@@ -22,14 +22,14 @@
     <div class="row">
       <div class="col-md-12">
         <span class="text-nowrap lead">
-          <% if @limit_leads != @unclaimed_leads.count %>
+          <% if @limit_leads != @open_leads.count %>
             <%= @limit_leads %> of
-            <%= @unclaimed_leads.count %> Unclaimed Leads
+            <%= @open_leads.count %> Open Leads
             <span>
               <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn-xs btn-primary") %>
             </span>
           <% else %>
-            <%= @unclaimed_leads.count %> Unclaimed Leads
+            <%= @open_leads.count %> Open Leads
           <% end %>
         </span>
         <table class="table lead_listing" id="unclaimed_lead_listing">
@@ -37,7 +37,7 @@
           <tbody>
 
             <!-- Unclaimed Leads -->
-            <%= render collection: @unclaimed_leads.limit(@limit_leads), partial: 'lead' %>
+            <%= render collection: @open_leads.limit(@limit_leads), partial: 'lead' %>
           </tbody>
         </table>
 

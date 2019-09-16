@@ -5,10 +5,10 @@ class HomeController < ApplicationController
     @page_title = "BlueSky Dashboard"
 
     @my_leads = Lead.for_agent(current_user).active.is_lead
-    @unclaimed_leads = current_user.available_leads.includes(:property)
+    @open_leads = current_user.available_leads.includes(:property)
     @today_actions = ScheduledAction.includes(:schedule, :lead_action, :target).for_agent(current_user).due_today.sorted_by_due_asc
     @upcoming_actions = ScheduledAction.includes(:schedule, :lead_action).for_agent(current_user).upcoming.sorted_by_due_asc
-    @limit_leads = [ ( params[:limit_leads] || 5 ).to_i,  @unclaimed_leads.count ].min
+    @limit_leads = [ ( params[:limit_leads] || 5 ).to_i,  @open_leads.count ].min
   end
 
   def manager_dashboard
