@@ -9,7 +9,7 @@
       </div>
       <% if current_user.property.present? %>
         <div class="col-md-6" style="padding-top: 22px;">
-          <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id]}}), class: "btn btn-xs btn-primary") %>
+          <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{open prospect showing application} }}), class: "btn btn-xs btn-primary") %>
         </div>
       <% end %>
     </div>
@@ -17,7 +17,7 @@
       <thead></thead>
       <tbody>
         <% if current_user.property.present? %>
-          <% current_user.property.leads.early_pipeline.high_priority.each do |lead| %>
+          <% current_user.property.leads.in_progress.high_priority.each do |lead| %>
             <tr>
               <td>
                 <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
