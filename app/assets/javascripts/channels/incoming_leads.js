@@ -55,11 +55,13 @@ function issueIncomingLeadNotifications(lead) {
   var seconds_since_last_notification = ( Date.now() - App.incoming_leads_last_notified ) / 1000
   if (seconds_since_last_notification > 60) {
     var notification_body = "New incoming Lead! " + lead['name'];
-    sendBrowserNotification("BlueSky", notification_body);
+    var browser_notified = sendBrowserNotification("BlueSky", notification_body);
     App.incoming_leads_last_notified = Date.now();
 
-    App.incoming_lead_sound.load();
-    App.incoming_lead_sound.play().catch(function(err){console.log(err)});
+    if (browser_notified) {
+      App.incoming_lead_sound.load();
+      App.incoming_lead_sound.play().catch(function(err){console.log(err)});
+    }
   } else {
     console.log("Skipping incoming Lead browser notification")
   }
