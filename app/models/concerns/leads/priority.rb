@@ -36,6 +36,11 @@ module Leads
         return !had_errors
       end
 
+      def handle_scheduled_action_completion
+        calculate_priority
+        save
+      end
+
       def estimated_priority
         score = state_priority_score + last_contact_score + task_deadline_score
         score = [score, 5].min - 1
