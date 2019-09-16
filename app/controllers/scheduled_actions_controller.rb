@@ -25,8 +25,9 @@ class ScheduledActionsController < ApplicationController
       end
       @scheduled_actions = @user.scheduled_actions
     else
-      @scheduled_actions = current_user.scheduled_actions.includes(:schedule)
+      @scheduled_actions = current_user.scheduled_actions
     end
+    @scheduled_actions = @scheduled_actions.includes(:schedule).order("schedules.date ASC, schedules.time ASC")
   end
 
   # GET /scheduled_actions/1
