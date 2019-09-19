@@ -45,7 +45,8 @@ FactoryBot.define do
     phone { Faker::PhoneNumber.phone_number }
     fax { Faker::PhoneNumber.phone_number }
     email { Faker::Internet.email }
-    units { Faker::Number.number(3) }
+    # TODO: this is causing error
+    #units { Faker::Number.number(3) }
     notes { Faker::Lorem.sentence }
     website { Faker::Internet.url }
     school_district { Faker::Company.name }

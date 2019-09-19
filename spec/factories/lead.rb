@@ -38,9 +38,9 @@ FactoryBot.define do
     phone2 { Faker::PhoneNumber.phone_number }
     phone2_type { 'Cell' }
     phone2_tod { 'Night' }
-    id_number { Faker::Number.number(10) }
+    id_number { Faker::Number.number(digits: 10) }
     id_state { Faker::Address.state_abbr }
-    dob { Faker::Date.birthday(18,99) }
+    dob { Faker::Date.birthday(min_age: 18, max_age: 99) }
     fax { Faker::PhoneNumber.phone_number }
     email { Faker::Internet.email }
     preference_attributes { FactoryBot.attributes_for(:lead_preference)}

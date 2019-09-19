@@ -33,11 +33,11 @@ FactoryBot.define do
     property { create(:property) }
     unit_type { create(:unit_type) }
     rental_type { create(:rental_type) }
-    unit { Faker::Number.between(1, 1000) + Time.now.to_i }
-    floor { Faker::Number.between(1,3) }
-    sqft { Faker::Number.between(400, 1200) }
-    bedrooms { Faker::Number.between(1,3) }
-    bathrooms { Faker::Number.between(1,3) }
+    unit { Faker::Number.between(from: 1, to: 1000) + Time.now.to_i }
+    floor { Faker::Number.between(from: 1, to: 3) }
+    sqft { Faker::Number.between(from: 400, to: 1200) }
+    bedrooms { Faker::Number.between(from: 1, to: 3) }
+    bathrooms { Faker::Number.between(from: 1, to: 3) }
     description { Faker::Lorem.sentence }
     address1 { Faker::Address.street_address }
     address2 { Faker::Address.secondary_address }
@@ -50,6 +50,6 @@ FactoryBot.define do
     end
     occupancy {Unit::OCCUPANCY_STATUSES[rand(1)]}
     lease_status {Unit::LEASE_STATUSES[rand(5)]}
-    market_rent { Faker::Number.between(600, 2500) }
+    market_rent { Faker::Number.between(from: 600, to: 2500) }
   end
 end

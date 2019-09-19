@@ -67,7 +67,7 @@ namespace :db do
         lead_source = LeadSource.order("RANDOM()").first
         lead = FactoryBot.create(:lead, property: property, source: lead_source, referral: lead_source.name)
         puts "  - #{lead.name}: interested in the property #{property.name}"
-        if (Faker::Boolean.boolean(0.2))
+        if (Faker::Boolean.boolean(true_ratio: 0.2))
           lead.user = agent
           lead.claim if lead.open?
           puts "    + Claimed by #{agent.name}"

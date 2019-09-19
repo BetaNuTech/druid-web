@@ -21,13 +21,13 @@ FactoryBot.define do
     name { Faker::Lorem.word }
     description { Faker::Lorem.sentence }
     property_id { create(:property).id }
-    market_rent { Faker::Number.between(600, 2500) }
+    market_rent { Faker::Number.between(from: 600, to: 2500) }
     sequence :remoteid do |n|
       "remote-#{n}"
     end
-    bedrooms { Faker::Number.between(1,3) }
-    bathrooms { Faker::Number.between(1,3) }
-    sqft { Faker::Number.between(600, 2500) }
+    bedrooms { Faker::Number.between(from: 1, to: 3) }
+    bathrooms { Faker::Number.between(from: 1, to: 3) }
+    sqft { Faker::Number.between(from: 600, to: 2500) }
     active { true }
   end
 end
