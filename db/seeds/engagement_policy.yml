@@ -1,6 +1,6 @@
 ---
 :engagement_policy:
-  :version: 3
+  :version: 4
   :data:
     - :version: 1
       :property_name: null
@@ -16,7 +16,7 @@
           :retry_delay_multiplier: none
           :score: 5
           :active: true
-    - :version: 1
+    - :version: 2
       :property_name: null
       :lead_state: prospect
       :description: Global Engagement Policy for 'prospect' Leads
@@ -30,15 +30,7 @@
           :retry_delay_multiplier: none
           :score: 5
           :active: true
-        - :lead_action_name: Schedule Appointment
-          :description: Schedule appointment with Lead
-          :deadline: 24
-          :retry_count: 2
-          :retry_delay: 12
-          :retry_delay_multiplier: none
-          :score: 5
-          :active: true
-    - :version: 2
+    - :version: 3
       :property_name: null
       :lead_state: showing
       :description: Global Engagement Policy for 'showing' Leads
@@ -60,28 +52,12 @@
           :retry_delay_multiplier: none
           :score: 5
           :active: true
-    - :version: 2
+    - :version: 3
       :property_name: null
       :lead_state: application
       :description: Global Engagement Policy for 'application' Leads
       :active: true
       :engagement_policy_actions:
-        - :lead_action_name: Prepare Application
-          :description: Prepare leasing application for Lead
-          :deadline: 48
-          :retry_count: 0
-          :retry_delay: 0
-          :retry_delay_multiplier: none
-          :score: 2
-          :active: true
-        - :lead_action_name: Deliver Application
-          :description: Provide Application to Lead
-          :deadline: 36
-          :retry_count: 0
-          :retry_delay: 0
-          :retry_delay_multiplier: none
-          :score: 2
-          :active: true
         - :lead_action_name: Process Application
           :description: Process leasing application
           :deadline: 48
