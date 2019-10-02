@@ -24,6 +24,12 @@
               <% if lead.property.present? %>
                 for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
               <% end %>
+              <% if lead.preference.notes.present? %>
+                <p class="dashboard_lead_notes">
+                  <%= glyph(:question_sign) %>
+                  <span><%= lead.preference.notes %></span>
+                </p>
+              <% end %>
               <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
             </td>
             <td>
