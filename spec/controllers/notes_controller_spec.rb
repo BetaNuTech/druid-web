@@ -382,6 +382,18 @@ RSpec.describe NotesController, type: :controller do
           expect(response).to be_redirect
         }.to change{Note.count}
       end
+
+      it "should succeed if it has no user" do
+        note.notable = create(:lead, property: agent.property, user: agent)
+        note.user = nil
+        note.save!
+        sign_in agent
+        expect {
+          delete :destroy, params: {id: note.id}
+          expect(assigns(:note)).to eq(note)
+          expect(response).to be_redirect
+        }.to change{Note.count}
+      end
     end
 
     describe "as an corporate" do

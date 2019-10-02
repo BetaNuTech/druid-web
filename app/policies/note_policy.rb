@@ -3,7 +3,6 @@ class NotePolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       scope.
-        where(user_id: user.id).
         order(created_at: "DESC")
     end
   end
@@ -21,7 +20,7 @@ class NotePolicy < ApplicationPolicy
   end
 
   def edit?
-    user.admin? || (user.user? && same_user? )
+    user.admin? || (user.user? && ( same_user? || same_notable_user? ) )
   end
 
   def update?
@@ -38,6 +37,11 @@ class NotePolicy < ApplicationPolicy
 
   def same_user?
     record.user.present? && record.user === user 
+  end
+
+  def same_notable_user?
+    record.notable.present? && record.notable.respond_to?(:user) &&
+      record.notable.user === user
   end
 
   def allowed_params
