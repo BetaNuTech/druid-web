@@ -30,7 +30,8 @@ module ScheduledActions
         after_all_events -> (*args) { after_all_events_callback(*args) }
 
         event :complete do
-          transitions from: [:pending], to: :completed
+          transitions from: [:pending], to: :completed,
+            after: :target_completion
         end
 
         event :retry do
@@ -62,8 +63,10 @@ module ScheduledActions
       def set_completion_time
         case self.state
         when 'completed', 'completed_retry'
-          self.completed_at = DateTime.now
-          self.save
+          if !self.completed_at.present?
+            self.completed_at = DateTime.now
+            self.save
+          end
         end
       end
 
@@ -92,6 +95,12 @@ module ScheduledActions
           omit << :retry
         end
         return base_events - omit
+      end
+
+      def target_completion
+        if target.respond_to?(:handle_scheduled_action_completion)
+          target.handle_scheduled_action_completion
+        end
       end
 
     end

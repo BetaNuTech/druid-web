@@ -8,8 +8,8 @@ FactoryBot.define do
     phone2_type { 'Cell' }
     phone2_tod { 'Night' }
     email { Faker::Internet.email }
-    ssn { Faker::Number.number(9) }
-    id_number { Faker::Number.number(10) }
+    ssn { Faker::Number.number(digits: 9) }
+    id_number { Faker::Number.number(digits: 10) }
     id_state { Faker::Address.state_abbr }
   end
 end

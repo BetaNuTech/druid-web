@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TeamsController, type: :controller do
   include_context "users"
+  render_views
 
   describe "GET #index" do
     describe "as a corporate user" do

@@ -9,7 +9,7 @@
     <div class="col-md-12">
 
       <% @engagement_policies.group_by(&:property).each do |property, policies| %>
-        <div class="row fieldset_content">
+        <div class="row">
           <h2><%= property ? property.name : 'Default' %></h2>
 
           <table class="table">

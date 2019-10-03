@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe ScheduledActionsController, type: :controller do
   include_context "team_members"
   include_context "engagement_policy"
+  render_views
 
   before(:each) do
     seed_engagement_policy

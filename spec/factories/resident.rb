@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :resident do
     status { "current" }
-    dob { Faker::Date.birthday(18,99) }
+    dob { Faker::Date.birthday(min_age: 18, max_age: 99) }
     title { Faker::Name.prefix }
     first_name { Faker::Name.first_name }
     middle_name { Faker::Name.first_name }

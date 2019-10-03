@@ -71,9 +71,10 @@ class NotesController < ApplicationController
   # DELETE /notes/1.json
   def destroy
     authorize @note
+    notable = @note.notable
     @note.destroy
     respond_to do |format|
-      format.html { redirect_to notes_url, notice: 'Note was successfully destroyed.' }
+      format.html { redirect_to url_for(notable), notice: 'Note was successfully destroyed.' }
       format.json { head :no_content }
       format.js
     end

@@ -36,8 +36,8 @@ RSpec.describe ResidentDetail, type: :model do
     id = resident_detail.id
     ssn = resident_detail.ssn
     resident_detail = ResidentDetail.find(id)
-    expect(resident_detail.ssn).to eq(ssn)
-    expect(resident_detail.ssn).to_not eq(resident_detail.encrypted_ssn)
+    expect(resident_detail.ssn.to_s).to eq(ssn.to_s)
+    expect(resident_detail.ssn.to_s).to_not eq(resident_detail.encrypted_ssn.to_s)
   end
 
   describe "associations" do

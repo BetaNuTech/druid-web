@@ -5,15 +5,21 @@ module Leads
     PENDING_STATES = %w{open prospect showing application}
     CLAIMED_STATES = %w{prospect showing application approved denied movein resident}
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
+    EARLY_PIPELINE_STATES = %w{open prospect showing application}
+    IN_PROGRESS_STATES = %w{prospect showing}
 
     class_methods do
 
       def early_pipeline
-        where(state: ['open', 'prospect', 'application'])
+        where(state: EARLY_PIPELINE_STATES)
       end
 
       def active
         where.not(state: CLOSED_STATES)
+      end
+
+      def in_progress
+        where(state: IN_PROGRESS_STATES)
       end
 
       def pending_revisit

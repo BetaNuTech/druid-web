@@ -3,9 +3,9 @@ FactoryBot.define do
     engagement_policy
     lead_action
     description { Faker::Lorem.sentence }
-    deadline { Faker::Number.between(1,120) }
-    retry_count { Faker::Number.between(1,5) }
-    retry_delay { Faker::Number.between(1, 120) }
+    deadline { Faker::Number.between(from: 1, to: 120) }
+    retry_count { Faker::Number.between(from: 1, to: 5) }
+    retry_delay { Faker::Number.between(from: 1, to: 120) }
     retry_delay_multiplier { 'none' }
     score { 1.0 }
     active { true }

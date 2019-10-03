@@ -35,8 +35,13 @@
                 <%= short_time scheduled_action.schedule.to_datetime %>
               </span> &mdash;
               <span class="scheduled_action_calendar_scheduled_action_action">
-                <%= scheduled_action.lead_action.try(:name) %>:
+                <%= scheduled_action.lead_action&.name %>:
               </span><br/>
+              <% if scheduled_action.description.present? %>
+                <span class="scheduled_action_calendar_scheduled_action_description">
+                  <%= scheduled_action.description %>:
+                </span><br/>
+              <% end %>
               <span class="scheduled_action_calendar_scheduled_action_subject">
                 <%= scheduled_action.target_subject(current_user) %>
               </span>
