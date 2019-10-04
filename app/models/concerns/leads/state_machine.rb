@@ -179,7 +179,7 @@ module Leads
       end
 
       def clear_all_tasks
-        scheduled_actions.update_all(state: 'rejected')
+        scheduled_actions.incomplete.update_all(state: 'rejected')
       end
 
       def may_apply?
