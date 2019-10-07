@@ -8,11 +8,13 @@ class ScheduledActionPolicy < ApplicationPolicy
           skope
         when ->(u) { u.user? }
           if user.property.present?
-            user_ids = user.properties.map{|p| p.users}.flatten.map(&:id).uniq
+            user_ids = user.assigned_properties_agent_ids
           else
             user_ids = [ user.id ]
           end
-          skope.where(user_id: [ user_ids ])
+          skope.where(user_id: user.id).or(
+            skope.where(user_id: [ user_ids ], target_type: 'Lead')
+          )
         end
     end
   end

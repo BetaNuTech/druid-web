@@ -13,21 +13,31 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions.json
   def index
     authorize ScheduledAction
+
     set_limit
+    @show_all = params[:all].present?
+    skope = nil
+
     if @lead
       unless LeadPolicy.new(current_user, @lead).show?
         raise Pundit::NotAuthorizedError, "not allowed to view this Lead's Tasks"
       end
-      @scheduled_actions = @lead.scheduled_actions
+      skope = @lead.scheduled_actions
     elsif @user
       unless UserPolicy.new(current_user, @user).show?
         raise Pundit::NotAuthorizedError, "not allowed to view this User's Tasks"
       end
-      @scheduled_actions = @user.scheduled_actions
+      skope = @user.scheduled_actions
     else
-      @scheduled_actions = current_user.scheduled_actions
+      if @show_all
+        skope = policy_scope(ScheduledAction)
+      else
+        skope = current_user.scheduled_actions
+      end
     end
-    @scheduled_actions = @scheduled_actions.includes(:schedule).order("schedules.date ASC, schedules.time ASC")
+
+
+    @scheduled_actions = skope.includes(:schedule).valid
   end
 
   # GET /scheduled_actions/1
