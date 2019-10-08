@@ -48,6 +48,14 @@ module Users
           where(property_users: {property: managed_properties})
       end
 
+      def assigned_properties_agents
+        User.includes(:assignments).where(property_users: {property_id: properties.select(:id).map(&:id)})
+      end
+
+      def assigned_properties_agent_ids
+        User.includes(:assignments).where(property_users: {property_id: properties.select(:id).map(&:id)}).select(:id).map(&:id)
+      end
+
     end
   end
 end

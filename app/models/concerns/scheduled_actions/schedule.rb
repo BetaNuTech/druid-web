@@ -9,8 +9,12 @@ module ScheduledActions
 
       def upcoming
         return incomplete.having_schedule.
-          where("schedules.date > ?", Date.today).
-          sorted_by_due_asc
+          where("schedules.date >= ?", Date.today)
+      end
+
+      def upcoming_or_incomplete
+        return upcoming.or(incomplete.having_schedule).
+                sorted_by_due_asc
       end
 
       def due_today
@@ -24,9 +28,18 @@ module ScheduledActions
         return skope
       end
 
+      def previous_month
+        previous.where("schedules.date >= ? AND schedules.date <= ?", 1.month.ago.beginning_of_day, Date.today)
+      end
+
       def sorted_by_due_asc
         skope = self.having_schedule.
           order("schedules.date ASC, schedules.time ASC")
+      end
+
+      def sorted_by_due_desc
+        skope = self.having_schedule.
+          order("schedules.date DESC, schedules.time DESC")
       end
 
       def with_start_date(date)

@@ -4,6 +4,15 @@
   padding-bottom: 1em;
 }
 
+.scheduled_action_calendar_entry_my_task {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.scheduled_action_calendar_entry_completed {
+  font-style: italic;
+}
+
 .scheduled_action_calendar_scheduled_action_action,
   .scheduled_action_calendar_scheduled_action_subject
 {

@@ -112,4 +112,27 @@ module ScheduledActionsHelper
     grouped_options_for_select(collection_for_select, scheduled_action.article&.id)
   end
 
+  def scheduled_action_calendar_entry_class(scheduled_action)
+    css_classes = [ "scheduled_action_calendar_entry" ]
+    css_classes << "scheduled_action_calendar_entry_my_task" if scheduled_action.user_id == current_user.id
+    css_classes << 'scheduled_action_calendar_entry_completed' if scheduled_action.is_completed?
+
+    return css_classes.join(" ")
+  end
+
+  def scheduled_action_completion_state_icon(scheduled_action)
+    case scheduled_action.state
+    when 'pending'
+      glyph(:flag)
+    when 'completed'
+      glyph(:ok)
+    when 'completed_retry'
+      glyph(:duplicate)
+    when 'expired'
+      glyph(:time)
+    when 'rejected'
+      glyph(:ban_circle)
+    end
+  end
+
 end
