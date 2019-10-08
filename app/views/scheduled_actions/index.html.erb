@@ -43,7 +43,7 @@
               </span>
               <% if scheduled_action.user_id != current_user.id %>
                 <span>
-                  for <%= scheduled_action.user.name %>:
+                  for <%= scheduled_action.user&.name || '(System)' %>:
                 </span><br/>
               <% end %>
               <span>
