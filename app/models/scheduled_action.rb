@@ -76,10 +76,18 @@ class ScheduledAction < ApplicationRecord
 
   ### Class Methods
 
+  def self.excluding_disqualified_leads
+    select do |task|
+      task.target.respond_to?(:state?) ?
+        task.target.state != 'disqualified' :
+        true
+    end
+  end
 
   ### Instance Methods
 
   attr_accessor :impersonate
+
 
   def start_time
     self.schedule.try(:date)

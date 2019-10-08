@@ -25,14 +25,14 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.upcoming_or_incomplete.limit(10) } %>
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.upcoming_or_incomplete.limit(10).excluding_disqualified_leads } %>
         </div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class=col-md-12"">
-      <%= month_calendar events: @scheduled_actions.valid.sorted_by_due_asc do |date, scheduled_actions| %>
+      <%= month_calendar events: @scheduled_actions.valid.sorted_by_due_asc.excluding_disqualified_leads do |date, scheduled_actions| %>
         <%= date.day %><br/>
         <% scheduled_actions.each do |scheduled_action| %>
           <div class="<%= scheduled_action_calendar_entry_class(scheduled_action) %>">
