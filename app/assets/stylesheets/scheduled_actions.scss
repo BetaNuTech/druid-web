@@ -9,8 +9,8 @@
   font-size: 1em;
 }
 
-.scheduled_action_calendar_entry_completed {
-  font-style: italic;
+.scheduled_action_calendar_entry_completed a {
+  color: #777;
 }
 
 .scheduled_action_calendar_scheduled_action_action,
@@ -33,4 +33,10 @@
 
 .lead_task_completed {
   display: none;
+}
+
+@media (max-width: 1300px) {
+  .simple-calendar table {
+    font-size: 0.8em;
+  }
 }
