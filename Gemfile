@@ -49,7 +49,6 @@ gem 'premailer', "~> 1.11"
 gem 'image_processing', "~> 1.9"
 gem 'mini_magick', "~> 4.9"
 gem 'delayed_job_web', "~> 1.4"
-gem 'jquery-datatables', "~> 1.10"
 gem 'immigrant', "~> 0.3"
 
 
