@@ -34,7 +34,7 @@ module Cdrs
         return false unless status
         kpis = {
           "_replication_ok" => self.replication_ok?(status),
-          "Seconds_Behind_Master" => status["Seconds_Behind_Master"] < 60,
+          "Seconds_Behind_Master" => status["Seconds_Behind_Master"] || 0 < 60,
           "Slave_SQL_Running_State" => status["Slave_SQL_Running_State"] == "Slave has read all relay log; waiting for the slave I/O thread to update it",
         }
         return kpis.values.all?{|v| v}
