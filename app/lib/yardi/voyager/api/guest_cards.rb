@@ -20,7 +20,8 @@ module Yardi
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
-            ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
+            # TODO: insert record into a table of errors
+            #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
           return guestcards
@@ -58,7 +59,8 @@ module Yardi
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
-            ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
+            # TODO: insert record into a table of errors
+            #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
           return guestcards
@@ -80,7 +82,8 @@ module Yardi
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
-            ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
+            # TODO: insert record into a table of errors
+            #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
           return guestcards
@@ -122,7 +125,8 @@ module Yardi
             msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
             full_msg = msg + " -- #{e.backtrace}"
             Rails.logger.error msg
-            ErrorNotification.send(StandardError.new(full_msg), {lead_id: lead.id, property_id: lead.property_id})
+            # TODO: insert record into a table of errors
+            #ErrorNotification.send(StandardError.new(full_msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
           return updated_lead
@@ -133,7 +137,8 @@ module Yardi
           unless lead.valid?
             msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards declines to update events due to Lead validation errors: #{lead.errors.to_a.join('; ')}"
             Rails.logger.error msg
-            ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
+            # TODO: insert record into a table of errors
+            #ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
 
@@ -141,7 +146,8 @@ module Yardi
           unless guestcard.present?
             msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find associated GuestCard for Lead[#{lead.id}]"
             Rails.logger.error msg
-            ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
+            # TODO: insert record into a table of errors
+            #ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
 
