@@ -20,7 +20,7 @@ module Leads
           'property_city' => property.try(:city),
           'property_amenities' => property.try(:amenities),
           'property_website' => property.try(:website),
-          'property_phone' => property.try(:phone),
+          'property_phone' => property.try(:formatted_phone_number),
           'property_school_district' => property.try(:school_district),
           'property_application_url' => property.try(:application_url),
           'html_email_header_image' => ("%s://%s/email_header_sapphire-620.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),

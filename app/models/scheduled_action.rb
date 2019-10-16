@@ -20,6 +20,9 @@
 #  remoteid                               :string
 #  article_id                             :uuid
 #  article_type                           :string
+#  notify                                 :boolean          default(FALSE)
+#  notified_at                            :datetime
+#  notification_message                   :text
 #
 
 class ScheduledAction < ApplicationRecord
@@ -30,6 +33,7 @@ class ScheduledAction < ApplicationRecord
   include ScheduledActions::Article
   include ScheduledActions::EngagementPolicy
   include ScheduledActions::StateMachine
+  include ScheduledActions::Notification
 
   ### Constants
   ALLOWED_PARAMS = [
@@ -38,6 +42,7 @@ class ScheduledAction < ApplicationRecord
     :description, :completion_message, :completion_action,
     :completion_retry_delay_value, :completion_retry_delay_unit,
     :target_id, :target_type, :article_id, :article_type,
+    :notify, :notification_message,
     { schedule_attributes: Schedule::ALLOWED_PARAMS }
   ]
 

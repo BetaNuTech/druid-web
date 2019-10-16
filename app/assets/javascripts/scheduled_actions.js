@@ -34,7 +34,6 @@ $(document).on('turbolinks:load', function() {
   var scheduled_action_completion_action_selector = $('#scheduled_action_completion_action');
   scheduled_action_completion_action_selector.on('change', function(e){
     // on Mark Task as Completed selection change
-    var target = e.target;
     if (e.target.value == 'retry') {
       retry_delay_selector_container.show()
     } else {
@@ -48,13 +47,49 @@ $(document).on('turbolinks:load', function() {
     var lead_action_id = $('#scheduled_action_lead_action_id').val();
     var target_id = $('#scheduled_action_target_id').val();
     var target_type = $('#scheduled_action_target_type').val();
-    var url = '/scheduled_actions/update_action_article_options.js?scheduled_action_id=' + scheduled_action_id +
-      '&lead_action_id=' + lead_action_id + '&target_id=' + target_id + '&target_type=' + target_type;
+    var url = '/scheduled_actions/update_scheduled_action_form_on_action_change.js' +
+      '?scheduled_action_id=' + scheduled_action_id +
+      '&lead_action_id=' + lead_action_id +
+      '&target_id=' + target_id +
+      '&target_type=' + target_type;
     $.ajax({
       url: url,
       dataType: 'script',
       success: ''
-    })
+    });
   })
+
+  $('#scheduled_action_load_notification_template').on('click', function(e){
+    var scheduled_action_id = $('#scheduled_action_id').val();
+    var lead_action_id = $('#scheduled_action_lead_action_id').val();
+    var target_id = $('#scheduled_action_target_id').val();
+    var target_type = $('#scheduled_action_target_type').val();
+    var message_template_id = $('#message_template_select').val();
+    var schedule_date_1i = $('#scheduled_action_schedule_attributes_date_1i').val();
+    var schedule_date_2i = $('#scheduled_action_schedule_attributes_date_2i').val();
+    var schedule_date_3i = $('#scheduled_action_schedule_attributes_date_3i').val();
+    var schedule_date_time_3i = $('#scheduled_action_schedule_attributes_time_3i').val();
+    var schedule_date_time_4i = $('#scheduled_action_schedule_attributes_time_4i').val();
+    var url = '/scheduled_actions/load_notification_template.js' +
+      '?scheduled_action_id=' + scheduled_action_id +
+      '&lead_action_id=' + lead_action_id +
+      '&target_id=' + target_id +
+      '&target_type=' + target_type +
+      '&message_template_id=' + message_template_id +
+      '&schedule_date_1i=' + schedule_date_1i +
+      '&schedule_date_2i=' + schedule_date_2i +
+      '&schedule_date_3i=' + schedule_date_3i +
+      '&schedule_date_time_3i=' + schedule_date_time_3i +
+      '&schedule_date_time_4i=' + schedule_date_time_4i;
+    $.ajax({
+      url: url,
+      dataType: 'script',
+      success: ''
+    });
+  })
+
+  var editor = CKEDITOR.instances["scheduled_action_notification_message"];
+  if (editor != undefined) { editor.destroy() }
+  CKEDITOR.replace("scheduled_action_notification_message");
 
 });

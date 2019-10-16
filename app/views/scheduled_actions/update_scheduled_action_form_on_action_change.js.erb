@@ -1,0 +1,12 @@
+<%- if @lead_action.present? %>
+  $('div#scheduled_action_article').html('<%= escape_javascript scheduled_action_article_select(scheduled_action: @scheduled_action, action: @lead_action) %>');
+  <%- if @scheduled_action.wants_notification? %>
+    $('#scheduled_action_form_notification_controls').show();
+    $('#scheduled_action_notify').prop('checked', true);
+  <%- else %>
+    $('#scheduled_action_form_notification_controls').hide();
+    $('#scheduled_action_notify').prop('checked', false);
+  <%- end %>
+  window.enableSelectize();
+<%- end %>
+

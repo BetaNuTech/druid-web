@@ -28,7 +28,6 @@ $(document).on("turbolinks:load", function(){
 });
 
 function toggleHTMLEditor(e) {
-  console.log('hello');
   e.preventDefault();
   if ( $("#html_editor")[0] != undefined ) {
     $("#html_editor").attr("id", "plain_editor");

@@ -3,6 +3,8 @@ module Properties
     extend ActiveSupport::Concern
 
     included do
+      include ActionView::Helpers::NumberHelper
+
       has_many :phone_numbers, -> { order(name: :asc) }, as: :phoneable, dependent: :destroy
       accepts_nested_attributes_for :phone_numbers, allow_destroy: true, reject_if: proc{|attributes| attributes['number'].blank? }
 
@@ -17,6 +19,10 @@ module Properties
 
       def name_for_phone_number(number)
         return phone_numbers.where(number: number).first.try(:name)
+      end
+
+      def formatted_phone_number
+        number_to_phone(phone)
       end
 
     end

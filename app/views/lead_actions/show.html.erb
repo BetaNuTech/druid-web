@@ -56,6 +56,23 @@
       </div>
 
       <div class="row">
+        <div class="col-md-12">
+          <p>
+            <strong>Notify Lead:</strong>
+            <%= @lead_action.notify? ? 'Yes' : 'No' %>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <p>
+            <strong>Active:</strong>
+            <%= @lead_action.active %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-4">
           <%= link_to 'Edit', edit_lead_action_path(@lead_action) %> |
           <%= link_to 'Back', lead_actions_path %>

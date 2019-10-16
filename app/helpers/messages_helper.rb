@@ -14,7 +14,7 @@ module MessagesHelper
   end
 
   def message_template_options(message_type=nil, value)
-    templates = MessageTemplate.available_for_user_and_type(current_user, message_type)
+    templates = MessageTemplate.available_for_user_and_type(current_user, message_type).order("name ASC")
     options_for_select(templates.collect{|t| [t.name, t.id]}, value)
   end
 

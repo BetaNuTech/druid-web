@@ -11,6 +11,7 @@
 #  glyph          :string
 #  is_contact     :boolean          default(FALSE)
 #  state_affinity :string           default("all")
+#  notify         :boolean          default(FALSE)
 #
 
 require 'rails_helper'

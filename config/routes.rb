@@ -37,7 +37,8 @@ Rails.application.routes.draw do
   resources :scheduled_actions do
     collection do
       get :conflict_check, to: 'scheduled_actions#conflict_check'
-      get 'update_action_article_options', to: 'scheduled_actions#update_action_article_options'
+      get 'update_scheduled_action_form_on_action_change', to: 'scheduled_actions#update_scheduled_action_form_on_action_change'
+      get 'load_notification_template', to: 'scheduled_actions#load_notification_template'
     end
     member do
       post 'complete', to: 'scheduled_actions#complete'
