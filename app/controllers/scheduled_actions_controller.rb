@@ -160,7 +160,7 @@ class ScheduledActionsController < ApplicationController
 
     schedule_date = Time.zone.local(
       params[:schedule_date_1i].to_i, params[:schedule_date_2i].to_i, params[:schedule_date_3i].to_i,
-      params[:schedule_time_4i].to_i, params[:schedule_time_5i].to_i)
+      params[:schedule_time_4i].to_i, params[:schedule_time_5i].to_i, 0) + 1.hour
     schedule = Schedule.new(date: schedule_date.to_date, time: schedule_date.to_time)
     @scheduled_action.schedule = schedule
 
