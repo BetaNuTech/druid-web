@@ -68,8 +68,8 @@ $(document).on('turbolinks:load', function() {
     var schedule_date_1i = $('#scheduled_action_schedule_attributes_date_1i').val();
     var schedule_date_2i = $('#scheduled_action_schedule_attributes_date_2i').val();
     var schedule_date_3i = $('#scheduled_action_schedule_attributes_date_3i').val();
-    var schedule_date_time_3i = $('#scheduled_action_schedule_attributes_time_3i').val();
-    var schedule_date_time_4i = $('#scheduled_action_schedule_attributes_time_4i').val();
+    var schedule_time_4i = $('#scheduled_action_schedule_attributes_time_4i').val();
+    var schedule_time_5i = $('#scheduled_action_schedule_attributes_time_5i').val();
     var url = '/scheduled_actions/load_notification_template.js' +
       '?scheduled_action_id=' + scheduled_action_id +
       '&lead_action_id=' + lead_action_id +
@@ -79,8 +79,8 @@ $(document).on('turbolinks:load', function() {
       '&schedule_date_1i=' + schedule_date_1i +
       '&schedule_date_2i=' + schedule_date_2i +
       '&schedule_date_3i=' + schedule_date_3i +
-      '&schedule_date_time_4i=' + schedule_date_time_4i +
-      '&schedule_date_time_5i=' + schedule_date_time_5i;
+      '&schedule_time_4i=' + schedule_time_4i +
+      '&schedule_time_5i=' + schedule_time_5i;
     $.ajax({
       url: url,
       dataType: 'script',
