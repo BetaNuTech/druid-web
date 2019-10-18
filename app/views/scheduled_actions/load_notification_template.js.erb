@@ -1,0 +1,7 @@
+<%- if @message.present? %>
+  var editor = CKEDITOR.instances["scheduled_action_notification_message"];
+  if (editor != undefined) { editor.destroy() }
+  CKEDITOR.replace("scheduled_action_notification_message");
+
+  $('#scheduled_action_notification_message').val('<%= raw escape_javascript(@message) %>');
+<%- end %>

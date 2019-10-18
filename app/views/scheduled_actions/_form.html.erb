@@ -1,4 +1,4 @@
-<%= form_with(model: scheduled_action, id: 'scheduled_action_form') do |form| %>
+<%= form_with(model: scheduled_action, id: 'scheduled_action_form', local: true) do |form| %>
   <% if scheduled_action.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(scheduled_action.errors.count, "error") %> prohibited this scheduled_action from being saved:</h2>
@@ -60,9 +60,35 @@
   <div class="row">
     <div class="form-group col-md-8">
       <%= form.label :description %>
-      <%= form.text_area :description, id: :scheduled_action_description, class: "form-control", rows: 5%>
+      <%= form.text_area :description, id: :scheduled_action_description, class: 'form-control', rows: 5%>
     </div>
   </div>
+  <fieldset id="scheduled_action_form_notification_controls" style="display: <%= @scheduled_action.wants_notification? ? 'block' : 'none' %>">
+    <legend>Notification</legend>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <div>
+          <%= form.check_box :notify, class: 'form-check-input', id: "scheduled_action_notify" %>
+          <%= form.label :notify, "Send Email/SMS Reminder to Lead" %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <%= form.label 'Use Template' %>
+        <span class="btn btn-xs btn-info" id="scheduled_action_load_notification_template">Load</span>
+        <%= select_tag('scheduled_action_message_template_id',
+                       message_template_options(MessageType.email, nil),
+                       { include_blank: true, id: 'message_template_select', class: 'form-control' }) %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-8">
+        <%= form.label :notification_message, "Message" %>
+        <%= form.text_area :notification_message, id: :scheduled_action_notification_message, class: 'form-control', rows: 20 %>
+      </div>
+    </div>
+  </fieldset>
   <div class="form-group">
     <button type="submit" class="btn btn-primary">Submit</button>
       <%= link_to 'Cancel', :back, class: "btn btn-xs btn-info"   %>

@@ -143,11 +143,28 @@ class ScheduledActionsController < ApplicationController
     end
   end
 
-  def update_action_article_options
+  def update_scheduled_action_form_on_action_change
     @scheduled_action = ScheduledAction.where(id: params[:scheduled_action_id]).first ||
       ScheduledAction.new(target_id: params[:target_id], target_type: params[:target_type])
     authorize @scheduled_action
     @lead_action = LeadAction.where(id: params[:lead_action_id]).first
+    @scheduled_action.lead_action = @lead_action
+  end
+
+  def load_notification_template
+    @scheduled_action = ScheduledAction.where(id: params[:scheduled_action_id]).first ||
+      ScheduledAction.new(target_id: params[:target_id], target_type: params[:target_type])
+    authorize @scheduled_action
+
+    @message_template = MessageTemplate.find(params[:message_template_id])
+
+    schedule_date = DateTime.new(
+      params[:schedule_date_1i].to_i, params[:schedule_date_2i].to_i, params[:schedule_date_3i].to_i,
+      params[:schedule_date_time_3i].to_i, params[:schedule_date_time_4i].to_i)
+    schedule = Schedule.new(date: schedule_date.to_date, time: schedule_date.to_time)
+    @scheduled_action.schedule = schedule
+
+    @message = @scheduled_action.notification_message_content(@message_template)
   end
 
   private

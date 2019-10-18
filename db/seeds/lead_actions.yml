@@ -134,3 +134,11 @@
     :is_contact: false
     :active: true
     :state_affinity: 'none'
+  - :name: Meeting
+    :description: Meet with Lead
+    :glyph: user
+    :is_contact: true
+    :active: true
+    :state_affinity: 'all'
+    :notify: true
+

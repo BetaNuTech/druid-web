@@ -11,6 +11,7 @@
 #  glyph          :string
 #  is_contact     :boolean          default(FALSE)
 #  state_affinity :string           default("all")
+#  notify         :boolean          default(FALSE)
 #
 
 class LeadAction < ApplicationRecord
@@ -19,7 +20,7 @@ class LeadAction < ApplicationRecord
   include Seeds::Seedable
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active, :is_contact, :state_affinity]
+  ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active, :is_contact, :state_affinity, :notify]
   SHOWING_ACTION_NAME = 'Show Unit'
   STATE_AFFINITIES = %w{all none} + Lead.state_names
 

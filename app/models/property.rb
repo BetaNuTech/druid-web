@@ -100,7 +100,7 @@ class Property < ApplicationRecord
     (housing_units.occupied.count.to_f / [ housing_units.count || 1].min.to_f).round(1) * 100.0
   end
 
-  def address(line_break="\n\r")
+  def address(line_break="\n")
     [address1, address2, address3, "#{city} #{state} #{zip}"].
       compact.
       select{|c| (c || '').length > 0}.

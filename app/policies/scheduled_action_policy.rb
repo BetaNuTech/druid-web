@@ -51,7 +51,11 @@ class ScheduledActionPolicy < ApplicationPolicy
     edit?
   end
 
-  def update_action_article_options?
+  def update_scheduled_action_form_on_action_change?
+    edit?
+  end
+
+  def load_notification_template?
     edit?
   end
 

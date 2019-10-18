@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_04_205012) do
+ActiveRecord::Schema.define(version: 2019_10_16_160041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2019_10_04_205012) do
     t.string "glyph"
     t.boolean "is_contact", default: false
     t.string "state_affinity", default: "all"
+    t.boolean "notify", default: false
     t.index ["state_affinity"], name: "index_lead_actions_on_state_affinity"
   end
 
@@ -470,7 +471,11 @@ ActiveRecord::Schema.define(version: 2019_10_04_205012) do
     t.string "remoteid"
     t.uuid "article_id"
     t.string "article_type"
+    t.boolean "notify", default: false
+    t.datetime "notified_at"
+    t.text "notification_message"
     t.index ["article_type", "article_id"], name: "scheduled_actions_article_idx"
+    t.index ["notify", "notified_at"], name: "notification_idx"
     t.index ["originator_id"], name: "index_scheduled_actions_on_originator_id"
     t.index ["target_id", "target_type"], name: "scheduled_action_target"
     t.index ["user_id"], name: "index_scheduled_actions_on_user_id"

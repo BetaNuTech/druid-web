@@ -20,6 +20,9 @@
 #  remoteid                               :string
 #  article_id                             :uuid
 #  article_type                           :string
+#  notify                                 :boolean          default(FALSE)
+#  notified_at                            :datetime
+#  notification_message                   :text
 #
 
 require 'rails_helper'
@@ -101,5 +104,41 @@ RSpec.describe ScheduledAction, type: :model do
 
     end
 
+  end
+
+  describe "notifications" do
+    include_context "scheduled_actions"
+
+    let(:notification_action) { create(:lead_action, notify: true) }
+
+    before do
+      scheduled_action1.lead_action = notification_action
+      scheduled_action1.notify = true
+      scheduled_action1.notification_message = "Notification message"
+      scheduled_action1.save!
+    end
+
+    it "should report if its lead action wants notification" do
+      assert(scheduled_action1.wants_notification?)
+
+      scheduled_action1.notify = false
+      scheduled_action1.lead_action = nil
+      refute(scheduled_action1.wants_notification?)
+
+      scheduled_action1.notify = true
+      scheduled_action1.lead_action = nil
+      assert(scheduled_action1.wants_notification?)
+
+      scheduled_action1.notify = false
+      scheduled_action1.lead_action = notification_action
+      assert(scheduled_action1.wants_notification?)
+    end
+
+    it "validates the presence of notification_message if notify is true" do
+      assert(scheduled_action1.notify)
+      assert(scheduled_action1.valid?)
+      scheduled_action1.notification_message = nil
+      refute(scheduled_action1.valid?)
+    end
   end
 end
