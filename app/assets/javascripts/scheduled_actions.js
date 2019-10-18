@@ -79,8 +79,8 @@ $(document).on('turbolinks:load', function() {
       '&schedule_date_1i=' + schedule_date_1i +
       '&schedule_date_2i=' + schedule_date_2i +
       '&schedule_date_3i=' + schedule_date_3i +
-      '&schedule_date_time_3i=' + schedule_date_time_3i +
-      '&schedule_date_time_4i=' + schedule_date_time_4i;
+      '&schedule_date_time_4i=' + schedule_date_time_4i +
+      '&schedule_date_time_5i=' + schedule_date_time_5i;
     $.ajax({
       url: url,
       dataType: 'script',

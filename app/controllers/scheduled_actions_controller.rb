@@ -160,7 +160,7 @@ class ScheduledActionsController < ApplicationController
 
     schedule_date = DateTime.new(
       params[:schedule_date_1i].to_i, params[:schedule_date_2i].to_i, params[:schedule_date_3i].to_i,
-      params[:schedule_date_time_3i].to_i, params[:schedule_date_time_4i].to_i)
+      params[:schedule_date_time_4i].to_i, params[:schedule_date_time_5i].to_i)
     schedule = Schedule.new(date: schedule_date.to_date, time: schedule_date.to_time)
     @scheduled_action.schedule = schedule
 
