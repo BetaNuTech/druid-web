@@ -8,6 +8,10 @@ module Users
       #def send_devise_notification(notification, *args)
         #devise_mailer.send(notification, self, *args).deliver_later
       #end
+
+      def password_required?
+        confirmed? ? super : false
+      end
     end
 
   end
