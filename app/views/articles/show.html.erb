@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <h1><%= @article.title %></h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <span class="label label-primary">
+        Created by <%= @article.user&.name || 'System' %> on <%= long_date @article.created_at %>
+      </span>
+      <% if @article.updated_at > @article.created_at + 1.day %>
+        &nbsp;
+        <span class="label label-warning">
+          updated <%= long_date @article.updated_at %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-info">
+        A <%= @article.published ? '' : 'draft' %>
+        <b><%= ( @article.category || 'None' ).humanize %></b>
+        <b><%= @article.articletype.humanize %></b> article for
+        Section <b><%= @article.context %></b>
+        visible to <b><%= @article.audience.humanize %></b>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <%= raw sanitize(@article.body) %>
+    </div>
+  </div>
+
+  <% if @article.related.any? %>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="alert alert-info">
+        <b>Related Articles</b>:
+        <% if @article.related.count > 5 %>
+          <%= link_to("More", articles_path(id: @article.id, related: true), class: 'btn btn-xs btn-primary') %>
+        <% end %>
+        <br/>
+        <% @article.related.limit(5).each do |article| %>
+          <p>
+            <%= decorated_article_link(article) %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= link_to( 'Edit', edit_article_path(@article), class: 'btn btn-primary' ) if policy(@article).edit? %>
+      <%= link_to 'Back', :back, class: 'btn btn-xs btn-info' %>
+    </div>
+  </div>
+
+</div>

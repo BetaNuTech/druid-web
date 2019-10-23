@@ -1,0 +1,46 @@
+---
+:articles:
+  :version: 1
+  :key: :slug
+  :data:
+    - :slug: leads-show-created_at
+      :title: Leads#show#created_at
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Date/Time the Lead entered Bluesky
+    - :slug: leads-show-last_comm
+      :title: Leads#show#last_comm
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Last contact date/time
+    - :slug: leads-show-pending_tasks
+      :title: Leads#show#pending_tasks
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: There are pending tasks for this lead
+    - :slug: home-dashboard-duplicate
+      :title: Home#dashboard#duplicate
+      :contextid: Home#dashboard
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: There are other Leads in the system with similar information
+    - :slug: leads-show-referral
+      :title: Leads#show#referral
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Referral source
+

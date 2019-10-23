@@ -19,8 +19,8 @@ RSpec.describe HomeController, type: :controller do
     it "renders the dashboard page" do
       sign_in unroled_user
       get :dashboard
-      expect(response).to be_successful
-      expect(response).to render_template(:dashboard)
+      expect(response).to be_redirect
+      #expect(response).to render_template(:dashboard)
     end
 
     describe "as an administrator" do

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :articles
   mount ActionCable.server => '/cable'
 
   if Rails.env.development?

@@ -38,9 +38,13 @@
               <br>
               <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
               <br>
-              <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+              <%= tooltip_block('leads-show-last_comm') do %>
+                <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+              <% end %>
               <br>
-              <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
+              <%= tooltip_block('leads-show-pending_tasks', lead.scheduled_actions.incomplete.count > 0) do %>
+                <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %>
+              <% end %>
             </td>
           </tr>
         <% end %>

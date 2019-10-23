@@ -2,6 +2,7 @@ class HomeController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :messaging_preferences, :unsubscribe]
 
   def dashboard
+    authorize User, policy_class: HomePolicy
     @page_title = "BlueSky Dashboard"
 
     @my_leads = Lead.for_agent(current_user).active.is_lead
@@ -12,16 +13,18 @@ class HomeController < ApplicationController
   end
 
   def manager_dashboard
+    authorize User, policy_class: HomePolicy
     @page_title = "Manager Dashboard"
-
   end
 
   def messaging_preferences
+    authorize User, policy_class: HomePolicy
     @page = "Update Messaging Preferences"
     @lead = Lead.where(id: params[:id]).first
   end
 
   def unsubscribe
+    authorize User, policy_class: HomePolicy
     @page = "Update Messaging Preferences"
     lead_id = params[:lead_id]
     optout = params[:lead_optout]
@@ -39,6 +42,8 @@ class HomeController < ApplicationController
   end
 
   def insert_unclaimed_lead
+    authorize User, policy_class: HomePolicy
     @lead = current_user.available_leads.find(params[:id])
   end
+
 end

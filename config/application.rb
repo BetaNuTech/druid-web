@@ -23,5 +23,6 @@ module BlueskyWeb
     end
 
     config.active_job.queue_adapter = :delayed_job
+    config.action_view.sanitized_allowed_attributes = ['href', 'title', 'style']
   end
 end
