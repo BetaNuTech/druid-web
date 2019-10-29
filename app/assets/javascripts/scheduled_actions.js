@@ -89,7 +89,9 @@ $(document).on('turbolinks:load', function() {
   })
 
   var editor = CKEDITOR.instances["scheduled_action_notification_message"];
-  if (editor != undefined) { editor.destroy() }
-  CKEDITOR.replace("scheduled_action_notification_message");
+  if (editor != undefined) {
+    editor.destroy()
+    CKEDITOR.replace("scheduled_action_notification_message");
+  }
 
 });
