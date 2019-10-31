@@ -4,7 +4,7 @@ module TeamsHelper
   end
 
   def team_membership_user_select(val)
-    options_for_select(User.without_team.map{|user| [user.name, user.id]}, val)
+    options_for_select(User.without_team.by_name_asc.map{|user| [user.name, user.id]}, val)
   end
 
   def team_membership_teamrole_select(val)

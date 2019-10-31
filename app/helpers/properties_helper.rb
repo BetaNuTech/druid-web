@@ -27,7 +27,8 @@ module PropertiesHelper
   def select_property_user(property:, selected:)
     available_users = property.users_available_for_assignment
     selected_user = selected.present? ? [ User.find(selected) ] : []
-    options_for_select((selected_user + available_users).map{|u| [u.name, u.id]}, selected)
+    select_users = (selected_user + available_users).sort_by{|u| u.profile&.last_name + u.profile&.first_name}
+    options_for_select(select_users.map{|u| [u.name, u.id]}, selected)
   end
 
   def select_user_role(selected)

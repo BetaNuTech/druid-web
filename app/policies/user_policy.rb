@@ -19,13 +19,28 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
-    user === record ||
-      (user.admin? && ( user.role >= record.role )) ||
-      ( ( user.role >= record.role ) &&
-        ( ( !record.manager? && property_manager? ) ||
-          ( !record.manager? && team_lead? )
-        )
-      )
+    case user
+    when -> (u) { u === record }
+      true
+    when -> (u) { u.admin? }
+      user.role >= record.role
+    when -> (u) { u.team_admin? }
+      (user.role >= record.role) &&
+        (record.property.nil? ||
+          same_property? ||
+          team_lead?  )
+    when -> (u) { property_manager? }
+      user.role >= record.role && !record.manager?
+    when -> (u) { u.manager? }
+      (user.role >= record.role) &&
+        (record.property.nil? ||
+          same_property? ||
+          team_lead?  )
+    when -> (u) { team_lead? }
+      user.role >= record.role && !record.manager?
+    else
+      false
+    end
   end
 
   def update?
@@ -33,22 +48,51 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
-    user === record ||
-      user.admin? ||
-      property_manager? ||
-      team_lead?
-  end
+    edit? ||
+    user.admin? ||
+    property_manager? ||
+    team_lead?
+   end
 
   def destroy?
     user != record && edit?
   end
 
   def assign_to_role?
-    user.admin?
+    manager_access =
+      ( record.role.nil? && record.teamrole.nil? ) ||
+      ( record.role.nil? && record.property.nil?) ||
+      ( user.role >= record.role &&
+          (property_manager? || team_lead?) )
+    case user
+    when ->(u) { user.admin? }
+      true
+    when -> (u) { u.manager? }
+      manager_access
+    when -> (u) { u.team_admin? }
+      manager_access
+    when -> (u) { property_manager? }
+      manager_access
+    when -> (u) { team_lead? }
+      manager_access
+    else
+      false
+    end
   end
 
   def assign_to_teamrole?
-    user.admin?
+    case user
+    when ->(u) { user.admin? }
+      true
+    when -> (u) { team_lead? }
+      true
+    when -> (u) { u.team_admin? }
+      # Team admins can assign unaffiliated agents to their team
+      record.teamrole.nil?
+    else
+      # Only Admins and team leads can assign teamroles
+      false
+    end
   end
 
   def allowed_params
@@ -92,7 +136,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def team_lead?
-    user.team_lead? && record.team == user.team
+    user.team_admin? && record.team == user.team
   end
 
   def user_is_a_manager?
