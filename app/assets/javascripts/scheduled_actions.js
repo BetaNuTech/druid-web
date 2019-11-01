@@ -94,4 +94,46 @@ $(document).on('turbolinks:load', function() {
     CKEDITOR.replace("scheduled_action_notification_message");
   }
 
+  // Convert schedule hour select options from 24h to 12h
+  var schedule_hour_select = $('#scheduled_action_schedule_attributes_time_4i')[0];
+  if (schedule_hour_select != undefined) {
+    rekeyHourSelect(schedule_hour_select);
+  }
+
 });
+
+function rekeyHourSelect(el) {
+    var selected_option = null;
+
+    while (el.options.length > 0) {
+      var old_option_index = el.options.length - 1;
+      var old_option = el.options[old_option_index];
+      if (old_option.selected == true) {
+        selected_option = old_option.value;
+      }
+      el.remove(old_option_index);
+    }
+
+    for (i=0; i<=23; i++) {
+      var new_option = [];
+      if (i == 0) {
+        new_option = ["12 AM", "0"];
+      } else {
+        if (i < 12) {
+          new_option = [i + " AM", i + ""];
+        } else if (i == 12 ) {
+          new_option = ["12 PM", "12"]
+        } else {
+          new_option = [( i - 12 ) + " PM", i + ""];
+        }
+      }
+
+      var option = document.createElement('option');
+      option.text = new_option[0];
+      option.value = new_option[1]
+      option.selected = (new_option[1] == selected_option);
+      el.add(option);
+    }
+
+    return(el);
+}
