@@ -207,4 +207,11 @@ class LeadsController < ApplicationController
       end
     end
 
+    def trigger_lead_state_event(lead:, event_name:)
+      success = false
+      if policy(lead).allow_state_event_by_user?(event_name)
+        success = lead.trigger_event(event_name: event_name, user: current_user)
+      end
+      return success
+    end
 end
