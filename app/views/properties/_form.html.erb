@@ -218,7 +218,7 @@
         <div class="col-md-12" id="property_users">
           <%= form.nested_fields_for :property_users, wrapper_options: {class: 'property_phone_number_entry'} do |agent_form| %>
             <div class="row">
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <%= agent_form.label :user_id, "User" %>
                 <% if agent_form.object.user_id.present? %>
                   <br/>
@@ -226,8 +226,8 @@
                   <%= agent_form.hidden_field :user_id, value: agent_form.object.user_id %>
                 <% else %>
                   <%= agent_form.select :user_id,
-                    select_property_user(property: property, selected: agent_form.object.user_id),
-                    {include_blank: true}, class: "form-control" %>
+                    select_property_user(property: property, selected: agent_form.object.user_id, all: true),
+                    {include_blank: true}, class: "form-control selectize" %>
                 <% end %>
               </div>
               <div class="col-md-3">
