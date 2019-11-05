@@ -26,7 +26,7 @@ module PropertiesHelper
 
   def select_property_user(property:, selected:, all: false)
     if all
-      available_users = User.includes(:profile)
+      available_users = User.includes(:profile).where.not(id: property.users.select(:id).map(&:id))
     else
       available_users = property.users_available_for_assignment
     end
