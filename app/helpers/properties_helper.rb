@@ -24,11 +24,27 @@ module PropertiesHelper
     options_for_select(Property.order(name: 'ASC').map{|p| [p.name, p.id]}, val)
   end
 
-  def select_property_user(property:, selected:)
-    available_users = property.users_available_for_assignment
+  def select_property_user(property:, selected:, all: false)
+    if all
+      available_users = User.includes(:profile)
+    else
+      available_users = property.users_available_for_assignment
+    end
+
     selected_user = selected.present? ? [ User.find(selected) ] : []
     select_users = (selected_user + available_users).sort_by{|u| u.profile&.last_name + u.profile&.first_name}
-    options_for_select(select_users.map{|u| [u.name, u.id]}, selected)
+
+    user_options = select_users.map{|u|
+      property_list = ['none']
+      if u.properties.any?
+        property_list = u.properties.map{|p| p.name}
+      end
+      property_list = property_list.join(',')
+
+      [ ( "%s (%s)" % [ u.name, property_list] ), u.id ]
+    }
+
+    options_for_select(user_options, selected)
   end
 
   def select_user_role(selected)

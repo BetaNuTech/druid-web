@@ -19,3 +19,8 @@ $(document).on('turbolinks:load', function() {
   }
   window.enableSelectize();
 });
+
+/* Selectize added nested form fields */
+$(document).on("fields_added.nested_form_fields", function(event, param){
+  $(event.target).find('.selectize').selectize();
+})
