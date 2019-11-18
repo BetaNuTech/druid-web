@@ -1,5 +1,5 @@
 class LeadsController < ApplicationController
-  include LeadsHelper
+  #include LeadsHelper
 
   before_action :authenticate_user!
   before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state, :update_referrable_options]

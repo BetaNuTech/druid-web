@@ -31,7 +31,9 @@ RSpec.describe ScheduledActionPolicy do
     end
 
     it 'allows access to agents within the same property' do
-      scheduled_action = ScheduledAction.create(user: team1_agent1)
+      expect(team1_agent1.property).to eq(team1_agent3.property)
+      ScheduledAction.destroy_all
+      scheduled_action = ScheduledAction.create(user: team1_agent1, target: create(:lead))
       collection = ScheduledActionPolicy::Scope.new(team1_agent3, ScheduledAction).resolve
       expect(collection.count).to eq(1)
     end

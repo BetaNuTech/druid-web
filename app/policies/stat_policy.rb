@@ -6,6 +6,10 @@ class StatPolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    manager?
+  end
+
   def manager?
     user.admin? || user.user?
   end

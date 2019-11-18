@@ -28,6 +28,11 @@ namespace :db do
       SeedPropertyTeams.load_seed_data
     end
 
+    desc "Seed Articles"
+    task :articles => :environment do
+      Article.load_seed_data
+    end
+
     desc "Seed Development Environment with random data"
     task :development => :environment do
       require 'factory_bot_rails'
@@ -74,6 +79,44 @@ namespace :db do
         end
       }
 
+    end
+
+    desc "Random Articles"
+    task :random_articles => :environment do
+      require 'factory_bot_rails'
+
+      puts "= Creating dummy News Articles"
+      10.times do
+        FactoryBot.create(:article,
+                          articletype: 'news',
+                          category: 'General',
+                          contextid: 'Home#')
+      end
+
+      puts "= Creating dummy Blog Articles"
+      10.times do
+        FactoryBot.create(:article,
+                          articletype: 'blog',
+                          category: 'general',
+                          contextid: 'Home#')
+      end
+
+      puts "= Creating dummy Help Articles"
+      10.times do
+        FactoryBot.create(:article,
+                          articletype: 'help',
+                          user: User.order("random() asc").first,
+                          category: 'general',
+                          contextid: AppContext.list.sample)
+      end
+
+      puts "= Creating dummy Tooltips"
+      10.times do
+        FactoryBot.create(:article,
+                          articletype: 'tooltip',
+                          category: 'general',
+                          contextid: AppContext.list.sample)
+      end
     end
 
     desc "Load EngagementPolicy"

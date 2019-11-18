@@ -13,14 +13,15 @@
   <%= lead_priority_icon(lead) %>
   <br/>
   <span class="dashboard_lead_created">
-    <%= glyph(:question_sign) %>
-    <%= short_datetime(lead.created_at) %>
+    <%= tooltip_block('leads-show-created_at') do %>
+      <%= glyph(:question_sign) %>
+      <%= short_datetime(lead.created_at) %>
+    <% end %>
   </span>
-  <%= "via " + lead.referral if lead.referral.present? %>
-  <span class="text-nowrap">
-    <%= glyph(:filter) %>
-    <%= lead.source.present? ? lead.source.name : '(None)'%>
-  </span><br/>
+  <%= tooltip_block('leads-show-referral') do %>
+    <%= "via " + lead.referral if lead.referral.present? %>
+  <% end %>
+  <br/>
   <span class="text-nowrap">
     <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
   </span>

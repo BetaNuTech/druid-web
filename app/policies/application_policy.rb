@@ -18,11 +18,11 @@ class ApplicationPolicy
   end
 
   def is_owner?
-    record.user === user
+    record&.user == user
   end
 
   def team_lead?
-    user.team_lead? &&
+    user&.team_lead? &&
       user.team&.properties&.map(&:id)&.include?(record&.property_id)
   end
 

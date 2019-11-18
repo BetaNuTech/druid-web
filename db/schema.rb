@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_16_160041) do
+ActiveRecord::Schema.define(version: 2019_11_14_225205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -37,6 +37,25 @@ ActiveRecord::Schema.define(version: 2019_10_16_160041) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "articles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "articletype"
+    t.string "category"
+    t.boolean "published", default: false
+    t.string "title"
+    t.text "body"
+    t.string "slug"
+    t.uuid "user_id"
+    t.string "contextid", default: "hidden"
+    t.string "audience", default: "all"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["articletype"], name: "index_articles_on_articletype"
+    t.index ["contextid"], name: "index_articles_on_contextid"
+    t.index ["created_at"], name: "index_articles_on_created_at"
+    t.index ["title"], name: "index_articles_on_title"
+    t.index ["user_id", "published", "audience", "articletype", "contextid", "created_at"], name: "article_info_idx"
   end
 
   create_table "audits", force: :cascade do |t|

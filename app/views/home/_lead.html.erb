@@ -10,7 +10,9 @@
       <% end %>
     <% end %>
     <% if lead.duplicates.any? %>
-      <p><%= link_to("Duplicate?", lead_path(lead.duplicates.first) + "#duplicates") %> </p>
+      <%= tooltip_block('home-dashboard-duplicate') do %>
+        <p><%= link_to("Duplicate?", lead_path(lead.duplicates.first) + "#duplicates") %> </p>
+      <% end %>
     <% end %>
   </td>
   <td>

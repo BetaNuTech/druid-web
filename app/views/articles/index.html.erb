@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Articles</h1>
+    </div>
+    <% if policy(Article).new? %>
+      <div class="col-md-6 text-right">
+        <%= link_to 'Create New Article', new_article_path, class: "btn btn-xs btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <% if @articles.empty? %>
+        <p class="lead">Nothing Found</p>
+      <% end %>
+      <% if @search.filtered? %>
+        <%= link_to("View All #{@search.articletype&.humanize}", articles_path(articletype: @search.articletype)) %>
+      <% end %>
+    </div>
+  </div>
+  <% %w{help news blog tooltip}.each do |articletype| %>
+    <% next unless policy(Article).articletype_visible?(articletype) %>
+    <div class="row">
+      <div class="col-md-12">
+        <%= render partial: 'table', locals: {collection: @articles.to_a.select{|a| a.articletype == articletype} } %>
+      </div>
+    </div>
+  <% end %>
+</div>

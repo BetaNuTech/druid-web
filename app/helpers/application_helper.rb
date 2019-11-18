@@ -71,4 +71,41 @@ module ApplicationHelper
       end
     end
   end
+
+  def current_page_help_path
+    contextid = AppContext.for_params(params).first
+    if contextid.present?
+      articles_path(articletype: 'help', contextid: contextid)
+    else
+      articles_path(articletype: 'help')
+    end
+  end
+
+  def tooltip(title:, glyph: :info_sign, placement: :top)
+    article = Article.published.tooltip.where(title: title).first
+    if article&.body&.present?
+      content_tag(:span, {data: {toggle: 'tooltip', placement: placement}, title: strip_tags(article.body).chomp}) do
+        glyph(:info_sign)
+      end
+    else
+      raw("<!-- Tooltip '#{title}' missing -->")
+    end
+  end
+
+  def tooltip_block(slug, show = true, &block)
+    unless show
+      return yield
+    end
+
+    article = Article.tooltip_for(slug).first
+    if article&.body&.present?
+      content_tag(:span, {data: {toggle: 'tooltip', placement: 'top'}, title: strip_tags(article.body).chomp}) do
+        yield
+      end
+    else
+      raw("<!-- Tooltip '#{slug}' missing -->") +
+      yield
+    end
+  end
+
 end
