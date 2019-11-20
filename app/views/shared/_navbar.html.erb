@@ -331,6 +331,7 @@
           </li> <!-- Account -->
         <% end %>
 
+        <% if current_user.present? %>
           <li> <!-- Help -->
             <div class="btn-group">
               <%= link_to(current_page_help_path, method: :get, class: "btn btn-primary") do %>
@@ -369,6 +370,7 @@
                     <span class="glyphicon glyphicon-user"></span> All Articles
                   <% end %>
                 </li>
+              <% end %>
 
               </ul>
             </div>

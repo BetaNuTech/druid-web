@@ -145,6 +145,19 @@ RSpec.describe HomeController, type: :controller do
 
     end
 
+    describe "as a manager" do
+      before do
+        sign_in manager
+      end
+
+      describe "GET #dashboard" do
+        it "renders succesfully" do
+          get :dashboard
+          expect(response).to be_successful
+        end
+      end
+    end
+
   end
 
 end

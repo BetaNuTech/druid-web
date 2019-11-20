@@ -1,7 +1,7 @@
 class HomePolicy < ApplicationPolicy
 
   def index?
-    user.admin? || user.agent?
+    user.admin? || user.manager? || user.agent?
   end
 
   def dashboard?
