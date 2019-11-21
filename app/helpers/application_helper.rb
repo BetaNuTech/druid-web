@@ -108,4 +108,19 @@ module ApplicationHelper
     end
   end
 
+  def true_current_user
+    return @true_current_user || (
+      if (user_id = cookies.encrypted[:true_current_user_id]).present?
+        @true_current_user ||= (User.where(id: user_id).first)
+      else
+        nil
+      end
+    )
+  end
+
+  def impersonating?
+    current_user.present? &&
+      true_current_user.present? &&
+      true_current_user&.id != current_user&.id
+  end
 end

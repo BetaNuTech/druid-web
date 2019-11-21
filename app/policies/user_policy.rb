@@ -58,6 +58,10 @@ class UserPolicy < ApplicationPolicy
     user != record && edit?
   end
 
+  def impersonate?
+    user.administrator? && !record.administrator?
+  end
+
   def assign_to_role?
     manager_access =
       ( record.role.nil? && record.teamrole.nil? ) ||

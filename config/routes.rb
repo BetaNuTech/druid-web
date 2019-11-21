@@ -104,6 +104,8 @@ Rails.application.routes.draw do
     get 'manager_dashboard', to: 'manager_dashboard'
     get 'dashboard', to: 'dashboard'
     get 'insert_unclaimed_lead', to: 'insert_unclaimed_lead'
+    post 'impersonate', to: 'impersonate'
+    post 'end_impersonation', to: 'end_impersonation'
   end
 
   resources :teams do
