@@ -1,0 +1,8 @@
+<% if impersonating? %>
+<div class="row">
+  <div class="col-md-12">
+    Impersonating <%= current_user.name %> (<%= current_user.email %>) 
+    <%= link_to('EXIT', home_end_impersonation_path, method: :post) %>
+  </div>
+</div>
+<% end %>

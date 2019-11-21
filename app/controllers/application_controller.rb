@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pundit
+  include ApplicationHelper
   protect_from_forgery with: :exception
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -40,5 +41,28 @@ class ApplicationController < ActionController::Base
   def prepare_exception_notifier
     request.env["exception_notifier.exception_data"] = { current_user: current_user }
   end
+
+  def impersonate_user(user)
+    allowed = policy(user).impersonate?
+    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user, target_user: user, allowed: allowed, datetime: DateTime.now, action: 'start' } )
+    return false unless allowed
+    @true_current_user ||= current_user
+    cookies.encrypted[:true_current_user_id] = true_current_user.id
+    sign_out
+    sign_in(:user, user)
+    return true
+  end
+
+  def terminate_impersonation
+    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user, target_user: true_current_user, allowed: true, datetime: DateTime.now, action: 'stop' } )
+    if true_current_user.present?
+      sign_out
+      @true_current_user = nil
+      cookies.encrypted[:true_current_user_id] = nil
+    else
+      return false
+    end
+  end
+
 
 end

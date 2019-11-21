@@ -46,4 +46,17 @@ class HomeController < ApplicationController
     @lead = current_user.available_leads.find(params[:id])
   end
 
+  def impersonate
+    @target_user = User.find(params[:id])
+    authorize @target_user
+
+    impersonate_user(@target_user)
+    redirect_to root_path
+  end
+
+  def end_impersonation
+    terminate_impersonation
+    redirect_to root_path
+  end
+
 end

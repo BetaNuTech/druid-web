@@ -160,5 +160,96 @@ RSpec.describe HomeController, type: :controller do
 
   end
 
+  describe "impersonation" do
+    describe "as an administrator" do
+      describe "POST home/impersonate" do
+        it "should set current_user to the impersonated user" do
+          sign_in administrator
+          post :impersonate, params: {id: agent.id}
+          expect(response).to be_redirect
+          expect(assigns[:current_user]).to eq(agent)
+          expect(assigns[:true_current_user]).to eq(administrator)
+        end
+
+        it "should set true_current_user to the original identity" do
+          sign_in administrator
+          post :impersonate, params: {id: agent.id}
+          expect(response).to be_redirect
+          expect(assigns[:true_current_user]).to eq(administrator)
+        end
+
+        it "should load subsequent pages as the impersonated user" do
+          sign_in administrator
+          post :impersonate, params: {id: agent.id}
+          expect(response).to be_redirect
+          get :dashboard
+          expect(assigns[:current_user]).to eq(agent)
+        end
+
+        it "should indicate in the footer that a user is being impersonated" do
+          sign_in administrator
+          post :impersonate, params: {id: agent.id}
+          expect(response).to be_redirect
+          get :dashboard
+          expect(assigns[:current_user]).to eq(agent)
+          expect(response.body).to match(/Impersonating/)
+        end
+      end
+
+      describe "POST home/end_impersonation" do
+        it "should end impersonation and switch back to the original identity" do
+          sign_in administrator
+          post :impersonate, params: {id: agent.id}
+          expect(response).to be_redirect
+          get :dashboard
+          expect(assigns[:current_user]).to eq(agent)
+          expect(assigns[:true_current_user]).to eq(administrator)
+          post :end_impersonation
+          expect(response).to be_redirect
+          expect(assigns[:current_user]).to be_nil
+          expect(assigns[:true_current_user]).to be_nil
+          expect(response.body).to_not match("Impersonating")
+        end
+
+      end
+    end
+
+    describe "as a corporate user" do
+      describe "POST home/impersonate" do
+        it "should not allow impersonation" do
+          sign_in corporate
+          post :impersonate, params: {id: agent.id}
+          expect(response).to be_redirect
+          get :dashboard
+          expect(assigns[:current_user]).to eq(corporate)
+        end
+      end
+    end
+
+    describe "as a manager user" do
+      describe "POST home/impersonate" do
+        it "should not allow impersonation" do
+          sign_in manager
+          post :impersonate, params: {id: agent.id}
+          expect(response).to be_redirect
+          get :dashboard
+          expect(assigns[:current_user]).to eq(manager)
+        end
+      end
+    end
+
+    describe "as an agent user" do
+      describe "POST home/impersonate" do
+        it "should not allow impersonation" do
+          sign_in agent
+          post :impersonate, params: {id: agent2.id}
+          expect(response).to be_redirect
+          get :dashboard
+          expect(assigns[:current_user]).to eq(agent)
+        end
+      end
+    end
+  end # Impersonation
+
 end
 
