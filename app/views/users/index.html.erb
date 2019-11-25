@@ -3,9 +3,11 @@
     <div class="col-md-6">
       <h1>Users</h1>
     </div>
-    <div class="col-md-6 text-right">
-      <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" %>
-    </div>
+    <% if policy(User).new? %>
+      <div class="col-md-6 text-right">
+        <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" %>
+      </div>
+    <% end %>
   </div>
   <div class="row">
     <div class="col-md-12">
@@ -62,9 +64,11 @@
       </table>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12 text-right">
-      <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" %>
+  <% if policy(User).new? %>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" %>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :destroy]
   after_action :verify_authorized
 
   # GET /users
@@ -18,12 +18,15 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
-    @user = User.new
+    @creator = Users::Creator.new(params: {user: {id: nil}}, creator: current_user)
+    @user = @creator.user
     authorize @user
   end
 
   # GET /users/1/edit
   def edit
+    @creator = Users::Creator.new(params: params, creator: current_user)
+    @user = @creator.user
     authorize @user
   end
 
@@ -31,10 +34,11 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     authorize User
-    @user = User.new(user_params)
-
+    @creator = Users::Creator.new(params: params, creator: current_user)
+    @creator.save
+    @user = @creator.user
     respond_to do |format|
-      if @user.save
+      if @creator.valid?
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
       else
@@ -47,9 +51,12 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    authorize @user
+    @creator = Users::Creator.new(params: params, creator: current_user)
+    authorize @creator.user
+    @creator.save
+    @user = @creator.user
     respond_to do |format|
-      if @user.update(user_params)
+      if @creator.valid?
         format.html { redirect_to edit_user_path(@user), notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -74,37 +81,6 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
-  end
-
-  def user_params
-    # Do not require password confirmation if password is not provided
-    if params[:user].present?
-      if params[:user][:password].blank?
-        params[:user].delete(:password)
-        params[:user].delete(:password_confirmation)
-      end
-    end
-
-    # Determine Allowed User params by Policy
-    valid_user_params = policy(User).allowed_params
-
-    if @user.present?
-      # Prevent privilege escalation of Role
-      unless policy(@user).may_change_role?((params[:user][:role_id] rescue nil))
-        valid_user_params = valid_user_params - [:role_id]
-        logger.warn("WARNING: UsersController Prevented Role promotion of User[#{@user.try(:id) || 'NEW'}] by User[#{current_user.id}]")
-      end
-
-      # Prevent privilege escalation of TeamRole
-      unless policy(@user).may_change_teamrole?((params[:user][:teamrole_id] rescue nil))
-        valid_user_params = valid_user_params - [:teamrole_id]
-        logger.warn("WARNING: UsersController Prevented TeamRole promotion of User[#{@user.try(:id) || 'NEW'}] by User[#{current_user.id}]")
-      end
-    end
-
-    allow_params = params.require(:user).permit(*valid_user_params)
-    logger.debug("DEBUG: UserController allowing params for #{current_user.email} to edit #{@user.try(:email)} #{allow_params.inspect}")
-    allow_params
   end
 
 end
