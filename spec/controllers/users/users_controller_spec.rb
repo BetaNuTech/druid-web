@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
   include_context "users"
+  include_context "team_members"
   render_views
 
   # This should return the minimal set of attributes required to create a valid
@@ -114,18 +115,60 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "GET #edit" do
+    let(:user) { team1_agent1 }
     describe "as an corporate" do
       it "returns a success response" do
         sign_in corporate
-        user = User.create! valid_attributes
         get :edit, params: {id: user.to_param}
         expect(response).to be_successful
       end
     end
+    describe "as a team lead" do
+      it "returns a success response" do
+        sign_in team1_lead1
+        get :edit, params: {id: user.to_param}
+        expect(response).to be_successful
+      end
+    end
+    describe "as an unrelated team lead" do
+      it "denies access" do
+        user.membership.destroy
+        sign_in team2_lead1
+        get :edit, params: {id: user.to_param}
+        expect(response).to be_redirect
+      end
+    end
+    describe "as a property manager" do
+      it "returns a success response" do
+        manager.role = property_role
+        manager.save!
+        user.assignments.destroy_all
+        manager.property.assign_user(user: user, role: 'agent')
+        user.reload
+        sign_in manager
+        get :edit, params: {id: user.to_param}
+        expect(response).to be_successful
+      end
+    end
+    describe "as a manager at another property" do
+      it "returns a success response when editing a member of a shared property" do
+        user.property.assign_user(user: manager, role: 'manager')
+        user.reload
+        sign_in manager
+        get :edit, params: {id: user.to_param}
+        expect(response).to be_successful
+      end
+
+      it "denies access when editing a member of another property" do
+        sign_in manager
+        get :edit, params: {id: team2_agent1.to_param}
+        expect(response).to be_redirect
+      end
+    end
+
     describe "as an agent" do
       it "denies access" do
         sign_in agent
-        user = User.create! valid_attributes
         get :edit, params: {id: user.to_param}
         expect(response).to be_redirect
       end
@@ -135,23 +178,27 @@ RSpec.describe UsersController, type: :controller do
   describe "POST #create" do
     describe "as an corporate" do
       describe "with valid params" do
+        let(:valid_attributes_with_role) { valid_attributes.merge(role_id: property_role) }
+        let(:valid_creation_attributes) { {user: valid_attributes_with_role, property_id: agent.property, property_role: 'agent', team_id: team1.id, teamrole_id: agent_teamrole.id } }
+
         it "creates a new User" do
+          valid_creation_attributes
           sign_in corporate
           expect {
-            post :create, params: {user: valid_attributes}
+            post :create, params: valid_creation_attributes
           }.to change(User, :count).by(1)
         end
 
         it "redirects to the created user" do
           sign_in corporate
-          post :create, params: {user: valid_attributes}
+          post :create, params: valid_creation_attributes
           new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
           expect(response).to redirect_to(new_user)
         end
 
         it "assigns profile information" do
           sign_in corporate
-          post :create, params: {user: valid_attributes}
+          post :create, params: valid_creation_attributes
           new_user = User.where(email: valid_attributes[:email]).order("created_at desc").last
           expect(new_user.profile).to be_a(UserProfile)
           expect(new_user.profile.first_name).to_not be_nil

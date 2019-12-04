@@ -95,15 +95,15 @@
     </div>
   </div>
 
-  <% if policy(user).assign_to_role? %>
+  <% if @creator.assign_to_role? %>
     <div class="row">
       <div class="col-md-12">
         <fieldset>
           <legend>Role and Access</legend>
           <div class="row">
             <div class="col-md-4 form-group">
-              <%= form.label "Role" %>
-              <%= form.select :role_id, roles_for_select(user: @user, editor: current_user, value: @user.role_id),{}, { class: "form-control" }%>
+              <%= form.label :role_id, "System Role" %>
+              <%= form.select :role_id, options_for_select(@creator.roles_for_select, selected: @user.role_id),{include_blank: true}, {class: "form-control" } %>
             </div>
           </div>
         </fieldset>
@@ -111,7 +111,33 @@
     </div>
   <% end %>
 
-  <% unless @user.new_record? %>
+  <% if @user.new_record? %>
+  <div class="row">
+    <div class="col-md-12">
+      <fieldset>
+        <legend>Property Assignment</legend>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <%= user_creator_form_group(:property_id) do %>
+              <%= label_tag(:property_id, 'Property') %>
+            <% end %>
+            <%= user_creator_form_group(:property_id) do %>
+              <%= select_tag(:property_id, options_for_select(@creator.properties_for_select, selected: @creator.property&.id || @creator.property&.id), { include_blank: true, class: "form-control" }) %>
+            <% end %>
+          </div>
+          <div class="col-md-6 form-group">
+            <%= user_creator_form_group(:property_role) do %>
+              <%= label_tag(:property_role, 'Property Role') %>
+            <% end %>
+            <%= user_creator_form_group(:property_role) do %>
+              <%= select_tag(:property_role, options_for_select(@creator.property_roles_for_select, selected: @creator.property_role), {include_blank: true, class: "form-control" }) %>
+            <% end %>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+  <% else %>
   <div class="row">
     <div class="col-md-12">
       <fieldset>
@@ -120,6 +146,35 @@
       </fieldset>
     </div>
   </div>
+  <% end %>
+
+  <% if @user.new_record? %>
+    <div class="row">
+      <div class="col-md-12">
+        <fieldset>
+          <legend>Team Assignment</legend>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <%= user_creator_form_group(:team_id) do %>
+                <%= label_tag(:team_id, "Team") %>
+              <% end %>
+              <%= user_creator_form_group(:team_id) do %>
+                <%= select_tag(:team_id, options_for_select(@creator.teams_for_select, selected: @creator.team&.id), {include_blank: true, class: "form-control" }) %>
+              <% end %>
+            </div>
+            <div class="col-md-6 form-group">
+              <%= user_creator_form_group(:teamrole_id) do %>
+                <%= label_tag(:teamrole_id, "Team Role") %>
+              <% end %>
+              <%= user_creator_form_group(:teamrole_id) do %>
+                <%= select_tag(:teamrole_id, options_for_select(@creator.teamroles_for_select, selected: @creator.teamrole), {include_blank: true, class: "form-control" }) %>
+              <% end %>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
   <% end %>
 
   <div class="form-group">

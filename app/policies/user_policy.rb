@@ -24,6 +24,8 @@ class UserPolicy < ApplicationPolicy
       true
     when -> (u) { u.admin? }
       user.role >= record.role
+    when -> (u) { team_lead? }
+      user.role >= record.role && !record.manager?
     when -> (u) { u.team_admin? }
       (user.role >= record.role) &&
         (record.property.nil? ||
@@ -36,8 +38,6 @@ class UserPolicy < ApplicationPolicy
         (record.property.nil? ||
           same_property? ||
           team_lead?  )
-    when -> (u) { team_lead? }
-      user.role >= record.role && !record.manager?
     else
       false
     end
@@ -73,28 +73,13 @@ class UserPolicy < ApplicationPolicy
       true
     when -> (u) { u.manager? }
       manager_access
+    when -> (u) { team_lead? }
+      manager_access
     when -> (u) { u.team_admin? }
       manager_access
     when -> (u) { property_manager? }
       manager_access
-    when -> (u) { team_lead? }
-      manager_access
     else
-      false
-    end
-  end
-
-  def assign_to_teamrole?
-    case user
-    when ->(u) { user.admin? }
-      true
-    when -> (u) { team_lead? }
-      true
-    when -> (u) { u.team_admin? }
-      # Team admins can assign unaffiliated agents to their team
-      record.teamrole.nil?
-    else
-      # Only Admins and team leads can assign teamroles
       false
     end
   end
@@ -136,15 +121,55 @@ class UserPolicy < ApplicationPolicy
   end
 
   def property_manager?
-    record.properties.any?{|rp| user.property_manager?(rp) }
+    if record.new_record?
+      user.property_manager?
+    else
+      record.properties.any?{|rp| user.property_manager?(rp) }
+    end
   end
 
   def team_lead?
-    user.team_admin? && record.team == user.team
+    user.team_admin? &&
+      ( record.new_record? ||
+       ( record.team == user.team ) )
   end
 
-  def user_is_a_manager?
-    record.assignments.where(role: PropertyUser::MANAGER_ROLE).exists?
+  def roles_for_select
+    return Role.all.to_a.
+      select{|role| user.role.present? ? user.role >= role : false}.
+      map{|role| [role.name, role.id]}
+  end
+
+  def teamroles_for_select
+    return Teamrole.all.to_a.map{|role| [role.name, role.id]}
+  end
+
+  def properties_for_select
+    properties = case user
+                 when -> (u) {u.admin?}
+                   Property.active.all
+                 when -> (u) {u.team_lead?}
+                   (user.team.properties + Array(user.property)).compact.uniq
+                 when -> (u) {u.property_manager?}
+                   [ user.property ]
+                 when -> (u) {u.agent?}
+                   [ user.property ]
+                 end
+    return properties.map{|p| [p.name, p.id]}.sort_by{|p| p[0]}
+  end
+
+  def property_roles_for_select
+    return PropertyUser.roles.keys.map{|r| [r.humanize, r]}
+  end
+
+  def teams_for_select
+    teams = case user
+            when -> (u) {u.admin?}
+              Team.order(name: :asc)
+            else
+              [user.team]
+            end
+    return teams.compact.map{|t| [t.name, t.id]}
   end
 
 end
