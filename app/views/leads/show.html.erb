@@ -83,7 +83,7 @@
         <%= tooltip_block('leads-remoteid-duplicate', @lead.duplicate_remoteid?) do %>
           <%= link_to(search_leads_path(lead_search: {text: @lead.remoteid})) do %>
             <%= content_tag(:span, glyph(:warning_sign), style: "color: red;")  %>
-          <% end %>
+          <% end if @lead.duplicate_remoteid? %>
         <% end %>
       </span>
     </div>
