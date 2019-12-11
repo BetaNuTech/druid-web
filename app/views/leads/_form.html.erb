@@ -72,6 +72,16 @@
         </div>
       </div>
 
+      <% if policy(lead).change_remoteid? %>
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <%= form.label :remoteid %>
+            <%= content_tag(:span, glyph(:warning_sign), style: "color: red;") if lead.duplicate_remoteid? %>
+            <%= form.text_field :remoteid, class: "form-control" %>
+          </div>
+        </div>
+      <% end %>
+
       <div class="row">
         <div class="col-md-2 form-group">
           <%= form.label :title %><br/>

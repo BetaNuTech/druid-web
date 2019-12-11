@@ -43,4 +43,11 @@
       :audience: all
       :published: true
       :body: Referral source
-
+    - :slug: leads-remoteid-duplicate
+      :title: Leads#remoteid#duplicate
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: This Lead has a duplicate RemoteID
