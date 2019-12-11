@@ -34,7 +34,11 @@
           </td>
           <td>
             <span class="<%= lead_record[:flags][:name] ? 'highlight' : '' %>">
-              <%= link_to(lead.name, lead_path(lead), target: '_blank') %>
+              <% if lead != @lead && policy(lead).show? %>
+                <%= link_to(lead.name, lead_path(lead), target: '_blank') %>
+              <% else %>
+                <%= lead.name %>
+              <% end %>
             </span>
           </td>
           <td>

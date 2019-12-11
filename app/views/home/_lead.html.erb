@@ -9,11 +9,7 @@
         Claim
       <% end %>
     <% end %>
-    <% if lead.duplicates.any? %>
-      <%= tooltip_block('home-dashboard-duplicate') do %>
-        <%= link_to("Duplicate?", lead_path(lead.duplicates.first) + "#duplicates") %>
-      <% end %>
-    <% end %>
+    <%= duplicate_reference_link(lead) %>
   </td>
   <td>
     <%= render partial: "leads/lead_card", locals: {lead: lead} %>
