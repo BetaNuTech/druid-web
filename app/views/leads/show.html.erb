@@ -80,6 +80,11 @@
       </span>
       <span>
         <em>Yardi ID:</em> <%= @lead.remoteid || 'None' %>
+        <%= tooltip_block('leads-remoteid-duplicate', @lead.duplicate_remoteid?) do %>
+          <%= link_to(search_leads_path(lead_search: {text: @lead.remoteid})) do %>
+            <%= content_tag(:span, glyph(:warning_sign), style: "color: red;")  %>
+          <% end %>
+        <% end %>
       </span>
     </div>
     <div class="preferences">

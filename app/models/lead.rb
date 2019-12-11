@@ -135,6 +135,10 @@ class Lead < ApplicationRecord
     return self.remoteid.present?
   end
 
+  def duplicate_remoteid?
+    imported? && Lead.where(remoteid: self.remoteid).count > 1
+  end
+
   def name
     [title, first_name, middle_name, last_name].join(' ')
   end

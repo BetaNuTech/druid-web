@@ -143,5 +143,9 @@ class LeadPolicy < ApplicationPolicy
     is_owner? || user.manager? || user.admin?
   end
 
+  def change_remoteid?
+    user.manager? || user.admin?  
+  end
+
 
 end
