@@ -177,4 +177,13 @@ module LeadsHelper
     grouped_options_for_select(collection_for_select, referral.referrable&.id)
   end
 
+  def duplicate_reference_link(lead)
+    if lead.has_duplicates?
+      target_lead = policy_scope(lead.duplicates).first || lead
+      tooltip_block('home-dashboard-duplicate') do
+        link_to("Duplicate?", lead_path(target_lead) + "#duplicates")
+     end
+    end
+  end
+
 end
