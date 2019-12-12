@@ -1,13 +1,24 @@
-<tr>
+<tr id="unclaimed_lead_<%= lead.id %>">
   <td><%= glyph(:person) %></td>
   <td class="dashboard_item_date">
     <% if lead.open? && policy(lead).permitted_state_events.any? %>
-      <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: 'claim'),
-                  { method: :post,
-                    class: "btn btn-sm btn-primary",
-                    data: {confirm: "Are you sure you want to claim this lead?"} } ) do %>
-        Claim
-      <% end %>
+      <p>
+        <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: 'claim'),
+                    { method: :post,
+                      class: "btn btn-sm btn-primary",
+                      data: {confirm: "Are you sure you want to claim this lead?"} } ) do %>
+          Claim
+        <% end %>
+      </p>
+      <p>
+        <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: 'disqualify', format: :js),
+                    { method: :post,
+                      remote: true,
+                      class: "btn btn-xs btn-warning",
+                      data: {confirm: "Are you sure you want to disqualify this lead?"} } ) do %>
+                      Disqualify
+                    <% end %>
+      </p>
     <% end %>
     <%= duplicate_reference_link(lead) %>
   </td>
