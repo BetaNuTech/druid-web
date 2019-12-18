@@ -47,7 +47,7 @@
         <table class="table">
           <thead></thead>
           <tbody>
-            <%= render collection: @today_actions, partial: 'scheduled_action' %>
+            <%= render collection: @today_actions.limit(20), partial: 'scheduled_action' %>
           </tbody>
         </table>
       </div>

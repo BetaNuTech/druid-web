@@ -18,7 +18,7 @@
         <table class="table lead_listing">
           <thead></thead>
           <tbody>
-            <%= render collection: scheduled_actions, partial: 'scheduled_action' %>
+            <%= render collection: scheduled_actions.limit(20), partial: 'scheduled_action' %>
           </tbody>
         </table>
       </div>
