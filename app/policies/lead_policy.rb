@@ -5,17 +5,23 @@ class LeadPolicy < ApplicationPolicy
     def resolve
       skope = scope
       return case user
-        when ->(u) { u.admin? }
+        when ->(u) { u.administrator? }
           skope
+        when ->(u) { u.corporate? }
+          skope.
+            includes(:property).
+            where(properties: {active: [ true, nil ]})
         when -> (u) { u.team_lead?}
-          skope.for_team(user.team)
+          skope.
+            includes(:property).
+            for_team(user.team).
+            where(properties: {active: [ true, nil ]})
         else
           # Belonging to User
           skope.where(user_id: user.id).
-            # or Belonging to User's Team
-            or(skope.where(property_id: user.properties.select(:id).map(&:id)))
-            # or Open Leads older than EXCLUSIVITY_LIMIT
-            #or(skope.where(state: 'open').where("leads.created_at < ?", EXCLUSIVITY_LIMIT.hours.ago))
+          or(skope.where(property_id: user.properties.select(:id).map(&:id)))
+          # or Open Leads older than EXCLUSIVITY_LIMIT
+          #or(skope.where(state: 'open').where("leads.created_at < ?", EXCLUSIVITY_LIMIT.hours.ago))
         end
     end
   end
@@ -144,7 +150,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def change_remoteid?
-    user.manager? || user.admin?  
+    user.manager? || user.admin?
   end
 
 

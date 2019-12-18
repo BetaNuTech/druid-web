@@ -41,6 +41,33 @@ RSpec.describe LeadsController, type: :controller do
         get :index, params: {lead_search: {states: ['open']}}
         expect(response).to be_successful
       end
+    end
+
+    describe "when there is an inactive property" do
+      let(:active_prop) { create(:property, active: true) }
+      let(:inactive_prop)  { create(:property, active: false) }
+      let(:lead1) { create(:lead, property: active_prop, state: 'open') }
+      let(:lead2) { create(:lead, property: inactive_prop, state: 'open') }
+
+      describe "as an admin" do
+        it "should display all leads" do
+          Lead.destroy_all; lead1; lead2
+          assert(Lead.count == 2)
+          sign_in administrator
+          get :index, params: {lead_search: {states: ['open']}}
+          expect(assigns[:leads].count).to eq(2)
+        end
+      end
+
+      describe "as a corporate user" do
+        it "should display leads from active properties" do
+          Lead.destroy_all; lead1; lead2
+          assert(Lead.count == 2)
+          sign_in corporate
+          get :index, params: {lead_search: {states: ['open']}}
+          expect(assigns[:leads].count).to eq(1)
+        end
+      end
 
     end
 
@@ -51,7 +78,6 @@ RSpec.describe LeadsController, type: :controller do
         get :index, params: {lead_search: {states: ['open']}}
         expect(response).to be_successful
       end
-
     end
 
     describe "as an unroled user" do
