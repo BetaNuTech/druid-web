@@ -69,6 +69,8 @@ class UserPolicy < ApplicationPolicy
       ( user.role >= record.role &&
           (property_manager? || team_lead?) )
     case user
+    when nil
+      false
     when ->(u) { user.admin? }
       true
     when -> (u) { u.manager? }
@@ -88,6 +90,9 @@ class UserPolicy < ApplicationPolicy
     valid_user_params = User::ALLOWED_PARAMS
     valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS } ]
     case user
+    when nil
+      valid_user_params = []
+      valid_user_profile_params = []
     when ->(u) { u.administrator? }
       # NOOP all valid fields allowed
     when ->(u) { u.corporate? }

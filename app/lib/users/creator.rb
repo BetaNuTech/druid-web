@@ -47,38 +47,99 @@ module Users
       @errors = ActiveModel::Errors.new(User.new)
       @user.validate
       @user.errors.each{|e| @errors.add(e)} unless @user.valid?
+
+      # Only apply these extended validations on a new record
       if @new_record
-        if !@creator.present?
+        # Creator present?
+        if @creator.present?
+          # OK
+          true
+        else
           @errors.add(:creator, "missing")
           @user.errors.add(:creator, "missing")
         end
-        unless @user.role_id.present?
+
+        # Role present?
+        if @user.role_id.present?
+          # OK
+          true
+        else
           @errors.add(:role_id, "is missing")
           @user.errors.add(:role_id, "is missing")
         end
-        unless policy.assign_to_role?
+
+        # Can creator set role?
+        if policy.assign_to_role?
+          # OK
+          true
+        else
           @errors.add(:role_id, "cannot be set by creator")
           @user.errors.add(:role_id, "cannot be set by creator")
         end
-        if !@user.admin?
-          unless @property.present?
-            @errors.add(:property_id, "is missing")
-            @user.errors.add(:property_id, "is missing")
+
+        # Property present?
+        if @property.present?
+          # OK
+          true
+        else
+          if @user.role&.admin?
+            # Admins are ok
+          else
+            if @teamrole == Teamrole.lead
+              # Team Leads are ok
+            else
+              @errors.add(:property_id, "is missing")
+              @user.errors.add(:property_id, "is missing")
+            end
           end
-          unless PropertyUser.roles.keys.include?(@property_role)
-            @errors.add(:property_role, "is invalid")
-            @user.errors.add(:property_role, "is invalid")
+        end
+
+        # Property Role present/valid?
+        if PropertyUser.roles.keys.include?(@property_role)
+          # OK
+          true
+        else
+          if @user.role&.admin?
+            # Admins are ok
+          else
+            if @teamrole == Teamrole.lead
+              # Team Leads are ok
+            else
+              @errors.add(:property_role, "is invalid")
+              @user.errors.add(:property_role, "is invalid")
+            end
           end
         end
-        unless @team.present?
-          @errors.add(:team_id, "is missing")
-          @user.errors.add(:team_id, "is missing")
+
+        # Team present?
+        if @team.present?
+          # OK
+          true
+        else
+          if @user.role&.admin?
+            # Admins are OK
+            true
+          else
+            @errors.add(:team_id, "is missing")
+            @user.errors.add(:team_id, "is missing")
+          end
         end
-        unless @teamrole.present?
-          @errors.add(:teamrole_id, "is invalid")
-          @user.errors.add(:teamrole_id, "is invalid")
+
+        # Team Role present?
+        if @teamrole.present?
+          # OK
+          true
+        else
+          if @user.role&.admin?
+            # Admins are OK
+            true
+          else
+            @errors.add(:teamrole_id, "is invalid")
+            @user.errors.add(:teamrole_id, "is invalid")
+          end
         end
-      end
+      end # new_record?
+
       return @errors.any? ? @errors : true
     end
 
