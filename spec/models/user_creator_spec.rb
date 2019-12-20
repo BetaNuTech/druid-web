@@ -5,6 +5,67 @@ RSpec.describe Users::Creator do
 
 
   describe "creating a new user" do
+    describe "without a creator" do
+      let(:property) { create(:property, team: team1)}
+      let(:user_attributes) { attributes_for(:user, property: property, role_id: property_role.id)}
+      let(:params) {
+        {
+          user: user_attributes,
+          team_id: team1.id,
+          teamrole_id: agent_teamrole.id,
+          property_id: property,
+        }
+      }
+
+      it "should fail" do
+        user_creator = Users::Creator.new(
+          params: {
+            user: user_attributes,
+            property_id: property.id,
+            property_role: 'agent',
+            team_id: team1.id,
+            teamrole_id: agent_teamrole.id,
+          },
+          creator: nil
+        )
+        refute(user_creator.valid?)
+      end
+
+    end
+
+    describe "as corporate" do
+      let(:property) { creator.property }
+      let(:user_attributes) { attributes_for(:user, property: property, role_id: property_role.id)}
+      let(:creator) { team1_manager1 }
+
+      it "should create a TRM with a property" do
+        user_creator = Users::Creator.new(
+          params: {
+            user: user_attributes,
+            property_id: property.id,
+            property_role: 'manager',
+            team_id: team1.id,
+            teamrole_id: lead_teamrole.id
+          },
+          creator: creator
+        )
+        assert(user_creator.valid?)
+      end
+
+      it "should create a TRM without a property" do
+        user_creator = Users::Creator.new(
+          params: {
+            user: user_attributes,
+            team_id: team1.id,
+            teamrole_id: lead_teamrole.id
+          },
+          creator: creator
+        )
+        assert(user_creator.valid?)
+      end
+
+    end
+
     describe "as a property manager" do
       let(:property) { creator.property }
       let(:user_attributes) { attributes_for(:user, property: property, role_id: property_role.id)}
@@ -13,7 +74,7 @@ RSpec.describe Users::Creator do
         {
           user: user_attributes,
           team_id: team1.id,
-          teamrole_id: Teamrole.agent,
+          teamrole_id: agent_teamrole.id,
           property_id: property,
 
         }
