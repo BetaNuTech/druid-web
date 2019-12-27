@@ -18,13 +18,15 @@
   </td>
   <td class="text-nowrap">
     <% if policy(scheduled_action).show? %>
-      <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+      <%= tooltip_block('scheduled_action-completion_form-link') do %>
+        <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+      <% end %>
     <% end %>
-    <% if policy(scheduled_action).edit? %>
-      <%= link_to(glyph(:edit), edit_scheduled_action_path(scheduled_action)) %>
-    <% end %>
+    <%= model_link_with_tooltip(scheduled_action, :edit) %>
     <% if policy(scheduled_action).complete? %>
-      <%= link_to(glyph(:ok), complete_scheduled_action_path(id: scheduled_action.id, scheduled_action: {completion_action: 'complete'}), method: :post, rel: 'nofollow' ) %>&nbsp;
+      <%= tooltip_block('scheduled_action-complete-link') do %>
+        <%= link_to(glyph(:ok), complete_scheduled_action_path(id: scheduled_action.id, scheduled_action: {completion_action: 'complete'}), method: :post, rel: 'nofollow' ) %>&nbsp;
+      <% end %>
     <% end unless scheduled_action.completed? %>
   </td>
 </tr>

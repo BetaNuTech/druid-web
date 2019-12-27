@@ -10,10 +10,14 @@
   </td>
   <td class="text-nowrap">
     <% if policy(scheduled_action).show? %>
-      <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+      <%= tooltip_block('scheduled_action-completion_form-link') do %>
+        <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
+      <% end %>
     <% end %>
     <% if policy(scheduled_action).edit? %>
-      <%= link_to(glyph(:edit), edit_scheduled_action_path(scheduled_action)) %>
+      <%= tooltip_block('scheduled_action-edit-link') do %>
+        <%= link_to(glyph(:edit), edit_scheduled_action_path(scheduled_action)) %>
+      <% end %>
     <% end %>
   </td>
 </tr>

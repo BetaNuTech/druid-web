@@ -26,9 +26,9 @@
               <td><%= role.slug %></td>
               <td><%= role.description %></td>
               <td>
-                <%= link_to role do %><%= glyph(:show) %><% end %>&nbsp;
-                <%= link_to edit_role_path(role) do %><%= glyph(:edit) %><% end %>&nbsp;
-                <%= link_to role, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                <%= model_link_with_tooltip(role, :show) %>&nbsp;
+                <%= model_link_with_tooltip(role, :edit) %>&nbsp;
+                <%= model_link_with_tooltip(role, :destroy) %>&nbsp;
               </td>
             </tr>
           <% end %>

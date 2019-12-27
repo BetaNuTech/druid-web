@@ -35,9 +35,9 @@
               <td><%= lead_action.notify? ? "Yes" : "No" %></td>
               <td><%= lead_action.state_affinity&.capitalize %></td>
               <td class="text-nowrap">
-                <%= link_to lead_action do %><%= glyph(:show) %><% end if policy(lead_action).show? %>&nbsp;
-                <%= link_to edit_lead_action_path(lead_action) do %><%= glyph(:edit) %><% end if policy(lead_action).edit? %>&nbsp;
-                <%= link_to lead_action, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(lead_action).destroy? %>
+                <%= model_link_with_tooltip(lead_action, :show) %>&nbsp;
+                <%= model_link_with_tooltip(lead_action, :edit) %>&nbsp;
+                <%= model_link_with_tooltip(lead_action, :destroy) %>&nbsp;
               </td>
             </tr>
           <% end %>

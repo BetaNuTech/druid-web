@@ -22,8 +22,8 @@
     </div>
 
     <div class="col-md-3">
-      <%= link_to edit_note_path(note) do %><%= glyph(:edit) %><% end if policy(note).edit? %>
-      <%= link_to note, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(note).destroy? %>
+      <%= model_link_with_tooltip(note, :edit) %>
+      <%= model_link_with_tooltip(note, :destroy) %>
     </div>
 
   </div>
