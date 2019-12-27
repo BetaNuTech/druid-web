@@ -53,10 +53,12 @@
                 </ul>
               </td>
               <td>
-                <%= link_to user do %><%= glyph(:show) %><% end if policy(user).show? %>&nbsp;
-                <%= link_to edit_user_path(user) do %><%= glyph(:edit) %><% end if policy(user).edit? %>&nbsp;
-                <%= link_to user, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(user).destroy? %>
-                <%= link_to home_impersonate_path(id: user.id), method: :post, data: {confirm: "Impersonate #{user.name}?"} do %><%= glyph(:sunglasses) %><% end if policy(user).impersonate? %>
+                <%= model_link_with_tooltip(user, :show) %>&nbsp;
+                <%= model_link_with_tooltip(user, :edit) %>&nbsp;
+                <%= model_link_with_tooltip(user, :destroy) %>&nbsp;
+                <%= tooltip_block('user-impersonate-link') do %>
+                  <%= link_to home_impersonate_path(id: user.id), method: :post, data: {confirm: "Impersonate #{user.name}?"} do %><%= glyph(:sunglasses) %><% end %>
+                <% end if policy(user).impersonate?%>
               </td>
             </tr>
           <% end %>

@@ -3,6 +3,30 @@
   :version: 1
   :key: :slug
   :data:
+    - :slug: lead-show-link
+      :title: Leads#Show#Link
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Lead information
+    - :slug: lead-edit-link
+      :title: Leads#Edit#Link
+      :contextid: Leads#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Lead information
+    - :slug: lead-destroy-link
+      :title: Leads#Destroy#Link
+      :contextid: Leads#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Lead
     - :slug: leads-show-created_at
       :title: Leads#show#created_at
       :contextid: Leads#show
@@ -51,3 +75,315 @@
       :audience: all
       :published: true
       :body: This Lead has a duplicate RemoteID
+    - :slug: user-show-link
+      :title: Users#Show#Link
+      :contextid: Users#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show User account information
+    - :slug: user-edit-link
+      :title: Users#Edit#Link
+      :contextid: Users#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit User account information
+    - :slug: user-destroy-link
+      :title: Users#Destroy#Link
+      :contextid: Users#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete User account
+    - :slug: user-impersonate-link
+      :title: Users#Impersonate#Link
+      :contextid: Users#impersonate
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Impersonate User account
+    - :slug: role-show-link
+      :title: Roles#Show#Link
+      :contextid: Roles#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Role information
+    - :slug: role-edit-link
+      :title: Roles#Edit#Link
+      :contextid: Roles#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Role information
+    - :slug: role-destroy-link
+      :title: Roles#Destroy#Link
+      :contextid: Roles#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Role
+    - :slug: lead_source-show-link
+      :title: LeadSources#Show#Link
+      :contextid: LeadSources#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Lead Source information
+    - :slug: lead_source-edit-link
+      :title: LeadSources#Edit#Link
+      :contextid: LeadSources#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Lead Source information
+    - :slug: lead_source-destroy-link
+      :title: LeadSources#Destroy#Link
+      :contextid: LeadSources#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Lead Source
+    - :slug: lead_referral_source-show-link
+      :title: LeadReferralSources#Show#Link
+      :contextid: LeadReferralSources#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Lead Referral Source information
+    - :slug: lead_referral_source-edit-link
+      :title: LeadReferralSources#Edit#Link
+      :contextid: LeadReferralSources#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Lead Referral Source information
+    - :slug: lead_referral_source-destroy-link
+      :title: LeadReferralSources#Destroy#Link
+      :contextid: LeadReferralSources#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Lead Referral Source
+    - :slug: lead_action-show-link
+      :title: LeadActions#Show#Link
+      :contextid: LeadActions#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Lead Action information
+    - :slug: lead_action-edit-link
+      :title: LeadActions#Edit#Link
+      :contextid: LeadActions#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Lead Action information
+    - :slug: lead_action-destroy-link
+      :title: LeadActions#Destroy#Link
+      :contextid: LeadActions#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Lead Actionen
+    - :slug: reason-show-link
+      :title: Reasons#Show#Link
+      :contextid: Reasons#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Reason information
+    - :slug: reason-edit-link
+      :title: Reasons#Edit#Link
+      :contextid: Reasons#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Reason information
+    - :slug: reason-destroy-link
+      :title: Reasons#Destroy#Link
+      :contextid: Reasons#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Reason
+    - :slug: message_template-show-link
+      :title: MessageTemplates#Show#Link
+      :contextid: MessageTemplates#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Message Template information
+    - :slug: message_template-edit-link
+      :title: MessageTemplates#Edit#Link
+      :contextid: MessageTemplates#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Message Template information
+    - :slug: message_template-destroy-link
+      :title: MessageTemplates#Destroy#Link
+      :contextid: MessageTemplates#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Message Template
+    - :slug: property-show-link
+      :title: Properties#Show#Link
+      :contextid: Properties#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Property information
+    - :slug: property-edit-link
+      :title: Properties#Edit#Link
+      :contextid: Properties#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Property information
+    - :slug: property-destroy-link
+      :title: Properties#Destroy#Link
+      :contextid: Properties#destroy
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Delete Property
+    - :slug: scheduled_action-completion_form-link
+      :title: ScheduledAction#CompletionForm#Link
+      :contextid: ScheduledAction#complete
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show and/or Complete Scheduled Action
+    - :slug: scheduled_action-show-link
+      :title: ScheduledAction#Show#Link
+      :contextid: ScheduledAction#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Scheduled Action
+    - :slug: scheduled_action-complete-link
+      :title: ScheduledAction#Complete#Link
+      :contextid: ScheduledAction#complete
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Complete Scheduled Action
+    - :slug: note-show-link
+      :title: Notes#Show#Link
+      :contextid: Notes#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Note/Comment
+    - :slug: note-edit-link
+      :title: Notes#Edit#Link
+      :contextid: Notes#edit
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Edit Note/Comment
+    - :slug: note-destroy-link
+      :title: Notes#Destroy#link
+      :contextid: Notes#destroy
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Delete Note/Comment
+    - :slug: message-type_indicator-phone
+      :title: Messages#TypeIndicator#Phone
+      :contextid: Messages#show
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: SMS
+    - :slug: message-type_indicator-email
+      :title: Messages#TypeIndicator#Email
+      :contextid: Messages#show
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Email
+    - :slug: message-type_indicator-other
+      :title: Messages#TypeIndicator#Other
+      :contextid: Messages#show
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Message
+    - :slug: message-type_indicator-incoming
+      :title: Messages#TypeIndicator#Incoming
+      :contextid: Messages#show
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Incoming
+    - :slug: message-type_indicator-outgoing
+      :title: Messages#TypeIndicator#Outgoing
+      :contextid: Messages#show
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Outgoing
+    - :slug: message-show-link
+      :title: Messages#Show#Link
+      :contextid: Messages#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Show Message
+    - :slug: message-edit-link
+      :title: Messages#Edit#Link
+      :contextid: Messages#edit
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Edit Message
+    - :slug: message-destroy-link
+      :title: Messages#Destroy#link
+      :contextid: Messages#destroy
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Delete Message

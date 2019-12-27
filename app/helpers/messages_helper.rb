@@ -59,9 +59,13 @@ module MessagesHelper
 
   def message_delivery_indicator_link(message)
     if message.incoming?
-      return link_to(message_delivery_indicator(message), new_message_path(reply_to: message.id))
+      tooltip_block('message-type_indicator-incoming') do
+        link_to(message_delivery_indicator(message), new_message_path(reply_to: message.id))
+      end
     else
-      return message_delivery_indicator(message)
+      tooltip_block('message-type_indicator-outgoing') do
+        message_delivery_indicator(message)
+      end
     end
   end
 
@@ -70,11 +74,17 @@ module MessagesHelper
     content_tag(:span, class: container_class) do
       case message
         when -> (m) { m.sms? }
-          glyph(:phone)
+          tooltip_block('message-type_indicator-phone') do
+            glyph(:phone)
+          end
         when -> (m) { m.email? }
-          glyph(:envelope)
+          tooltip_block('message-type_indicator-email') do
+            glyph(:envelope)
+          end
         else
-          glyph(:envelope)
+          tooltip_block('message-type_indicator-other') do
+            glyph(:envelope)
+          end
       end
     end
   end

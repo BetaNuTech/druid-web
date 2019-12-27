@@ -25,9 +25,9 @@
               <tr>
                 <td><%= lead_referral_source.name %></td>
                 <td>
-                  <%= link_to lead_referral_source do %><%= glyph(:show) %><% end if policy(lead_referral_source).show? %>&nbsp;
-                  <%= link_to edit_lead_referral_source_path(lead_referral_source) do %><%= glyph(:edit) %><% end if policy(lead_referral_source).edit? %>&nbsp;
-                  <%= link_to lead_referral_source, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(lead_referral_source).destroy? %>
+                  <%= model_link_with_tooltip(lead_referral_source, :show) %>&nbsp;
+                  <%= model_link_with_tooltip(lead_referral_source, :edit) %>&nbsp;
+                  <%= model_link_with_tooltip(lead_referral_source, :destroy) %>&nbsp;
                 </td>
               </tr>
             <% end %>

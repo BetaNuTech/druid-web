@@ -31,9 +31,9 @@
                 <td><%= message_template.user&.name || 'System' %></td>
                 <td><%= message_template.shared? ? 'Shared' : 'Private' %></td>
                 <td>
-                  <%= link_to message_template do %><%= glyph(:show) %><% end if policy(message_template).show? %>&nbsp;
-                  <%= link_to edit_message_template_path(message_template) do %><%= glyph(:edit) %><% end if policy(message_template).edit? %>&nbsp;
-                  <%= link_to message_template, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(message_template).destroy? %>
+                  <%= model_link_with_tooltip(message_template, :show) %>&nbsp;
+                  <%= model_link_with_tooltip(message_template, :edit) %>&nbsp;
+                  <%= model_link_with_tooltip(message_template, :destroy) %>&nbsp;
                 </td>
               </tr>
             <% end %>
