@@ -37,7 +37,7 @@ class ScheduledActionsController < ApplicationController
     end
 
 
-    @scheduled_actions = skope.includes(:schedule).valid
+    @scheduled_actions = skope.includes(:schedule).valid.limit(200)
   end
 
   # GET /scheduled_actions/1

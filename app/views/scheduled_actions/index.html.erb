@@ -25,14 +25,14 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.upcoming_or_incomplete.limit(10) } %>
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.upcoming_or_incomplete.sorted_by_due_desc.limit(10) } %>
         </div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class=col-md-12"">
-      <%= month_calendar events: @scheduled_actions.valid.sorted_by_due_asc do |date, scheduled_actions| %>
+      <%= month_calendar events: @scheduled_actions.valid.sorted_by_due_asc.limit(200) do |date, scheduled_actions| %>
         <%= date.day %><br/>
         <% scheduled_actions.each do |scheduled_action| %>
           <div class="<%= scheduled_action_calendar_entry_class(scheduled_action) %>">
@@ -66,7 +66,7 @@
         </div>
         <% unless @limit_set %>
           <div class="col-md-6 text-right" style="position: relative; top: 2em;">
-            <%= link_to(scheduled_actions_path(limit: 999, start_date: @start_date)) do %>
+            <%= link_to(scheduled_actions_path(limit: 200, start_date: @start_date)) do %>
               <span class="btn btn-xs btn-info">View All</span>
             <% end %>
           </div>
@@ -74,7 +74,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(@limit) } %>
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(20) } %>
         </div>
       </div>
     </div>
