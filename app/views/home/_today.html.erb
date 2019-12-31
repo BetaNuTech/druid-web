@@ -32,6 +32,11 @@
             <%= @open_leads.count %> Open Leads
           <% end %>
         </span>
+        <% if policy(Lead).mass_assignment? %>
+          <%= tooltip_block('leads-mass-assign-link') do %>
+            <span> <%= link_to("Assign...", mass_assignment_leads_path, class: "btn btn-xs btn-primary") %> </span>
+          <% end %>
+        <% end %>
         <table class="table lead_listing" id="unclaimed_lead_listing">
           <thead></thead>
           <tbody>

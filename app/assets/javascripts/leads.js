@@ -38,4 +38,9 @@ $(document).on('turbolinks:load', function() {
       success: ''
     })
   })
+
+  $('.lead_assignment-agent-selector').on('change', function(){
+    $('.lead_assigner-pagination').hide();
+  }) 
+
 });

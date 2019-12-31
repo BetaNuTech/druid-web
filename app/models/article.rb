@@ -143,6 +143,16 @@ class Article < ApplicationRecord
       end
   end
 
+  def to_seed_yml
+    data = slice(:slug, :title, :contextid, :articletype, :category, :audience, :published, :body).
+            to_h.
+            symbolize_keys
+    data[:body] = (data[:body] || '').
+										gsub("\r\n",'').
+										gsub("\t",'')
+    return [data].to_yaml(options: {line_width: -1})
+  end
+
   private
 
   def set_slug

@@ -30,6 +30,12 @@ module Properties
           order('user_profiles.last_name ASC, user_profiles.first_name ASC')
       end
 
+      def users_available_for_lead_assignment
+        User.includes(assignments: {user: :profile}).
+          where(property_users: {property_id: self.id}).
+          order('user_profiles.last_name ASC, user_profiles.first_name ASC')
+      end
+
       def primary_agent
         managers.first || agents.first
       end

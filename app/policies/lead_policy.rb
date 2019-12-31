@@ -64,6 +64,15 @@ class LeadPolicy < ApplicationPolicy
     user.admin? || is_owner? || property_manager? || team_lead?
   end
 
+  def mass_assignment?
+    user.property.present? && 
+      (user.admin? || user.manager?)
+  end
+
+  def mass_assign?
+    mass_assignment?
+  end
+
   def trigger_state_event?
     edit?
   end

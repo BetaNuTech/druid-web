@@ -97,6 +97,14 @@
                       <span class="glyphicon glyphicon-check"></span> Closed Leads
                     <% end %>
                   </li>
+                  <% if policy(Lead).mass_assignment? %>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                      <%= link_to(mass_assignment_leads_path) do %>
+                        <span class="glyphicon glyphicon-random"></span> Assign Open Leads
+                      <% end %>
+                    </li>
+                  <% end %>
                   <li role="separator" class="divider"></li>
                   <li>
                     <%= link_to(new_lead_path) do %>

@@ -387,3 +387,19 @@
       :audience: all
       :published: true
       :body: Delete Message
+    - :slug: leads-mass-assign-link
+      :title: Leads#MassAssign#link
+      :contextid: Home
+      :articletype: tooltip
+      :category: general
+      :audience: all
+      :published: true
+      :body: Assign several leads to agents at once
+    - :slug: assigning-mutiple-leads-at-once
+      :title: Assigning Multiple Leads at Once
+      :contextid: Leads#mass_assignment
+      :articletype: help
+      :category: general
+      :audience: manager
+      :published: true
+      :body: <p>Property Managers can use the Lead Mass Assignment feature to assign multiple leads to multiple agents at once from the same screen.</p><p><span style="font-size:16px;"><strong>Getting to the Mass Assignment Page</strong></span></p><ul><li>From the home page you can click the blue &quot;Assign...&quot; button.</li><li>Or you can click &quot;Leads&quot; in the navigation bar and select &quot;Assign Open Leads&quot;</li></ul><p><span style="font-size:16px;"><strong>Assigning Leads</strong></span></p><p>On the Mass Assignment Page you will see a list of open leads for your property.</p><ol><li>If there are a large number of open leads, you may use pagination links to browse</li><li>For any listed lead, select an Agent from the dropdown list on the right.</li><li>Click the &quot;Assign Leads&quot; button</li></ol><p>The Leads will now be claimed by the agents of your choosing.</p>

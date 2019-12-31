@@ -69,6 +69,8 @@ Rails.application.routes.draw do
   resources :leads do
     collection do
       get 'search', to: "leads#search"
+      get 'mass_assignment', to: 'leads#mass_assignment'
+      post 'mass_assign', to: 'leads#mass_assign'
     end
     member do
       post 'trigger_state_event', to: "leads#trigger_state_event"

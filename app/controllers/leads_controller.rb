@@ -28,6 +28,32 @@ class LeadsController < ApplicationController
     end
   end
 
+  def mass_assignment
+    authorize Lead
+    page = ( params[:page] || 1 ).to_i
+    @assigner = Leads::AgentAssigner.new(
+      user: current_user,
+      property: current_property,
+      page: page
+    )
+  end
+
+  def mass_assign
+    authorize Lead
+    assignments = params[:assignments] || []
+
+    @assigner = Leads::AgentAssigner.new(
+      user: current_user,
+      property: current_property,
+      assignments: assignments)
+
+    if @assigner.call
+      render :mass_assignment, notice: "#{@assigner.assignments.count} Leads have been assigned to Agents"
+    else
+      render :mass_assignment, notice: 'There were problems assigning Leads'
+    end
+  end
+
   # GET /leads/1
   # GET /leads/1.json
   def show
