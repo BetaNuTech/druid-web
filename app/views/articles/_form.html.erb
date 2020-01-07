@@ -12,11 +12,13 @@
   <% end %>
 
   <div>
+    <% unless @article.new_record? %>
     <div class="row">
       <div class="col-md-12">
         <b>Article Slug:</b> <%= @article.slug %>
       </div>
-    </div>
+      </div>
+    <% end %>
     <div class="row">
       <div class="col-md-2 form-group">
         <%= form.label :articletype, 'Type' %>

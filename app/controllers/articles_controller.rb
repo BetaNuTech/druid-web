@@ -19,7 +19,7 @@ class ArticlesController < ApplicationController
 
   # GET /articles/new
   def new
-    @article = Article.new
+    @article = Article.new(article_params)
     @article.user = current_user
     authorize @article
   end
