@@ -695,4 +695,20 @@ RSpec.describe LeadsController, type: :controller do
 
   end
 
+  describe "GET #mass_assignment" do
+    let(:lead1) { create(:lead, state: 'open', property: agent.property)}
+    let(:lead2) { create(:lead, state: 'open', property: agent.property)}
+    let(:lead3) { create(:lead, state: 'prospect', property: agent.property, user_id: agent)}
+
+    it "should load successfully" do
+      sign_in manager
+      get :mass_assignment
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "POST #mass_assign" do
+    it "should assign leads to agents"
+  end
+
 end

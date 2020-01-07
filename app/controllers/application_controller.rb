@@ -29,6 +29,14 @@ class ApplicationController < ActionController::Base
     @property = @current_property ||= Property.where(id: (params[:property_id] || 0)).first || current_user.try(:properties).try(:first)
   end
 
+  def current_property
+    begin
+      @current_property ||= set_property
+    rescue
+      nil
+    end
+  end
+
   def current_team
     begin
       @current_team ||= current_user.present? ? current_user.team : nil
