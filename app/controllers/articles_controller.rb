@@ -19,7 +19,11 @@ class ArticlesController < ApplicationController
 
   # GET /articles/new
   def new
-    @article = Article.new(article_params)
+    if params[:article].present?
+      @article = Article.new(article_params)
+    else
+      @article = Article.new
+    end
     @article.user = current_user
     authorize @article
   end

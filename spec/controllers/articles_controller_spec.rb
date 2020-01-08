@@ -97,10 +97,21 @@ RSpec.describe ArticlesController, type: :controller do
   end
 
   describe "GET #new" do
-    it "returns a success response" do
-      sign_in agent
-      get :new, params: {}
-      expect(response).to be_successful
+    describe "without params" do
+      it "returns a success response" do
+        sign_in agent
+        get :new
+        expect(response).to be_successful
+      end
+    end
+
+    describe "with params" do
+      it "initializes the new article with contextid and articletype provided" do
+        sign_in agent
+        get :new, params: {article: {articletype: 'help' , contextid: 'home'}}
+        expect(assigns[:article].articletype).to eq('help')
+        expect(assigns[:article].contextid).to eq('home')
+      end
     end
   end
 
