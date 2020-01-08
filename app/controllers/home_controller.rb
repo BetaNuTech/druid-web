@@ -28,16 +28,13 @@ class HomeController < ApplicationController
     @page = "Update Messaging Preferences"
     lead_id = params[:lead_id]
     optout = params[:lead_optout]
-    if @lead = Lead.where(id: lead_id).first
-      if optout == "true"
-        @lead.optout!
-        flash[:notice] = "You have opted out of email notifications."
-      else
-        @lead.optin!
-        flash[:notice] = "You may recieve email notifications again."
-      end
+    @lead = Lead.find(lead_id)
+    if optout == "true"
+      @lead.optout!
+      flash[:notice] = "You have opted out of email notifications."
     else
-      redirect_to(messaging_preferences_path(id: :lead_id))
+      @lead.optin!
+      flash[:notice] = "You may recieve email notifications again."
     end
   end
 

@@ -210,17 +210,17 @@ class ProspectStats
     end
   end
 
-  def conversion_rate_all(skope, window)
-    Rails.logger.info "=== ProspectStats: conversion_rate_all #{window}"
-    return cache(stat: 'conversion_rate_all', skope: skope, window: window) do
-      count = skope.leads.includes(:lead_transitions).
-        where(lead_transitions: {
-        current_state: CONVERSION_STATE,
-        created_at: time_window_range(window)
-      }).count
-      calculate_lead_pctg_all(count, skope, window)
-    end
-  end
+  #def conversion_rate_all(skope, window)
+    #Rails.logger.info "=== ProspectStats: conversion_rate_all #{window}"
+    #return cache(stat: 'conversion_rate_all', skope: skope, window: window) do
+      #count = skope.leads.includes(:lead_transitions).
+        #where(lead_transitions: {
+        #current_state: CONVERSION_STATE,
+        #created_at: time_window_range(window)
+      #}).count
+      #calculate_lead_pctg_all(count, skope, window)
+    #end
+  #end
 
   def closing_rate(skope, window)
     Rails.logger.info "=== ProspectStats: closing_rate #{window}"
@@ -234,17 +234,17 @@ class ProspectStats
     end
   end
 
-  def closing_rate_all(skope, window)
-    Rails.logger.info "=== ProspectStats: closing_rate_all #{window}"
-    return cache(stat: 'closing_rate_all', skope: skope, window: window) do
-      count = skope.leads.includes(:lead_transitions).
-        where(lead_transitions: {
-        current_state: CLOSING_STATE,
-        created_at: time_window_range(window)
-      }).count
-      calculate_lead_pctg_all(count, skope, window)
-    end
-  end
+  #def closing_rate_all(skope, window)
+    #Rails.logger.info "=== ProspectStats: closing_rate_all #{window}"
+    #return cache(stat: 'closing_rate_all', skope: skope, window: window) do
+      #count = skope.leads.includes(:lead_transitions).
+        #where(lead_transitions: {
+        #current_state: CLOSING_STATE,
+        #created_at: time_window_range(window)
+      #}).count
+      #calculate_lead_pctg_all(count, skope, window)
+    #end
+  #end
 
   def calculate_lead_pctg(count, skope, window)
     if count > 0
@@ -255,14 +255,14 @@ class ProspectStats
     return rate
   end
 
-  def calculate_lead_pctg_all(count, skope, window)
-    if count > 0
-      rate = (count.to_f / prospect_count_all(skope,window).to_f).round(3)
-    else
-      rate = 0.0
-    end
-    return rate
-  end
+  #def calculate_lead_pctg_all(count, skope, window)
+    #if count > 0
+      #rate = (count.to_f / prospect_count_all(skope,window).to_f).round(3)
+    #else
+      #rate = 0.0
+    #end
+    #return rate
+  #end
 
   def cache(stat:, skope:, window:, &block)
     key = cached_data_key(stat: stat, skope: skope, window: window)

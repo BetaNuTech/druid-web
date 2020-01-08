@@ -17,10 +17,10 @@ RSpec.describe HomeController, type: :controller do
 
   describe "when authenticated" do
     it "renders the dashboard page" do
-      sign_in unroled_user
+      sign_in agent
       get :dashboard
-      expect(response).to be_redirect
-      #expect(response).to render_template(:dashboard)
+      #expect(response).to be_redirect
+      expect(response).to render_template(:dashboard)
     end
 
     describe "as an administrator" do
@@ -156,6 +156,13 @@ RSpec.describe HomeController, type: :controller do
           expect(response).to be_successful
         end
       end
+
+      describe "GET #manager_dashboard" do
+        it "is successful" do
+          get :manager_dashboard
+          expect(response).to be_successful
+        end
+      end
     end
 
   end
@@ -250,6 +257,48 @@ RSpec.describe HomeController, type: :controller do
       end
     end
   end # Impersonation
+
+  describe "a lead managing messaging preferences" do
+    let(:lead) { create(:lead, user: agent, property: agent.property, state: 'open') }
+
+    describe "displaying the message preferences page" do
+      it "should be successful" do
+        get :messaging_preferences, params: {id: lead.id}
+        expect(response).to be_successful
+      end
+    end
+
+    describe "opting out of messaging" do
+      it "should be successful" do
+        refute(lead.optout?)
+        post :unsubscribe, params: {lead_id: lead.id, lead_optout: true}
+        expect(response).to be_successful
+        lead.reload
+        assert(lead.optout?)
+      end
+    end
+
+    describe "opting into messaging" do
+      it "should be successful" do
+        lead.optout!
+        assert(lead.optout?)
+        post :unsubscribe, params: {lead_id: lead.id}
+        expect(response).to be_successful
+        lead.reload
+        refute(lead.optout?)
+      end
+    end
+  end
+
+  describe "inserting an incoming lead on the dashboard page" do
+    it "should be successful" do
+      lead = create(:lead, property: agent.property, state: 'open')
+      sign_in agent
+      get :insert_unclaimed_lead, params: {id: lead.id}, xhr: true
+      expect(response).to be_successful
+    end
+
+  end
 
 end
 

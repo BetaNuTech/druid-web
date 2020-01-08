@@ -13,6 +13,47 @@ RSpec.describe ScheduledActionsController, type: :controller do
     @lead.reload
   end
 
+  describe "GET #index" do
+    let(:lead) {
+      lead = create(:lead, property: agent.property)
+      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.reload
+      lead
+    }
+
+    it "should display scheduled actions for user" do
+      sign_in agent
+      get :index
+      expect(response).to be_successful
+    end
+
+    it "should display scheduled actions for a lead" do
+      sign_in manager
+      get :index, params: {lead_id: lead.id}
+      expect(response).to be_successful
+    end
+
+    it "should display scheduled actions for an agent" do
+      sign_in manager
+      get :index, params: {user_id: agent.id}
+      expect(response).to be_successful
+    end
+
+    it "should display scheduled actions for all" do
+      sign_in agent
+      get :index, params: {all: true}
+      expect(response).to be_successful
+    end
+
+    it "should reject requests to unauthorized users" do
+      sign_in agent2
+      get :index, params: {lead_id: lead.id}
+      expect(response).to_not be_successful
+      get :index, params: {user_id: agent.id}
+      expect(response).to_not be_successful
+    end
+  end
+
   describe "GET #show" do
     describe "as the owner" do
       it "should display the record" do
