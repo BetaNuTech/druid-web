@@ -31,7 +31,7 @@ class ResidentDetail < ApplicationRecord
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
 
   ### Associations
-  belongs_to :resident
+  belongs_to :resident, required: false
 
   ### Validations
   # None
