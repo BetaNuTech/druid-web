@@ -5,6 +5,8 @@ RSpec.describe ScheduledActionsController, type: :controller do
   include_context "engagement_policy"
   render_views
 
+  let(:scheduled_action) { create(:scheduled_action, user: team1_agent1) }
+
   before(:each) do
     seed_engagement_policy
     Lead.destroy_all
@@ -79,7 +81,6 @@ RSpec.describe ScheduledActionsController, type: :controller do
   describe "GET #edit" do
     describe "as the owner" do
       it "should be successful" do
-        scheduled_action = @lead.scheduled_actions.last
         expect(scheduled_action.user).to eq(team1_agent1)
         url_params = { id: scheduled_action.id }
         sign_in team1_agent1
@@ -93,12 +94,10 @@ RSpec.describe ScheduledActionsController, type: :controller do
     describe "as the owner" do
       it "should be successful" do
         new_description =  'Foobar123'
-        scheduled_action = @lead.scheduled_actions.last
-        expect(scheduled_action.user).to eq(team1_agent1)
         url_params = { id: scheduled_action.id, scheduled_action: {description: new_description} }
         sign_in team1_agent1
         put :update, params: url_params
-        expect(response).to be_successful
+        expect(response).to be_redirect
         scheduled_action.reload
         expect(scheduled_action.description).to eq(new_description)
       end
@@ -107,9 +106,9 @@ RSpec.describe ScheduledActionsController, type: :controller do
 
   describe "POST #create" do
     describe "as the owner" do
-      it "should be successful" do
-        pending 'TODO'
-      end
+      #it "should be successful" do
+        #pending 'TODO'
+      #end
     end
   end
 
