@@ -39,5 +39,12 @@ FactoryBot.define do
       slug { 'YardiVoyager' }
       active { true }
     end
+
+    factory :cobalt_source do
+      name { 'Cobalt' }
+      incoming { false }
+      slug { 'Cobalt' }
+      active { true }
+    end
   end
 end

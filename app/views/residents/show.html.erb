@@ -91,37 +91,37 @@
       <div class="row">
         <div class="col-md-3">
           <strong>Phone 1: </strong>
-          <%= @resident.detail.phone1 %>
+          <%= @resident.detail&.phone1 %>
         </div>
         <div class="col-md-3">
           <strong>Type: </strong>
-          <%= @resident.detail.phone1_type || '-' %>
+          <%= @resident.detail&.phone1_type || '-' %>
         </div>
         <div class="col-md-4">
           <strong>Best Time to Call: </strong>
-          <%= @resident.detail.phone1_tod || '-' %>
+          <%= @resident.detail&.phone1_tod || '-' %>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-3">
           <strong>Phone 2: </strong>
-          <%= @resident.detail.phone2 %>
+          <%= @resident.detail&.phone2 %>
         </div>
         <div class="col-md-3">
           <strong>Type: </strong>
-          <%= @resident.detail.phone2_type || '-' %>
+          <%= @resident.detail&.phone2_type || '-' %>
         </div>
         <div class="col-md-4">
           <strong>Best Time to Call: </strong>
-          <%= @resident.detail.phone2_tod || '-' %>
+          <%= @resident.detail&.phone2_tod || '-' %>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-12">
           <strong>Email: </strong>
-          <%= @resident.detail.email %>
+          <%= @resident.detail&.email %>
         </div>
       </div>
 
@@ -129,18 +129,18 @@
       <div class="row">
         <div class="col-md-12">
           <strong>SSN: </strong>
-          <%= @resident.detail.ssn %>
+          <%= @resident.detail&.ssn %>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-4">
           <strong>ID/DL Number: </strong>
-          <%= @resident.detail.id_number %>
+          <%= @resident.detail&.id_number %>
         </div>
         <div class="col-md-3">
           <strong>ID State:</strong>
-          <%= @resident.detail.id_state %>
+          <%= @resident.detail&.id_state %>
         </div>
       </div>
 

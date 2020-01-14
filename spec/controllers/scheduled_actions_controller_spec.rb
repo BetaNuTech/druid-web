@@ -5,6 +5,8 @@ RSpec.describe ScheduledActionsController, type: :controller do
   include_context "engagement_policy"
   render_views
 
+  let(:scheduled_action) { create(:scheduled_action, user: team1_agent1) }
+
   before(:each) do
     seed_engagement_policy
     Lead.destroy_all
@@ -13,18 +15,100 @@ RSpec.describe ScheduledActionsController, type: :controller do
     @lead.reload
   end
 
+  describe "GET #index" do
+    let(:lead) {
+      lead = create(:lead, property: agent.property)
+      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.reload
+      lead
+    }
+
+    it "should display scheduled actions for user" do
+      sign_in agent
+      get :index
+      expect(response).to be_successful
+    end
+
+    it "should display scheduled actions for a lead" do
+      sign_in manager
+      get :index, params: {lead_id: lead.id}
+      expect(response).to be_successful
+    end
+
+    it "should display scheduled actions for an agent" do
+      sign_in manager
+      get :index, params: {user_id: agent.id}
+      expect(response).to be_successful
+    end
+
+    it "should display scheduled actions for all" do
+      sign_in agent
+      get :index, params: {all: true}
+      expect(response).to be_successful
+    end
+
+    it "should reject requests to unauthorized users" do
+      sign_in agent2
+      get :index, params: {lead_id: lead.id}
+      expect(response).to_not be_successful
+      get :index, params: {user_id: agent.id}
+      expect(response).to_not be_successful
+    end
+  end
+
+  describe "GET #new" do
+    describe "as an agent" do
+      it "should be successful" do
+        sign_in agent
+        get :new
+        expect(response).to be_successful
+      end
+    end
+  end
+
   describe "GET #show" do
     describe "as the owner" do
       it "should display the record" do
         scheduled_action = @lead.scheduled_actions.last
-        url_params = {
-          id: scheduled_action.id
-        }
-
-        sign_in team1_agent1
+        url_params = { id: scheduled_action.id }
+        sign_in agent
         get :show, params: url_params
         expect(response).to be_successful
       end
+    end
+  end
+
+  describe "GET #edit" do
+    describe "as the owner" do
+      it "should be successful" do
+        expect(scheduled_action.user).to eq(team1_agent1)
+        url_params = { id: scheduled_action.id }
+        sign_in team1_agent1
+        get :edit, params: url_params
+        expect(response).to be_successful
+      end
+    end
+  end
+
+  describe "PUT #update" do
+    describe "as the owner" do
+      it "should be successful" do
+        new_description =  'Foobar123'
+        url_params = { id: scheduled_action.id, scheduled_action: {description: new_description} }
+        sign_in team1_agent1
+        put :update, params: url_params
+        expect(response).to be_redirect
+        scheduled_action.reload
+        expect(scheduled_action.description).to eq(new_description)
+      end
+    end
+  end
+
+  describe "POST #create" do
+    describe "as the owner" do
+      #it "should be successful" do
+        #pending 'TODO'
+      #end
     end
   end
 

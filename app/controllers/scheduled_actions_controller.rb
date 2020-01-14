@@ -5,8 +5,8 @@ class ScheduledActionsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:conflict_check]
   before_action :authenticate_user!
   before_action :set_scheduled_action, only: [:show, :edit, :update, :destroy, :complete, :completion_form]
-  before_action :set_lead, only: [:show, :edit, :update, :destroy, :complete, :completion_form]
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :complete, :completion_form]
+  before_action :set_lead, only: [:index, :show, :edit, :update, :destroy, :complete, :completion_form]
+  before_action :set_user, only: [:index, :show, :edit, :update, :destroy, :complete, :completion_form]
   after_action :verify_authorized
 
   # GET /scheduled_actions

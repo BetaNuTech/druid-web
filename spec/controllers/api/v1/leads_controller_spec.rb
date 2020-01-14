@@ -19,6 +19,12 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
     base_attrs
   }
 
+  let(:valid_attributes_for_bluesky_wrong_token) {
+    base_attrs = attributes_for(:lead)
+    base_attrs[:token] = create(:lead_source, active: false).api_token
+    base_attrs
+  }
+
   let(:invalid_attributes_for_bluesky) {
     base_attrs = attributes_for(:lead)
     base_attrs[:first_name] = nil
@@ -46,6 +52,16 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
         it "fails to create a new Lead with an invalid token" do
           expect {
             post :create, params: valid_attributes_for_bluesky_invalid_token, format: :json
+          }.to change(Lead, :count).by(0)
+          response_json = JSON.parse(response.body)
+          expect(response).to have_http_status(:forbidden)
+          expect(response_json["errors"]).to_not be_nil
+          expect(response_json["errors"]["base"][0]).to match('Invalid Access Token')
+        end
+
+        it "fails to create a new Lead with an incorrect token" do
+          expect {
+            post :create, params: valid_attributes_for_bluesky_wrong_token, format: :json
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response).to have_http_status(:forbidden)
@@ -131,6 +147,8 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
     end
 
     it "should refuse invalid tokens" do
+      get :index, params: {token: create(:lead_source, active: false).api_token}
+      expect(response).to have_http_status(:forbidden)
       get :index, params: {token: 'invalid'}
       expect(response).to have_http_status(:forbidden)
       get :index, params: {}
@@ -155,5 +173,62 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
       response_json = JSON.parse(response.body)
       expect(response_json.size).to eq(record_limit)
     end
+  end
+
+  describe "GET #prospect_stats" do
+    include_context "users"
+
+    let(:cobalt_source) { create(:cobalt_source) }
+    let(:voyager_source) { create(:yardi_voyager_source) }
+    let(:source) { create(:lead_source, slug: LeadSource::DEFAULT_SLUG) }
+    let(:source2) { create(:lead_source, slug: 'source2') }
+    let(:property) { create(:property) }
+    let(:property2) { create(:property) }
+    let(:property3) { create(:property) }
+    let(:listing) { create(:property_listing, source_id: source.id, property_id: property.id) }
+    let(:listing2) { create(:property_listing, source_id: source.id, property_id: property2.id) }
+    let(:listing3) { create(:property_listing, source_id: source2.id, property_id: property3.id) }
+
+    let(:lead1) { create(:lead, property: property, source: source) }
+    let(:lead2) { create(:lead, property: property2, source: source) }
+    let(:lead3) { create(:lead, property: property, source: source2) }
+    let(:lead4) { create(:lead, property: property2, source: source2) }
+
+    before do
+      lead1; lead2; lead3; lead4
+      listing; listing2; listing3
+      cobalt_source; voyager_source
+    end
+
+    it "should reject requests with an invalid token" do
+      get :prospect_stats, params: {token: 'bad'}, format: :json
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "should reject requests by an with an incorrect but valid leasource token" do
+      get :prospect_stats, params: {token: voyager_source.api_token}, format: :json
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "should return JSON data of prospect statistics" do
+      get :prospect_stats, params: {token: cobalt_source.api_token}, format: :json
+      expect(response).to be_successful
+    end
+
+    it "should return prospect stats for properties" do
+      get :prospect_stats, params: {token: cobalt_source.api_token, stats: 'properties', ids: [property.id, property2.id]}, format: :json
+      expect(response).to be_successful
+    end
+
+    it "should return prospect stats for teams" do
+      get :prospect_stats, params: {token: cobalt_source.api_token, stats: 'teams'}, format: :json
+      expect(response).to be_successful
+    end
+
+    it "should return prospect stats for agents" do
+      get :prospect_stats, params: {token: cobalt_source.api_token, stats: 'agents'}, format: :json
+      expect(response).to be_successful
+    end
+
   end
 end

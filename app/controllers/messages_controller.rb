@@ -158,6 +158,7 @@ class MessagesController < ApplicationController
     end
 
     def set_message_template
+      params.permit(:message_template_id)
       if (message_template_id = (( params[:message] || {} ).fetch(:message_template_id, params[:message_template_id]))).present?
         @message_template = MessageTemplate.find(message_template_id)
       else
