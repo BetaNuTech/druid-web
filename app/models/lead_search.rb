@@ -45,7 +45,6 @@ class LeadSearch
       filter_by_last_name.
       filter_by_id_number.
       filter_by_date.
-      finalize.
       search_by_text
 
     if @perform_sort
@@ -351,14 +350,6 @@ class LeadSearch
     return self
   end
 
-  def finalize
-    if @filter_applied
-      ids = ids_from(@skope)
-      @skope = @default_skope.where(id: ids)
-    end
-    return self
-  end
-
   private
 
   def query_sort
@@ -387,10 +378,6 @@ class LeadSearch
   def query_sort_dir
     sort_dir = (Array(@options[:sort_dir]).first || :none).to_sym
     SORT_OPTIONS[query_sort_by].keys.include?(sort_dir) ? sort_dir : DEFAULT_SORT[1]
-  end
-
-  def ids_from(skope)
-    skope.select("#{LEAD_TABLE}.id").map(&:id)
   end
 
   def property_values
