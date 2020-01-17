@@ -46,11 +46,13 @@
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu">
+                <% if policy(Stat).index? %>
                   <li>
                     <%= link_to(stats_manager_path) do %>
                       <span class="glyphicon glyphicon-star"></span> Stats Dashboard
                     <% end %>
                   </li>
+                <% end %>
                 </ul>
               </div>
             </li>
