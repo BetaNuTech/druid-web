@@ -159,13 +159,21 @@ export function updateSearchString(search) {
       if (search.Filters === undefined) {
         return
       }
+
+      let new_values
+      if (search_string) {
+        new_values = [{label: search_string, value: search_string}]
+      } else {
+        new_values = []
+      }
+
       const newSearch = {
         ...search,
         Filters: {
           ...search.Filters,
           Search: {
             ...search.Filters.Search,
-            values: [{label: search_string, value: search_string}]
+            values: new_values
           }
         }
       }

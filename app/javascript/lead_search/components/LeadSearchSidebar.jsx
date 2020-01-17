@@ -13,7 +13,12 @@ class LeadSearchSidebar extends React.Component {
     let output = ""
     if (values.length > 0) {
       output = values.map((value) => {
-        return <li key={key + "_" + ( value.label || value )}>{value.label || value}</li>
+        if ( (value && value.label) ||
+             (value && ( typeof value === 'string' || value instanceof String ))) {
+          return <li key={key + "_" + ( value.label || value )}>{value.label || value}</li>
+        } else {
+          return <li>Any</li>
+        }
       })
     } else {
       output = <li>Any</li>
