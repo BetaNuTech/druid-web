@@ -105,6 +105,7 @@ class Lead < ApplicationRecord
         data: JSON.parse(lead.preference.raw_data).with_indifferent_access,
         token: lead.source.api_token )
       new_lead = creator.call
+      new_lead.first_comm = lead.first_comm || lead.created_at || DateTime.now
       new_lead.validate
       return new_lead
     else

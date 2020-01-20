@@ -5,7 +5,7 @@ module Leads
     included do
 
       CSV_COLUMNS = [
-        [ "Yardi ID" , -> (lead) { Leads::Adapters::YardiVoyager.property_code(lead.property) } ],
+        [ "Yardi Property ID" , -> (lead) { Leads::Adapters::YardiVoyager.property_code(lead.property) } ],
         [ "Property" , -> (lead) { lead.property.try(:name) } ],
         [ "Last Name" , -> (lead) { lead.last_name } ],
         [ "First Name" , -> (lead) { lead.first_name } ],
@@ -17,7 +17,11 @@ module Leads
         [ "Phone" , -> (lead) { lead.phone1 } ],
         [ "Yardi?" , -> (lead) { lead.remoteid.present? } ],
         [ "Yardi ID" , -> (lead) { lead.remoteid } ],
-        [ "Notes" , -> (lead) { lead.preference.try(:notes) } ]
+        [ "Notes" , -> (lead) { lead.preference.try(:notes) } ],
+        ["Bluesky ID" , -> (lead) { lead.id }],
+        [ "Bluesky URL" , -> (lead) {
+          "%s://%s/leads/%s" % [ ENV['APPLICATION_PROTOCOL'], ENV['APPLICATION_HOST'], lead.id ] }
+        ]
       ]
 
       def to_csv
