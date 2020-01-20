@@ -313,4 +313,46 @@ namespace :leads do
 
     end
   end
+
+  namespace :incoming do
+    desc "Reparse Null leads"
+    task :reparse => :environment do
+
+      start_date = 1.month.ago.beginning_of_day
+      null_leads = Lead.where(first_name: 'Null', referral: 'Null', created_at: start_date..DateTime.now)
+      puts "* Re-Processing #{null_leads.count} 'Null' Leads since #{start_date.to_s(:long)}"
+      processed = 0
+      failed = 0
+      new_leads = null_leads.map do |null_lead|
+        new_lead = Lead.reparse(null_lead)
+        if new_lead.referral != 'Null' && new_lead.save
+          puts "  - %s => %s : %s for %s from %s (%s)" % [
+            null_lead.id,
+            new_lead.id,
+            new_lead.name,
+            new_lead.property.name,
+            new_lead.referral,
+            null_lead.created_at
+          ]
+          processed += 1
+        else
+          puts "  - %s : %s" % [null_lead.id, null_lead.errors.to_a.to_s]
+          failed += 1
+        end
+
+        new_lead
+      end
+      puts "DONE. #{processed} records saved out of #{new_leads.size}"
+
+      new_leads.each do |new_lead|
+        if new_lead.valid?
+          puts " - Added: %s://%s/leads/%s" % [
+            ENV['APPLICATION_PROTOCOL'],
+            ENV['APPLICATION_HOST'],
+            new_lead.id
+          ]
+        end
+      end
+    end
+  end
 end
