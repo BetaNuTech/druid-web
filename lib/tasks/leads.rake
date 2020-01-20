@@ -355,4 +355,28 @@ namespace :leads do
       end
     end
   end
+
+  namespace :disqualified do
+    desc "Reject Tasks assigned to Disqualified Leads"
+    task :reject_tasks => :environment do
+      skope = ScheduledAction.
+        joins("INNER JOIN leads ON leads.id = scheduled_actions.target_id AND scheduled_actions.target_type = 'Lead'").
+        incomplete.
+        where(leads: {state: [:disqualified, :approved]})
+      count = skope.count
+
+      puts "* Rejecting tasks for Disqualified and Approved Leads"
+      puts " - #{count} tasks found"
+      if count > 1
+        print " - rejecting tasks..."
+        ScheduledAction.
+            joins("INNER JOIN leads ON leads.id = scheduled_actions.target_id AND scheduled_actions.target_type = 'Lead'").
+            incomplete.
+            where(leads: {state: [:disqualified, :approved]}).
+          update_all(state: :rejected)
+      end
+      puts "DONE."
+    end
+  end
+
 end
