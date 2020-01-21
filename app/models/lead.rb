@@ -95,6 +95,12 @@ class Lead < ApplicationRecord
 
   ### Class Methods
 
+  def self.unique_phones
+    return ActiveRecord::Base.connection.
+            execute("SELECT DISTINCT(phone1) phone FROM leads WHERE phone1 IS NOT NULL UNION SELECT DISTINCT(phone2) phone FROM leads WHERE phone2 IS NOT NULL").
+            map{|d| d["phone"]}
+  end
+
   def self.for_agent(agent)
     where(user_id: agent.id)
   end
@@ -160,6 +166,7 @@ class Lead < ApplicationRecord
   def agent
     user || property.try(:managers).try(:first)
   end
+
 
 
   private

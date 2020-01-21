@@ -40,6 +40,8 @@ class Cdr < CdrdbModel
 
   ### Constants
   #DCONTEXTS = ["app-blackhole", "app-blacklist-add", "app-blacklist-remove", "app-calltrace-perform", "default", "ext-fax", "ext-group", "ext-local", "ext-meetme", "ext-queues", "from-did-direct", "from-internal", "from-internal-xfer", "from-queue", "from-trunk", "from-trunk-sip-a2b", "from-trunk-sip-voxox", "ivr-1", "ivr-10", "ivr-11", "ivr-12", "ivr-13", "ivr-14", "ivr-15", "ivr-16", "ivr-17", "ivr-18", "ivr-19", "ivr-20", "ivr-21", "ivr-22", "ivr-23", "ivr-24", "ivr-25", "ivr-26", "ivr-27", "ivr-28", "ivr-29", "ivr-30", "ivr-31", "ivr-32", "ivr-33", "ivr-34", "ivr-35", "ivr-36", "ivr-37", "ivr-39", "ivr-4", "ivr-40", "ivr-5", "ivr-6", "ivr-7", "ivr-8", "ivr-9", "vm-callme"]
+  CALLERID_BLACKLIST = ['TOLL FREE']
+  TOLL_FREE_PREFIXES = [ 800, 888, 877, 866, 855, 844, 833 ]
 
   ### Scopes
   scope :calls_for, -> (numbers) {
@@ -80,12 +82,13 @@ class Cdr < CdrdbModel
   end
 
   def self.possible_leads(start_date:, end_date:)
-    variants = number_variants(Lead.select(:phone1, :phone2).all.
-                                 map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq) +
-                ["Anonymous", "Restricted"]
+    ignore_numbers = number_variants(Lead.unique_phones) + ["Anonymous", "Restricted"]
+    omit_toll_free_sql = TOLL_FREE_PREFIXES.map{|p| "src LIKE '#{p}%'"}.join(' OR ')
+
     skope = select(:id, :calldate, :did, :src, :dst, :dcontext, :clid, :cnam).
       where("did != ''").
-      where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: variants, src: variants}).
+      where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: ignore_numbers, src: ignore_numbers}).
+      where("NOT (?)", omit_toll_free_sql).
       where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
       group(:cnam, :src, :did)
   end
