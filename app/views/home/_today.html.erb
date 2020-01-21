@@ -3,49 +3,64 @@
 
     <!-- Header -->
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <h3>
           <%= glyph(:task) %>
           Today
         </h3>
       </div>
-      <div class="col-md-3" style="padding-top: 22px;">
-        <%= link_to("View Calendar", scheduled_actions_path, {class: "btn btn-xs btn-primary"})  %>
-      </div>
-      <div class="col-md-3" style="padding-top: 22px;">
-        <%= link_to("Schedule a Task", new_scheduled_action_path, {class: "btn btn-xs btn-primary"}) %>
+      <div class="col-md-6" style="margin-top: 22px;">
+        <span style="">
+          <%= link_to("View Calendar", scheduled_actions_path, {class: "btn btn-xs btn-primary"})  %>
+        </span>
+        <span style="">
+          <%= link_to("Schedule a Task", new_scheduled_action_path, {class: "btn btn-xs btn-primary"}) %>
+        </span>
       </div>
     </div>
     <!-- End Header -->
 
-    <!-- Listing -->
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <span class="text-nowrap lead">
           <% if @limit_leads != @open_leads.count %>
             <%= @limit_leads %> of
             <%= @open_leads.count %> Open Leads
-            <span>
-              <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn-xs btn-primary") %>
-            </span>
           <% else %>
             <%= @open_leads.count %> Open Leads
           <% end %>
         </span>
+      </div>
+      <div class="col-md-6">
+        <% if @limit_leads != @open_leads.count %>
+          <span style="padding-top: 5px;">
+            <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn-xs btn-primary") %>
+          </span>
+        <% end %>
         <% if policy(Lead).mass_assignment? %>
           <%= tooltip_block('leads-mass-assign-link') do %>
-            <span> <%= link_to("Assign...", mass_assignment_leads_path, class: "btn btn-xs btn-primary") %> </span>
+            <span style="padding-top: 5px;">
+              <%= link_to("Assign...", mass_assignment_leads_path, class: "btn btn-xs btn-primary") %>
+            </span>
           <% end %>
         <% end %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
         <table class="table lead_listing" id="unclaimed_lead_listing">
           <thead></thead>
           <tbody>
-
             <!-- Unclaimed Leads -->
             <%= render collection: @open_leads.limit(@limit_leads), partial: 'lead' %>
           </tbody>
         </table>
+      </div>
+    </div>
 
+    <div class="row">
+      <div class="col-md-12">
         <span class="text-nowrap lead">
           <%= @today_actions.count %> Tasks Due Today
         </span>
@@ -55,9 +70,8 @@
             <%= render collection: @today_actions.limit(20), partial: 'scheduled_action' %>
           </tbody>
         </table>
-      </div>
+      </div> 
     </div>
-    <!-- End Listing -->
 
   </div>
 </div>
