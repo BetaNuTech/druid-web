@@ -7,12 +7,22 @@
           Property Leads
         </h3>
       </div>
-      <% if current_user.property.present? %>
-        <div class="col-md-6" style="padding-top: 22px;">
-          <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{open prospect showing application} }}), class: "btn btn-xs btn-primary") %>
-        </div>
-      <% end %>
     </div>
+    <% if current_user.property.present? %>
+    <div class="row">
+      <div class="col-md-6">
+        <span class="lead">
+          <%= current_user.property.leads.early_pipeline.count %> Active Leads
+        </span>
+      </div>
+      <div class="col-md-3">
+        <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{open prospect showing application} }}), class: "btn btn-xs btn-primary") %>
+      </div>
+      <div class="col-md-3">
+        <%= link_to("Duplicates", duplicate_leads_property_path(id: current_user.property), class: "btn btn-xs btn-primary") %>
+      </div>
+    </div>
+    <% end %>
     <table class="table lead_listing">
       <thead></thead>
       <tbody>

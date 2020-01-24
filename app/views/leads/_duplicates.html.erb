@@ -1,4 +1,5 @@
-<% duplicate_groups = duplicates.groups_annotated %>
+<% property = nil unless defined?(property) %>
+<% duplicate_groups = duplicates.groups_annotated(property: property) %>
 
 <table class="table lead_duplicates">
   <thead>
@@ -19,8 +20,8 @@
   </thead>
   <tbody>
     <% duplicate_groups.each_with_index do |leads, group_index| %>
-      <% row_bgclass = cycle('', 'bg-info') %>
       <% row_bgclass = '' %>
+      <% next unless leads.size > 1 %>
       <% leads.each_with_index do |lead_record, index| %>
         <% lead = lead_record[:record] %>
         <% row_class = index == 0 ? 'group_primary' : 'group_secondary' %>
@@ -34,7 +35,7 @@
           </td>
           <td>
             <span class="<%= lead_record[:flags][:name] ? 'highlight' : '' %>">
-              <% if lead != @lead && policy(lead).show? %>
+              <% if lead != @lead %>
                 <%= link_to(lead.name, lead_path(lead), target: '_blank') %>
               <% else %>
                 <%= lead.name %>
