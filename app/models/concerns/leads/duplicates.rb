@@ -13,7 +13,37 @@ module Leads
       after_save :duplicate_check_on_update
 
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name}
-      DUPLICATE_IGNORED_VALUES = [ 'none@gmail.com', 'Null', '00000000', '0000000000', '(None)', 'None', 'non@aol.zzz', 'non@aol.com', 'none@aol.zzz', 'none@aol.com', 'noemail@bluestone.com', 'noemail@xyz.zzz', 'noemail@noemail.zzz', 'WIRELESS', 'CALLER' ]
+      DUPLICATE_IGNORED_VALUES = [
+        '(None)',
+        '00000000',
+        '000000000',
+        '0000000000',
+        '11111111 1111111111',
+        '1111111111',
+        '1234567890',
+        '1234567891',
+        '7777777777',
+        'CALLER',
+        'FREE',
+        'Noemail@gmail.com',
+        'None',
+        'Null',
+        'TOLL',
+        'WIRELESS',
+        'noemail@bluestone.com',
+        'noemail@email.com',
+        'noemail@gmail.com',
+        'noemail@gmail.zzz',
+        'noemail@noemail.com',
+        'noemail@noemail.zzz',
+        'noemail@xyz.zzz',
+        'non@aol.com',
+        'non@aol.zzz',
+        'none@aol.com',
+        'none@aol.zzz',
+        'none@gmail.com',
+        'unknown@noemail.com',
+      ]
 
       def has_duplicates?
         duplicate_records.any?

@@ -105,4 +105,29 @@ class DuplicateLead < ApplicationRecord
     lead_scope = LeadPolicy::Scope.new(user, property.leads).resolve
     return self.where("reference_id IN (#{lead_scope.select(:id).to_sql})")
   end
+
+  def self.cleanup_invalid
+    invalid_values_sql = Lead::DUPLICATE_IGNORED_VALUES.map{|v| "'#{v}'"}.join(', ')
+
+    sql_query =<<~SQL
+      DELETE FROM duplicate_leads
+      WHERE
+        duplicate_leads.id IN (
+          SELECT duplicate_leads.id
+          FROM duplicate_leads
+          INNER JOIN leads
+            ON (duplicate_leads.reference_id = leads.id OR duplicate_leads.lead_id = leads.id)
+          WHERE (
+            leads.phone1 IN (#{invalid_values_sql})
+            OR leads.phone2 IN (#{invalid_values_sql})
+            OR leads.first_name IN (#{invalid_values_sql})
+            OR leads.last_name IN (#{invalid_values_sql})
+            OR leads.email IN (#{invalid_values_sql})
+          )
+        )
+    SQL
+
+    ActiveRecord::Base.connection.execute(sql_query)
+    return true
+  end
 end

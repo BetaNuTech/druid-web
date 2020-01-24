@@ -379,4 +379,18 @@ namespace :leads do
     end
   end
 
+  namespace :duplicates do
+    desc "Cleanup invalid duplicate references"
+    task :cleanup => :environment do
+      puts "* Cleaning up Lead duplicate references..."
+      start_count = DuplicateLead.count
+
+      DuplicateLead.cleanup_invalid
+
+      delta = start_count - DuplicateLead.count
+      puts "  - #{delta} records removed"
+      puts "DONE!"
+    end
+  end
+
 end
