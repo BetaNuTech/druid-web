@@ -37,7 +37,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def show?
-    user.admin? || is_owner? || same_property? || team_lead?
+    is_owner? || user.admin? || same_property? || team_lead?
   end
 
   def call_log_partial?
@@ -103,8 +103,7 @@ class LeadPolicy < ApplicationPolicy
   def allow_state_event_by_user?(event_name)
     event = event_name.to_sym
     record.permitted_state_events.include?(event) &&
-      (!record.user.present? || is_owner? ||
-       user.admin? || property_manager? || team_lead?)
+      (!record.user.present? || is_owner? || same_property? || user.admin? || property_manager? || team_lead?)
   end
 
   def manually_change_state?
