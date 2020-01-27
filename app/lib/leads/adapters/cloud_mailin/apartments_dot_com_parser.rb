@@ -21,13 +21,14 @@ module Leads
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
           referral = "Apartments.com"
-          phone1 = nil
+          phone1 = (body.match(/PHONE: (.+)$/i)[1] rescue '(None)' ).strip
           phone2 = nil
           #email = ( body.match(/Email: (.+)$/)[1] rescue '(None)' ).strip
           email = (data.fetch(:headers,{}).fetch("Reply-To",""))
           fax = nil
-          baths = nil
-          beds = nil
+          beds_baths = (body.match(/Beds\/Baths: (\d)\/?(\d?)/i) rescue [nil,nil,nil])
+          beds = beds_baths[1] rescue nil
+          baths = beds_baths[2] rescue nil
           notes = self.sanitize(( body.match(/Comments:(.+?)<br/m)[1] rescue '(None)' ).gsub("\n"," ")).strip
           smoker = nil
           pets = nil
