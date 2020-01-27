@@ -51,11 +51,11 @@
     </div>
   </div>
 
+  <%= form.fields_for :profile do |profile_form| %>
   <div class="row">
     <div class="col-md-12">
       <fieldset>
         <legend>Profile</legend>
-        <%= form.fields_for :profile do |profile_form| %>
           <div class="row">
             <div class="col-md-2 form-group">
               <%= profile_form.label "Prefix" %>
@@ -90,10 +90,25 @@
               <%= profile_form.text_area :notes, {class: "form-control"} %>
             </div>
           </div>
-        <% end %>
       </fieldset>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-12">
+      <fieldset>
+        <legend>Messaging</legend>
+        <div class="row">
+          <div class="col-md-8 form-group">
+            <%= profile_form.label :signature %>
+            <%= profile_form.text_area :signature, { id: 'html_editor', class: 'form-control user_signature', rows: 6 } %>
+            <%= profile_form.check_box :signature_enabled, class: 'form-check-input user_signature_enabled' %>
+            <%= profile_form.label(:signature_enabled, 'Display My Signature in Messages') %>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+  <% end %>
 
   <% if @creator.assign_to_role? %>
     <div class="row">

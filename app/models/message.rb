@@ -129,6 +129,7 @@ class Message < ApplicationRecord
     end
 
     message.load_template if !message.body.present? && !message.subject.present?
+    message.load_signature
 
     return message
   end
@@ -348,6 +349,12 @@ class Message < ApplicationRecord
     return self.since_last
   end
 
+  def load_signature
+    if rich_editor? && user&.use_signature?
+      self.body = ( self.body || '' ) + "<br/><br/>" + user.profile.signature
+    end
+  end
+
   private
 
   def detect_incoming_from_recipient
@@ -371,6 +378,5 @@ class Message < ApplicationRecord
       return false
     end
   end
-
 
 end
