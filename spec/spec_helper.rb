@@ -16,3 +16,5 @@ RSpec.configure do |config|
   config.default_formatter = 'doc'
   Kernel.srand config.seed
 end
+
+RSpec::Expectations.configuration.on_potential_false_positives = :nothing

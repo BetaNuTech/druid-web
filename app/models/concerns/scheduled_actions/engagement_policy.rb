@@ -24,7 +24,6 @@ module ScheduledActions
         if target.present? && target.respond_to?(:notes)
           note_content = summary + " -- " + ( message || completion_message || "")
           note = Note.new(
-            user: user,
             lead_action: lead_action,
             notable: target,
             reason: reason,

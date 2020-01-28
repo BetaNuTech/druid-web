@@ -20,7 +20,7 @@ class Note < ApplicationRecord
 
   ### Constants
   ALLOWED_PARAMS = [
-    :id, :reason_id, :lead_action_id, :notable_id, :notable_type, :content,
+    :id, :reason_id, :lead_action_id, :notable_id, :notable_type, :content, :user_id,
     { schedule_attributes: Schedulable::ScheduleSupport.param_names }
   ]
 
@@ -34,6 +34,10 @@ class Note < ApplicationRecord
   belongs_to :notable, polymorphic: true, required: false
   belongs_to :reason, required: false
   belongs_to :user, required: false
+
+  ### Scopes
+  scope :agent, -> { where.not(user_id: nil)}
+  scope :timeline, -> { where(user_id: nil)}
 
   ### Class Methods
 
