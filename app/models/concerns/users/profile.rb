@@ -17,6 +17,7 @@ module Users
       delegate :cell_phone, to: :profile, allow_nil: true
       delegate :fax, to: :profile, allow_nil: true
       delegate :notes, to: :profile, allow_nil: true
+      delegate :use_signature?, to: :profile, allow_nil: true
     end
 
   end
