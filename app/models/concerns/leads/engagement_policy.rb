@@ -71,7 +71,6 @@ module Leads
         note_lead_action = LeadAction.where(name: APPLICATION_COMMENT_ACTION_NAME).first
         note_reason = Reason.where(name: APPLICATION_COMMENT_REASON_NAME).first
         note = Note.create!(
-          user: agent,
           lead_action: note_lead_action,
           notable: self,
           reason: note_reason,

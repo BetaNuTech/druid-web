@@ -36,7 +36,7 @@ class NotePolicy < ApplicationPolicy
   end
 
   def same_user?
-    record.user.present? && record.user === user 
+    record.user.present? && record.user === user
   end
 
   def same_notable_user?
@@ -45,7 +45,6 @@ class NotePolicy < ApplicationPolicy
   end
 
   def allowed_params
-    allowed = []
     case
       when user.admin?
         allowed = Note::ALLOWED_PARAMS
@@ -54,6 +53,8 @@ class NotePolicy < ApplicationPolicy
         if record.respond_to?(:user) && record.user.present? && record.user != user
           allowed -= [:user_id]
         end
+      else
+      allowed = []
     end
     return allowed
   end

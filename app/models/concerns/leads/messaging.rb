@@ -91,7 +91,6 @@ module Leads
         note_lead_action = LeadAction.where(name: 'Lead Email Opt-Out').first
         note_reason = Reason.where(name: 'Lead Preference Set').first
         note = Note.create(
-          user: agent,
           lead_action: note_lead_action,
           notable: self,
           reason: note_reason,
@@ -103,7 +102,6 @@ module Leads
         note_lead_action = LeadAction.where(name: 'Lead Email Opt-In').first
         note_reason = Reason.where(name: 'Lead Preference Set').first
         note = Note.create(
-          user: agent,
           lead_action: note_lead_action,
           notable: self,
           reason: note_reason,
@@ -120,7 +118,6 @@ module Leads
         }
         note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
         Note.create(
-          user: user,
           notable: self,
           reason: note_reason,
           content: note_content
