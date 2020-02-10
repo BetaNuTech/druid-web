@@ -387,13 +387,21 @@ class LeadSearch
   end
 
   def property_options
-    if @user
-      property_ids = LeadPolicy::Scope.new(@user, @skope).resolve.
-                      select("distinct property_id").
-                      map(&:property_id)
-      properties = Property.where(id: property_ids)
-    else
-      properties = Property.active
+    begin
+      if @user
+        begin
+          property_ids = LeadPolicy::Scope.new(@user, @skope).resolve.
+                          select("distinct property_id").
+                          map(&:property_id)
+          properties = Property.active.where(id: property_ids)
+        rescue
+          # HACK HACK HACK
+          # Sometimes there is an SQL error when the user is a corporate role...WHY???
+          properties = Property.active
+        end
+      else
+        properties = Property.active
+      end
     end
     return properties.order(name: :asc).map{|p| {label: p.name, value: p.id}}
   end
