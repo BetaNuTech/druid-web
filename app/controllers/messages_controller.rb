@@ -132,6 +132,7 @@ class MessagesController < ApplicationController
 
     def deliver_message
       @message.deliver!
+      Message.mark_read!(@message, current_user)
       redirect_to @message.messageable, notice: 'Message Sent'
     end
 
