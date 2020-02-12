@@ -3,11 +3,8 @@
   <td class="dashboard_item_date">
     <% if lead.open? && policy(lead).permitted_state_events.any? %>
       <p>
-        <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: 'claim'),
-                    { method: :post,
-                      class: "btn btn-sm btn-primary",
-                      data: {confirm: "Are you sure you want to claim this lead?"} } ) do %>
-          Claim
+        <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'claim'), method: 'post', local: true ) do %>
+          <%= submit_tag('Claim', class: "btn btn-sm btn-primary", id: "lead-claim-button")%>
         <% end %>
       </p>
       <p>
