@@ -48,7 +48,6 @@ $(document).on('turbolinks:load', function() {
       var lead_id = $(e.target).data('lead_id');
       var url = "/leads/" + lead_id + "/trigger_state_event?eventid=claim"
       window.Loader.start();
-      $.post(url);
     } else {
       e.preventDefault();
     }
