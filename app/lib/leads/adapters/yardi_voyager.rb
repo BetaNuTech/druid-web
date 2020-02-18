@@ -11,9 +11,10 @@ module Leads
       # Returns:
       # [ { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> } ... ]
       def self.property_codes
-        PropertyListing.includes(:source, :property).
+        PropertyListing.
+            includes(:source, :property).
             active.
-            where(lead_sources: {slug: LEAD_SOURCE_SLUG}).
+            where(properties: {active: true}, lead_sources: {slug: LEAD_SOURCE_SLUG}).
           map do |pl|
             {name: pl.property.name, code: pl.code, property: pl.property}
           end
