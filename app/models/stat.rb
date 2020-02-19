@@ -692,7 +692,18 @@ EOS
   end
 
   def get_property_ids(properties)
-    Array(properties).map{|p| p.is_a?(Property) ? p.id : p }
+    Array(properties).map do |p|
+      case p
+      when Property
+        p.id
+      when nil, ''
+        nil
+      when String
+        p
+      else
+        nil
+      end
+    end.compact
   end
 
   def get_team_ids(teams)
