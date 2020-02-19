@@ -1,3 +1,4 @@
+<% display_icons = defined?(icons) ? icons : true %>
 <% unless note.new_record? %>
   <div class="row note-listing-record note-<%= cycle(['odd', 'even'])%>" id="note_<%= note.id %>">
     <div class="col-md-9">
@@ -22,8 +23,10 @@
     </div>
 
     <div class="col-md-3">
-      <%= model_link_with_tooltip(note, :edit) %>
-      <%= model_link_with_tooltip(note, :destroy) %>
+      <% if display_icons %>
+        <%= model_link_with_tooltip(note, :edit) %>
+        <%= model_link_with_tooltip(note, :destroy) %>
+      <% end %>
     </div>
 
   </div>
