@@ -48,7 +48,7 @@
                 <ul class="dropdown-menu">
                 <% if policy(Stat).index? %>
                   <li>
-                    <%= link_to(stats_manager_path(filter: true, date_range: [ 'month' ], property_ids: [ @property.id ])) do %>
+                    <%= link_to(stats_manager_path(filter: true, date_range: [ 'month' ], property_ids: [ @current_property&.id ])) do %>
                       <span class="glyphicon glyphicon-star"></span> Stats Dashboard
                     <% end %>
                   </li>

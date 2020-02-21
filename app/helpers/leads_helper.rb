@@ -25,7 +25,7 @@ module LeadsHelper
   end
 
   def properties_for_select(property_id)
-    options_from_collection_for_select(Property.active.order('name asc'), 'id', 'name', property_id)
+    options_from_collection_for_select(PropertyPolicy.new(current_user, Property).for_lead_assignment, 'id', 'name', property_id)
   end
 
   def state_toggle(lead)

@@ -93,4 +93,15 @@ class PropertyPolicy < ApplicationPolicy
     user.admin? || same_property?
   end
 
+  def for_lead_assignment
+    return case user
+    when ->(u) { u.admin? }
+      Scope.new(user, Property).resolve.active
+    when ->(u) { u.team_lead? }
+      user.team.properties.active
+    else
+      user.properties.active
+    end
+  end
+
 end
