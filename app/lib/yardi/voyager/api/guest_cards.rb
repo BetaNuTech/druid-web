@@ -169,13 +169,13 @@ module Yardi
                   raise ActiveRecord::RecordNotFound
                 end
               rescue ActiveRecord::RecordNotFound
-                msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find #{event_reference} for GuestCard[#{guestcard.prospect_id}] Event[#{guestcard_event.remoteid}] for BlueSky Lead[#{lead.id}]"
+                msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find #{event_reference} for GuestCard[#{guestcard.prospect_id}] Event[#{guestcard_event.remoteid}] for Bluesky Lead[#{lead.id}]"
                 Rails.logger.error msg
               end
             end
 
             if event.nil?
-              msg = "#{format_request_id} Voyager Event[#{guestcard_event.remoteid}] for Guestcard[#{guestcard.prospect_id}] does not reference a valid BlueSky Event"
+              msg = "#{format_request_id} Voyager Event[#{guestcard_event.remoteid}] for Guestcard[#{guestcard.prospect_id}] does not reference a valid Bluesky Event"
               Rails.logger.info msg
               next
             end

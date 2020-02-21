@@ -55,7 +55,7 @@ function issueIncomingLeadNotifications(lead) {
   var seconds_since_last_notification = ( Date.now() - App.incoming_leads_last_notified ) / 1000
   if (seconds_since_last_notification > 60) {
     var notification_body = "New incoming Lead! " + lead['name'];
-    var browser_notified = sendBrowserNotification("BlueSky", notification_body);
+    var browser_notified = sendBrowserNotification("Bluesky", notification_body);
     App.incoming_leads_last_notified = Date.now();
 
     if (browser_notified) {

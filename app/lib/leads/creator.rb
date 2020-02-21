@@ -87,7 +87,7 @@ module Leads
       if property_code.present?
         property = Property.find_by_code_and_source(code: property_code, source_id: @lead.source.id)
         if @lead.source == LeadSource.default
-          # Fail over to finding Property By ID if using the default LeadSource (BlueSky WebApp)
+          # Fail over to finding Property By ID if using the default LeadSource (Bluesky WebApp)
           # for compatibility when creating a Lead via the Web UI
           property ||= Property.where(id: property_code).first
         end

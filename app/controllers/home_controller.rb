@@ -3,7 +3,7 @@ class HomeController < ApplicationController
 
   def dashboard
     authorize User, policy_class: HomePolicy
-    @page_title = "BlueSky Dashboard"
+    @page_title = "Bluesky Dashboard"
 
     @my_leads = Lead.for_agent(current_user).active.is_lead
     @open_leads = current_user.available_leads.includes(:property)

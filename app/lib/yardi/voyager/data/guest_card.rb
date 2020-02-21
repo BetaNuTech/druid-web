@@ -503,7 +503,7 @@ module Yardi
                         }
                         xml.EventReasons 'Spoke to'
                         xml.FirstContact 'true'
-                        xml.Comments("%s (BlueSky Lead from %s/%s)" % [lead.preference.notes, lead.source.try(:name), lead.referral])
+                        xml.Comments("%s (Bluesky Lead from %s/%s)" % [lead.preference.notes, lead.source.try(:name), lead.referral])
                         xml.TransactionSource 'Referral'
                       }
                     }
