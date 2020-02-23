@@ -10,6 +10,7 @@
     </div>
     <div class="row">
       <% ( (current_user.properties.to_a) + ( current_user.team&.properties || [] ) ).flatten.uniq.each do |property| %>
+        <% leads_accessible = policy(property).leads_accessible? %>
         <% if policy(property).show? %>
           <div class="property_quicklinks">
             <div class="property_quicklinks-property">
@@ -18,22 +19,24 @@
               <% else %>
                 <h4><%= link_to(property.name, property_path(property)) %></h4><br/>
               <% end %>
-              <%= link_to('Leads', search_leads_path({lead_search: {property_ids: [property.id]}})) %>
-              <% if policy(property).create_lead? %>
-                <%= link_to('Create', new_lead_path(property_id: property.id), {class: "btn btn-xs btn-primary" }) %> &bullet;
+              <% if leads_accessible %>
+                <%= link_to('Leads', search_leads_path({lead_search: {property_ids: [property.id]}})) %>
+                <% if policy(property).create_lead? %>
+                  <%= link_to('Create', new_lead_path(property_id: property.id), {class: "btn btn-xs btn-primary" }) %> &bullet;
+                <% end %>
+                <span class="text-nowrap">
+                  Mine: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], user_ids: [current_user.id]}})) do %><%= property.leads.for_agent(current_user).count %><% end %>
+                </span> &bullet;
+                <span class="text-nowrap">
+                  Open: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open']}})) do %><%= property.leads.open.count %><% end %>
+                </span> &bullet;
+                <span class="text-nowrap">
+                  Active: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'claimed']}})) do %><%= property.leads.active.count %><% end %>
+                </span>
+                <span class="text-nowrap">
+                  Other: <%= link_to("Duplicates", duplicate_leads_property_path(id: property.id)) %>
+                </span>
               <% end %>
-              <span class="text-nowrap">
-                Mine: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], user_ids: [current_user.id]}})) do %><%= property.leads.for_agent(current_user).count %><% end %>
-              </span> &bullet;
-              <span class="text-nowrap">
-                Open: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open']}})) do %><%= property.leads.open.count %><% end %>
-              </span> &bullet;
-              <span class="text-nowrap">
-                Active: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'claimed']}})) do %><%= property.leads.active.count %><% end %>
-              </span>
-              <span class="text-nowrap">
-                Other: <%= link_to("Duplicates", duplicate_leads_property_path(id: property.id)) %>
-              </span>
             </div>
           </div>
         <% end %>

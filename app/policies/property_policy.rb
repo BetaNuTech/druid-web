@@ -104,4 +104,17 @@ class PropertyPolicy < ApplicationPolicy
     end
   end
 
+  def leads_accessible?
+    return case user
+      when ->(u) { u.administrator? }
+        true
+      when -> (u) { u.corporate? }
+        true
+      when ->(u) { u.team_lead? }
+        true
+      else
+        user.properties.include?(record)
+      end
+  end
+
 end

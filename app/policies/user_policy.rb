@@ -15,7 +15,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def create?
-    new?
+    user.admin? || (user.manager? && user.team.present?)
   end
 
   def edit?
@@ -32,9 +32,12 @@ class UserPolicy < ApplicationPolicy
           same_property? ||
           team_lead?  )
     when -> (u) { property_manager? }
-      user.role >= record.role && !record.manager?
+      user.role >= record.role &&
+        !record.manager? &&
+        !record.team_admin?
     when -> (u) { u.manager? }
       (user.role >= record.role) &&
+        (!record.team_admin?) &&
         (record.property.nil? ||
           same_property? ||
           team_lead?  )
