@@ -89,14 +89,15 @@ module Yardi
           return guestcards
         end
 
-        def sendGuestCard(propertyid:, lead:, dry_run: false, include_events: false, version: 2)
+        def sendGuestCard(lead:, dry_run: false, include_events: false, version: 2)
+          propertyid = lead.property.voyager_property_code
           case version
           when 2
-            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, propertyid: propertyid, include_events: include_events)
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
           when 1
-            payload = Yardi::Voyager::Data::GuestCard.to_xml_1(lead: lead, propertyid: propertyid)
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_1(lead: lead)
           else
-            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, propertyid: propertyid, include_events: include_events)
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
           end
 
           request_options = {

@@ -40,10 +40,14 @@ module Yardi
               event.reasons = 'Emailed'
               event.event_type = 'Other'
             else
-              event.reasons = 'Emailed'
-              event.event_type = 'Other'
-              event.first_contact = false
+              if xtn.current_state == 'disqualified'
+                event.event_type = 'Cancel'
+              else
+                event.event_type = 'Other'
+              end
               event.comments = "Lead transitioned from %s to %s (classified as %s) -- [LeadTransition:%s])" % [xtn.last_state, xtn.current_state, ( xtn.classification || '-'), xtn.id]
+              event.reasons = 'Emailed'
+              event.first_contact = false
             end
 
             event

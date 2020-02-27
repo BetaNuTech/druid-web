@@ -55,8 +55,40 @@ module Yardi
 
         def self.from_GetYardiGuestActivitySearch(data, filter=true)
           self.from_api_response(response: data, method: 'GetYardiGuestActivity_Search') do |response_data|
+
+            messages = response_data.fetch("Messages",false)
+
+            err = false
+            if messages
+              if messages['Message'].is_a?(Hash)
+                msgs = [messages['Message']]
+              else
+                msgs = messages['Message']
+              end
+
+              msgs.map! do |m|
+                next if m.is_a?(String)
+                [m.fetch('messageType','Default'), m.fetch('__content__', 'Default')]
+              end
+              msgs.compact!
+
+              if msgs.any?{|m| m[0] == 'Error'}
+                if msgs.any?{|m| m[1].match('No guests')}
+                  err = true
+                else
+                  error_messages = msgs.map{|m| "#{m[0]}: #{m[1]}"}.join(';')
+                  raise "ImportYardiGuest server error: #{error_messages}"
+                end
+              end
+            end
+
             record = response_data.dig('LeadManagement', 'Prospects', 'Prospect')
-            GuestCard.from_guestcard_node(record, filter)
+
+            if err || record.empty?
+              nil
+            else
+              GuestCard.from_guestcard_node(record, filter)
+            end
           end
         end
 
@@ -256,18 +288,19 @@ module Yardi
           return prospects
         end
 
-        def self.to_xml_2(lead:, propertyid:, include_events: false)
+        def self.to_xml_2(lead:, include_events: false)
           organization = Yardi::Voyager::Api::Configuration.new.vendorname
           agent = lead.user ||
             lead.property.primary_agent ||
             User.new(profile: UserProfile.new(first_name: 'None', last_name: 'None'))
+          propertyid = lead.property.voyager_property_code
           customer = GuestCard.from_lead(lead, propertyid)
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.LeadManagement('xmlns' => '') {
               xml.Prospects {
                 xml.Prospect {
                   xml.Customers {
-                    xml.Customer('Type' => 'prospect') {
+                    xml.Customer('Type' => lead_guestcard_type(lead)) {
                       if lead.remoteid.present?
                         xml.Identification('IDType' => 'ProspectID', 'IDValue' => lead.remoteid)
                       else
@@ -419,18 +452,19 @@ module Yardi
 
 
 
-        def self.to_xml_1(lead:, propertyid:)
+        def self.to_xml_1(lead:)
           organization = Yardi::Voyager::Api::Configuration.new.vendorname
           agent = lead.user ||
                   lead.property.primary_agent ||
                   User.new(first_name: 'None', last_name: 'None')
+          propertyid = lead.property.voyager_property_code
           customer = GuestCard.from_lead(lead, propertyid)
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.LeadManagement('xmlns' => '') {
               xml.Prospects {
                 xml.Prospect {
                   xml.Customers {
-                    xml.Customer('Type' => 'prospect') {
+                    xml.Customer('Type' => lead_guestcard_type(lead)) {
                       if lead.remoteid.present?
                         xml.Identification('IDType' => 'ProspectID', 'IDValue' => lead.remoteid)
                       end
@@ -515,10 +549,33 @@ module Yardi
 
           # Return XML without XML doctype or carriage returns
           return builder.doc.root.serialize(save_with:0)
+        end #to_xml_2
+
+        def self.lead_guestcard_type(lead)
+          return case lead.state.to_s
+            when 'open', 'prospect', 'showing', 'application', 'approved'
+              'prospect'
+            when 'denied'
+              'canceled'
+            when 'movein'
+              'current_resident'
+            when 'resident'
+              'current_resident'
+            when 'exresident'
+              'former_resident'
+            when 'disqualified'
+              'canceled'
+            when 'abandoned'
+              'prospect'
+            when 'future'
+              'future_resident'
+            else
+              'prospect'
+            end
         end
-      end
-    end
 
 
-  end
-end
+      end# Yardi::Voyager::Data::GuestCard
+    end # Yardi::Voyager::Data
+  end # Yardi::Yoyager
+end # Yardi

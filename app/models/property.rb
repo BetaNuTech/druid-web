@@ -34,6 +34,7 @@ class Property < ApplicationRecord
   include Properties::Users
   include Properties::PhoneNumbers
   include Properties::Logo
+  include Properties::YardiVoyager
   audited
 
   ### Constants
@@ -113,12 +114,6 @@ class Property < ApplicationRecord
 
   def duplicate_groups
     DuplicateLead.includes("lead").where(leads: {property_id: self.id}).groups
-  end
-
-  def leads_for_sync
-    return leads.
-      where(remoteid: nil, state: 'prospect').
-      where.not(user_id: nil)
   end
 
   private

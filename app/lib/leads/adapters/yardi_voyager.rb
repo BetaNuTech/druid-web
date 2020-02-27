@@ -25,34 +25,31 @@ module Leads
         PropertyListing.includes(:source).
             active.
             where(property_id: property.id, lead_sources: {slug: LEAD_SOURCE_SLUG}).
-            first.try(:code)
+            first&.code
       end
 
       # This Class interacts with the YardiVoyager API in the Yardi::Voyager namespace
-      # Use it to send Leads to YardiVoyager, or download Leads, UnitTypes, and Units
+      # Use it to send Leads to YardiVoyager, or download Leads,
+      # Residents, UnitTypes (floorplans), and Units
       #
-      # Accepts a Hash at minimum containing a valid
-      # PropertyListing code for the YardiVoyager LeadSource
-      #
-      # Ex: { property_code: 'marble'}
-      def initialize(params)
-        @params = params
+      # Provide a Property record
+      def initialize(property)
+        @property = property
         @lead_source =  get_lead_source
         if @lead_source.nil?
           msg = "Lead Adapter Error! LeadSource record for #{LEAD_SOURCE_SLUG} is missing!"
           err = StandardError.new(msg)
-          ErrorNotification.send(err, @params)
+          ErrorNotification.send(err)
           Rails.logger.error msg
           raise err
         end
-        @property_code = get_property_code(@params)
-        @property = property_for_listing_code(@property_code)
+        @property_code = YardiVoyager.property_code(@property)
       end
 
       # Fetch New Leads from YardiVoyager
       # or progress Lead state if the Lead is already in BlueSky
-      def processLeads
-        @data ||= fetch_GuestCards(@property_code, filter: false)
+      def processLeads(start_date: nil, end_date: DateTime.now)
+        @data ||= fetch_GuestCards(start_date: start_date, end_date: end_date, filter: false)
         leads = []
         ActiveRecord::Base.transaction do
           leads = lead_collection_from_guestcards(@data)
@@ -65,10 +62,9 @@ module Leads
         return leads
       end
 
-      # Fetch New Leads from YardiVoyager
-      # or progress Lead state if the Lead is already in Bluesky
-      def processResidents
-        @data ||= fetch_GuestCards(@property_code, filter: false)
+      # Fetch Residents from YardiVoyager
+      def processResidents(start_date: nil, end_date: DateTime.now)
+        @data ||= fetch_GuestCards(start_date: start_date, end_date: end_date)
         residents = []
         ActiveRecord::Base.transaction do
           residents = resident_collection_from_guestcards(@data)
@@ -79,7 +75,7 @@ module Leads
 
       # Fetch New UnitTypes from YardiVoyager
       def processUnitTypes
-        @data = fetch_Floorplans(@property_code)
+        @data = fetch_Floorplans
         unit_types = []
         ActiveRecord::Base.transaction do
           unit_types = collection_from_floorplans(@data)
@@ -99,7 +95,7 @@ module Leads
         return units
       end
 
-      # Send new/unsynced Leads to Yardi Voyager
+      # Send Leads to Yardi Voyager for GuestCard creation or update
       def sendLeads(leads)
         updated_leads = []
         ActiveRecord::Base.transaction do
@@ -107,6 +103,42 @@ module Leads
           updated_leads.map{|l| l.save }
         end
         return updated_leads
+      end
+
+      def getGuestCards(start_date: nil, end_date: DateTime.now, filter: false, debug: false)
+        adapter = Yardi::Voyager::Api::GuestCards.new
+        adapter.debug = debug
+        return adapter.
+          getGuestCards(@property_code, start_date: start_date, end_date: end_date, filter: filter)
+      end
+
+      def findLeadGuestCard(lead, debug: false)
+        adapter = Yardi::Voyager::Api::GuestCards.new
+        adapter.debug = debug
+        params = {}
+        if lead.remoteid.present?
+          params[:third_party_id] = lead.remoteid
+        elsif lead.email.present?
+          params[:email_address] = lead.email
+        elsif ( leadphone = [ lead.phone1, lead.phone2 ].compact.first ).present?
+          params[:phone_number] = leadphone
+        else
+          params[:first_name] = lead.first_name if lead.first_name.present?
+          params[:last_name] = lead.last_name if lead.last_name.present?
+        end
+        return adapter.getGuestCard(@property_code, params: params)&.first
+      end
+
+      def createGuestCards(start_date: 1.day.ago)
+        return sendLeads(@property.new_leads_for_sync.where(created_at: start_date..DateTime.now))
+      end
+
+      def updateGuestCards(start_date: 1.day.ago)
+        return sendLeads(@property.leads_for_sync.where(updated_at: start_date..DateTime.now))
+      end
+
+      def cancelGuestCards(start_date: 1.day.ago)
+        return sendLeads(@property.leads_for_cancelling.where(updated_at: start_date..DateTime.now))
       end
 
       private
@@ -332,24 +364,22 @@ module Leads
           return LeadAction.where(name: action_name).first || LeadAction.where(name: 'Other').first
       end
 
-      def fetch_GuestCards(propertycode, filter: false)
+      def fetch_GuestCards(start_date: nil, end_date: DateTime.now, filter: false)
         adapter = Yardi::Voyager::Api::GuestCards.new
         adapter.debug = true if debug?
-        start_date = @params.fetch(:start_date,nil)
-        end_date = @params.fetch(:end_date, DateTime.now)
-        return adapter.getGuestCards(propertycode, start_date: start_date, end_date: end_date, filter: filter)
+        return adapter.getGuestCards(@property_code, start_date: start_date, end_date: end_date, filter: filter)
       end
 
-      def fetch_Floorplans(propertycode)
+      def fetch_Floorplans
         adapter = Yardi::Voyager::Api::Floorplans.new
         adapter.debug = true if debug?
-        return adapter.getFloorPlans(propertycode)
+        return adapter.getFloorPlans(@property_code)
       end
 
-      def fetch_Units(propertycode)
+      def fetch_Units
         adapter = Yardi::Voyager::Api::Units.new
         adapter.debug = true if debug?
-        return adapter.getUnits(propertycode)
+        return adapter.getUnits(@property_code)
       end
 
       def send_Leads(leads)
@@ -361,7 +391,7 @@ module Leads
         adapter.debug = true if debug?
 
         return leads.map do |lead|
-          adapter.sendGuestCard(propertyid: @property_code, lead: lead, include_events: true)
+          adapter.sendGuestCard(lead: lead, include_events: true)
         end
       end
 
@@ -396,19 +426,8 @@ module Leads
         return priority
       end
 
-      def get_property_code(params)
-        return params[:property_code]
-      end
-
       def get_lead_source
         return LeadSource.active.where(slug: LEAD_SOURCE_SLUG).first
-      end
-
-      def property_for_listing_code(listingcode)
-        property = @lead_source.listings.active.where(code: listingcode).
-          first.try(:property)
-        Rails.logger.warn "Error in Leads::Adapters::YardiVoyager finding PropertyListing code '#{listingcode}'" if property.nil?
-        return property
       end
 
       def debug?

@@ -172,19 +172,16 @@ namespace :leads do
         msg = " * Importing Yardi Voyager GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
-        adapter = Leads::Adapters::YardiVoyager.new({
-          property_code: property[:code],
-          start_date: start_date,
-          end_date: DateTime.now })
+        adapter = Leads::Adapters::YardiVoyager.new(property[:property])
 
         msg = " * Processing Leads for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
-        leads = adapter.processLeads
+        leads = adapter.processLeads(start_date: start_date, end_date: DateTime.now)
         msg = " * Processing Residents for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
-        residents = adapter.processResidents
+        residents = adapter.processResidents(start_date: start_date, end_date: DateTime.now)
 
         lead_count = leads.size
         lead_succeeded = leads.select{|l| l.id.present? }.size
@@ -213,7 +210,13 @@ namespace :leads do
     end
 
     desc "Send GuestCards"
-    task :send_guestcards => :environment do
+    task :send_guestcards, [:minutes_ago] => :environment do |t, args|
+
+      if (minutes_ago = args[:minutes_ago]).present?
+        start_date = minutes_ago.to_i.minutes.ago
+      else
+        start_date = 1.day.ago
+      end
 
       property_codes = Leads::Adapters::YardiVoyager.property_codes
 
@@ -230,26 +233,35 @@ namespace :leads do
         msg = " * Sending Leads to Yardi Voyager as GuestCards for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
-        adapter = Leads::Adapters::YardiVoyager.new({ property_code: property[:code] })
+        adapter = Leads::Adapters::YardiVoyager.new(property[:property])
 
-        # Send only assigned leads without a remoteid (new to Yardi Voyager)
-        # At this time UPDATES ARE NOT SUPPORTED by BlueSky
-        leads = adapter.sendLeads(property[:property].leads_for_sync)
-
-        count = leads.size
-        succeeded = leads.select{|l| l.remoteid.present? }.size
-        failures = leads.select{|l| !l.errors.empty? || !l.remoteid.present? }.map do |record|
-          "FAIL: #{property[:name]}: #{record.name} [Lead ID: #{record.id}]: #{record.errors.to_a.join(', ')}"
-        end
-
-        msg=<<~EOS
-        - Processed #{leads.size} Records
-        - #{succeeded} Records saved
-        - #{failures.size} Failed
+        reporter = -> (leads) {
+          leads_count = leads.size
+          leads_succeeded = leads.select{|l| l.remoteid.present? }.size
+          leads_failures = leads.select{|l| !l.errors.empty? || !l.remoteid.present? }.map do |record|
+            "FAIL: #{property[:name]}: #{record.name} [Lead ID: #{record.id}]: #{record.errors.to_a.join(', ')}"
+          end
+          leads_msg=<<~EOS
+            - Processed #{leads_count} Records
+            - #{leads_succeeded} Records saved
+            - #{leads_failures.size} Failed
           EOS
-        msg += failures.join("\n")
-        puts msg
-        Rails.logger.warn msg
+          leads_msg += leads_failures.join("\n")
+          puts leads_msg
+          Rails.logger.warn leads_msg
+        }
+
+        # Send only assigned leads without a remoteid (new to Yardi Voyager) added recently
+        leads = adapter.createGuestCards(start_date: start_date)
+        reporter.call(leads)
+
+        # Update Guestcards for active leads modified recently
+        leads = adapter.updateGuestCards(start_date: start_date)
+        reporter.call(leads)
+
+        # Cancel Guestcards for leads disqualified recently
+        leads = adapter.cancelGuestCards(start_date: start_date)
+        reporter.call(leads)
       end
     end
 
