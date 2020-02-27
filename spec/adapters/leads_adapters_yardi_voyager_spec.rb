@@ -9,7 +9,7 @@ RSpec.describe Leads::Adapters::YardiVoyager do
   let(:listing) { create(:property_listing, code: property_code, property: property, source: lead_source)}
   let(:initial_params) {
     listing
-    { property_code: property_code }
+    property
   }
   let(:adapter) { Leads::Adapters::YardiVoyager.new(initial_params) }
   let(:lead) {
