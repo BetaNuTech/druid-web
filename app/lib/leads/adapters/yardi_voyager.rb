@@ -399,9 +399,16 @@ module Leads
         record_type_state_map = {
           'applicant' => 'application',
           'approved_applicant' => 'approved',
+          'canceled' => 'disqualified',
+          'current_resident' => 'resident',
+          'denied_applicant' => 'denied',
+          'former_resident' => 'exresident',
           'future_resident' => 'approved',
+          'guarantor' => 'open',
+          'other' => 'open',
           'prospect' => 'open',
-          'canceled' => 'disqualified'
+          'roommate' => 'open',
+          'spouse' => 'open'
         }
         state = record_type_state_map.fetch( guestcard.record_type, 'open' )
         return state

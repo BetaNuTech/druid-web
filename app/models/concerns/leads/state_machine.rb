@@ -129,7 +129,7 @@ module Leads
         end
 
         event :lodge do
-          transitions from: [:movein], to: :resident,
+          transitions from: [:movein, :approved, :application], to: :resident,
             after: ->(*args) { set_conversion_date; set_priority_zero },
             guard: :may_progress?
         end
