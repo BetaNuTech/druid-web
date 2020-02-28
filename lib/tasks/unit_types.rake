@@ -20,7 +20,7 @@ namespace :unit_types do
         msg = " * Importing Yardi Voyager FloorPlans for #{property[:name]} [YARDI ID: #{property[:code]}] as UnitTypes"
         puts msg
         Rails.logger.warn msg
-        adapter = Leads::Adapters::YardiVoyager.new({ property_code: property[:code] })
+        adapter = Leads::Adapters::YardiVoyager.new(property[:property])
         unit_types = adapter.processUnitTypes
 
         count = unit_types.size
