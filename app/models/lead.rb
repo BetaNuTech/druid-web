@@ -164,7 +164,21 @@ class Lead < ApplicationRecord
   end
 
   def agent
-    user || property.try(:managers).try(:first)
+    user || property&.primary_agent
+  end
+
+  def showings
+    return scheduled_actions.complete.
+      includes(:lead_action).
+      where(lead_actions: {name: LeadAction::SHOWING_ACTION_NAME})
+  end
+
+  def last_showing_agent
+    return showings&.last&.user
+  end
+
+  def creditable_agent
+    last_showing_agent || agent
   end
 
 

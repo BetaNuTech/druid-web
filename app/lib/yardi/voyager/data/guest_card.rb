@@ -298,9 +298,8 @@ module Yardi
 
         def self.to_xml_2(lead:, include_events: false)
           organization = Yardi::Voyager::Api::Configuration.new.vendorname
-          agent = lead.user ||
-            lead.property.primary_agent ||
-            User.new(profile: UserProfile.new(first_name: 'None', last_name: 'None'))
+          agent = lead.creditable_agent ||
+                  User.new(profile: UserProfile.new(first_name: 'None', last_name: 'None'))
           propertyid = lead.property.voyager_property_code
           customer = GuestCard.from_lead(lead, propertyid)
           builder = Nokogiri::XML::Builder.new do |xml|
@@ -357,7 +356,11 @@ module Yardi
                   xml.Events {
                     customer.events.each do |event|
                       xml.Event('EventType' =>event.event_type, 'EventDate' => event.date.strftime(REMOTE_DATE_FORMAT) ) {
-                        xml.EventID('IDValue' => event.remoteid)
+                        if event.idtype.present?
+                          xml.EventID('IDValue' => event.remoteid, 'IDType' => event.idtype)
+                        else
+                          xml.EventID('IDValue' => event.remoteid)
+                        end
                         xml.Agent {
                           xml.AgentName {
                             xml.FirstName event.agent.fetch(:first_name, '')
