@@ -68,7 +68,7 @@
                 </button>
                 <ul class="dropdown-menu">
                   <li>
-                    <%= link_to(search_leads_path(lead_search: {user_ids: [current_user.id]})) do %>
+                    <%= link_to(search_leads_path(lead_search: {user_ids: [current_user.id], states: Lead::IN_PROGRESS_STATES})) do %>
                       <span class="glyphicon glyphicon-star"></span> My Leads
                     <% end %>
                   </li>
