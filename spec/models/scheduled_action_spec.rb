@@ -49,6 +49,12 @@ RSpec.describe ScheduledAction, type: :model do
       expect(scheduled_action1.conflicting.any?).to be(false)
     end
 
+    it "handles ScheduledActions with a Schedule with no end_time" do
+      schedule = Schedule.new(date: Date.today, time: Time.now, duration: 30, end_time: nil)
+      scheduled_action1.schedule = schedule
+      refute(scheduled_action1.conflicting.any?)
+    end
+
   end
 
   describe "completion" do

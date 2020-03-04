@@ -125,7 +125,11 @@ class ScheduledAction < ApplicationRecord
   end
 
   def conflicting
-    return [] if schedule.duration.nil? || schedule.duration == 0
+    invalid_time = ( schedule.duration.nil? || schedule.duration == 0 ) ||
+      schedule.date.nil? || schedule.time.nil?
+    return [] if invalid_time
+
+    schedule.end_time ||= schedule.time + schedule.duration.minutes
 
     # The time stored in the schedules table is automatically converted to UTC by ActiveRecord
     # before persistence to the database. The SQL condition must use timestamps in UTC
@@ -138,6 +142,7 @@ class ScheduledAction < ApplicationRecord
     schedule_end = DateTime.new(schedule.date.year, schedule.date.month,
                                 schedule.date.day, schedule.end_time.utc.hour,
                                 schedule.end_time.utc.min)
+
     params = {
       scheduled_action_id: id,
       user_id: user_id,
