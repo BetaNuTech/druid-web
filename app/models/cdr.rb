@@ -71,26 +71,32 @@ class Cdr < CdrdbModel
   end
 
   def self.non_leads(start_date:, end_date:, recordings: true)
-    variants = number_variants(Lead.select(:phone1, :phone2).all.map{|l| [l.phone1, l.phone2]}.flatten.compact.uniq)
     skope = select(:id, :calldate, :src, :dst, :recordingfile).
-      where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
-      where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: variants, src: variants})
+      where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date })
     if recordings
       skope = skope.where("recordingfile IS NOT null AND recordingfile != ''")
     end
-    return skope
+
+    # SQL can't handle thousands of parameters, so we have to filter the records as an array
+    lead_phones = number_variants(Lead.unique_phones)
+    return skope.to_a.select{|c| !lead_phones.include?(c.src) && !lead_phones.include?(c.dst)}
   end
 
   def self.possible_leads(start_date:, end_date:)
-    ignore_numbers = number_variants(Lead.unique_phones) + ["Anonymous", "Restricted"]
     omit_toll_free_sql = TOLL_FREE_PREFIXES.map{|p| "src LIKE '#{p}%'"}.join(' OR ')
 
+    ignore_numbers = ["Anonymous", "Restricted"]
     skope = select(:id, :calldate, :did, :src, :dst, :dcontext, :clid, :cnam).
       where("did != ''").
       where("src NOT IN (:src) AND dst NOT IN (:dst)", { dst: ignore_numbers, src: ignore_numbers}).
       where("NOT (?)", omit_toll_free_sql).
       where("calldate >= :start_date AND calldate <= :end_date", { start_date: start_date, end_date: end_date }).
       group(:cnam, :src, :did)
+
+
+    # SQL can't handle thousands of parameters, so we have to filter the records as an array
+    lead_phones = number_variants(Lead.unique_phones)
+    return skope.to_a.select{|c| !lead_phones.include?(c.src) && !lead_phones.include?(c.dst)}
   end
 
   def self.non_lead_recordings(start_date:, end_date:)
