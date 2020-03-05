@@ -122,7 +122,12 @@ module Leads
           end
 
           def get_format_and_body(data)
-            d = data.symbolize_keys
+            if data.is_a?(ActionController::Parameters)
+              d = data
+            else
+              d = data.symbolize_keys
+            end
+
             plain_body = d.fetch(:plain, nil)
             html_body = d.fetch(:html, nil)
 
