@@ -243,9 +243,17 @@ module Yardi
             prospect.email = pr['Email']
             pr['Lease'].tap do |lease|
               prospect.expected_move_in = ( Date.parse(lease['ExpectedMoveInDate']) rescue nil)
+              if prospect.expected_move_in.present? && prospect.expected_move_in < 100.years.ago
+                # Guard against invalid data
+                prospect.expected_move_in = nil
+              end
               prospect.lease_from = ( Date.parse(lease['LeaseFromDate']) rescue nil)
               prospect.lease_to = ( Date.parse(lease['LeaseToDate']) rescue nil)
               prospect.actual_move_in =( Date.parse(lease['ActualMoveIn']) rescue nil)
+              if prospect.actual_move_in.present? && prospect.actual_move_in < 100.years.ago
+                # Guard against invalid data
+                prospect.actual_move_in = nil
+              end
               prospect.rent = ( lease['CurrentRent'] || 1 ).to_i
             end if pr['Lease']
             prospect.expected_move_in ||= prospect_preferences['TargetMoveInDate']

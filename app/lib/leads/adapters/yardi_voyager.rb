@@ -227,6 +227,11 @@ module Leads
           lead.referral = 'Yardi Voyager'
 
           preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
+          if preference.move_in.present? && preference.move_in < 100.years.ago
+            # Guard against invalid data
+            preference.move_in = nil
+          end
+
           preference.beds = guestcard.bedrooms
           preference.max_price = guestcard.rent unless guestcard.rent.nil?
           preference.notes = guestcard.preference_comment # Note that Yardi Voyager data in the Comment node is often truncated.
