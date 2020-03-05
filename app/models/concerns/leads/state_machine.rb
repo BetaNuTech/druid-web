@@ -7,7 +7,6 @@ module Leads
     IN_PROGRESS_STATES = %w{prospect showing application approved}
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
     EARLY_PIPELINE_STATES = %w{open prospect showing application}
-    IN_PROGRESS_STATES = %w{prospect showing}
 
     class_methods do
 
