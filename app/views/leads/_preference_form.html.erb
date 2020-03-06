@@ -54,7 +54,7 @@
           <div class="col-md-6 form-group">
             <% 
               # date_select doesn't handle bad dates, so HACK if needed
-              preference_form.object.move_in = nil if preference_form.object.move_in < 100.years.ago
+              preference_form.object.move_in = nil if ( preference_form.object.move_in ||DateTime.now ) < 100.years.ago
             %>
             <%= preference_form.label 'Move In Date' %><br/>
             <%= preference_form.date_select :move_in, {}, { class: 'form-control form-control-date-select' } %>
