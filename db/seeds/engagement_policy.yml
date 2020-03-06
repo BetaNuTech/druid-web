@@ -1,6 +1,6 @@
 ---
 :engagement_policy:
-  :version: 4
+  :version: 5
   :data:
     - :version: 1
       :property_name: null
@@ -130,7 +130,7 @@
           :retry_delay_multiplier: none
           :score: 1
           :active: true
-    - :version: 1
+    - :version: 2
       :property_name: null
       :lead_state: disqualified
       :description: Global Engagement Policy for 'disqualified' Leads
