@@ -135,15 +135,7 @@
       :lead_state: disqualified
       :description: Global Engagement Policy for 'disqualified' Leads
       :active: true
-      :engagement_policy_actions:
-        - :lead_action_name: Other
-          :description: Task for disqualified leads
-          :deadline: 48
-          :retry_count: 0
-          :retry_delay: 0
-          :retry_delay_multiplier: none
-          :score: 1
-          :active: true
+      :engagement_policy_actions: []
     - :version: 2
       :property_name: null
       :lead_state: abandoned

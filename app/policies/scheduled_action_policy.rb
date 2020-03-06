@@ -32,7 +32,7 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def edit?
-    !record.completed? &&
+    !record&.completed? &&
     ( user.admin? ||
       same_user? ||
       (user.user? &&

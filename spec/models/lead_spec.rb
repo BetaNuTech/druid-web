@@ -315,6 +315,19 @@ RSpec.describe Lead, type: :model do
         lead.reload
         expect(lead.scheduled_actions.pending.count).to eq(0)
       end
+
+      it "should clear all old tasks when disqualified" do
+        ScheduledAction.destroy_all
+        agent = team1_agent1
+        property = agent.properties.first
+        lead.property = property
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        expect(lead.scheduled_actions.pending.count).to be > 0
+        lead.disqualify!
+        lead.reload
+        expect(lead.scheduled_actions.pending.count).to eq(0)
+      end
     end
 
     describe "trigger_event" do
