@@ -5,8 +5,11 @@ module Leads
         # This parser should be declared/loaded before Zillow
         class << self
           def match?(data)
+            zillow_match = (data.fetch(:headers, {}).fetch('Subject',"")).
+              match?("Zillow Group").
+              present?
             format, body = get_format_and_body(data)
-            return body.match?("hotpads.com").present?
+            return !zillow_match && body.match?("hotpads.com").present?
           end
 
           def parse(data)

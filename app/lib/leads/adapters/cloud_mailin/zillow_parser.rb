@@ -15,7 +15,7 @@ module Leads
           body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
 
           name = ( body.match(/New Contact(.+) says:/m)[1] rescue '(None)' ).gsub('*','')
-          name_arr = name.split(' ')
+          name_arr = ( name || '' ).split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
           title = nil
