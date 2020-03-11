@@ -158,7 +158,8 @@ class EngagementPolicyScheduler
 
   def handle_scheduled_action_completion(scheduled_action, user: nil)
     unless (compliance = scheduled_action.engagement_policy_action_compliance).present?
-      log_error("Skipping Compliance Record handling of Updated ScheduledAction because there is none", {scheduled_action: scheduled_action, user: user})
+      # Removed because error notifications were excessive
+      #log_error("Skipping Compliance Record handling of Updated ScheduledAction because there is none", {scheduled_action: scheduled_action, user: user})
       return true
     end
 
