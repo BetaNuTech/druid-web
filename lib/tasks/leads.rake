@@ -235,14 +235,14 @@ namespace :leads do
         Rails.logger.warn msg
         adapter = Leads::Adapters::YardiVoyager.new(property[:property])
 
-        reporter = -> (leads) {
+        reporter = -> (leads, desc) {
           leads_count = leads.size
           leads_succeeded = leads.select{|l| l.remoteid.present? }.size
           leads_failures = leads.select{|l| !l.errors.empty? || !l.remoteid.present? }.map do |record|
             "FAIL: #{property[:name]}: #{record.name} [Lead ID: #{record.id}]: #{record.errors.to_a.join(', ')}"
           end
           leads_msg=<<~EOS
-            - Processed #{leads_count} Records
+            - Processed #{leads_count} Records #{desc}
             - #{leads_succeeded} Records saved
             - #{leads_failures.size} Failed
           EOS
@@ -253,15 +253,15 @@ namespace :leads do
 
         # Send only assigned leads without a remoteid (new to Yardi Voyager) added recently
         leads = adapter.createGuestCards(start_date: start_date)
-        reporter.call(leads)
+        reporter.call(leads, 'for creation')
 
         # Update Guestcards for active leads modified recently
         leads = adapter.updateGuestCards(start_date: start_date)
-        reporter.call(leads)
+        reporter.call(leads, 'for update')
 
         # Cancel Guestcards for leads disqualified recently
         leads = adapter.cancelGuestCards(start_date: start_date)
-        reporter.call(leads)
+        reporter.call(leads, 'to cancel')
       end
     end
 

@@ -6,7 +6,7 @@ module Properties
 
       def new_leads_for_sync
         return leads.
-          where(remoteid: [ nil, '' ], state: 'prospect').
+          where(remoteid: [ nil, '' ], state: Lead::EARLY_PIPELINE_STATES).
           where.not(user_id: nil)
       end
 
