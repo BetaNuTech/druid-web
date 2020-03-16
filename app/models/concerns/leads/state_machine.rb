@@ -251,7 +251,7 @@ module Leads
 
       def create_lead_transition_note
         self.comments << self.comments.build(
-          user: user,
+          user: nil,
           reason: Reason.where(name: "Pipeline Event").last,
           content: "Lead transitioned from %s to %s.%s" % [
             ( aasm.from_state&.capitalize || '?' ),

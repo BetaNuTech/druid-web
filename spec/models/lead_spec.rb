@@ -267,7 +267,7 @@ RSpec.describe Lead, type: :model do
         expect(lead.user).to eq(agent)
         lead.disqualify!
         lead.reload
-        expect(lead.scheduled_actions.pending.count).to eq(1)
+        expect(lead.scheduled_actions.pending.count).to eq(0)
         expect(lead.user).to eq(agent)
         expect(lead.priority).to eq('zero')
       end
@@ -800,8 +800,8 @@ RSpec.describe Lead, type: :model do
         lead.reload
         latest_message = lead.messages.order(created_at: :desc).first
         first_comment = lead.comments.order(created_at: :asc).first
-        expect(lead.messages.count).to eq(message_count)
-        expect(lead.comments.count).to eq(comment_count + 2)
+        expect(lead.messages.count).to eq(message_count + 1)
+        expect(lead.comments.count).to eq(comment_count + 3)
         expect(first_comment.content).to match("NOT SENT: #{template_name}")
         expect(first_comment.content).to match("Lead has no agent")
       end
