@@ -21,7 +21,7 @@
   <tbody>
     <% duplicate_groups.each_with_index do |leads, group_index| %>
       <% row_bgclass = '' %>
-      <% next unless leads.size > 1 %>
+      <% next unless leads.size > 0 %>
       <% leads.each_with_index do |lead_record, index| %>
         <% lead = lead_record[:record] %>
         <% row_class = index == 0 ? 'group_primary' : 'group_secondary' %>
