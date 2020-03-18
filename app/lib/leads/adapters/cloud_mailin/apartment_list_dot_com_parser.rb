@@ -13,9 +13,9 @@ module Leads
           # TODO
           #  * beds
           #  * baths
-          body = data.fetch(:plain,nil) || data.fetch(:html,nil) || ''
+          body = data.fetch(:plain,'')
 
-          name = (body.match(/ +(.+) is (looking at|interested in)/i)[1] rescue '(None)' )
+          name = (body.match(/New lead from (.+) /i)[1]) rescue '(None)'
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
