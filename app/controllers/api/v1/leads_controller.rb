@@ -19,6 +19,7 @@ module Api
       # POST /api/v1/leads
       def create
         unless access_policy.create?
+          Leads::Creator.create_event_note(message: 'Lead API Access Denied', error: true)
           render json: {errors: {base: [ 'Access Denied' ]}}, status: :forbidden
           return
         end

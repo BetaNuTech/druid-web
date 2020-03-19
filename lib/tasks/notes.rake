@@ -1,5 +1,21 @@
 namespace :notes do
 
+  desc 'Report Errors and External events'
+  task :report, [:hours, :limit] => :environment do |task, args|
+    limit = args.fetch(:limit, 100).to_i
+    hours = args.fetch(:hours, 24).to_i
+    window = hours.hours.ago..DateTime.now
+    notes = Note.where(classification: [ 'error', 'external' ], created_at: window).order(created_at: :desc)
+    note_count = notes.count
+    count_info = note_count < limit ? "#{note_count}" : "#{limit} of #{note_count}"
+
+    puts "=== Noted Errors and External Events in Last #{hours} Hours (#{count_info}) ==="
+    notes.each do |n|
+      puts n.status_line
+    end
+    puts "=== END ==="
+  end
+
   desc 'correct ownership'
   task :correct_ownership => :environment do
 

@@ -52,6 +52,7 @@ class Property < ApplicationRecord
   has_many :housing_units, class_name: 'Unit', dependent: :destroy
   has_many :residents, dependent: :destroy
   has_many :engagement_policies, dependent: :destroy
+  has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
 
   ### Validations
   validates :name, presence: true, uniqueness: true

@@ -136,7 +136,7 @@
   <a name="#duplicates">&nbsp;</a>
   <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
   <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
-  <%= render partial: 'comments', locals: {lead: @lead, comments: @lead.comments.agent} %>
+  <%= render partial: 'comments', locals: {lead: @lead, comments: @lead.comments.agent.comments} %>
   <%= render partial: 'timeline', locals: {lead: @lead, comments: @lead.comments.timeline} %>
   <%= render partial: 'messages', locals: {lead: @lead} %>
   <%= render partial: 'calls', locals: {lead: @lead} %>

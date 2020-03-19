@@ -27,7 +27,8 @@ module ScheduledActions
             lead_action: lead_action,
             notable: target,
             reason: reason,
-            content: note_content
+            content: note_content,
+            classification: 'system'
           )
           note.save
         else

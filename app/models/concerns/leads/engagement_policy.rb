@@ -70,11 +70,12 @@ module Leads
       def create_rental_application_comment(content:, agent:)
         note_lead_action = LeadAction.where(name: APPLICATION_COMMENT_ACTION_NAME).first
         note_reason = Reason.where(name: APPLICATION_COMMENT_REASON_NAME).first
-        note = Note.create!(
+        note = Note.create!( # create_event_note
           lead_action: note_lead_action,
           notable: self,
           reason: note_reason,
-          content: content
+          content: content,
+          classification: 'system'
         )
       end
 

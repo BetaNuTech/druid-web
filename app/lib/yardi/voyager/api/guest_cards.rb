@@ -20,7 +20,7 @@ module Yardi
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
-            # TODO: insert record into a table of errors
+            create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
             #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
@@ -59,7 +59,7 @@ module Yardi
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
-            # TODO: insert record into a table of errors
+            create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
             #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
@@ -82,6 +82,7 @@ module Yardi
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
             Rails.logger.error msg
+            create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
             # TODO: insert record into a table of errors
             #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
@@ -118,15 +119,19 @@ module Yardi
               end
             end
             if updated_lead.present?
-              Rails.logger.warn "Yardi::Voyager::Api Submitted Lead:#{updated_lead.id} as Voyager GuestCard:#{updated_lead.remoteid}"
+              msg = "Yardi::Voyager::Api Submitted Lead:#{updated_lead.id} as Voyager GuestCard:#{updated_lead.remoteid}"
+              Rails.logger.warn msg
+              create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: false)
             else
-              Rails.logger.error "Yardi::Voyager::Api Submission of Lead[#{lead.id}] as Voyager GuestCard did not return a Lead as expected"
+              msg = "Yardi::Voyager::Api Submission of Lead[#{lead.id}] as Voyager GuestCard did not return a Lead as expected"
+              Rails.logger.error msg
+              create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             end
           rescue => e
             msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
             full_msg = msg + " -- #{e.backtrace}"
             Rails.logger.error msg
-            # TODO: insert record into a table of errors
+            create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             #ErrorNotification.send(StandardError.new(full_msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
@@ -138,7 +143,7 @@ module Yardi
           unless lead.valid?
             msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards declines to update events due to Lead validation errors: #{lead.errors.to_a.join('; ')}"
             Rails.logger.error msg
-            # TODO: insert record into a table of errors
+            create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             #ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
@@ -147,7 +152,7 @@ module Yardi
           unless guestcard.present?
             msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find associated GuestCard for Lead[#{lead.id}]"
             Rails.logger.error msg
-            # TODO: insert record into a table of errors
+            create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             #ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
@@ -172,12 +177,14 @@ module Yardi
               rescue ActiveRecord::RecordNotFound
                 msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find #{event_reference} for GuestCard[#{guestcard.prospect_id}] Event[#{guestcard_event.remoteid}] for Bluesky Lead[#{lead.id}]"
                 Rails.logger.error msg
+                create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
               end
             end
 
             if event.nil?
               msg = "#{format_request_id} Voyager Event[#{guestcard_event.remoteid}] for Guestcard[#{guestcard.prospect_id}] does not reference a valid Bluesky Event"
               Rails.logger.info msg
+              create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
               next
             end
 
@@ -188,6 +195,7 @@ module Yardi
             else
               msg = "#{format_request_id} #{event.class.name}[#{event.id}] could not be saved: #{event.errors.to_a.join('; ')}"
               Rails.logger.warn msg
+              create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             end
 
           end

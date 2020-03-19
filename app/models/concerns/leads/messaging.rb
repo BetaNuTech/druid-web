@@ -2,7 +2,10 @@ module Leads
   module Messaging
     extend ActiveSupport::Concern
 
-    MESSAGE_DELIVERY_COMMENT_REASON = 'Other'
+    MESSAGE_DELIVERY_COMMENT_REASON = 'Follow-Up'
+    MESSAGE_OPTOUT_LEAD_ACTION = 'Lead Email Opt-Out'
+    MESSAGE_OPTIN_LEAD_ACTION = 'Lead Email Opt-In'
+    MESSAGE_LEAD_PREFERENCE_SET = 'Lead Preference Set'
 
     included do
 
@@ -88,24 +91,26 @@ module Leads
       end
 
       def create_optout_comment(content:)
-        note_lead_action = LeadAction.where(name: 'Lead Email Opt-Out').first
-        note_reason = Reason.where(name: 'Lead Preference Set').first
-        note = Note.create(
+        note_lead_action = LeadAction.where(name: MESSAGE_OPTOUT_LEAD_ACTION).first
+        note_reason = Reason.where(name: MESSAGE_LEAD_PREFERENCE_SET).first
+        note = Note.create( # create_event_note
           lead_action: note_lead_action,
           notable: self,
           reason: note_reason,
-          content: content
+          content: content,
+          classification: 'system'
         )
       end
 
       def create_optin_comment(content:)
-        note_lead_action = LeadAction.where(name: 'Lead Email Opt-In').first
-        note_reason = Reason.where(name: 'Lead Preference Set').first
-        note = Note.create(
+        note_lead_action = LeadAction.where(name: MESSAGE_OPTIN_LEAD_ACTION).first
+        note_reason = Reason.where(name: MESSAGE_LEAD_PREFERENCE_SET).first
+        note = Note.create( # create_event_note
           lead_action: note_lead_action,
           notable: self,
           reason: note_reason,
-          content: content
+          content: content,
+          classification: 'system'
         )
       end
 
@@ -117,10 +122,12 @@ module Leads
           tofrom: msg.incoming? ? "from" : "to"
         }
         note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
-        Note.create(
+        # create_event_note
+        Note.create( # create_event_note
           notable: self,
           reason: note_reason,
-          content: note_content
+          content: note_content,
+          classification: 'system'
         )
       end
 

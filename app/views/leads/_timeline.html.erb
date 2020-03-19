@@ -15,7 +15,7 @@
             </p>
           <% else %>
             <div>
-              <%= render partial: "notes/note", collection: comments.order(created_at: 'desc')[0..4], locals: {icons: false}  %>
+              <%= render partial: "notes/note", collection: comments.order(created_at: 'desc').limit(100), locals: {icons: false}  %>
             </div>
           <% end %>
         </div>

@@ -20,9 +20,12 @@ class Note < ApplicationRecord
 
   ### Constants
   ALLOWED_PARAMS = [
-    :id, :reason_id, :lead_action_id, :notable_id, :notable_type, :content, :user_id,
+    :id, :reason_id, :lead_action_id, :notable_id, :notable_type, :content, :user_id, :classification,
     { schedule_attributes: Schedulable::ScheduleSupport.param_names }
   ]
+
+  ### Enums
+  enum classification: {comment: 0, system: 1, external: 2, error: 3 } # DEFAULT: 0
 
   ### Validations
   #validates :notable_id, :notable_type,
@@ -37,7 +40,8 @@ class Note < ApplicationRecord
 
   ### Scopes
   scope :agent, -> { where.not(user_id: nil)}
-  scope :timeline, -> { where(user_id: nil)}
+  scope :comments, -> { where(classification: 0)}
+  scope :timeline, -> { where.not(classification: 0)}
 
   ### Class Methods
 
@@ -78,6 +82,11 @@ class Note < ApplicationRecord
     else
       'None'
     end
+  end
+
+  def status_line
+    "%s -- %s -- %s -- for '%s'(%s[%s]) -- (%s => %s)" %
+      [ classification.upcase, created_at, content, notable&.name, notable_type, notable_id, lead_action&.name, reason&.name ]
   end
 
 end

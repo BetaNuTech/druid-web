@@ -77,11 +77,12 @@ module Leads
         referrals.where("referrable_id IS NOT NULL").each do |referral|
           next unless referral.referrable.present?
           comment_content = "%s %s referred this Lead" % [referral.referrable_type, referral.referrable&.name]
-          comment = Note.create(
+          comment = Note.create( # create_event_note
             lead_action: referral_action,
             reason: referral_reason,
             notable: self,
-            content: comment_content
+            content: comment_content,
+            classification: 'system'
           )
         end
 

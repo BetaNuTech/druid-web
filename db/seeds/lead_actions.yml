@@ -1,6 +1,6 @@
 ---
 :lead_actions:
-  :version: 1
+  :version: 2
   :key: :name
   :data:
   - :name: Claim Lead
@@ -134,6 +134,11 @@
     :is_contact: false
     :active: true
     :state_affinity: 'none'
+  - :name: External Referral
+    :glyph: import
+    :is_contact: false
+    :active: true
+    :state_affinity: 'none'
   - :name: Meeting
     :description: Meet with Lead
     :glyph: user
@@ -141,4 +146,24 @@
     :active: true
     :state_affinity: 'all'
     :notify: true
-
+  - :name: State Transition
+    :description: Change Record State
+    :glyph: road
+    :is_contact: false
+    :active: true
+    :state_affinity: 'all'
+    :notify: false
+  - :name: Sync to Remote
+    :description: Sync data to external service
+    :glyph: export
+    :is_contact: false
+    :active: true
+    :state_affinity: 'all'
+    :notify: false
+  - :name: Sync from Remote
+    :description: Sync data from external service
+    :glyph: import
+    :is_contact: false
+    :active: true
+    :state_affinity: 'all'
+    :notify: false
