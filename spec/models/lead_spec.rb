@@ -795,13 +795,14 @@ RSpec.describe Lead, type: :model do
         lead.save!
         message_count = lead.messages.count
         comment_count = lead.comments.count
+        lead.property.property_users.destroy_all
         lead.trigger_event(event_name: :apply, user: agent)
         lead.save!
         lead.reload
         latest_message = lead.messages.order(created_at: :desc).first
         first_comment = lead.comments.order(created_at: :asc).first
-        expect(lead.messages.count).to eq(message_count + 1)
-        expect(lead.comments.count).to eq(comment_count + 3)
+        expect(lead.messages.count).to eq(message_count)
+        expect(lead.comments.count).to eq(comment_count + 2)
         expect(first_comment.content).to match("NOT SENT: #{template_name}")
         expect(first_comment.content).to match("Lead has no agent")
       end
