@@ -15,7 +15,9 @@ module Leads
           #  * baths
           body = data.fetch(:plain,'')
 
-          name = (body.match(/New lead from (.+) /i)[1]) rescue '(None)'
+          name = (body.match(/lead from (.+) /i)[1]) rescue nil
+          name ||= (body.match(/\* (.+) is ready/i)[1]) rescue '(None)'
+
           name_arr = name.split(' ')
 
           message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
