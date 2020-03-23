@@ -48,6 +48,11 @@ module Users
           where(property_users: {property: managed_properties})
       end
 
+      def colleagues
+        return User.includes(:assignments, :profile).
+          where(property_users: {property: properties})
+      end
+
       def assigned_properties_agents
         User.includes(:assignments).where(property_users: {property_id: properties.select(:id).map(&:id)})
       end

@@ -6,12 +6,9 @@ class MessageTemplatePolicy < ApplicationPolicy
         when ->(u) { u.admin?}
           # Return all
           skope
-        when ->(u) { u.manager? }
-          # Return shared or belonging to subordinates
-          skope.where("message_templates.shared = true OR message_templates.user_id IN ( ? )", user.subordinates.map(&:id))
         else
-          # Return shared or own
-          skope.where("message_templates.shared = true OR message_templates.user_id IN ( ? )", user.id)
+          # Return shared from assigned proeprties or own
+          skope.where("message_templates.user_id IS NULL OR message_templates.user_id = ? OR (message_templates.shared = true AND message_templates.user_id IN ( ? ))", user.id, user.colleagues.map(&:id))
         end
       return skope.order("message_types.name ASC, message_templates.name ASC")
     end
