@@ -157,11 +157,11 @@ class UserPolicy < ApplicationPolicy
                  when -> (u) {u.admin?}
                    Property.active.all
                  when -> (u) {u.team_lead?}
-                   (user.team.properties + Array(user.property)).compact.uniq
+                   (user.team.properties.active + user.properties.active).compact.uniq
                  when -> (u) {u.property_manager?}
-                   [ user.property ]
+                   user.properties.active
                  when -> (u) {u.agent?}
-                   [ user.property ]
+                   user.properties.active
                  end
     return properties.map{|p| [p.name, p.id]}.sort_by{|p| p[0]}
   end
