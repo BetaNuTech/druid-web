@@ -6,6 +6,7 @@ CKEDITOR.editorConfig = function( config )
   config.disableNativeSpellChecker = false;
 
   config.toolbar_mailedit = [
+    { name: 'links', items: ['Link', 'Unlink'] },
     { name: 'paragraph', groups: [ 'list', 'indent', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
     { name: 'styles', items: [ 'Font', 'FontSize' ] },
     { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
