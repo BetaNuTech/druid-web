@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Notes</h2>
+    <%if @property.comments.empty? %>
+      <p>None</p>
+    <% end %>
+    <div>
+      <%= render partial: "notes/note", collection: @property.comments.order(created_at: 'desc').limit(20), locals: {icons: false}  %>
+    </div>
+  </div>
+</div>

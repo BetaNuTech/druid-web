@@ -28,6 +28,10 @@ module Leads
             first&.code
       end
 
+      def self.property(propertyid)
+        PropertyListing.where(code: propertyid).first&.property
+      end
+
       # This Class interacts with the YardiVoyager API in the Yardi::Voyager namespace
       # Use it to send Leads to YardiVoyager, or download Leads,
       # Residents, UnitTypes (floorplans), and Units
@@ -261,6 +265,13 @@ module Leads
               lead.ignore_incomplete_tasks = true
               lead.skip_event_notifications = true
               lead.trigger_event(event_name: event_name)
+              Note.create( # create_event_note
+                classification: 'external',
+                notable: lead,
+                content: 'Lead state updated from Voyager',
+                reason: Reason.where(name: 'Data Sync').last,
+                lead_action: LeadAction.where(name: 'Sync from Remote').last
+              )
             else
               # no event can transition the Lead
               msg = "Lead Adapter Error! Can't update Lead[#{lead.id}] state for GuestCard[#{guestcard.prospect_id}] for Property[#{@property.name}] with record_type[#{guestcard.record_type}]"
@@ -269,6 +280,13 @@ module Leads
                 # If the Lead is unclaimed, this issue isn't urgent and doesn't require notification.
                 # ( We assume that the Lead is unclaimed for a reason )
                 ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, guestcard: guestcard.summary})
+                Note.create( # create_event_note
+                  classification: 'error',
+                  notable: lead,
+                  content: msg,
+                  reason: Reason.where(name: 'Data Sync').last,
+                  lead_action: LeadAction.where(name: 'Sync from Remote').last
+                )
               end
             end
           end
@@ -312,7 +330,6 @@ module Leads
 
       def notes_from_guestcard_events(lead:, events: [])
         return ( events || [] ).map do |event|
-          #event_type, event_date, event_comment = event
           event_date_parsed = (DateTime.parse(event.date) rescue nil)
 					event_lead_action_id = lead_action_from_event_type(event.event_type).try(:id)
           event_content = event.comments
@@ -332,7 +349,8 @@ module Leads
 							notable_id: lead.id,
 							notable_type: 'Lead',
 							content: event_content,
-              created_at: ( event_date_parsed || DateTime.now )
+              created_at: ( event_date_parsed || DateTime.now ),
+              classification: 'system'
 						)
 					end
         end.compact

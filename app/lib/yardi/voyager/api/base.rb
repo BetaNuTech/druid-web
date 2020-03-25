@@ -90,7 +90,6 @@ module Yardi
               retries += 1
               msg = "Yardi::Voyager::Api encountered a timeout fetching data from #{url}. Retry #{retries} of 3 #{format_request_id}"
               Rails.logger.error msg
-              #ErrorNotification.send(StandardError.new(msg))
               sleep(5)
               retry
             else
@@ -113,6 +112,24 @@ module Yardi
 
         def format_request_id
           return "[Request ID: #{@request_id}]"
+        end
+
+        def create_event_note(propertyid:, incoming:, notable: nil, message: nil, error: false)
+          lead_action_name = incoming ? 'Sync from Remote' : 'Sync to Remote'
+          reason_name = 'Data Sync'
+          classification = error ? 'error' : 'external'
+
+          lead_action = LeadAction.where(name: lead_action_name).first
+          reason = Reason.where(name: reason_name).first
+          notable = notable || Leads::Adapters::YardiVoyager.property(propertyid)
+          content = message
+          Note.create(
+            classification: classification,
+            lead_action: lead_action,
+            reason: reason,
+            notable: notable,
+            content: content,
+          )
         end
 
       end

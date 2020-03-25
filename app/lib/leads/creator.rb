@@ -13,6 +13,8 @@ module Leads
     end
 
     DEFAULT_TOKEN = '(NONE)'
+    NOTE_LEAD_ACTION = 'External Referral'
+    NOTE_REASON = 'Lead Referral'
 
     attr_reader :data,
       :errors,
@@ -22,6 +24,22 @@ module Leads
       :source,
       :token,
       :agent
+
+    def self.create_event_note(message:, notable: nil, error: false)
+      classification = error ? 'error' : 'external'
+
+      lead_action = LeadAction.where(name: NOTE_LEAD_ACTION).first
+      reason = Reason.where(name: NOTE_REASON).first
+      content = message
+
+      Note.create(
+        classification: classification,
+        lead_action: lead_action,
+        reason: reason,
+        notable: notable,
+        content: content
+      )
+    end
 
     def initialize(data:, agent: nil, token: DEFAULT_TOKEN)
       @lead = Lead.new
@@ -39,21 +57,29 @@ module Leads
 
       # Validate Access Token for Lead Source
       unless ( @source.present? && @token.present? )
-        error_message =  "Invalid Access Token '#{@token}'}"
+        error_message =  "Leads::Creator Error Invalid Access Token '#{@token}'}"
         @errors.add(:base, error_message)
         @lead.errors.add(:base, error_message)
+        Leads::Creator.create_event_note(message: error_message, error: true)
         return @lead
       end
 
       # Validate Parser
       if @parser.nil?
-        error_message =  "Parser for Lead Source not found: #{@source.try(:name) || 'UNKNOWN'}"
+        error_message =  "Leads::Creator Error Parser for Lead Source not found: #{@source.try(:name) || 'UNKNOWN'}"
         @errors.add(:base, error_message)
         @lead.errors.add(:base, error_message)
+        note_message = error_message + "\n" + @data.to_s
+        Leads::Creator.create_event_note(message: error_message, error: true)
         return @lead
       end
 
-      parse_result = @parser.new(@data).parse
+      begin
+        parse_result = @parser.new(@data).parse
+      rescue => e
+        note_message = "Leads::Creator Error parsing incoming Lead data: #{e}\n\n#{@data}"
+        Leads::Creator.create_event_note(message: note_message, error: true)
+      end
 
       @lead = Lead.new(parse_result.lead)
       @lead.user = @agent if @agent.present?
@@ -74,12 +100,18 @@ module Leads
           parse_result.errors.each do |err|
             @lead.errors.add(:base, err)
           end
+          notable = parse_result.property_code.present? ?
+            Leads::Adapters::YardiVoyager.property(parse_result.property_code) :
+            nil
+          note_message = "Leads::Creator Error New Lead has validation errors: " + @lead.errors.to_a.join(', ')
+          Leads::Creator.create_event_note(message: note_message, notable: notable, error: true)
       end
 
       @errors = @lead.errors
 
       return @lead
     end
+
 
     private
 
@@ -102,10 +134,11 @@ module Leads
     # Log error if Lead property is not assigned
     def property_assignment_warning(lead:, property_code:)
       unless lead.property.present?
-        err_message = "API WARNING: LEAD CREATOR COULD NOT IDENTIFY PROPERTY '#{property_code || '(None)'}' FROM SOURCE #{lead.source.try(:name)} FOR LEAD #{lead.id}"
+        err_message = "Leads::Creator Error API WARNING: LEAD CREATOR COULD NOT IDENTIFY PROPERTY '#{property_code || '(None)'}' FROM SOURCE #{lead.source.try(:name)} FOR LEAD #{lead.id}"
         @lead.notes = "%s %s %s" % [@lead.notes, "///", err_message]
         @lead.save
         Rails.logger.warn err_message
+        Leads::Creator.create_event_note(message: err_message, error: true)
       end
     end
 

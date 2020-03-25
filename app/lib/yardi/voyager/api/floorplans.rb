@@ -17,6 +17,7 @@ module Yardi
             msg = "#{format_request_id} Yardi::Voyager::Api::Floorplans encountered an error fetching data. #{e}"
             Rails.logger.error msg
             ErrorNotification.send(StandardError.new(msg))
+            create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
             return []
           end
           return floorplans

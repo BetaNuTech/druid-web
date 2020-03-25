@@ -7,6 +7,8 @@ module Leads
     IN_PROGRESS_STATES = %w{prospect showing application approved}
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
     EARLY_PIPELINE_STATES = %w{open prospect showing application}
+    STATE_TRANSITION_LEAD_ACTION = 'State Transition'
+    STATE_TRANSITION_REASON = 'Pipeline Event'
 
     class_methods do
 
@@ -252,12 +254,14 @@ module Leads
       def create_lead_transition_note
         self.comments << self.comments.build(
           user: nil,
-          reason: Reason.where(name: "Pipeline Event").last,
+          lead_action: LeadAction.where(name: STATE_TRANSITION_LEAD_ACTION).first,
+          reason: Reason.where(name: STATE_TRANSITION_REASON).last,
           content: "Lead transitioned from %s to %s.%s" % [
             ( aasm.from_state&.capitalize || '?' ),
             ( aasm.to_state&.capitalize || '?' ),
             (transition_memo.present? ? " -- Memo: #{transition_memo}": '')
-          ]
+          ],
+          classification: 'system'
         )
       end
 

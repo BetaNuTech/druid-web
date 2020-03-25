@@ -1,6 +1,6 @@
 ---
 :reasons:
-  :version: 1
+  :version: 2
   :key: :name
   :data:
   - :name: First Contact
@@ -24,6 +24,9 @@
   - :name: Referral
     :description: Lead Referral
     :active: true
+  - :name: Data Sync
+    :description: Sync data between Bluesky and an external service
+    :active: true
   - :name: Message Response
-    :description: Respond to an incoming message from a lead
+    :description: Respond to an incoming message
     :active: true

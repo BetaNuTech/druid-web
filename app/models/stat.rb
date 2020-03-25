@@ -444,7 +444,7 @@ EOS
   end
 
   def notes_created(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
-    notes = Note.where( notable_type: 'Lead', created_at: (start_date..end_date))
+    notes = Note.where( notable_type: 'Lead', created_at: (start_date..end_date)).comments
     if filter_by_agent?
       notes = notes.where(user_id: @user_ids)
     end
