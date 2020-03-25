@@ -265,6 +265,13 @@ module Leads
               lead.ignore_incomplete_tasks = true
               lead.skip_event_notifications = true
               lead.trigger_event(event_name: event_name)
+              Note.create( # create_event_note
+                classification: 'external',
+                notable: lead,
+                content: 'Lead state updated from Voyager',
+                reason: Reason.where(name: 'Data Sync').last,
+                lead_action: LeadAction.where(name: 'Sync from Remote').last
+              )
             else
               # no event can transition the Lead
               msg = "Lead Adapter Error! Can't update Lead[#{lead.id}] state for GuestCard[#{guestcard.prospect_id}] for Property[#{@property.name}] with record_type[#{guestcard.record_type}]"
