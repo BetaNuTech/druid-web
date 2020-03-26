@@ -21,7 +21,7 @@ module Yardi
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards.getGuestCards encountered an error fetching data. #{e}"
             full_msg = "#{msg} -- #{e.backtrace}"
             Rails.logger.error full_msg
-            create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
+            create_event_note(propertyid: propertyid, incoming: true, message: full_msg, error: true)
             #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
@@ -61,7 +61,7 @@ module Yardi
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards.getGuestCard encountered an error fetching data. #{e}"
             full_msg = "#{msg} -- #{e.backtrace}"
             Rails.logger.error full_msg
-            create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
+            create_event_note(propertyid: propertyid, incoming: true, message: full_msg, error: true)
             return []
           end
           return guestcards
@@ -84,7 +84,7 @@ module Yardi
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards.getGuestCardsDateRange encountered an error fetching data. #{e}"
             full_msg = "#{msg} -- #{e.backtrace}"
             Rails.logger.error full_msg
-            create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
+            create_event_note(propertyid: propertyid, incoming: true, message: full_msg, error: true)
             return []
           end
           return guestcards
@@ -132,7 +132,7 @@ module Yardi
             msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards.sendGuestCard encountered an error fetching data. #{e}"
             full_msg = msg + " -- #{e.backtrace}"
             Rails.logger.error msg
-            create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
+            create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: full_msg, error: true)
             return lead
           end
           return updated_lead
