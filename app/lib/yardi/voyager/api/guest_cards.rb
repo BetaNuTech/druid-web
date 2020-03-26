@@ -18,8 +18,9 @@ module Yardi
             response = getData(request_options)
             guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivity(response.parsed_response, filter)
           rescue => e
-            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
-            Rails.logger.error msg
+            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards.getGuestCards encountered an error fetching data. #{e}"
+            full_msg = "#{msg} -- #{e.backtrace}"
+            Rails.logger.error full_msg
             create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
             #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
@@ -57,10 +58,10 @@ module Yardi
             response = getData(request_options)
             guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivitySearch(response.parsed_response)
           rescue => e
-            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
-            Rails.logger.error msg
+            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards.getGuestCard encountered an error fetching data. #{e}"
+            full_msg = "#{msg} -- #{e.backtrace}"
+            Rails.logger.error full_msg
             create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
-            #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
           return guestcards
@@ -80,11 +81,10 @@ module Yardi
             response = getData(request_options)
             guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivityDateRange(response.parsed_response)
           rescue => e
-            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e} -- #{e.backtrace}"
-            Rails.logger.error msg
+            msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards.getGuestCardsDateRange encountered an error fetching data. #{e}"
+            full_msg = "#{msg} -- #{e.backtrace}"
+            Rails.logger.error full_msg
             create_event_note(propertyid: propertyid, incoming: true, message: msg, error: true)
-            # TODO: insert record into a table of errors
-            #ErrorNotification.send(StandardError.new(msg), {propertyid: propertyid})
             return []
           end
           return guestcards
@@ -128,11 +128,10 @@ module Yardi
               create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             end
           rescue => e
-            msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards encountered an error fetching data. #{e}"
+            msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards.sendGuestCard encountered an error fetching data. #{e}"
             full_msg = msg + " -- #{e.backtrace}"
             Rails.logger.error msg
             create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
-            #ErrorNotification.send(StandardError.new(full_msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
           return updated_lead
