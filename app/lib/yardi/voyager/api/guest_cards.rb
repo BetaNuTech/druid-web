@@ -184,7 +184,7 @@ module Yardi
             if event.nil?
               msg = "#{format_request_id} Voyager Event[#{guestcard_event.remoteid}] for Guestcard[#{guestcard.prospect_id}] does not reference a valid Bluesky Event"
               Rails.logger.info msg
-              create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
+              #create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
               next
             end
 
