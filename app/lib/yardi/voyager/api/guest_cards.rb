@@ -108,6 +108,7 @@ module Yardi
             xml: payload
           }
           begin
+            last_remoteid = lead.remoteid
             if dry_run
               response = getData(request_options, dry_run: true)
               updated_lead = lead
@@ -118,7 +119,7 @@ module Yardi
                 updated_lead = updateLeadEvents(propertyid: propertyid, lead: updated_lead)
               end
             end
-            if updated_lead.present?
+            if updated_lead.present? && updated_lead.remoteid != last_remoteid
               msg = "Yardi::Voyager::Api Submitted Lead:#{updated_lead.id} as Voyager GuestCard:#{updated_lead.remoteid}"
               Rails.logger.warn msg
               create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: false)
@@ -143,7 +144,6 @@ module Yardi
             msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards declines to update events due to Lead validation errors: #{lead.errors.to_a.join('; ')}"
             Rails.logger.error msg
             create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
-            #ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
 
@@ -152,7 +152,6 @@ module Yardi
             msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find associated GuestCard for Lead[#{lead.id}]"
             Rails.logger.error msg
             create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
-            #ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, property_id: lead.property_id})
             return lead
           end
 
@@ -160,6 +159,7 @@ module Yardi
           Rails.logger.warn msg
 
           event_re = /\[([A-Za-z]+):([^\]]+)\]/
+          events_created = 0
           guestcard.events.each do |guestcard_event|
             event = nil
             if (bluesky_event_id = guestcard_event.comments.match(event_re))
@@ -187,16 +187,25 @@ module Yardi
               next
             end
 
+            last_remoteid  = event.remoteid
             event.remoteid = guestcard_event.remoteid
             if event.save
               msg = "#{format_request_id} #{event.class.name}[#{event.id}] remoteid set to '#{event.remoteid}'"
               Rails.logger.info msg
+              if last_remoteid != event.remoteid
+                events_created += 1
+              end
             else
               msg = "#{format_request_id} #{event.class.name}[#{event.id}] could not be saved: #{event.errors.to_a.join('; ')}"
               Rails.logger.warn msg
               create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             end
 
+          end
+
+          if events_created > 0
+            msg = "Yardi::Voyager::Api::GuestCards submitted #{events_created} events for Lead[#{lead.id}] to Guestcard[#{lead.remoteid}]"
+            create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: false)
           end
 
           return lead
