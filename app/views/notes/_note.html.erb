@@ -11,13 +11,14 @@
           <% end %>
         </div>
         <div class="col-md-6">
+          <%= note_glyph(note) %>
           <%= action_and_reason(note) %>
         </div>
       </div>
 
       <div class="row note-listing-content">
-        <div class="col-md-12">
-          <%= note.content %>
+        <div class="col-md-12" id="note_<%= note.id %>">
+          <%= note_content(note) %>
         </div>
       </div>
     </div>

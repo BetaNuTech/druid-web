@@ -107,7 +107,7 @@ module Leads
         end
 
         event :approve do
-          transitions from: [:application, :denied], to: :approved,
+          transitions from: [:prospect, :showing, :application, :denied], to: :approved,
             guard: :may_progress?
         end
 
