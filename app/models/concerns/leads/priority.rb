@@ -8,27 +8,30 @@ module Leads
 
       def self.set_priorities
         errors = []
-        skope = self.active
-        skope.each do |lead|
-          begin
-            old_priority = lead.priority
-            lead.calculate_priority
-            if lead.changed?
-              lead.save
-              msg = "Lead Priority Updater: Lead[#{lead.id}] priority updated #{old_priority} => #{lead.priority}"
+        skope = self.where(state: ['prospect', 'showing', 'application'])
+        skope.find_in_batches do |leads_to_prioritize|
+          leads_to_prioritize.each do |lead|
+            begin
+              old_priority = lead.priority
+              lead.calculate_priority
+              if lead.changed?
+                lead.save
+                msg = "Lead Priority Updater: Lead[#{lead.id}] priority updated #{old_priority} => #{lead.priority}"
+                Rails.logger.info msg
+                puts msg if Rails.env.development?
+              else
+                msg = "Lead Priority Updater: Lead[#{lead.id}] priority unchanged"
+                Rails.logger.info msg
+                puts msg if Rails.env.development?
+              end
+            rescue => e
+              msg = "Lead Priority Updater: Error calculating/setting Lead[#{lead.id}] Priority. #{e}"
+              errors << msg
               Rails.logger.warn msg
-              puts msg if Rails.env.development?
-            else
-              msg = "Lead Priority Updater: Lead[#{lead.id}] priority unchanged"
-              Rails.logger.warn msg
-              puts msg if Rails.env.development?
             end
-          rescue => e
-            msg = "Lead Priority Updater: Error calculating/setting Lead[#{lead.id}] Priority. #{e}"
-            errors << msg
-            Rails.logger.warn msg
           end
         end
+
         had_errors = errors.present?
         unless Rails.env.production?
           puts errors.inspect if had_errors
@@ -36,13 +39,24 @@ module Leads
         return !had_errors
       end
 
-      def handle_scheduled_action_completion
+      def set_priority
         calculate_priority
         save
       end
 
+      def handle_scheduled_action_completion
+        set_priority
+      end
+
       def estimated_priority
-        score = state_priority_score + last_contact_score + task_deadline_score
+        case state
+        when 'open'
+          score = 5
+        when *Leads::StateMachine::IN_PROGRESS_STATES
+          score = last_contact_score + task_deadline_score
+        else
+          score = 1
+        end
         score = [score, 5].min - 1
         return score
       end
@@ -57,8 +71,8 @@ module Leads
           prospect: 3,
           showing: 3,
           application: 2,
-          approved: 2,
-          denied: 2,
+          approved: 1,
+          denied: 1,
           movein: 1,
           resident: 0,
           exresident: 0,
