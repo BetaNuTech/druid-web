@@ -19,7 +19,7 @@ module Properties
 
       def leads_for_cancelling
         return leads.
-          where(state: 'disqualified').
+          where(state: [ 'disqualified', 'abandoned' ]).
           where.not(remoteid: [nil, '']).
           where.not(user_id: nil)
       end
