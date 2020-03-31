@@ -577,7 +577,7 @@ module Yardi
             when 'disqualified'
               'canceled'
             when 'abandoned'
-              'prospect'
+              'canceled'
             when 'future'
               'future_resident'
             else
