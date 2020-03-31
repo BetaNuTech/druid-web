@@ -26,7 +26,7 @@
       <tbody>
         <% @my_leads.each do |lead| %>
           <tr>
-            <td>
+            <td width="70%">
               <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
               <% if lead.property.present? %>
                 for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
