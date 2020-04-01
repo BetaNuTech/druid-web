@@ -2,8 +2,14 @@ class NotePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.
-        order(created_at: "DESC")
+      case user
+        when ->(u) { u.administrator? }
+          skope = scope
+        else
+          skope = scope.where(classification: ['comment', 'system' ])
+      end
+      skope = skope.order(created_at: :desc)
+      return skope
     end
   end
 

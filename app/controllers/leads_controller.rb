@@ -58,6 +58,9 @@ class LeadsController < ApplicationController
   # GET /leads/1.json
   def show
     authorize @lead
+    note_scope = NotePolicy::Scope.new(current_user, @lead.comments).resolve
+    @lead_comments = note_scope.agent.comments
+    @lead_timeline = note_scope.timeline
   end
 
   # GET /leads/new
