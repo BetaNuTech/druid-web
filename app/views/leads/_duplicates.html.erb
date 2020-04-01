@@ -14,6 +14,7 @@
       <th>Phone</th>
       <th>Property</th>
       <th>Source</th>
+      <th>Remoteid</th>
       <th>State</th>
       <th>Created</th>
     </tr>
@@ -57,6 +58,11 @@
           </td>
           <td>
             <%= lead.referral %>
+          </td>
+          <td>
+            <span class="<%= lead_record[:flags][:remoteid] ? 'highlight' : '' %>">
+              <%= lead.remoteid %>
+            </span>
           </td>
           <td><%= lead.state.humanize %></td>
           <td><%= short_date(lead.created_at) %></td>

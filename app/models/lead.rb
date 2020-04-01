@@ -88,7 +88,13 @@ class Lead < ApplicationRecord
   validates :first_name, presence: true
 	validates :phone1, presence: true, unless: ->(lead){ lead.phone2.present? || lead.email.present? }
 	validates :email, presence: true, unless: ->(lead){ lead.phone1.present? || lead.phone2.present? }
-  validates :remoteid, uniqueness: { scope: :property_id, case_sensitive: false }, if: -> {remoteid.present?}
+  validates :remoteid,
+    if: -> {remoteid.present?},
+    uniqueness: {
+      scope: :property_id,
+      case_sensitive: false,
+      message: "is not unique. Delete the remoteid of this record or in the duplicate record"
+    }
 
   ### Callbacks
   before_validation :format_phones

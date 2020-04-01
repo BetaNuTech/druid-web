@@ -12,7 +12,7 @@ module Leads
       after_create :mark_duplicates
       after_save :duplicate_check_on_update
 
-      DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name}
+      DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name remoteid}
       DUPLICATE_IGNORED_VALUES = [
         '(None)',
         '00000000',
@@ -93,6 +93,11 @@ module Leads
                    AND phone2 = :phone2
                    AND phone2 NOT IN (#{invalid_values_sql})
                  )
+              OR ( remoteid IS NOT NULL
+                   AND remoteid != ''
+                   AND remoteid = :remoteid
+                   AND remoteid NOT IN (#{invalid_values_sql})
+                 )
               OR ( first_name IS NOT NULL
                    AND first_name != ''
                    AND first_name = :first_name
@@ -114,7 +119,8 @@ module Leads
           sql_template,
           id: id,
           first_name: first_name, last_name: last_name,
-          phone1: phone1, phone2: phone2, email: email
+          phone1: phone1, phone2: phone2, email: email,
+          remoteid: remoteid
         ]
 
         sql = Lead.sanitize_sql_array(query_array)

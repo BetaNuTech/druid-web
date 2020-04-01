@@ -65,7 +65,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def mass_assignment?
-    user.property.present? && 
+    user.property.present? &&
       (user.admin? || user.manager?)
   end
 
@@ -117,6 +117,7 @@ class LeadPolicy < ApplicationPolicy
   # Return an array of state events that the User can issue
   # to the Record
   def permitted_state_events
+    return [] unless record.valid?
     record.permitted_state_events.
       select{|e| allow_state_event_by_user?(e) }
   end
