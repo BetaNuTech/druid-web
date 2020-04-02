@@ -32,7 +32,27 @@
 
     <div class="controls row">
       <div class="col-md-12">
-        <%= render partial: "state_toggle", locals: {lead: @lead} %>
+        <% if @lead.valid? %>
+          <%= render partial: "state_toggle", locals: {lead: @lead} %>
+        <% else %>
+          <div class='alert alert-danger row' >
+            <div class="col-md-1">
+              <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-sm btn-primary" %>
+            </div>
+            <div class='col-md-11'>
+              <p class='lead'>
+                There are problems with this record:
+              </p>
+
+              <ul>
+              <% @lead.errors.to_a.each do |err| %>
+                <li><%= err %></li>
+              <% end %>
+              </ul>
+            </div>
+
+          </div>
+        <% end %>
       </div>
     </div>
 

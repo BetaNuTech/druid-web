@@ -77,7 +77,8 @@ class DuplicateLead < ApplicationRecord
             name: lead.name,
             email: lead.email,
             phone1: lead.phone1,
-            phone2: lead.phone2
+            phone2: lead.phone2,
+            remoteid: lead.remoteid
           }
         }
 
@@ -91,6 +92,7 @@ class DuplicateLead < ApplicationRecord
             {
               record: lead,
               flags: {
+                remoteid: lead.remoteid.present? && other_records.map{|o| o[:remoteid]}.include?(lead.remoteid),
                 name: lead.name.present? && other_records.map{|o| o[:name]}.include?(lead.name),
                 email: lead.email.present? && other_records.map{|o| o[:email]}.include?(lead.email),
                 phone: ( lead.phone1.present? && other_records.map{|o| o[:phone1]}.include?(lead.phone1) ) ||
