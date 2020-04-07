@@ -90,7 +90,7 @@ module Leads
 
       # Fetch New Units from YardiVoyager
       def processUnits
-        @data = fetch_Units(@property_code)
+        @data = fetch_Units
         units = []
         ActiveRecord::Base.transaction do
           units = collection_from_yardi_units(@data)
