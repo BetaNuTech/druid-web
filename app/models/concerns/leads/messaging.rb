@@ -67,7 +67,9 @@ module Leads
 
       def message_types_available
         types = []
-        types << MessageType.active.sms if message_sms_destination.present?
+        # TODO: re-enable SMS messaging after opt-in logic is in place
+        #
+        #types << MessageType.active.sms if message_sms_destination.present?
         types << MessageType.active.email if message_email_destination.present?
         return types
       end
