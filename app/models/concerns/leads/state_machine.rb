@@ -152,7 +152,7 @@ module Leads
         end
 
         event :postpone do
-          transitions from: [:open, :prospect, :application], to: :future,
+          transitions from: [:open, :prospect, :showing, :application], to: :future,
             after: -> (*args) {clear_all_tasks; event_clear_user; set_priority_low}
         end
 
