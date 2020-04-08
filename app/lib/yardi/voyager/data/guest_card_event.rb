@@ -25,69 +25,87 @@ module Yardi
 
         def self.from_lead_events(lead)
           out = []
-          out += lead.transitions.where(remoteid: nil).map do |xtn|
-            agent = ( xtn.lead.user.present? ?
-                     { first_name: xtn.lead.user.profile.first_name,
-                       last_name: xtn.lead.user.profile.last_name } : {} )
 
-            event = GuestCardEvent.new
-            event.remoteid = xtn.remoteid || ''
-            event.date = xtn.created_at
-            event.agent = agent
+          ### Lead state transitions as events
+          #out += lead.transitions.where(remoteid: nil).map do |xtn|
+            #GuestCardEvent.from_lead_state_transition(xtn)
+          #end
 
-            if (xtn.last_state == 'none' && xtn.current_state == 'open')
-              event.comments = "Lead created in Bluesky originating from #{lead.referral || 'Unknown'}"
-              event.transaction_source = 'Referral'
-              event.first_contact = true
-
-              # TODO: assign better reason and event type
-              event.reasons = 'Emailed'
-              event.event_type = 'Other'
-            else
-              if xtn.current_state == 'disqualified'
-                event.event_type = 'Cancel'
-              else
-                event.event_type = 'Other'
-              end
-              event.comments = "Lead transitioned from %s to %s (classified as %s) -- [LeadTransition:%s])" % [xtn.last_state, xtn.current_state, ( xtn.classification || '-'), xtn.id]
-              event.reasons = 'Emailed'
-              event.first_contact = false
-            end
-
-            event
+          ### Completed Tasks as GuestCard Events
+          completed_actions = lead.scheduled_actions.completed.where(remoteid: nil)
+          out += completed_actions.map do |sa|
+            GuestCardEvent.from_scheduled_action(sa)
           end
 
-          out += lead.scheduled_actions.completed.where(remoteid: nil).map do |sa|
-            agent = ( sa.user.present? ?
-                     { first_name: sa.user.profile&.first_name,
-                       last_name: sa.user.profile&.last_name } : {} )
-            comments = "%s -- [ScheduledAction:%s])" % [sa.summary, sa.id]
-
-            case sa.lead_action&.name
-              when LeadAction::SHOWING_ACTION_NAME
-                event_type = 'Show'
-                idtype = sa.article&.remoteid
-              else
-                event_type = 'Other'
-                idtype = nil
-            end
-
-            event = GuestCardEvent.new
-            event.remoteid = sa.remoteid || ''
-            event.idtype = idtype
-            event.date = sa.created_at
-            event.event_type = event_type
-            event.reasons = 'Emailed'
-            event.first_contact = 'false'
-            event.agent = agent
-            event.comments = comments
-            #event.transaction_source = 'Referral'
-            event
+          ### Pending Meetings as GuestCard Events
+          pending_meetings = lead.scheduled_actions.includes(:lead_action).pending.
+            where(lead_actions: {notify: true}, scheduled_actions: {remoteid: [ nil, '' ]})
+          out += pending_meetings.map do |sa|
+            GuestCardEvent.from_scheduled_action(sa)
           end
 
           out = out.sort_by{|event| event.date}
 
           return out
+        end
+
+        def self.from_lead_state_transition(lead_transition)
+          agent = ( lead_transition.lead.user.present? ?
+                   { first_name: lead_transition.lead.user.profile.first_name,
+                     last_name: lead_transition.lead.user.profile.last_name } : {} )
+
+          event = GuestCardEvent.new
+          event.remoteid = lead_transition.remoteid || ''
+          event.date = lead_transition.created_at
+          event.agent = agent
+
+          if (lead_transition.last_state == 'none' && lead_transition.current_state == 'open')
+            event.comments = "Lead created in Bluesky originating from #{lead.referral || 'Unknown'}"
+            event.transaction_source = 'Referral'
+            event.first_contact = true
+
+            # TODO: assign better reason and event type
+            event.reasons = 'Emailed'
+            event.event_type = 'Other'
+          else
+            if lead_transition.current_state == 'disqualified'
+              event.event_type = 'Cancel'
+            else
+              event.event_type = 'Other'
+            end
+            event.comments = "Lead transitioned from %s to %s (classified as %s) -- [LeadTransition:%s])" % [lead_transition.last_state, lead_transition.current_state, ( lead_transition.classification || '-'), lead_transition.id]
+            event.reasons = 'Emailed'
+            event.first_contact = false
+          end
+
+          event
+        end
+
+        def self.from_scheduled_action(scheduled_action)
+          agent = ( scheduled_action.user.present? ?
+                   { first_name: scheduled_action.user.profile&.first_name,
+                     last_name: scheduled_action.user.profile&.last_name } : {} )
+          comments = "%s -- [ScheduledAction:%s])" % [scheduled_action.summary, scheduled_action.id]
+
+          case scheduled_action.lead_action&.name
+          when LeadAction::SHOWING_ACTION_NAME
+            event_type = 'Show'
+            idtype = scheduled_action.article&.remoteid
+          else
+            event_type = 'Other'
+            idtype = nil
+          end
+
+          event = GuestCardEvent.new
+          event.remoteid = scheduled_action.remoteid || ''
+          event.idtype = idtype
+          event.date = scheduled_action.created_at
+          event.event_type = event_type
+          event.reasons = 'Emailed'
+          event.first_contact = 'false'
+          event.agent = agent
+          event.comments = comments
+          event
         end
 
       end
