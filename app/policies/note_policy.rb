@@ -3,7 +3,7 @@ class NotePolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       case user
-        when ->(u) { u.administrator? }
+        when ->(u) { u.admin? }
           skope = scope
         else
           skope = scope.where(classification: ['comment', 'system' ])

@@ -5,7 +5,7 @@ class LeadPolicy < ApplicationPolicy
     def resolve
       skope = scope
       return case user
-        when ->(u) { u.administrator? }
+        when ->(u) { u.admin? }
           skope
         when ->(u) { u.corporate? }
           skope.
