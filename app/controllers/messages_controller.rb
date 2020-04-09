@@ -43,7 +43,6 @@ class MessagesController < ApplicationController
     end
     authorize @message
     @message.load_template
-    @message.load_signature
   end
 
   # GET /messages/1/edit
