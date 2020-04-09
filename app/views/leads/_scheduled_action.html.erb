@@ -1,4 +1,4 @@
-<tr class="<%= "lead_task_#{scheduled_action.completed? ? 'completed' : 'pending'}" %>">
+<tr id="scheduled_action_row_<%= scheduled_action.id %>" class="<%= "lead_task_#{scheduled_action.completed? ? 'completed' : 'pending'}" %>">
   <td><%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %></td>
   <td class="dashboard_item_date">
     <% unless scheduled_action.schedule.duration.present? %>
@@ -25,7 +25,7 @@
     <%= model_link_with_tooltip(scheduled_action, :edit) %>
     <% if policy(scheduled_action).complete? %>
       <%= tooltip_block('scheduled_action-complete-link') do %>
-        <%= link_to(glyph(:ok), complete_scheduled_action_path(id: scheduled_action.id, scheduled_action: {completion_action: 'complete'}), method: :post, rel: 'nofollow' ) %>&nbsp;
+        <%= link_to(glyph(:ok),'#', class: 'scheduled_action-complete-button', data: {scheduled_action_id: scheduled_action.id}) %>
       <% end %>
     <% end unless scheduled_action.completed? %>
   </td>

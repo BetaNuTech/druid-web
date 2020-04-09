@@ -1,0 +1,6 @@
+window.Loader.stop();
+<% if @success %>
+  $('#scheduled_action_row_<%= @scheduled_action.id %>').remove();
+<% else %>
+  alert('Sorry, there was an error');
+<% end %>

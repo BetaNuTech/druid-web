@@ -70,7 +70,10 @@ class ScheduledActionsController < ApplicationController
       scheduled_action: @scheduled_action,
       event_name: @scheduled_action.completion_action,
       user: completion_user)
-    redirect_to completion_form_scheduled_action_path(@scheduled_action)
+    respond_to do |format|
+      format.js
+      format.html { redirect_to completion_form_scheduled_action_path(@scheduled_action) }
+    end
   end
 
   def conflict_check

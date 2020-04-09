@@ -41,7 +41,7 @@ $(document).on('turbolinks:load', function() {
 
   $('.lead_assignment-agent-selector').on('change', function(){
     $('.lead_assigner-pagination').hide();
-  }) 
+  })
 
   $('#lead-claim-button').on('click', function(e){
     if(confirm("Are you sure you want to claim this lead?")) {
@@ -53,6 +53,28 @@ $(document).on('turbolinks:load', function() {
     }
     return(true);
   });
-  
+
+  $('.scheduled_action-complete-button').on('click', function(e){
+    if ( confirm('Are you sure you want to mark this task as completed') ) {
+      window.Loader.start();
+      var el = $(e.target).parent();
+      var id = el.data('scheduledActionId');
+      var token = $('meta[name="csrf-token"]').attr('content');
+      var url = '/scheduled_actions/' + id + '/complete.js' +
+        '?scheduled_action[completion_action]=complete'
+      $.ajax({
+        url: url,
+        dataType: 'script',
+        method: 'post',
+        success: '',
+        headers: {
+          'X-CSRF-Token': token
+        }
+      })
+    }
+    return(false);
+  })
+
+
 
 });
