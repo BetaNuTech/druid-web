@@ -1,6 +1,6 @@
 json.Meta do
   json.ReportDate @stats.end_date
-  json.Version "1.2.1"
+  json.Version "1.3.1"
 end
 
 case @stats_for
