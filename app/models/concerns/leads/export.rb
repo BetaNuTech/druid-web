@@ -18,7 +18,9 @@ module Leads
         [ "Yardi?" , -> (lead) { lead.remoteid.present? } ],
         [ "Yardi ID" , -> (lead) { lead.remoteid } ],
         [ "Notes" , -> (lead) { lead.preference.try(:notes) } ],
-        ["Bluesky ID" , -> (lead) { lead.id }],
+        [ "State" , -> (lead) { lead.state }],
+        [ "Classification" , -> (lead) { lead.classification }],
+        [ "Bluesky ID" , -> (lead) { lead.id }],
         [ "Bluesky URL" , -> (lead) {
           "%s://%s/leads/%s" % [ ENV['APPLICATION_PROTOCOL'], ENV['APPLICATION_HOST'], lead.id ] }
         ]
