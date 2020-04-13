@@ -14,13 +14,13 @@
 #  description                            :text
 #  completed_at                           :datetime
 #  state                                  :string           default("pending")
-#  attempt                                :integer          default(1)
+#  attempt                                :integer          default("1")
 #  created_at                             :datetime         not null
 #  updated_at                             :datetime         not null
 #  remoteid                               :string
 #  article_id                             :uuid
 #  article_type                           :string
-#  notify                                 :boolean          default(FALSE)
+#  notify                                 :boolean          default("false")
 #  notified_at                            :datetime
 #  notification_message                   :text
 #

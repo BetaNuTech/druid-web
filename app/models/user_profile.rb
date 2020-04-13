@@ -2,19 +2,21 @@
 #
 # Table name: user_profiles
 #
-#  id           :uuid             not null, primary key
-#  user_id      :uuid
-#  name_prefix  :string
-#  first_name   :string
-#  last_name    :string
-#  name_suffix  :string
-#  slack        :string
-#  cell_phone   :string
-#  office_phone :string
-#  fax          :string
-#  notes        :text
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id                :uuid             not null, primary key
+#  user_id           :uuid
+#  name_prefix       :string
+#  first_name        :string
+#  last_name         :string
+#  name_suffix       :string
+#  slack             :string
+#  cell_phone        :string
+#  office_phone      :string
+#  fax               :string
+#  notes             :text
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  signature         :text
+#  signature_enabled :boolean          default("false")
 #
 
 class UserProfile < ApplicationRecord

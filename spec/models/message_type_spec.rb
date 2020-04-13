@@ -5,10 +5,10 @@
 #  id          :uuid             not null, primary key
 #  name        :string           not null
 #  description :text
-#  active      :boolean          default(TRUE), not null
+#  active      :boolean          default("true"), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  html        :boolean          default(FALSE)
+#  html        :boolean          default("false")
 #
 
 require 'rails_helper'

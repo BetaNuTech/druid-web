@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: articles
+#
+#  id          :uuid             not null, primary key
+#  articletype :string
+#  category    :string
+#  published   :boolean          default("false")
+#  title       :string
+#  body        :text
+#  slug        :string
+#  user_id     :uuid
+#  contextid   :string           default("hidden")
+#  audience    :string           default("all")
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
 require 'rails_helper'
 
 RSpec.describe Article, type: :model do

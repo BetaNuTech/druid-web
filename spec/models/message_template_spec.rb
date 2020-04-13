@@ -10,7 +10,7 @@
 #  body            :text             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  shared          :boolean          default(TRUE)
+#  shared          :boolean          default("true")
 #
 
 require 'rails_helper'

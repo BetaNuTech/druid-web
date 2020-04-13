@@ -19,7 +19,7 @@
 #  beds              :integer
 #  raw_data          :text
 #  unit_type_id      :uuid
-#  optout_email      :boolean          default(FALSE)
+#  optout_email      :boolean          default("false")
 #  optout_email_date :datetime
 #
 

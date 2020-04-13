@@ -7,7 +7,7 @@
 #  slug            :string           not null
 #  name            :string           not null
 #  description     :text
-#  active          :boolean          default(TRUE), not null
+#  active          :boolean          default("true"), not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  api_token       :string

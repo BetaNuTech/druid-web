@@ -20,7 +20,7 @@
 #  notes           :text
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  active          :boolean          default(TRUE)
+#  active          :boolean          default("true")
 #  website         :string
 #  school_district :string
 #  amenities       :text

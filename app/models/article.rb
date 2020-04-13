@@ -5,7 +5,7 @@
 #  id          :uuid             not null, primary key
 #  articletype :string
 #  category    :string
-#  published   :boolean
+#  published   :boolean          default("false")
 #  title       :string
 #  body        :text
 #  slug        :string

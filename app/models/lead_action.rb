@@ -5,13 +5,13 @@
 #  id             :uuid             not null, primary key
 #  name           :string
 #  description    :string
-#  active         :boolean          default(TRUE)
+#  active         :boolean          default("true")
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  glyph          :string
-#  is_contact     :boolean          default(FALSE)
+#  is_contact     :boolean          default("false")
 #  state_affinity :string           default("all")
-#  notify         :boolean          default(FALSE)
+#  notify         :boolean          default("false")
 #
 
 class LeadAction < ApplicationRecord
