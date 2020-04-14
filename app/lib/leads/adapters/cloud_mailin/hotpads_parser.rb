@@ -5,11 +5,8 @@ module Leads
         # This parser should be declared/loaded before Zillow
         class << self
           def match?(data)
-            zillow_match = (data.fetch(:headers, {}).fetch('Subject',"")).
-              match?("Zillow Group").
-              present?
             format, body = get_format_and_body(data)
-            return !zillow_match && body.match?("hotpads.com").present?
+            return body.match?("filenet.hotpads.com").present?
           end
 
           def parse(data)
@@ -24,13 +21,14 @@ module Leads
             end
           end
 
-          def parse_html(data)
+          def parse_html_v1(data)
             body = data[:body]
             html = Nokogiri::HTML(body)
             container = html.css('td.h-card')
 
             raw_name_and_unit = container.css('span.p-name').text
             interest, raw_name, raw_unit = raw_name_and_unit.match(/(.+) is interested in (.+) and says/).to_a
+
             name = raw_name.split(' ')
 
             message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
@@ -76,6 +74,92 @@ module Leads
             }
 
             return parsed
+          end
+
+          
+          def parse_html_v2(data)
+            body = data[:body]
+            html = Nokogiri::HTML(body)
+            container = html.css('td.h-card')
+
+            raw_name_and_unit = container.css('span.p-name').text
+            raw_name = raw_name_and_unit.match(/(.+) says:/)[1] rescue '(Null)'
+            name = raw_name.split(' ')
+
+            message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
+            title = nil
+            first_name = name.first
+            last_name = name.last
+            last_name = nil if last_name == first_name
+            referral = "HotPads.com"
+            phone1 = container.css('td.phone-button-wrapper td.btn-text font.p-tel').text
+            phone2 = nil
+            email = container.css('table.email-button-tbl td.btn-text a[href^="mailto:"]').attr('href').to_s.match(/mailto:([^?]+)/)[1] rescue ''
+            fax = nil
+            baths = nil
+            beds = nil
+            notes = (container.css('tr:nth-child(2) td').text || '').strip.gsub('"','')
+            smoker = nil
+            pets = nil
+            move_in = nil
+            agent_notes = nil
+            raw_data = data.to_json
+
+            parsed = {
+              title: title,
+              first_name: first_name,
+              last_name: last_name,
+              referral: referral,
+              phone1: phone1,
+              phone1_type: 'Cell',
+              phone2: phone2,
+              phone2_type: 'Cell',
+              email: email,
+              fax: fax,
+              notes: nil,
+              preference_attributes: {
+                baths: baths,
+                beds: beds,
+                notes: notes,
+                smoker: smoker,
+                raw_data: raw_data,
+                pets: pets,
+                move_in: move_in
+              }
+            }
+
+            return parsed
+          end
+
+          def html_v1?(data)
+            body = data[:body]
+            html = Nokogiri::HTML(body)
+            container = html.css('td.h-card')
+
+            raw_name_and_unit = container.css('span.p-name').text
+            interest, raw_name, raw_unit = raw_name_and_unit.match(/(.+) is interested in (.+) and says/).to_a
+
+            return raw_name.present?
+          end
+
+          def html_v2?(data)
+            body = data[:body]
+            html = Nokogiri::HTML(body)
+            container = html.css('td.h-card')
+
+            raw_name_and_unit = container.css('span.p-name').text
+            raw_name = raw_name_and_unit.match(/(.+) says:/).to_a
+
+            return raw_name.present?
+          end
+
+          def parse_html(data)
+            return case data
+                    when -> (d) { html_v1?(d) }
+                      parse_html_v1(data)
+                    when -> (d) { html_v2?(d) }
+                      parse_html_v2(data)
+                   end
           end
 
           def parse_plain(data)
