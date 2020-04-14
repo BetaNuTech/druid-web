@@ -153,6 +153,7 @@ RSpec.describe EngagementPolicyScheduler do
     it "should create retries for a Personal Task without an associated Reason" do
       scheduled_action = ScheduledAction.new(
         user: agent,
+        target: agent,
         description: "This is a test"
       )
 

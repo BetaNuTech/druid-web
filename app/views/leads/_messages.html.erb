@@ -6,6 +6,25 @@
         <h2>Messages</h2>
       </div>
     </div>
+    <div class="row">
+      <div class=:col-md-8">
+        <ul>
+          <% if @lead.optout_email? %>
+            <li><b>This Lead has opted out of email notifications.</b></li>
+          <% end %>
+          <% if !@lead.optin_sms? %>
+            <li>
+              <b>This Lead has not yet agreed to SMS messaging</b>
+              <% if policy(lead).resend_sms_opt_in_message? %>
+                    <%= link_to(resend_sms_opt_in_message_lead_path(id: lead.id), method: :post) do %>
+                     <span class='btn btn-sm btn-primary'>Resend Now</span>
+                   <% end %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-md-8">

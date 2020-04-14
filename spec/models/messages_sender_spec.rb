@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Messages::Sender do
   describe "Initialization" do
     before :each  do
-      ENV[Messages::Sender::WHITELIST_FLAG] = 'false'
+      ENV[MessageDelivery::WHITELIST_FLAG] = 'false'
     end
 
     let(:message_type) { create(:email_message_type)}
@@ -134,7 +134,7 @@ RSpec.describe Messages::Sender do
 
       describe "with whitelist enabled" do
         before :each do
-          ENV[Messages::Sender::WHITELIST_FLAG] = 'true'
+          ENV[MessageDelivery::WHITELIST_FLAG] = 'true'
         end
 
         it "should send an email to a recipient with a whitelisted email address" do
@@ -170,7 +170,7 @@ RSpec.describe Messages::Sender do
 
       describe "with whitelist disabled" do
         before :each do
-          ENV[Messages::Sender::WHITELIST_FLAG] = 'false'
+          ENV[MessageDelivery::WHITELIST_FLAG] = 'false'
         end
 
         it "should send an email to a recipient with a whitelisted email address" do

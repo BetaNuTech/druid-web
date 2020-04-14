@@ -4,7 +4,7 @@ RSpec.shared_context "twilio_incoming_message" do
   let(:sms_message_type) { MessageType.sms || create(:sms_message_type) }
   #let(:sms_delivery_adapter) { create(:sms_delivery_adapter) }
   let(:sms_adapter_token) { sms_delivery_adapter.api_token }
-  let(:twilio_delivery_adapter) { create(:sms_delivery_adapter) }
+  let(:twilio_delivery_adapter) { MessageDeliveryAdapter.where(name: 'Twilio').first || create(:sms_delivery_adapter) }
   let(:twilio_adapter_token) { twilio_delivery_adapter.api_token }
   let(:sms_message_threadid) { Message.new_threadid }
   let(:sms_message_user) { agent }

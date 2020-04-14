@@ -3,6 +3,17 @@
         <legend>Preferences</legend>
 
         <div class="row">
+          <div class="col-md-3 form-group">
+            <%= preference_form.check_box :optin_sms, class: 'form-check-input' %>
+            SMS Messaging Allowed
+          </div>
+          <div class="col-md-3 form-group">
+            <%= preference_form.check_box :optout_email, class: 'form-check-input' %>
+            Do Not Email
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-md-6 form-group">
             <%= preference_form.label :unit_type_id, 'Unit Type' %>
             <%= preference_form.select :unit_type_id,

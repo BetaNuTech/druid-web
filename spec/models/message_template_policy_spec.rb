@@ -11,7 +11,7 @@ RSpec.describe MessageTemplatePolicy do
       it "should return all message templates" do
         scope = MessageTemplatePolicy::Scope.new(corporate, MessageTemplate)
         results = scope.resolve
-        expect(results.count).to eq(9)
+        expect(results.count).to eq(MessageTemplate.count)
       end
     end
 

@@ -3,13 +3,17 @@ module Leads
     extend ActiveSupport::Concern
 
     MESSAGE_DELIVERY_COMMENT_REASON = 'Follow-Up'
-    MESSAGE_OPTOUT_LEAD_ACTION = 'Lead Email Opt-Out'
-    MESSAGE_OPTIN_LEAD_ACTION = 'Lead Email Opt-In'
+    MESSAGE_OPTOUT_LEAD_ACTION = 'Lead Email/SMS Opt-Out'
+    MESSAGE_OPTIN_LEAD_ACTION = 'Lead Email/SMS Opt-In'
     MESSAGE_LEAD_PREFERENCE_SET = 'Lead Preference Set'
+    SMS_OPT_IN_MESSAGE_TEMPLATE_NAME='SMS Opt-In Request'
+    SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-In Confirmation'
+    SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-Out Confirmation'
 
     included do
 
       has_many :messages, as: :messageable, dependent: :destroy
+      #before_save :set_optin_sms_date
 
       def message_template_data
         {
@@ -67,29 +71,61 @@ module Leads
 
       def message_types_available
         types = []
-        # TODO: re-enable SMS messaging after opt-in logic is in place
-        #
-        #types << MessageType.active.sms if message_sms_destination.present?
-        types << MessageType.active.email if message_email_destination.present?
+        types << MessageType.sms if permit_sms_messaging?
+        types << MessageType.email if permit_email_messaging?
         return types
       end
 
-      def optout!
+      def permit_sms_messaging?
+        !( MessageType.sms.disabled? rescue false ) && optin_sms? && message_sms_destination.present?
+      end
+
+      def permit_email_messaging?
+        !( MessageType.email.disabled? rescue false ) && !optout_email? && message_email_destination.present?
+      end
+
+      def optout_email?
+        preference&.optout_email?
+      end
+
+      def optin_email?
+        !optout_email?
+      end
+
+      def optout_email!
         if preference.present?
-          preference.optout!
+          preference.optout_email!
           create_optout_comment(content: "Lead used email unsubscribe link to opt out of automated emails")
         end
       end
 
-      def optin!
+      def optin_email!
         if preference.present?
-          preference.optin!
+          preference.optin_email!
           create_optin_comment(content: "Lead used email unsubscribe link to opt back into automated emails")
         end
       end
 
-      def optout?
-        preference.optout? if preference.present?
+      def optin_sms?
+        preference&.optin_sms?
+      end
+
+      def optout_sms?
+        !optin_sms?
+      end
+
+      def optin_sms!
+        if preference.present?
+          preference.optin_sms!
+          create_optin_comment(content: "Lead used email unsubscribe link to opt back into automated sms messaging")
+        end
+      end
+
+      def optout_sms!
+        if preference.present?
+          preference.optout_sms!
+          create_optin_comment(content: "Lead used email unsubscribe link to opt out of automated sms messaging")
+        end
       end
 
       def create_optout_comment(content:)
@@ -143,11 +179,106 @@ module Leads
 
       def handle_message_delivery(message_delivery)
         if message_delivery&.delivered_at.present?
-          create_message_delivery_comment(message_delivery)
-          create_message_delivery_task(message_delivery)
           self.last_comm = message_delivery.delivered_at
           save
+          preference&.handle_message_response(message_delivery)
+          create_message_delivery_comment(message_delivery)
+          create_message_delivery_task(message_delivery)
         end
+      end
+
+      # Send communication compliance message
+      #
+      # send_compliance_message(
+      #   message_type: MessageType.sms|MessageType.email,
+      #   disposition: :request|:confirmation,
+      #   assent: true|false)
+      def send_compliance_message(message_type:, disposition:, assent:)
+        note_lead_action_name = assent ? MESSAGE_OPTIN_LEAD_ACTION : MESSAGE_OPTOUT_LEAD_ACTION
+        note_lead_action = LeadAction.where(name: note_lead_action_name).first
+        note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
+        message_type_name = message_type&.name&.downcase
+        message_template_name = "Leads::Messaging::%s_%s%s_MESSAGE_TEMPLATE_NAME" % [
+          message_type_name&.upcase,
+          ( assent ? 'OPT_IN' : 'OPT_OUT' ),
+          ( disposition == :confirmation ? '_CONFIRMATION'  : '' )
+        ]
+        message_template_name = Object.const_get(message_template_name) rescue nil
+        message_template = MessageTemplate.where(name: message_template_name).first
+        destination_present = ( self.send("message_" + message_type_name + "_destination").present? rescue false )
+
+        if destination_present && message_template.present?
+          # Send Message to Lead
+          message = Message.new_message(
+            from: agent,
+            to: self,
+            message_type: message_type,
+            message_template: message_template,
+            classification: 'compliance'
+          )
+          message.save
+          message.deliver!
+          message.reload
+          comment_content = "SENT: #{message_template_name}"
+        else
+          # Cannot send Message: send Error Notification
+          message = Message.new()
+          error_message = "Could not send SMS opt-in request to Lead[#{self.id}]"
+          errors[:errors] << error_message
+          error = StandardError.new(error_message)
+          if message_template.nil?
+            errors[:errors] << "Missing Message Template: '#{message_template_name}'"
+          end
+          if message_sms_destination.nil?
+            errors[:errors] << "Lead does not have a Phone Number"
+          end
+          ErrorNotification.send(error,errors)
+          comment_content = "NOT SENT: #{message_template_name} -- #{errors[:errors].join('; ')}"
+        end
+
+        # Add activity entry to Lead timeline
+        note = Note.create!( # create_event_note
+          notable: self,
+          lead_action: note_lead_action,
+          reason: note_reason,
+          content: comment_content,
+          classification: 'system'
+        )
+
+      end
+
+      def send_sms_optin_request
+        send_compliance_message(
+          message_type: MessageType.sms,
+          disposition: :request,
+          assent: true
+        )
+      end
+
+      def send_sms_optin_confirmation
+        send_compliance_message(
+          message_type: MessageType.sms,
+          disposition: :confirmation,
+          assent: true
+        )
+      end
+
+      def send_sms_optout_confirmation
+        send_compliance_message(
+          message_type: MessageType.sms,
+          disposition: :confirmation,
+          assent: false
+        )
+      end
+
+      def opt_in_message_sent?
+        messages.for_compliance.exists?
+      end
+
+      def resend_opt_in_message?
+        messages.for_compliance.empty? ||
+        ( messages.for_compliance.exists? &&
+          messages.for_compliance.last.failed? )
       end
 
     end

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h1>Update your Messaging Preferences</h1>
+      <h2>Update your Messaging Preferences</h2>
     </div>
   </div>
 
@@ -11,7 +11,7 @@
         <%= form_tag(messaging_unsubscribe_path) %>
         <%= hidden_field_tag :lead_id, params[:id] %>
 
-        <div class="row">
+        <div class="row form-group">
           <div class="col-md-4">
             <%= label_tag :lead_email, 'Email Address' %>
             <%= text_field_tag :lead_email, @lead.email, class: "form-control" %>
@@ -19,8 +19,14 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-            <%= check_box_tag :lead_optout, "true", @lead.optout? %>
-            <%= label_tag :lead_optout, 'Opt out of Emails and Notifications' %>
+            <%= check_box_tag :lead_email_optout, "true", @lead.optout_email? %>
+            <%= label_tag :lead_email_optout, 'I do not want to be sent Email messages' %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <%= check_box_tag :lead_sms_optout, "true", @lead.optout_sms? %>
+            <%= label_tag :lead_sms_optout, 'I do not want to be sent SMS messages' %>
           </div>
         </div>
 

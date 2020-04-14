@@ -21,6 +21,7 @@
 #  read_by_user_id     :uuid
 #  incoming            :boolean
 #  since_last          :integer
+#  classification      :integer          default("0")
 #
 
 require 'rails_helper'

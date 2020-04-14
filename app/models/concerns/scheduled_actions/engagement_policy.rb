@@ -60,6 +60,7 @@ module ScheduledActions
       end
 
       def next_scheduled_attempt(this_attempt=nil)
+        default = ( DateTime.now.utc + 1.day )
         if completion_retry_delay_value.present? && completion_retry_delay_unit.present?
           # Use override delay information
           retry_value = [completion_retry_delay_value.to_i, 1].max
@@ -76,7 +77,8 @@ module ScheduledActions
         else
           # If this is a personal task, return Now + 1 day
           # If this is a Compliance Task, return the date as dictated by Policy
-          return personal_task? ? ( DateTime.now.utc + 1.day ) : engagement_policy_action.next_scheduled_attempt(this_attempt)
+          return default if personal_task? || engagement_policy_action.nil?
+          return engagement_policy_action.next_scheduled_attempt(this_attempt)
         end
       end
 

@@ -2,15 +2,9 @@ module Messages
   class Sender
     class Error < StandardError; end
 
-    WHITELIST_FLAG = "MESSAGE_WHITELIST_ENABLED"
 
     attr_reader :delivery, :adapter
 
-    def initialize(delivery)
-      @delivery = delivery
-      validate!(delivery)
-      @adapter = find_adapter!(delivery.message)
-    end
 
     def self.find_adapter(message)
       available = MessageDeliveryAdapter.where(
@@ -40,48 +34,50 @@ module Messages
       end
     end
 
+    def initialize(delivery)
+      @delivery = delivery
+      validate!(delivery)
+      @adapter = find_adapter!(delivery.message)
+    end
+
     def deliver
       begin
-        enforce_whitelist!
-        @adapter.deliver(
-          from: delivery.message.from_address,
-          to: delivery.message.to_address,
-          subject: delivery.message.subject,
-          body: delivery.message.body_with_layout
-        )
-        delivery.delivered_at = DateTime.now
-        delivery.status = MessageDelivery::SUCCESS
-        delivery.save!
-        delivery.message.incoming = false
-        delivery.message.delivered_at = delivery.delivered_at
-        delivery.message.read_at = delivery.delivered_at
-        delivery.message.read_by_user_id = delivery.message.user_id
-        delivery.message.set_time_since_last_message
-        delivery.message.save
+        deliver_via_adapter
+        record_success
       rescue => e
-        delivery.status = MessageDelivery::FAILED
-        delivery.log = e.to_s
-        delivery.save!
-        delivery.message.reload
-        delivery.message.fail!
+        handle_delivery_exception(e)
       end
     end
 
     private
 
-    def enforce_whitelist!
-      if enforce_whitelist?
-        unless message_recipient_whitelist.include?(delivery.message.to_address)
-          msg = "Invalid MessageDelivery #{delivery.id}. Message violates recipient whitelist: #{delivery.message.to_address}"
-          Rails.logger.error msg
-          ErrorNotification.send(StandardError.new(msg))
-          raise Error.new(msg)
-        end
-      end
+    def deliver_via_adapter
+      @adapter.deliver(
+        from: delivery.message.from_address,
+        to: delivery.message.to_address,
+        subject: delivery.message.subject,
+        body: delivery.message.body_with_layout
+      )
     end
 
-    def enforce_whitelist?
-      %w{1 true t yes y}.include?(ENV.fetch("MESSAGE_WHITELIST_ENABLED", false).to_s.downcase)
+    def record_success
+      delivery.delivered_at = DateTime.now
+      delivery.status = MessageDelivery::SUCCESS
+      delivery.save!
+      delivery.message.incoming = false
+      delivery.message.delivered_at = delivery.delivered_at
+      delivery.message.read_at = delivery.delivered_at
+      delivery.message.read_by_user_id = delivery.message.user_id
+      delivery.message.set_time_since_last_message
+      delivery.message.save
+    end
+
+    def handle_delivery_exception(e)
+      delivery.status = MessageDelivery::FAILED
+      delivery.log = e.to_s
+      delivery.save!
+      delivery.message.reload
+      delivery.message.fail!
     end
 
     def find_adapter!(message)
@@ -103,22 +99,6 @@ module Messages
         raise Error.new(msg)
       end
       return true
-    end
-
-    def email_whitelist
-      return User.select('distinct email').
-        map(&:email).
-        select{|p| p.present?}
-    end
-
-    def phone_whitelist
-      return UserProfile.select(:cell_phone, :office_phone, :fax).
-        map{|p| [p.cell_phone, p.office_phone, p.fax]}.
-        flatten.compact.uniq.select{|p| p.present?}
-    end
-
-    def message_recipient_whitelist
-      return (email_whitelist + phone_whitelist)
     end
 
   end

@@ -21,11 +21,13 @@
 #  read_by_user_id     :uuid
 #  incoming            :boolean
 #  since_last          :integer
+#  classification      :integer          default("0")
 #
 
 class Message < ApplicationRecord
   ### Class Concerns/Extensions
   include Messages::StateMachine
+  include Messages::Compliance
   audited
 
   ### Constants
@@ -103,13 +105,14 @@ class Message < ApplicationRecord
   end
 
 
-  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil)
+  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil, classification: 'default')
     message = Message.new(
       message_type: message_type,
       message_template: message_template,
       threadid: threadid,
       subject: subject,
-      body: body
+      body: body,
+      classification: classification
     )
 
     message.set_threadid

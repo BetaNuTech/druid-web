@@ -34,5 +34,6 @@ RSpec.shared_context "message_templates" do
   before do
     #MessageTemplate.destroy_all
     all_message_templates
+    MessageTemplate.load_seed_data
   end
 end

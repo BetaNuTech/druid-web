@@ -271,6 +271,25 @@ RSpec.describe Lead, type: :model do
         expect(lead.user).to eq(agent)
         expect(lead.priority).to eq('zero')
       end
+
+      describe "sms opt-in" do
+        include_context "message_templates"
+
+        before do
+          seed_engagement_policy
+        end
+
+        it "sends an sms opt-in message upon claiming" do
+          lead.phone1 = '5555555555'
+          lead.phone1_type = 'Cell'
+          lead.property = agent.property
+          lead.save!
+          expect(lead.messages.for_compliance.count).to eq(0)
+          lead.trigger_event(event_name: 'claim', user: agent)
+          lead.reload
+          expect(lead.messages.for_compliance.count).to eq(1)
+        end
+      end
     end
 
     describe "priorities" do
@@ -585,23 +604,23 @@ RSpec.describe Lead, type: :model do
       sms_message_type
       email_message_type
       lead.phone1_type = 'Cell'
-      expect(lead.message_types_available).to eq([email_message_type])
+      expect(lead.message_types_available.sort).to eq([sms_message_type,email_message_type].sort)
       lead.phone1 = nil
       expect(lead.message_types_available).to eq([email_message_type])
     end
 
     it "returns whether the Lead has opted out of messaging" do
-      refute(lead.optout?)
+      refute(lead.optout_email?)
       lead.preference.optout_email = true
       lead.preference.save
       lead.reload
-      assert(lead.optout?)
+      assert(lead.optout_email?)
     end
 
     it "sets the optout flag" do
-      refute(lead.optout?)
-      lead.optout!
-      assert(lead.optout?)
+      refute(lead.optout_email?)
+      lead.optout_email!
+      assert(lead.optout_email?)
     end
 
     describe "handling message delivery" do

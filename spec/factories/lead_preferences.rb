@@ -21,6 +21,8 @@
 #  unit_type_id      :uuid
 #  optout_email      :boolean          default("false")
 #  optout_email_date :datetime
+#  optin_sms         :boolean          default("false")
+#  optin_sms_date    :datetime
 #
 
 FactoryBot.define do
@@ -39,5 +41,7 @@ FactoryBot.define do
     unit_type
     optout_email { false }
     optout_email_date { nil }
+    optin_sms { true }
+    optin_sms_date { DateTime.now }
   end
 end

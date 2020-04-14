@@ -27,14 +27,18 @@ class HomeController < ApplicationController
     authorize User, policy_class: HomePolicy
     @page = "Update Messaging Preferences"
     lead_id = params[:lead_id]
-    optout = params[:lead_optout]
+    email_optout = params[:lead_email_optout]
+    sms_optout = params[:lead_sms_optout]
     @lead = Lead.find(lead_id)
-    if optout == "true"
-      @lead.optout!
-      flash[:notice] = "You have opted out of email notifications."
+    if email_optout == "true"
+      @lead.optout_email!
     else
-      @lead.optin!
-      flash[:notice] = "You may recieve email notifications again."
+      @lead.optin_email!
+    end
+    if sms_optout == "true"
+      @lead.optout_sms!
+    else
+      @lead.optin_sms!
     end
   end
 

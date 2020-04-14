@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       get 'progress_state', to: "leads#progress_state"
       post 'update_state', to: "leads#update_state"
       get 'update_referrable_options', to: 'leads#update_referrable_options'
+      post 'resend_sms_opt_in_message', to: 'leads#resend_sms_opt_in_message'
     end
     resources :messages do
       post 'deliver', on: :member
