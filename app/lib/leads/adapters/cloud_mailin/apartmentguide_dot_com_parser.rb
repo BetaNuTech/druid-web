@@ -4,7 +4,7 @@ module Leads
       class ApartmentguideDotComParser
 
         def self.match?(data)
-          return data.fetch("envelope",{}).fetch("from").
+          return data.fetch("envelope",{}).fetch("from",'').
             match?(/apartmentguide.com$/).
             present?
         end
