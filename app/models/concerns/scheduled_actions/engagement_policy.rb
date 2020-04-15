@@ -52,7 +52,7 @@ module ScheduledActions
       end
 
       def personal_task?
-        return ( user_id.present? && !compliance_task? )
+        return ( user_id.present? && target_id == user_id )
       end
 
       def compliance_task?

@@ -32,11 +32,12 @@ class ScheduledActionPolicy < ApplicationPolicy
   end
 
   def edit?
-    !record&.completed? &&
-    ( user.admin? ||
-      same_user? ||
-      (user.user? &&
-       (for_lead_in_same_property? && !record.personal_task?)) )
+    user.admin? || (
+      !record&.completed? &&
+      ( same_user? ||
+        (user.user? &&
+        (for_lead_in_same_property? && !record.personal_task?)) )
+      )
   end
 
   def update?

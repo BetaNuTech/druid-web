@@ -13,8 +13,6 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions.json
   def index
     authorize ScheduledAction
-
-    set_limit
     @show_all = params[:all].present?
     skope = nil
 
@@ -220,10 +218,6 @@ class ScheduledActionsController < ApplicationController
         @scheduled_action.user :
         current_user
       return user
-    end
-
-    def set_limit
-      return @limit ||= (params[:limit] || 10).to_i
     end
 
 end

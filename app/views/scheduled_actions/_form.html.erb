@@ -30,7 +30,7 @@
   <div class="row">
     <div class="col-md-4 form-group">
       <%= form.label :lead_action_id, "Action" %>
-      <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id, state: scheduled_action.target&.state), {include_blank: true},{id: :scheduled_action_lead_action_id, class: "form-control"} %>
+      <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id, state: ( scheduled_action.target&.state rescue nil )), {include_blank: true},{id: :scheduled_action_lead_action_id, class: "form-control"} %>
       <div id="scheduled_action_article">
         <%= scheduled_action_article_select(scheduled_action: scheduled_action, action: scheduled_action.lead_action) if scheduled_action.lead_action.present? %>
       </div>

@@ -25,7 +25,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.upcoming_or_incomplete.sorted_by_due_desc.limit(10) } %>
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.upcoming_or_incomplete.sorted_by_due_desc.limit(50) } %>
         </div>
       </div>
     </div>
@@ -74,7 +74,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(20) } %>
+          <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(50) } %>
         </div>
       </div>
     </div>
