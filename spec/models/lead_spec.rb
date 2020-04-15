@@ -512,7 +512,7 @@ RSpec.describe Lead, type: :model do
   end
 
   describe "messaging helpers" do
-    let(:lead) { create(:lead) }
+    let(:lead) { create(:lead, preference: create(:lead_preference)) }
     let(:sms_message_type) {create(:sms_message_type)}
     let(:email_message_type) {create(:email_message_type)}
 
