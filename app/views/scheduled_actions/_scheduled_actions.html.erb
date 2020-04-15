@@ -14,6 +14,7 @@
     </thead>
     <tbody>
       <% scheduled_actions.each do |scheduled_action| %>
+        <% next unless policy(scheduled_action).completion_form? %>
         <tr>
           <td class="text-nowrap"><%= scheduled_action.user.try(:name) || 'None' %></td>
           <td class="text-nowrap">
@@ -42,7 +43,7 @@
                 <%= glyph(:edit) %>
               <% end %>
             <% end %>
-            <% if policy(scheduled_action).completion_form? && scheduled_action.pending? %>
+            <% if scheduled_action.pending? %>
               <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete'), title: 'Complete Task' ) do %><%= glyph(:ok) %><% end %>&nbsp;
               <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete_retry'), title: 'Complete and Re-Attempt Task Later' ) do %><%= glyph(:refresh) %><% end %>&nbsp;
               <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'reject'), title: 'Reject Task' ) do %><%= glyph(:remove) %><% end %>&nbsp;
@@ -50,6 +51,7 @@
             <% else %>
               <%= link_to(scheduled_action_status(scheduled_action), completion_form_scheduled_action_path(scheduled_action)) %>
             <% end %>
+
           </td>
         </tr>
       <% end %>
