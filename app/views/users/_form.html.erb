@@ -16,6 +16,14 @@
       <fieldset>
         <legend>Login Information</legend>
 
+        <% if user.deactivated? %>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="lead bg-danger"> Deactivated </p>
+            </div>
+          </div>
+        <% end %>
+
         <div class="row">
           <div class="col-md-8 form-group">
             <%= form.label :email %>
@@ -115,6 +123,12 @@
       <div class="col-md-12">
         <fieldset>
           <legend>Role and Access</legend>
+          <div class="row">
+            <div class="col-md-4">
+              <%= form.check_box :deactivated, class: 'form-check-input' %>
+              <%= form.label(:deactivated, 'Deactivated?') %>
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-4 form-group">
               <%= form.label :role_id, "System Role" %>

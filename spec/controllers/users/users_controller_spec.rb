@@ -334,12 +334,27 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested user" do
+    it "does not delete the requested user" do
       sign_in corporate
       user = User.create! valid_attributes
       expect {
         delete :destroy, params: {id: user.to_param}
-      }.to change(User, :count).by(-1)
+      }.to_not change(User, :count)
+    end
+
+    it "deactivates the user and prevents login" do
+      user = User.create! valid_attributes
+      sign_in user
+      expect(response).to be_successful
+      sign_out user
+      sign_in corporate
+      delete :destroy, params: {id: user.to_param}
+      user.reload
+      assert(user.deactivated?)
+      sign_out user
+      sign_in user
+      get :index
+      expect(response).to redirect_to('/users/sign_in')
     end
 
     it "redirects to the users list" do

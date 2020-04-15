@@ -512,7 +512,7 @@ RSpec.describe Lead, type: :model do
   end
 
   describe "messaging helpers" do
-    let(:lead) { create(:lead) }
+    let(:lead) { create(:lead, preference: create(:lead_preference)) }
     let(:sms_message_type) {create(:sms_message_type)}
     let(:email_message_type) {create(:email_message_type)}
 
@@ -585,9 +585,9 @@ RSpec.describe Lead, type: :model do
       sms_message_type
       email_message_type
       lead.phone1_type = 'Cell'
-      expect(lead.message_types_available).to eq([sms_message_type, email_message_type])
-      lead.email = nil
-      expect(lead.message_types_available).to eq([sms_message_type])
+      expect(lead.message_types_available).to eq([email_message_type])
+      lead.phone1 = nil
+      expect(lead.message_types_available).to eq([email_message_type])
     end
 
     it "returns whether the Lead has opted out of messaging" do
