@@ -58,11 +58,13 @@ class UserPolicy < ApplicationPolicy
    end
 
   def destroy?
-    user != record && edit?
+    !record.deactivated? &&
+      user != record &&
+      edit?
   end
 
   def impersonate?
-    user.administrator? && !record.administrator?
+    !record.deactivated? && user.administrator? && !record.administrator?
   end
 
   def assign_to_role?
@@ -107,6 +109,11 @@ class UserPolicy < ApplicationPolicy
     else
       valid_user_params = []
       valid_user_profile_params = []
+    end
+
+    # Disallow self-deactivation
+    if record == user
+      valid_user_params = valid_user_params - [:deactivated]
     end
 
     return(valid_user_params + valid_user_profile_params)

@@ -24,6 +24,7 @@
 #  updated_at             :datetime         not null
 #  role_id                :uuid
 #  timezone               :string           default("UTC")
+#  deactivated            :boolean          default("false")
 #
 
 require 'rails_helper'

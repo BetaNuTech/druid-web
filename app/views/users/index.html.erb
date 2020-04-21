@@ -23,7 +23,7 @@
 
         <tbody>
           <% @users.each do |user| %>
-            <tr>
+            <tr class='<%= user.deactivated? ? 'users-deactivated' : '' %>'>
               <td><%= user.name %></td>
               <td>
                 <%= glyph(:email) %> <%= user.email %><br/>
@@ -38,6 +38,9 @@
                 <% end %>
               </td>
               <td>
+                <% if user.deactivated? %>
+                  <b>DEACTIVATED</b><br/>
+                <% end %>
                 <b>System Role:</b> <%= user.role.try(:name) || 'None' %>
                 <ul>
                   <% if user.team.present? %>

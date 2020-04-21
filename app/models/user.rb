@@ -24,6 +24,7 @@
 #  updated_at             :datetime         not null
 #  role_id                :uuid
 #  timezone               :string           default("UTC")
+#  deactivated            :boolean          default("false")
 #
 
 class User < ApplicationRecord
@@ -38,7 +39,7 @@ class User < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :timezone]
+  ALLOWED_PARAMS = [:id, :email, :password, :password_confirmation, :role_id, :timezone, :deactivated]
 
   ### Associations
   has_many :leads
@@ -55,6 +56,19 @@ class User < ApplicationRecord
   ### Class Methods
 
   ### Instance Methods
+  
+  def deactivated?
+    deactivated || false
+  end
+
+  def deactivate!
+    self.deactivated = true
+    self.save
+  end
+
+  def active_for_authentication?
+    super && !deactivated?
+  end
 
   def name
     if first_name.nil? && last_name.nil?
