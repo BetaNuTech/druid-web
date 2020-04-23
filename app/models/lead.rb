@@ -187,7 +187,9 @@ class Lead < ApplicationRecord
     last_showing_agent || agent
   end
 
-
+  def source_document
+    @source_document ||= preference&.source_document
+  end
 
   private
 

@@ -102,4 +102,9 @@ class LeadPreference < ApplicationRecord
     optout_email
   end
 
+  def source_document
+    data = ( JSON.parse(raw_data) rescue nil ) or return nil
+    return {html: data.fetch("html", false), text: data.fetch("plain")}
+  end
+
 end

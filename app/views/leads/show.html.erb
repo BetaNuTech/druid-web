@@ -59,6 +59,7 @@
     <div class="contact" >
       <span class="lead_name">
         <%= @lead.name %> <%= @lead.is_lead? ? '' : "(Not a Lead: #{@lead.classification&.capitalize})" %>
+      <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-xs btn-primary" %>
       </span><br/>
       <span class="contact_info" >
         <span title="Primary Phone" class="glyphicon glyphicon-earphone" ></span>&nbsp;
@@ -153,6 +154,7 @@
     <% end %>
   </div>
 
+  <%= render partial: 'source_document', locals: {lead: @lead} if @lead.source_document.present? %>
   <a name="#duplicates">&nbsp;</a>
   <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
   <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>

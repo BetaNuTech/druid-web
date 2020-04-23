@@ -148,6 +148,10 @@ table#leads-table {
   }
 }
 
+.Lead .lead_source_document {
+  grid-area: LeadSourceDocument; 
+}
+
 @media(min-width: 600px) {
   .Lead {
     display: grid;
@@ -164,6 +168,7 @@ table#leads-table {
       "LeadMessages LeadMessages LeadMessages"
       "LeadCalls LeadCalls LeadCalls"
       "LeadTimeline LeadTimeline LeadTimeline"
+      "LeadSourceDocument LeadSourceDocument LeadSourceDocument"
     ;
   }
 }

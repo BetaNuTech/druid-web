@@ -1,0 +1,19 @@
+<div class="row lead_source_document">
+  <div class="col-md-12">
+    <h4>Source Email</h4>
+
+    <div class="row">
+    <% if lead.source_document[:text].present? %>
+      <div class="col-md-6">
+        <%#= lead.source_document[:text] %>
+        <iframe id="message_preview" srcdoc="<pre><%= lead.source_document[:text] %></pre>" style="height: 600px; width: 600px;"> </iframe>
+      </div>
+    <% end %>
+    <% if lead.source_document[:html].present? %>
+      <div class="col-md-6">
+        <iframe id="message_preview" srcdoc="<%= lead.source_document[:html] %>" style="height: 600px; width: 600px;"> </iframe>
+      </div>
+    <% end %>
+    </div>
+  </div>
+</div>
