@@ -27,9 +27,12 @@ module Yardi
           out = []
 
           ### Lead state transitions as events
-          #out += lead.transitions.where(remoteid: nil).map do |xtn|
-            #GuestCardEvent.from_lead_state_transition(xtn)
-          #end
+          #transition_events = lead.transitions.where(remoteid: nil).map do |xtn|
+          # Only send initial claim event as first contact
+          transition_events = lead.transitions.where(remoteid: nil, last_state: 'none', current_state: 'open')
+          out += transition_events.map do |xtn|
+            GuestCardEvent.from_lead_state_transition(xtn)
+          end
 
           ### Completed Tasks as GuestCard Events
           completed_actions = lead.scheduled_actions.completed.where(remoteid: nil)
@@ -60,7 +63,7 @@ module Yardi
           event.agent = agent
 
           if (lead_transition.last_state == 'none' && lead_transition.current_state == 'open')
-            event.comments = "Lead created in Bluesky originating from #{lead.referral || 'Unknown'}"
+            event.comments = "Lead created in Bluesky originating from #{lead_transition.lead.referral || 'Unknown'}"
             event.transaction_source = 'Referral'
             event.first_contact = true
 
