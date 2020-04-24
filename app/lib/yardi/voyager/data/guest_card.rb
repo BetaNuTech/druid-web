@@ -373,7 +373,7 @@ module Yardi
                         xml.TransactionSource event.transaction_source
                       }
                     end
-                  } if include_events
+                  } if include_events && customer.events.present?
 
                 } # end xml.Prospect
               } # end xml.Prospects
