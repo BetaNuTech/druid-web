@@ -147,7 +147,7 @@ module Yardi
             return lead
           end
 
-          guestcard = getGuestCard(propertyid, params: {third_party_id: lead.shortid}).first
+          guestcard = getGuestCard(propertyid, params: {third_party_id: lead.shortid})&.first
           unless guestcard.present?
             msg =  "#{format_request_id} Yardi::Voyager::Api::GuestCards cannot find associated GuestCard for Lead[#{lead.id}]"
             Rails.logger.error msg
