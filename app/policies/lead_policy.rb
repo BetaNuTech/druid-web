@@ -159,7 +159,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def change_remoteid?
-    user.manager? || user.admin?
+    edit? && ( !record.valid? || user.manager? || user.admin?)
   end
 
 
