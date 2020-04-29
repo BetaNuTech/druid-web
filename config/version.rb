@@ -1,3 +1,3 @@
 module BlueskyWeb
-  VERSION = "0.9.196"
+  VERSION = "0.9.197"
 end
