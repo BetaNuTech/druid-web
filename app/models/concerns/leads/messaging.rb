@@ -216,7 +216,7 @@ module Leads
             message_template: message_template,
             classification: 'compliance'
           )
-          message.save
+          message.save!
           message.deliver!
           message.reload
           comment_content = "SENT: #{message_template_name}"
