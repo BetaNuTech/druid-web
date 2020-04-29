@@ -163,7 +163,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def resend_sms_opt_in_message?
-    edit? && record.resend_opt_in_message?
+    record.user.present? && edit? && record.resend_opt_in_message?
   end
 
 end
