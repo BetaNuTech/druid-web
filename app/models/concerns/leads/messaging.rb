@@ -194,6 +194,14 @@ module Leads
       #   disposition: :request|:confirmation,
       #   assent: true|false)
       def send_compliance_message(message_type:, disposition:, assent:)
+        # Abort if contact information for message type is not present
+        case message_type
+        when MessageType.sms
+          return true unless message_sms_destination.present?
+        when MessageType.email
+          return true unless message_email_destination.present?
+        end
+
         note_lead_action_name = assent ? MESSAGE_OPTIN_LEAD_ACTION : MESSAGE_OPTOUT_LEAD_ACTION
         note_lead_action = LeadAction.where(name: note_lead_action_name).first
         note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
@@ -223,7 +231,7 @@ module Leads
         else
           # Cannot send Message: send Error Notification
           message = Message.new()
-          error_message = "Could not send SMS opt-in request to Lead[#{self.id}]"
+          error_message = "Could not send SMS opt-in request"
           errors[:errors] << error_message
           error = StandardError.new(error_message)
           if message_template.nil?
@@ -232,7 +240,7 @@ module Leads
           if message_sms_destination.nil?
             errors[:errors] << "Lead does not have a Phone Number"
           end
-          ErrorNotification.send(error,errors)
+          #ErrorNotification.send(error,errors)
           comment_content = "NOT SENT: #{message_template_name} -- #{errors[:errors].join('; ')}"
         end
 

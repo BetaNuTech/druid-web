@@ -100,7 +100,7 @@ class Message < ApplicationRecord
   end
 
   def self.format_phone(val)
-    return nil if ( val.nil? || (!val.is_a?(String)) )
+    return nil if ( val.nil? || (!val.is_a?(String)) || (val ||"").empty? )
     return ( "+1" + val.gsub(/[^\d]/,'').sub(/\A1/,'') )
   end
 
