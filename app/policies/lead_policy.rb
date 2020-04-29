@@ -5,12 +5,12 @@ class LeadPolicy < ApplicationPolicy
     def resolve
       skope = scope
       return case user
-        when ->(u) { u.admin? }
+        when ->(u) { u.administrator? }
           skope
         when ->(u) { u.corporate? }
           skope.
             includes(:property).
-            where(properties: {active: [ true, nil ]})
+            where(properties: {active: [ true, nil]})
         when -> (u) { u.team_lead?}
           skope.
             includes(:property).
@@ -162,5 +162,8 @@ class LeadPolicy < ApplicationPolicy
     edit? && ( !record.valid? || user.manager? || user.admin?)
   end
 
+  def resend_sms_opt_in_message?
+    edit? && record.resend_opt_in_message?
+  end
 
 end

@@ -2,7 +2,7 @@ module MessagesHelper
 
   def select_message_type_for(messageable)
     last_message_type = messageable.messages.order("delivered_at DESC").first.try(:message_type)
-    available = ( [last_message_type] + messageable.message_types_available ).compact.uniq
+    available = (messageable.message_types_available ).compact.uniq
     if available.size > 1
       return select_tag('message_type_id', options_for_select(available.collect{|t| [t.name, t.id]}))
     else
@@ -41,7 +41,7 @@ module MessagesHelper
   def message_delivery_indicator(message)
     if message.failed?
       delivery_status_class = 'btn-danger'
-      title = 'Delivery Failure'
+      title = 'Delivery Failure: ' + ( message.deliveries.last&.log || '' )
     else
       if message.draft?
         delivery_status_class = 'btn-default'

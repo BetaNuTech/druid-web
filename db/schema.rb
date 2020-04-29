@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_20_192808) do
+ActiveRecord::Schema.define(version: 2020_04_21_194111) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -176,6 +176,8 @@ ActiveRecord::Schema.define(version: 2020_04_20_192808) do
     t.uuid "unit_type_id"
     t.boolean "optout_email", default: false
     t.datetime "optout_email_date"
+    t.boolean "optin_sms", default: false
+    t.datetime "optin_sms_date"
   end
 
   create_table "lead_referral_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -329,6 +331,7 @@ ActiveRecord::Schema.define(version: 2020_04_20_192808) do
     t.uuid "read_by_user_id"
     t.boolean "incoming"
     t.integer "since_last"
+    t.integer "classification", default: 0
     t.index ["messageable_type", "messageable_id"], name: "message_messageable"
     t.index ["state"], name: "index_messages_on_state"
     t.index ["threadid"], name: "index_messages_on_threadid"

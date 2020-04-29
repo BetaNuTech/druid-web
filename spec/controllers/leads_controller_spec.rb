@@ -62,6 +62,8 @@ RSpec.describe LeadsController, type: :controller do
       describe "as a corporate user" do
         it "should display leads from active properties" do
           Lead.destroy_all; lead1; lead2
+          assert(lead1.property.active)
+          refute(lead2.property.active)
           assert(Lead.count == 2)
           sign_in corporate
           get :index, params: {lead_search: {states: ['open']}}

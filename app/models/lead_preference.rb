@@ -21,6 +21,8 @@
 #  unit_type_id      :uuid
 #  optout_email      :boolean          default("false")
 #  optout_email_date :datetime
+#  optin_sms         :boolean          default("false")
+#  optin_sms_date    :datetime
 #
 
 class LeadPreference < ApplicationRecord
@@ -29,8 +31,8 @@ class LeadPreference < ApplicationRecord
   DEFAULT_UNIT_SYSTEM = :imperial
   ALLOWED_PARAMS = [:baths, :beds, :min_price, :max_price, :min_area, :max_area,
                     :move_in, :pets, :smoker, :washerdryer, :notes, :raw_data,
-                    :unit_type_id, :optout_email]
-  PRIVILEGED_PARAMS = [:id, :optout_email, :raw_data]
+                    :unit_type_id, :optout_email, :optin_sms]
+  PRIVILEGED_PARAMS = [:id, :optout_email, :optin_sms, :raw_data]
   NO_UNIT_PREFERENCE='(no preference)'
 
   ### Class Concerns/Extensions
@@ -86,25 +88,78 @@ class LeadPreference < ApplicationRecord
     DEFAULT_UNIT_SYSTEM
   end
 
-  def optout!
+  def optout_email!
     self.optout_email = true
     self.optout_email_date ||= DateTime.now
     save
   end
 
-  def optin!
+  def optin_email!
     self.optout_email = false
     self.optout_email_date = nil
     save
   end
 
-  def optout?
+  def optin_sms!
+    unless self.optin_sms
+      self.optin_sms = true
+      self.optin_sms_date = DateTime.now
+      save
+      lead.send_sms_optin_confirmation
+    end
+  end
+
+  def optout_sms!
+    self.optin_sms = false
+    self.optin_sms_date = DateTime.now
+    save
+    lead.send_sms_optout_confirmation
+  end
+
+  def optout_email?
     optout_email
+  end
+
+  def optin_email?
+    !optout_email?
+  end
+
+  def optin_sms?
+    optin_sms
+  end
+
+  def optout_sms?
+    !optin_sms
   end
 
   def source_document
     data = ( JSON.parse(raw_data) rescue nil ) or return nil
     return {html: data.fetch("html", false), text: data.fetch("plain")}
   end
+
+  def handle_message_response(message_delivery)
+    case message_delivery&.message&.message_type
+    when MessageType.sms
+      if message_delivery&.message&.incoming?
+        handle_sms_reply(message_delivery)
+      end
+    when MessageType.email
+      # NOOP
+    else
+      # NOOP
+    end
+  end
+
+  def handle_sms_reply(message_delivery)
+    body = message_delivery&.message&.body || ''
+    body = body.downcase.strip
+    case body
+    when 'yes'
+      optin_sms!
+    when 'stop'
+      optout_sms!
+    end
+  end
+
 
 end

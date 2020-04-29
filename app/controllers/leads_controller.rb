@@ -2,7 +2,7 @@ class LeadsController < ApplicationController
   #include LeadsHelper
 
   before_action :authenticate_user!
-  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state, :update_referrable_options]
+  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state, :update_referrable_options, :resend_sms_opt_in_message]
   before_action :conditional_redirect_to_default_search, only: [:index, :search]
   after_action :verify_authorized
 
@@ -158,8 +158,6 @@ class LeadsController < ApplicationController
     redirect_to(@lead)
   end
 
-
-
   def mark_messages_read
     authorize @lead
     Message.mark_read!(@lead.messages, current_user)
@@ -179,6 +177,16 @@ class LeadsController < ApplicationController
   def update_referrable_options
     authorize @lead
     @referral = params[:referral]
+  end
+
+  def resend_sms_opt_in_message
+    authorize @lead
+    if @lead.resend_opt_in_message?
+      @lead.send_sms_optin_request
+      redirect_to @lead, notice: 'SMS Opt-In Request was re-sent'
+    else
+      redirect_to @lead, notice: 'SMS Opt-In Request could not be re-sent'
+    end
   end
 
   private

@@ -268,26 +268,52 @@ RSpec.describe HomeController, type: :controller do
       end
     end
 
-    describe "opting out of messaging" do
+    describe "opting out of email messaging" do
       it "should be successful" do
-        refute(lead.optout?)
-        post :unsubscribe, params: {lead_id: lead.id, lead_optout: true}
+        refute(lead.optout_email?)
+        post :unsubscribe, params: {lead_id: lead.id, lead_email_optout: true}
         expect(response).to be_successful
         lead.reload
-        assert(lead.optout?)
+        assert(lead.optout_email?)
       end
     end
 
-    describe "opting into messaging" do
+    describe "opting into email messaging" do
       it "should be successful" do
-        lead.optout!
-        assert(lead.optout?)
-        post :unsubscribe, params: {lead_id: lead.id}
+        lead.optout_email!
+        lead.save
+        assert(lead.optout_email?)
+        post :unsubscribe, params: {lead_id: lead.id, lead_email_optout: false}
         expect(response).to be_successful
         lead.reload
-        refute(lead.optout?)
+        refute(lead.optout_email?)
       end
     end
+
+    describe "opting into sms messaging" do
+      it "should be successful" do
+        lead.optout_sms!
+        lead.save
+        assert(lead.optout_sms?)
+        post :unsubscribe, params: {lead_id: lead.id, lead_sms_optout: false}
+        expect(response).to be_successful
+        lead.reload
+        refute(lead.optout_sms?)
+      end
+    end
+
+    describe "opting out of sms messaging" do
+      it "should be successful" do
+        lead.optin_sms!
+        lead.save
+        refute(lead.optout_sms?)
+        post :unsubscribe, params: {lead_id: lead.id, lead_sms_optout: true}
+        expect(response).to be_successful
+        lead.reload
+        assert(lead.optout_sms?)
+      end
+    end
+
   end
 
   describe "inserting an incoming lead on the dashboard page" do

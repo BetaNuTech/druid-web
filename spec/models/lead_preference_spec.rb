@@ -21,6 +21,8 @@
 #  unit_type_id      :uuid
 #  optout_email      :boolean          default("false")
 #  optout_email_date :datetime
+#  optin_sms         :boolean          default("false")
+#  optin_sms_date    :datetime
 #
 
 require 'rails_helper'

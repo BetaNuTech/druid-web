@@ -23,7 +23,7 @@ FactoryBot.define do
 
     factory :sms_delivery_adapter do
       message_type { MessageType.sms || create(:sms_message_type)}
-      name { 'SMS' }
+      name { 'Twilio' }
       slug { 'TwilioAdapter' }
       active { true }
       sequence :api_token do |n|

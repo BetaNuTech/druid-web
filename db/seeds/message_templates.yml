@@ -1,6 +1,6 @@
 ---
 :message_templates:
-  :version: 1
+  :version: 2
   :key: :name
   :data:
   - :name: General Inquiries
@@ -423,3 +423,18 @@
 
 
       --- Don't like these emails? Unsubscribe at {{email_unsubscribe_link}} ---
+  - :name: <%= Leads::Messaging::SMS_OPT_IN_MESSAGE_TEMPLATE_NAME %>
+    :message_type_id: <%= MessageType.sms&.id %>
+    :subject: None
+    :body: |
+      Please reply YES if you would like to allow us at {{property_name}} to contact you via text. Reply STOP to cancel at any time.
+  - :name: <%= Leads::Messaging::SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME %>
+    :message_type_id: <%= MessageType.sms&.id %>
+    :subject: None
+    :body: |
+      Thank you for choosing {{property_name}}! Reply STOP to cancel at any time.
+  - :name: <%= Leads::Messaging::SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME %>
+    :message_type_id: <%= MessageType.sms&.id %>
+    :subject: None
+    :body: |
+      {{property_name}} will no longer send you SMS messages at this phone number. Reply YES to resume.

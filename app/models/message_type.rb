@@ -19,6 +19,8 @@ class MessageType < ApplicationRecord
   ### Constants
   SMS_TYPE_NAME = 'SMS'
   EMAIL_TYPE_NAME = 'Email'
+  SMS_MESSAGING_DISABLED_FLAG='SMS_MESSAGING_DISABLED'
+  EMAIL_MESSAGING_DISABLED_FLAG='EMAIL_MESSAGING_DISABLED'
 
   ### Associations
   has_many :message_templates
@@ -40,7 +42,25 @@ class MessageType < ApplicationRecord
     MessageType.where(name: SMS_TYPE_NAME).active.first
   end
 
+  def self.sms_messaging_disabled?
+    %w{1 true t yes y}.include?(ENV.fetch(SMS_MESSAGING_DISABLED_FLAG, false).to_s.downcase)
+  end
+
+  def self.email_messaging_disabled?
+    %w{1 true t yes y}.include?(ENV.fetch(EMAIL_MESSAGING_DISABLED_FLAG, false).to_s.downcase)
+  end
+
   ### Instance Methods
+
+  def disabled?
+    if sms?
+      MessageType.sms_messaging_disabled?
+    elsif email?
+      MessageType.email_messaging_disabled?
+    else
+      false
+    end
+  end
 
   def sms?
     name == SMS_TYPE_NAME

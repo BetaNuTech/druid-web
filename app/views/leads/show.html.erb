@@ -149,9 +149,6 @@
         </span>
       </p>
     <% end %>
-    <% if @lead.optout? %>
-      <h3>This lead has opted out of automatic notifications.</h3>
-    <% end %>
   </div>
 
   <%= render partial: 'source_document', locals: {lead: @lead} if @lead.source_document.present? %>

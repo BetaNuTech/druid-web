@@ -59,20 +59,20 @@ module Messages
       end
 
       def deliver(from: nil, to:, subject: nil, body:)
-        result = nil
         if Rails.env.test?
           Rails.logger.warn "!!! Refusing to deliver SMS messages in TEST"
-          result = true
-        else
-          msg = "Messages::DeliveryAdapters::TwilioAdapter sending SMS message to #{to}: #{body}"
-          Rails.logger.info msg
-
-          result = client.api.account.messages.create(
-            from: format_phone(@phone_number),
-            to: format_phone(to),
-            body: body
-          )
+          return true
         end
+
+        result = nil
+        msg = "Messages::DeliveryAdapters::TwilioAdapter sending SMS message to #{to}: #{body}"
+        Rails.logger.info msg
+
+        result = client.api.account.messages.create(
+          from: format_phone(@phone_number),
+          to: format_phone(to),
+          body: body
+        )
         return result
       end
 
