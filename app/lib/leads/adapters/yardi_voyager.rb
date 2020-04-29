@@ -5,6 +5,7 @@ module Leads
       DEFAULT_RENTAL_TYPE = 'Residential'
 
       attr_reader :property, :property_code, :lead_source, :data, :params
+      attr_accessor :commit
 
       # Returns all active Property ID's defined as PropertyListings in the database
       #
@@ -38,6 +39,7 @@ module Leads
       #
       # Provide a Property record
       def initialize(property)
+        @commit = true
         @property = property
         @lead_source =  get_lead_source
         if @lead_source.nil?
@@ -57,10 +59,12 @@ module Leads
         leads = []
         ActiveRecord::Base.transaction do
           leads = lead_collection_from_guestcards(@data)
-          leads.each do |lead|
-            # Skip dedupe on Voyager Sync to prevent an avalanche of dedupe background jobs
-            lead.skip_dedupe = true
-            lead.save
+          if commit
+            leads.each do |lead|
+              # Skip dedupe on Voyager Sync to prevent an avalanche of dedupe background jobs
+              lead.skip_dedupe = true
+              lead.save
+            end
           end
         end
         return leads
@@ -72,7 +76,7 @@ module Leads
         residents = []
         ActiveRecord::Base.transaction do
           residents = resident_collection_from_guestcards(@data)
-          residents.map(&:save)
+          residents.map(&:save) if commit
         end
         return residents
       end
@@ -83,7 +87,7 @@ module Leads
         unit_types = []
         ActiveRecord::Base.transaction do
           unit_types = collection_from_floorplans(@data)
-          unit_types.each{|l| l.save}
+          unit_types.each{|l| l.save} if commit
         end
         return unit_types
       end
@@ -94,7 +98,7 @@ module Leads
         units = []
         ActiveRecord::Base.transaction do
           units = collection_from_yardi_units(@data)
-          units.each{|l| l.save}
+          units.each{|l| l.save} if commit
         end
         return units
       end
@@ -104,7 +108,7 @@ module Leads
         updated_leads = []
         ActiveRecord::Base.transaction do
           updated_leads = send_Leads(leads)
-          updated_leads.map{|l| l.save }
+          updated_leads.each{|l| l.save } if commit
         end
         return updated_leads
       end
@@ -143,6 +147,24 @@ module Leads
 
       def cancelGuestCards(start_date: 1.day.ago)
         return sendLeads(@property.leads_for_cancelling.where(updated_at: start_date..DateTime.now))
+      end
+
+      def fetch_GuestCards(start_date: nil, end_date: DateTime.now, filter: false)
+        adapter = Yardi::Voyager::Api::GuestCards.new
+        adapter.debug = true if debug?
+        return adapter.getGuestCards(@property_code, start_date: start_date, end_date: end_date, filter: filter)
+      end
+
+      def fetch_Floorplans
+        adapter = Yardi::Voyager::Api::Floorplans.new
+        adapter.debug = true if debug?
+        return adapter.getFloorPlans(@property_code)
+      end
+
+      def fetch_Units
+        adapter = Yardi::Voyager::Api::Units.new
+        adapter.debug = true if debug?
+        return adapter.getUnits(@property_code)
       end
 
       private
@@ -228,7 +250,7 @@ module Leads
           lead.priority = priority_from_state(lead.state)
           lead.notes = guestcard.summary
           lead.first_comm = DateTime.now
-          lead.referral = 'Yardi Voyager'
+          lead.referral = guestcard.referral || 'Yardi Voyager'
 
           preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
           if preference.move_in.present? && preference.move_in < 100.years.ago
@@ -249,7 +271,7 @@ module Leads
           if guestcard.first_comm.present? &&
               lead.first_comm.to_date == lead.created_at.to_date
             lead.first_comm = guestcard.first_comm
-            lead.save
+            lead.save if commit
           end
 
           # Update Lead State from Yardi Data
@@ -258,7 +280,7 @@ module Leads
           new_state = lead_state_for(guestcard)
 
           # Has the Lead state progressed?
-          if Lead.compare_states(new_state, old_state) == 1
+          if commit && Lead.compare_states(new_state, old_state) == 1
             event_name = Lead.event_name_for_transition(from: old_state, to: new_state)
             if event_name
               # We want to progress the state even if tasks are incomplete
@@ -292,8 +314,10 @@ module Leads
           end
         end
 
-				new_comments = notes_from_guestcard_events(lead: lead, events: guestcard.events)
-        lead.comments << new_comments
+        if commit
+          new_comments = notes_from_guestcard_events(lead: lead, events: guestcard.events)
+          lead.comments << new_comments
+        end
 
         return lead
       end
@@ -387,23 +411,6 @@ module Leads
           return LeadAction.where(name: action_name).first || LeadAction.where(name: 'Other').first
       end
 
-      def fetch_GuestCards(start_date: nil, end_date: DateTime.now, filter: false)
-        adapter = Yardi::Voyager::Api::GuestCards.new
-        adapter.debug = true if debug?
-        return adapter.getGuestCards(@property_code, start_date: start_date, end_date: end_date, filter: filter)
-      end
-
-      def fetch_Floorplans
-        adapter = Yardi::Voyager::Api::Floorplans.new
-        adapter.debug = true if debug?
-        return adapter.getFloorPlans(@property_code)
-      end
-
-      def fetch_Units
-        adapter = Yardi::Voyager::Api::Units.new
-        adapter.debug = true if debug?
-        return adapter.getUnits(@property_code)
-      end
 
       def send_Leads(leads)
         # Abort if ANY leads belong to the wrong Property
