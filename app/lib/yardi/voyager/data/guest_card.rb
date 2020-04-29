@@ -21,7 +21,8 @@ module Yardi
           :preference_comment,
           :events,
           :first_comm,
-          :record_type
+          :record_type,
+          :referral
         ]
 
         attr_accessor *ATTRIBUTES
@@ -282,12 +283,16 @@ module Yardi
                 event.reasons = e["EventReasons"]
                 event.first_contact = e["FirstContact"]
                 event.comments = e["Comments"]
+                event.transaction_source = e["TransactionSource"]
                 event
               end
 
               # Lacking a GuestCard creation date, use the first recorded EventDate as the first_comm date
               first_comm = prospect.events.sort_by{|e| e.date}.first
               prospect.first_comm = ( DateTime.parse(first_comm.date) rescue nil )
+
+              # Assign Referral from first contact event
+              prospect.referral = (first_comm.transaction_source rescue nil) if first_comm.first_contact == "true"
             end
 
             prospects << prospect
