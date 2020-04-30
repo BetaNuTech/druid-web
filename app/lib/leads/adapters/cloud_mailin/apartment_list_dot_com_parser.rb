@@ -34,8 +34,7 @@ module Leads
           notes = self.sanitize(( body.match(/\*preference\*(.+)Apartment List/m)[1] rescue '(None)' ).strip.gsub("\n"," "))
           smoker = nil
           pets = (body.match(/PETS:/)).present?
-          move_in = (body.match(/MOVE-IN: ([^ ]+) /)[1] rescue nil)
-          move_in = (DateTime.strptime(move_in, "%m/%d/%Y") rescue nil)
+          move_in = ( DateTime.strptime(body.match(/MOVE-IN: ([^ ]+) /)[1],  "%m/%d/%Y") rescue nil )
           agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
           raw_data = data.to_json
 
