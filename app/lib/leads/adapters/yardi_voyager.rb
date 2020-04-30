@@ -228,6 +228,9 @@ module Leads
 
       # Return a Lead record based on the provided Vardi::Voyager::Data::GuestCard
       def lead_from_guestcard(guestcard)
+        data_sync_reason = Reason.where(name: 'Data Sync').last
+        data_sync_action = LeadAction.where(name: 'Sync from Remote').last
+
         remoteid = guestcard.prospect_id || guestcard.tenant_id
 
         lead = Lead.where(property_id: @property.id, remoteid: remoteid).first || Lead.new
@@ -291,8 +294,8 @@ module Leads
                 classification: 'external',
                 notable: lead,
                 content: 'Lead state updated from Voyager',
-                reason: Reason.where(name: 'Data Sync').last,
-                lead_action: LeadAction.where(name: 'Sync from Remote').last
+                reason: data_sync_reason,
+                lead_action: data_sync_action
               )
             else
               # no event can transition the Lead
@@ -306,8 +309,8 @@ module Leads
                   classification: 'error',
                   notable: lead,
                   content: msg,
-                  reason: Reason.where(name: 'Data Sync').last,
-                  lead_action: LeadAction.where(name: 'Sync from Remote').last
+                  reason: data_sync_reason,
+                  lead_action: data_sync_action
                 )
               end
             end
@@ -382,6 +385,8 @@ module Leads
 
 
       def lead_action_from_event_type(event_type)
+        @lead_action_cache ||= LeadAction.all.to_a
+        @other_lead_action ||= @lead_action_cache.select{|la| la.name == 'Other'}.first
         action_name = {
             'Application': 'Process Application',
             'ApplicationDenied': 'Process Application',
@@ -408,7 +413,8 @@ module Leads
             'WalkIn': 'Process Application',
             'WebService': 'Other' }.
           fetch(event_type, 'Other')
-          return LeadAction.where(name: action_name).first || LeadAction.where(name: 'Other').first
+          lead_action = @lead_action_cache.select{|la| la.name == action_name}.first || @other_lead_action
+          return lead_action
       end
 
 
