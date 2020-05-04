@@ -54,7 +54,7 @@ module Yardi
 
         def self.from_floorplan_node(data)
           floorplan = Floorplan.new
-          floorplan.name = data["Name"]
+          floorplan.name = data["Name"] || data["IDValue"] || 'Unknown'
           data["Room"].each do |room|
             case room['RoomType']
             when 'Bedroom'
