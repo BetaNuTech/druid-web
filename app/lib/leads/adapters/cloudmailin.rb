@@ -35,7 +35,7 @@ module Leads
       end
 
       def get_property_code(params)
-        params.permit!
+        params.permit! if params.respond_to?("permit!")
         to_addr = params.fetch(:envelope, {}).fetch(:to,'') || ""
         code = ( to_addr.split('@').first || "" ).split("+").last
         return code
