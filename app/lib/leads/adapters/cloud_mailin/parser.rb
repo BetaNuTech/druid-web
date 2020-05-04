@@ -6,6 +6,7 @@ require_relative './hotpads_parser'
 require_relative './zillow_parser'
 require_relative './forrent_dot_com_parser'
 require_relative './lease_labs_dot_com_parser'
+require_relative './after55_dot_com_parser'
 require_relative './null_parser'
 
 module Leads
@@ -15,6 +16,7 @@ module Leads
       # All Valid CloudMailin Parsers except NullParser
       PARSERS = [
         LeaseLabsDotComParser,
+        After55DotComParser,
         AbodoParser,
         ApartmentguideDotComParser,
         ApartmentListDotComParser,
