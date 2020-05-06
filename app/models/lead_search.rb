@@ -1,5 +1,5 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date ]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date, :bedrooms]
   LEAD_TABLE = Lead.table_name
   DEFAULT_PER_PAGE = 10
   MAX_PER_PAGE = 100
@@ -45,6 +45,7 @@ class LeadSearch
       filter_by_last_name.
       filter_by_id_number.
       filter_by_date.
+      filter_by_bedrooms.
       search_by_text
 
     if @perform_sort
@@ -58,7 +59,7 @@ class LeadSearch
   def full_options
     opts = {
       "Filters" => {
-        "_index" => ["Start Date", "End Date", "Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search"],
+        "_index" => ["Start Date", "End Date", "Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search", "Bedrooms"],
         "Agents" => {
           param: "user_ids",
           type: "select",
@@ -132,7 +133,13 @@ class LeadSearch
           type: "date",
           values: Array(@options[:end_date]),
           options: []
-        }
+        },
+        "Bedrooms" => {
+          param: "bedrooms",
+          type: "select",
+          values: Array(@options[:bedrooms]).map{|v| {label: v, value: v}},
+          options: bedroom_options
+        },
       },
       "Pagination" => {
         "_index" => ["Page", "PerPage", "SortBy", "SortDir"],
@@ -341,6 +348,17 @@ class LeadSearch
     return self
   end
 
+  def filter_by_bedrooms(bedrooms=nil)
+    bedrooms ||= @options[:bedrooms]
+    if bedrooms.present?
+      @skope = @skope.
+        includes(:preference).
+        where(lead_preferences: {beds: bedrooms})
+      @filter_applied = true
+    end
+    return self
+  end
+
   def paginate
     @skope.limit(query_limit).offset(query_offset)
   end
@@ -417,4 +435,9 @@ class LeadSearch
     sorted_agents = agents.sort_by{|u| u.profile.try(:last_name) }
     return agents.map{ |u| {label: u.name, value: u.id} }
   end
+
+  def bedroom_options
+    (1..4).to_a.map{|v| { label: v.to_s, value: v.to_s }}
+  end
+
 end

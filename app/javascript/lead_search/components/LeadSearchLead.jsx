@@ -98,10 +98,15 @@ class LeadSearchLead extends React.Component {
             {this.formatDate(this.props.data.preference.move_in)}
           </span><br/>
           <span><strong>Price: </strong>
-            ${this.props.data.preference.min_price} - ${this.props.data.preference.max_price}
+            ${this.props.data.preference.max_price || 'Any'}
+          </span><br/>
+          <span><strong>Beds/Baths: </strong>
+            {this.props.data.preference.beds || '?'} beds / {this.props.data.preference.baths || '?'} baths
           </span><br/>
           <span><strong>Unit Size: </strong>
-            {this.props.data.preference.min_area} - {this.props.data.preference.max_area}
+            {this.props.data.preference.min_area || 'Any' } <i>ft<sup>2</sup></i>
+            &nbsp;-&nbsp;
+            {this.props.data.preference.max_area || 'Any'} <i>ft<sup>2</sup></i>
           </span><br/>
         </div>
         <div className={Style.notes}>
