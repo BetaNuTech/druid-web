@@ -114,6 +114,10 @@ class LeadPolicy < ApplicationPolicy
     edit?
   end
 
+  def update_from_remote?
+    edit? && record.can_update_from_remote?
+  end
+
   # Return an array of state events that the User can issue
   # to the Record
   def permitted_state_events

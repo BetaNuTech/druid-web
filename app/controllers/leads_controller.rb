@@ -2,7 +2,7 @@ class LeadsController < ApplicationController
   #include LeadsHelper
 
   before_action :authenticate_user!
-  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state, :update_referrable_options, :resend_sms_opt_in_message]
+  before_action :set_lead, only: [:show, :edit, :update, :destroy, :call_log_partial, :trigger_state_event, :mark_messages_read, :progress_state, :update_state, :update_referrable_options, :resend_sms_opt_in_message, :update_from_remote]
   before_action :conditional_redirect_to_default_search, only: [:index, :search]
   after_action :verify_authorized
 
@@ -187,6 +187,16 @@ class LeadsController < ApplicationController
     else
       redirect_to @lead, notice: 'SMS Opt-In Request could not be re-sent'
     end
+  end
+
+  def update_from_remote
+    authorize @lead
+    if @lead.update_from_remote!
+      notice = "Lead updated from #{@lead.source.name}"
+    else
+      notice = "Lead could not be updated from #{@lead.source.name}"
+    end
+    redirect_to @lead, notice: notice
   end
 
   private

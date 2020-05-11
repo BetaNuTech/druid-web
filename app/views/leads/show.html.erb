@@ -106,6 +106,9 @@
             <%= content_tag(:span, glyph(:warning_sign), style: "color: red;")  %>
           <% end if @lead.duplicate_remoteid? %>
         <% end %>
+        <% if policy(@lead).update_from_remote? %>
+          <%= link_to('Update', update_from_remote_lead_path(@lead), { method: :post, class: 'btn btn-xs btn-primary', onclick: 'window.Loader.start()' }) %>
+        <% end %>
       </span>
     </div>
     <div class="preferences">

@@ -56,7 +56,7 @@ module Yardi
           }.merge(search_params)
           begin
             response = getData(request_options)
-            guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivitySearch(response.parsed_response)
+            guestcards = Yardi::Voyager::Data::GuestCard.from_GetYardiGuestActivitySearch(response.parsed_response, false)
           rescue => e
             msg = "#{format_request_id} Yardi::Voyager::Api::Guestcards.getGuestCard encountered an error fetching data. #{e}"
             full_msg = "#{msg} -- #{e.backtrace}"

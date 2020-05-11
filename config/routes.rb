@@ -80,6 +80,7 @@ Rails.application.routes.draw do
       post 'update_state', to: "leads#update_state"
       get 'update_referrable_options', to: 'leads#update_referrable_options'
       post 'resend_sms_opt_in_message', to: 'leads#resend_sms_opt_in_message'
+      post 'update_from_remote', to: 'leads#update_from_remote'
     end
     resources :messages do
       post 'deliver', on: :member
