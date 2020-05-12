@@ -12,6 +12,9 @@ class LeadSearch
     first_contact: {
       asc: "#{LEAD_TABLE}.first_comm ASC",
       desc: "#{LEAD_TABLE}.first_comm DESC" },
+    last_contact: {
+      asc: "#{LEAD_TABLE}.last_comm ASC, #{LEAD_TABLE}.first_comm ASC",
+      desc: "#{LEAD_TABLE}.last_comm DESC, #{LEAD_TABLE}.first_comm DESC" },
     lead_name: {
       asc: "#{LEAD_TABLE}.last_name ASC, #{LEAD_TABLE}.first_name ASC",
       desc: "#{LEAD_TABLE}.last_name DESC, #{LEAD_TABLE}.first_name DESC" }
@@ -155,7 +158,10 @@ class LeadSearch
         "SortBy" => {
           param: "sort_by",
           values: [ { label: "Sort By", value: query_sort_by }],
-          options: [ {label: 'Priority', value: 'priority'}, {label: 'First Contact', value: 'first_contact'}, {label: 'Name', value: 'lead_name'} ]
+          options: [ {label: 'Priority', value: 'priority'},
+                     {label: 'First Contact', value: 'first_contact'},
+                     {label: 'Last Contact', value: 'last_contact'},
+                     {label: 'Name', value: 'lead_name'} ]
         },
         "SortDir" => {
           param: "sort_dir",
