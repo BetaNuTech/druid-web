@@ -13,8 +13,8 @@ class LeadSearch
       asc: "#{LEAD_TABLE}.first_comm ASC",
       desc: "#{LEAD_TABLE}.first_comm DESC" },
     last_contact: {
-      asc: "#{LEAD_TABLE}.last_comm ASC, #{LEAD_TABLE}.first_comm ASC",
-      desc: "#{LEAD_TABLE}.last_comm DESC, #{LEAD_TABLE}.first_comm DESC" },
+      asc: "COALESCE(#{LEAD_TABLE}.last_comm, #{LEAD_TABLE}.first_comm) ASC",
+      desc: "COALESCE(#{LEAD_TABLE}.last_comm, #{LEAD_TABLE}.first_comm) DESC" },
     lead_name: {
       asc: "#{LEAD_TABLE}.last_name ASC, #{LEAD_TABLE}.first_name ASC",
       desc: "#{LEAD_TABLE}.last_name DESC, #{LEAD_TABLE}.first_name DESC" }
