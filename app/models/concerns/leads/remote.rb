@@ -23,8 +23,22 @@ module Leads
       end
 
       def update_lead_from_voyager_guestcard(debug=false)
-        return nil unless remoteid.present?
-        guestcard = voyager_guestcard(debug)
+        return false unless remoteid.present?
+
+        unless (guestcard = voyager_guestcard(debug))
+          # Handle unexpected missing guestcard
+          data_sync_reason = Reason.where(name: 'Data Sync').last
+          data_sync_action = LeadAction.where(name: 'Sync from Remote').last
+          Note.create( # create_event_note
+            classification: 'error',
+            notable: self,
+            content: 'Attempted a manual Guestcard to Lead Update but Voyager did not return a GuestCard as expected!',
+            reason: data_sync_reason,
+            lead_action: data_sync_action
+          )
+          return false
+        end
+
         adapter = Leads::Adapters::YardiVoyager.new(property)
         adapter.send(:lead_from_guestcard, guestcard)
         reload
