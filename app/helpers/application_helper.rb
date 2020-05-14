@@ -147,4 +147,19 @@ module ApplicationHelper
       true_current_user.present? &&
       true_current_user&.id != current_user&.id
   end
+
+  def editor_aws_data
+    return FroalaEditorSDK::S3.data_hash(editor_upload_s3_options)
+  end
+
+  def editor_upload_s3_options
+    return options = {
+      bucket: ENV.fetch("ACTIVESTORAGE_S3_BUCKET", "").dup,
+      region: ENV.fetch("ACTIVESTORAGE_S3_REGION", "").dup,
+      keyStart: "editor_asset".dup,
+      acl: "public-read".dup,
+      accessKey: ENV.fetch("ACTIVESTORAGE_S3_ACCESS_KEY", "").dup,
+      secretKey: ENV.fetch("ACTIVESTORAGE_S3_SECRET_KEY", "").dup
+    }
+  end
 end
