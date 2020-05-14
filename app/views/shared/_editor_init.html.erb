@@ -1,0 +1,11 @@
+<script>
+$(document).on('turbolinks:load',function(){
+	var editor = new FroalaEditor(
+		'#html_editor_v2',
+    {
+      imageUploadToS3: <%= editor_aws_data.to_json.html_safe %>,
+      fileUploadToS3: <%= editor_aws_data.to_json.html_safe %>
+    }
+	);
+});
+</script>

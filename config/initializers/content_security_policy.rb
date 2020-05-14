@@ -1,3 +1,5 @@
+# See config/initializers/csp.rb for Content Security Policy configuration
+#
 # Be sure to restart your server when you modify this file.
 
 # Define an application-wide content security policy
