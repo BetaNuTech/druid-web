@@ -51,7 +51,7 @@
     <div class="row">
       <div class="col-md-12 form-group">
         <%= form.label :body %>
-        <%= form.text_area :body, { rows: 40, id: 'html_editor' , class: 'form-control' } %>
+        <%= form.text_area :body, { rows: 40, id: 'html_editor_v2' , class: 'form-control' } %>
       </div>
     </div>
 
@@ -71,3 +71,5 @@
     <%= link_to 'Back', articles_path, class: 'btn btn-xs btn-info' %>
   </div>
 <% end %>
+
+<%= render partial: 'shared/editor_init' %>

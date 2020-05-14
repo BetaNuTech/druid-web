@@ -46,8 +46,8 @@
     <div class="row">
       <div class="col-md-12 form-group">
         <%= form.label :body %>
-        <%= link_to("Toggle Rich Editor", "#", {id: "html_editor_toggle", class: "btn btn-xs btn-info"}) %>
-        <%= form.text_area :body, { rows: 20, id: (message_template.rich_editor? ? 'html_editor' : 'plain_editor'), class: 'form-control' } %>
+        <%#= link_to("Toggle Rich Editor", "#", {id: "html_editor_toggle", class: "btn btn-xs btn-info"}) %>
+        <%= form.text_area :body, { rows: 5, id: (message_template.rich_editor? ? 'html_editor_v2' : 'plain_editor'), class: 'form-control' } %>
       </div>
     </div>
 
@@ -58,3 +58,5 @@
 
     <%= render partial: "template_help" %>
   <% end %>
+
+<%= render partial: 'shared/editor_init' %>

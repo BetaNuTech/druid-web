@@ -18,7 +18,7 @@ class MessageTemplatesController < ApplicationController
 
   # GET /message_templates/new
   def new
-    @message_template = MessageTemplate.new(user: current_user)
+    @message_template = MessageTemplate.new(user: current_user, message_type: MessageType.email)
     authorize @message_template
   end
 
