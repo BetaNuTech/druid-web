@@ -27,5 +27,6 @@
     <% end %>
 
     <%= render partial: 'shared/browser_check' %>
+    <%= render partial: 'shared/tracking' unless Rails.env.test? %>
   </body>
 </html>
