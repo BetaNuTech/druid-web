@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_21_194111) do
+ActiveRecord::Schema.define(version: 2020_05_20_222949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -389,6 +389,7 @@ ActiveRecord::Schema.define(version: 2020_04_21_194111) do
     t.text "amenities"
     t.string "application_url"
     t.uuid "team_id"
+    t.boolean "call_lead_generation", default: true
     t.index ["active"], name: "index_properties_on_active"
     t.index ["team_id"], name: "index_properties_on_team_id"
   end

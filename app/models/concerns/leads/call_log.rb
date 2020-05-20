@@ -71,7 +71,9 @@ module Leads
 
         # Eager load properties to prevent N+1
         incoming_dids = call_leads.map{|l| l.did}
-        incoming_properties = Property.find_all_by_phone_numbers(incoming_dids)
+        incoming_properties = Property.
+          supporting_call_lead_generation.
+          find_all_by_phone_numbers(incoming_dids)
         incoming_properties_numbers = incoming_properties.map{|ip| [ip, ip.all_numbers]}
 
         # Eager load matching old leads to prevent N+1

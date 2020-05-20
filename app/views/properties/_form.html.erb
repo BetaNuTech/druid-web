@@ -235,7 +235,7 @@
                 <%= agent_form.select :role, select_user_role(agent_form.object.role), {}, class: "form-control" %>
               </div>
               <div class="col-md-2" style="padding-top: 2em">
-                <%= agent_form.check_box :_destroy %>
+                <%= agent_form.check_box :_destroy, class: "form-check-input" %>
                 <%= agent_form.label :_destroy, 'Remove' %>
               </div>
             </div>
@@ -244,6 +244,15 @@
       </div>
     </fieldset>
 
+    <fieldset>
+      <legend>Preferences</legend>
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <%= form.check_box :call_lead_generation, class: "form-check-input" %>
+          <%= form.label :call_lead_generation, "Generate Leads from Incoming Calls" %> 
+        </div>
+      </div>
+    </fieldset>
 
     <div class="row">
       <div class="col-md-12 form-group">

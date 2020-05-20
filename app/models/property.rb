@@ -2,30 +2,31 @@
 #
 # Table name: properties
 #
-#  id              :uuid             not null, primary key
-#  name            :string
-#  address1        :string
-#  address2        :string
-#  address3        :string
-#  city            :string
-#  state           :string
-#  zip             :string
-#  country         :string
-#  organization    :string
-#  contact_name    :string
-#  phone           :string
-#  fax             :string
-#  email           :string
-#  units           :integer
-#  notes           :text
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  active          :boolean          default("true")
-#  website         :string
-#  school_district :string
-#  amenities       :text
-#  application_url :string
-#  team_id         :uuid
+#  id                   :uuid             not null, primary key
+#  name                 :string
+#  address1             :string
+#  address2             :string
+#  address3             :string
+#  city                 :string
+#  state                :string
+#  zip                  :string
+#  country              :string
+#  organization         :string
+#  contact_name         :string
+#  phone                :string
+#  fax                  :string
+#  email                :string
+#  units                :integer
+#  notes                :text
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  active               :boolean          default("true")
+#  website              :string
+#  school_district      :string
+#  amenities            :text
+#  application_url      :string
+#  team_id              :uuid
+#  call_lead_generation :boolean          default("true")
 #
 
 class Property < ApplicationRecord
@@ -42,7 +43,7 @@ class Property < ApplicationRecord
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
                     :country, :organization, :contact_name, :phone, :fax, :email,
                     :website, :units, :notes, :school_district, :amenities, :active,
-                    :application_url, :team_id, :logo, :remove_logo ]
+                    :application_url, :team_id, :logo, :remove_logo, :call_lead_generation ]
 
   ## Associations
   has_many :leads
@@ -59,6 +60,7 @@ class Property < ApplicationRecord
 
   ### Scopes
   scope :active, -> { where(active: true) }
+  scope :supporting_call_lead_generation, -> { where(call_lead_generation: true)}
 
   ### Callbacks
 
