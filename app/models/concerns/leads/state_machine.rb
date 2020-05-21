@@ -4,7 +4,7 @@ module Leads
 
     PENDING_STATES = %w{open prospect showing application}
     CLAIMED_STATES = %w{prospect showing application approved denied movein resident}
-    IN_PROGRESS_STATES = %w{prospect showing application approved}
+    IN_PROGRESS_STATES = %w{prospect showing application }
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
     EARLY_PIPELINE_STATES = %w{open prospect showing application}
     STATE_TRANSITION_LEAD_ACTION = 'State Transition'
