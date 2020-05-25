@@ -12,7 +12,7 @@ SecureHeaders::Configuration.default do |config|
     connect_src: Rails.env.production? ? %w('self' https://capture.trackjs.com https://apm.scoutapp.com https://s3.amazonaws.com/druid-staging-activestorage https://s3.amazonaws.com/druid-prod-activestorage) : %w('self' http://localhost:3035 ws://localhost:3035 https://apm.scoutapp.com https://capture.trackjs.com https://s3.amazonaws.com/druid-staging-activestorage),
     font_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     img_src: Rails.env.production? ? %w(https: 'self' blob:) : %w(http: 'self' blob:),
-    object_src: %w('self' http: blob:),
+    object_src: Rails.env.production? ? %w('self' https: blob:) : %w('self' http: blob:),
     media_src: %w('self' https://druidaudio.s3.us-east-2.amazonaws.com),
     script_src: Rails.env.production? ? %w(https: 'unsafe-inline') :  %w(http: 'unsafe-eval' 'unsafe-inline' ),
     style_src: Rails.env.production? ? %w(https: blob: 'self' 'unsafe-inline' ) :  %w(http: blob: 'self' 'unsafe-inline')
