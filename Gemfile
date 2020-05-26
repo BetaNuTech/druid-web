@@ -50,7 +50,7 @@ gem 'image_processing', "~> 1.10"
 gem 'mini_magick', "~> 4.10"
 gem 'delayed_job_web', "~> 1.4"
 gem 'immigrant', "~> 0.3"
-gem "wysiwyg-rails", git: 'https://github.com/froala/wysiwyg-editor'
+gem "wysiwyg-rails", github: 'codeprimate/wysiwyg-rails'
 gem 'froala-editor-sdk', "~> 1.4"
 
 
