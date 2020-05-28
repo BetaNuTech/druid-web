@@ -1,12 +1,16 @@
-@media (max-width: 680px) {
+body {
+  padding-top: 120px;
+}
+
+@media (max-width: 495px) {
   body {
-    padding-top: 100px;
+    padding-top: 200px;
   }
 }
 
 @media (min-width: 680px) {
   body {
-    padding-top: 70px;
+    padding-top: 120px;
   }
 }
 
@@ -114,7 +118,7 @@
     }
   }
 
-
+0
   .btn-group-vertical {
     li {
       border: 1px solid red;
