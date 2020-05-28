@@ -2,7 +2,6 @@
 //= require plugins/align.min.js
 //= require plugins/code_beautifier.min.js
 //= require plugins/code_view.min.js
-//= require plugins/colors.min.js
 //= require plugins/emoticons.min.js
 //= require plugins/entities.min.js
 //= require plugins/file.min.js
@@ -23,7 +22,6 @@
 //= require plugins/print.min.js
 //= require plugins/quote.min.js
 //= require plugins/save.min.js
-//= require plugins/table.min.js
 //= require plugins/special_characters.min.js
 //= require plugins/url.min.js
 //= require plugins/video.min.js
