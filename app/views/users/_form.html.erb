@@ -108,7 +108,7 @@
         <div class="row">
           <div class="col-md-8 form-group">
             <%= profile_form.label :signature %>
-            <%= profile_form.text_area :signature, { id: 'html_editor', class: 'form-control user_signature', rows: 6 } %>
+            <%= profile_form.text_area :signature, { id: 'html_editor_v2', class: 'form-control user_signature', rows: 6 } %>
             <%= profile_form.check_box :signature_enabled, class: 'form-check-input user_signature_enabled' %>
             <%= profile_form.label(:signature_enabled, 'Display My Signature in Messages') %>
           </div>
@@ -211,3 +211,5 @@
     <%= link_to 'Back', ( policy(User).index? ? users_path : :back ), class: "btn btn-xs btn-info" %>
   </div>
 <% end %>
+
+<%= render partial: 'shared/editor_init' %>

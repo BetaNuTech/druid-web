@@ -1,0 +1,21 @@
+<script>
+  window.init_html_editor_v2 = function () {
+    window.html_editor_v2 = new FroalaEditor(
+      '#html_editor_v2',
+      {
+        key: 'cJC7bA5B2G2A2B2I2yQNDMIJg1IQNSEa1EUAi1XVFQd1EaG3C2A5D5C4E3F3D4G2B2==',
+        imageUploadToS3: <%= editor_aws_data.to_json.html_safe %>,
+        fileUploadToS3: <%= editor_aws_data.to_json.html_safe %>
+      }
+    );
+  }
+
+  window.destroy_html_editor_v2 = function() {
+    console.log('destroying...');
+    window.html_editor_v2.destroy();
+  }
+
+  $(document).on('turbolinks:load',function(){
+    window.init_html_editor_v2();
+  });
+</script>
