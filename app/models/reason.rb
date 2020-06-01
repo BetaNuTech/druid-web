@@ -17,6 +17,7 @@ class Reason < ApplicationRecord
 
   ### Constants
   ALLOWED_PARAMS = [:id, :name, :description, :active]
+  FIRST_CONTACT_REASON = 'First Contact'
 
   ### Validations
   validates :name,
@@ -25,5 +26,15 @@ class Reason < ApplicationRecord
 
   ### Scopes
   scope :active, -> {where(active: true)}
+
+  def self.first_contact
+    if (record = self.active.where(name: FIRST_CONTACT_REASON).first).present?
+      return record
+    else
+      err_msg = 'Reason with Name "First Contact" is missing!'
+      ErrorNotification.send(StandardError.new(err_msg))
+      return nil
+    end
+  end
 
 end

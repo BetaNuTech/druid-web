@@ -186,4 +186,31 @@ module LeadsHelper
     end
   end
 
+  def lead_form_partial_for_entry_type(entry_type=nil)
+    case ( entry_type || '' ).to_sym
+    when :walkin
+      'walkin_form'
+    when :default
+      'form'
+    else
+      'form'
+    end
+  end
+
+  def lead_form_header_for_entry_type(entry_type=nil)
+    case ( entry_type || '' ).to_sym
+    when :walkin
+      'New Walk-In'
+    when :default
+      'New Lead'
+    else
+      'New Lead'
+    end
+  end
+
+  def showing_unit_selection_options(property)
+    collection = property.housing_units.for_showings.order(unit: :asc)
+    options_from_collection_for_select(collection, 'id', :display_name)
+  end
+
 end

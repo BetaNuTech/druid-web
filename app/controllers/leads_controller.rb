@@ -70,6 +70,7 @@ class LeadsController < ApplicationController
     @lead.user ||= current_user
     @lead.property ||= @property if @property.present?
     @lead.source ||= LeadSource.default
+    @entry_type = params[:entry] || :default
     authorize @lead
   end
 
@@ -87,6 +88,7 @@ class LeadsController < ApplicationController
     assign_user = lead_params['user_id'].present? ? User.find(lead_params['user_id']) : nil
     lead_creator = Leads::Creator.new(data: lead_params, agent: assign_user, token: @lead_source.api_token)
     @lead = lead_creator.call
+    @entry_type = params[:entry] || :default
 
     respond_to do |format|
       if !@lead.errors.any?
