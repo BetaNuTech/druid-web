@@ -4,7 +4,6 @@ module Leads
 
       class After55DotComParser
         def self.match?(data)
-          binding.pry
           return (data.fetch("headers",{}).fetch('From','').
                   match?('After55')
                  )
