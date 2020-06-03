@@ -5,7 +5,7 @@ class HomeController < ApplicationController
     authorize User, policy_class: HomePolicy
     @page_title = "Bluesky Dashboard"
 
-    @my_leads = Lead.for_agent(current_user).active.is_lead
+    @my_leads = Lead.for_agent(current_user).in_progress.is_lead
     @open_leads = current_user.available_leads.includes(:property)
     @today_actions = ScheduledAction.includes(:schedule, :lead_action, :target).for_agent(current_user).due_today.sorted_by_due_asc
     @upcoming_actions = ScheduledAction.includes(:schedule, :lead_action).for_agent(current_user).upcoming.sorted_by_due_asc
