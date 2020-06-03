@@ -1,12 +1,13 @@
-require_relative './rent_dot_com_parser'
-require_relative './apartments_dot_com_parser'
-require_relative './apartmentguide_dot_com_parser'
-require_relative './apartment_list_dot_com_parser'
-require_relative './hotpads_parser'
-require_relative './zillow_parser'
-require_relative './forrent_dot_com_parser'
-require_relative './lease_labs_dot_com_parser'
 require_relative './after55_dot_com_parser'
+require_relative './apartment_list_dot_com_parser'
+require_relative './apartmentguide_dot_com_parser'
+require_relative './apartments_dot_com_parser'
+require_relative './corporatehousing_dot_com_parser'
+require_relative './forrent_dot_com_parser'
+require_relative './hotpads_parser'
+require_relative './lease_labs_dot_com_parser'
+require_relative './rent_dot_com_parser'
+require_relative './zillow_parser'
 require_relative './null_parser'
 
 module Leads
@@ -15,6 +16,7 @@ module Leads
 
       # All Valid CloudMailin Parsers except NullParser
       PARSERS = [
+        CorporatehousingDotComParser, # Goes before all other forrent.com parsers
         LeaseLabsDotComParser,
         After55DotComParser,
         AbodoParser,
