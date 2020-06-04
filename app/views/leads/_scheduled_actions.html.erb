@@ -19,7 +19,7 @@
         <tr><td><p class="lead">No Pending Tasks</p></td></tr>
       <% end %>
       <%= render collection: lead.scheduled_actions.incomplete.sorted_by_due_asc, partial: 'scheduled_action' %>
-      <%= render collection: lead.scheduled_actions.completed.sorted_by_due_asc, partial: 'scheduled_action' %>
+      <%= render collection: lead.scheduled_actions.complete.sorted_by_due_asc, partial: 'scheduled_action' %>
     </tbody>
   </table>
 </div>

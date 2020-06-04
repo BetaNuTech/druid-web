@@ -135,4 +135,13 @@ module ScheduledActionsHelper
     end
   end
 
+  def scheduled_action_user_id_select_options(scheduled_action, current_user)
+    if scheduled_action.target&.property&.present?
+      collection = scheduled_action.target.property.users.by_name_asc
+    else
+      collection = [current_user]
+    end
+   return options_from_collection_for_select(collection, 'id', :name, scheduled_action.user_id || current_user.id)
+  end
+
 end

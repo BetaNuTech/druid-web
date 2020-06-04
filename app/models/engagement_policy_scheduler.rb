@@ -112,8 +112,14 @@ class EngagementPolicyScheduler
     )
 
     description = "%s [%s]" % [originator.description, 'FOLLOW UP']
+    if (originator.target.respond_to?(:user))
+      action_owner = originator.target.user
+    else
+      action_owner = originator.user
+    end
     action = ScheduledAction.new(
       user: originator.user,
+      #user: action_owner,
       target: originator.target,
       originator: originator,
       lead_action: originator.lead_action,
@@ -128,7 +134,7 @@ class EngagementPolicyScheduler
     if originator.compliance_task?
       compliance = EngagementPolicyActionCompliance.new(
         scheduled_action: action,
-        user: originator.user,
+        user: action.user,
         expires_at: due
       )
 
@@ -166,6 +172,8 @@ class EngagementPolicyScheduler
     # Set completion user if provided
     if user.present?
       scheduled_action.user_id = compliance.user_id = user.id
+      scheduled_action.save
+      compliance.save
     end
 
     # Update Compliance State

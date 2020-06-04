@@ -53,6 +53,8 @@ class User < ApplicationRecord
     order("user_profiles.last_name ASC, user_profiles.first_name ASC")
   }
 
+  scope :active, -> { where.not(deactivated: true) }
+
   ### Class Methods
 
   ### Instance Methods

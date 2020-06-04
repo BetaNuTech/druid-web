@@ -98,57 +98,93 @@ RSpec.describe EngagementPolicyScheduler do
       #expect(compliance.user).to eq(agent2)
 
     #end
+    
+    describe "when completed with retry" do
 
-    it "should create retries for ScheduledActions" do
-      seed_engagement_policy
-      lead = create(:lead, state: initial_state )
-      lead.reload
-      lead.trigger_event(event_name: 'claim', user: agent)
-      lead.reload
-      scheduled_actions = lead.scheduled_actions.order("created_at ASC")
+      it "should create retries for ScheduledActions" do
+        seed_engagement_policy
+        lead = create(:lead, state: initial_state )
+        lead.reload
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        scheduled_actions = lead.scheduled_actions.order("created_at ASC")
 
-      initial_scheduled_actions_count = ScheduledAction.count
+        initial_scheduled_actions_count = ScheduledAction.count
 
-      # First attempt
-      original_action = scheduled_actions.last
-      retry_count = original_action.engagement_policy_action.retry_count
-      note_count = Note.count
-      original_action.trigger_event(event_name: 'retry')
-      original_action.reload
-      new_actions = ScheduledAction.where(originator_id: original_action.id)
-      expect(Note.count).to eq(note_count + 1)
-      expect(original_action.engagement_policy_action.retry_count).to eq(retry_count)
-      expect(new_actions.count).to eq(1)
-      expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 1)
-
-      new_action = nil
-
-      # Subsequent Attempts
-      retry_count.times do |retry_number|
-        new_action = new_actions.first
+        # First attempt
+        original_action = scheduled_actions.last
+        retry_count = original_action.engagement_policy_action.retry_count
         note_count = Note.count
-        expect(new_action.engagement_policy_action_compliance.present?)
-        expect(new_action.attempt).to eq(retry_number + 2)
-        new_action.trigger_event(event_name: 'retry')
+        original_action.trigger_event(event_name: 'retry')
+        original_action.reload
+        new_actions = ScheduledAction.where(originator_id: original_action.id)
         expect(Note.count).to eq(note_count + 1)
-        new_action.reload
-        expect(new_action.state).to eq('completed_retry')
-        new_actions = ScheduledAction.where(originator_id: new_action.id)
-        if retry_number == (retry_count - 1)
-          expect(new_actions.count).to eq(0)
-          expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + retry_number + 1)
-        else
-          expect(new_actions.count).to eq(1)
-          expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + retry_number + 2)
+        expect(original_action.engagement_policy_action.retry_count).to eq(retry_count)
+        expect(new_actions.count).to eq(1)
+        expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 1)
+
+        new_action = nil
+
+        # Subsequent Attempts
+        retry_count.times do |retry_number|
+          new_action = new_actions.first
+          note_count = Note.count
+          expect(new_action.engagement_policy_action_compliance.present?)
+          expect(new_action.attempt).to eq(retry_number + 2)
+          new_action.trigger_event(event_name: 'retry')
+          expect(Note.count).to eq(note_count + 1)
+          new_action.reload
+          expect(new_action.state).to eq('completed_retry')
+          new_actions = ScheduledAction.where(originator_id: new_action.id)
+          if retry_number == (retry_count - 1)
+            expect(new_actions.count).to eq(0)
+            expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + retry_number + 1)
+          else
+            expect(new_actions.count).to eq(1)
+            expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + retry_number + 2)
+          end
         end
+
+        # There shouldn't be any new retry records after attempt limit is reached
+        expect(new_action.state).to eq('completed_retry')
+        expect(new_action.engagement_policy_action_compliance.present?)
+        expect(new_actions.count).to eq(0)
+        expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 4)
       end
 
-      # There shouldn't be any new retry records after attempt limit is reached
-      expect(new_action.state).to eq('completed_retry')
-      expect(new_action.engagement_policy_action_compliance.present?)
-      expect(new_actions.count).to eq(0)
-      expect(ScheduledAction.count).to eq(initial_scheduled_actions_count + 4)
+      it "should assign the retry record to the lead owner if the lead owner completed the task" do
+        seed_engagement_policy
+        lead = create(:lead, state: initial_state )
+        lead.reload
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        scheduled_actions = lead.scheduled_actions.order("created_at ASC")
+        original_action = scheduled_actions.last
+        original_action.trigger_event(event_name: 'retry', user: lead.user)
+        lead.reload
+        retry_action = lead.scheduled_actions.order(created_at: :desc).first
+        expect(retry_action.user).to eq(lead.user)
+      end
+
+
+      it "should assign the retry record to the lead owner if another agent completed the task" do
+        seed_engagement_policy
+        lead = create(:lead, state: initial_state )
+        lead.reload
+        assert(agent2 != lead.user)
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        scheduled_actions = lead.scheduled_actions.order("created_at ASC")
+        original_action = scheduled_actions.last
+        original_action.trigger_event(event_name: 'retry', user: agent2)
+        lead.reload
+        retry_action = lead.scheduled_actions.order(created_at: :desc).first
+        expect(retry_action.user).to eq(lead.user)
+      end
+
+
     end
+
 
     it "should create retries for a Personal Task without an associated Reason" do
       scheduled_action = ScheduledAction.new(

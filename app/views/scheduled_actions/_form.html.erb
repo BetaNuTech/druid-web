@@ -27,6 +27,14 @@
       </p>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-4 form-group">
+      <%= form.label :user_id, 'Task Owner' %>
+      <%= form.select :user_id, scheduled_action_user_id_select_options(scheduled_action, current_user), {include_blank: false}, {id: :scheduled_action_user_id, class: 'form-control'} %>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-md-4 form-group">
       <%= form.label :lead_action_id, "Action" %>
