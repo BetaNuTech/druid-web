@@ -90,11 +90,13 @@ module Leads
 
       case parse_result.status
         when :ok
+          @lead.state = 'showing' if @lead.show_unit.present?
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
           property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
           @lead.infer_referral_record
-          @lead.delay.broadcast_to_streams if @lead.user_id.nil? && @lead.valid?
+          @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
+          @lead.delay.broadcast_to_streams if @lead.valid?
         else
           @lead.validate
           parse_result.errors.each do |err|

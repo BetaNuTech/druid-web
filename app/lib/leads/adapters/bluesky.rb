@@ -15,7 +15,7 @@ module Leads
         lead = Lead.new(@data)
         lead.validate
         status = lead.valid? ? :ok : :invalid
-        result = Leads::Creator::Result.new( status: status, lead: @data, errors: lead.errors, property_code: @property_code)
+        result = Leads::Creator::Result.new( status: status, lead: @data, errors: [], property_code: @property_code)
         return result
       end
 
@@ -29,7 +29,7 @@ module Leads
       #
       # (extracted from LeadsController)
       def filter_params(params)
-        valid_lead_params = Lead::ALLOWED_PARAMS - Lead::PRIVILEGED_PARAMS + [:property_id]
+        valid_lead_params = Lead::ALLOWED_PARAMS - Lead::PRIVILEGED_PARAMS + [:property_id, :state]
         valid_preference_params = [{preference_attributes: LeadPreference::ALLOWED_PARAMS - LeadPreference::PRIVILEGED_PARAMS }]
         filterable_params = params.is_a?(ActionController::Parameters) ? params : ActionController::Parameters.new(params)
         return filterable_params.permit(*(valid_lead_params + valid_preference_params))

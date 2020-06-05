@@ -236,6 +236,17 @@ RSpec.describe LeadsController, type: :controller do
       end
     end
 
+    describe "using an entry type" do
+      describe "identified as 'walkin'" do
+        it "returns a success response" do
+          sign_in agent
+          get :new, params: {entry: :walkin}, session: valid_session
+          expect(response).to have_http_status(:ok)
+          expect(response).to render_template("leads/_walkin_form")
+        end
+      end
+    end
+
   end
 
   describe "GET #edit" do
@@ -272,9 +283,54 @@ RSpec.describe LeadsController, type: :controller do
 
   describe "POST #create" do
     include_examples "authenticated action", {params: {id: 0 }, name: 'create'}
+    include_context 'engagement_policy'
 
     before do
       source
+    end
+
+    describe "with an entry type: 'walkin'" do
+      let(:walkin_unit) { create(:unit, property: agent.property)}
+      let(:walkin_attributes) {
+        {
+          classification: 'lead',
+          property_id: agent.property.id,
+          first_comm: DateTime.now.to_s,
+          first_name: 'WalkinFirst',
+          last_name: 'WalkinLast',
+          phone1: '5555555555',
+          email: 'walkin@example.com',
+          show_unit: walkin_unit.id
+        }
+      }
+
+      before do
+        seed_engagement_policy
+        agent
+        walkin_unit
+      end
+
+      it "should create a new lead" do
+        sign_in agent
+        lead_count = Lead.count
+        post :create, params: {entry: 'walkin', lead: walkin_attributes}, session: valid_session
+
+        expect(Lead.count).to eq(lead_count + 1)
+
+        new_lead = assigns(:lead)
+        assert(new_lead.errors.empty?)
+        assert(new_lead.showing?)
+        expect(new_lead.first_name).to eq(walkin_attributes[:first_name])
+      end
+      it "should create a new ScheduledAction to show the selected unit" do
+        sign_in agent
+        post :create, params: {entry: 'walkin', lead: walkin_attributes}, session: valid_session
+        new_lead = assigns(:lead)
+        expect(new_lead.scheduled_actions.count).to eq(2)
+        showing_task = new_lead.scheduled_actions.where(lead_action: LeadAction.showing).first
+        expect(showing_task.article).to eq(walkin_unit)
+        expect(showing_task.lead_action).to eq(LeadAction.showing)
+      end
     end
 
     describe "as an corporate" do

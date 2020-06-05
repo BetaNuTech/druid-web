@@ -54,12 +54,13 @@ class Lead < ApplicationRecord
   include Leads::Remote
 
   ### Constants
-  ALLOWED_PARAMS = [:lead_source_id, :remoteid, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at, { referrals_attributes: LeadReferral::ALLOWED_PARAMS }]
+  ALLOWED_PARAMS = [:lead_source_id, :remoteid, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at, :show_unit, { referrals_attributes: LeadReferral::ALLOWED_PARAMS }]
   PRIVILEGED_PARAMS = [:lead_source_id, :user_id, :state, :id, :property_id]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
 
   ### Attributes
+  attr_accessor :show_unit
 
   ### Enums
   enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4 }
@@ -86,9 +87,9 @@ class Lead < ApplicationRecord
   }
 
   ### Validations
-  validates :first_name, presence: true
-	validates :phone1, presence: true, unless: ->(lead){ lead.phone2.present? || lead.email.present? }
-	validates :email, presence: true, unless: ->(lead){ lead.phone1.present? || lead.phone2.present? }
+  validates :first_name, presence: { message: 'must be provided' }
+	validates :phone1, presence: {message: 'or email must be provided'}, unless: ->(lead){ lead.phone2.present? || lead.email.present? }
+	validates :email, presence: {message: 'or phone number must be provided'}, unless: ->(lead){ lead.phone1.present? || lead.phone2.present? }
   validates :remoteid,
     if: -> {remoteid.present?},
     uniqueness: {
@@ -192,7 +193,19 @@ class Lead < ApplicationRecord
     @source_document ||= preference&.source_document
   end
 
+  def update_showing_task_unit(unit_id=nil)
+    return false unless property
+    unit = property.housing_units.where(id: ( unit_id || show_unit )).first
+    return false unless unit.present? && LeadAction.showing.present?
+    showing_task = scheduled_actions.where(lead_action: LeadAction.showing).first
+    return false unless showing_task.present?
+    showing_task.article_type = 'Unit'
+    showing_task.article_id = unit.id
+    return showing_task.save
+  end
+
   private
+
 
   def format_phones
     self.phone1 = PhoneNumber.format_phone(self.phone1) if self.phone1.present?

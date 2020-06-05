@@ -56,6 +56,7 @@ class Unit < ApplicationRecord
 
   ### Scopes
   scope :vacant, -> { where(occupancy: 'vacant').order(model: :desc, occupancy: :desc, unit: :asc) }
+  scope :for_showings, -> { where(model: true) }
 
   ### Class Methods
 
@@ -72,6 +73,15 @@ class Unit < ApplicationRecord
   def display_name
     model_str = model? ? ' Model' : ''
     "%s%s %s" % [unit, model_str, unit_type&.name]
+  end
+
+  def display_name2
+    "%s %sbr/%sba (%s)" % [
+      unit_type&.name,
+      unit_type&.bedrooms || bedrooms,
+      unit_type&.bathrooms || bathrooms,
+      unit
+    ]
   end
 
   def resident

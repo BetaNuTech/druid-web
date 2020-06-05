@@ -109,6 +109,11 @@
                   <% end %>
                   <li role="separator" class="divider"></li>
                   <li>
+                    <%= link_to(custom_new_leads_path(entry: 'walkin')) do %>
+                      <span class="glyphicon glyphicon-pencil"></span> New Walk-In
+                    <% end %>
+                  </li>
+                  <li>
                     <%= link_to(new_lead_path) do %>
                       <span class="glyphicon glyphicon-pencil"></span> Create Lead
                     <% end %>

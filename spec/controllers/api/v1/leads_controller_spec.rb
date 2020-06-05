@@ -78,7 +78,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response_json["errors"]).to_not be_nil
-          expect(response_json["errors"]["first_name"][0]).to eq("can't be blank")
+          expect(response_json["errors"]["first_name"][0]).to eq("must be provided")
         end
       end
     describe "using the Costar Adapter" do
@@ -119,7 +119,7 @@ RSpec.describe Api::V1::LeadsController, type: :controller do
           }.to change(Lead, :count).by(0)
           response_json = JSON.parse(response.body)
           expect(response_json["errors"]).to_not be_nil
-          expect(response_json["errors"]["first_name"][0]).to eq("can't be blank")
+          expect(response_json["errors"]["first_name"][0]).to eq("must be provided")
         end
       end
     end

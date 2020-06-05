@@ -68,6 +68,7 @@ Rails.application.routes.draw do
 
   resources :leads do
     collection do
+      get 'new/:entry', to: 'leads#new', as: 'custom_new'
       get 'search', to: "leads#search"
       get 'mass_assignment', to: 'leads#mass_assignment'
       post 'mass_assign', to: 'leads#mass_assign'

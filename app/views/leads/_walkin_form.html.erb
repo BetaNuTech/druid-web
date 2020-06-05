@@ -1,0 +1,82 @@
+<%= form_with(model: lead, local: true) do |form| %>
+  <%= hidden_field_tag 'entry', 'walkin' %>
+  <%= hidden_field_tag 'lead[id]', lead.id, id: 'lead_id' %>
+  <%= hidden_field_tag 'lead[classification]', 'lead' %>
+  <%= hidden_field_tag 'lead[property_id]', @current_property.id %>
+  <%= hidden_field_tag 'lead[first_comm]', DateTime.now %>
+
+  <% if lead.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(lead.errors.count, "error") %> prohibited this lead from being saved:</h2>
+      <ul>
+        <% lead.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6 form-group">
+      <%= form.label :first_name %>
+      <%= form.text_field :first_name, id: :lead_first_name, class: "form-control" %>
+    </div>
+    <div class="col-md-6 form-group">
+      <%= form.label :last_name %>
+      <%= form.text_field :last_name, id: :lead_last_name, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 form-group">
+      <%= form.label :phone1, 'Phone Number (primary)' %>
+      <%= form.telephone_field :phone1, class: "form-control", pattern: "[0-9]{10}", placeholder: "Format: 1234567890" %>
+    </div>
+    <div class="col-md-6 form-group">
+      <%= form.label :email %>
+      <%= form.email_field :email, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 form-group">
+      <%= form.label :show_unit, 'Show Unit' %>
+        <% lead.property.housing_units.for_showings.order(unit: :asc).each do |unit| %>
+          <div class="row">
+            <div class="col-md-12">
+              <%= form.radio_button :show_unit, unit.id, {id: "show_unit_#{unit.id}"} %>
+              <%= form.label :show_unit, unit.display_name2, for: "show_unit_#{unit.id}" %>
+            </div>
+          </div>
+        <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 form-group">
+      <%= form.label :notes, 'Notes' %>
+      <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 3 %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 form-group">
+      <%= form.label :referral, 'Lead Source/Referral Origin' %>
+      <small>Select or enter a referral source</small>
+      <%= form.select :referral, select_lead_referral_source('Drive By'), {include_blank: true}, { id: :lead_referral, class: "form-control" } %>
+    </div>
+    <div class="col-md-6 form-group">
+      <div id="lead_referrable">
+        <%= lead_referrable_select(lead: lead, referral: lead.referral) %>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <%= link_to('Cancel', :back, class: 'btn btn-xs btn-info') %>
+  </div>
+<% end %>
+
+<script>$(document).on('turbolinks:load',function(){document.getElementById('lead_first_name').focus()})</script>
