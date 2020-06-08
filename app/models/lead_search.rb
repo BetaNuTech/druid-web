@@ -432,14 +432,15 @@ class LeadSearch
 
   def agent_options
     if @user
-      agents = PropertyPolicy::Scope.new(@user, Property).resolve.all.
-        to_a.map{|p| p.users.to_a}.
-        flatten.compact.uniq
+      property_ids = PropertyPolicy::Scope.new(@user, Property).resolve.pluck(:id)
+      agents = User.includes([:assignments, :profile]).
+        where(property_users: {property_id: property_ids})
     else
       agents = PropertyUser.select("distinct user_id").map(&:user)
     end
-    sorted_agents = agents.sort_by{|u| u.profile.try(:last_name) }
-    return agents.map{ |u| {label: u.name, value: u.id} }
+    return agents.
+      map{ |u| {label: u.name, value: u.id} }.
+      sort_by{|x| ( x[:label] || '' ).split.last}
   end
 
   def bedroom_options
