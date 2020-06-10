@@ -5,8 +5,14 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
-    gtag('config', '<%= GOOGLE_ANALYTICS_TRACKING_ID %>');
+    gtag('config',
+         '<%= GOOGLE_ANALYTICS_TRACKING_ID %>',
+         {'custom_map':
+           {'dimension1': 'property'}
+         }
+    );
+    var dimensionValue = '<%= current_property.name rescue "Unknown" %>';
+    gtag('event', 'property_dimension', dimensionValue);
   </script>
 <% else %>
   <!-- GOOGLE_ANAYLTICS_TRACKING_ID is not set -->
