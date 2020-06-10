@@ -11,7 +11,7 @@
            {'dimension1': 'property'}
          }
     );
-    var dimensionValue = '<%= current_property.name rescue "Unknown" %>';
+    var dimensionValue = '<%= current_user.property&.name || "Unknown" rescue "Unknown" %>';
     gtag('event', 'property_dimension', dimensionValue);
   </script>
 <% else %>
