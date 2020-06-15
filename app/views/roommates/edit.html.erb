@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Edit Roommate/Guarantor</h1>
+      <h2>with <%= link_to @lead.name, url_for(@lead) %></h2>
+      <%= render partial: 'form', locals: { roommate: @roommate, lead: @lead } %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="cold-md-12">
+      <%= link_to 'Back', lead_path(@lead) %>
+    </div>
+  </div>
+</div>

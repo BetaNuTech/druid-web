@@ -108,24 +108,30 @@ module ApplicationHelper
     end
   end
 
-  def model_link_with_tooltip(obj, action)
+  def model_link_with_tooltip(objs, action)
+    if objs.is_a?(Array)
+      obj = objs.last
+    else
+      obj = objs
+      objs = [objs]
+    end
     slug = "%s-%s-%s" % [obj.class.to_s.underscore, action.to_s, 'link']
     case action.to_sym
     when :show
       tooltip_block(slug) do
-        link_to obj do
+        link_to objs do
           glyph(:show)
         end
       end if policy(obj).show?
     when :edit
       tooltip_block(slug) do
-        link_to url_for([ :edit, obj ]) do
+        link_to url_for([ :edit, *objs ]) do
           glyph(:edit)
         end
       end if policy(obj).edit?
     when :destroy
       tooltip_block(slug) do
-        link_to(obj, method: :delete, data: {confirm: 'Are you sure you want to delete this?'}) do
+        link_to(objs, method: :delete, data: {confirm: 'Are you sure you want to delete this?'}) do
           glyph(:delete)
         end
       end if policy(obj).destroy?

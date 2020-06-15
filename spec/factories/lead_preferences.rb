@@ -19,9 +19,9 @@
 #  beds              :integer
 #  raw_data          :text
 #  unit_type_id      :uuid
-#  optout_email      :boolean          default("false")
+#  optout_email      :boolean          default(FALSE)
 #  optout_email_date :datetime
-#  optin_sms         :boolean          default("false")
+#  optin_sms         :boolean          default(FALSE)
 #  optin_sms_date    :datetime
 #
 

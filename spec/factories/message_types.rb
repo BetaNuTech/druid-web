@@ -5,10 +5,10 @@
 #  id          :uuid             not null, primary key
 #  name        :string           not null
 #  description :text
-#  active      :boolean          default("true"), not null
+#  active      :boolean          default(TRUE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  html        :boolean          default("false")
+#  html        :boolean          default(FALSE)
 #
 
 FactoryBot.define do

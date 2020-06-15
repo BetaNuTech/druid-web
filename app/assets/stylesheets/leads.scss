@@ -152,6 +152,18 @@ table#leads-table {
   grid-area: LeadSourceDocument; 
 }
 
+.Lead .lead_roommates {
+  grid-area: LeadRoommates;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
 @media(min-width: 600px) {
   .Lead {
     display: grid;
@@ -163,6 +175,7 @@ table#leads-table {
       "LeadContact LeadProperty LeadPreferences"
       "LeadNotes LeadNotes LeadNotes"
       "LeadDuplicates LeadDuplicates LeadDuplicates"
+      "LeadRoommates LeadRoommates LeadRoommates"
       "LeadScheduledActions LeadScheduledActions LeadScheduledActions"
       "LeadComments LeadComments LeadComments"
       "LeadMessages LeadMessages LeadMessages"

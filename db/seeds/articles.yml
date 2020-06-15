@@ -1,8 +1,32 @@
 ---
 :articles:
-  :version: 1
+  :version: 2
   :key: :slug
   :data:
+    - :slug: roommate-edit-link
+      :title: Roommate#Edit#Link
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Roommate information
+    - :slug: roommate-add-link
+      :title: Roommate#Add#Link
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Add roommate
+    - :slug: roommate-destroy-link
+      :title: Roommate#Destroy#Link
+      :contextid: Leads#show
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Remove roommate
     - :slug: lead-show-link
       :title: Leads#Show#Link
       :contextid: Leads#show

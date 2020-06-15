@@ -20,7 +20,7 @@
 #  phone2              :string
 #  fax                 :string
 #  email               :string
-#  priority            :integer          default("1")
+#  priority            :integer          default("low")
 #  phone1_type         :string           default("Cell")
 #  phone2_type         :string
 #  phone1_tod          :string

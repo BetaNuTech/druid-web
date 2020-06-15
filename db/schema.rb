@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_20_222949) do
+ActiveRecord::Schema.define(version: 2020_06_15_182137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -476,6 +476,22 @@ ActiveRecord::Schema.define(version: 2020_05_20_222949) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "roommates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "phone"
+    t.string "email"
+    t.integer "relationship", default: 0
+    t.boolean "sms_allowed", default: false
+    t.boolean "email_allowed", default: true
+    t.integer "occupancy", default: 0
+    t.string "remoteid"
+    t.text "notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "scheduled_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -1,0 +1,59 @@
+<div class="row lead_roommates">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <h2>Roommates</h2>
+      </div>
+      <div class="col-md-2">
+        <%= tooltip_block('roommate-add-link') do %>
+          <%= link_to('Add', new_lead_roommate_path(@lead), {class: 'btn btn-xs btn-primary'}) %>
+        <% end %>
+      </div>
+    </div>
+    <% if @lead.roommates.any? %>
+      <table class="table">
+        <thead>
+          <th>Name</th>
+          <th>Occupancy</th>
+          <th>Contact</th>
+          <th>Notes</th>
+          <th></th>
+        </thead>
+        <tbody>
+          <% @lead.roommates.each do |roommate| %>
+            <tr>
+              <td width="30%"><%= link_to(roommate.name, edit_lead_roommate_path(lead, roommate)) %></td>
+              <td width="10%">
+                <%= roommate.occupancy&.capitalize %><br/>
+                <%= roommate.relationship&.capitalize %><br/>
+              </td>
+              <td width="20%">
+                <% if roommate.phone.present? %>
+                  <span class="nowrap roommate_sms_<%= roommate.sms_allowed %>">
+                    <%= glyph(:phone) %>
+                    <%= roommate.phone || '-' %>
+                  </span><br/>
+                <% end %>
+                <% if roommate.email.present? %>
+                  <span class="nowrap roommate_email_<%= roommate.email_allowed %>">
+                    <%= glyph(:email) %>
+                    <%= roommate.email || '-' %>
+                  </span>
+                <% end %>
+              </td>
+              <td width="30%">
+                <%= roommate.notes %>
+              </td>
+              <td width="10%">
+                <%= model_link_with_tooltip([ lead, roommate ], :edit) %>
+                <%= model_link_with_tooltip([ lead, roommate ], :destroy) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="lead">None</p>
+    <% end %>
+  </div>
+</div>

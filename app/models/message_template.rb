@@ -10,7 +10,7 @@
 #  body            :text             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  shared          :boolean          default("true")
+#  shared          :boolean          default(TRUE)
 #
 
 class MessageTemplate < ApplicationRecord
