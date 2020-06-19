@@ -7,11 +7,11 @@
 #  lead_action_id         :uuid
 #  description            :text
 #  deadline               :decimal(, )
-#  retry_count            :integer          default("0")
-#  retry_delay            :decimal(, )      default("0.0")
+#  retry_count            :integer          default(0)
+#  retry_delay            :decimal(, )      default(0.0)
 #  retry_delay_multiplier :string           default("none")
-#  score                  :decimal(, )      default("1.0")
-#  active                 :boolean          default("true")
+#  score                  :decimal(, )      default(1.0)
+#  active                 :boolean          default(TRUE)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #

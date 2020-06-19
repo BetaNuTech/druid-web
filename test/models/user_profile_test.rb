@@ -16,7 +16,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  signature         :text
-#  signature_enabled :boolean          default("false")
+#  signature_enabled :boolean          default(FALSE)
 #
 
 require 'test_helper'

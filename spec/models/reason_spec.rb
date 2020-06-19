@@ -5,7 +5,7 @@
 #  id          :uuid             not null, primary key
 #  name        :string
 #  description :string
-#  active      :boolean          default("true")
+#  active      :boolean          default(TRUE)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

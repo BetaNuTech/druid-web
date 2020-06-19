@@ -1,0 +1,74 @@
+<%= form_with(model: [lead, roommate ], local: true) do |form| %>
+  <% if roommate.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(roommate.errors.count, "error") %> prohibited this Roommate from being saved:</h2>
+
+      <ul>
+        <% roommate.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <fieldset>
+    <legend>Personal</legend>
+    <div class="row form-group">
+      <div class="col-md-6">
+        <%= form.label :first_name %>
+        <%= form.text_field :first_name, {class: 'form-control', id: 'first_name_field'} %>
+      </div>
+      <div class="col-md-6">
+        <%= form.label :last_name %>
+        <%= form.text_field :last_name, {class: 'form-control'} %>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-3">
+        <%= form.label :occupancy %>
+        <%= form.select :occupancy, roommate_occupancies_for_select(roommate.occupancy), {}, {class: 'form-control'} %>
+      </div>
+      <div class="col-md-3">
+        <%= form.label :relationship, 'Relationship to Lead' %>
+        <%= form.select :relationship, roommate_relationships_for_select(roommate.relationship), {}, {class: 'form-control'} %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Contact</legend>
+    <div class="row form-group">
+      <div class="col-md-6">
+        <%= form.label :phone %>
+        <%= form.phone_field :phone, {class: 'form-control'} %>
+        <%= form.check_box :sms_allowed %>
+        <%= form.label :sms_allowed, 'SMS/Text permitted' %>
+      </div>
+      <div class="col-md-6">
+        <%= form.label :email %>
+        <%= form.phone_field :email, {class: 'form-control'} %>
+        <%= form.check_box :email_allowed %>
+        <%= form.label :email_allowed, 'Email permitted' %>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="row form-group">
+    <div class="col-md-12">
+      <%= form.label :notes %>
+      <%= form.text_area :notes, {rows: 4, class: 'form-control'} %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 form-group">
+      <br/>
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <%= link_to('Cancel', :back, class: 'btn btn-xs btn-info') %>
+    </div>
+  </div>
+<% end %>
+
+<script>
+  $(document).on('turbolinks:load', function(){  $('#first_name_field').focus();})
+</script>

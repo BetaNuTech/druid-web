@@ -213,4 +213,24 @@ module LeadsHelper
     options_from_collection_for_select(collection, 'id', :display_name)
   end
 
+  def new_lead_email_message_link(lead, &block)
+    if policy(lead).compose_message? && lead.message_types_available.include?(MessageType.email)
+      link_to(new_message_path(messageable_type: 'Lead', messageable_id: lead.id, message_type_id: MessageType.email&.id)) do
+        yield
+      end
+    else
+      yield
+    end
+  end
+
+  def new_lead_sms_message_link(lead, &block)
+    if policy(lead).compose_message? && lead.message_types_available.include?(MessageType.sms)
+      link_to(new_message_path(messageable_type: 'Lead', messageable_id: lead.id, message_type_id: MessageType.sms&.id)) do
+        yield
+      end
+    else
+      yield
+    end
+  end
+
 end

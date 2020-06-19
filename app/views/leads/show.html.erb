@@ -62,13 +62,24 @@
       <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-xs btn-primary" %>
       </span><br/>
       <span class="contact_info" >
-        <span title="Primary Phone" class="glyphicon glyphicon-earphone" ></span>&nbsp;
-        <%= @lead.phone1 %><br/>
-        <span title="Secondary Phone" class="glyphicon glyphicon-earphone"></span>&nbsp;
-        <%= @lead.phone2 %><br/>
+        <% if @lead.phone1.present? %>
+          <span title="Primary Phone" class="glyphicon glyphicon-earphone" ></span>&nbsp;
+          <%= new_lead_sms_message_link(@lead) do %>
+            <%= @lead.phone1 %>
+          <% end %>
+          <br/>
+        <% end %>
+        <% if @lead.phone2.present? %>
+          <span title="Secondary Phone" class="glyphicon glyphicon-earphone"></span>&nbsp;
+          <%= new_lead_sms_message_link(@lead) do %>
+            <%= @lead.phone2 %><br/>
+          <% end %>
+        <% end %>
         <span title="Email Address" class="glyphicon glyphicon-envelope"></span>&nbsp;
         <% if @lead.email.present? %>
-          <%= @lead.email %>
+          <%= new_lead_email_message_link(@lead) do %>
+            <%= @lead.email %>
+          <% end %>
         <% else %>
           <span class="missing_lead_email">Email Required</span>
         <% end %><br/>
@@ -157,6 +168,7 @@
   <%= render partial: 'source_document', locals: {lead: @lead} if @lead.source_document.present? %>
   <a name="#duplicates">&nbsp;</a>
   <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
+  <%= render partial: 'roommates', locals: {lead: @lead} %>
   <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
   <%= render partial: 'comments', locals: {lead: @lead, comments: @lead_comments} %>
   <%= render partial: 'timeline', locals: {lead: @lead, comments: @lead_timeline} %>

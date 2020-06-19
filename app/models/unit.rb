@@ -24,8 +24,8 @@
 #  occupancy      :string           default("vacant")
 #  lease_status   :string           default("available")
 #  available_on   :date
-#  market_rent    :decimal(, )      default("0.0")
-#  model          :boolean          default("false")
+#  market_rent    :decimal(, )      default(0.0)
+#  model          :boolean          default(FALSE)
 #
 
 class Unit < ApplicationRecord

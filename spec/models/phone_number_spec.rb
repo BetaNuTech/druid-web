@@ -6,8 +6,8 @@
 #  name           :string
 #  number         :string
 #  prefix         :string           default("1")
-#  category       :integer          default("0")
-#  availability   :integer          default("0")
+#  category       :integer          default("cell")
+#  availability   :integer          default("any")
 #  phoneable_id   :uuid
 #  phoneable_type :string
 #  created_at     :datetime         not null

@@ -3,7 +3,7 @@
 # Table name: cdr
 #
 #  id            :integer          unsigned, not null, primary key
-#  calldate      :datetime         default("0000-00-00 00:00:00"), not null
+#  calldate      :datetime         default(NULL), not null
 #  clid          :string(80)       default(""), not null
 #  src           :string(80)       default(""), not null
 #  dst           :string(80)       default(""), not null
@@ -12,10 +12,10 @@
 #  dstchannel    :string(80)       default(""), not null
 #  lastapp       :string(80)       default(""), not null
 #  lastdata      :string(80)       default(""), not null
-#  duration      :integer          default("0"), not null
-#  billsec       :integer          default("0"), not null
+#  duration      :integer          default(0), not null
+#  billsec       :integer          default(0), not null
 #  disposition   :string(45)       default(""), not null
-#  amaflags      :integer          default("0"), not null
+#  amaflags      :integer          default(0), not null
 #  accountcode   :string(20)       default(""), not null
 #  uniqueid      :string(32)       default(""), not null
 #  userfield     :string(255)      default(""), not null
@@ -26,7 +26,7 @@
 #  outbound_cnum :string(40)       default(""), not null
 #  outbound_cnam :string(40)       default(""), not null
 #  dst_cnam      :string(40)       default(""), not null
-#  flag_imported :integer          default("0")
+#  flag_imported :integer          default(0)
 #
 
 ### Data Reference: https://wiki.asterisk.org/wiki/display/AST/Asterisk+12+CDR+Specification

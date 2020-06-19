@@ -11,7 +11,7 @@
 #  content        :text
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  classification :integer          default("0")
+#  classification :integer          default("comment")
 #
 
 class Note < ApplicationRecord

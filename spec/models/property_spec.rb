@@ -20,13 +20,13 @@
 #  notes                :text
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
-#  active               :boolean          default("true")
+#  active               :boolean          default(TRUE)
 #  website              :string
 #  school_district      :string
 #  amenities            :text
 #  application_url      :string
 #  team_id              :uuid
-#  call_lead_generation :boolean          default("true")
+#  call_lead_generation :boolean          default(TRUE)
 #
 
 require 'rails_helper'

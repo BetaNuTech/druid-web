@@ -87,6 +87,7 @@ Rails.application.routes.draw do
       post 'deliver', on: :member
       post 'mark_read', to: "messages#mark_read"
     end
+    resources :roommates
   end
 
   resources :lead_sources do

@@ -20,7 +20,7 @@
 #  phone2              :string
 #  fax                 :string
 #  email               :string
-#  priority            :integer          default("1")
+#  priority            :integer          default("low")
 #  phone1_type         :string           default("Cell")
 #  phone2_type         :string
 #  phone1_tod          :string
@@ -52,6 +52,7 @@ class Lead < ApplicationRecord
   include Leads::Referrals
   include Leads::Broadcasts
   include Leads::Remote
+  include Leads::Roommates
 
   ### Constants
   ALLOWED_PARAMS = [:lead_source_id, :remoteid, :property_id, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at, :show_unit, { referrals_attributes: LeadReferral::ALLOWED_PARAMS }]

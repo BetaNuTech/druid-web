@@ -4,7 +4,7 @@
 #
 #  id          :uuid             not null, primary key
 #  name        :string
-#  active      :boolean          default("true")
+#  active      :boolean          default(TRUE)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  description :text
@@ -12,8 +12,8 @@
 #  remoteid    :string
 #  bathrooms   :integer
 #  bedrooms    :integer
-#  market_rent :decimal(, )      default("0.0")
-#  sqft        :decimal(, )      default("0.0")
+#  market_rent :decimal(, )      default(0.0)
+#  sqft        :decimal(, )      default(0.0)
 #
 
 require 'rails_helper'

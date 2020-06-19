@@ -6,8 +6,8 @@
 #  property_id :uuid
 #  lead_state  :string
 #  description :text
-#  version     :integer          default("0")
-#  active      :boolean          default("true")
+#  version     :integer          default(0)
+#  active      :boolean          default(TRUE)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

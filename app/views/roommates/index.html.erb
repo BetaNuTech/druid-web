@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Roommates/Guarantors</h1>
+      <h2>with <%= link_to @lead.name, url_for(@lead) %></h2>
+    </div>
+    <div class="col-md-6 text-right">
+      <%= link_to 'Add Roommate', new_lead_roommate_path(@lead), { class: 'btn btn-sm btn-primary' }  %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <% if @roommates.present? %>
+        <table class="table">
+          <thead>
+            <th>Occupancy</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </thead>
+          <tbody>
+            <% @roommates.each do |roommate| %>
+              <tr>
+                <td><%= roommate.occupancy %></td>
+                <td><%= roommate.name %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="lead">None</p>
+      <% end %>
+    </div>
+  </div>
+</div>
