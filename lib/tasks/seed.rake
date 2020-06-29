@@ -33,6 +33,41 @@ namespace :db do
       Article.load_seed_data
     end
 
+    desc "Seed LeadSources"
+    task :lead_sources => :environment do
+      LeadSource.load_seed_data
+    end
+
+    desc "Bluesky Portal Listings"
+    task :bluesky_portal_listings => :environment do
+      puts "== Creating Bluesky Portal Listings"
+
+      lead_source = LeadSource.where(slug: 'BlueskyPortal').first
+      unless lead_source.present?
+        puts "  ! BlueSkyPortal LeadSource not found! Aborting!"
+        return false
+      end
+      Property.active.each do |property|
+        code = Leads::Adapters::YardiVoyager.property_code(property) rescue nil
+        if code.present?
+          listing = PropertyListing.new(
+            property_id: property.id,
+            source_id: lead_source.id,
+            code: code,
+            active: true
+          )
+          if listing.save
+            puts "  + Created PropertyListing '#{code}' for #{property.name} on #{lead_source.name}"
+          else
+            puts "  ! Error creating PropertyListing {code: '#{code}', source: '#{lead_source.name}'} for #{property.name}: #{listing.errors.to_a}"
+          end
+        else
+          puts "  ! #{propery.name} has no Voyager code! Skipping Bluesky Portal listing"
+        end
+      end
+      puts "DONE.\n"
+    end
+
     desc "Seed Development Environment with random data"
     task :development => :environment do
       require 'factory_bot_rails'

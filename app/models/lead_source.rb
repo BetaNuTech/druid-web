@@ -13,6 +13,7 @@
 #
 
 class LeadSource < ApplicationRecord
+  include Seeds::Seedable
   ALLOWED_PARAMS = [:name, :incoming, :slug, :active]
 
   # A LeadSource 'slug' also identifies the parser

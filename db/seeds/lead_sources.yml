@@ -1,0 +1,41 @@
+---
+:lead_sources:
+  :version: 1
+  :key: :name
+  :data:
+  - :name: 'BlueSky Webapp'
+    :slug: 'Bluesky'
+    :incoming: true
+    :active: true
+  - :name: 'BlueSky Portal'
+    :slug: 'BlueskyPortal'
+    :incoming: true
+    :active: true
+  - :name: 'Zillow'
+    :slug: 'Zillow'
+    :incoming: true
+    :active: true
+  - :name: 'Cloudmailin'
+    :slug: 'Cloudmailin'
+    :incoming: true
+    :active: true
+  - :name: 'YardiVoyager'
+    :slug: 'YardiVoyager'
+    :incoming: false
+    :active: true
+  - :name: 'CoStar'
+    :slug: 'Costar'
+    :incoming: true
+    :active: true
+  - :name: "ForRent"
+    :slug: "Zillow"
+    :incoming: true
+    :active: true
+  - :name: "RentPath"
+    :slug: "Zillow"
+    :incoming: true
+    :active: true
+  - :name: "Cobalt"
+    :slug: "Cobalt"
+    :incoming: false
+    :active: true
