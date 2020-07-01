@@ -67,8 +67,11 @@ module Yardi
           end
 
           data['Units']['Unit'].tap do |unit_data|
-            unit.remoteid = unit_data['Identification']['IDValue']
-            unit.name = unit_data['Identification']['IDValue']
+            identification_records = Array(unit_data['Identification'])
+            identification = identification_records.select{|ir| ir['OrganizationName'] == 'Unit'}.first
+
+            unit.remoteid = identification['IDValue']
+            unit.name = identification['IDValue']
             unit.floorplan_id = unit_data['UnitType']
             unit.floorplan_name = unit_data['FloorplanName']
             unit.bedrooms = unit_data['UnitBedrooms'].to_i
