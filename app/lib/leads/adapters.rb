@@ -1,4 +1,5 @@
 require_relative './adapters/bluesky'
+require_relative './adapters/bluesky_portal'
 require_relative './adapters/zillow'
 require_relative './adapters/cloudmailin'
 
@@ -7,7 +8,7 @@ module Leads
     # List valid/enabled adapter classes Here
     ### IMPORTANT: Values in the VALID array correspond directly to
     # the LeadSource record "slug"s
-    SUPPORTED = [ 'Bluesky', 'Zillow', 'Cloudmailin', 'YardiVoyager', 'Costar', 'CallCenter']
+    SUPPORTED = [ 'Bluesky', 'Zillow', 'Cloudmailin', 'YardiVoyager', 'Costar', 'CallCenter', 'BlueskyPortal']
 
 
     # Does the provided source match a valid Lead Adapter Source
