@@ -1,3 +1,3 @@
 module BlueskyWeb
-  VERSION = "0.9.218"
+  VERSION = ((File.read(File.join(__dir__,'VERSION'))) rescue '0.0.0').chomp
 end
