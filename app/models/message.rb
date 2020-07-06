@@ -28,6 +28,7 @@ class Message < ApplicationRecord
   ### Class Concerns/Extensions
   include Messages::StateMachine
   include Messages::Compliance
+  include Messages::Broadcasts
   audited
 
   ### Constants
@@ -302,6 +303,7 @@ class Message < ApplicationRecord
 
   def handle_message_delivery(delivery)
     messageable&.handle_message_delivery(delivery)
+    self.delay.broadcast_to_streams
     return true
   end
 

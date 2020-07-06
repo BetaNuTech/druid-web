@@ -4,15 +4,18 @@ class MessagePolicy < ApplicationPolicy
       skope = scope
       skope = case user
         when ->(u) { u.admin? }
-          skope
-        # TODO: the following does not return expected Messages in MessagesController#index
-        #when ->(u) { u.manager? }
-          #skope.includes(user: :properties).
-            #where(user_id: user.id).
-            #or(skope.includes(user: :properties).
-               #where(property_users: {property_id: user.properties.map(&:id)}))
+          if user.monitor_all_messages?
+            skope
+          else
+            skope.where(user_id: user.id)
+          end
         else
-          skope.where(user_id: user.id)
+          if user.monitor_all_messages?
+            property_skope = skope.joins("INNER JOIN leads ON leads.id = messages.messageable_id AND messages.messageable_type = 'Lead'")
+            property_skope.where(user_id: user.id).or(property_skope.where(leads: {property_id: user.property_ids}))
+          else
+            skope.where(user_id: user.id)
+          end
         end
       return skope.display_order
     end

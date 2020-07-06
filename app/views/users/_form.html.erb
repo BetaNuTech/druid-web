@@ -106,11 +106,17 @@
       <fieldset>
         <legend>Messaging</legend>
         <div class="row">
+          <div class="col-md-4 form-group">
+            <%= profile_form.check_box :monitor_all_messages, class: 'form-check-input'%>
+            <%= profile_form.label :monitor_all_messages, 'Notify me of all incoming Lead messages' %>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-md-8 form-group">
             <%= profile_form.label :signature %>
             <%= profile_form.text_area :signature, { id: 'html_editor_v2', class: 'form-control user_signature', rows: 6 } %>
             <%= profile_form.check_box :signature_enabled, class: 'form-check-input user_signature_enabled' %>
-            <%= profile_form.label(:signature_enabled, 'Display My Signature in Messages') %>
+            <%= profile_form.label(:signature_enabled, 'Display my signature in outgoing messages') %>
           </div>
         </div>
       </fieldset>

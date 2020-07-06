@@ -124,11 +124,9 @@
 
             <li>
               <div class="btn-group">
-                <%= link_to(messages_path, class: "btn btn-primary") do %>
+                <%= link_to(messages_path, class: "btn btn-primary", id: 'navigation_messages_menu_link') do %>
                   <% if current_user.messages.unread.where.not(state: 'draft').any? %>
-                    <span style="color: red" >
-                      <%= glyph(:warning_sign) %>
-                    </span>
+                    <span id="messages_incoming_notification"><span style="color: red" class="glyphicon glyphicon-warning-sign"></span></span>
                   <% else %>
                     <span class="glyphicon glyphicon-envelope"></span>
                   <% end %>

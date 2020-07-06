@@ -5,16 +5,15 @@ $(document).on('turbolinks:load', function() {
     App.incoming_leads_channels = [];
     App.incoming_leads_last_notified = Date.now() - 100000;
 
-
-    // Get list of properties to subscribe
-    var properties = [];
-    $.ajax("/properties.json",{
-      error: function(jqXHR, status, err) { },
-      success: function(data) {
-        properties = $.map(data, function(e) { return { id: e["id"], name: e["name"] } });
-        properties.forEach(function(e){ subscribeIncomingLeads(App.incoming_leads_channels, e) })
-      }
-    })
+    // Subscribe to Property Leads channels
+    setSubscribedProperties();
+    if (App.subscribed_properties.length == 0) {
+      setTimeout(function(){
+        App.subscribed_properties.forEach(function(e){ subscribeIncomingLeads(App.incoming_leads_channels, e) })
+      }, 2000)
+    } else {
+      App.subscribed_properties.forEach(function(e){ subscribeIncomingLeads(App.incoming_leads_channels, e) })
+    }
 
     // Initialize sound effect
     App.incoming_lead_sound = document.createElement('audio');
@@ -43,6 +42,7 @@ function issueIncomingLeadNotifications(lead) {
   console.log('Incoming Lead: ', lead['id'], lead['name']);
 
   // Insert Lead into Unclaimed Leads listing on Dashboard
+  // TODO: this will be bad for performance at scale. better to build the DOM node here than to use an ajax call.
   $.ajax('/home/insert_unclaimed_lead.js?id=' + lead['id']);
 
   // Add badge to navigation if not already present

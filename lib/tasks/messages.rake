@@ -25,4 +25,38 @@ namespace :messages do
     end
     puts "\n= Done"
   end
+
+  desc 'Dummy Incoming Message'
+  task :dummy_incoming_message, [:lead] => :environment do |t, args|
+    lead_id = args[:lead]
+    raise 'Provide Lead id: rake messages:dummy_incoming_message[LEADID]' unless lead_id.present?
+    lead = Lead.find(lead_id)
+
+    message = Message.new(
+      messageable:  lead,
+      user_id: lead.user_id,
+      state: 'sent',
+      message_template_id: nil,
+      message_type_id: MessageType.email.id,
+      subject: Faker::Lorem.sentence,
+      body: Faker::Lorem.paragraph,
+      incoming: true
+    )
+    message.recipientid = message.incoming_recipientid
+    message.senderid = message.incoming_senderid
+    message.save!
+
+    delivery = MessageDelivery.create(
+      message: message,
+      message_type: message.message_type,
+      attempt: 1,
+      attempted_at: message.delivered_at,
+      status: MessageDelivery::SUCCESS,
+      delivered_at: message.delivered_at
+    )
+    message.handle_message_delivery(delivery)
+
+    puts "=== Sent dummy message to Lead #{lead.name} (#{lead.id})"
+  end
+
 end

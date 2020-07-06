@@ -156,7 +156,7 @@ class Lead < ApplicationRecord
   end
 
   def name
-    [title, first_name, middle_name, last_name].join(' ')
+    [title, first_name, middle_name, last_name].join(' ').gsub(/ +/,' ').strip
   end
 
   def priority_value
