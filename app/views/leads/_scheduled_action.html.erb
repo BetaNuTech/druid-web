@@ -1,4 +1,4 @@
-<tr id="scheduled_action_row_<%= scheduled_action.id %>" class="<%= "lead_task_#{scheduled_action.completed? ? 'completed' : 'pending'}" %>">
+<tr id="scheduled_action_row_<%= scheduled_action.id %>" class="<%= "lead_task_#{scheduled_action.is_completed? ? 'completed' : 'pending'}" %>">
   <td><%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %></td>
   <td class="dashboard_item_date">
     <% unless scheduled_action.schedule.duration.present? %>
