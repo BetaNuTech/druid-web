@@ -173,4 +173,8 @@ class LeadPolicy < ApplicationPolicy
       record.resend_opt_in_message?
   end
 
+  def subscribe_incoming_messages_channel?
+    user.admin? || show?
+  end
+
 end

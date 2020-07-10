@@ -25,7 +25,7 @@
     <table class="table lead_listing">
       <thead></thead>
       <tbody>
-        <% @my_leads.each do |lead| %>
+        <% @my_leads.limit(20).each do |lead| %>
           <tr>
             <td width="70%">
               <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>

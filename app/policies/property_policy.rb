@@ -93,6 +93,10 @@ class PropertyPolicy < ApplicationPolicy
     user.admin? || same_property?
   end
 
+  def subscribe_incoming_messages_channel?
+    ( user.admin? || same_property? ) && user.monitor_all_messages?
+  end
+
   def for_lead_assignment
     return case user
     when ->(u) { u.admin? }

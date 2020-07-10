@@ -25,7 +25,7 @@ class UserProfile < ApplicationRecord
   audited
 
   ### Constants
-  ALLOWED_PARAMS = [ :id, :user_id, :name_prefix, :first_name, :last_name, :name_suffix, :slack, :cell_phone, :office_phone, :fax, :notes, :signature, :signature_enabled ]
+  ALLOWED_PARAMS = [ :id, :user_id, :name_prefix, :first_name, :last_name, :name_suffix, :slack, :cell_phone, :office_phone, :fax, :notes, :signature, :signature_enabled, :monitor_all_messages ]
 
   ### Associations
   belongs_to :user, required: false

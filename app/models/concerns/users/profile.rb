@@ -18,6 +18,7 @@ module Users
       delegate :fax, to: :profile, allow_nil: true
       delegate :notes, to: :profile, allow_nil: true
       delegate :use_signature?, to: :profile, allow_nil: true
+      delegate :monitor_all_messages?, to: :profile, allow_nil: true
     end
 
   end

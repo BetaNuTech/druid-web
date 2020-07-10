@@ -13,6 +13,7 @@ gem 'puma', "~> 4.3"
 gem 'sass-rails', "~> 6.0"
 gem 'uglifier', "~> 4.2"
 gem 'secure_headers', "~> 6.3"
+gem 'bundler'
 
 gem 'turbolinks', "~> 5.2"
 gem 'jbuilder', "~> 2.10"
