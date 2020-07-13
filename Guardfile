@@ -24,7 +24,7 @@
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
 
-guard :rspec, cmd: "NO_TEST_COVERAGE=true bundle exec rspec " do
+guard :rspec, cmd: "NO_TEST_COVERAGE=true rspec " do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
 
