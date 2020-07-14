@@ -57,12 +57,14 @@ class Unit < ApplicationRecord
   ### Scopes
   scope :vacant, -> { where(occupancy: 'vacant').order(model: :desc, occupancy: :desc, unit: :asc) }
   scope :for_showings, -> { where(model: true) }
+  scope :available, -> { where(lease_status: 'available')}
 
   ### Class Methods
 
   def self.occupied
     where(occupancy: 'occupied')
   end
+
 
   ### Instance Methods
 

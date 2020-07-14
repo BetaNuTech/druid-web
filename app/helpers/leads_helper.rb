@@ -233,4 +233,8 @@ module LeadsHelper
     end
   end
 
+  def humanize_lead_state(state_name='None')
+    state_name.to_s.capitalize.titlecase
+  end
+
 end

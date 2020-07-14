@@ -192,7 +192,9 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "lead_transitions" do
-      let(:memo) { 'Lead transition memo 1'}
+      let(:memo) { 'Lead transition memo 1' }
+      let(:lead) { create(:lead, state: 'open', user: agent, property: agent.property) }
+      let(:unit_type) { create(:unit_type, property: lead.property) }
 
       it "creates a lead transtion from nothing to open on create" do
         expect(LeadTransition.count).to eq(0)
@@ -270,6 +272,38 @@ RSpec.describe Lead, type: :model do
         expect(lead.scheduled_actions.pending.count).to eq(0)
         expect(lead.user).to eq(agent)
         expect(lead.priority).to eq('zero')
+      end
+
+      it "allows transition to waitlist if unit preference is set" do
+        seed_engagement_policy
+        lead.state = 'open'
+        lead.save!
+        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.reload
+        expect(lead.state).to eq('prospect')
+        expect(lead.permitted_state_events).to_not include(:wait_for_unit)
+        lead.preference.unit_type = unit_type
+        lead.preference.save!
+        lead.reload
+        expect(lead.permitted_state_events).to include(:wait_for_unit)
+        lead.trigger_event(event_name: 'wait_for_unit', user: agent)
+        lead.reload
+        expect(lead.state).to eq('waitlist')
+        expect(lead.permitted_state_events).to include(:revisit)
+      end
+
+      it "allows transition from waitlist to open if units are available to lease" do
+        seed_engagement_policy
+        unit_type = create(:unit_type, property: lead.property)
+        lead.preference.unit_type = unit_type
+        lead.state = 'waitlist'
+        lead.save!
+        expect(lead.permitted_state_events).to_not include(:revisit_unit_available)
+        unit = create(:unit, unit_type: unit_type, property: lead.property, lease_status: 'available')
+        expect(lead.permitted_state_events).to include(:revisit_unit_available)
+        lead.trigger_event(event_name: 'revisit_unit_available')
+        lead.reload
+        expect(lead.state).to eq('open')
       end
 
       describe "sms opt-in" do

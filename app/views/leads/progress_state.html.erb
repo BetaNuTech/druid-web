@@ -1,7 +1,7 @@
 <div class="container">
 <div class="row">
   <div class="col-md-12">
-    <h4><%= @eventid.capitalize %> : Progressing <%= @lead.name %> from <%= @lead.state.capitalize %> Stage</h4>
+    <h4><%= humanize_lead_state(@eventid) %> : Progressing <%= @lead.name %> from '<%= humanize_lead_state(@lead.state) %>' Stage</h4>
   </div>
 </div>
 
@@ -10,14 +10,14 @@
   <div class="row">
     <div class="col-md-4 form-group">
       <%= label_tag "Event" %>
-      <%= select_tag :eventid, options_for_select(policy(@lead).permitted_state_events.map{|se| [se.capitalize, se]}, @eventid), class: "form-control" %>
+      <%= select_tag :eventid, options_for_select(policy(@lead).permitted_state_events.map{|se| [humanize_lead_state(se), se]}, @eventid), class: "form-control" %>
     </div>
   </div>
 
   <div class="row">
     <div class="col-md-4 form-group">
       <%= label_tag "Classify As A"%>
-      <%= select_tag :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, @lead.classification ), class: "form-control"%>
+      <%= select_tag :classification, options_for_select(Lead.classifications.map{|k,v| [humanize_lead_state(k), k]}, @lead.classification ), class: "form-control"%>
     </div>
   </div>
 

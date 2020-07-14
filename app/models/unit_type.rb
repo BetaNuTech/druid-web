@@ -31,6 +31,7 @@ class UnitType < ApplicationRecord
   ### Associations
   belongs_to :property
   delegate :name, to: :property, prefix: true
+  has_many :units
 
   ### Validations
 

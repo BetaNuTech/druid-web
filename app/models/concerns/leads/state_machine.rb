@@ -5,7 +5,7 @@ module Leads
     PENDING_STATES = %w{open prospect showing application}
     CLAIMED_STATES = %w{prospect showing application approved denied movein resident}
     IN_PROGRESS_STATES = %w{prospect showing application }
-    CLOSED_STATES = %w{ disqualified abandoned resident exresident future }
+    CLOSED_STATES = %w{ disqualified abandoned resident exresident future waitlist}
     EARLY_PIPELINE_STATES = %w{open prospect showing application}
     STATE_TRANSITION_LEAD_ACTION = 'State Transition'
     STATE_TRANSITION_REASON = 'Pipeline Event'
@@ -64,6 +64,12 @@ module Leads
           lead.trigger_event(event_name: 'revisit')
         end
       end
+
+      def process_waitlist
+        can_leave_waitlist.each do |lead|
+          lead.trigger_event(event_name: 'revisit_unit_available', user: lead.user)
+        end
+      end
     end
 
     included do
@@ -71,6 +77,10 @@ module Leads
       attr_accessor :ignore_incomplete_tasks, :transition_memo, :skip_event_notifications
 
       after_create :create_initial_transition
+
+      scope :can_leave_waitlist, -> { 
+        waitlist.includes(preference: {unit_type: :units}).where(units: {lease_status: 'available'})
+      }
 
       # https://github.com/aasm/aasm
       include AASM
@@ -88,6 +98,7 @@ module Leads
         state :disqualified
         state :abandoned
         state :future
+        state :waitlist
 
         after_all_events :after_all_events_callback
 
@@ -157,8 +168,20 @@ module Leads
         end
 
         event :revisit do
-          transitions from: :future, to: :open,
+          transitions from: [ :future ], to: :open,
             after: -> (*args) {unset_follow_up_at}
+        end
+
+        event :wait_for_unit do
+          transitions from: [ :open, :prospect, :showing ], to: :waitlist,
+            guard: :unit_preference_set?,
+            after: -> (*args) {clear_all_tasks; event_clear_user; set_priority_low}
+        end
+
+        event :revisit_unit_available do
+          transitions from: :waitlist, to: :open,
+            guard: :unit_preference_available?,
+            after: -> (*args) { set_priority_urgent }
         end
 
       end
@@ -191,6 +214,14 @@ module Leads
       # Lead is permitted to change state
       def may_progress?
         return all_tasks_completed?
+      end
+
+      def unit_preference_set?
+        return self.preference&.unit_type.present?
+      end
+
+      def unit_preference_available?
+        return preference&.unit_type&.units&.available.present?
       end
 
       def set_priority_zero
