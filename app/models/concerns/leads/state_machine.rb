@@ -221,7 +221,8 @@ module Leads
       end
 
       def unit_preference_available?
-        return preference&.unit_type&.units&.available.present?
+        return preference&.unit_type.nil? ||
+          preference&.unit_type&.units&.available.present?
       end
 
       def set_priority_zero

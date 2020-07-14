@@ -276,10 +276,8 @@ RSpec.describe Lead, type: :model do
 
       it "allows transition to waitlist if unit preference is set" do
         seed_engagement_policy
-        lead.state = 'open'
+        lead.state = 'prospect'
         lead.save!
-        lead.trigger_event(event_name: 'claim', user: agent)
-        lead.reload
         expect(lead.state).to eq('prospect')
         expect(lead.permitted_state_events).to_not include(:wait_for_unit)
         lead.preference.unit_type = unit_type
@@ -289,7 +287,7 @@ RSpec.describe Lead, type: :model do
         lead.trigger_event(event_name: 'wait_for_unit', user: agent)
         lead.reload
         expect(lead.state).to eq('waitlist')
-        expect(lead.permitted_state_events).to include(:revisit)
+        expect(lead.permitted_state_events).to_not include(:revisit_unit_available)
       end
 
       it "allows transition from waitlist to open if units are available to lease" do
@@ -300,6 +298,19 @@ RSpec.describe Lead, type: :model do
         lead.save!
         expect(lead.permitted_state_events).to_not include(:revisit_unit_available)
         unit = create(:unit, unit_type: unit_type, property: lead.property, lease_status: 'available')
+        expect(lead.permitted_state_events).to include(:revisit_unit_available)
+        lead.trigger_event(event_name: 'revisit_unit_available')
+        lead.reload
+        expect(lead.state).to eq('open')
+      end
+
+      it "allows transition from waitlist to open if no unit preference is set" do
+        seed_engagement_policy
+        unit_type = create(:unit_type, property: lead.property)
+        lead.preference.unit_type = nil
+        lead.preference.save!
+        lead.state = 'waitlist'
+        lead.save!
         expect(lead.permitted_state_events).to include(:revisit_unit_available)
         lead.trigger_event(event_name: 'revisit_unit_available')
         lead.reload
