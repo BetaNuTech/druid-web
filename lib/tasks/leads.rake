@@ -405,4 +405,15 @@ namespace :leads do
     end
   end
 
+  namespace :waitlist do
+    desc "Re-open waitlist leads whose unit preference is now available"
+    task :process => :environment do
+      puts "*** Opening waitlist leads whose unit preference is now available"
+      puts "=> #{Lead.can_leave_waitlist.count} Leads are eligible to re-open"
+      puts Lead.can_leave_waitlist.pluck(:id).join(', ')
+      Lead.process_waitlist
+      puts "DONE!"
+    end
+  end
+
 end
