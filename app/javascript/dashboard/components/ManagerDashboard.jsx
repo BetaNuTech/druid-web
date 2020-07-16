@@ -18,6 +18,7 @@ class ManagerDashboard extends React.Component {
   constructor(props) {
     super(props)
     const container = document.getElementById("Dashboard")
+    this.valid_reports = [ 'lead_sources', 'lead_states', 'agent_conversion_rates', 'referral_conversion_rates', 'response_times', 'property_leads', 'open_leads', 'agent_status', 'recent_activity' ]
     this.state = {
       api_root: container.dataset.api,
       initial_data: container.dataset.url,
@@ -53,9 +54,16 @@ class ManagerDashboard extends React.Component {
 
   updateData = (url) => {
     window.activateLoader()
+    this.valid_reports.forEach( (report_name) => {
+      let report_url = url + "&report=" + report_name
+      this.fetchReportData(report_url)
+    })
+  }
+
+  fetchReportData = (url) => {
     axios.get(url)
     .then(response => {
-      this.setState({ data: response.data.data, filters: response.data.data.filters })
+      this.setState({ data: {...this.state.data, ...response.data.data}, filters: response.data.data.filters })
       window.disableLoader()
     })
     .catch(error => {
