@@ -11,6 +11,7 @@ class StatsController < ApplicationController
       team_ids: params[:team_ids],
       date_range: params[:date_range]
     }
+    @report = params[:report] || 'lead_sources'
     @stats = Stat.new(filters: @filters, url: stats_manager_path(format: :json))
   end
 

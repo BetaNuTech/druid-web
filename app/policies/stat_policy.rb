@@ -11,8 +11,6 @@ class StatPolicy < ApplicationPolicy
   end
 
   def manager?
-    # temporarily disabled
-    return false
     user.admin? || user.user?
   end
 end

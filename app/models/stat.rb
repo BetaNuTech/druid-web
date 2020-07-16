@@ -484,7 +484,7 @@ EOS
     if filter_by_property?
       tasks = tasks.joins("INNER JOIN leads ON leads.user_id = scheduled_actions.user_id AND leads.property_id IN #{property_ids_sql}")
     end
-    return tasks
+    return tasks.limit(10)
   end
 
   def completed_tasks_json(start_date: 48.hours.ago, end_date: DateTime.now)
@@ -514,7 +514,7 @@ EOS
     if filter_by_property?
       messages = messages.joins("INNER JOIN team_users ON team_users.user_id = messages.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )")
     end
-    return messages
+    return messages.limit(10)
   end
 
   def messages_sent_json(start_date: 48.hours.ago, end_date: DateTime.now)
@@ -544,7 +544,7 @@ EOS
       end
     end
 
-    return transitions
+    return transitions.limit(10)
   end
 
   def lead_state_changed_records_json(start_date: 48.hours.ago, end_date: DateTime.now)
