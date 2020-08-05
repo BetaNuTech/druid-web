@@ -189,7 +189,7 @@ module LeadsHelper
   def lead_form_partial_for_entry_type(entry_type=nil)
     case ( entry_type || '' ).to_sym
     when :walkin
-      'walkin_form'
+      @current_property.present? ? 'walkin_form' : lead_form_partial_for_entry_type(:default)
     when :default
       'form'
     else

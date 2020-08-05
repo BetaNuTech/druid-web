@@ -244,6 +244,14 @@ RSpec.describe LeadsController, type: :controller do
           expect(response).to have_http_status(:ok)
           expect(response).to render_template("leads/_walkin_form")
         end
+
+        it "handles admins without a property assignment" do
+          expect(administrator.properties).to be_empty
+          sign_in administrator
+          get :new, params: {entry: :walkin}, session: valid_session
+          expect(response).to have_http_status(:ok)
+          expect(response).to render_template("leads/_form")
+        end
       end
     end
 
