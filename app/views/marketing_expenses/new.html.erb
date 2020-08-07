@@ -1,0 +1,8 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>New Marketing Expense for <%= @marketing_expense&.marketing_source&.name %></h1>
+      <%= render partial: 'form', locals: {marketing_expense: @marketing_expense } %>
+    </div>
+  </div>
+</div>

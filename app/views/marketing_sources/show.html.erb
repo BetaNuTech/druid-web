@@ -1,0 +1,109 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <% unless @marketing_source.active? %>
+        <p class="bg-danger">
+          INACTIVE
+        </p>
+      <% end %>
+      <h1>
+        <%= @marketing_source.name %>
+        <%= link_to('Edit', edit_marketing_source_path(@marketing_source), class: 'btn btn-sm btn-primary') %>
+        <%= link_to('See All...', marketing_sources_path, class: 'btn btn-sm btn-default') %>
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p>
+        <%= @marketing_source.description %>
+      </p>
+      <p>
+        <b>Start Date:</b>
+        <%= @marketing_source.start_date %><br/>
+        <b>End Date:</b>
+        <%= @marketing_source.end_date || '(None)' %><br/>
+        <b>Fees:</b>
+        <%= number_to_currency(@marketing_source.fee_rate || 0.0) %> / <%= @marketing_source.fee_type %><br/>
+        <%= glyph(:email) %> <%= @marketing_source.tracking_email %><br/>
+        <%= glyph(:phone) %> <%= @marketing_source.tracking_number %> &#8594;
+        <%= @marketing_source.destination_number %>
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h4>
+        Expenses
+      </h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Due</th>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span style="white-space: nowrap;">2020-08-23</span><br/>
+              <span class="label label-warning">pending</span>
+            </td>
+            <td width="50%">
+              <span class="label label-info">#112234</span>
+              <span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras porta ullamcorper felis eleifend dapibus.
+              </span>
+            </td>
+            <td>
+              1 <span class="label label-info">month</span>
+            </td>
+            <td>
+              <strong>$526.12</strong>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span style="white-space: nowrap;">2020-08-10</span><br/>
+              <span class="label label-danger">pending</span>
+            </td>
+            <td width="50%">
+              <span class="label label-info">#112233</span>
+              <span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras porta ullamcorper felis eleifend dapibus.
+              </span>
+            </td>
+            <td>
+              24 <span class="label label-success">lead</span>
+            </td>
+            <td>
+              <strong>$1,526.12</strong>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span style="white-space: nowrap;">2020-02-15</span><br/>
+              <span class="label label-success">2020-02-10</span>
+            </td>
+            <td width="50%">
+              <span class="label label-info">#112232</span>
+              <span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras porta ullamcorper felis eleifend dapibus.
+              </span>
+            </td>
+            <td>
+              1 <span class="label label-info">month</span>
+            </td>
+            <td>
+              <strong>$526.12</strong>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

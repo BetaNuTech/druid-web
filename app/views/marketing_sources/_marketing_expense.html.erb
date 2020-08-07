@@ -1,0 +1,27 @@
+<tr class="marketing_source_marketing_expense_row">
+  <td>
+    <span style="white-space: nowrap;"><%= marketing_expense.start_date&.to_date %></span>
+    <% if marketing_expense.end_date.present? %>
+      &rarr;
+      <span style="white-space: nowrap;"><%= marketing_expense.end_date&.to_date %></span>
+    <% end %>
+  </td>
+  <td width="50%">
+    <% if marketing_expense.invoice.present? %>
+      <span class="label label-info"><%= marketing_expense.invoice %></span>
+    <% end %>
+    <span><%= marketing_expense.description %></span>
+  </td>
+  <td width=15%>
+    <%= marketing_expense.quantity %>
+    <span class="label label-info"><%= marketing_expense.fee_type %></span>
+  </td>
+  <td class="marketing_expense_fee_total_display" width=15%>
+    <strong><%= number_to_currency(marketing_expense.fee_total) %></strong>
+    <% if policy(marketing_expense).edit? %>
+      <%= link_to(glyph(:edit), edit_marketing_source_marketing_expense_path(marketing_expense.marketing_source, marketing_expense), class: 'hidden') %>
+    <% else %>
+      &nbsp;
+    <% end %>
+  </td>
+</tr>

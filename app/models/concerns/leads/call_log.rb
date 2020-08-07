@@ -65,7 +65,7 @@ module Leads
     class_methods do
 
       def from_recent_calls(start_date:, end_date:)
-        default_source = LeadSource.default
+        default_source = ( LeadSource.where(slug: 'Arrowtel').first rescue LeadSource.default)
 
         call_leads = Cdr.possible_leads(start_date: start_date, end_date: end_date)
 

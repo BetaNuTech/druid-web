@@ -41,6 +41,14 @@ module Leads
       )
     end
 
+    # Get Parser Class named like the Source slug
+    def self.get_parser(source)
+      return nil unless source
+      return Leads::Adapters.supported_source?(source.slug) ?
+        Object.const_get("Leads::Adapters::#{source.slug}") :
+        nil
+    end
+
     def initialize(data:, agent: nil, token: DEFAULT_TOKEN)
       @lead = Lead.new
       @saved = false
@@ -152,10 +160,7 @@ module Leads
 
     # Get Parser Class named like the Source slug
     def get_parser(source)
-      return nil unless source
-      return Leads::Adapters.supported_source?(source.slug) ?
-        Object.const_get("Leads::Adapters::#{source.slug}") :
-        nil
+      Leads::Creator.get_parser(source)
     end
   end
 end

@@ -20,7 +20,7 @@ gem 'jbuilder', "~> 2.10"
 gem 'dotenv', "~> 2.7"
 gem 'foreman', "~> 0.87"
 gem 'delayed_job_active_record', "~> 4.1"
-gem 'awesome_print', "~> 1.8"
+gem 'amazing_print'
 gem 'pry-rails', "~> 0.3"
 gem 'webpacker', "~> 4.2"
 gem 'devise', "~> 4.7"
@@ -70,7 +70,7 @@ group :test do
   gem 'capybara', "~> 3.32"
   gem 'guard-rspec', "~> 4.7"
   gem 'guard-rake', "~> 1.0"
-  gem 'rails-controller-testing', "~> 1.0"
+  gem 'rails-controller-testing'
   gem 'rspec-rails', "~> 4.0"
   gem 'simplecov', "~> 0.18"
   gem 'rspec_junit_formatter', "~> 0.4"

@@ -39,3 +39,7 @@
     :slug: "Cobalt"
     :incoming: false
     :active: true
+  - :name: "Arrowtel"
+    :slug: "Arrowtel"
+    :incoming: true
+    :active: true

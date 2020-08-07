@@ -416,4 +416,13 @@ namespace :leads do
     end
   end
 
+  namespace :referrals do
+    desc 'Standardize Lead referral references'
+    task cleanup: :environment do
+      service = Leads::Cleanup.new
+      service.debug = true
+      service.call
+    end
+  end
+
 end

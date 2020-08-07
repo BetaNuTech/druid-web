@@ -1,0 +1,131 @@
+<div id="<%=marketing_source.id%>" class="well well-sm">
+  <% unless marketing_source.active? %>
+    <p class="bg-danger">
+      INACTIVE
+    </p>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-12">
+      <h3>
+        <%= marketing_source.name %>
+        <small> for <%= marketing_source.property&.name %> </small>
+        <%= link_to('Edit', edit_marketing_source_path(marketing_source), class: 'btn btn-xs btn-primary') %>
+      </h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <blockquote>
+        <i><%= marketing_source.description %></i>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <p>
+        <b>Active Dates:</b>
+        <span style="white-space: nowrap;">
+          <%= marketing_source.start_date %> &#8594; <%= marketing_source.end_date || '(Renewing)' %>
+        </span>
+        <br/>
+        <b>Fees:</b>
+        <%= number_to_currency(marketing_source.fee_rate || 0.0) %> / <%= marketing_source.fee_type %><br/>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <p>
+        <% if marketing_source.tracking_email.present? %>
+          <%= glyph(:email) %> <%= marketing_source.tracking_email %><br/>
+        <% else %>
+          <i>No email tracking</i><br/>
+        <% end %>
+
+        <% if marketing_source.tracking_number.present? %>
+          <span style="white-space: nowrap;">
+            <%= glyph(:phone) %> <%= marketing_source.tracking_number %> &#8594;
+            <%= marketing_source.destination_number %>
+          </span>
+        <% else %>
+          <i>No call tracking</i><br/>
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 col-xs-6">
+      <table class="marketing_source--stats--table">
+        <tbody>
+          <tr>
+            <td>Total Spend:</td>
+            <td> <%= number_to_currency(marketing_source.total_spend) %></td>
+          </tr>
+          <tr>
+            <td>Spend YTD:</td>
+           <td><%= number_to_currency(marketing_source.total_spend_ytd) %></td>
+          </tr>
+          <tr>
+            <td>Per Lead:</td>
+            <td><%= number_to_currency(marketing_source.spend_per_lead) %></td>
+          </tr>
+          <tr>
+            <td>Per Conversion:</td>
+           <td><%= number_to_currency(marketing_source.spend_per_conversion) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6 col-xs-6">
+      <table class="marketing_source--stats--table">
+        <tbody>
+          <tr>
+            <td>Total Leads:</td>
+            <td><%= marketing_source.total_leads %></td>
+          </tr>
+          <tr>
+            <td>Leads YTD:</td>
+           <td><%= marketing_source.total_leads_ytd %></td>
+          </tr>
+          <tr>
+            <td>Conversions:</td>
+            <td><%= marketing_source.total_conversions %></td>
+          </tr>
+          <tr>
+            <td>Conversions YTD:</td>
+           <td><%= marketing_source.total_conversions_ytd %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <h4>
+        Expenses
+        <%= link_to('Add', new_marketing_source_marketing_expense_path(marketing_source_id: marketing_source.id), class: 'btn btn-xs btn-primary') %>
+      </h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Dates</th>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render partial: 'marketing_expense', collection: marketing_source.marketing_expenses.order('start_date DESC') %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
