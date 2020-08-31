@@ -34,6 +34,7 @@ class Property < ApplicationRecord
   include Properties::Team
   include Properties::Users
   include Properties::PhoneNumbers
+  include Properties::MarketingSources
   include Properties::Logo
   include Properties::YardiVoyager
   audited
