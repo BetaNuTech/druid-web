@@ -38,7 +38,7 @@ $(document).on('turbolinks:load', function() {
       var entry_input = entry_container.find('input');
       if (data[e] !== false) {
         entry_container.removeClass('hidden');
-        entry_input.val(data[e]);
+        if ( entry_input.val() == '') entry_input.val(data[e]);
       } else {
         entry_container.addClass('hidden')
       }
