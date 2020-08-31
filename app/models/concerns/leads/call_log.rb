@@ -88,8 +88,9 @@ module Leads
           next unless property.present?
 
           first_name, last_name = incoming_call.cnam.split(' ')
-          notes = "Incoming Call from %s (%s) at %s [CDR:%s]" % [incoming_call.cnam, incoming_call.src, incoming_call.calldate, incoming_call.id]
-          referral = property.name_for_phone_number(incoming_call.did) || 'Call'
+          notes = "Incoming Call from %s (%s) to %s at %s [CDR:%s]" % [incoming_call.cnam, incoming_call.src, incoming_call.did, incoming_call.calldate, incoming_call.id]
+          #referral = property.name_for_phone_number(incoming_call.did) || 'Call'
+          referral = property.referral_name_for_incoming_number(incoming_call.did) || 'Call'
 
           Lead.new(
             property: property,

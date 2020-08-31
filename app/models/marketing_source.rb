@@ -49,6 +49,9 @@ class MarketingSource < ApplicationRecord
   validates :start_date, presence: true
   validate :validate_end_date
 
+  ### Callbacks
+  before_validation :format_phone_numbers
+
   ### Scopes
   scope :periodic, -> { where(fee_type: [MONTHLY_FEE, QUARTERLY_FEE, YEARLY_FEE]) }
 
@@ -74,6 +77,28 @@ class MarketingSource < ApplicationRecord
       where(lead_transitions: { last_state: 'prospect', current_state: 'showing'})
   end
 
+  def self.format_phone(number,prefixed: false)
+    # Strip non-digits
+    out = ( number || '' ).to_s.gsub(/[^0-9]/,'')
+
+    if out.length > 10
+      # Remove US country code
+      if (out[0] == '1')
+        out = out[1..-1]
+      end
+    end
+
+    # Truncate number to 10 digits
+    out = out[0..9]
+
+    # Add country code if we want to prefix
+    if prefixed
+      out = "1" + out
+    end
+
+    return out
+  end
+
   ### Public methods
 
   def leads
@@ -89,5 +114,22 @@ class MarketingSource < ApplicationRecord
 
   def validate_end_date
     errors.add(:end_date, 'Must be later than start date') if end_date.present? && start_date.present? && end_date <= start_date
+  end
+
+  def format_phone_numbers
+    if self.tracking_number.present?
+      if detected_prefix = self.tracking_number.match(/^\+(\d)/)
+        self.tracking_number = self.class.format_phone(self.tracking_number, prefixed: false)
+      else
+        self.tracking_number = self.class.format_phone(self.tracking_number)
+      end
+    end
+    if self.destination_number.present?
+      if detected_prefix = self.tracking_number.match(/^\+(\d)/)
+        self.destination_number = self.class.format_phone(self.destination_number, prefixed: false)
+      else
+        self.destination_number = self.class.format_phone(self.destination_number)
+      end
+    end
   end
 end
