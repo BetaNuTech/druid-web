@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_09_200230) do
+ActiveRecord::Schema.define(version: 2020_08_17_190235) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -262,6 +262,42 @@ ActiveRecord::Schema.define(version: 2020_07_09_200230) do
     t.index ["priority"], name: "index_leads_on_priority"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"
+  end
+
+  create_table "marketing_expenses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "property_id", null: false
+    t.uuid "marketing_source_id", null: false
+    t.string "invoice"
+    t.text "description"
+    t.decimal "fee_total", null: false
+    t.integer "fee_type", default: 0, null: false
+    t.integer "quantity", default: 1, null: false
+    t.date "start_date", null: false
+    t.date "end_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["property_id", "marketing_source_id", "start_date"], name: "query_idx"
+  end
+
+  create_table "marketing_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "active", default: true
+    t.uuid "property_id", null: false
+    t.uuid "lead_source_id"
+    t.string "name", null: false
+    t.text "description"
+    t.string "tracking_code"
+    t.string "tracking_email"
+    t.string "tracking_number"
+    t.string "destination_number"
+    t.integer "fee_type", default: 0, null: false
+    t.decimal "fee_rate", default: "0.0"
+    t.date "start_date", null: false
+    t.date "end_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["property_id", "name"], name: "index_marketing_sources_on_property_id_and_name", unique: true
+    t.index ["tracking_email"], name: "index_marketing_sources_on_tracking_email"
+    t.index ["tracking_number"], name: "index_marketing_sources_on_tracking_number"
   end
 
   create_table "message_deliveries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

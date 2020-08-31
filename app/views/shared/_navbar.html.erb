@@ -220,6 +220,21 @@
                   </li>
                   <% end %>
                   <li role="separator" class="divider"></li>
+                  <% if policy(MarketingSource).index? %>
+                    <li>
+                      <%= link_to(marketing_sources_path) do %>
+                        <span class="glyphicon glyphicon-bullhorn"></span> Marketing Sources
+                      <% end %>
+                    </li>
+                  <% end %>
+                  <% if policy(MarketingSource).report? %>
+                    <li>
+                      <%= link_to(report_marketing_sources_path) do %>
+                        <span class="glyphicon glyphicon-bullhorn"></span> Ad Spend Report
+                      <% end %>
+                    </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
                   <% if policy(Team).index? %>
                   <li>
                     <%= link_to(teams_path) do %>

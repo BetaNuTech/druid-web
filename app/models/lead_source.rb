@@ -33,6 +33,7 @@ class LeadSource < ApplicationRecord
 
   # Scopes
   scope :active, -> { where(active: true) }
+  scope :incoming, -> { where(incoming: true) }
 
   # Callbacks
   before_validation :assign_api_token

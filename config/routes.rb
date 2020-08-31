@@ -102,6 +102,14 @@ Rails.application.routes.draw do
 
   resources :message_templates
 
+  resources :marketing_sources do
+    resources :marketing_expenses
+    collection do
+      get 'form_suggest_tracking_details', to: 'marketing_sources#form_suggest_tracking_details'
+      get 'report', to: 'marketing_sources#report'
+    end
+  end
+
   namespace :stats do
     get 'manager', to: "manager"
   end
