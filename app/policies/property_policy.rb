@@ -99,6 +99,8 @@ class PropertyPolicy < ApplicationPolicy
 
   def for_lead_assignment
     return case user
+    when ->(u) { u.nil? }
+      Property.where('1=0')
     when ->(u) { u.admin? }
       Scope.new(user, Property).resolve.active
     when ->(u) { u.team_lead? }
@@ -119,6 +121,10 @@ class PropertyPolicy < ApplicationPolicy
       else
         user.properties.include?(record)
       end
+  end
+
+  def select_current?
+    for_lead_assignment.count > 1
   end
 
 end

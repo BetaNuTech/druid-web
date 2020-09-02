@@ -7,7 +7,6 @@ class ResidentsController < ApplicationController
   # GET /residents.json
   def index
     authorize Resident
-    @property ||= current_user.property
     @residents = resident_scope.includes(:unit).order("units.unit ASC, residents.last_name ASC, residents.first_name ASC")
   end
 
