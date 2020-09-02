@@ -6,7 +6,8 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   around_action :user_timezone, if: :current_user
-  before_action :current_team, :set_property
+  before_action :current_team
+  before_action :set_property
   before_action :prepare_exception_notifier
 
   private
@@ -26,7 +27,8 @@ class ApplicationController < ActionController::Base
 
   def set_property
     return nil unless current_user
-    @property = @current_property ||= Property.where(id: (params[:property_id] || 0)).first || current_user.try(:properties).try(:first)
+    property_id = params[:property_id] || cookies[:current_property] || current_user&.properties&.first || 0
+    @property = @current_property = Property.where(id: property_id).first
   end
 
   def current_property

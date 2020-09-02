@@ -61,6 +61,9 @@ Rails.application.routes.draw do
     resources :units
     resources :unit_types
     resources :residents
+    collection do
+      post 'select_current', to: 'properties#select_current'
+    end
     member do
       get 'duplicate_leads', to: 'properties#duplicate_leads'
     end
