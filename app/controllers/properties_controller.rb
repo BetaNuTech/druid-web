@@ -79,6 +79,13 @@ class PropertiesController < ApplicationController
       for_property_accessible_by_user(@property, current_user)
   end
 
+  def select_current
+    authorize Property
+    @current_property = Property.find(params[:property_id])
+    cookies[:current_property] = @current_property.id if @current_property
+    redirect_to URI(request.referer).path
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_property

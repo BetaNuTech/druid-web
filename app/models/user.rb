@@ -58,7 +58,7 @@ class User < ApplicationRecord
   ### Class Methods
 
   ### Instance Methods
-  
+
   def deactivated?
     deactivated || false
   end
@@ -81,8 +81,8 @@ class User < ApplicationRecord
     end
   end
 
-  def available_leads
-    return LeadPolicy::Scope.new(self, Lead.open).
+  def available_leads(skope=nil)
+    return LeadPolicy::Scope.new(self, (skope || Lead).open).
             resolve.
             order("leads.priority DESC, leads.created_at ASC")
   end

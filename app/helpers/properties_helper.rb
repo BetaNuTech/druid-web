@@ -50,4 +50,8 @@ module PropertiesHelper
   def select_user_role(selected)
     options_for_select(PropertyUser.roles.to_a.map{|r| [r[0].capitalize, r[0]]}, selected)
   end
+
+  def property_options_for_current(val)
+    options_for_select(PropertyPolicy.new(current_user,Property).for_lead_assignment.order(name: 'ASC').map{|p| [p.name, p.id]}, val)
+  end
 end
