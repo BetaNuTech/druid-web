@@ -1,0 +1,409 @@
+<nav id="main_navbar" class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+
+    <div class="navbar-header">
+
+      <div class="navbar-branding">
+        <div class="logo">
+          <%= link_to image_tag("bluestone-logo-white.png"), root_path %>
+        </div>
+
+        <div class="appname">
+          <span class="part-1">Bluesky</span>
+          <span class="part-2">Lead Management</span>
+        </div>
+      </div>
+
+      <button type="button" class="navbar-toggle collapsed"
+          data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+			<div id="loader">
+				<div class="cssload-loader">
+					<div class="cssload-inner cssload-one"></div>
+					<div class="cssload-inner cssload-two"></div>
+					<div class="cssload-inner cssload-three"></div>
+				</div>
+			</div>
+    </div>
+
+      <div id="navbar" class="collapse navbar-collapse ">
+        <ul class="nav navbar-nav">
+          <% cache_if current_user.present?, navbar_cache_key do %>
+          <% if current_user.present? %>
+            <li>
+              <div class="btn-group">
+                <%= link_to(root_path, class: "btn btn-primary", id: "navigation_dashboard_menu_link") do %>
+                  <span class="glyphicon glyphicon-th-large"></span> Dashboard
+                <% end %>
+                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                <% if policy(Stat).index? %>
+                  <li>
+                    <%= link_to(stats_manager_path(filter: true, date_range: [ 'month' ], property_ids: [ @current_property&.id ])) do %>
+                      <span class="glyphicon glyphicon-star"></span> Stats Dashboard
+                    <% end %>
+                  </li>
+                <% end %>
+                </ul>
+              </div>
+            </li>
+
+            <li> <!-- Leads -->
+              <div class="btn-group">
+                <%= link_to(search_leads_path, class: "btn btn-primary") do %>
+                  <span class="glyphicon glyphicon-flag"></span> Leads
+                <% end %>
+                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(search_leads_path(lead_search: {user_ids: [current_user.id], states: Lead::IN_PROGRESS_STATES})) do %>
+                      <span class="glyphicon glyphicon-star"></span> My Leads
+                    <% end %>
+                  </li>
+                  <li role="separator" class="divider"></li>
+                  <li>
+                    <%= link_to(search_leads_path) do %>
+                      <span class="glyphicon glyphicon-search"></span> Search Leads
+                    <% end %>
+                  </li>
+                  <li role="separator" class="divider"></li>
+                  <li>
+                    <%= link_to(search_leads_path(lead_search: {priorities: [ 'urgent' ]})) do %>
+                      <span class="glyphicon glyphicon-warning-sign"></span> Urgent Leads
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(search_leads_path(lead_search: {states: ['open']})) do %>
+                      <span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(search_leads_path(lead_search: {states: Lead::CLAIMED_STATES})) do %>
+                      <span class="glyphicon glyphicon-flag"></span> Claimed Leads
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(search_leads_path(lead_search: {states: Lead::CLOSED_STATES })) do %>
+                      <span class="glyphicon glyphicon-check"></span> Closed Leads
+                    <% end %>
+                  </li>
+                  <% if policy(Lead).mass_assignment? %>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                      <%= link_to(mass_assignment_leads_path) do %>
+                        <span class="glyphicon glyphicon-random"></span> Assign Open Leads
+                      <% end %>
+                    </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
+                  <li>
+                    <%= link_to(custom_new_leads_path(entry: 'walkin')) do %>
+                      <span class="glyphicon glyphicon-pencil"></span> New Walk-In
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(new_lead_path) do %>
+                      <span class="glyphicon glyphicon-pencil"></span> Create Lead
+                    <% end %>
+                  </li>
+                </ul>
+              </div>
+            </li> <!-- Leads -->
+
+            <li>
+              <div class="btn-group">
+                <%= link_to(messages_path, class: "btn btn-primary", id: 'navigation_messages_menu_link') do %>
+                  <% if current_user.messages.unread.where.not(state: 'draft').any? %>
+                    <span id="messages_incoming_notification"><span style="color: red" class="glyphicon glyphicon-warning-sign"></span></span>
+                  <% else %>
+                    <span class="glyphicon glyphicon-envelope"></span>
+                  <% end %>
+                  Messages
+                <% end %>
+              </div>
+            </li>
+
+            <% if false %>
+            <li> <!-- Messaging -->
+              <div class="btn-group">
+                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</a>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="#"><span class="glyphicon glyphicon-star"></span> Unresponded Emails</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Recent Emails</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-send"></span> Create Email</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-th"></span> Email Templates</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-calendar"></span> Reminders</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-bell"></span> Create Reminder</a></li>
+                  <li role="separator" class="divider"></li>
+                </ul>
+              </div>
+            </li> <!-- Messaging -->
+          <% end %>
+
+            <% if false %>
+            <li> <!-- Reports -->
+              <div class="btn-group">
+                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</a>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="#"><span class="glyphicon glyphicon-picture"></span> Report 1</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> Report 2</a></li>
+                </ul>
+              </div>
+            </li> <!-- Reports -->
+            <% end %>
+
+            <% if policy(Property).index? %>
+            <li> <!-- Properties -->
+              <div class="btn-group">
+                <%= link_to(properties_path, class: "btn btn-primary") do %>
+                  <span class="glyphicon glyphicon-home"></span> Properties
+                <% end %>
+                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(properties_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Properties
+                    <% end %>
+                  </li>
+                  <% if false && policy(Resident).index? %>
+                    <li>
+                      <%= link_to(residents_path) do %>
+                        <span class="glyphicon glyphicon-user"></span> Residents
+                      <% end %>
+                    </li>
+                <% end %>
+                  <li role="separator" class="divider"></li>
+                  <% if policy(Unit).index? %>
+                  <li>
+                    <%= link_to(units_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Units
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <% if policy(UnitType).index? %>
+                  <li>
+                    <%= link_to(unit_types_path) do %>
+                      <span class="glyphicon glyphicon-home"></span> Unit Types
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
+                  <% if policy(Resident).index? %>
+                  <li>
+                    <%= link_to(residents_path) do %>
+                      <span class="glyphicon glyphicon-user"></span> Residents
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
+                  <% if policy(MarketingSource).index? %>
+                    <li>
+                      <%= link_to(marketing_sources_path) do %>
+                        <span class="glyphicon glyphicon-bullhorn"></span> Marketing Sources
+                      <% end %>
+                    </li>
+                  <% end %>
+                  <% if policy(MarketingSource).report? %>
+                    <li>
+                      <%= link_to(report_marketing_sources_path) do %>
+                        <span class="glyphicon glyphicon-bullhorn"></span> Ad Spend Report
+                      <% end %>
+                    </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
+                  <% if policy(Team).index? %>
+                  <li>
+                    <%= link_to(teams_path) do %>
+                      <span class="glyphicon glyphicon-user"></span> Teams
+                    <% end %>
+                  </li>
+                  <% end %>
+                </ul>
+              </div>
+            </li> <!-- Properties -->
+            <% end %>
+
+            <%# if current_user.admin? %>
+            <li> <!-- System -->
+              <div class="btn-group">
+                <a  href="#" class="btn btn-primary"><span class="glyphicon glyphicon-wrench"></span> System</a>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <% if policy(User).index? %>
+                  <li>
+                    <%= link_to(users_path) do %>
+                      <span class="glyphicon glyphicon-user"></span> Manage Bluesky Users
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <% if policy(Role).index? %>
+                  <li>
+                    <%= link_to(roles_path) do %>
+                      <span class="glyphicon glyphicon-cog"></span> Manage User Roles
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <li role="separator" class="divider"></li>
+                  <% if policy(LeadSource).index? %>
+                  <li>
+                    <%= link_to(lead_sources_path) do %>
+                      <span class="glyphicon glyphicon-download-alt"></span> Lead Sources
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <% if policy(LeadReferralSource).edit? %>
+                  <li>
+                    <%= link_to(lead_referral_sources_path) do %>
+                      <span class="glyphicon glyphicon-hand-right"></span> Lead Referral Sources
+                    <% end %>
+                  </li>
+                  <% end %>
+                  <% if policy(LeadAction).index? %>
+                  <li>
+                    <%= link_to(lead_actions_path) do %>
+                      <span class="glyphicon glyphicon-retweet"></span> Lead Actions
+                    <% end %>
+                  </li>
+                  <% end %>
+
+                  <li role="separator" class="divider"></li>
+                  <% if policy(EngagementPolicy).index? %>
+                  <li>
+                    <%= link_to(engagement_policies_path) do %>
+                      <span class="glyphicon glyphicon-check"></span> Engagement Policies
+                    <% end %>
+                  </li>
+                  <% end %>
+
+                  <li role="separator" class="divider"></li>
+                  <% if policy(Reason).index? %>
+                  <li>
+                    <%= link_to(reasons_path) do %>
+                      <span class="glyphicon glyphicon-retweet"></span> Reasons
+                    <% end %>
+                  </li>
+                  <% end %>
+
+                  <li role="separator" class="divider"></li>
+                  <% if policy(MessageTemplate).index? %>
+                  <li>
+                    <%= link_to(message_templates_path) do %>
+                      <%= glyph('folder-open') %> Message Templates
+                    <% end %>
+                  </li>
+                  <% end %>
+                </ul>
+              </div>
+            </li> <!-- System -->
+
+          <% end %>
+
+
+          <li> <!-- Account -->
+            <div class="btn-group">
+              <% if current_user.present? %>
+                <%= link_to(edit_user_path(current_user), method: :get, class: "btn btn-primary") do %>
+                  <span class="glyphicon glyphicon-user"></span> Account
+                <% end %>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to(edit_user_path(current_user), method: :get) do %>
+                      <span class="glyphicon glyphicon-user"></span> Edit Account and Profile
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to(destroy_user_session_path, method: :delete) do %>
+                      <span class="glyphicon glyphicon-off"></span> Logout
+                    <% end %>
+                  </li>
+                </ul>
+              <% else %>
+                <% if false %>
+                  <%= link_to(new_user_session_path, class: "btn btn-primary") do %>
+                    <span class="glyphicon glyphicon-off"></span> Login
+                  <% end %>
+                <% end %>
+              <% end %>
+            </div>
+          </li> <!-- Account -->
+        <% end %>
+
+        <% if current_user.present? %>
+          <li> <!-- Help -->
+            <div class="btn-group">
+              <%= link_to(current_page_help_path, method: :get, class: "btn btn-primary") do %>
+                <span class="glyphicon glyphicon-question-sign"></span>
+              <% end %>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <%= link_to(articles_path(articletype: 'help'), method: :get) do %>
+                    <span class="glyphicon glyphicon-user"></span> Help Index
+                  <% end %>
+                </li>
+                <% if Article.published.news.count > 0 %>
+                <li>
+                  <%= link_to(articles_path(articletype: 'news'), method: :get) do %>
+                    <span class="glyphicon glyphicon-user"></span> News
+                  <% end %>
+                </li>
+                <% end %>
+
+
+                <% if Article.published.blog.count > 0 %>
+                <li>
+                  <%= link_to(articles_path(articletype: 'blog'), method: :get) do %>
+                    <span class="glyphicon glyphicon-user"></span> Blog
+                  <% end %>
+                </li>
+                <% end %>
+
+                <li role="separator" class="divider"></li>
+                <li>
+                  <%= link_to(articles_path, method: :get) do %>
+                    <span class="glyphicon glyphicon-user"></span> All Articles
+                  <% end %>
+                </li>
+              <% end %>
+
+              </ul>
+            </div>
+          </li> <!-- Help -->
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>

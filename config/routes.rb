@@ -1,24 +1,16 @@
 Rails.application.routes.draw do
-
-  resources :articles
-  mount ActionCable.server => '/cable'
-
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
+  mount ActionCable.server => '/cable'
+
   authenticated :user, -> user { user.admin? }  do
-    mount DelayedJobWeb, at: "/delayed_job"
+    mount Flipflop::Engine => "/flipflop"
   end
 
-  namespace :api do
-    namespace :v1 do
-      get 'docs/swagger.:format', to: "swagger#index"
-      get 'docs', to: "swagger#apidocs"
-      resources :leads, only: [:index, :create ]
-      get 'leads/prospect_stats', to: "leads#prospect_stats"
-      resources :messages, only: [:create]
-    end
+  authenticated :user, -> user { user.admin? }  do
+    mount DelayedJobWeb, at: "/delayed_job"
   end
 
   devise_for :users, controllers: { sessions: 'users/sessions',
@@ -32,8 +24,15 @@ Rails.application.routes.draw do
 
   root to: redirect('/users/sign_in')
 
-  resources :lead_actions
-  resources :lead_referral_sources
+  namespace :api do
+    namespace :v1 do
+      get 'docs/swagger.:format', to: "swagger#index"
+      get 'docs', to: "swagger#apidocs"
+      resources :leads, only: [:index, :create ]
+      get 'leads/prospect_stats', to: "leads#prospect_stats"
+      resources :messages, only: [:create]
+    end
+  end
 
   resources :scheduled_actions do
     collection do
@@ -47,13 +46,15 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :lead_actions
+  resources :lead_referral_sources
+  resources :articles
   resources :notes
   resources :reasons
   resources :roles
   resources :unit_types
   resources :units
-  resources :users do
-  end
+  resources :users
   resources :residents
   resources :engagement_policies
 

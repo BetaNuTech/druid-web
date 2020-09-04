@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_17_190235) do
+ActiveRecord::Schema.define(version: 2020_09_09_185614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -142,6 +142,13 @@ ActiveRecord::Schema.define(version: 2020_08_17_190235) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["engagement_policy_id", "lead_action_id"], name: "engagement_policy_action_covering"
+  end
+
+  create_table "flipflop_features", force: :cascade do |t|
+    t.string "key", null: false
+    t.boolean "enabled", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "lead_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -660,6 +667,7 @@ ActiveRecord::Schema.define(version: 2020_08_17_190235) do
     t.text "signature"
     t.boolean "signature_enabled", default: false
     t.boolean "monitor_all_messages", default: false
+    t.jsonb "enabled_features", default: {}
     t.index ["user_id"], name: "index_user_profiles_on_user_id", unique: true
   end
 

@@ -99,7 +99,9 @@ class UserPolicy < ApplicationPolicy
       valid_user_params = []
       valid_user_profile_params = []
     when ->(u) { u.administrator? }
-      # NOOP all valid fields allowed
+      # All valid fields allowed
+      # Allow setting feature flags
+      valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS + [ UserProfile::FEATURE_PARAMS ] } ]
     when ->(u) { u.corporate? }
       # NOOP all valid fields allowed
     when ->(u) { u.manager? }
@@ -129,6 +131,10 @@ class UserPolicy < ApplicationPolicy
 
   def may_change_teamrole?(new_role_id=nil)
     return user.admin?
+  end
+
+  def manage_features?
+    user.admin? if user
   end
 
   def same_property?

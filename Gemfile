@@ -52,6 +52,7 @@ gem 'delayed_job_web', "~> 1.4"
 gem 'immigrant', "~> 0.3"
 gem "wysiwyg-rails", github: 'codeprimate/wysiwyg-rails'
 gem 'froala-editor-sdk', "~> 1.4"
+gem 'flipflop', github: 'Bellingham-DEV/flipflop'
 
 
 group :development, :test do
