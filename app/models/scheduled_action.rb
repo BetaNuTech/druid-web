@@ -72,6 +72,12 @@ class ScheduledAction < ApplicationRecord
 
   ### Scopes
   scope :for_agent, ->(agent) { where(user_id: agent.id) }
+  scope :for_property, ->(property) {
+    user_ids = property.users.pluck(:id)
+    self.where(user_id: user_ids).or(
+      self.where(user_id: user_ids, target_type: 'Lead')
+    )
+  }
 
   ### Validations
   validates :state, presence: true, inclusion: ScheduledAction.state_names

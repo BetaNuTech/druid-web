@@ -28,12 +28,11 @@ class ScheduledActionsController < ApplicationController
       skope = @user.scheduled_actions
     else
       if @show_all
-        skope = policy_scope(ScheduledAction)
+        skope = policy_scope(ScheduledAction.for_property(@current_property))
       else
         skope = current_user.scheduled_actions
       end
     end
-
 
     @scheduled_actions = skope.includes(:schedule).valid.limit(200)
   end
