@@ -212,6 +212,26 @@
 
   <% end %>
 
+  <% if policy(@user).manage_features? %>
+    <%= fields_for 'user[profile_attributes][enabled_features]', OpenStruct.new(@user.profile&.enabled_features) do |enabled_features| %>
+      <div class="row">
+        <div class="col-md-12">
+          <fieldset>
+            <legend>Bluesky Application Features</legend>
+            <div class="form-row">
+              <% UserProfile.managed_features.each do |feature| %>
+                <div class="col-md-2 form-group form-check">
+                  <%= enabled_features.check_box feature, class: 'form-check-input' %>
+                  <%= enabled_features.label feature, class: 'form-check-label' %>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
   <div class="form-group">
     <button type="submit" class="btn btn-primary">Submit</button>
     <%= link_to 'Back', ( policy(User).index? ? users_path : :back ), class: "btn btn-xs btn-info" %>

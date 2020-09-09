@@ -18,15 +18,17 @@
 #  signature            :text
 #  signature_enabled    :boolean          default(FALSE)
 #  monitor_all_messages :boolean          default(FALSE)
+#  enabled_features     :jsonb
 #
 
 class UserProfile < ApplicationRecord
 
   ### Class Concerns/Extensions
   audited
+  include UserProfiles::Features
 
   ### Constants
-  ALLOWED_PARAMS = [ :id, :user_id, :name_prefix, :first_name, :last_name, :name_suffix, :slack, :cell_phone, :office_phone, :fax, :notes, :signature, :signature_enabled, :monitor_all_messages ]
+  ALLOWED_PARAMS = [ :id, :user_id, :name_prefix, :first_name, :last_name, :name_suffix, :slack, :cell_phone, :office_phone, :fax, :notes, :signature, :signature_enabled, :monitor_all_messages].freeze
 
   ### Associations
   belongs_to :user, required: false

@@ -19,7 +19,10 @@ module Users
       delegate :notes, to: :profile, allow_nil: true
       delegate :use_signature?, to: :profile, allow_nil: true
       delegate :monitor_all_messages?, to: :profile, allow_nil: true
+      delegate :enabled_features, to: :profile, allow_nil: true
+      delegate :feature_enabled?, to: :profile, allow_nil: true
+      delegate :switch_feature!, to: :profile, allow_nil: true
+      delegate :clear_feature!, to: :profile, allow_nil: true
     end
-
   end
 end

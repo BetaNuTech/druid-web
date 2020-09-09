@@ -18,6 +18,7 @@
 #  signature            :text
 #  signature_enabled    :boolean          default(FALSE)
 #  monitor_all_messages :boolean          default(FALSE)
+#  enabled_features     :jsonb
 #
 
 require 'test_helper'

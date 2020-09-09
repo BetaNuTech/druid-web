@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Disable IE compatibility mode -->
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-
     <%= render partial: "shared/html_head" %>
     <title><%= @page_title || 'Bluesky' %></title>
     <%= csrf_meta_tags %>
-
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
@@ -19,14 +15,13 @@
     <%= render partial: 'shared/property_selection' %>
     <%= yield %>
     <%= render partial: 'shared/footer' %>
-
+    <%= render partial: 'shared/enabled_features' if policy(User).manage_features? %>
     <% if defined?(@webpack) %>
       <% Array(@webpack).each do |pack| %>
         <%= javascript_pack_tag pack %>
         <%= stylesheet_pack_tag pack %>
       <% end %>
     <% end %>
-
     <%= render partial: 'shared/browser_check' %>
     <%= render partial: 'shared/tracking' unless Rails.env.test? %>
   </body>

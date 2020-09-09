@@ -10,8 +10,8 @@
 #  fee_total           :decimal(, )      not null
 #  fee_type            :integer          default("free"), not null
 #  quantity            :integer          default(1), not null
-#  start_date          :datetime         not null
-#  end_date            :datetime
+#  start_date          :date             not null
+#  end_date            :date
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
