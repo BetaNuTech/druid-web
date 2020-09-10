@@ -134,7 +134,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def manage_features?
-    user.admin? if user
+    user&.administrator?
   end
 
   def same_property?
