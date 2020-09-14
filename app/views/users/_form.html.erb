@@ -98,6 +98,19 @@
               <%= profile_form.text_area :notes, {class: "form-control"} %>
             </div>
           </div>
+          <div class="row">
+            <div class="form-group">
+              <%= profile_form.label :photo %>
+              <% if user.profile.photo.attached? %>
+                <div style="padding: 10px 5px;">
+                  <%= image_tag(user.profile.photo.variant(resize: "100x100"), alt: "#{@user.name || 'User'} photo" )%>
+                  <%= profile_form.label :remove_photo, class: "checkbox-inline" %>
+                  <%= profile_form.check_box :remove_photo %>
+                </div>
+              <% end %>
+              <%= profile_form.file_field :photo %>
+            </div>
+          </div>
       </fieldset>
     </div>
   </div>
