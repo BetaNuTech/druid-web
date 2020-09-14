@@ -43,7 +43,6 @@ RSpec.describe Lead, type: :model do
   include_context "users"
   include_context "engagement_policy"
   include_context "messaging"
-  include_context "engagement_policy"
   include_context "team_members"
 
   it "can be initialized" do

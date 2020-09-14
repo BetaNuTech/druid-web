@@ -16,6 +16,9 @@ class PropertyUser < ApplicationRecord
   belongs_to :property
   belongs_to :user
 
+  ### Callbacks
+  before_destroy :reassign_pending_tasks
+
   ### Constants
   ALLOWED_PARAMS = [:id, :user_id, :property_id, :role, :_destroy]
   AGENT_ROLE = 'agent'
@@ -40,6 +43,17 @@ class PropertyUser < ApplicationRecord
 
   def manager?
     role == MANAGER_ROLE
+  end
+
+  private
+
+  def reassign_pending_tasks
+    new_user = property.primary_agent
+    pending_tasks = user.tasks_pending
+    pending_tasks.select{|task|
+      task.state == 'pending' &&
+        task.target&.property_id == property_id
+    }.each{|task| task.user_id = new_user.id; task.save}
   end
 
 end
