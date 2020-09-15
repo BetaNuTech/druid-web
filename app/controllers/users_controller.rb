@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, only: [:show, :destroy]
+  before_action :set_user, only: [:show, :destroy, :switch_setting]
   after_action :verify_authorized
 
   # GET /users
@@ -74,6 +74,17 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to users_url, notice: 'User was deactivated.' }
       format.json { head :no_content }
+    end
+  end
+
+  def switch_setting
+    authorize @user
+    if (setting_key = params[:setting])
+      setting_key = setting_key.to_sym
+      @user.switch_setting!(setting_key, !@user.setting_enabled?(setting_key))
+      redirect_to request.referer
+    else
+      render status: :unprocessable_entity
     end
   end
 

@@ -23,6 +23,10 @@ module Users
       delegate :feature_enabled?, to: :profile, allow_nil: true
       delegate :switch_feature!, to: :profile, allow_nil: true
       delegate :clear_feature!, to: :profile, allow_nil: true
+      delegate :appsettings, to: :profile, allow_nil: true
+      delegate :setting_enabled?, to: :profile, allow_nil: true
+      delegate :switch_setting!, to: :profile, allow_nil: true
+      delegate :clear_setting!, to: :profile, allow_nil: true
     end
   end
 end

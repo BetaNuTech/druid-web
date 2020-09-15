@@ -99,39 +99,21 @@
             </div>
           </div>
           <div class="row">
-            <div class="form-group">
-              <%= profile_form.label :photo %>
-              <% if user.profile.photo.attached? %>
-                <div style="padding: 10px 5px;">
-                  <%= image_tag(user.profile.photo.variant(resize: "100x100"), alt: "#{@user.name || 'User'} photo" )%>
-                  <%= profile_form.label :remove_photo, class: "checkbox-inline" %>
-                  <%= profile_form.check_box :remove_photo %>
-                </div>
-              <% end %>
-              <%= profile_form.file_field :photo %>
+              <div class="col-md-6">
+                <%= profile_form.label :photo %><br/>
+                <% if user.profile.photo.attached? %>
+                    <%= image_tag(user.profile.photo.variant(resize: "200x200"), alt: "#{@user.name || 'User'} photo" )%>
+                    <br/>
+                    <span>
+                      <%= profile_form.label :remove_photo, 'Remove', class: 'form-check-label' %>
+                      <%= profile_form.check_box :remove_photo, class: 'checkbox-inline' %>
+                    </span>
+                <% end %>
+                <%= profile_form.file_field :photo, class: 'form-control' %>
+              </div>
+            <div class="col-md-6 form-group">
             </div>
           </div>
-      </fieldset>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <fieldset>
-        <legend>Messaging</legend>
-        <div class="row">
-          <div class="col-md-4 form-group">
-            <%= profile_form.check_box :monitor_all_messages, class: 'form-check-input'%>
-            <%= profile_form.label :monitor_all_messages, 'Notify me of all incoming Lead messages' %>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-8 form-group">
-            <%= profile_form.label :signature %>
-            <%= profile_form.text_area :signature, { id: 'html_editor_v2', class: 'form-control user_signature', rows: 6 } %>
-            <%= profile_form.check_box :signature_enabled, class: 'form-check-input user_signature_enabled' %>
-            <%= profile_form.label(:signature_enabled, 'Display my signature in outgoing messages') %>
-          </div>
-        </div>
       </fieldset>
     </div>
   </div>
@@ -225,6 +207,24 @@
 
   <% end %>
 
+  <%= fields_for 'user[profile_attributes][appsettings]', OpenStruct.new(@user.profile&.appsettings) do |appsettings| %>
+    <div class="row">
+      <div class="col-md-12">
+        <fieldset>
+          <legend>Bluesky Application Settings</legend>
+          <div class="form-row">
+            <% UserProfile.managed_settings.each do |setting| %>
+              <div class="col-md-3 form-group form-check">
+                <%= appsettings.check_box setting, class: 'form-check-input' %>
+                <%= appsettings.label setting, class: 'form-check-label' %>
+              </div>
+            <% end %>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  <% end %>
+
   <% if policy(@user).manage_features? %>
     <%= fields_for 'user[profile_attributes][enabled_features]', OpenStruct.new(@user.profile&.enabled_features) do |enabled_features| %>
       <div class="row">
@@ -233,7 +233,7 @@
             <legend>Bluesky Application Features</legend>
             <div class="form-row">
               <% UserProfile.managed_features.each do |feature| %>
-                <div class="col-md-2 form-group form-check">
+                <div class="col-md-3 form-group form-check">
                   <%= enabled_features.check_box feature, class: 'form-check-input' %>
                   <%= enabled_features.label feature, class: 'form-check-label' %>
                 </div>

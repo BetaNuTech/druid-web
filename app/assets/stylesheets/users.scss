@@ -2,3 +2,11 @@ tr.users-deactivated {
   font-style: italic;
   color: #ccc;
 }
+
+span.setting-on a {
+  color: black !important;
+}
+
+span.setting-off a {
+  color: lightgray !important;
+}

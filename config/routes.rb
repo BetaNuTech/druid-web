@@ -54,7 +54,11 @@ Rails.application.routes.draw do
   resources :roles
   resources :unit_types
   resources :units
-  resources :users
+  resources :users do
+    member do
+      post 'switch_setting', to: 'users#switch_setting'
+    end
+  end
   resources :residents
   resources :engagement_policies
 

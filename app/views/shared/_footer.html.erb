@@ -1,6 +1,11 @@
 <footer class="footer">
   <div class="container">
     <%= render partial: 'shared/impersonation' %>
-    <p class="text-muted">Bluesky Lead Management &copy; 2018-<%= Date.today.year %> Bluestone Properties (v.<%= BlueskyWeb::VERSION %>)</p>
+    <p class="text-muted">
+      Bluesky Lead Management &copy; 2018-<%= Date.today.year %> Bluestone Properties (v.<%= BlueskyWeb::VERSION %>)
+      &nbsp;
+      &nbsp;
+      <%= render partial: 'shared/appsettings' %>
+    </p>
   </div>
 </footer>

@@ -46,6 +46,10 @@ class UserPolicy < ApplicationPolicy
     end
   end
 
+  def switch_setting?
+    update?
+  end
+
   def update?
     edit?
   end
@@ -93,7 +97,7 @@ class UserPolicy < ApplicationPolicy
 
   def allowed_params
     valid_user_params = User::ALLOWED_PARAMS
-    valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS } ]
+    valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS + [ UserProfile::APPSETTING_PARAMS ] } ]
     case user
     when nil
       valid_user_params = []
@@ -101,7 +105,7 @@ class UserPolicy < ApplicationPolicy
     when ->(u) { u.administrator? }
       # All valid fields allowed
       # Allow setting feature flags
-      valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS + [ UserProfile::FEATURE_PARAMS ] } ]
+      valid_user_profile_params = [ { profile_attributes: UserProfile::ALLOWED_PARAMS + [ UserProfile::FEATURE_PARAMS ] + [ UserProfile::APPSETTING_PARAMS ] } ]
     when ->(u) { u.corporate? }
       # NOOP all valid fields allowed
     when ->(u) { u.manager? }
