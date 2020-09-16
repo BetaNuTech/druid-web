@@ -9,7 +9,7 @@ module UserProfiles
       serialize :appsettings
 
       def setting_enabled?(setting)
-        val = appsettings.fetch(setting, false)
+        val = ( appsettings || {} ).fetch(setting, false)
         [true, 'true', '1'].include?(val)
       end
 
