@@ -9,22 +9,26 @@ module UserProfiles
       serialize :appsettings
 
       def setting_enabled?(setting)
-        val = ( appsettings || {} ).fetch(setting, false)
+        self.appsettings ||= {}
+        val = appsettings.fetch(setting, false)
         [true, 'true', '1'].include?(val)
       end
 
       def switch_setting!(setting, enabled)
+        self.appsettings ||= {}
         val = [true, 'true', '1'].include?(enabled) ? '1' : '0'
         appsettings[setting] = val
         save!
       end
 
       def clear_setting!(setting)
+        self.appsettings ||= {}
         appsettings.delete(setting)
         save!
       end
 
       def monitor_all_messages?
+        self.appsettings ||= {}
         setting_enabled?(:view_all_messages)
       end
     end
