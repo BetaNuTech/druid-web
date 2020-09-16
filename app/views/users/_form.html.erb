@@ -98,22 +98,24 @@
               <%= profile_form.text_area :notes, {class: "form-control"} %>
             </div>
           </div>
-          <div class="row">
-              <div class="col-md-6">
-                <%= profile_form.label :photo %><br/>
-                <% if user.profile.photo.attached? %>
-                    <%= image_tag(user.profile.photo.variant(resize: "200x200"), alt: "#{@user.name || 'User'} photo" )%>
-                    <br/>
-                    <span>
-                      <%= profile_form.label :remove_photo, 'Remove', class: 'form-check-label' %>
-                      <%= profile_form.check_box :remove_photo, class: 'checkbox-inline' %>
-                    </span>
-                <% end %>
-                <%= profile_form.file_field :photo, class: 'form-control' %>
+          <% if Flipflop.enabled?(:profile_images_v1) %>
+            <div class="row">
+                <div class="col-md-6">
+                  <%= profile_form.label :photo %><br/>
+                  <% if user.profile.photo.attached? %>
+                      <%= image_tag(user.profile.photo.variant(resize: "200x200"), alt: "#{@user.name || 'User'} photo" )%>
+                      <br/>
+                      <span>
+                        <%= profile_form.label :remove_photo, 'Remove', class: 'form-check-label' %>
+                        <%= profile_form.check_box :remove_photo, class: 'checkbox-inline' %>
+                      </span>
+                  <% end %>
+                  <%= profile_form.file_field :photo, class: 'form-control' %>
+                </div>
+              <div class="col-md-6 form-group">
               </div>
-            <div class="col-md-6 form-group">
             </div>
-          </div>
+          <% end %>
       </fieldset>
     </div>
   </div>

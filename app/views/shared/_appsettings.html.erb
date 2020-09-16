@@ -1,11 +1,17 @@
-<span id="toggle_message_notifications" class="<%= current_user&.profile&.setting_enabled?(:message_web_notifications) ? 'setting-on' : 'setting-off' %>">
-  <%= link_to(switch_setting_user_path(id: current_user.id, setting: :message_web_notifications), method: :post) do %>
-    <span class="glyphicon glyphicon-envelope"></span>
+<% if current_user&.profile %>
+  <%= tooltip_block('toggle-message-notifications') do %>
+    <span id="toggle_message_notifications" class="<%= current_user&.profile&.setting_enabled?(:message_web_notifications) ? 'setting-on' : 'setting-off' %>">
+      <%= link_to(switch_setting_user_path(id: current_user.id, setting: :message_web_notifications), method: :post) do %>
+        <span class="glyphicon glyphicon-envelope"></span>
+      <% end %>
+    </span>
   <% end %>
-</span>
 
-<span id="toggle_lead_notifications" class="<%= current_user&.profile&.setting_enabled?(:lead_web_notifications) ? 'setting-on' : 'setting-off' %>">
-  <%= link_to(switch_setting_user_path(id: current_user.id, setting: :lead_web_notifications), method: :post) do %>
-    <span class="glyphicon glyphicon-flag"></span>
+  <%= tooltip_block('toggle-lead-notifications') do %>
+    <span id="toggle_lead_notifications" class="<%= current_user&.profile&.setting_enabled?(:lead_web_notifications) ? 'setting-on' : 'setting-off' %>">
+      <%= link_to(switch_setting_user_path(id: current_user.id, setting: :lead_web_notifications), method: :post) do %>
+        <span class="glyphicon glyphicon-flag"></span>
+      <% end %>
+    </span>
   <% end %>
-</span>
+<% end %>

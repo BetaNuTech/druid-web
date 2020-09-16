@@ -7,6 +7,8 @@ Flipflop.configure do
   strategy :active_record
   strategy :default
 
+  feature :profile_images_v1, default: false, description: 'Profile image support'
+
   group :design_v1 do
     feature :navigation_v1, default: false, description: 'UI v1 Navigation'
     feature :leads_v1, default: false, description: 'UI v1 Lead Page'

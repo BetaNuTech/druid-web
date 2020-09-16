@@ -103,8 +103,9 @@ module ApplicationHelper
         yield
       end
     else
-      raw("<!-- Tooltip '#{slug}' missing -->") +
-      yield
+      content_tag(:span) do
+        yield
+      end
     end
   end
 
