@@ -11,27 +11,24 @@ module Properties
         reject_if: proc{|attributes| attributes['user_id'].blank?}
 
       def agents
-        users.references(:property_users).
-          where(property_users: {
-            role: PropertyUser::AGENT_ROLE
-          })
+        users.active.references(:property_users).
+          where(property_users: { role: PropertyUser::AGENT_ROLE })
       end
 
       def managers
-        users.references(:property_users).
-          where(property_users: {
-            role: PropertyUser::MANAGER_ROLE
-        })
+        users.active.references(:property_users).
+          where(property_users: { role: PropertyUser::MANAGER_ROLE })
       end
 
       def users_available_for_assignment
-        User.includes(assignments: {user: :profile}).
+        User.active.includes(assignments: {user: :profile}).
           where(property_users: {id: nil}).
+          where.not(deactivated: true).
           order('user_profiles.last_name ASC, user_profiles.first_name ASC')
       end
 
       def users_available_for_lead_assignment
-        User.includes(assignments: {user: :profile}).
+        User.active.includes(assignments: {user: :profile}).
           where(property_users: {property_id: self.id}).
           order('user_profiles.last_name ASC, user_profiles.first_name ASC')
       end

@@ -47,13 +47,15 @@ class User < ApplicationRecord
 
   ### Validations
 
-  ## Scopes
+  ### Scopes
   scope :by_name_asc, -> {
     includes(:profile).
     order("user_profiles.last_name ASC, user_profiles.first_name ASC")
   }
-
   scope :active, -> { where.not(deactivated: true) }
+
+  ### Callbacks
+  after_save :deactivation_cleanup
 
   ### Class Methods
 
@@ -106,4 +108,25 @@ class User < ApplicationRecord
                 created_at: start_date..end_date })
   end
 
+
+  def deactivation_cleanup
+    return true unless deactivated?
+    Rails.logger.warn('Reassigning all Leads for User[#{id}]')
+    leads.active.each do |lead|
+      if lead.property&.primary_agent&.present?
+        lead.user_id = lead.property.primary_agent.id
+        lead.save
+      end
+    end
+
+    Rails.logger.warn('Reassigning all ScheduledActions for User[#{id}]')
+    scheduled_actions.pending.each do |sa|
+      if sa.target.respond_to?(:property) && sa.target.property.primary_agent.present?
+        sa.user_id = sa.target.property.primary_agent.id
+        sa.save
+      end
+    end
+  end
+
+  handle_asynchronously :deactivation_cleanup, queue: :low_priority
 end
