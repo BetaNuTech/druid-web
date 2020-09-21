@@ -13,6 +13,11 @@ module UserProfiles
         photo.purge_later if photo.attached?
       end
 
+      # HACK: https://github.com/rails/rails/issues/37701
+      def changed_for_autosave?
+        super || remove_photo == '1'
+      end
+
     end
   end
 end
