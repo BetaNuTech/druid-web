@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_15_193004) do
+ActiveRecord::Schema.define(version: 2020_09_22_174240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -649,6 +649,17 @@ ActiveRecord::Schema.define(version: 2020_09_15_193004) do
     t.boolean "model", default: false
     t.index ["property_id", "unit"], name: "index_units_on_property_id_and_unit", unique: true
     t.index ["remoteid"], name: "index_units_on_remoteid"
+  end
+
+  create_table "user_impressions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.string "reference"
+    t.string "path"
+    t.string "referrer"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["reference", "created_at"], name: "index_user_impressions_on_reference_and_created_at"
+    t.index ["user_id", "reference"], name: "index_user_impressions_on_user_id_and_reference"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

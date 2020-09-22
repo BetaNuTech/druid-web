@@ -2,12 +2,14 @@ require_relative '../app/lib/user_preference_strategy.rb'
 
 Flipflop.configure do
   # Strategies will be used in the order listed here.
-  strategy UserPreferenceStrategy
   #strategy :cookie
-  strategy :active_record
+  # strategy :active_record
+  strategy UserPreferenceStrategy
   strategy :default
 
   feature :profile_images_v1, default: false, description: 'Profile image support'
+
+  feature :user_tracking, default: true, description: 'Track page impressions'
 
   group :design_v1 do
     feature :navigation_v1, default: false, description: 'UI v1 Navigation'

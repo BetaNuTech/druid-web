@@ -9,7 +9,10 @@ module UserProfiles
       serialize :enabled_features
 
       def feature_enabled?(feature)
-        val = enabled_features.fetch(feature, false)
+        self.enabled_features ||= {}
+        val = enabled_features.fetch(feature, nil)
+        return nil if val.nil?
+
         [true, 'true', '1'].include?(val)
       end
 
@@ -20,6 +23,7 @@ module UserProfiles
       end
 
       def clear_feature!(feature)
+        self.enabled_features ||= {}
         enabled_features.delete(feature)
         save!
       end

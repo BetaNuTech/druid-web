@@ -5,10 +5,27 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
+  before_action :create_user_impression, if: :current_user
   around_action :user_timezone, if: :current_user
   before_action :current_team
   before_action :set_property
   before_action :prepare_exception_notifier
+
+  def create_user_impression
+    begin
+      impression = URI(request.path).path rescue 'ERROR'
+      referrer = URI(request.referer).path rescue 'ERROR'
+      UserImpression.create(
+        user_id: current_user&.id,
+        reference: AppContext.for_params(params).last,
+        referrer: referrer,
+        path: impression
+      ) if Flipflop.user_tracking?
+    rescue => e
+      Rails.logger.warn('Error creating user impression: ' + e.to_s)
+      true
+    end
+  end
 
   private
 

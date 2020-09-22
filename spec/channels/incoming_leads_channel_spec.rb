@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe IncomingLeadsChannel, type: :channel do
   include_context 'users'
 
-  let(:user) { agent }
+  let(:user) { agent; agent.switch_setting!(:lead_web_notifications, true); agent }
   let(:lead1){ create(:lead, property: property, state: 'open') }
   let(:property) { user.property }
   let(:property_stream) { lead1.property_incoming_leads_stream_name }

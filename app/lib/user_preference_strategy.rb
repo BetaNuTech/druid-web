@@ -13,17 +13,18 @@ class UserPreferenceStrategy < Flipflop::Strategies::AbstractStrategy
 
   def enabled?(feature)
     # Can only check features if we have the user's session.
-    user = find_current_user or return false
+    return unless request?
+    user = find_current_user or return
     user.feature_enabled?(feature)
   end
 
   def switch!(feature, enabled)
-    user = find_current_user or return false
+    user = find_current_user or return
     user.switch_feature!(feature, enabled)
   end
 
   def clear!(feature)
-    user = find_current_user or return false
+    user = find_current_user or return
     user.clear_feature!(feature)
   end
 
