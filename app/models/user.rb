@@ -36,6 +36,7 @@ class User < ApplicationRecord
   include Users::Teams
   include Users::Properties
   include Users::Tasks
+  include Users::Messaging
   audited
 
   ### Constants

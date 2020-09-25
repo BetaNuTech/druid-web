@@ -2,6 +2,14 @@ module UserProfiles
   module Appsettings
     extend ActiveSupport::Concern
 
+    MANAGED_SETTINGS = %i[
+      message_signature
+      view_all_messages
+      message_web_notifications
+      lead_web_notifications
+      email_task_reminders
+    ].freeze
+
     included do
 
       APPSETTING_PARAMS = { appsettings: UserProfile.managed_settings }
@@ -35,7 +43,7 @@ module UserProfiles
 
     class_methods do
       def managed_settings
-        [:message_signature, :view_all_messages, :message_web_notifications, :lead_web_notifications]
+        MANAGED_SETTINGS
       end
     end
   end

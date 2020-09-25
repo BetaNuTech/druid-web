@@ -1,15 +1,8 @@
 Rails.application.routes.draw do
-  if Rails.env.development?
-    mount LetterOpenerWeb::Engine, at: "/letter_opener"
-  end
-
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   mount ActionCable.server => '/cable'
-
   authenticated :user, -> user { user.admin? }  do
     mount Flipflop::Engine => "/flipflop"
-  end
-
-  authenticated :user, -> user { user.admin? }  do
     mount DelayedJobWeb, at: "/delayed_job"
   end
 

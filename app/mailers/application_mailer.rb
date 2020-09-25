@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'noreply@druidapp.com'
+  default from: 'noreply@blue-sky.app'
   layout 'mailer'
 end

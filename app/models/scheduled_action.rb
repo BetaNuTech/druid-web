@@ -109,13 +109,29 @@ class ScheduledAction < ApplicationRecord
   end
 
   def summary
-    parts = {
-      desc: ( compliance_task? ? "Engagement Policy Task" : "Personal Task" ),
-      action: lead_action&.description || lead_action&.name,
+    return "%{desc}: %{action} by %{schedule} [%{state}] " % summary_data
+  end
+
+  def summary_data
+    if compliance_task?
+      desc = 'Lead Task'
+      target_name = target&.name || 'Deleted'
+      target_link = target ? Rails.application.routes.url_helpers.full_url_for(target)  : '#'
+    else
+      desc = 'Personal Task'
+      target_name = target.class.name
+      target_link = Rails.application.routes.url_helpers.scheduled_action_url(self)
+    end
+
+    {
+      desc: desc,
+      action: lead_action&.description || lead_action&.name || description,
+      reason: reason&.name,
       schedule: schedule.try(:long_datetime),
       state: state.try(:upcase) || '',
+      target: target_name,
+      target_link: target_link
     }
-    return "%{desc}: %{action} by %{schedule} [%{state}] " % parts
   end
 
   def activity_summary

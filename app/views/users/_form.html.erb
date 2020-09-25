@@ -214,7 +214,7 @@
   <%= fields_for 'user[profile_attributes][appsettings]', OpenStruct.new(@user.profile&.appsettings) do |appsettings| %>
     <div class="row">
       <div class="col-md-12">
-        <fieldset>
+        <fieldset id="bluesky_appsettings">
           <legend>Bluesky Application Settings</legend>
           <div class="form-row">
             <% UserProfile.managed_settings.each do |setting| %>
