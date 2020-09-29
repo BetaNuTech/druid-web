@@ -81,7 +81,6 @@ module Leads
           FROM leads
           WHERE
             ( id != :id )
-            AND state IN ('open', 'prospect','showing','application')
             AND (
               ( phone1 IS NOT NULL
                 AND phone1 != ''

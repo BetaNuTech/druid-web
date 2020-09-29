@@ -77,6 +77,7 @@ class Lead < ApplicationRecord
   has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
   has_many :scheduled_actions, as: :target, dependent: :destroy
   has_many :transitions, class_name: 'LeadTransition', dependent: :destroy
+  has_one :resident
 
   ### Scopes
   scope :ordered_by_created, -> {order(created_at: "ASC")}

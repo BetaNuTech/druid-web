@@ -92,7 +92,13 @@
         <span>
           <span class="glyphicon glyphicon-home"></span>&nbsp;
           <%= @lead.property.name %>
-        </span><br/>
+        </span>
+        <% if @lead.resident.present? %>
+          <span>
+            <%= link_to('Resident', resident_path(@lead.resident)) %>
+          </span>
+        <% end %>
+        <br/>
         <span>
           <span class="glyphicon glyphicon-filter"></span>&nbsp;
           <%= @lead.referral %>

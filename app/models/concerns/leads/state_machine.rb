@@ -267,7 +267,7 @@ module Leads
       end
 
       def set_conversion_date
-        self.conversion_date = DateTime.now
+        self.conversion_date ||= DateTime.now
       end
 
       def create_initial_transition
@@ -283,14 +283,14 @@ module Leads
         )
       end
 
-      def create_lead_transition_note
+      def create_lead_transition_note(last_state: nil, current_state: nil)
         self.comments << self.comments.build(
           user: nil,
           lead_action: LeadAction.where(name: STATE_TRANSITION_LEAD_ACTION).first,
           reason: Reason.where(name: STATE_TRANSITION_REASON).last,
           content: "Lead transitioned from %s to %s.%s" % [
-            ( aasm.from_state&.capitalize || '?' ),
-            ( aasm.to_state&.capitalize || '?' ),
+            ( ( last_state || aasm.from_state )&.capitalize || '?' ),
+            ( (current_state || aasm.to_state)&.capitalize || '?' ),
             (transition_memo.present? ? " -- Memo: #{transition_memo}": '')
           ],
           classification: 'system'
