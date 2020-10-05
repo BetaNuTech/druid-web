@@ -1,17 +1,15 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Your notification preferences have been updated!</h2>
+<div class="row">
+  <div class="col-md-12">
+    <h2>Your notification preferences have been updated!</h2>
 
-      <p class="lead">
-        You <%= @lead.optin_sms? ? 'can' : 'will not' %> recieve SMS messages.
-        <br/>
-        You <%= @lead.optin_email? ? 'can' : 'will not' %> recieve email messages.
-      </p>
+    <p class="lead">
+      You <%= @lead.optin_sms? ? 'can' : 'will not' %> recieve SMS messages.
+      <br/>
+      You <%= @lead.optin_email? ? 'can' : 'will not' %> recieve email messages.
+    </p>
 
-      <p>
-        Feel free to <%= link_to("go back", messaging_preferences_path(id: @lead.id))%> and change your notification preferences any time.
-      </p>
-    </div>
+    <p>
+      Feel free to <%= link_to("go back", messaging_preferences_path(id: @lead.id))%> and change your notification preferences any time.
+    </p>
   </div>
 </div>

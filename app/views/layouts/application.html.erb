@@ -4,18 +4,24 @@
     <%= render partial: "shared/html_head" %>
     <title><%= @page_title || 'Bluesky' %></title>
     <%= csrf_meta_tags %>
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'designv0', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body<%- if @webpack %> data-no-turbolink data-no-transition-cache<% end %>>
-    <%#= render partial: 'shared/trackjs' unless Rails.env.test? %>
-    <%= render partial: 'shared/navbar' %>
-    <%= render partial: 'shared/notifications' %>
-    <%= render partial: 'shared/property_selection' %>
-    <%= yield %>
-    <%= render partial: 'shared/footer' %>
-    <%= render partial: 'shared/enabled_features' if policy(User).manage_features? %>
+    <div id="app_layout">
+      <%= render partial: 'shared/navbar_v0' %>
+      <div id="content" class="container">
+        <%= render partial: 'shared/notifications' %>
+        <%= render partial: 'shared/property_selection' %>
+        <%= yield %>
+      </div>
+      <div id="footer">
+        <%= render partial: 'shared/enabled_features' if policy(User).manage_features? %>
+        <%= render partial: 'shared/footer' %>
+      </div>
+    </div>
     <% if defined?(@webpack) %>
       <% Array(@webpack).each do |pack| %>
         <%= javascript_pack_tag pack %>

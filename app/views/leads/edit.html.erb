@@ -1,14 +1,12 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1>Edit Lead</h1>
-      <%= render 'form', lead: @lead %>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <h1>Edit Lead</h1>
+    <%= render 'form', lead: @lead %>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to 'Show', @lead, class: "btn btn-xs btn-primary" %>
-      <%= link_to 'Back', :back, class: "btn btn-xs btn-info"  %>
-    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <%= link_to 'Show', @lead, class: "btn btn-xs btn-primary" %>
+    <%= link_to 'Back', :back, class: "btn btn-xs btn-info"  %>
   </div>
 </div>

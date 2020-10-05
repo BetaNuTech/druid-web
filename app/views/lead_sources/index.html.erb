@@ -1,52 +1,43 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Lead Sources</h1>
-    </div>
-    <div class="col-md-6 text-right">
-      <%= glyph(:create) %>
-      <%= link_to 'Create New Lead Source', new_lead_source_path %>
-    </div>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Lead Sources</h1>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-        <thead>
+  <div class="col-md-6 text-right">
+    <%= link_to 'Create New Lead Source', new_lead_source_path, class: 'btn btn-sm btn-primary' %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Slug</th>
+          <th>Incoming</th>
+          <th>Active</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @lead_sources.each do |lead_source| %>
           <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Slug</th>
-            <th>Incoming</th>
-            <th>Active</th>
-            <th>Actions</th>
+            <td></td>
+            <td><%= lead_source.name %></td>
+            <td><%= lead_source.slug %></td>
+            <td><%= lead_source.incoming %></td>
+            <td><%= lead_source.active %></td>
+            <td>
+              <%= model_link_with_tooltip(lead_source, :show) %>&nbsp;
+              <%= model_link_with_tooltip(lead_source, :edit) %>&nbsp;
+              <%= model_link_with_tooltip(lead_source, :destroy) %>&nbsp;
+            </td>
           </tr>
-        </thead>
+        <% end %>
+      </tbody>
+    </table>
+    <br>
 
-        <tbody>
-          <% @lead_sources.each do |lead_source| %>
-            <tr>
-              <td></td>
-              <td><%= lead_source.name %></td>
-              <td><%= lead_source.slug %></td>
-              <td><%= lead_source.incoming %></td>
-              <td><%= lead_source.active %></td>
-              <td>
-                <%= model_link_with_tooltip(lead_source, :show) %>&nbsp;
-                <%= model_link_with_tooltip(lead_source, :edit) %>&nbsp;
-                <%= model_link_with_tooltip(lead_source, :destroy) %>&nbsp;
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <br>
-
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12 text-right">
-      <%= glyph(:create) %>
-      <%= link_to 'Create New Lead Source', new_lead_source_path %>
-    </div>
   </div>
 </div>

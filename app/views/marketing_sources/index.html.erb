@@ -1,92 +1,90 @@
-<div class="container">
+<div class="row">
+  <div class="col-md-6">
+    <h1>Marketing Sources</h1>
+  </div>
+</div>
+
+<%= form_tag(marketing_sources_path, remote: false, method: :get) do %>
   <div class="row">
+    <div class="col-xs-6 col-md-3">
+        <div class="form-group">
+          <%= select_tag :property_id, marketing_source_properties(@property_id), class: 'form-control' %>
+        </div>
+    </div>
+    <div class="col-xs-2 col-md-2">
+      <%= submit_tag 'Select Property', class: 'btn btn-sm btn-primary' %>
+    </div>
     <div class="col-md-6">
-      <h1>Marketing Sources</h1>
+      <%= link_to('Marketing Sources CSV Export', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id], report_type: 'source_export'}, format: :csv), class: 'btn btn-xs btn-info') %>
+      <%= link_to('Marketing Expenses CSV Export', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id], report_type: 'expense_export'}, format: :csv), class: 'btn btn-xs btn-info') %>
+      <%= link_to('Ad Spend Report', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id]}), class: 'btn btn-xs btn-info') %>
     </div>
   </div>
+<% end if policy(MarketingSource).select_property?%>
 
-  <%= form_tag(marketing_sources_path, remote: false, method: :get) do %>
-    <div class="row">
-      <div class="col-xs-6 col-md-3">
-          <div class="form-group">
-            <%= select_tag :property_id, marketing_source_properties(@property_id), class: 'form-control' %>
-          </div>
-      </div>
-      <div class="col-xs-2 col-md-2">
-        <%= submit_tag 'Select Property', class: 'btn btn-sm btn-primary' %>
-      </div>
-      <div class="col-md-6">
-        <%= link_to('Marketing Sources CSV Export', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id], report_type: 'source_export'}, format: :csv), class: 'btn btn-xs btn-info') %>
-        <%= link_to('Marketing Expenses CSV Export', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id], report_type: 'expense_export'}, format: :csv), class: 'btn btn-xs btn-info') %>
-        <%= link_to('Ad Spend Report', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id]}), class: 'btn btn-xs btn-info') %>
-      </div>
+
+<% if @marketing_sources.empty? %>
+  <div class="row">
+    <div class="col-md-12">
+      <% if policy(MarketingSource).new? %>
+        <%= link_to 'Add a Marketing Source', new_marketing_source_path, class: "btn btn-sm btn-primary"  %>
+      <% end %>
     </div>
-  <% end if policy(MarketingSource).select_property?%>
+  </div>
+<% end %>
 
-
-  <% if @marketing_sources.empty? %>
-    <div class="row">
-      <div class="col-md-12">
-        <% if policy(MarketingSource).new? %>
-          <%= link_to 'Add a Marketing Source', new_marketing_source_path, class: "btn btn-sm btn-primary"  %>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
-  <% @marketing_sources.group_by{|s| s.property.name }.each do |property_name, marketing_sources| %>
-    <% property = Property.where(name: property_name).first %>
-    <div class="row">
-      <div class="col-xs-12 col-md-3">
-        <h2><%= property_name %></h2>
-        <% if policy(MarketingSource).new? %>
-          <%= link_to 'Add a Marketing Source', new_marketing_source_path(property_id: marketing_sources.first&.property_id), class: "btn btn-sm btn-primary"  %>
-        <% end %>
-        <br/><br/>
-        <div class="row well well-sm">
-          <div class="col-md-12 col-xs-6">
-            <table class="marketing_source--stats--table">
-              <tbody>
-                <tr>
-                  <td>Total Spend:</td>
-                  <td> <%= number_to_currency(MarketingSource.total_spend(property)) %></td>
-                </tr>
-                <tr>
-                  <td>Spend YTD:</td>
-                 <td><%= number_to_currency(MarketingSource.total_spend_ytd(property)) %></td>
-                </tr>
-                <tr>
-                  <td>Per Lead:</td>
-                  <td><%= number_to_currency(MarketingSource.spend_per_lead(property)) %></td>
-                </tr>
-                <tr>
-                  <td>Per Conversion:</td>
-                 <td><%= number_to_currency(MarketingSource.spend_per_conversion(property)) %></td>
-                </tr>
-                <tr>
-                  <td>Total Leads:</td>
-                  <td><%= MarketingSource.total_leads(property) %></td>
-                </tr>
-                <tr>
-                  <td>Leads YTD:</td>
-                 <td><%= MarketingSource.total_leads_ytd(property) %></td>
-                </tr>
-                <tr>
-                  <td>Conversions:</td>
-                  <td><%= MarketingSource.total_conversions(property) %></td>
-                </tr>
-                <tr>
-                  <td>Conversions YTD:</td>
-                  <td><%= MarketingSource.total_conversions_ytd(property) %></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+<% @marketing_sources.group_by{|s| s.property.name }.each do |property_name, marketing_sources| %>
+  <% property = Property.where(name: property_name).first %>
+  <div class="row">
+    <div class="col-xs-12 col-md-3">
+      <h2><%= property_name %></h2>
+      <% if policy(MarketingSource).new? %>
+        <%= link_to 'Add a Marketing Source', new_marketing_source_path(property_id: marketing_sources.first&.property_id), class: "btn btn-sm btn-primary"  %>
+      <% end %>
+      <br/><br/>
+      <div class="row well well-sm">
+        <div class="col-md-12 col-xs-6">
+          <table class="marketing_source--stats--table">
+            <tbody>
+              <tr>
+                <td>Total Spend:</td>
+                <td> <%= number_to_currency(MarketingSource.total_spend(property)) %></td>
+              </tr>
+              <tr>
+                <td>Spend YTD:</td>
+               <td><%= number_to_currency(MarketingSource.total_spend_ytd(property)) %></td>
+              </tr>
+              <tr>
+                <td>Per Lead:</td>
+                <td><%= number_to_currency(MarketingSource.spend_per_lead(property)) %></td>
+              </tr>
+              <tr>
+                <td>Per Conversion:</td>
+               <td><%= number_to_currency(MarketingSource.spend_per_conversion(property)) %></td>
+              </tr>
+              <tr>
+                <td>Total Leads:</td>
+                <td><%= MarketingSource.total_leads(property) %></td>
+              </tr>
+              <tr>
+                <td>Leads YTD:</td>
+               <td><%= MarketingSource.total_leads_ytd(property) %></td>
+              </tr>
+              <tr>
+                <td>Conversions:</td>
+                <td><%= MarketingSource.total_conversions(property) %></td>
+              </tr>
+              <tr>
+                <td>Conversions YTD:</td>
+                <td><%= MarketingSource.total_conversions_ytd(property) %></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="col-xs-12 col-md-9">
-        <%= render partial: 'marketing_source', collection: marketing_sources %>
-      </div>
     </div>
-  <% end %>
-</div>
+    <div class="col-xs-12 col-md-9">
+      <%= render partial: 'marketing_source', collection: marketing_sources %>
+    </div>
+  </div>
+<% end %>

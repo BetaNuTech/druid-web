@@ -1,186 +1,184 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="row">
-        <div class="col-md-6">
-          <h1>Unit: <%= @unit.unit %></h1>
-        </div>
-      </div>
-
-      <section>
-        <h2>Property Information</h2>
-        <div class="row">
-          <div class="col-md-12">
-            <p>
-              <strong>Property:</strong>
-              <%= link_to(@unit.property_name, property_path(@unit.property)) %>
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <p>
-              <strong>Current Resident(s):</strong>
-              <% if @unit.current_residents.any? %>
-                <ul>
-                  <% @unit.current_residents.each do |resident| %>
-                    <li>
-                      <%= link_to(resident.name, property_resident_path(@unit.property, resident)) %>
-                    </li>
-                  <% end %>
-                </ul>
-              <% else %>
-                <strong>None</strong>
-              <% end %>
-            </p>
-            <p>
-              <strong>Former Resident(s):</strong>
-              <% if @unit.former_residents.any? %>
-                <ul>
-                  <% @unit.former_residents.each do |resident| %>
-                    <li>
-                      <%= link_to(resident.name, property_resident_path(@unit.property, resident)) %>
-                    </li>
-                  <% end %>
-                </ul>
-              <% else %>
-                <strong>None</strong>
-              <% end %>
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-3">
-            <p>
-              <strong>Rental Type:</strong>
-              <%= @unit.rental_type_name %>
-            </p>
-          </div>
-          <div class="col-md-4">
-            <p>
-              <strong>Unit Type:</strong>
-              <%= @unit.unit_type_name %>
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <p>
-              <strong>Model Unit?:</strong>
-              <%= @unit.model? ? 'Yes' : 'No' %>
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <strong>Unit:</strong>
-            <%= @unit.unit %>
-          </div>
-          <div class="col-md-4">
-            <strong>Remote ID:</strong>
-            <%= @unit.remoteid || 'None' %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-2">
-            <strong>Floor:</strong>
-            <%= @unit.floor %>
-          </div>
-          <div class="col-md-2">
-            <strong>Sqft:</strong>
-            <%= @unit.sqft %>
-          </div>
-          <div class="col-md-2">
-            <strong>Bedrooms:</strong>
-            <%= @unit.bedrooms %>
-          </div>
-          <div class="col-md-2">
-            <strong>Bathrooms:</strong>
-            <%= @unit.bathrooms %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-2">
-            <strong>Occupancy</strong>
-            <%= @unit.occupancy %>
-          </div>
-          <div class="col-md-2">
-            <strong>Lease Status</strong>
-            <%= @unit.lease_status %>
-          </div>
-          <div class="col-md-2">
-            <strong>Available On</strong>
-            <%= @unit.available_on %>
-          </div>
-          <div class="col-md-2">
-            <strong>Market Rent</strong>
-            <%= @unit.market_rent %>
-          </div>
-        </div>
-      </section>
-
-
-      <section>
-        <h2>Address</h2>
-
-        <div class="row">
-          <div class="col-md-6">
-            <p>
-              <strong>Address1:</strong>
-              <%= @unit.address1 %>
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <p>
-              <strong>Address2:</strong>
-              <%= @unit.address2 %>
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <p>
-              <strong>City:</strong>
-              <%= @unit.city %>
-            </p>
-          </div>
-          <div class="col-md-2">
-            <p>
-              <strong>State:</strong>
-              <%= @unit.state %>
-            </p>
-          </div>
-          <div class="col-md-2">
-            <p>
-              <strong>Zip:</strong>
-              <%= @unit.zip %>
-            </p>
-          </div>
-          <div class="col-md-2">
-            <p>
-              <strong>Country:</strong>
-              <%= @unit.country %>
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <%= link_to 'Edit', edit_property_unit_path(@unit.property, @unit), class: 'btn btn-sm btn-primary' %>
-            <%= link_to 'Back', :back, class: 'btn btn-xs btn-info' %>
-          </div>
-        </div>
-
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Unit: <%= @unit.unit %></h1>
       </div>
     </div>
-</div>
+
+    <section>
+      <h2>Property Information</h2>
+      <div class="row">
+        <div class="col-md-12">
+          <p>
+            <strong>Property:</strong>
+            <%= link_to(@unit.property_name, property_path(@unit.property)) %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Current Resident(s):</strong>
+            <% if @unit.current_residents.any? %>
+              <ul>
+                <% @unit.current_residents.each do |resident| %>
+                  <li>
+                    <%= link_to(resident.name, property_resident_path(@unit.property, resident)) %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <strong>None</strong>
+            <% end %>
+          </p>
+          <p>
+            <strong>Former Resident(s):</strong>
+            <% if @unit.former_residents.any? %>
+              <ul>
+                <% @unit.former_residents.each do |resident| %>
+                  <li>
+                    <%= link_to(resident.name, property_resident_path(@unit.property, resident)) %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <strong>None</strong>
+            <% end %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <p>
+            <strong>Rental Type:</strong>
+            <%= @unit.rental_type_name %>
+          </p>
+        </div>
+        <div class="col-md-4">
+          <p>
+            <strong>Unit Type:</strong>
+            <%= @unit.unit_type_name %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Model Unit?:</strong>
+            <%= @unit.model? ? 'Yes' : 'No' %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <strong>Unit:</strong>
+          <%= @unit.unit %>
+        </div>
+        <div class="col-md-4">
+          <strong>Remote ID:</strong>
+          <%= @unit.remoteid || 'None' %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <strong>Floor:</strong>
+          <%= @unit.floor %>
+        </div>
+        <div class="col-md-2">
+          <strong>Sqft:</strong>
+          <%= @unit.sqft %>
+        </div>
+        <div class="col-md-2">
+          <strong>Bedrooms:</strong>
+          <%= @unit.bedrooms %>
+        </div>
+        <div class="col-md-2">
+          <strong>Bathrooms:</strong>
+          <%= @unit.bathrooms %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <strong>Occupancy</strong>
+          <%= @unit.occupancy %>
+        </div>
+        <div class="col-md-2">
+          <strong>Lease Status</strong>
+          <%= @unit.lease_status %>
+        </div>
+        <div class="col-md-2">
+          <strong>Available On</strong>
+          <%= @unit.available_on %>
+        </div>
+        <div class="col-md-2">
+          <strong>Market Rent</strong>
+          <%= @unit.market_rent %>
+        </div>
+      </div>
+    </section>
+
+
+    <section>
+      <h2>Address</h2>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Address1:</strong>
+            <%= @unit.address1 %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Address2:</strong>
+            <%= @unit.address2 %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <p>
+            <strong>City:</strong>
+            <%= @unit.city %>
+          </p>
+        </div>
+        <div class="col-md-2">
+          <p>
+            <strong>State:</strong>
+            <%= @unit.state %>
+          </p>
+        </div>
+        <div class="col-md-2">
+          <p>
+            <strong>Zip:</strong>
+            <%= @unit.zip %>
+          </p>
+        </div>
+        <div class="col-md-2">
+          <p>
+            <strong>Country:</strong>
+            <%= @unit.country %>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <%= link_to 'Edit', edit_property_unit_path(@unit.property, @unit), class: 'btn btn-sm btn-primary' %>
+          <%= link_to 'Back', :back, class: 'btn btn-xs btn-info' %>
+        </div>
+      </div>
+
+    </div>
+  </div>

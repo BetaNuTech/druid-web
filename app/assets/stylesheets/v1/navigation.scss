@@ -1,0 +1,190 @@
+$header-height: 50px;
+$sidebar-gray: #555;
+$content-gray: #F0F0F0;
+$profile-image-height: 50px;
+
+#content {
+  padding-top: $header-height;
+}
+
+#viewcontent {
+  padding-top: 5px;
+}
+
+#headerrow {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  width: 100%;
+  z-index: 1000;
+}
+
+.appname {
+  background: url('/bluesky-header.svg');
+  background-color: #133D6B;
+  background-repeat: no-repeat;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16pt;
+  text-transform: uppercase;
+  height: $header-height;
+  padding: 16px 0 0 25px;
+
+  .part-1 {
+    letter-spacing: 6px;
+    font-weight: bold;
+  }
+  .part-2 {
+    letter-spacing: 4px;
+    font-weight: lighter;
+  }
+}
+
+div#sidebar {
+  // Fixed position WIP //
+  position: fixed;
+  z-index: 1000;
+  width: 230px;
+  height: 100%;
+  top: 50px;
+  padding-bottom: 50px;
+  bottom: 0;
+  overflow-y: auto;
+  padding-top: 5px;
+  left: 0px;
+  background: white;
+  // Fixed>
+
+  display: flex;
+  flex-direction: column;
+  color: $sidebar-gray;
+
+  a { color: $sidebar-gray; }
+
+  .sidebar--header {
+    text-transform: uppercase;
+    letter-spacing: 0px;
+    font-size: 0.9em;
+    margin-top: 5px;
+    border-top: 2px solid $content-gray;
+    padding-top: 10px;
+    padding-left: 15px;
+  }
+
+  .sidebar--item {
+    padding: 5px 10px 5px 18px;
+    line-height: 30px;
+    height: 35px;
+  }
+
+  .sidebar--item:hover, .sidebar--item--active {
+    background: $content-gray;
+    font-weight: bold;
+  }
+
+  .sidebar--item a:hover { text-decoration: none !important; }
+  .sidebar--item a:hover .sidbar--item-content { font-weight: bold;}
+
+  .sidebar--item img {
+    height: 25px;
+    width: 25px;
+  }
+  .sidebar--item-content {
+    display: inline-block;
+    line-height: 25px;
+    padding-left: 5px;
+    font-size: 14px;
+  }
+
+
+  .sidebar--item-alert {
+    color: red;
+    display: block;
+    float: right;
+  }
+
+  #sidebar--top-actions {
+    width: auto;
+    margin: 10px auto 0 auto;
+
+    .sidebar--action-button {
+      width: 75px;
+      height: 65px;
+      float: left;
+      text-align: center;
+
+      .sidebar--action-button--icon {
+        width: 40px;
+        height: 40px;
+        margin: auto;
+        padding-left: 6px;
+        padding-top: 5px;
+        font-size: 25px;
+        background-color: $content-gray;
+        border-radius: 6px;
+        border: 1px solid $sidebar-gray;
+      }
+
+      .sidebar--action-button--label {
+        display: inline-block;
+        font-size: 10px;
+      }
+
+    }
+
+    .sidebar--action-button:hover .sidebar--action-button--label {
+        font-weight: bold;
+    }
+
+  }
+}
+
+#sidebar--account-controls {
+  margin-top: 10px;
+  border-top: 2px solid $content-gray;
+  border-bottom: 2px solid $content-gray;
+  height: 145px;
+  width: auto;
+  text-align: center;
+
+  .sidebar--account-controls--buttons {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .sidebar--account-controls--button {
+    height: 25px;
+    width: 25px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar--account-controls--username {
+    font-size: 10px;
+  }
+
+  .sidebar--account-controls--profile {
+    border: 1px solid $content-gray;
+    border-radius: 50%;
+    height: $profile-image-height;
+    width: $profile-image-height;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar--account-controls--profile img {
+    border-radius: 50%;
+    height: $profile-image-height;
+    width: $profile-image-height;
+  }
+
+
+  .toggle_setting--button {
+    padding-right: 5px;
+  }
+}

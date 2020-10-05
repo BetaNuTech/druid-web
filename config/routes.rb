@@ -17,6 +17,8 @@ Rails.application.routes.draw do
 
   root to: redirect('/users/sign_in')
 
+  get 'v2', to: 'home#design2'
+
   namespace :api do
     namespace :v1 do
       get 'docs/swagger.:format', to: "swagger#index"

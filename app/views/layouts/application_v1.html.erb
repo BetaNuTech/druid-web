@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= render partial: "shared/html_head" %>
+    <title><%= @page_title || 'Bluesky' %></title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'designv1', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body<%- if @webpack %> data-no-turbolink data-no-transition-cache<% end %>>
+    <div id="app_layout" class="container">
+      <div id="headerrow">
+        <div class="appname">
+          <span id="nav-hamburger" class="hamburger hidden visible-xs visible-sm">
+              <svg viewBox="0 0 100 80" width="20" height="20">
+                <rect width="100" height="15" style="fill:rgb(201,208,216)"></rect>
+                <rect y="30" width="100" height="15" style="fill:rgb(201,208,216)"></rect>
+                <rect y="60" width="100" height="15" style="fill:rgb(201,208,216)"></rect>
+              </svg>
+          </span>
+        </div>
+      </div>
+      <div id="content" class="row">
+        <div class="hidden-xs hidden-sm col-md-3" style="padding-right: 0;">
+          <%= render partial: 'shared/navbar_v1' %>
+        </div>
+        <div id="viewcontent" class="col-sm-9">
+          <%= render partial: 'shared/notifications' %>
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      <%= render partial: 'shared/enabled_features' if policy(User).manage_features? %>
+      <%= render partial: 'shared/footer' %>
+    </div>
+    <% if defined?(@webpack) %>
+      <% Array(@webpack).each do |pack| %>
+        <%= javascript_pack_tag pack %>
+        <%= stylesheet_pack_tag pack %>
+      <% end %>
+    <% end %>
+    <%= render partial: 'shared/browser_check' %>
+    <%= render partial: 'shared/tracking' unless Rails.env.test? %>
+  </body>
+</html>

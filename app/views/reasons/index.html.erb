@@ -1,50 +1,39 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Reasons</h1>
-      <h4>Lead Action and Other Reasons</h4>
-    </div>
-    <% if policy(Reason).new? %>
-      <div class="col-md-6 text-right">
-        <%= glyph(:create) %>
-        <%= link_to 'create new reason', new_reason_path %>
-      </div>
-    <% end %>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Reasons</h1>
+    <h4>Lead Action and Other Reasons</h4>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-        <thead>
+  <% if policy(Reason).new? %>
+    <div class="col-md-6 text-right">
+      <%= link_to 'Create New Reason', new_reason_path, class: 'btn btn-sm btn-primary' %>
+    </div>
+  <% end %>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Active?</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reasons.each do |reason| %>
           <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Active?</th>
-            <th>Actions</th>
+            <td class="first-column"><%= reason.name %></td>
+            <td><%= reason.description %></td>
+            <td><%= reason.active ? "Yes" : "No" %></td>
+            <td>
+              <%= model_link_with_tooltip(reason, :show) %>&nbsp;
+              <%= model_link_with_tooltip(reason, :edit) %>&nbsp;
+              <%= model_link_with_tooltip(reason, :destroy) %>&nbsp;
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% @reasons.each do |reason| %>
-            <tr>
-              <td class="first-column"><%= reason.name %></td>
-              <td><%= reason.description %></td>
-              <td><%= reason.active ? "Yes" : "No" %></td>
-              <td>
-                <%= model_link_with_tooltip(reason, :show) %>&nbsp;
-                <%= model_link_with_tooltip(reason, :edit) %>&nbsp;
-                <%= model_link_with_tooltip(reason, :destroy) %>&nbsp;
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="row">
-    <% if policy(Reason).new? %>
-      <div class="col-md-12 text-right">
-        <%= glyph(:create) %>
-        <%= link_to 'Create New Reason', new_reason_path %>
-      </div>
-    <% end %>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>

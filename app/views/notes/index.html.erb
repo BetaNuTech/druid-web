@@ -1,76 +1,74 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Events/Notes Calendar</h1>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Events/Notes Calendar</h1>
+  </div>
+  <% if policy(Note).new? %>
+    <div class="col-md-6 text-right">
+      <%= glyph(:create) %>
+      <%= link_to "Create New Note", new_note_path %>
     </div>
-    <% if policy(Note).new? %>
-      <div class="col-md-6 text-right">
-        <%= glyph(:create) %>
-        <%= link_to "Create New Note", new_note_path %>
-      </div>
+  <% end %>
+</div>
+<div class="row">
+  <div class=col-md-12"">
+    <%= month_calendar events: @notes do |date, notes| %>
+      <%= date.day %><br/>
+      <% notes.each do |note| %>
+        <div class="note_calendar_entry">
+          <%= link_to note_path(note), title: note.content do %>
+            <span class="note_calendar_note_action">
+              <%= note.lead_action.try(:name) %>:
+            </span><br/>
+            <span class="note_calendar_note_subject">
+              <%= note.notable_subject(current_user) %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
     <% end %>
   </div>
-  <div class="row">
-    <div class=col-md-12"">
-      <%= month_calendar events: @notes do |date, notes| %>
-        <%= date.day %><br/>
-        <% notes.each do |note| %>
-          <div class="note_calendar_entry">
-            <%= link_to note_path(note), title: note.content do %>
-              <span class="note_calendar_note_action">
-                <%= note.lead_action.try(:name) %>:
-              </span><br/>
-              <span class="note_calendar_note_subject">
-                <%= note.notable_subject(current_user) %>
-              </span>
-            <% end %>
-          </div>
-        <% end %>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Upcoming</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <%= render partial: "notes", locals: { notes: @notes.upcoming } %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Previous</h3>
+      </div>
+      <% unless @limit_set %>
+        <div class="col-md-6 text-right" style="position: relative; top: 2em;">
+          <%= link_to(notes_path(limit: 999, start_date: @start_date)) do %>
+            <span class="btn btn-xs btn-info">View All</span>
+          <% end %>
+        </div>
       <% end %>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="row">
-        <div class="col-md-6">
-          <h3>Upcoming</h3>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <%= render partial: "notes", locals: { notes: @notes.upcoming } %>
-        </div>
+    <div class="row">
+      <div class="col-md-12">
+        <%= render partial: "notes", locals: { notes: @notes.previous } %>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="row">
-        <div class="col-md-6">
-          <h3>Previous</h3>
-        </div>
-        <% unless @limit_set %>
-          <div class="col-md-6 text-right" style="position: relative; top: 2em;">
-            <%= link_to(notes_path(limit: 999, start_date: @start_date)) do %>
-              <span class="btn btn-xs btn-info">View All</span>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <%= render partial: "notes", locals: { notes: @notes.previous } %>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <% if policy(Note).new? %>
-      <div class="col-md-12 text-right">
-        <%= glyph(:create) %>
-        <%= link_to "Create New Note", new_note_path %>
-      </div>
-    <% end %>
-  </div>
-
 </div>
+<div class="row">
+  <% if policy(Note).new? %>
+    <div class="col-md-12 text-right">
+      <%= glyph(:create) %>
+      <%= link_to "Create New Note", new_note_path %>
+    </div>
+  <% end %>
+</div>
+

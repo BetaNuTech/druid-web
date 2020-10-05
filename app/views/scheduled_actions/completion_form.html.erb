@@ -1,20 +1,18 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Reviewing Task</h2>
-      <%= render partial: "summary", locals: { scheduled_action: @scheduled_action} %>
-      <% if @scheduled_action.is_completed? %>
-        <p class="text-right">
-          <%= link_to("Restore", complete_scheduled_action_path(id: @scheduled_action.id, event: 'restore'), { method: :post , class: "btn btn-warning"}) %>
-        </p>
-      <% else %>
-        <%= render 'completion_form', note: @scheduled_action %>
-      <% end %>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <h2>Reviewing Task</h2>
+    <%= render partial: "summary", locals: { scheduled_action: @scheduled_action} %>
+    <% if @scheduled_action.is_completed? %>
+      <p class="text-right">
+        <%= link_to("Restore", complete_scheduled_action_path(id: @scheduled_action.id, event: 'restore'), { method: :post , class: "btn btn-warning"}) %>
+      </p>
+    <% else %>
+      <%= render 'completion_form', note: @scheduled_action %>
+    <% end %>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to('Back', url_for(@scheduled_action.target), class: "btn btn-sm btn-info") %>
-    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <%= link_to('Back', url_for(@scheduled_action.target), class: "btn btn-sm btn-info") %>
   </div>
 </div>

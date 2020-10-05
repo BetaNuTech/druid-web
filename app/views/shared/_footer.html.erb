@@ -2,7 +2,10 @@
   <div class="container">
     <%= render partial: 'shared/impersonation' %>
     <p class="text-muted">
-      Bluesky Lead Management &copy; 2018-<%= Date.today.year %> Bluestone Properties (v.<%= BlueskyWeb::VERSION %>)
+      <span id="copyright_notice">
+        Bluesky Lead Management &copy; 2018-<%= Date.today.year %> Bluestone Properties
+        (<span id="bluesky_version">v.<%= BlueskyWeb::VERSION %></span>)
+      </span>
       &nbsp;
       &nbsp;
       <%= render partial: 'shared/appsettings' %>

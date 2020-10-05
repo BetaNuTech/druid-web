@@ -1,13 +1,11 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1>Edit Note</h1>
-      <%= render 'form', note: @note %>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <h1>Edit Note</h1>
+    <%= render 'form', note: @note %>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to('Back', url_for(@note.notable), class: "btn btn-sm btn-info") %>
-    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <%= link_to('Back', url_for(@note.notable), class: "btn btn-sm btn-info") %>
   </div>
 </div>

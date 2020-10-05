@@ -1,1 +1,252 @@
-_navbar_v0.html.erb
+<div id="sidebar">
+  <div id="sidebar--top-actions">
+    <div class="sidebar--action-button">
+      <%= link_to(custom_new_leads_path(entry: 'walkin')) do %>
+        <%= image_tag('/icons/walkin.svg') %>
+        <span class="sidebar--action-button--label">New Walk-In</span>
+      <% end %>
+    </div>
+    <div class="sidebar--action-button">
+      <%= link_to(new_scheduled_action_path) do %>
+        <%= image_tag('/icons/new_task.svg') %>
+        <span class="sidebar--action-button--label">New Task</span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="sidebar--header"> </div>
+  <div class="sidebar--item-group">
+    <div class="sidebar--item <%= nav_item_class(:home) %>">
+      <%= link_to(root_path) do %>
+        <%= image_tag('/icons/home.svg') %>
+        <span class="sidebar--item-content">Home</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item <%= nav_item_class(:messages) %>">
+      <%= link_to(messages_path) do %>
+        <%= image_tag('/icons/messages.svg') %>
+        <span class="sidebar--item-content">Messages</span>
+      <% end %>
+      <% if current_user.messages.unread.where.not(state: 'draft').any? %>
+        <span class="sidebar--item-alert">&#9679;</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item <%= nav_item_class(:scheduled_actions) %>">
+      <%= link_to(scheduled_actions_path) do %>
+        <%= image_tag('/icons/calendar.svg') %>
+        <span class="sidebar--item-content">Calendar</span>
+      <% end %>
+      <% if current_user.messages.unread.where.not(state: 'draft').any? %>
+        <span class="sidebar--item-alert">&#9679;</span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="sidebar--header">
+    Leads
+  </div>
+  <div class="sidebar--item-group">
+    <div class="sidebar--item <%= nav_item_class(:leads, :search) %>">
+      <%= link_to(search_leads_path(lead_search: {states: ['open']})) do %>
+        <%= image_tag('/icons/open_folder.svg') %>
+        <span class="sidebar--item-content">Open</span>
+      <% end %>
+      <% if (@property || @current_property).leads.open.any? %>
+        <span class="sidebar--item-alert">&#9679;</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item <%= nav_item_class(:leads, :search) %>">
+      <%= link_to(search_leads_path(lead_search: {user_ids: [current_user.id], states: Lead::IN_PROGRESS_STATES})) do %>
+        <%= image_tag('/icons/star.svg') %>
+        <span class="sidebar--item-content">Mine</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item <%= nav_item_class(:leads, :search) %>">
+      <%= link_to(search_leads_path) do %>
+        <%= image_tag('/icons/magnifying_glass.svg') %>
+        <span class="sidebar--item-content">All</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item <%= nav_item_class(:leads, :search) %>">
+      <%= link_to(search_leads_path(lead_search: {states: ['waitlist']})) do %>
+        <%= image_tag('/icons/hourglass.svg') %>
+        <span class="sidebar--item-content">Waitlist</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item <%= nav_item_class(:leads, :mass_assignment) %>">
+      <%= link_to(mass_assignment_leads_path) do %>
+        <%= image_tag('/icons/pencil_assign.svg') %>
+        <span class="sidebar--item-content">Assign Leads</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item <%= nav_item_class(:stats, :manager) %>">
+      <%= link_to(stats_manager_path(filter: true, date_range: [ 'month' ], property_ids: [ @current_property&.id ])) do %>
+        <%= image_tag('/icons/chart.svg') %>
+        <span class="sidebar--item-content">Analytics</span>
+      <% end %>
+    </div>
+  </div>
+
+
+  <div class="sidebar--header">Property</div>
+  <div class="sidebar--item-group">
+    <% if policy(@property || @current_property).show? %>
+      <div class="sidebar--item <%= nav_item_class(:properties, :show) %>">
+        <%= link_to(property_path(@property || @current_property)) do %>
+          <%= image_tag('/icons/building.svg') %>
+          <span class="sidebar--item-content">This Property</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(Property).index? %>
+      <div class="sidebar--item <%= nav_item_class(:properties, :index) %>">
+        <%= link_to(properties_path) do %>
+          <%= image_tag('/icons/buildings.svg') %>
+          <span class="sidebar--item-content">All Properties</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(Unit).index? %>
+      <div class="sidebar--item <%= nav_item_class(:units) %>">
+        <%= link_to(units_path) do %>
+          <%= image_tag('/icons/units.svg') %>
+          <span class="sidebar--item-content">Units</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(UnitType).index? %>
+      <div class="sidebar--item <%= nav_item_class(:unit_types) %>">
+        <%= link_to(unit_types_path) do %>
+          <%= image_tag('/icons/unit_types.svg') %>
+          <span class="sidebar--item-content">Unit Types</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(MarketingSource).index? %>
+      <div class="sidebar--item <%= nav_item_class(:marketing_sources) %>">
+        <%= link_to(marketing_sources_path) do %>
+          <%= image_tag('/icons/marketing.svg') %>
+          <span class="sidebar--item-content">Marketing</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(Team).index? %>
+      <div class="sidebar--item <%= nav_item_class(:teams) %>">
+        <%= link_to(teams_path) do %>
+          <%= image_tag('/icons/teams.svg') %>
+          <span class="sidebar--item-content">Teams</span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="sidebar--header">Manage</div>
+  <div class="sidebar--item-group">
+    <% if policy(User).index? %>
+      <div class="sidebar--item <%= nav_item_class(:users, :index) %>">
+        <%= link_to(users_path) do %>
+          <%= image_tag('/icons/users.svg') %>
+          <span class="sidebar--item-content">Users</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(Role).index? %>
+      <div class="sidebar--item <%= nav_item_class(:roles) %>">
+        <%= link_to(roles_path) do %>
+          <%= image_tag('/icons/user_roles.svg') %>
+          <span class="sidebar--item-content">User Roles</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(EngagementPolicy).index? %>
+      <div class="sidebar--item <%= nav_item_class(:engagement_policies) %>">
+        <%= link_to(engagement_policies_path) do %>
+          <%= image_tag('/icons/engagement.svg') %>
+          <span class="sidebar--item-content">Policies</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(LeadSource).index? %>
+      <div class="sidebar--item <%= nav_item_class(:lead_sources) %>">
+        <%= link_to(lead_sources_path) do %>
+          <%= image_tag('/icons/lead_sources.svg') %>
+          <span class="sidebar--item-content">Lead Sources</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(LeadReferralSource).edit? %>
+      <div class="sidebar--item <%= nav_item_class(:lead_referral_sources) %>">
+        <%= link_to(lead_referral_sources_path) do %>
+          <%= image_tag('/icons/referral_sources.svg') %>
+          <span class="sidebar--item-content">Referral Sources</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(LeadAction).index? %>
+      <div class="sidebar--item <%= nav_item_class(:lead_actions) %>">
+        <%= link_to(lead_actions_path) do %>
+          <%= image_tag('/icons/lead_actions.svg') %>
+          <span class="sidebar--item-content">Lead Actions</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(Reason).index? %>
+      <div class="sidebar--item <%= nav_item_class(:reasons) %>">
+        <%= link_to(reasons_path) do %>
+          <%= image_tag('/icons/reasons.svg') %>
+          <span class="sidebar--item-content">Reasons</span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if policy(MessageTemplate).index? %>
+      <div class="sidebar--item <%= nav_item_class(:message_templates) %>">
+        <%= link_to(message_templates_path) do %>
+          <%= image_tag('/icons/templates.svg') %>
+          <span class="sidebar--item-content">Templates</span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="sidebar--header"></div>
+  <div class="sidebar--item-group">
+    <div class="sidebar--item <%= nav_item_class(:articles) %>">
+      <%= link_to(current_page_help_path, method: :get) do %>
+        <%= image_tag('/icons/help.svg') %>
+        <span class="sidebar--item-content">Help</span>
+      <% end %>
+    </div>
+    <div class="sidebar--item">
+      <%= link_to(destroy_user_session_path, method: :delete) do %>
+        <%= image_tag('/icons/logout.svg') %>
+        <span class="sidebar--item-content">Logout</span>
+      <% end %>
+    </div>
+  </div>
+
+  <div id="sidebar--account-controls">
+    <div class="sidebar--account-controls--buttons">
+      <div class="sidebar--account-controls--button">
+        <%= link_to(edit_user_path(current_user), method: :get) do %>
+        <%= image_tag('/icons/gear.svg') %>
+        <% end %>
+      </div>
+      <div class="sidebar--account-controls--button sidebar--account-controls--profile">
+        <% if @current_user&.profile&.photo.present? %>
+          <%= image_tag(@current_user.profile.photo.variant(resize: "50x50"), alt: "#{@current_user.name || 'User'} photo" )%>
+        <% else %>
+          <%= @current_user.initials %>
+        <% end %>
+      </div>
+      <div class="sidebar--account-controls--button" style="padding-left: 20px;">
+        <%= render partial: 'shared/appsettings' %>
+      </div>
+    </div>
+    <span class="sidebar--account-controls--username">
+      <%= @current_user.email %>
+    </span>
+    <br/>
+    <%= image_tag('bluestone-logo.svg') %>
+  </div>
+</div>
+

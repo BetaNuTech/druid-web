@@ -1,15 +1,13 @@
-<div class="container">
+<div class="row">
+  <div class="col-md-12">
+    <h1>Edit Marketing Expense for <%= @marketing_expense&.marketing_source&.name %></h1>
+    <%= render partial: 'form', locals: {marketing_expense: @marketing_expense } %>
+  </div>
+</div>
+<% if policy(@marketing_expense).destroy? %>
   <div class="row">
-    <div class="col-md-12">
-      <h1>Edit Marketing Expense for <%= @marketing_expense&.marketing_source&.name %></h1>
-      <%= render partial: 'form', locals: {marketing_expense: @marketing_expense } %>
+    <div class="col-md-offset-10 col-md-2">
+      <%= link_to('Delete', marketing_source_marketing_expense_path([@marketing_expense.marketing_source, @marketing_expense ]), method: :delete, class: 'btn btn-danger', data: {confirm: 'Are you sure?'}) %>
     </div>
   </div>
-  <% if policy(@marketing_expense).destroy? %>
-    <div class="row">
-      <div class="col-md-offset-10 col-md-2">
-        <%= link_to('Delete', marketing_source_marketing_expense_path([@marketing_expense.marketing_source, @marketing_expense ]), method: :delete, class: 'btn btn-danger', data: {confirm: 'Are you sure?'}) %>
-      </div>
-    </div>
-  <% end %>
-</div>
+<% end %>

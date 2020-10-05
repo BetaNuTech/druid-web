@@ -1,85 +1,82 @@
-<div class="container">
+<div class="row">
+  <div class="col-md-12">
+    <h1>Assign Open Leads for <%= @property.name %></h1>
+  </div>
+</div>
+
+<% if @assigner.processed %>
   <div class="row">
-    <div class="col-md-12">
-      <h1>Assign Open Leads for <%= @property.name %></h1>
+    <div class="col-md-12 bg-success">
+      <h3>Assigned <%= @assigner.last_assignments.count %> Leads</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Lead Name</th>
+            <th>First Contact</th>
+            <th>Referrer</th>
+            <th>Property</th>
+            <th>Agent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @assigner.last_assignments.each do |assignment| %>
+            <tr>
+              <td><%= link_to(assignment.lead&.name,lead_path(assignment.lead), target: '_blank') %></td>
+              <td><%= short_datetime assignment.lead&.first_comm %></td>
+              <td><%= assignment.lead&.referral %></td>
+              <td><%= assignment.lead&.property&.name %></td>
+              <td><%= assignment.lead&.agent&.name %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
+<% end %>
 
-  <% if @assigner.processed %>
-    <div class="row">
-      <div class="col-md-12 bg-success">
-        <h3>Assigned <%= @assigner.last_assignments.count %> Leads</h3>
-        <table class="table">
-          <thead>
+<%= form_tag('/leads/mass_assign') do%>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>  <%= @assigner.pending_assignment.count %> Leads are Pending Assignment  </h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Lead Name</th>
+            <th>First Contact</th>
+            <th>Referrer</th>
+            <th>Property</th>
+            <th>Agent</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% @assigner.assignments.each do |assignment| %>
             <tr>
-              <th>Lead Name</th>
-              <th>First Contact</th>
-              <th>Referrer</th>
-              <th>Property</th>
-              <th>Agent</th>
+              <td><%= link_to(assignment.lead&.name,lead_path(assignment.lead), target: '_blank') %></td>
+              <td><%= short_datetime assignment.lead&.first_comm %></td>
+              <td><%= assignment.lead&.referral %></td>
+              <td><%= assignment.lead&.property&.name %></td>
+              <td>
+                <%= hidden_field_tag "assignments[][lead_id]", assignment.lead&.id %>
+                <%= select_tag "assignments[][agent_id]",
+                  options_from_collection_for_select(assignment.assignable_agents, 'id', 'name', assignment.agent&.id),
+                  {include_blank: true, class: "lead_assignment-agent-selector"} %>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            <% @assigner.last_assignments.each do |assignment| %>
-              <tr>
-                <td><%= link_to(assignment.lead&.name,lead_path(assignment.lead), target: '_blank') %></td>
-                <td><%= short_datetime assignment.lead&.first_comm %></td>
-                <td><%= assignment.lead&.referral %></td>
-                <td><%= assignment.lead&.property&.name %></td>
-                <td><%= assignment.lead&.agent&.name %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+          <% end %>
+        </tbody>
+      </table>
     </div>
-  <% end %>
-
-  <%= form_tag('/leads/mass_assign') do%>
-    <div class="row">
-      <div class="col-md-12">
-        <h3>  <%= @assigner.pending_assignment.count %> Leads are Pending Assignment  </h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Lead Name</th>
-              <th>First Contact</th>
-              <th>Referrer</th>
-              <th>Property</th>
-              <th>Agent</th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <% @assigner.assignments.each do |assignment| %>
-              <tr>
-                <td><%= link_to(assignment.lead&.name,lead_path(assignment.lead), target: '_blank') %></td>
-                <td><%= short_datetime assignment.lead&.first_comm %></td>
-                <td><%= assignment.lead&.referral %></td>
-                <td><%= assignment.lead&.property&.name %></td>
-                <td>
-                  <%= hidden_field_tag "assignments[][lead_id]", assignment.lead&.id %>
-                  <%= select_tag "assignments[][agent_id]",
-                    options_from_collection_for_select(assignment.assignable_agents, 'id', 'name', assignment.agent&.id),
-                    {include_blank: true, class: "lead_assignment-agent-selector"} %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 lead_assigner-pagination">
+      <%= paginate @assigner.leads, params: {controller: 'leads', action: 'mass_assignment'} %>
     </div>
-    <div class="row">
-      <div class="col-md-12 lead_assigner-pagination">
-        <%= paginate @assigner.leads, params: {controller: 'leads', action: 'mass_assignment'} %>
-      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= submit_tag 'Assign Leads', class: 'btn btn-primary' %>
+      <%= link_to('Back', root_path, { class: 'btn btn-xs btn-info' }) %>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <%= submit_tag 'Assign Leads', class: 'btn btn-primary' %>
-        <%= link_to('Back', root_path, { class: 'btn btn-xs btn-info' }) %>
-      </div>
-    </div>
-  <% end %>
-
-</div>
+  </div>
+<% end %>

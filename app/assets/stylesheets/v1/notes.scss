@@ -1,0 +1,43 @@
+// Place all the styles related to the Notes controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.note_calendar_entry {
+  font-size: 0.8em;
+  line-height: 1em;
+  padding-top: 0.5em;
+}
+
+.note_calendar_note_action {
+  font-weight: bold;
+}
+
+.simple-calendar {
+  .calendar-title {
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 1em;
+  }
+}
+
+/*
+div#comments > div.note-listing-record:nth-child(even) {
+  background-color: #d9edf7;
+}
+*/
+
+div.note-even {
+  background-color: #f6f6f6;
+}
+
+.note-listing-record {
+  padding: 0.3em;
+}
+
+.note-listing-header {
+  font-style: italic;
+}
+
+.note-listing-content {
+  padding: 0.3em 0 0 0.5em;
+}

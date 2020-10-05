@@ -1,12 +1,10 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12 text-center">
-      <strong>Site Features: </strong>
-      <% UserProfile.managed_features.each do |feature| %>
-        <span class="btn btn-sm btn-<%= Flipflop.enabled?(feature) ? 'success' : 'default' %>">
-          <%= feature %>
-        </span>
-      <% end %>
-    </div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <strong>Site Features: </strong>
+    <% UserProfile.managed_features.each do |feature| %>
+      <span class="btn btn-sm btn-<%= Flipflop.enabled?(feature) ? 'success' : 'default' %>">
+        <%= feature %>
+      </span>
+    <% end %>
   </div>
 </div>

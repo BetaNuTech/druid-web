@@ -1,58 +1,54 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Units at <%= @property.name %></h1>
-    </div>
-    <% if policy(Unit).new? %>
-      <div class="col-md-6 text-right">
-        <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path), class: "btn btn-sm btn-primary"  %>
-      </div>
-    <% end %>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Units at <%= @property.name %></h1>
   </div>
-
-  <div class="row">
-    <div class"col-md-12">
-    <% unless @units.present? %>
-      <p class="lead">
-        No Units found
-      </p>
-    <% end %>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Unit</th>
-            <th>Unit Type / Floorplan</th>
-            <th>Occupancy</th>
-            <th>Availability</th>
-            <th>Size</th>
-            <th>Beds</th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @units.each do |unit| %>
-            <tr class="<%= unit_occupancy_class(unit) %>">
-              <td><%= unit.unit %> <b><%= "MODEL" if unit.model? %></b></td>
-              <td><%= unit.unit_type_name %></td>
-              <td>
-                <%= unit_occupancy_icon(unit) %>
-                <%= unit.occupancy.try(:humanize) %>:<%= unit.lease_status.try(:humanize) %>
-              </td>
-              <td><%= unit.available_on %></td>
-              <td><%= unit.sqft %> ft<sup>2</sup></td>
-              <td><%= unit.bedrooms %></td>
-              <td>
-                <%= link_to unit do %><%= glyph(:show) %><% end if policy(unit).show? %>&nbsp;
-                <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end if policy(unit).edit? %>&nbsp;
-                <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit).destroy? %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+  <% if policy(Unit).new? %>
+    <div class="col-md-6 text-right">
+      <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path), class: "btn btn-sm btn-primary"  %>
     </div>
-  </div>
+  <% end %>
 </div>
 
+<div class="row">
+  <div class"col-md-12">
+  <% unless @units.present? %>
+    <p class="lead">
+      No Units found
+    </p>
+  <% end %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Unit</th>
+          <th>Unit Type / Floorplan</th>
+          <th>Occupancy</th>
+          <th>Availability</th>
+          <th>Size</th>
+          <th>Beds</th>
+          <th></th>
+        </tr>
+      </thead>
 
+      <tbody>
+        <% @units.each do |unit| %>
+          <tr class="<%= unit_occupancy_class(unit) %>">
+            <td><%= unit.unit %> <b><%= "MODEL" if unit.model? %></b></td>
+            <td><%= unit.unit_type_name %></td>
+            <td>
+              <%= unit_occupancy_icon(unit) %>
+              <%= unit.occupancy.try(:humanize) %>:<%= unit.lease_status.try(:humanize) %>
+            </td>
+            <td><%= unit.available_on %></td>
+            <td><%= unit.sqft %> ft<sup>2</sup></td>
+            <td><%= unit.bedrooms %></td>
+            <td>
+              <%= link_to unit do %><%= glyph(:show) %><% end if policy(unit).show? %>&nbsp;
+              <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end if policy(unit).edit? %>&nbsp;
+              <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit).destroy? %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

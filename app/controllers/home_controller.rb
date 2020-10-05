@@ -12,6 +12,10 @@ class HomeController < ApplicationController
     @limit_leads = [ ( params[:limit_leads] || 5 ).to_i,  @open_leads.count ].min
   end
 
+  def design2
+    @page_title = "Bluesky Dashboardv2"
+  end
+
   def manager_dashboard
     authorize User, policy_class: HomePolicy
     @page_title = "Manager Dashboard"

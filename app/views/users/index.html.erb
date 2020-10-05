@@ -1,79 +1,77 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Users</h1>
-    </div>
-    <% if policy(User).new? %>
-      <div class="col-md-6 text-right">
-        <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" if policy(User).create? %>
-      </div>
-    <% end %>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Role and Membership</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @users.each do |user| %>
-            <tr class='<%= user.deactivated? ? 'users-deactivated' : '' %>'>
-              <td><%= user.name %></td>
-              <td>
-                <%= glyph(:email) %> <%= user.email %><br/>
-                <% if user.office_phone.present? %>
-                  <%= glyph(:phone) %> <strong>Office:</strong> <%= user.office_phone || '-' %><br/>
-                <% end %>
-                <% if user.cell_phone.present? %>
-                  <%= glyph(:phone) %> <strong>Cell:</strong> <%= user.cell_phone || '-' %><br/>
-                <% end %>
-                <% if user.fax.present? %>
-                  <%= glyph(:fax) %> <strong>Fax:</strong> <%= user.fax || '-' %><br/>
-                <% end %>
-              </td>
-              <td>
-                <% if user.deactivated? %>
-                  <b>DEACTIVATED</b><br/>
-                <% end %>
-                <b>System Role:</b> <%= user.role.try(:name) || 'None' %>
-                <ul>
-                  <% if user.team.present? %>
-                    <li>
-                      <%= user.team_title %> in Team <%= link_to(user.team.name, team_path(user.team)) %>
-                    </li>
-                  <% end %>
-                  <% user.assignments.each do |assignment| %>
-                    <li>
-                      <%= assignment.role.capitalize %> at <%= link_to(assignment.property.name, property_url(assignment.property)) %>
-                    </li>
-                  <% end %>
-                </ul>
-              </td>
-              <td>
-                <%= model_link_with_tooltip(user, :show) %>&nbsp;
-                <%= model_link_with_tooltip(user, :edit) %>&nbsp;
-                <%= model_link_with_tooltip(user, :destroy) %>&nbsp;
-                <%= tooltip_block('user-impersonate-link') do %>
-                  <%= link_to home_impersonate_path(id: user.id), method: :post, data: {confirm: "Impersonate #{user.name}?"} do %><%= glyph(:sunglasses) %><% end %>
-                <% end if policy(user).impersonate?%>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Users</h1>
   </div>
   <% if policy(User).new? %>
-    <div class="row">
-      <div class="col-md-12 text-right">
-        <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" if policy(User).create? %>
-      </div>
+    <div class="col-md-6 text-right">
+      <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" if policy(User).create? %>
     </div>
   <% end %>
 </div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Role and Membership</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @users.each do |user| %>
+          <tr class='<%= user.deactivated? ? 'users-deactivated' : '' %>'>
+            <td><%= user.name %></td>
+            <td>
+              <%= glyph(:email) %> <%= user.email %><br/>
+              <% if user.office_phone.present? %>
+                <%= glyph(:phone) %> <strong>Office:</strong> <%= user.office_phone || '-' %><br/>
+              <% end %>
+              <% if user.cell_phone.present? %>
+                <%= glyph(:phone) %> <strong>Cell:</strong> <%= user.cell_phone || '-' %><br/>
+              <% end %>
+              <% if user.fax.present? %>
+                <%= glyph(:fax) %> <strong>Fax:</strong> <%= user.fax || '-' %><br/>
+              <% end %>
+            </td>
+            <td>
+              <% if user.deactivated? %>
+                <b>DEACTIVATED</b><br/>
+              <% end %>
+              <b>System Role:</b> <%= user.role.try(:name) || 'None' %>
+              <ul>
+                <% if user.team.present? %>
+                  <li>
+                    <%= user.team_title %> in Team <%= link_to(user.team.name, team_path(user.team)) %>
+                  </li>
+                <% end %>
+                <% user.assignments.each do |assignment| %>
+                  <li>
+                    <%= assignment.role.capitalize %> at <%= link_to(assignment.property.name, property_url(assignment.property)) %>
+                  </li>
+                <% end %>
+              </ul>
+            </td>
+            <td>
+              <%= model_link_with_tooltip(user, :show) %>&nbsp;
+              <%= model_link_with_tooltip(user, :edit) %>&nbsp;
+              <%= model_link_with_tooltip(user, :destroy) %>&nbsp;
+              <%= tooltip_block('user-impersonate-link') do %>
+                <%= link_to home_impersonate_path(id: user.id), method: :post, data: {confirm: "Impersonate #{user.name}?"} do %><%= glyph(:sunglasses) %><% end %>
+              <% end if policy(user).impersonate?%>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<% if policy(User).new? %>
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" if policy(User).create? %>
+    </div>
+  </div>
+<% end %>

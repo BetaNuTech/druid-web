@@ -1,14 +1,12 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <p class="lead">
-        Compose
-        <%= @message.message_type&.name %>
-        Message for
-        <%= @message.messageable&.name %>
-      </p>
-      <%= render partial: 'form', locals: { message: @message, message_type: @message.message_type }  %>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <p class="lead">
+      Compose
+      <%= @message.message_type&.name %>
+      Message for
+      <%= @message.messageable&.name %>
+    </p>
+    <%= render partial: 'form', locals: { message: @message, message_type: @message.message_type }  %>
   </div>
   <div class="row">
     <div class="col-md-12">

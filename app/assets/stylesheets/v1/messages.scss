@@ -1,0 +1,29 @@
+div.send_new_message_callout {
+  font-size: 1.1em;
+  padding: 1em;
+}
+
+table.message_list {
+  tr.message_unread {
+    font-weight: bold;
+    font-size: 1.2em;
+    background: #f6f6f6;
+  }
+
+  tr.message_draft td {
+    background: #d9edf7;
+  }
+
+  .message_body_preview {
+    a { text-decoration: none !important; }
+    .message_subject { font-size: 1.2em; }
+  }
+}
+
+
+iframe#message_preview {
+  width: 100%;
+  scrolling: no;
+  border: 0;
+  margin: 1em;
+}

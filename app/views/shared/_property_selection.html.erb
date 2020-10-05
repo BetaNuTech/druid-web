@@ -1,6 +1,6 @@
 <% if policy(Property).select_current? %>
   <%= form_tag(select_current_properties_path, method: :post, remote: false, id: 'propertyselection--form', class: 'form-inline') do %>
-  <div id="propertyselection--container" class="container">
+  <div id="propertyselection--container" >
     <div class="row">
       <div class="col-md-1 col-md-offset-8  col-sm-1 col-sm-offset-5 text-right">
         <%= submit_tag 'Select', id: 'propertyselection--submit-button', class: 'btn btn-sm btn-primary hidden' %>

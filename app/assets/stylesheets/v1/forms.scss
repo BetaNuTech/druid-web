@@ -1,0 +1,50 @@
+$error-color: #f2dede;
+
+#notice {
+  color: green;
+}
+
+.field_with_errors {
+  padding: 2px;
+  background-color: $error-color ;
+}
+
+#error_explanation {
+  width: 450px;
+  border: 2px solid  $error-color;
+  padding: 7px 7px 0;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+
+  h2 {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 5px 5px 15px;
+    font-size: 12px;
+    margin: -7px -7px 0;
+    background-color: #c00;
+    color: #fff;
+  }
+
+  ul li {
+    font-size: 12px;
+    list-style: square;
+  }
+}
+
+.fieldset_content {
+  box-shadow: 5px 5px 5px #ccc;
+  padding: 1em 2em 0.5em 1em;
+  margin: 1em auto;
+  border: 1px 1px 1px 0 solid #ccc;
+
+  h2 {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
+.form-control-date-select {
+  width: auto !important;
+  display: inline !important;
+}

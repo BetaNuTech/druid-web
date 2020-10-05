@@ -1,0 +1,5 @@
+table.marketing_source--stats--table tr td:first-child {
+  font-weight: bold;
+  padding-right: 0.5em;
+  text-align: right;
+}

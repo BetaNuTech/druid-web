@@ -11,11 +11,7 @@ Flipflop.configure do
 
   feature :user_tracking, default: true, description: 'Track page impressions'
 
-  group :design_v1 do
-    feature :navigation_v1, default: false, description: 'UI v1 Navigation'
-    feature :leads_v1, default: false, description: 'UI v1 Lead Page'
-    feature :lead_search_v1, default: false, description: 'UI v1 Lead Search Page'
-  end
+  feature :design_v1, default: false, description: 'UI v1 Navigation'
 
   # Other strategies:
   #
