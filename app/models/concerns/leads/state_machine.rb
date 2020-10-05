@@ -60,6 +60,7 @@ module Leads
 
       def process_followups
         pending_revisit.each do |lead|
+          next unless lead.member_of_an_active_property?
           Rails.logger.warn "Lead #{lead.id} is ready to revisit"
           lead.trigger_event(event_name: 'revisit')
         end
@@ -67,6 +68,7 @@ module Leads
 
       def process_waitlist
         can_leave_waitlist.each do |lead|
+          next unless lead.member_of_an_active_property?
           lead.trigger_event(event_name: 'revisit_unit_available', user: lead.user)
         end
       end

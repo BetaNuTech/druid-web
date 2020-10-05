@@ -11,6 +11,7 @@ module Leads
         skope = self.where(state: ['prospect', 'showing', 'application'])
         skope.find_in_batches do |leads_to_prioritize|
           leads_to_prioritize.each do |lead|
+            next unless lead.member_of_an_active_property?
             begin
               old_priority = lead.priority
               lead.calculate_priority

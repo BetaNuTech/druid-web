@@ -6,6 +6,7 @@ namespace :marketing_expenses do
     puts message
     Rails.logger.warn message
     MarketingSource.all.each do |source|
+      next unless source.property&.active?
       expense = source.create_pending_expense
       if expense.valid?
         message = "=== Created MarketingExpense -- #{source.property.name}:#{source.name} => #{expense.description}: #{expense.fee_total} (#{expense.start_date})"

@@ -99,6 +99,7 @@ module Users
 
       def send_pending_task_notifications
         ::User.active.each do |user|
+          next unless user.member_of_an_active_property?
           active_leads = user.leads.active
           pending_tasks = ScheduledAction.includes(:schedule, :lead_action, :target).for_agent(user).due_today
           next unless active_leads.count > 1 && pending_tasks.count > 1

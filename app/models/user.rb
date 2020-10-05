@@ -7,7 +7,7 @@
 #  encrypted_password     :string           default(""), not null
 #  reset_password_token   :string
 #  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
+#  rem?ember_created_at    :datetime
 #  sign_in_count          :integer          default(0), not null
 #  current_sign_in_at     :datetime
 #  last_sign_in_at        :datetime
@@ -72,7 +72,15 @@ class User < ApplicationRecord
   end
 
   def active_for_authentication?
-    super && !deactivated?
+    super && !deactivated? && member_of_an_active_property?
+  end
+
+  def member_of_an_active_property?
+    # Default to True for admin and corporate accounts
+    # who do not need property membership
+    return true if admin? || team_admin?
+
+    properties.any?(&:active?)
   end
 
   def name

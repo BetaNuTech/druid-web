@@ -16,12 +16,12 @@ module Users
       end
 
       def team_corporate?
-        teamrole.try(:corporate?) || false
+        teamrole&.corporate? || false
       end
 
       def team_manager?
         raise "Manager Teamrole is deprecated"
-        #teamrole.try(:manager?) || false
+        # teamrole.try(:manager?) || false
       end
 
       def team_lead?
@@ -45,7 +45,7 @@ module Users
 
       def team_managers
         raise "Manager Teamrole is deprecated"
-        includes(:membership).where(team_users: {teamrole_id: Teamrole.manager&.id})
+        # includes(:membership).where(team_users: {teamrole_id: Teamrole.manager&.id})
       end
 
       def team_leads
