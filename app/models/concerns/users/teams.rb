@@ -16,7 +16,7 @@ module Users
       end
 
       def team_corporate?
-        teamrole&.corporate? || false
+        teamrole&.lead? || false
       end
 
       def team_manager?
