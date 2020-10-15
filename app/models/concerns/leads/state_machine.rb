@@ -80,7 +80,7 @@ module Leads
 
       after_create :create_initial_transition
 
-      scope :can_leave_waitlist, -> { 
+      scope :can_leave_waitlist, -> {
         waitlist.includes(preference: {unit_type: :units}).where(units: {lease_status: 'available'})
       }
 

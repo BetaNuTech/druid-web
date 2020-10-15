@@ -50,14 +50,14 @@ class LeadSearchLead extends React.Component {
             </li>
           </ul>
         </div>
-        { false && <LeadActions lead_id={this.props.data.id} /> }
         <div className={Style.contact} >
           <span className={Style.lead_name}>
             <a href={this.props.data.web_url}>
-            {this.props.data.title}&nbsp;
-            {this.props.data.first_name}&nbsp;
-            {this.props.data.last_name}
-          </a>
+              {this.props.data.title}&nbsp;
+              {this.props.data.first_name}&nbsp;
+              {this.props.data.last_name}
+            </a>
+            <LeadActions lead_id={this.props.data.id} lead_state={this.props.data.state} />
           </span><br/>
           <span className={Style.contact_info} >
             <span title="Primary Phone" className="glyphicon glyphicon-earphone" />&nbsp;
