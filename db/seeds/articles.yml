@@ -323,6 +323,22 @@
       :audience: all
       :published: true
       :body: Complete Scheduled Action
+    - :slug: scheduled_action-edit-link
+      :title: ScheduledAction#Edit#Link
+      :contextid: ScheduledAction#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Edit Scheduled Action
+    - :slug: scheduled_action-reject-link
+      :title: ScheduledAction#Reject#Link
+      :contextid: ScheduledAction#complete
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Reject/Complete Scheduled Action
     - :slug: note-show-link
       :title: Notes#Show#Link
       :contextid: Notes#show
