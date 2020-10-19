@@ -37,7 +37,7 @@
         </thead>
         <tbody>
           <% @messages.each do |message| %>
-              <% next unless policy(message).show? %>
+              <% next unless policy(message).show? && policy(message).listable? %>
               <tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
                 <td>
                   <span class="text-nowrap">

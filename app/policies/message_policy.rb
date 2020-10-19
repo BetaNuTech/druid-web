@@ -72,6 +72,18 @@ class MessagePolicy < ApplicationPolicy
       user&.property_manager?(record.messageable.property)
   end
 
+  def listable?
+    case record&.messageable
+    when nil
+      true
+    when Lead
+      # Dont list messages for disqualified leads
+      user.admin? || record.messageable.state != 'disqualified'
+    else
+      true
+    end
+  end
+
   def allowed_params
     Message::ALLOWED_PARAMS
   end

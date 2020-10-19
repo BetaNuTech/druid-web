@@ -10,15 +10,19 @@ class MessagesController < ApplicationController
   # GET /messages.json
   def index
     authorize Message
-    @messages = record_scope.includes([:messageable, :message_type, :deliveries])
-    @messages = @messages.page(params[:page])
+    @messages = record_scope
+      .includes([:messageable, :message_type, :deliveries])
+      .page(params[:page])
   end
 
   # GET /messages/1
   # GET /messages/1.json
   def show
     authorize @message
-    Message.mark_read!(@message, current_user) if !@message.read? && policy(@message).mark_read?
+    if !@message.read? && policy(@message).mark_read?
+      Message.mark_read!(@message, current_user)
+      @message.reload
+    end
   end
 
   def body_preview

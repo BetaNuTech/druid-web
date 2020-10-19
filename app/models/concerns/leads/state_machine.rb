@@ -140,7 +140,7 @@ module Leads
 
         event :disqualify do
           transitions from: [ :open, :prospect, :showing, :application, :denied, :approved, :movein, :resident ], to: :disqualified,
-            after: ->(*args) { set_priority_zero; clear_all_tasks }
+            after: ->(*args) { set_priority_zero; clear_all_tasks; mark_all_messages_read }
         end
 
         event :lodge do
@@ -207,6 +207,10 @@ module Leads
 
       def clear_all_tasks
         scheduled_actions.incomplete.update_all(state: 'rejected')
+      end
+
+      def mark_all_messages_read
+        Message.mark_read!(messages, user)
       end
 
       def may_apply?
