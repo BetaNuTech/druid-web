@@ -360,6 +360,10 @@ class Message < ApplicationRecord
     end
   end
 
+  def previous_messages_in_thread
+    Message.where(threadid: self.threadid).where.not(id: self.id).order(created_at: :desc)
+  end
+
   private
 
   def detect_incoming_from_recipient

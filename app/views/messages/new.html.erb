@@ -10,4 +10,20 @@
       <%= render partial: 'form', locals: { message: @message, message_type: @message.message_type }  %>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Previous Messages</h4>
+        <table class="table message_list">
+          <thead>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </thead>
+          <tbody>
+            <%= render partial: 'leads/message', collection: @message.previous_messages_in_thread %>
+          </tbody>
+        </table>
+    </div>
+  </div>
 </div>

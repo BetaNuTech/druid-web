@@ -27,7 +27,7 @@
     <div class='row'>
       <div class='col-md-4 form-group'>
         <%= form.label :message_template_id, 'Template' %>
-        <%= link_to('Load', '#' , { id: 'message_template_load_button', class: 'btn btn-xs btn-info', data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type)} }) %>
+        <%= link_to('Load', '#' , { id: 'message_template_load_button', class: 'btn btn-xs btn-info', data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type, reply_to: @reply_to_id)} }) %>
         <%= link_to('View', message_template_path(id: message.message_template), {id: 'message_template_view_button', target: '_blank', class: 'btn btn-xs btn-info'}) if message.message_template.present? %>
         <% if any_message_templates_available?(message_type) %>
           <%= form.select :message_template_id, message_template_options(message_type, message.message_template_id),

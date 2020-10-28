@@ -33,16 +33,19 @@ class MessagesController < ApplicationController
 
   # GET /messages/new
   def new
-    if (reply_to_id = params[:reply_to]).present?
-      origin = Message.find(reply_to_id)
+    if (@reply_to_id = params[:reply_to]).present?
+      origin = Message.find(@reply_to_id)
       @message = origin.new_reply(user: current_user)
+      @message.message_type_id = @message_type.id if @message_type.try(:id)
+      @message.message_template_id = @message_template.id if @message_template.try(:id)
     else
       @message = Message.new(
         user: current_user,
         message_type: @message_type,
         message_type_id: @message_type.try(:id),
         message_template_id: @message_template.try(:id),
-        messageable: @messageable
+        messageable: @messageable,
+        threadid: params[:reply_to]
       )
     end
     authorize @message

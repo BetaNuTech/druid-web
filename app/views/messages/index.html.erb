@@ -33,6 +33,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -47,7 +48,7 @@
                       <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn-sm btn-primary" }) %>
                     <% else %>
                       <span class="dashboard_item_date">
-                        <%= message_delivery_indicator(message) %>
+                        <%= message_delivery_indicator_link(message) %>
                         <%= message_type_indicator(message) %>
                         <%= short_datetime(message.delivered_at || message.updated_at) %>
                       </span>
@@ -70,7 +71,7 @@
                   <br/>
                 </td>
                 <td>
-                  <%= link_to(message_path(message)) do %>
+                  <%= link_to(new_message_path(reply_to: message.id)) do %>
                     <%= message.subject %>
                   <% end %>
                 </td>
@@ -84,6 +85,9 @@
                       <%= message_body_preview(message) %>
                     <% end %>
                   <% end %>
+                </td>
+                <td>
+                  <%= link_to('Reply', new_message_path(reply_to: message.id), class: 'btn btn-primary') %>
                 </td>
               </tr>
             <% end %>
