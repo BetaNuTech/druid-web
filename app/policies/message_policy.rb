@@ -1,5 +1,6 @@
 class MessagePolicy < ApplicationPolicy
-  class Scope < Scope
+
+  class IndexScope < Scope
     def resolve
       skope = scope
       skope = case user
@@ -16,6 +17,20 @@ class MessagePolicy < ApplicationPolicy
           else
             skope.where(user_id: user.id)
           end
+        end
+      return skope.display_order
+    end
+  end
+
+  class Scope < Scope
+    def resolve
+      skope = scope
+      skope = case user
+        when ->(u) { u.admin? }
+          skope
+        else
+          property_skope = skope.joins("INNER JOIN leads ON leads.id = messages.messageable_id AND messages.messageable_type = 'Lead'")
+          property_skope.where(user_id: user.id).or(property_skope.where(leads: {property_id: user.property_ids}))
         end
       return skope.display_order
     end
