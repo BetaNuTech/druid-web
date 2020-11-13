@@ -79,6 +79,7 @@ module Leads
       attr_accessor :ignore_incomplete_tasks, :transition_memo, :skip_event_notifications
 
       after_create :create_initial_transition
+      after_save :disqualified_lead_checks
 
       scope :can_leave_waitlist, -> {
         waitlist.includes(preference: {unit_type: :units}).where(units: {lease_status: 'available'})
@@ -207,6 +208,12 @@ module Leads
 
       def clear_all_tasks
         scheduled_actions.incomplete.update_all(state: 'rejected')
+      end
+
+      def disqualified_lead_checks
+        if state == 'disqualified'
+          mark_all_messages_read
+        end
       end
 
       def mark_all_messages_read
