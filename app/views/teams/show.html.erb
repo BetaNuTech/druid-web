@@ -1,51 +1,48 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-8">
-      <h1>Team: <%= @team.name %></h1>
-      <p class="lead"><%= @team.description %></p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to(stats_manager_path(team_ids: [@team.id]), class: "btn btn-sm btn-info") do %>
-        <%= glyph(:object_align_bottom) %>
-        View Stats
-      <% end %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-4">
-      <h3>Properties</h3>
-      <% if @team.properties.exists? %>
-        <ul>
-          <% @team.properties.order(name: 'ASC').each do |property| %>
-            <li><%= link_to(property.name, property_path(property)) %></li>
-          <% end %>
-        </ul>
-      <% else %>
-        <p>None</p>
-      <% end %>
-    </div>
-    <div class="col-md-6">
-      <h3>Members</h3>
-      <% if @team.members.exists? %>
-        <ul>
-          <% @team.members.sort_by(&:name).each do |member| %>
-            <li><%= member.name %> (<%= @team.teamrole_for(member)&.name %>)</li>
-          <% end %>
-        </ul>
-      <% else %>
-        <p>None</p>
-      <% end %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <% if policy(@team).edit? %>
-        <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-sm btn-primary' %>
-      <% end %>
-      <%= link_to 'Back', teams_path, class: 'btn btn-xs btn-info' %>
-    </div>
+<div class="row">
+  <div class="col-md-8">
+    <h1>Team: <%= @team.name %></h1>
+    <p class="lead"><%= @team.description %></p>
   </div>
 </div>
-
+<div class="row">
+  <div class="col-md-12">
+    <%= link_to(stats_manager_path(team_ids: [@team.id]), class: "btn btn-sm btn-info") do %>
+      <%= glyph(:object_align_bottom) %>
+      View Stats
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <h3>Properties</h3>
+    <% if @team.properties.exists? %>
+      <ul>
+        <% @team.properties.order(name: 'ASC').each do |property| %>
+          <li><%= link_to(property.name, property_path(property)) %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>None</p>
+    <% end %>
+  </div>
+  <div class="col-md-6">
+    <h3>Members</h3>
+    <% if @team.members.exists? %>
+      <ul>
+        <% @team.members.sort_by(&:name).each do |member| %>
+          <li><%= member.name %> (<%= @team.teamrole_for(member)&.name %>)</li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>None</p>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <% if policy(@team).edit? %>
+      <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-sm btn-primary' %>
+    <% end %>
+    <%= link_to 'Back', teams_path, class: 'btn btn-xs btn-info' %>
+  </div>
+</div>

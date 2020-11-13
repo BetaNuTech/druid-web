@@ -1,7 +1,7 @@
 class PropertiesController < ApplicationController
   #http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
   before_action :authenticate_user!
-  before_action :set_property, only: [:show, :edit, :update, :destroy, :duplicate_leads]
+  before_action :assign_property, only: [:show, :edit, :update, :destroy, :duplicate_leads]
   after_action :verify_authorized
 
   # GET /properties
@@ -88,7 +88,7 @@ class PropertiesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_property
+    def assign_property
       @property = policy_scope(Property).find(params[:id])
     end
 

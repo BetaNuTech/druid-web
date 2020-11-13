@@ -1,68 +1,66 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="row">
-        <div class="col-md-6">
-          <h1>Task/Scheduled Action</h1>
-        </div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Task/Scheduled Action</h1>
       </div>
-
-      <div class="row">
-        <div class="col-md-12">
-        <p>
-          <strong>Subject:</strong>
-          <% if @scheduled_action.target.present? %>
-            <%= link_to url_for(@scheduled_action.target) do %>
-              <%= @scheduled_action.target.try(:name) %> (<%= @scheduled_action.target.class %>)
-            <% end %>
-          <% else %>
-            None
-          <% end %>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <p>
-            <strong>Action:</strong>
-            <%= @scheduled_action.lead_action.try(:name) || 'None' %>
-          </p>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <p>
-            <strong>Reason:</strong>
-            <%= @scheduled_action.reason.try(:name) || 'None' %>
-          </p>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <p>
-            <strong>Due:</strong>
-            <%= long_datetime( @scheduled_action.schedule.to_datetime ) || 'None' %>
-          </p>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <p>
-            <strong>Description:</strong>
-            <%= @scheduled_action.description || 'None' %>
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <%= link_to 'Edit', edit_scheduled_action_path(@scheduled_action) %> |
-          <%= link_to 'Back', scheduled_actions_path %>
-        </div>
-      </div>
-
     </div>
+
+    <div class="row">
+      <div class="col-md-12">
+      <p>
+        <strong>Subject:</strong>
+        <% if @scheduled_action.target.present? %>
+          <%= link_to url_for(@scheduled_action.target) do %>
+            <%= @scheduled_action.target.try(:name) %> (<%= @scheduled_action.target.class %>)
+          <% end %>
+        <% else %>
+          None
+        <% end %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Action:</strong>
+          <%= @scheduled_action.lead_action.try(:name) || 'None' %>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Reason:</strong>
+          <%= @scheduled_action.reason.try(:name) || 'None' %>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Due:</strong>
+          <%= long_datetime( @scheduled_action.schedule.to_datetime ) || 'None' %>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Description:</strong>
+          <%= @scheduled_action.description || 'None' %>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <%= link_to 'Edit', edit_scheduled_action_path(@scheduled_action) %> |
+        <%= link_to 'Back', scheduled_actions_path %>
+      </div>
+    </div>
+
   </div>
 </div>

@@ -1,110 +1,106 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1>
-        Messages
-        <% if @messageable.present? %>
-          for <%= @messageable.name %>
-        <% end %>
-      </h1>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <h1>
+      Messages
+      <% if @messageable.present? %>
+        for <%= @messageable.name %>
+      <% end %>
+    </h1>
   </div>
+</div>
 
-  <% if @messageable.present? %>
+<% if @messageable.present? %>
   <div class="row">
     <div class="col-md-6">
       <%= render partial: "new_message_callout", locals: {messageable: @messageable} %>
     </div>
   </div>
-  <% end %>
+<% end %>
 
-  <div class="row">
-    <div class="col-md-12">
-      <%= paginate @messages %>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <%= paginate @messages %>
   </div>
+</div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table message_list">
-        <thead>
-          <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table message_list">
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @messages.each do |message| %>
+          <% next unless policy(message).show? && policy(message).listable? %>
+          <tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
+            <td>
+              <span class="text-nowrap">
+                <% if message.draft? %>
+                  <%= link_to(glyph(:edit), edit_message_path(message), class: 'btn btn-xs btn-primary') if policy(message).edit? %>
+                  <%= message_type_indicator(message) %>
+                  <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn-sm btn-primary" }) %>
+                <% else %>
+                  <span class="dashboard_item_date">
+                    <%= message_delivery_indicator_link(message) %>
+                    <%= message_type_indicator(message) %>
+                    <%= short_datetime(message.delivered_at || message.updated_at) %>
+                  </span>
+                <% end %>
+              </span>
+              <br/><br/>
+              <span class="text-nowrap">
+                <span class="btn btn-xs btn-default">
+                  <b>From:</b>
+                  <%= truncate(message.sender_name, length: 20) %>
+                </span>
+              </span>
+              <br/>
+              <span class="text-nowrap">
+                <span class="btn btn-xs btn-default">
+                  <b>To:</b>
+                  <%= truncate(message.recipient_name, length: 20) %>
+                </span>
+              </span>
+              <br/>
+            </td>
+            <td class="message_body_preview">
+              <span class="message_subject">
+                <%= link_to(new_message_path(reply_to: message.id)) do %>
+                  <%= message.subject %>
+                <% end %>
+              </span>
+              <% if message.draft? %>
+                <%= link_to(edit_message_path(message)) do %>
+                  <%= message_body_preview(message) %>
+                <% end %>
+              <% else %>
+                <%= link_to(message_path(message)) do %>
+                  <%= message_body_preview(message) %>
+                <% end %>
+              <% end %>
+              <%= link_to('Reply', new_message_path(reply_to: message.id), class: 'btn btn-primary') %>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% @messages.each do |message| %>
-              <% next unless policy(message).show? && policy(message).listable? %>
-              <tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
-                <td>
-                  <span class="text-nowrap">
-                    <% if message.draft? %>
-                      <%= link_to(glyph(:edit), edit_message_path(message), class: 'btn btn-xs btn-primary') if policy(message).edit? %>
-                      <%= message_type_indicator(message) %>
-                      <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn-sm btn-primary" }) %>
-                    <% else %>
-                      <span class="dashboard_item_date">
-                        <%= message_delivery_indicator_link(message) %>
-                        <%= message_type_indicator(message) %>
-                        <%= short_datetime(message.delivered_at || message.updated_at) %>
-                      </span>
-                    <% end %>
-                  </span>
-                  <br/><br/>
-                  <span class="text-nowrap">
-                    <span class="btn btn-xs btn-default">
-                      <b>From:</b>
-                      <%= truncate(message.sender_name, length: 20) %>
-                    </span>
-                  </span>
-                  <br/>
-                  <span class="text-nowrap">
-                    <span class="btn btn-xs btn-default">
-                      <b>To:</b>
-                      <%= truncate(message.recipient_name, length: 20) %>
-                    </span>
-                  </span>
-                  <br/>
-                </td>
-                <td>
-                  <%= link_to(new_message_path(reply_to: message.id)) do %>
-                    <%= message.subject %>
-                  <% end %>
-                </td>
-                <td class="message_body_preview">
-                  <% if message.draft? %>
-                    <%= link_to(edit_message_path(message)) do %>
-                      <%= message_body_preview(message) %>
-                    <% end %>
-                  <% else %>
-                    <%= link_to(message_path(message)) do %>
-                      <%= message_body_preview(message) %>
-                    <% end %>
-                  <% end %>
-                </td>
-                <td>
-                  <%= link_to('Reply', new_message_path(reply_to: message.id), class: 'btn btn-primary') %>
-                </td>
-              </tr>
-            <% end %>
-        </tbody>
-      </table>
-    </div>
+        <% end %>
+      </tbody>
+    </table>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= paginate @messages %>
-    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <%= paginate @messages %>
   </div>
-  <div class="row">
-    <div class="col-md-6">
-      <% if @messageable.present? %>
-        <%= link_to("Back", url_for(@messageable), class: "btn btn-xs btn-info") %>
-      <% end %>
-    </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <% if @messageable.present? %>
+      <%= link_to("Back", url_for(@messageable), class: "btn btn-xs btn-info") %>
+    <% end %>
   </div>
 </div>

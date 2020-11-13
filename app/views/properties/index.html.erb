@@ -1,67 +1,65 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Properties</h1>
-    </div>
-    <% if policy(Property).new? %>
-    <div class="col-md-6 text-right">
-      <%= link_to 'Add a New Property', new_property_path, class: "btn btn-xs btn-primary" %>
-    </div>
-    <% end %>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Team</th>
-            <th>Organization</th>
-            <th>Contact</th>
-            <th>Address</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @properties.each do |property| %>
-            <tr class="<%= property_active_table_row_class(property) %>">
-              <td class="first-column"><%= property.name %></td>
-              <td><%= property.team.try(:name) || '-' %></td>
-              <td><%= property.organization %></td>
-              <td>
-                <%= glyph(:person) %> <%= property.contact_name %><br/>
-                <%= glyph(:email) %> <%= property.email || '-' %><br/>
-                <%= glyph(:phone) %> <%= property.phone.present? ? number_to_phone(property.phone) : '-' %><br/>
-                <%= glyph(:fax) %> <%= property.fax.present? ? number_to_phone(property.fax) : '-' %><br/>
-              </td>
-              <td>
-                <p class="glyph-indent">
-                  <span style="display: block; float: left;"><%= glyph(:address) %></span>
-                  <span style="display: block; margin-left: 1.5em;">
-                  <%= property_address_block(property) %>
-                  </span>
-                </p>
-              </td>
-              <td class="text-nowrap">
-                <%= model_link_with_tooltip(property, :show) %>&nbsp;
-                <%= model_link_with_tooltip(property, :edit) %>&nbsp;
-                <%= model_link_with_tooltip(property, :destroy) %>&nbsp;
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <br>
-
-    </div>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Properties</h1>
   </div>
   <% if policy(Property).new? %>
-  <div class="row">
-    <div class="col-md-12 text-right">
-      <%= glyph(:create) %>
-      <%= link_to 'Create New Property', new_property_path %>
-    </div>
+  <div class="col-md-6 text-right">
+    <%= link_to 'Add a New Property', new_property_path, class: "btn btn-xs btn-primary" %>
   </div>
   <% end %>
 </div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Team</th>
+          <th>Organization</th>
+          <th>Contact</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @properties.each do |property| %>
+          <tr class="<%= property_active_table_row_class(property) %>">
+            <td class="first-column"><%= property.name %></td>
+            <td><%= property.team.try(:name) || '-' %></td>
+            <td><%= property.organization %></td>
+            <td>
+              <%= glyph(:person) %> <%= property.contact_name %><br/>
+              <%= glyph(:email) %> <%= property.email || '-' %><br/>
+              <%= glyph(:phone) %> <%= property.phone.present? ? number_to_phone(property.phone) : '-' %><br/>
+              <%= glyph(:fax) %> <%= property.fax.present? ? number_to_phone(property.fax) : '-' %><br/>
+            </td>
+            <td>
+              <p class="glyph-indent">
+                <span style="display: block; float: left;"><%= glyph(:address) %></span>
+                <span style="display: block; margin-left: 1.5em;">
+                <%= property_address_block(property) %>
+                </span>
+              </p>
+            </td>
+            <td class="text-nowrap">
+              <%= model_link_with_tooltip(property, :show) %>&nbsp;
+              <%= model_link_with_tooltip(property, :edit) %>&nbsp;
+              <%= model_link_with_tooltip(property, :destroy) %>&nbsp;
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <br>
+
+  </div>
+</div>
+<% if policy(Property).new? %>
+<div class="row">
+  <div class="col-md-12 text-right">
+    <%= glyph(:create) %>
+    <%= link_to 'Create New Property', new_property_path %>
+  </div>
+</div>
+<% end %>

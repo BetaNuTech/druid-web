@@ -1,3 +1,8 @@
+// DEBUG
+#bluesky_version::after {
+  content: "-ui1"
+}
+
 td.first-column {
   font-size: 1.2em;
   font-weight: bold;

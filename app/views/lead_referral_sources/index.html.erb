@@ -1,40 +1,37 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Lead Referral Sources</h1>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Lead Referral Sources</h1>
+  </div>
+  <% if policy(LeadReferralSource).new? %>
+    <div class="col-md-6 text-right">
+      <%= link_to('Create a Lead Referral Source', new_lead_referral_source_path, class: "btn btn-xs btn-primary" ) %>
     </div>
-    <% if policy(LeadReferralSource).new? %>
-      <div class="col-md-6 text-right">
-        <%= link_to('Create a Lead Referral Source', new_lead_referral_source_path, class: "btn btn-xs btn-primary" ) %>
-      </div>
+  <% end %>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <% if @lead_referral_sources.empty? %>
+      <p class="lead">None</p>
+    <% else %>
+      <thead>
+        <table class="table">
+          <th>Name</th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          <% @lead_referral_sources.each do |lead_referral_source| %>
+            <tr>
+              <td><%= lead_referral_source.name %></td>
+              <td>
+                <%= model_link_with_tooltip(lead_referral_source, :show) %>&nbsp;
+                <%= model_link_with_tooltip(lead_referral_source, :edit) %>&nbsp;
+                <%= model_link_with_tooltip(lead_referral_source, :destroy) %>&nbsp;
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     <% end %>
   </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <% if @lead_referral_sources.empty? %>
-        <p class="lead">None</p>
-      <% else %>
-        <thead>
-          <table class="table">
-            <th>Name</th>
-            <th>Actions</th>
-          </thead>
-          <tbody>
-            <% @lead_referral_sources.each do |lead_referral_source| %>
-              <tr>
-                <td><%= lead_referral_source.name %></td>
-                <td>
-                  <%= model_link_with_tooltip(lead_referral_source, :show) %>&nbsp;
-                  <%= model_link_with_tooltip(lead_referral_source, :edit) %>&nbsp;
-                  <%= model_link_with_tooltip(lead_referral_source, :destroy) %>&nbsp;
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% end %>
-    </div>
-  </div>
-
 </div>

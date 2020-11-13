@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280px" height="62px" viewBox="0 0 1280 62" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>header-background</title>
+    <g id="Navigation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD">
+            <g id="Group" fill-rule="nonzero">
+                <g id="header-background" transform="translate(-2.000000, -3.000000)">
+                    <polygon id="Rectangle" stroke="#979797" fill="#12487F" points="1.003125 1.06666667 1.003125 64 1284 64 1284 1.06666667"></polygon>
+                    <polygon id="Triangle" fill-opacity="0.5" fill="#0A2A5C" points="513.098438 1.06666667 1026.19688 64 0 64"></polygon>
+                    <polygon id="Triangle" fill-opacity="0.36" fill="#142B48" points="1284 0.342370773 1284 64 740.30625 64 974.242095 0"></polygon>
+                    <polygon id="Path" fill-opacity="0.56" fill="#0E2F52" points="0 0 0 29.8666667 326.015625 0"></polygon>
+                    <polygon id="Path-2" fill-opacity="0.45" fill="#0C2947" points="0 0 508.584375 62.9333333 0 62.9333333"></polygon>
+                </g>
+            </g>
+            <rect id="Rectangle" fill="#F2F2F2" x="240" y="61" width="1040" height="1019"></rect>
+            <text id="LEAD-MANAGEMENT" font-family="ArialMT, Arial" font-size="22" font-weight="normal" letter-spacing="5" fill="#CCCCCC">
+                <tspan x="240" y="35">LEAD MANAGEMENT</tspan>
+            </text>
+            <text id="BLUESKY" font-family="Arial-Black, Arial Black" font-size="22" font-weight="700" letter-spacing="5" fill="#F2F2F2">
+                <tspan x="72" y="35">BLUESKY</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

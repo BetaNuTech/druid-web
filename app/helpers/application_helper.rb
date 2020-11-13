@@ -169,4 +169,12 @@ module ApplicationHelper
       secretKey: ENV.fetch("ACTIVESTORAGE_S3_SECRET_KEY", "").dup
     }
   end
+
+  def nav_item_active?(key, action=nil)
+    params[:controller] == key.to_s && (action ? params[:action] == action.to_s : true)
+  end
+
+  def nav_item_class(key, action=nil)
+    nav_item_active?(key,action) ? 'sidebar--item--active' : ''
+  end
 end

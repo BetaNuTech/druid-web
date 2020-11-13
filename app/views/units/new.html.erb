@@ -1,16 +1,14 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <% if @unit.property.present? %>
-        <h2><%= @unit.property_name %></h2>
-      <% end %>
-      <h1>New Unit</h1>
-      <%= render 'form', unit: @unit %>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <% if @unit.property.present? %>
+      <h2><%= @unit.property_name %></h2>
+    <% end %>
+    <h1>New Unit</h1>
+    <%= render 'form', unit: @unit %>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to 'Back', :back  %>
-    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <%= link_to 'Back', :back  %>
   </div>
 </div>

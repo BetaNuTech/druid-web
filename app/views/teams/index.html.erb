@@ -1,70 +1,68 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Teams</h1>
-    </div>
-    <% if policy(Team).new? %>
-    <div class="col-md-6 text-right">
-      <%= link_to 'Create New Team', new_team_path, class: "btn btn-xs btn-primary" %>
-    </div>
-    <% end %>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Teams</h1>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-        <thead>
+  <% if policy(Team).new? %>
+  <div class="col-md-6 text-right">
+    <%= link_to 'Create New Team', new_team_path, class: "btn btn-xs btn-primary" %>
+  </div>
+  <% end %>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Properties</th>
+          <th>Members</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @teams.each do |team| %>
           <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Properties</th>
-            <th>Members</th>
-            <th>Actions</th>
+            <td class="first-column"><%= team.name %></td>
+            <td><%= team.description %></td>
+            <td>
+              <% if team.properties.present? %>
+                <ul>
+                  <% team.properties.order(name: 'ASC').each do |property| %>
+                    <li><%= link_to(property.name, property_path(property)) %></li>
+                  <% end %>
+                </ul>
+              <% else %>
+                <p>None</p>
+              <% end %>
+            </td>
+            <td>
+              <% if team.members.present? %>
+                <ul>
+                  <% team.members.sort_by(&:name).each do |member| %>
+                    <li><%= link_to(member.name, user_path(member)) %> (<%= member.team_title %>)</li>
+                  <% end %>
+                </ul>
+              <% else %>
+                <p>None</p>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to(glyph(:object_align_bottom), stats_manager_path(team_ids: [team.id])) %>
+              <%= link_to team do %><%= glyph(:show) %><% end if policy(team).show? %>&nbsp;
+              <%= link_to edit_team_path(team) do %><%= glyph(:edit) %><% end if policy(team).edit? %>&nbsp;
+              <%= link_to team, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(team).destroy? %>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% @teams.each do |team| %>
-            <tr>
-              <td class="first-column"><%= team.name %></td>
-              <td><%= team.description %></td>
-              <td>
-                <% if team.properties.present? %>
-                  <ul>
-                    <% team.properties.order(name: 'ASC').each do |property| %>
-                      <li><%= link_to(property.name, property_path(property)) %></li>
-                    <% end %>
-                  </ul>
-                <% else %>
-                  <p>None</p>
-                <% end %>
-              </td>
-              <td>
-                <% if team.members.present? %>
-                  <ul>
-                    <% team.members.sort_by(&:name).each do |member| %>
-                      <li><%= link_to(member.name, user_path(member)) %> (<%= member.team_title %>)</li>
-                    <% end %>
-                  </ul>
-                <% else %>
-                  <p>None</p>
-                <% end %>
-              </td>
-              <td>
-                <%= link_to(glyph(:object_align_bottom), stats_manager_path(team_ids: [team.id])) %>
-                <%= link_to team do %><%= glyph(:show) %><% end if policy(team).show? %>&nbsp;
-                <%= link_to edit_team_path(team) do %><%= glyph(:edit) %><% end if policy(team).edit? %>&nbsp;
-                <%= link_to team, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(team).destroy? %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+        <% end %>
+      </tbody>
+    </table>
   </div>
-  <div class="row">
-    <% if policy(Team).new? %>
-    <div class="col-md-12 text-right">
-      <%= link_to 'Create New Team', new_team_path, class: "btn btn-xs btn-primary" %>
-    </div>
-    <% end %>
+</div>
+<div class="row">
+  <% if policy(Team).new? %>
+  <div class="col-md-12 text-right">
+    <%= link_to 'Create New Team', new_team_path, class: "btn btn-xs btn-primary" %>
   </div>
+  <% end %>
 </div>

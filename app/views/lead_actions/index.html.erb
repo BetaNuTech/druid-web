@@ -1,55 +1,53 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Lead Actions</h1>
-    </div>
-    <% if policy(LeadAction).new? %>
-      <div class="col-md-6 text-right">
-        <%= link_to 'Create New Lead Action', new_lead_action_path, class: "btn btn-xs btn-primary" %>
-      </div>
-    <% end %>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Lead Actions</h1>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-        <thead>
+  <% if policy(LeadAction).new? %>
+    <div class="col-md-6 text-right">
+      <%= link_to 'Create New Lead Action', new_lead_action_path, class: "btn btn-xs btn-primary" %>
+    </div>
+  <% end %>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Glyph</th>
+          <th>Description</th>
+          <th>Active?</th>
+          <th>Is Contact?</th>
+          <th>Notify Leads?</th>
+          <th>State Affinity</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @lead_actions.each do |lead_action| %>
           <tr>
-            <th>Name</th>
-            <th>Glyph</th>
-            <th>Description</th>
-            <th>Active?</th>
-            <th>Is Contact?</th>
-            <th>Notify Leads?</th>
-            <th>State Affinity</th>
-            <th>Actions</th>
+            <td class="first-column"><%= lead_action.name %></td>
+            <td style="font-size: 1.5em;"><%= glyph(lead_action.glyph) %></td>
+            <td><%= lead_action.description %></td>
+            <td><%= lead_action.active ? "Yes" : "No" %></td>
+            <td><%= lead_action.is_contact ? "Yes" : "No" %></td>
+            <td><%= lead_action.notify? ? "Yes" : "No" %></td>
+            <td><%= lead_action.state_affinity&.capitalize %></td>
+            <td class="text-nowrap">
+              <%= model_link_with_tooltip(lead_action, :show) %>&nbsp;
+              <%= model_link_with_tooltip(lead_action, :edit) %>&nbsp;
+              <%= model_link_with_tooltip(lead_action, :destroy) %>&nbsp;
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% @lead_actions.each do |lead_action| %>
-            <tr>
-              <td class="first-column"><%= lead_action.name %></td>
-              <td style="font-size: 1.5em;"><%= glyph(lead_action.glyph) %></td>
-              <td><%= lead_action.description %></td>
-              <td><%= lead_action.active ? "Yes" : "No" %></td>
-              <td><%= lead_action.is_contact ? "Yes" : "No" %></td>
-              <td><%= lead_action.notify? ? "Yes" : "No" %></td>
-              <td><%= lead_action.state_affinity&.capitalize %></td>
-              <td class="text-nowrap">
-                <%= model_link_with_tooltip(lead_action, :show) %>&nbsp;
-                <%= model_link_with_tooltip(lead_action, :edit) %>&nbsp;
-                <%= model_link_with_tooltip(lead_action, :destroy) %>&nbsp;
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div classs="row">
+  <% if policy(LeadAction).new? %>
+    <div class="col-md-12 text-right">
+      <%= link_to 'Create New Lead Action', new_lead_action_path, class: "btn btn-xs btn-primary" %>
     </div>
-  </div>
-  <div classs="row">
-    <% if policy(LeadAction).new? %>
-      <div class="col-md-12 text-right">
-        <%= link_to 'Create New Lead Action', new_lead_action_path, class: "btn btn-xs btn-primary" %>
-      </div>
-    <% end %>
-  </div>
+  <% end %>
 </div>

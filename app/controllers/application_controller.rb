@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  layout -> {versioned_layout }
 
   before_action :create_user_impression, if: :current_user
   around_action :user_timezone, if: :current_user
@@ -11,7 +12,16 @@ class ApplicationController < ActionController::Base
   before_action :set_property
   before_action :prepare_exception_notifier
 
+  def versioned_layout
+    if Flipflop.enabled?(:design_v1)
+      'application_v1'
+    else
+      'application'
+    end
+  end
+
   def create_user_impression
+    return true unless Flipflop.user_tracking?
     begin
       impression = URI(request.path).path rescue 'ERROR'
       referrer = URI(request.referer).path rescue 'ERROR'
@@ -20,7 +30,7 @@ class ApplicationController < ActionController::Base
         reference: AppContext.for_params(params).last,
         referrer: referrer,
         path: impression
-      ) if Flipflop.user_tracking?
+      )
     rescue => e
       Rails.logger.warn('Error creating user impression: ' + e.to_s)
       true

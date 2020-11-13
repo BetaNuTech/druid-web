@@ -92,6 +92,12 @@ class User < ApplicationRecord
     end
   end
 
+  def initials
+    first_char = first_name ? first_name[0] : last_name[0]
+    second_char = first_name ? last_name[0] : last_name[1]
+    [first_char, second_char].join.upcase
+  end
+
   def available_leads(skope=nil)
     return LeadPolicy::Scope.new(self, (skope || Lead).open).
             resolve.

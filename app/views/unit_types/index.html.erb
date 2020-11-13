@@ -1,63 +1,48 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
+<div class="row">
+  <div class="col-md-6">
+    <% if @property.present? %>
+      <h2><%= @property.name %></h2>
+    <% end %>
+    <h1>Unit Types</h1>
+  </div>
+  <% if policy(UnitType).new? %>
+    <div class="col-md-6 text-right">
       <% if @property.present? %>
-        <h2><%= @property.name %></h2>
+        <%= link_to 'Create New Unit Type', new_property_unit_type_path(@property), class: 'btn btn-sm btn-primary' %>
+      <% else %>
+        <%= link_to 'Create New Unit Type', new_unit_type_path, class: 'btn btn-sm btn-primary' %>
       <% end %>
-      <h1>Unit Types</h1>
     </div>
-    <% if policy(UnitType).new? %>
-      <div class="col-md-6 text-right">
-        <%= glyph(:create) %>
-        <% if @property.present? %>
-          <%= link_to 'Create New Unit Type', new_property_unit_type_path(@property) %>
-        <% else %>
-          <%= link_to 'Create New Unit Type', new_unit_type_path %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-        <thead>
+  <% end %>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @unit_types.each do |unit_type| %>
           <tr>
-            <th>Property</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
+            <td><%= link_to(unit_type.property_name, property_path(unit_type.property)) || 'None' %></td>
+            <td class="first-column"><%= unit_type.name %></td>
+            <td>
+              <%= unit_type.size_summary %><br/>
+              <%= unit_type.description %>
+            </td>
+            <td>
+              <%= link_to property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:show) %><% end if policy(unit_type).show? %>&nbsp;
+              <%= link_to edit_property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:edit) %><% end if policy(unit_type).edit? %>&nbsp;
+              <%= link_to unit_type, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit_type).destroy? %>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% @unit_types.each do |unit_type| %>
-            <tr>
-              <td><%= link_to(unit_type.property_name, property_path(unit_type.property)) || 'None' %></td>
-              <td class="first-column"><%= unit_type.name %></td>
-              <td>
-                <%= unit_type.size_summary %><br/>
-                <%= unit_type.description %>
-              </td>
-              <td>
-                <%= link_to property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:show) %><% end if policy(unit_type).show? %>&nbsp;
-                <%= link_to edit_property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:edit) %><% end if policy(unit_type).edit? %>&nbsp;
-                <%= link_to unit_type, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit_type).destroy? %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="row">
-    <% if policy(UnitType).new? %>
-      <div class="col-md-12 text-right">
-        <%= glyph(:create) %>
-        <% if @property.present? %>
-          <%= link_to 'Create New Unit Type', new_property_unit_type_path(@property) %>
-        <% else %>
-          <%= link_to 'Create New Unit Type', new_unit_type_path %>
         <% end %>
-      </div>
-    <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
