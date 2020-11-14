@@ -63,7 +63,7 @@ class MessageTemplate < ApplicationRecord
   ### Class Methods
 
   def self.available_for_user(user)
-    where(user_id: [nil, user.id])
+    MessageTemplatePolicy::Scope.new(user, MessageTemplate).resolve
   end
 
   def self.available_for_user_and_type(user, message_type=nil)
