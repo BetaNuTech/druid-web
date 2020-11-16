@@ -5,6 +5,7 @@ $(document).on("turbolinks:load", function(){
 class SlideNav {
 	constructor() {
 		this.sidebar = $('#sidebar');
+    if (this.sidebar[0] == undefined) { return(false) }
 		this.visible = false;
 		this.hamburger_id = '#nav-hamburger';
 		this.toggle_button = $(this.hamburger_id);
