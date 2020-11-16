@@ -364,6 +364,10 @@ class Message < ApplicationRecord
     Message.where(threadid: self.threadid).where.not(id: self.id).order(created_at: :desc)
   end
 
+  def related_messages
+    messageable.messages.order(created_at: :desc)
+  end
+
   private
 
   def detect_incoming_from_recipient
