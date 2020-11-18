@@ -11,6 +11,10 @@ $profile-image-height: 50px;
   padding-top: 5px;
 }
 
+body {
+  background: $content-gray;
+}
+
 #headerrow {
   position: fixed;
   top: 0px;
@@ -51,7 +55,7 @@ div#sidebar {
   overflow-y: auto;
   padding-top: 5px;
   left: 0px;
-  background: white;
+  background: $content-gray;
   // Fixed>
 
   display: flex;
