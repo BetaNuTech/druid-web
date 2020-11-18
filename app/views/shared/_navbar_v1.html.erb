@@ -51,7 +51,7 @@
         <%= image_tag('/icons/open_folder.svg') %>
         <span class="sidebar--item-content">Open</span>
       <% end %>
-      <% if (@property || @current_property).leads.open.any? %>
+      <% if ( (@property || @current_property).leads.open.any? rescue false ) %>
         <span class="sidebar--item-alert">&#9679;</span>
       <% end %>
     </div>
