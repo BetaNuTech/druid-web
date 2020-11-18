@@ -19,13 +19,17 @@ class Stat
   end
 
   DATE_RANGES = {
-    all_time: 'All Time',
     today: 'Today',
-    week: 'Past Week',
-    '2weeks': 'Past 2 Weeks',
-    month: 'Past Month',
-    '3months': 'Past 3 Months',
-    year: 'Past Year'
+    last_week: 'Last Week',
+    last_month: 'Last Month',
+    last_quarter: 'Last Quarter',
+    last_year: 'Last Year',
+    all_time: 'All Time',
+    week: '7 days until today',
+    '2weeks': '14 days until today',
+    month: '30 Days until today',
+    '3months': '3 Months until today',
+    year: '12 Months until today'
   }
 
 
@@ -727,14 +731,39 @@ EOS
       start_date = DateTime.now.beginning_of_day
     when 'week'
       start_date = DateTime.now - 1.week
+    when 'last_week'
+      start_date = DateTime.now.beginning_of_week - 1.week
+      end_date = DateTime.now.end_of_week - 1.week
     when '2weeks'
       start_date = DateTime.now - 2.weeks
     when 'month'
       start_date = DateTime.now - 1.month
+    when 'last_month'
+      start_date = DateTime.now.beginning_of_month - 1.month
+      end_date = DateTime.now.end_of_month - 1.month
     when '3months'
       start_date = DateTime.now - 3.months
+    when 'last_quarter'
+      this_year = Date.today.year
+      case Date.today.month
+      when 1,2,3
+        start_date = DateTime.new(this_year,1,1)
+        end_date = DateTime.new(this_year,3,31)
+      when 4,5,6
+        start_date = DateTime.new(this_year,4,1)
+        end_date = DateTime.new(this_year,6,30)
+      when 7,8,9
+        start_date = DateTime.new(this_year,7,1)
+        end_date = DateTime.new(this_year,9,30)
+      when 10,11,12
+        start_date = DateTime.new(this_year,10,1)
+        end_date = DateTime.new(this_year,12,31)
+      end
     when 'year'
       start_date = DateTime.now - 1.year
+    when 'last_year'
+      start_date = DateTime.now.beginning_of_year - 1.year
+      end_date = DateTime.now.end_of_year - 1.year
     else
       date_range = 'custom'
       start_date = Date.parse(filters.fetch(:start_date, '')) rescue 99.years.ago
