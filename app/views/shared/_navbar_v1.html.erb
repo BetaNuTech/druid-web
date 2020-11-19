@@ -90,7 +90,7 @@
 
   <div class="sidebar--header">Property</div>
   <div class="sidebar--item-group">
-    <% if policy(@property || @current_property).show? %>
+    <% if ( policy(@property || @current_property).show? rescue false ) %>
       <div class="sidebar--item <%= nav_item_class(:properties, :show) %>">
         <%= link_to(property_path(@property || @current_property)) do %>
           <%= image_tag('/icons/building.svg') %>
