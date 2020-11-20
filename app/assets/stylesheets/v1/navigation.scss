@@ -1,6 +1,7 @@
 $header-height: 50px;
 $sidebar-gray: #555;
-$content-gray: #F0F0F0;
+$sidebar-bg: #fff;
+$content-bg-gray: #F0F0F0;
 $profile-image-height: 50px;
 
 #content {
@@ -12,7 +13,7 @@ $profile-image-height: 50px;
 }
 
 body {
-  background: $content-gray;
+  background: $content-bg-gray;
 }
 
 #headerrow {
@@ -55,7 +56,7 @@ div#sidebar {
   overflow-y: auto;
   padding-top: 5px;
   left: 0px;
-  background: $content-gray;
+  background: $sidebar-bg;
   // Fixed>
 
   display: flex;
@@ -69,7 +70,7 @@ div#sidebar {
     letter-spacing: 0px;
     font-size: 0.9em;
     margin-top: 5px;
-    border-top: 2px solid $content-gray;
+    border-top: 2px solid $content-bg-gray;
     padding-top: 10px;
     padding-left: 15px;
   }
@@ -81,7 +82,7 @@ div#sidebar {
   }
 
   .sidebar--item:hover, .sidebar--item--active {
-    background: $content-gray;
+    background: $content-bg-gray;
     font-weight: bold;
   }
 
@@ -123,7 +124,7 @@ div#sidebar {
         padding-left: 6px;
         padding-top: 5px;
         font-size: 25px;
-        background-color: $content-gray;
+        background-color: $content-bg-gray;
         border-radius: 6px;
         border: 1px solid $sidebar-gray;
       }
@@ -144,8 +145,8 @@ div#sidebar {
 
 #sidebar--account-controls {
   margin-top: 10px;
-  border-top: 2px solid $content-gray;
-  border-bottom: 2px solid $content-gray;
+  border-top: 2px solid $content-bg-gray;
+  border-bottom: 2px solid $content-bg-gray;
   height: 145px;
   width: auto;
   text-align: center;
@@ -171,7 +172,7 @@ div#sidebar {
   }
 
   .sidebar--account-controls--profile {
-    border: 1px solid $content-gray;
+    border: 1px solid $content-bg-gray;
     border-radius: 50%;
     height: $profile-image-height;
     width: $profile-image-height;
