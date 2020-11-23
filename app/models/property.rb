@@ -27,6 +27,7 @@
 #  application_url      :string
 #  team_id              :uuid
 #  call_lead_generation :boolean          default(TRUE)
+#  maintenance_phone    :string
 #
 
 class Property < ApplicationRecord
@@ -42,9 +43,10 @@ class Property < ApplicationRecord
   ### Constants
 
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
-                    :country, :organization, :contact_name, :phone, :fax, :email,
-                    :website, :units, :notes, :school_district, :amenities, :active,
-                    :application_url, :team_id, :logo, :remove_logo, :call_lead_generation ]
+                    :country, :organization, :contact_name, :phone, :maintenance_phone,
+                    :fax, :email, :website, :units, :notes, :school_district,
+                    :amenities, :active, :application_url, :team_id, :logo, :remove_logo,
+                    :call_lead_generation ]
 
   ## Associations
   has_many :leads
@@ -124,6 +126,7 @@ class Property < ApplicationRecord
 
   def format_phones
     self.phone = PhoneNumber.format_phone(self.phone) if self.phone.present?
+    self.maintenance_phone = PhoneNumber.format_phone(self.maintenance_phone) if self.maintenance_phone.present?
     self.fax = PhoneNumber.format_phone(self.fax) if self.fax.present?
   end
 

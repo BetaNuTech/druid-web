@@ -27,6 +27,7 @@
 #  application_url      :string
 #  team_id              :uuid
 #  call_lead_generation :boolean          default(TRUE)
+#  maintenance_phone    :string
 #
 
 require 'rails_helper'

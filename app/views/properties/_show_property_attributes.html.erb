@@ -111,16 +111,22 @@
 
 
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <p>
         <strong>Phone:</strong>
         <%= number_to_phone(@property.phone) if @property.phone.present? %>
       </p>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <p>
         <strong>Fax:</strong>
         <%= number_to_phone(@property.fax) if @property.fax.present? %>
+      </p>
+    </div>
+    <div class="col-md-3">
+      <p>
+        <strong>Maintenance Phone:</strong>
+        <%= number_to_phone(@property.maintenance_phone) if @property.maintenance_phone.present? %>
       </p>
     </div>
   </div>

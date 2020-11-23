@@ -27,6 +27,7 @@
 #  application_url      :string
 #  team_id              :uuid
 #  call_lead_generation :boolean          default(TRUE)
+#  maintenance_phone    :string
 #
 
 FactoryBot.define do
@@ -44,6 +45,7 @@ FactoryBot.define do
     organization { Faker::Company.name }
     contact_name { Faker::Name.name }
     phone { Faker::PhoneNumber.phone_number }
+    maintenance_phone { Faker::PhoneNumber.phone_number }
     fax { Faker::PhoneNumber.phone_number }
     email { Faker::Internet.email }
     # TODO: this is causing error
