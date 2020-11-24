@@ -39,7 +39,8 @@ class ProspectStats
           "Name": property.name,
           "ID": property_voyager_id(property),
           "BlueskyID": property.id,
-          "ReportDate": @end_date.to_date,
+          "ReportDate": DateTime.now,
+          "EndDate": @end_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(property, 365),
             "Prospects365": prospect_count(property, 365),
@@ -56,7 +57,10 @@ class ProspectStats
             "Closings365": closing_rate(property, 365),
             "Closings180": closing_rate(property, 180),
             "Closings30": closing_rate(property, 30),
-            "Closings10": closing_rate(property, 10)
+            "Closings10": closing_rate(property, 10),
+            "UnclaimedLeadsNow": unclaimed_leads_now(property),
+            "Tenacity30": "A",
+            "LeadSpeed30": "A"
           }
         }
       end
@@ -78,6 +82,7 @@ class ProspectStats
           "ID": user.id,
           "BlueskyID": user.id,
           "ReportDate": DateTime.now,
+          "EndDate": @end_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(user, 365),
             "Prospects365": prospect_count(user, 365),
@@ -94,7 +99,10 @@ class ProspectStats
             "Closings365": closing_rate(user, 365),
             "Closings180": closing_rate(user, 180),
             "Closings30": closing_rate(user, 30),
-            "Closings10": closing_rate(user, 10)
+            "Closings10": closing_rate(user, 10),
+            "UnclaimedLeadsNow": unclaimed_leads_now(user),
+            "Tenacity30": "A",
+            "LeadSpeed30": "A"
           }
         }
       end
@@ -115,6 +123,7 @@ class ProspectStats
           "ID": team.id,
           "BlueskyID": team.id,
           "ReportDate": DateTime.now,
+          "EndDate": @end_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(team, 365),
             "Prospects365": prospect_count(team, 365),
@@ -132,6 +141,9 @@ class ProspectStats
             "Closings180": closing_rate(team, 180),
             "Closings30": closing_rate(team, 30),
             "Closings10": closing_rate(team, 10),
+            "UnclaimedLeadsNow": unclaimed_leads_now(team),
+            "Tenacity30": "A",
+            "LeadSpeed30": "A"
           }
         }
       end
@@ -256,6 +268,16 @@ class ProspectStats
       rate = 0.0
     end
     return rate
+  end
+
+  def unclaimed_leads_now(context)
+    case context
+    when Team
+      skope = Lead.where(user_id: context.members.pluck(&:id))
+    else
+      skope = context.leads
+    end
+    skope.where(state: 'open').count
   end
 
   #def calculate_lead_pctg_all(count, skope, window)
