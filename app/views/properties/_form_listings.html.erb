@@ -1,0 +1,11 @@
+<fieldset>
+  <legend>
+    Listing IDs/Codes
+    <a href="#property_listings" data-toggle="collapse" aria-expanded="false" aria-controls="property_listings" class="btn btn-xs btn-info">
+      More...
+    </a>
+  </legend>
+  <div id="property_listings" class="collapse">
+    <%= render partial: 'property_listing_form', locals: {form: form} %>
+  </div>
+</fieldset>

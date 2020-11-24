@@ -1,0 +1,46 @@
+<fieldset>
+  <legend>
+    Employees
+    <a href="#property_employees" data-toggle="collapse" aria-expanded="false" aria-controls="property_employees" class="btn btn-xs btn-info">
+      More...
+    </a>
+  </legend>
+  <div class="collapse" id="property_employees">
+    <div class="row">
+      <div class="col-md-4">
+        <%= form.add_nested_fields_link :property_users, 'Add Employee',
+          class: 'btn btn-sm btn-primary', role: 'button',
+          data: { insert_into: 'property_users'} %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12" id="property_users">
+        <%= form.nested_fields_for :property_users, wrapper_options: {class: 'property_phone_number_entry'} do |agent_form| %>
+          <div class="row">
+            <div class="col-md-4">
+              <%= agent_form.label :user_id, "User" %>
+              <% if agent_form.object.user_id.present? %>
+                <br/>
+                <span class="lead"><%= agent_form.object.user.name %></span>
+                <%= agent_form.hidden_field :user_id, value: agent_form.object.user_id %>
+              <% else %>
+                <%= agent_form.select :user_id,
+                  select_property_user(property: property, selected: agent_form.object.user_id, all: true),
+                  {include_blank: true}, class: "form-control selectize" %>
+              <% end %>
+            </div>
+            <div class="col-md-3">
+              <%= agent_form.label :role %>
+              <%= agent_form.select :role, select_user_role(agent_form.object.role), {}, class: "form-control" %>
+            </div>
+            <div class="col-md-2" style="padding-top: 2em">
+              <%= agent_form.check_box :_destroy, class: "form-check-input" %>
+              <%= agent_form.label :_destroy, 'Remove' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</fieldset>

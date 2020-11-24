@@ -1,6 +1,9 @@
 <div class="row">
   <div class="col-md-12">
-    <h1>Edit Property</h1>
+    <h1>
+      <%= @property.name %>
+      <small>Details and Options</small>
+    </h1>
     <%= render 'form', property: @property %>
   </div>
 </div>

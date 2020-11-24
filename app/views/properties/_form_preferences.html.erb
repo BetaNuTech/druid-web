@@ -1,0 +1,16 @@
+<fieldset>
+  <legend>
+    Preferences
+    <a href="#property_preferences" data-toggle="collapse" aria-expanded="false" aria-controls="property_preferences" class="btn btn-xs btn-info">
+      More...
+    </a>
+  </legend>
+  <div class="collapse" id="property_preferences">
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <%= form.check_box :call_lead_generation, class: "form-check-input" %>
+        <%= form.label :call_lead_generation, "Generate Leads from Incoming Calls" %> 
+      </div>
+    </div>
+  </div>
+</fieldset>

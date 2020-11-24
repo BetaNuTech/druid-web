@@ -1,0 +1,24 @@
+<fieldset>
+  <legend>
+    Other Information
+    <a href="#property_other_information" data-toggle="collapse" aria-expanded="false" aria-controls="property_other_information" class="btn btn-xs btn-info">
+      More...
+    </a>
+  </legend>
+
+  <div class="collapse" id="property_other_information">
+    <div class="row">
+      <div class="col-md-8 form-group">
+        <%= form.label :school_district %>
+        <%= form.text_field :school_district, id: :property_school_district, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 form-group">
+        <%= form.label :amenities %>
+        <%= form.text_area :amenities, id: :property_amenities, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+</fieldset>

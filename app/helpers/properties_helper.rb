@@ -54,4 +54,30 @@ module PropertiesHelper
   def property_options_for_current(val)
     options_for_select(PropertyPolicy.new(current_user,Property).for_lead_assignment.order(name: 'ASC').map{|p| [p.name, p.id]}, val)
   end
+
+  def morning_hours_options(val)
+    option_arr = []
+    ( 5..11 ).each do |hour|
+      opt = "#{hour}:00 AM"
+      option_arr << [opt, opt]
+      opt = "#{hour}:30 AM"
+      option_arr << [opt, opt]
+    end
+    option_arr << ["12:00 PM", "12:00 PM"]
+    option_arr << ["12:30 PM", "12:30 PM"]
+    options_for_select(option_arr, val)
+  end
+
+  def afternoon_hours_options(val)
+    option_arr = []
+    option_arr << ["12:00 PM", "12:00 PM"]
+    option_arr << ["12:30 PM", "12:30 PM"]
+    ( 1..11 ).each do |hour|
+      opt = "#{hour}:00 PM"
+      option_arr << [opt, opt]
+      opt = "#{hour}:30 PM"
+      option_arr << [opt, opt]
+    end
+    options_for_select(option_arr, val)
+  end
 end

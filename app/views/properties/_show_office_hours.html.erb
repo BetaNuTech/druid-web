@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Office Hours</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Morning</th>
+          <th>Afternoon</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+        <tr>
+          <td><%= day.capitalize %></td>
+          <td>
+            <%= @property.working_hours[day]["morning"]["open"] %> &rarr;
+            <%= @property.working_hours[day]["morning"]["close"] %>
+          </td>
+          <td>
+            <%= @property.working_hours[day]["afternoon"]["open"] %> &rarr;
+            <%= @property.working_hours[day]["afternoon"]["close"] %>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

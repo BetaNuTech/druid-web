@@ -28,6 +28,7 @@
 #  team_id              :uuid
 #  call_lead_generation :boolean          default(TRUE)
 #  maintenance_phone    :string
+#  working_hours        :jsonb
 #
 
 FactoryBot.define do
