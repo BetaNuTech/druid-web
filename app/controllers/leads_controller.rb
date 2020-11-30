@@ -155,7 +155,9 @@ class LeadsController < ApplicationController
     params.permit!
     @lead.transition_memo = params[:memo] if params[:memo].present?
     @lead.classification = params[:classification] if params[:classification].present?
-    @lead.follow_up_at = DateTime.new(*(params[:follow_up_at].values.map(&:to_i))) if params[:follow_up_at].present?
+    if params[:follow_up_at].present?
+      @lead.follow_up_at = ( DateTime.new(*(params[:follow_up_at].values.map(&:to_i))) rescue ( DateTime.now + 3.months ))
+    end
     @success = trigger_lead_state_event(lead: @lead, event_name: params[:eventid])
     redirect_to(@lead)
   end

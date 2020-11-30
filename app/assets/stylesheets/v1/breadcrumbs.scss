@@ -29,7 +29,7 @@ ul#crumbs {
       margin: 5px 10px 0 0;
       font-size: 14px;
       text-decoration: none;
-      color: #fff;
+      color: #333;
     }
 
     a.crumb-link:after {
@@ -53,7 +53,7 @@ ul#crumbs {
       content: "";
       border-top: 13px solid transparent;
       border-bottom: 12px solid transparent;
-      border-left: 20px solid #fff;
+      border-left: 20px solid #F0F0F0;
       position: absolute; left: 0; top: 0;
     }
     a.crumb-active:hover { background: #5bc0de; }
