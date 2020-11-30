@@ -59,7 +59,7 @@ class ProspectStats
             "Closings30": closing_rate(property, 30),
             "Closings10": closing_rate(property, 10),
             "UnclaimedLeadsNow": unclaimed_leads_now(property),
-            "Tenacity30": "A",
+            "Tenacity30": "10",
             "LeadSpeed30": "A"
           }
         }
@@ -101,7 +101,7 @@ class ProspectStats
             "Closings30": closing_rate(user, 30),
             "Closings10": closing_rate(user, 10),
             "UnclaimedLeadsNow": unclaimed_leads_now(user),
-            "Tenacity30": "A",
+            "Tenacity30": "10",
             "LeadSpeed30": "A"
           }
         }
@@ -142,7 +142,7 @@ class ProspectStats
             "Closings30": closing_rate(team, 30),
             "Closings10": closing_rate(team, 10),
             "UnclaimedLeadsNow": unclaimed_leads_now(team),
-            "Tenacity30": "A",
+            "Tenacity30": "10",
             "LeadSpeed30": "A"
           }
         }
