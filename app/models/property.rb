@@ -38,6 +38,7 @@ class Property < ApplicationRecord
   include Properties::PhoneNumbers
   include Properties::MarketingSources
   include Properties::Logo
+  include Properties::WorkingHours
   include Properties::YardiVoyager
   audited
 
@@ -48,37 +49,6 @@ class Property < ApplicationRecord
                     :fax, :email, :website, :units, :notes, :school_district,
                     :amenities, :active, :application_url, :team_id, :logo, :remove_logo,
                     :call_lead_generation, { working_hours: {} } ]
-
-  DEFAULT_WORKING_HOURS = {
-    'sunday': {
-      'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-      'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
-    },
-    'monday': {
-      'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-      'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
-    },
-    'tuesday': {
-      'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-      'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
-    },
-    'wednesday': {
-      'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-      'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
-    },
-    'thursday': {
-      'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-      'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
-    },
-    'friday': {
-      'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-      'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
-    },
-    'saturday': {
-      'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-      'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
-    }
-  }
 
   ## Associations
   has_many :leads
