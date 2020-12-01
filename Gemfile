@@ -54,6 +54,7 @@ gem "wysiwyg-rails", github: 'codeprimate/wysiwyg-rails'
 gem 'froala-editor-sdk', "~> 1.4"
 gem 'flipflop', github: 'Bellingham-DEV/flipflop'
 gem 'descriptive_statistics', "~> 2.5", require: 'descriptive_statistics/safe'
+gem 'working_hours'
 
 
 group :development, :test do

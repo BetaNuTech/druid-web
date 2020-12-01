@@ -11,6 +11,23 @@ namespace :db do
       SeedProperties.new.call
     end
 
+    namespace :property do
+      desc "Seed Property Timezones"
+      task :timezones => :environment do
+        filename = Rails.root + 'db/seeds/property_timezones.yml'
+        data = YAML.load(File.read(filename))
+        data.each do |p|
+          name = p[:name]
+          tz = p[:timezone]
+          property = Property.find_by_name(name)
+          puts "  - #{name} => #{tz}"
+          property.timezone = tz
+          property.save!
+        end
+      end
+    end
+
+
     desc "Seed LeadActions"
     task :lead_actions => :environment do
       LeadAction.load_seed_data

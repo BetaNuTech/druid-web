@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       get 'docs', to: "swagger#apidocs"
       resources :leads, only: [:index, :create ]
       get 'leads/prospect_stats', to: "leads#prospect_stats"
+      get 'property_info', to: "leads#property_info"
       resources :messages, only: [:create]
     end
   end

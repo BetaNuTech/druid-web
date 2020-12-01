@@ -1,0 +1,222 @@
+---
+- :id: f6e37319-5084-43df-b558-f60bace1b9dd
+  :name: Paddock at Eastpoint
+  :city: Louisville
+  :state: KY
+  :zip: '40245'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 9ed4a047-3083-4ed8-b3f7-ac608ae42a7c
+  :name: Summercrest
+  :city: Burleson
+  :state: TX
+  :zip: '76028'
+  :timezone: 'Central Time (US & Canada)'
+- :id: f6ebcef7-5dcd-440d-8939-f68780545417
+  :name: Stonebrook
+  :city: Tyler
+  :state: TX
+  :zip: '75703'
+  :timezone: 'Central Time (US & Canada)'
+- :id: 240162fd-265b-431d-86a2-8b3e3cec2189
+  :name: Emerson Apartments
+  :city: Pflugerville
+  :state: TX
+  :zip: '78660'
+  :timezone: 'Central Time (US & Canada)'
+- :id: 8d922ec1-f4bf-41ae-9d7a-c2538a189e23
+  :name: Ranch 123
+  :city: Seguin
+  :state: TX
+  :zip: '78155'
+  :timezone: 'Central Time (US & Canada)'
+- :id: a114b7e3-1c54-431f-9396-f23dd41d457f
+  :name: Bandon Trails
+  :city: Tulsa
+  :state: OK
+  :zip: '74137'
+  :timezone: 'Central Time (US & Canada)'
+- :id: 3efe92ac-b1b5-44b8-9c42-fb7c111ce870
+  :name: Prinwood Place
+  :city: Portage
+  :state: MI
+  :zip: '49024'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: f6caa025-85f2-44a1-a52c-4aedd82a1d1f
+  :name: Estates at Hollister
+  :city: Houston
+  :state: TX
+  :zip: '77040'
+  :timezone: 'Central Time (US & Canada)'
+- :id: ac03fde7-e651-4b03-9e20-e6284a01cec8
+  :name: Glenmary Village
+  :city: Louisville
+  :state: KY
+  :zip: '40291'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: fbe47db9-ab6c-417d-a047-ce8af75f2673
+  :name: Hickory Point
+  :city: Nashville
+  :state: 'TN'
+  :zip: '37211'
+  :timezone: 'Central Time (US & Canada)'
+- :id: fc995eba-a4df-4344-b8c2-28c64d7889e7
+  :name: Orchard Hills
+  :city: Jeffersonville
+  :state: IN
+  :zip: '47130'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 85a28f5d-067f-4ee0-a588-b4083c516bfe
+  :name: Reserve at Maryville
+  :city: Maryville
+  :state: TN
+  :zip: '37801'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: b8d935f1-9444-489a-91ab-fb711a612223
+  :name: Eagle's Landing Apartments
+  :city: Salt Lake City
+  :state: UT
+  :zip: '84104'
+  :timezone: 'Mountain Time (US & Canada)'
+- :id: d2043370-9bb3-43bd-9700-ea2deb42e3d6
+  :name: Walden Legacy
+  :city: Knoxville
+  :state: TN
+  :zip: '37931'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 633360dc-4118-4f9d-9536-aa98ff6371c0
+  :name: Towne West
+  :city: Houston
+  :state: TX
+  :zip: '770872'
+  :timezone: 'Central Time (US & Canada)'
+- :id: 70c72361-f4ed-49c6-81cc-0b35dce587f1
+  :name: Lakeside at Town Center
+  :city: Marietta
+  :state: GA
+  :zip: '30066'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 713be75a-db60-4995-a9b6-79bbc1647fa3
+  :name: Marble Alley
+  :city: Knoxville
+  :state: TN
+  :zip: '37902'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: f3c4b25b-9210-4e1b-a181-ab581275e9b3
+  :name: Vantage Point
+  :city: Ashland City
+  :state: TN
+  :zip: '37015'
+  :timezone: 'Central Time (US & Canada)'
+- :id: ad548b23-cda6-4b50-945c-eb74cdce6f0e
+  :name: Houston Levee
+  :city: Cordova
+  :state: TN
+  :timezone: 'Central Time (US & Canada)'
+- :id: 63ae4927-bafa-44c5-8df1-4b158f976eed
+  :name: Ethos Apartments
+  :city: Austin
+  :state: TX
+  :zip: '78744'
+  :timezone: 'Central Time (US & Canada)'
+- :id: dd47656a-806c-4da2-9ae6-c95639b362b0
+  :name: Gulf Breeze
+  :city: Corpus Christi
+  :state: TX
+  :zip: '78414'
+  :timezone: 'Central Time (US & Canada)'
+- :id: 43ad17c5-e07e-4f63-856b-32444862fc12
+  :name: Maplebrook
+  :city: Louisville
+  :state: KY
+  :zip: '40241'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 513e0d59-cec3-4b97-8ac4-5724450af80d
+  :name: Brooklyn Place
+  :city: Evansville
+  :state: IN
+  :zip: '47715'
+  :timezone: 'Central Time (US & Canada)'
+- :id: d7d86d8a-d222-408a-a79e-f893edc54d41
+  :name: Legends at Indian Springs
+  :city: Louisville
+  :state: KY
+  :zip: '40241'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 2668c87d-54e3-4549-9ed6-564da1f99f9b
+  :name: Inverness
+  :city: Tuscaloosa
+  :state: AL
+  :zip: '35405'
+  :timezone: 'Central Time (US & Canada)'
+- :id: c6a4db49-c571-48d1-992f-0592968b9ea9
+  :name: Woodland Lakes
+  :city: Lansing
+  :state: MI
+  :zip: '48911'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: a8a6aee8-d53c-464e-8939-8b8087877410
+  :name: Ethan Pointe
+  :city: Burlington
+  :state: NC
+  :zip: '27215'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 832959e5-d642-4b86-ac5e-7243b2829f58
+  :name: Peyton Stakes
+  :city: Nashville
+  :state: TN
+  :zip: '37208'
+  :timezone: 'Central Time (US & Canada)'
+- :id: 5eccd25b-d32a-475d-b7be-d89a531c9409
+  :name: Reserve at North River
+  :city: Tuscaloosa
+  :state: AL
+  :zip: '35406'
+  :timezone: 'Central Time (US & Canada)'
+- :id: e605dac1-d67f-49a1-825c-3c6a71aa3602
+  :name: Summerwood
+  :city: Indianapolis
+  :state: IN
+  :zip: '46268'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 63d32c45-caae-43e0-8f6e-8121a3f1b7f7
+  :name: Stoneleigh
+  :city: Corpus Christi
+  :state: TX
+  :zip: '78412'
+  :timezone: 'Central Time (US & Canada)'
+- :id: 1185a890-ba7c-4bbe-b93d-482512528f0f
+  :name: Walnut Ridge
+  :city: Bastrop
+  :state: TX
+  :zip: '78602'
+  :timezone: 'Central Time (US & Canada)'
+- :id: a9e1e2f8-594b-4ed8-b813-ea4fa11ad303
+  :name: Tuscany Villas
+  :city: Baton Rogue
+  :state: LA
+  :zip: '70809'
+  :timezone: 'Central Time (US & Canada)'
+- :id: e8e2aea1-4f33-4dc7-9dd7-0c7e77393567
+  :name: Oak Hill Apartments
+  :city: Rensselaer
+  :state: NY
+  :zip: '12144'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 982914fb-7610-4c9c-b867-b88a14696f8f
+  :name: Overlook at Valley Ridge
+  :city: Indianapolis
+  :state: IN
+  :zip: '46237'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 51636210-eb08-42bd-abf9-e7d20b6ce0e0
+  :name: The Darby
+  :city: Holly Springs
+  :state: GA
+  :zip: '30115'
+  :timezone: 'Eastern Time (US & Canada)'
+- :id: 691b3d3f-6dad-413e-9e08-4753bce6f233
+  :name: Villas at Cordova
+  :city: Cordova
+  :state: TN
+  :zip: '38018'
+  :timezone: 'Central Time (US & Canada)'

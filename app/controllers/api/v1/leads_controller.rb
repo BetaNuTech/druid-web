@@ -52,6 +52,16 @@ module Api
         @stats = ProspectStats.new(ids: @ids, filters: {date: params[:date]})
       end
 
+      def property_info
+        unless access_policy.create?
+          Leads::Creator.create_event_note(message: 'Lead API Access Denied', error: true)
+          render json: {errors: {base: [ 'Access Denied' ]}}, status: :forbidden
+          return
+        end
+
+        render json: Property.property_info_for_incoming_number(params[:number])
+      end
+
       private
 
       def validate_lead_source_token

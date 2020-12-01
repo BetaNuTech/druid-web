@@ -11,4 +11,8 @@ class LeadApiPolicy < ApplicationPolicy
     "Cobalt" == record.name
   end
 
+  def property_info?
+    "CallCenter" == record.name
+  end
+
 end
