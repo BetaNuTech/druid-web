@@ -29,6 +29,7 @@
 #  call_lead_generation :boolean          default(TRUE)
 #  maintenance_phone    :string
 #  working_hours        :jsonb
+#  timezone             :string           default("UTC"), not null
 #
 
 class Property < ApplicationRecord
@@ -62,6 +63,7 @@ class Property < ApplicationRecord
 
   ### Validations
   validates :name, presence: true, uniqueness: true
+  validates :timezone, presence: true
 
   ### Scopes
   scope :active, -> { where(active: true) }

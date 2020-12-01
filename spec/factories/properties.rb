@@ -29,6 +29,7 @@
 #  call_lead_generation :boolean          default(TRUE)
 #  maintenance_phone    :string
 #  working_hours        :jsonb
+#  timezone             :string           default("UTC"), not null
 #
 
 FactoryBot.define do
