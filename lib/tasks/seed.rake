@@ -19,7 +19,8 @@ namespace :db do
         data.each do |p|
           name = p[:name]
           tz = p[:timezone]
-          property = Property.find_by_name(name)
+          property = Property.where(name: name).first
+          next unless property.present?
           puts "  - #{name} => #{tz}"
           property.timezone = tz
           property.save!
