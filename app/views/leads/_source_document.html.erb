@@ -5,7 +5,6 @@
     <div class="row">
     <% if lead.source_document[:text].present? %>
       <div class="col-md-6">
-        <%#= lead.source_document[:text] %>
         <iframe id="message_preview" srcdoc="<pre><%= lead.source_document[:text] %></pre>" style="height: 600px; width: 600px;"> </iframe>
       </div>
     <% end %>

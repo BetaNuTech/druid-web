@@ -1,4 +1,5 @@
 require_relative './after55_dot_com_parser'
+require_relative './knoxville_apartmentguide_dot_com_parser'
 require_relative './apartment_list_dot_com_parser'
 require_relative './apartmentguide_dot_com_parser'
 require_relative './apartments_dot_com_parser'
@@ -17,6 +18,7 @@ module Leads
       # All Valid CloudMailin Parsers except NullParser
       PARSERS = [
         CorporatehousingDotComParser, # Goes before all other forrent.com parsers
+        KnoxvilleApartmentguideDotComParser,
         LeaseLabsDotComParser,
         After55DotComParser,
         AbodoParser,
