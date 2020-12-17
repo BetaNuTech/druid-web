@@ -100,7 +100,7 @@ module ScheduledActions
 
       def target_completion
         if target.respond_to?(:handle_scheduled_action_completion)
-          target.handle_scheduled_action_completion
+          target.handle_scheduled_action_completion(self)
         end
       end
 

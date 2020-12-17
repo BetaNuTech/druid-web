@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_22_052050) do
+ActiveRecord::Schema.define(version: 2020_12_29_231110) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -78,6 +78,21 @@ ActiveRecord::Schema.define(version: 2020_12_22_052050) do
     t.index ["created_at"], name: "index_audits_on_created_at"
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
     t.index ["user_id", "user_type"], name: "user_index"
+  end
+
+  create_table "contact_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id", null: false
+    t.uuid "user_id", null: false
+    t.uuid "article_id"
+    t.string "article_type"
+    t.string "description"
+    t.datetime "timestamp", null: false
+    t.boolean "first_contact", default: false, null: false
+    t.integer "lead_time", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["first_contact", "timestamp"], name: "contact_events_contact_and_timestamp"
+    t.index ["lead_id", "user_id", "first_contact", "timestamp"], name: "contact_events_general_idx"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -583,6 +598,19 @@ ActiveRecord::Schema.define(version: 2020_12_22_052050) do
     t.datetime "updated_at", null: false
     t.integer "duration"
     t.time "end_time"
+  end
+
+  create_table "statistics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "fact", null: false
+    t.uuid "quantifiable_id", null: false
+    t.string "quantifiable_type", null: false
+    t.integer "resolution", default: 1440, null: false
+    t.decimal "value", null: false
+    t.datetime "time_start", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_at"], name: "index_statistics_on_created_at"
+    t.index ["fact", "quantifiable_id", "quantifiable_type", "resolution", "time_start"], name: "statistics_general_idx", unique: true
   end
 
   create_table "team_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

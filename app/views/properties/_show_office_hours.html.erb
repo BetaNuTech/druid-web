@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <h2>Office Hours</h2>
     <p>
-      <strong>Timezone:</strong> <%= @property.timezone %>
+      <strong>Timezone:</strong> <%= property.timezone %>
     </p>
     <table class="table">
       <thead>
@@ -13,16 +13,17 @@
         </tr>
       </thead>
       <tbody>
+        <% working_hours = OpenStruct.new(property.working_hours || Property::DEFAULT_WORKING_HOURS) %>
         <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
         <tr>
           <td><%= day.capitalize %></td>
           <td>
-            <%= @property.working_hours[day]["morning"]["open"] %> &rarr;
-            <%= @property.working_hours[day]["morning"]["close"] %>
+            <%= working_hours[day]["morning"]["open"] %> &rarr;
+            <%= working_hours[day]["morning"]["close"] %>
           </td>
           <td>
-            <%= @property.working_hours[day]["afternoon"]["open"] %> &rarr;
-            <%= @property.working_hours[day]["afternoon"]["close"] %>
+            <%= working_hours[day]["afternoon"]["open"] %> &rarr;
+            <%= working_hours[day]["afternoon"]["close"] %>
           </td>
         </tr>
         <% end %>

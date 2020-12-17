@@ -456,4 +456,26 @@ RSpec.describe Message, type: :model do
     end
 
   end
+
+  describe "contact events" do
+    let(:lead) { create(:lead, user: user, first_comm: 1.hour.ago)}
+    let(:user) { create(:user)}
+    let(:message_type) { create(:email_message_type)}
+    let(:message_template) { create(:message_template, message_type: message_type)}
+
+    it "should create a contact event when an outgoing message is delivered for a lead" do
+      event_count = lead.contact_events.count
+      message = Message.new_message(from: user, to: lead, message_type: message_type, subject: 'Test', body: 'Test')
+      message.save!
+      message.deliver
+      lead.reload
+      expect(lead.contact_events.count).to eq(event_count + 1)
+      event = lead.contact_events.last
+      expect(event.article).to eq(message)
+      expect(event.lead_time).to eq(60)
+      expect(event.user).to eq(lead.user)
+      expect(event.lead).to eq(lead)
+    end
+  end
+
 end

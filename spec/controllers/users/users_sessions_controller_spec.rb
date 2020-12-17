@@ -8,8 +8,8 @@ RSpec.describe Users::SessionsController, type: :controller do
 
   before do
    @request.env["devise.mapping"] = Devise.mappings[:user]
-   unroled_user.password = unroled_user.password_confirmation = user_pw
-   unroled_user.save!
+   agent.password = agent.password_confirmation = user_pw
+   agent.save!
   end
 
   describe "when a user is unauthenticated" do
@@ -28,13 +28,13 @@ RSpec.describe Users::SessionsController, type: :controller do
 
     describe "visiting the login page" do
       it "allows logging in with valid credentials" do
-        post :create, params: {user: {email: unroled_user.email, password: user_pw}}
+        post :create, params: {user: {email: agent.email, password: user_pw}}
         expect(response).to redirect_to(authenticated_root_path)
         expect(session["flash"]["flashes"]["notice"]).to eq('Signed in successfully.')
       end
 
       it "will not authenticate with invalid credentials" do
-        post :create, params: {user: {email: unroled_user.email, password: 'wrong password' }}
+        post :create, params: {user: {email: agent.email, password: 'wrong password' }}
         expect(response).to be_successful
         expect(session).to be_empty
       end

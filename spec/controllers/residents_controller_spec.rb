@@ -48,11 +48,11 @@ RSpec.describe ResidentsController, type: :controller do
       end
     end
 
-    describe "as an manager" do
+    describe "as a manager" do
       it "should succeed" do
         sign_in manager
         get :new
-        expect(response).to be_successful
+        expect(response).to render_template(:new)
       end
     end
   end
@@ -113,9 +113,8 @@ RSpec.describe ResidentsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect {
-          get :show, params: {id: resident.id}
-        }.to raise_error
+        get :show, params: {id: resident.id}
+        expect(response).to redirect_to new_user_session_path
       end
     end
 
@@ -140,9 +139,8 @@ RSpec.describe ResidentsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect {
-          get :edit, params: {id: resident.id}
-        }.to raise_error
+        get :edit, params: {id: resident.id}
+        expect(response).to redirect_to new_user_session_path
       end
     end
 
@@ -176,9 +174,8 @@ RSpec.describe ResidentsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect{
-          put :update, params: {id: resident.id, resident: valid_new_attributes}
-        }.to raise_error
+        put :update, params: {id: resident.id, resident: valid_new_attributes}
+        expect(response).to redirect_to new_user_session_path
       end
     end
 
@@ -244,9 +241,8 @@ RSpec.describe ResidentsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect{
-          delete :destroy, params: {id: resident.id}
-        }.to raise_error
+        delete :destroy, params: {id: resident.id}
+        expect(response).to redirect_to new_user_session_path
       end
     end
 

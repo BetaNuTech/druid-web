@@ -213,9 +213,8 @@ RSpec.describe UnitsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect{
-          get :show, params: {id: unit.id}
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        get :show, params: {id: unit.id}
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
@@ -258,16 +257,15 @@ RSpec.describe UnitsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect{
-          get :edit, params: {id: unit.id}
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        get :edit, params: {id: unit.id}
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     describe "as an agent" do
-      it "should fail and redirect" do
+      it "raise a 404" do
         sign_in agent
-        expect{
+        expect {
           get :edit, params: {id: unit.id}
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -312,14 +310,13 @@ RSpec.describe UnitsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect{
-          put :update, params: {id: unit.id, unit: updated_attributes}
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        put :update, params: {id: unit.id, unit: updated_attributes}
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     describe "as an agent" do
-      it "should fail and redirect" do
+      it "should throw 404" do
         sign_in agent
         expect{
           put :update, params: {id: unit.id, unit: updated_attributes}
@@ -374,9 +371,8 @@ RSpec.describe UnitsController, type: :controller do
     describe "as an unroled user" do
       it "should fail and redirect" do
         sign_in unroled_user
-        expect{
-          delete :destroy, params: {id: unit.id}
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        delete :destroy, params: {id: unit.id}
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 

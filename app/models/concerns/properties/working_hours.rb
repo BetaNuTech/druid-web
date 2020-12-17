@@ -1,38 +1,38 @@
 module Properties
   module WorkingHours
     extend ActiveSupport::Concern
-    require 'working_hours'
+    require 'working_hours/module'
 
     included do
-
+      include WorkingHours
       DEFAULT_WORKING_HOURS = {
-        'sunday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'sunday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'monday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'monday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'tuesday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'tuesday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'wednesday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'wednesday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'thursday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'thursday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'friday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'friday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'saturday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'saturday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         }
       }
 
@@ -82,8 +82,20 @@ module Properties
       end
 
       def office_open?
-        ::WorkingHours::Config.with_config(working_hours_config) do
+        with_working_hours do
           Time.now.in_working_hours?
+        end
+      end
+
+      def working_hours_difference_in_time(from, to)
+        with_working_hours do
+          (::WorkingHours.working_time_between(from, to) / 60).to_i
+        end
+      end
+
+      def with_working_hours(&block)
+        ::WorkingHours::Config.with_config(working_hours_config) do
+          yield
         end
       end
 

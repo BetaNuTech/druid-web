@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12">
     <%= render partial: "show_property_attributes" %>
-    <%= render partial: "show_office_hours" %>
+    <%= render partial: "show_office_hours", locals: { property: @property } %>
     <%= render partial: "show_users" %>
     <%= render partial: "show_listings" %>
     <%= render partial: "show_team" %>

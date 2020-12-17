@@ -110,6 +110,48 @@ RSpec.describe ScheduledAction, type: :model do
 
     end
 
+    describe "contact event" do
+      include_context "scheduled_actions"
+      let(:lead) {
+        lead = create(:lead, state: 'open')
+        lead.first_comm = 1.hour.ago
+        lead.trigger_event(event_name: 'claim', user: team1_agent1)
+        lead.reload
+        lead
+      }
+      let(:lead_action_contact) { create(:lead_action, is_contact: true) }
+      let(:lead_action_no_contact) { create(:lead_action, is_contact: false) }
+      let(:scheduled_action_contact) {
+        scheduled_action1.lead_action = lead_action_contact
+        scheduled_action1.target = lead
+        scheduled_action1.save!
+        scheduled_action1
+      }
+      let(:scheduled_action_no_contact) {
+        scheduled_action2.lead_action = lead_action_no_contact
+        scheduled_action2.target = lead
+        scheduled_action2.save!
+        scheduled_action2
+      }
+      it 'should not create a contact event upon completion if is it not a contact action' do
+        event_count = lead.contact_events.count
+        full_count = ContactEvent.count
+        scheduled_action_no_contact.trigger_event(event_name: :complete, user: user)
+        lead.reload
+        expect(lead.contact_events.count).to eq(event_count)
+        expect(ContactEvent.count).to eq(full_count)
+        scheduled_action_contact.trigger_event(event_name: :complete, user: user)
+        lead.reload
+        expect(lead.contact_events.count).to eq(event_count + 1)
+        expect(ContactEvent.count).to eq(full_count + 1)
+        event = lead.contact_events.last
+        expect(event.article).to eq(scheduled_action_contact)
+        expect(event.lead_time).to eq(60)
+        expect(event.user).to eq(lead.user)
+        expect(event.lead).to eq(lead)
+      end
+    end
+
   end
 
   describe "notifications" do
