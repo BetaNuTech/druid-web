@@ -251,7 +251,7 @@ RSpec.describe EngagementPolicyScheduler do
         expect(task.reason.name).to eq('Message Response')
         expect(task.engagement_policy_action.description).to eq('Require response to incoming message')
         expect(task.engagement_policy_action.deadline).to eq(2.0)
-        expect(task.engagement_policy_action_compliance.expires_at).to eq(message.delivered_at + 2.hours)
+        expect(task.engagement_policy_action_compliance.expires_at.to_i).to eq(( message.delivered_at + 2.hours ).to_i)
       end
 
       it "should award points to the agent if the task is completed" do

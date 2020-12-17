@@ -45,10 +45,6 @@ module Leads
         save
       end
 
-      def handle_scheduled_action_completion
-        set_priority
-      end
-
       def estimated_priority
         case state
         when 'open'

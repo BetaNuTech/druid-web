@@ -129,15 +129,15 @@ RSpec.describe LeadsController, type: :controller do
     end
   end
 
-  describe "GET #call_log_partial" do
-    let(:lead) { create(:lead, property: agent.property) }
-    describe "as an agent" do
-      it "returns a success response" do
-        sign_in agent
-        get :call_log_partial, xhr: true, params: {id: lead.id }, format: :js
-      end
-    end
-  end
+  #describe "GET #call_log_partial" do
+    #let(:lead) { create(:lead, property: agent.property) }
+    #describe "as an agent" do
+      #it "returns a success response" do
+        #sign_in agent
+        #get :call_log_partial, xhr: true, params: {id: lead.id }, format: :js
+      #end
+    #end
+  #end
 
   describe "GET #progress_state" do
     let(:lead) { Lead.create! valid_attributes }
@@ -203,7 +203,7 @@ RSpec.describe LeadsController, type: :controller do
       it "denies access" do
         sign_in unroled_user
         get :show, params: {id: lead.to_param}
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
@@ -704,7 +704,7 @@ RSpec.describe LeadsController, type: :controller do
       # POST as an unroled/unauthorized user
       sign_in unroled_user
       post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
-      expect(response).to be_redirect
+      expect(response.status).to eq(401)
     end
 
     it "should trigger event if the event is valid" do
@@ -757,8 +757,6 @@ RSpec.describe LeadsController, type: :controller do
       expect(lead.state).to eq('future')
       expect(lead.follow_up_at).to eq(DateTime.new(2018,12,1))
     end
-
-
   end
 
   describe "GET #mass_assignment" do
@@ -771,10 +769,6 @@ RSpec.describe LeadsController, type: :controller do
       get :mass_assignment
       expect(response).to have_http_status(:success)
     end
-  end
-
-  describe "POST #mass_assign" do
-    it "should assign leads to agents"
   end
 
 end

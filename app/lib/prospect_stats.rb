@@ -60,7 +60,7 @@ class ProspectStats
             "Closings10": closing_rate(property, 10),
             "UnclaimedLeadsNow": unclaimed_leads_now(property),
             "Tenacity30": "TBD",
-            "LeadSpeed30": "TBD"
+            "LeadSpeed30": Statistic.lead_speed_grade_for(property, interval: :month, time_start: 1.month.ago.beginning_of_month)
           }
         }
       end
@@ -102,7 +102,7 @@ class ProspectStats
             "Closings10": closing_rate(user, 10),
             "UnclaimedLeadsNow": unclaimed_leads_now(user),
             "Tenacity30": "TBD",
-            "LeadSpeed30": "TBD"
+            "LeadSpeed30": Statistic.lead_speed_grade_for(user, interval: :month, time_start: 1.month.ago.beginning_of_month)
           }
         }
       end
@@ -143,7 +143,7 @@ class ProspectStats
             "Closings10": closing_rate(team, 10),
             "UnclaimedLeadsNow": unclaimed_leads_now(team),
             "Tenacity30": "TBD",
-            "LeadSpeed30": "TBD"
+            "LeadSpeed30": Statistic.lead_speed_grade_for(team, interval: :month, time_start: 1.month.ago.beginning_of_month)
           }
         }
       end

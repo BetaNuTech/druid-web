@@ -55,6 +55,8 @@ class Message < ApplicationRecord
           CASE messages.read_at IS NULL WHEN true THEN 0 ELSE 1 END,
           messages.updated_at DESC"))
   }
+  scope :incoming, ->() { where(incoming: true) }
+  scope :outgoing, ->() { where(incoming: false) }
 
   ### Callbacks
   before_validation :set_meta

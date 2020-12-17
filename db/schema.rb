@@ -80,6 +80,21 @@ ActiveRecord::Schema.define(version: 2021_01_13_192444) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
+  create_table "contact_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id", null: false
+    t.uuid "user_id", null: false
+    t.uuid "article_id"
+    t.string "article_type"
+    t.string "description"
+    t.datetime "timestamp", null: false
+    t.boolean "first_contact", default: false, null: false
+    t.integer "lead_time", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["first_contact", "timestamp"], name: "contact_events_contact_and_timestamp"
+    t.index ["lead_id", "user_id", "first_contact", "timestamp"], name: "contact_events_general_idx"
+  end
+
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
@@ -583,6 +598,19 @@ ActiveRecord::Schema.define(version: 2021_01_13_192444) do
     t.datetime "updated_at", null: false
     t.integer "duration"
     t.time "end_time"
+  end
+
+  create_table "statistics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "fact", null: false
+    t.uuid "quantifiable_id", null: false
+    t.string "quantifiable_type", null: false
+    t.integer "resolution", default: 1440, null: false
+    t.decimal "value", null: false
+    t.datetime "time_start", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_at"], name: "index_statistics_on_created_at"
+    t.index ["fact", "quantifiable_id", "quantifiable_type", "resolution", "time_start"], name: "statistics_general_idx", unique: true
   end
 
   create_table "team_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

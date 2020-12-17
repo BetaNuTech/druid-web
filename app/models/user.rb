@@ -45,6 +45,7 @@ class User < ApplicationRecord
   ### Associations
   has_many :leads
   has_many :messages
+  has_many :contact_events, dependent: :destroy
 
   ### Validations
 

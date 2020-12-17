@@ -7,13 +7,9 @@ module Notes
       after_create :lead_action_contact_check
 
       def lead_action_contact_check
-        return true unless notable.present? && notable.is_a?(Lead)
-        lead = notable
-        if lead_action.present? && lead_action.is_contact
-          lead.last_comm = DateTime.now
-          lead.save
-        end
-        return true
+        return true unless notable.present? && notable.is_a?(Lead) && lead_action.present? && lead_action.is_contact
+
+        notable.make_contact(timestamp: Time.now, description: 'Agent made note of a Lead contact')
       end
 
     end
