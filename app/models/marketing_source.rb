@@ -48,6 +48,7 @@ class MarketingSource < ApplicationRecord
   validates :fee_rate, presence: true
   validates :start_date, presence: true
   validate :validate_end_date
+  validates :tracking_number, uniqueness: true, unless: -> { tracking_number.blank? }
 
   ### Callbacks
   before_validation :format_phone_numbers
