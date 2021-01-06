@@ -7,7 +7,19 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     authorize User
-    @users = User.includes(:profile).order('user_profiles.last_name ASC, user_profiles.first_name ASC')
+    skope = User.includes(:profile)
+
+    if params[:all]
+      @nofilter = true
+    else
+      @nofilter = false
+      if defined?(@current_property) && @crrent_property.present?
+        skope = @current_property.users.includes(:profile)
+      end
+      skope = skope.where(users: {deactivated: false})
+    end
+
+    @users = skope.order('user_profiles.last_name ASC, user_profiles.first_name ASC')
   end
 
   # GET /users/1
