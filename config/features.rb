@@ -7,11 +7,11 @@ Flipflop.configure do
   strategy UserPreferenceStrategy
   strategy :default
 
-  feature :profile_images_v1, default: false, description: 'Profile image support'
+  feature :profile_images_v1, default: true, description: 'Profile image support'
 
   feature :user_tracking, default: true, description: 'Track page impressions'
 
-  feature :design_v1, default: false, description: 'UI v1 Navigation'
+  feature :design_v1, default: true, description: 'UI v1 Navigation'
 
   # Other strategies:
   #
