@@ -66,7 +66,7 @@ class LeadPolicy < ApplicationPolicy
 
   def mass_assignment?
     user.property.present? &&
-      (user.admin? || user.manager?)
+      (user.admin? || user.corporate? || user.manager?)
   end
 
   def mass_assign?
