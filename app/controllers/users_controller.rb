@@ -13,7 +13,7 @@ class UsersController < ApplicationController
       @nofilter = true
     else
       @nofilter = false
-      if defined?(@current_property) && @crrent_property.present?
+      if defined?(@current_property) && @current_property.present?
         skope = @current_property.users.includes(:profile)
       end
       skope = skope.where(users: {deactivated: false})
