@@ -33,6 +33,13 @@ module UserProfiles
       def managed_features
         Flipflop.feature_set.features.map { |f| f.name.to_sym}
       end
+
+      def default_features
+        managed_features.inject({}) do |memo, obj|
+          memo[obj] = '1'
+          memo
+        end
+      end
     end
   end
 end

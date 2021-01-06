@@ -45,6 +45,13 @@ module UserProfiles
       def managed_settings
         MANAGED_SETTINGS
       end
+      
+      def default_settings
+        managed_settings.inject({}) do |memo, obj|
+          memo[obj] = '1'
+          memo
+        end
+      end
     end
   end
 end

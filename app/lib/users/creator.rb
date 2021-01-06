@@ -195,8 +195,12 @@ module Users
 
     def init_user
       @user = new_record? ? User.new : policy_scope.find(@user_id)
+      @user.timezone = 'Central Time (US & Canada)' if new_record?
       @user_attributes = allowed_attributes(@params)
       @user.attributes = @user_attributes
+      @user.profile ||= UserProfile.new
+      @user.profile.appsettings = UserProfile.default_settings.merge(@user.profile.appsettings)
+      @user.profile.enabled_features = UserProfile.default_features.merge(@user.profile.enabled_features)
       return @user
     end
 
