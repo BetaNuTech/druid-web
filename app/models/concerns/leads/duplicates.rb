@@ -9,7 +9,7 @@ module Leads
       has_many :duplicate_records, class_name: 'DuplicateLead', foreign_key: 'reference_id', dependent: :destroy
       has_many :duplicates, class_name: 'Lead', foreign_key: 'lead_id', through: :duplicate_records, source: :lead
 
-      after_create :mark_duplicates
+      after_create :mark_duplicates, :disqualify_if_resident
       after_save :duplicate_check_on_update
 
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name remoteid}
@@ -23,12 +23,18 @@ module Leads
         '1234567890',
         '1234567891',
         '2222222222',
+        '5025555555',
         '5555555',
         '5555555555',
         '7777777777',
+        '9999999999',
+        '5175551212',
         'CALLER',
         'CELLULAR',
         'FREE',
+        'abc123@gmail.com',
+        'noemail@xyz.com',
+        '5',
         'Noemail@gmail.com',
         'None',
         'None@none.com',
@@ -39,13 +45,16 @@ module Leads
         'WIRELESS',
         'didnothaveemail@gmail.com',
         'didnotwanttogive@gmail.com',
+        'didntgive@nowhere.com',
+        'n/a@gmail.com',
         'no.name@mane.com',
         'noemail@bluestone-prop.com',
         'noemail@bluestone-prop.zzz',
         'noemail@bluestone.com',
-        'noemail@email.com',
+        'noemail@dont.com',
         'noemail@gmail.com',
         'noemail@gmail.zzz',
+        'noemail@fake.com',
         'noemail@noemail.com',
         'noemail@noemail.zzz',
         'noemail@xyz.zzz',
@@ -60,12 +69,13 @@ module Leads
         'none@bluestone.com',
         'none@bluestone.zzz',
         'none@gmail.com',
+        'none@gmail.com',
         'none@gmail.zzz',
         'none@none.com',
         'none@noreply.com',
         'noone@bluestone.zzz',
         'noreply@noreply.com',
-        'unknown@noemail.com',
+        'unknown@noemail.com'
       ]
 
       def has_duplicates?
@@ -173,6 +183,119 @@ module Leads
       end
 
       handle_asynchronously :mark_duplicates, queue: :lead_dedupe
+
+      def disqualify_if_resident
+        if Lead.open_possible_residents(property).map{|opr| opr['id'] }.include?(id)
+          self.classification = :resident
+          self.transition_memo = 'Automatically disqualified as a Resident'
+          trigger_event(event_name: 'disqualify')
+          reload
+        end
+      end
+
+      handle_asynchronously :disqualify_if_resident, queue: :lead_dedupe
+    end
+
+    class_methods do
+
+      def disqualify_open_resident_leads(property=nil)
+        properties = property ? [property] : Property.active
+
+        properties.each do |p|
+          lead_ids = open_possible_residents(p).map{|r| r['id']}
+          Lead.where(id: lead_ids).each do |lead|
+            lead.classification = :resident
+            lead.transition_memo = 'Automatically disqualified as a Resident'
+            lead.trigger_event(event_name: 'disqualify')
+          end
+        end
+      end
+
+      def open_possible_residents_csv
+        data = []
+        Property.active.each do |property|
+          data += open_possible_residents(property)
+        end
+        CSV.generate do |csv|
+          csv << ['Property', 'Lead First Name', 'Lead Last Name', 'Lead Phone 1', 'Lead Phone 2', 'Lead Email', 'Resident First Name', 'Resident Last Name', 'Resident Phone 1', 'Resident Phone 2', 'Resident Email', 'Resident ID', 'Lead ID', 'Lead URL', 'Resident URL']
+          data.each do |row|
+            lead_base = 'https://www.blue-sky.app/leads/%s'
+            resident_base = 'https://www.blue-sky.app/residents/%s'
+            csv << row.to_a.map{|c| c.last} + [
+              lead_base % [row['id']],
+              resident_base % [row['resident_id']],
+            ]
+          end
+        end
+      end
+
+      def open_possible_residents(property)
+        invalid_values_sql = DUPLICATE_IGNORED_VALUES.map{|v| "'#{v}'"}.join(', ')
+
+        sql = <<~SQL
+          SELECT
+            properties.name AS property_name,
+            leads.first_name AS lead_first_name,
+            leads.last_name AS lead_last_name,
+            leads.phone1 AS lead_phone1,
+            leads.phone2 AS lead_phone2,
+            leads.email AS lead_email,
+            resident_info.resident_first_name AS resident_first_name,
+            resident_info.resident_last_name AS resident_last_name,
+            resident_info.resident_phone1 AS resident_phone1,
+            resident_info.resident_phone2 AS resident_phone2,
+            resident_info.resident_email AS resident_email,
+            resident_info.resident_id AS resident_id,
+            leads.id AS id
+          FROM
+            leads
+          INNER JOIN properties
+            ON leads.property_id = properties.id
+          INNER JOIN (
+            SELECT
+              residents.id AS resident_id,
+              residents.first_name as resident_first_name,
+              residents.last_name as resident_last_name,
+              resident_details.phone1 AS resident_phone1,
+              resident_details.phone2 AS resident_phone2,
+              resident_details.email AS resident_email
+            FROM residents
+            INNER JOIN resident_details
+              ON resident_details.resident_id = residents.id
+            WHERE
+              residents.property_id = '#{property.id}' AND
+              residents.status = 'current'
+          ) resident_info
+            ON (
+              (
+                leads.phone1 != '' AND
+                leads.phone1 = resident_info.resident_phone1 AND
+                leads.phone1 NOT IN (#{invalid_values_sql})
+              ) OR
+              (
+                leads.phone2 != '' AND
+                leads.phone2 = resident_info.resident_phone2 AND
+                leads.phone2 NOT IN (#{invalid_values_sql})
+              ) OR
+              (
+                leads.email != '' AND
+                leads.email = resident_info.resident_email AND
+                leads.email NOT IN (#{invalid_values_sql})
+              ) OR
+              (
+                leads.first_name = resident_info.resident_first_name AND
+                leads.last_name = resident_info.resident_last_name AND
+                leads.first_name NOT IN (#{invalid_values_sql}) AND
+                leads.last_name NOT IN (#{invalid_values_sql})
+              )
+            )
+          WHERE
+            leads.state = 'open' AND
+            leads.property_id = '#{property.id}';
+        SQL
+
+        ActiveRecord::Base.connection.execute(sql).to_a
+      end
     end
   end
 end

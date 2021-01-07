@@ -403,6 +403,12 @@ namespace :leads do
       puts "  - #{delta} records removed"
       puts "DONE!"
     end
+
+    desc "Disqualify if a Resident"
+    tasK :disqualify_residents => :environment do
+      puts '** Disqualifying as resident any open leads that match a current Resident record'
+      Lead.disqualify_open_resident_leads
+    end
   end
 
   namespace :waitlist do
