@@ -218,11 +218,11 @@ namespace :leads do
         start_date = 1.day.ago
       end
 
-      property_codes = Leads::Adapters::YardiVoyager.property_codes
+      properties = property_codes = Leads::Adapters::YardiVoyager.property_codes
 
       if ( env_properties = ENV.fetch('PROPERTY', nil) ).present?
         env_properties = env_properties.split(',')
-        properties = property_codes.select{|p| env_properties.include?(p[:code])}
+        properties = properties.select{|p| env_properties.include?(p[:code])}
         if properties.empty?
           properties = property_codes
         end
