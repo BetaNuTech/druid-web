@@ -3,7 +3,9 @@
     <h1>
       Users
       <% unless @nofilter %>
-        <small>at <%= @current_property.name %></small>
+        <% if @current_property %>
+          <small>at <%= @current_property.name %></small>
+        <% end %>
         <small>
           <%= link_to('Show All', users_path(all: true), class: "btn btn-sm btn-primary")  %>
         </small>
