@@ -16,7 +16,7 @@
   <div class="row">
     <div class="col-md-4 form-group">
       <%= label_tag "Classify As A"%>
-      <%= select_tag :classification, options_for_select(Lead.classifications.map{|k,v| [humanize_lead_state(k), k]}, @lead.classification ), class: "form-control"%>
+      <%= select_tag :classification, lead_classifications_for_progressing_state(lead: @lead, event: @eventid), class: "form-control"%>
     </div>
   </div>
 

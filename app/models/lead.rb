@@ -64,7 +64,7 @@ class Lead < ApplicationRecord
   attr_accessor :show_unit
 
   ### Enums
-  enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4 }
+  enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4, lost: 5 }
 
   ### Associations
   has_one :preference, class_name: 'LeadPreference', dependent: :destroy

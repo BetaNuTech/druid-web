@@ -237,4 +237,10 @@ module LeadsHelper
     state_name.to_s.capitalize.titlecase
   end
 
+  def lead_classifications_for_progressing_state(lead:, event:)
+    all_classes = Lead.classifications.keys
+    all_classes.delete('lead') if event == 'disqualify'
+    options_for_select(all_classes.map{|lc| [humanize_lead_state(lc), lc]}, lead.classification)
+  end
+
 end
