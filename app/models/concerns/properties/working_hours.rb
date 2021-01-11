@@ -6,33 +6,33 @@ module Properties
     included do
 
       DEFAULT_WORKING_HOURS = {
-        'sunday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'sunday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'monday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'monday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'tuesday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'tuesday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'wednesday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'wednesday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'thursday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'thursday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'friday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'friday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         },
-        'saturday': {
-          'morning': {'open': '6:00 AM', 'close': '11:30AM'},
-          'afternoon': {'open': '6:00 AM', 'close': '11:30AM'},
+        'saturday' => {
+          'morning' => {'open' => '6:00 AM', 'close' => '11:30AM'},
+          'afternoon' => {'open' => '6:00 AM', 'close' => '11:30AM'},
         }
       }
 
