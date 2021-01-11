@@ -405,7 +405,7 @@ namespace :leads do
     end
 
     desc "Disqualify if a Resident"
-    tasK :disqualify_residents => :environment do
+    task :disqualify_residents => :environment do
       puts '** Disqualifying as resident any open leads that match a current Resident record'
       Lead.disqualify_open_resident_leads
     end
