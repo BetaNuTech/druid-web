@@ -431,7 +431,7 @@ namespace :leads do
     end
   end
 
-  desc 'Transition Leads Correlated to eResidents'
+  desc 'Transition Leads Correlated to Residents'
   task resident_auto_transition: :environment do
     Leads::ResidentProcessor.new.call
   end
