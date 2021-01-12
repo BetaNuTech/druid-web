@@ -440,10 +440,10 @@ namespace :leads do
   task :kick_the_can => :environment do
     start_date = 5.years.ago
     end_date = Time.new(2020,11,1)
-    followup_base = Time.now + 3.months
-    Properties.active.each do |property|
-      puts "*** Processing old Open leads for #{property.name}"
-      old_leads = property.leads.open.where(created_at: start_date..end_date)
+    follow_up_base = Time.now.beginning_of_day + 2.months
+    Property.active.each do |property|
+      old_leads = property.leads.open.where(created_at: start_date..end_date).order(created_at: :asc)
+      puts "*** Processing #{old_leads.count} old Open leads for #{property.name}"
       if old_leads.count > 100
         batch_size = (old_leads.count / 90).to_i
         old_leads.find_in_batches(batch_size: batch_size).with_index do |group, index|
@@ -458,7 +458,7 @@ namespace :leads do
       else
         follow_up_date = follow_up_base + index.days
         puts " - Postponing #{old_leads.count} Leads for #{property.name} until #{follow_up_date}"
-        old_leads.order(created_at: :desc).each do |lead|
+        old_leads.each do |lead|
           lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up' 
           lead.follow_up_at = follow_up_base
           lead.trigger_event(event_name: :postpone)

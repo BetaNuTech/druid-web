@@ -98,7 +98,7 @@
           <span class="sidebar--item-content">This Property</span>
         <% end %>
       </div>
-    <% end if (@property || @current_property).id %>
+    <% end if (@property || @current_property)&.id %>
     <% if policy(Property).index? %>
       <div class="sidebar--item <%= nav_item_class(:properties, :index) %>">
         <%= link_to(properties_path) do %>
