@@ -19,7 +19,7 @@ class LeadTransition < ApplicationRecord
   ### Constants
 
   ### Enums
-  enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4 }
+  enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4, lost: 5 }
 
   ### Attributes
   validates :last_state, :current_state, presence: true
