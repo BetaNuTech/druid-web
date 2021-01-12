@@ -435,5 +435,36 @@ namespace :leads do
   task resident_auto_transition: :environment do
     Leads::ResidentProcessor.new.call
   end
+  
+  desc "Kick the can"
+  task :kick_the_can => :environment do
+    start_date = 5.years.ago
+    end_date = Time.new(2020,11,1)
+    followup_base = Time.now + 3.months
+    Properties.active.each do |property|
+      puts "*** Processing old Open leads for #{property.name}"
+      old_leads = property.leads.open.where(created_at: start_date..end_date)
+      if old_leads.count > 100
+        batch_size = (old_leads.count / 90).to_i
+        old_leads.find_in_batches(batch_size: batch_size).with_index do |group, index|
+          follow_up_date = follow_up_base + index.days
+          puts " - Postponing #{group.count} Leads for #{property.name} until #{follow_up_date}"
+          group.each do |lead|
+            lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up' 
+            lead.follow_up_at = follow_up_date
+            lead.trigger_event(event_name: :postpone)
+          end
+        end
+      else
+        follow_up_date = follow_up_base + index.days
+        puts " - Postponing #{old_leads.count} Leads for #{property.name} until #{follow_up_date}"
+        old_leads.order(created_at: :desc).each do |lead|
+          lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up' 
+          lead.follow_up_at = follow_up_base
+          lead.trigger_event(event_name: :postpone)
+        end
+      end
+    end
+  end
 
 end
