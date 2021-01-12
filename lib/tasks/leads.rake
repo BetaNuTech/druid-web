@@ -456,7 +456,7 @@ namespace :leads do
           end
         end
       else
-        follow_up_date = follow_up_base + index.days
+        follow_up_date = follow_up_base
         puts " - Postponing #{old_leads.count} Leads for #{property.name} until #{follow_up_date}"
         old_leads.each do |lead|
           lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up' 
