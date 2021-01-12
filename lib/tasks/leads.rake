@@ -444,8 +444,9 @@ namespace :leads do
     Property.active.each do |property|
       old_leads = property.leads.open.where(created_at: start_date..end_date).order(created_at: :asc)
       puts "*** Processing #{old_leads.count} old Open leads for #{property.name}"
+      next if old_leads.count < 50
       if old_leads.count > 100
-        batch_size = (old_leads.count / 90).to_i
+        batch_size = [(old_leads.count / 90).to_i, 30].max
         old_leads.find_in_batches(batch_size: batch_size).with_index do |group, index|
           follow_up_date = follow_up_base + index.days
           puts " - Postponing #{group.count} Leads for #{property.name} until #{follow_up_date}"
