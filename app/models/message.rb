@@ -365,7 +365,7 @@ class Message < ApplicationRecord
   end
 
   def related_messages
-    messageable.messages.order(created_at: :desc)
+    messageable ? messageable.messages.order(created_at: :desc) : []
   end
 
   private
