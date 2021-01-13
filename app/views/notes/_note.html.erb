@@ -1,8 +1,7 @@
 <% display_icons = defined?(icons) ? icons : true %>
 <% unless note.new_record? %>
   <div class="row note-listing-record note-<%= cycle(['odd', 'even'])%>" id="note_<%= note.id %>">
-    <div class="col-md-9">
-
+    <div class="col-md-12">
       <div class="row dashboard_item_date">
         <div class="col-md-6">
           <%= long_datetime(note.created_at) %>
@@ -10,25 +9,22 @@
             by <%= note.user&.name || 'None' %>
           <% end %>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <%= note_glyph(note) %>
           <%= action_and_reason(note) %>
         </div>
+        <div class="col-md-2">
+          <% if display_icons %>
+            <%= model_link_with_tooltip(note, :edit) %>
+            <%= model_link_with_tooltip(note, :destroy) %>
+          <% end %>
+        </div>
       </div>
-
       <div class="row note-listing-content">
         <div class="col-md-12" id="note_<%= note.id %>">
           <%= note_content(note) %>
         </div>
       </div>
     </div>
-
-    <div class="col-md-3">
-      <% if display_icons %>
-        <%= model_link_with_tooltip(note, :edit) %>
-        <%= model_link_with_tooltip(note, :destroy) %>
-      <% end %>
-    </div>
-
   </div>
 <% end %>

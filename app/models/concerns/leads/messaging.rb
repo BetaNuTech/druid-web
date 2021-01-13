@@ -154,10 +154,11 @@ module Leads
 
       def create_message_delivery_comment(message_delivery)
         msg = message_delivery.message
-        note_content = "%{direction} a %{message_type} message %{tofrom} the Lead" % {
+        note_content = "%{direction} a %{message_type} message %{tofrom} the Lead : %{subject}" % {
           direction: msg.incoming? ? "Received" : "Sent",
           message_type: msg.message_type.name,
-          tofrom: msg.incoming? ? "from" : "to"
+          tofrom: msg.incoming? ? "from" : "to",
+          subject: ( msg.subject || '' )[0..30]
         }
         note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
         # create_event_note
