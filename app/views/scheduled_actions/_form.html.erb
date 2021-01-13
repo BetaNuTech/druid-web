@@ -43,10 +43,12 @@
         <%= scheduled_action_article_select(scheduled_action: scheduled_action, action: scheduled_action.lead_action) if scheduled_action.lead_action.present? %>
       </div>
     </div>
-    <div class="col-md-4 form-group">
-      <%= form.label :reason_id, "Reason" %>
-      <%= form.select :reason_id, select_reason(scheduled_action.reason_id),{include_blank: true},{id: :scheduled_action_reason, class: "form-control"} %>
-    </div>
+    <% if @current_user.setting_enabled?(:select_task_reason) %>
+      <div class="col-md-4 form-group">
+        <%= form.label :reason_id, "Reason" %>
+        <%= form.select :reason_id, select_reason(scheduled_action.reason_id),{include_blank: true},{id: :scheduled_action_reason, class: "form-control"} %>
+      </div>
+    <% end %>
   </div>
   <div class="row">
     <div class="col-md-6">

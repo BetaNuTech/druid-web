@@ -7,7 +7,8 @@ module UserProfiles
       view_all_messages
       message_web_notifications
       lead_web_notifications
-      email_task_reminders
+      email_task_reminders,
+      select_task_reason
     ].freeze
 
     included do
