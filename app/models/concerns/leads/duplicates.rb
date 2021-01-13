@@ -190,7 +190,7 @@ module Leads
           self.transition_memo = 'Automatically disqualified as a Resident'
           trigger_event(event_name: 'disqualify')
           reload
-        end
+        end if property.present?
       end
 
       handle_asynchronously :disqualify_if_resident, queue: :lead_dedupe

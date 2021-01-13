@@ -13,7 +13,7 @@ class ScheduledActionPolicy < ApplicationPolicy
             user_ids = [ user.id ]
           end
           skope.where(user_id: user.id).or(
-            skope.where(user_id: [ user_ids ], target_type: 'Lead')
+            skope.where(user_id: user_ids, target_type: 'Lead')
           )
         end
     end

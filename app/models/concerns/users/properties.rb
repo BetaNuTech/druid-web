@@ -54,11 +54,11 @@ module Users
       end
 
       def assigned_properties_agents
-        User.includes(:assignments).where(property_users: {property_id: properties.select(:id).map(&:id)})
+        User.includes(:assignments).where(property_users: {property_id: properties.pluck(:id)})
       end
 
       def assigned_properties_agent_ids
-        User.includes(:assignments).where(property_users: {property_id: properties.select(:id).map(&:id)}).select(:id).map(&:id)
+        User.includes(:assignments).where(property_users: {property_id: properties.pluck(:id)}).pluck(:id)
       end
 
     end

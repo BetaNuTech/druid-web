@@ -1,19 +1,17 @@
 <div class="row">
-  <div class="col-md-6">
-    <div>
-      <%= link_to("My Calender", scheduled_actions_path, class: "btn btn-xs btn-#{@show_all ? 'primary' : 'default'}") %>
-      <%= link_to("Team Calender", scheduled_actions_path(all: true), class: "btn btn-xs btn-#{@show_all ? 'default' : 'primary'}") %>
-    </div>
+  <div class="col-md-12">
     <h1>
       <%= @show_all ? 'Team' : 'My' %>
       Task Calendar
     </h1>
-  </div>
-  <% if policy(ScheduledAction).new? %>
-    <div class="col-md-6 text-right">
-      <%= link_to "Schedule New Task", new_scheduled_action_path, class: "btn btn-sm btn-primary"%>
+    <div>
+      <%= link_to("My Calender", scheduled_actions_path, class: "btn btn-xs btn-#{@show_all ? 'primary' : 'default'}") %>
+      <%= link_to("Team Calender", scheduled_actions_path(all: true), class: "btn btn-xs btn-#{@show_all ? 'default' : 'primary'}") %>
+      <% if policy(ScheduledAction).new? %>
+        <small><%= link_to "Schedule New Task", new_scheduled_action_path, class: "btn btn-sm btn-primary"%></small>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -31,7 +29,8 @@
 </div>
 <div class="row">
   <div class=col-md-12"">
-    <%= month_calendar events: @scheduled_actions.valid.sorted_by_due_asc.limit(200) do |date, scheduled_actions| %>
+    <% events = @scheduled_actions.sorted_by_due_asc %>
+    <%= month_calendar events: events do |date, scheduled_actions| %>
       <%= date.day %><br/>
       <% scheduled_actions.each do |scheduled_action| %>
         <div class="<%= scheduled_action_calendar_entry_class(scheduled_action) %>">
@@ -78,11 +77,3 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <% if policy(ScheduledAction).new? %>
-    <div class="col-md-12 text-right">
-      <%= link_to "Schedule New Task", new_scheduled_action_path, class: "btn btn-sm btn-primary"%>
-    </div>
-  <% end %>
-</div>
-
