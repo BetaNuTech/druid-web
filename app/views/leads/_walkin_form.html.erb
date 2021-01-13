@@ -1,3 +1,7 @@
+<%= link_to 'Full Form', new_lead_path, class: 'btn btn-sm btn-primary' %>
+<br/>
+<br/>
+
 <%= form_with(model: lead, local: true) do |form| %>
   <%= hidden_field_tag 'entry', 'walkin' %>
   <%= hidden_field_tag 'lead[id]', lead.id, id: 'lead_id' %>
