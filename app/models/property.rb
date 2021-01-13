@@ -48,8 +48,8 @@ class Property < ApplicationRecord
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
                     :country, :organization, :contact_name, :phone, :maintenance_phone,
                     :fax, :email, :website, :units, :notes, :school_district,
-                    :amenities, :active, :application_url, :team_id, :logo, :remove_logo,
-                    :call_lead_generation, { working_hours: {} } ]
+                    :amenities, :active, :application_url, :team_id, :timezone,
+                    :logo, :remove_logo, :call_lead_generation, { working_hours: {} } ]
 
   ## Associations
   has_many :leads
