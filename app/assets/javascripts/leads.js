@@ -44,13 +44,9 @@ $(document).on('turbolinks:load', function() {
   })
 
   $('#lead-claim-button').on('click', function(e){
-    if(confirm("Are you sure you want to claim this lead?")) {
-      var lead_id = $(e.target).data('lead_id');
-      var url = "/leads/" + lead_id + "/trigger_state_event?eventid=claim"
-      window.Loader.start();
-    } else {
-      e.preventDefault();
-    }
+    var lead_id = $(e.target).data('lead_id');
+    var url = "/leads/" + lead_id + "/trigger_state_event?eventid=claim"
+    window.Loader.start();
     return(true);
   });
 
