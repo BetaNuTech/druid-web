@@ -14,12 +14,12 @@
           <%= current_user.leads.early_pipeline.count %> Active Leads
         </span>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-6">
         <%= link_to("More...", search_leads_path({lead_search: {user_ids: [current_user.id], states: %w{open prospect showing application} }}), class: "btn btn-xs btn-primary") %>
-      </div>
-      <div class="col-md-3">
-        <%= link_to('New Walk-In', custom_new_leads_path(entry: 'walkin'), {class: 'btn btn-xs btn-info'}) %>
-        <%= link_to('Create a Lead', new_lead_path, {class: 'btn btn-xs btn-primary'}) %>
+        <% unless Flipflop.enabled?(:design_v1) %>
+          <%= link_to('New Walk-In', custom_new_leads_path(entry: 'walkin'), {class: 'btn btn-xs btn-info'}) %>
+          <%= link_to('Create a Lead', new_lead_path, {class: 'btn btn-xs btn-primary'}) %>
+        <% end %>
       </div>
     </div>
     <table class="table lead_listing">
