@@ -472,7 +472,7 @@ RSpec.describe Message, type: :model do
       expect(lead.contact_events.count).to eq(event_count + 1)
       event = lead.contact_events.last
       expect(event.article).to eq(message)
-      expect(event.lead_time).to eq(60)
+      expect(event.lead_time).to eq(1)
       expect(event.user).to eq(lead.user)
       expect(event.lead).to eq(lead)
     end
