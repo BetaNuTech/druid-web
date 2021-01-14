@@ -78,6 +78,7 @@ class ScheduledAction < ApplicationRecord
       self.where(user_id: user_ids, target_type: 'Lead')
     )
   }
+  scope :contact, ->() { includes(:lead_action).where(lead_actions: {is_contact: true} ) }
 
   ### Validations
   validates :state, presence: true, inclusion: ScheduledAction.state_names

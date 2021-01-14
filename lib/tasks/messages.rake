@@ -1,5 +1,11 @@
 namespace :messages do
 
+  desc "Fix Disqualified Lead Messages"
+  task :fix_notifications => :environment do
+    skope = Message.joins("inner join leads on messages.messageable_id = leads.id").where(leads: {state: 'disqualified'}, messages: {read_at: nil})
+    Message.mark_read!(skope)
+  end
+
   desc "Set Missing Incoming Flag on all Messages"
   task :set_missing_incoming_flag => :environment do
     puts "= Setting missing Message incoming flags"

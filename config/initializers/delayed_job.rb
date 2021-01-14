@@ -3,6 +3,6 @@ Delayed::Worker.queue_attributes = {
   cable: { priority: 5},
   mailers: { priority: 10 },
   messages: { priority: 10 },
-  low_priority: { priority: 10 },
+  low_priority: { priority: 20 },
   lead_dedupe: { priority: 50 }
 }

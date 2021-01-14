@@ -13,11 +13,11 @@ class ResidentPolicy < ApplicationPolicy
   end
 
   def index?
-    user.admin? || user.user?
+    user.admin? || user.manager? || user.agent?
   end
 
   def new?
-    user.admin? || user.user?
+    user.admin? || user.manager? || user.agent?
   end
 
   def create?
@@ -26,7 +26,7 @@ class ResidentPolicy < ApplicationPolicy
 
   def show?
     user.admin? ||
-      (user.user? && same_property?)
+      (( user.manager? || user.agent? ) && same_property?)
   end
 
   def edit?
@@ -46,7 +46,7 @@ class ResidentPolicy < ApplicationPolicy
     valid_resident_detail_params = [ { detail_attributes: ResidentDetail::ALLOWED_PARAMS } ]
 
     case user
-    when ->(u) { u.admin? || u.user? }
+    when ->(u) { u.admin? || u.manager? || u.user? }
       _allowed_params = valid_resident_params + valid_resident_detail_params
     else
       _allowed_params = []
