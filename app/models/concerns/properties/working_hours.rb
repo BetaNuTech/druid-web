@@ -99,6 +99,12 @@ module Properties
         end
       end
 
+      def closed_on_day_of_week?(dow)
+        day_hours = working_hours[dow.to_s]
+        [day_hours["morning"]["open"], day_hours["morning"]["close"], day_hours["afternoon"]["open"], day_hours["afternoon"]["close"]].
+          all? { |h| h == "12:00 PM" }
+      end
+
     end
   end
 end

@@ -17,6 +17,12 @@
         <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
         <tr>
           <td><%= day.capitalize %></td>
+          <% if property.closed_on_day_of_week?(day) %>
+            <td colspan=2>
+              <b>Closed</b>
+            </td>
+            <% next %>
+          <% end %>
           <td>
             <%= working_hours[day]["morning"]["open"] %> &rarr;
             <%= working_hours[day]["morning"]["close"] %>

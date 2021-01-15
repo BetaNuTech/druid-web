@@ -30,4 +30,26 @@ $(document).on('turbolinks:load', function() {
     button.toggleClass('glyphicon-chevron-down');
   });
 
+  $('input.working_hours_toggle_closed').on('click', function(e){
+    var target = e.target;
+    var dow = $(target).data('weekday');
+    var is_checked = $(target).is(":checked");
+    var weekday_hours = $('.working_hours_' + dow);
+
+    if (weekday_hours[0] != undefined) {
+      if (is_checked) {
+        weekday_hours.addClass('hidden');
+        var inputs = $("div.working_hours_" + dow + " select.working_hours_input");
+        inputs.each(function(_i, e){
+          var previous_val = $(e).val();
+          $(e).data("previous_value", previous_val) });
+          inputs.val("12:00 PM");
+      } else {
+        var inputs = $("div.working_hours_" + dow + " select.working_hours_input");
+        inputs.each(function(_i, e){ $(e).val($(e).data("previous_value")); });
+        weekday_hours.removeClass('hidden');
+      }
+    }
+  });
+
 });
