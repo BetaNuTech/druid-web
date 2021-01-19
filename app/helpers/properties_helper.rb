@@ -26,12 +26,12 @@ module PropertiesHelper
 
   def select_property_user(property:, selected:, all: false)
     if all
-      available_users = User.includes(:profile).where.not(id: property.users.select(:id).map(&:id))
+      available_users = User.active.includes(:profile).where.not(id: property.users.select(:id).map(&:id))
     else
       available_users = property.users_available_for_assignment
     end
 
-    selected_user = selected.present? ? [ User.find(selected) ] : []
+    selected_user = selected.present? ? [ User.active.find(selected) ] : []
     select_users = (selected_user + available_users).sort_by{|u| u.profile&.last_name + u.profile&.first_name}
 
     user_options = select_users.map{|u|

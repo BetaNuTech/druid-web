@@ -1,11 +1,11 @@
 <div class="row">
   <div class="col-md-12">
     <h2>Employees</h2>
-    <%if @property.users.empty? %>
+    <%if @property.users.active.empty? %>
       <p>None</p>
     <% end %>
     <ul>
-      <% @property.users.each do |user| %>
+      <% @property.users.active.each do |user| %>
         <li>
           <b> <%= user.name %> </b>(<%= user.property_role(@property).capitalize %>)
         </li>
