@@ -15,6 +15,7 @@
 class Statistic < ApplicationRecord
   ### Class Concerns/Extensions
   include Statistics::LeadSpeed
+  include Statistics::Tenacity
 
   ### Constants
   LEADSPEED_FACT = :leadspeed
@@ -39,11 +40,24 @@ class Statistic < ApplicationRecord
   scope :weekly, -> () { where(resolution: 1.week.to_i / 60 )}
   scope :monthly, -> () { where(resolution: 1.month.to_i / 60 )}
   scope :yearly, -> () { where(resolution: 1.year.to_i / 60 )}
-
   scope :leadspeed, ->() { where(fact: LEADSPEED_FACT) }
   scope :tenacity, ->() { where(fact: TENACITY_FACT) }
+  scope :user, ->() { where(quantifiable_type: 'User') }
+  scope :property, ->() { where(quantifiable_type: 'Property') }
 
   ### Class Methods
+
+  def self.utc_hour_start
+    Time.now.utc.beginning_of_hour
+  end
+
+  def self.utc_day_start
+    Time.now.utc.beginning_of_day
+  end
+
+  def self.utc_month_start
+    Time.now.utc.beginning_of_month
+  end
 
   ### Instance Methods
 

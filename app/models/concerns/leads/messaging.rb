@@ -180,7 +180,7 @@ module Leads
 
       def handle_message_delivery(message_delivery)
         if message_delivery&.delivered_at.present?
-          make_contact(timestamp: message_delivery.delivered_at, description: 'Message sent to Lead', article: message_delivery.message)
+          make_contact(timestamp: message_delivery.delivered_at, description: 'Message sent to Lead', article: message_delivery.message) unless message_delivery.message.for_compliance?
           preference&.handle_message_response(message_delivery)
           create_message_delivery_comment(message_delivery)
           create_message_delivery_task(message_delivery)
