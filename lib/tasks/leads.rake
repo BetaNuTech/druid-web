@@ -435,13 +435,40 @@ namespace :leads do
   task resident_auto_transition: :environment do
     Leads::ResidentProcessor.new.call
   end
-  
+
   desc "Kick the can"
   task :kick_the_can => :environment do
+
+    properties = Leads::Adapters::YardiVoyager.property_codes
+    if ( env_property = ENV.fetch('PROPERTY', nil) ).present?
+      property = properties.select{|p| p[:code] == env_property}
+      if property.present?
+        properties = property
+      end
+    end
+
+    end_date = 2.months.ago.beginning_of_month
+    if (env_end_date = ENV.fetch('END_DATE', nil)).present?
+      begin
+        end_date = Time.parse(env_end_date)
+      rescue
+        # NOOP: default
+      end
+    end
+
     start_date = 5.years.ago
-    end_date = Time.new(2020,11,1)
     follow_up_base = Time.now.beginning_of_day + 2.months
-    Property.active.each do |property|
+
+    unless (ENV.fetch('CONFIRM', 'true') == 'false')
+      puts "*** Processing old Open Leads before #{end_date} for #{properties.count} properties (Press ENTER to continue)"
+      _ = $stdin.gets
+    end
+
+    #Property.active.each do |property|
+    properties.each do |record|
+      property = record[:property]
+      next unless property.active?
+
       old_leads = property.leads.open.where(created_at: start_date..end_date).order(created_at: :asc)
       puts "*** Processing #{old_leads.count} old Open leads for #{property.name}"
       next if old_leads.count < 50
@@ -451,7 +478,7 @@ namespace :leads do
           follow_up_date = follow_up_base + index.days
           puts " - Postponing #{group.count} Leads for #{property.name} until #{follow_up_date}"
           group.each do |lead|
-            lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up' 
+            lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up'
             lead.follow_up_at = follow_up_date
             lead.trigger_event(event_name: :postpone)
           end
@@ -460,7 +487,7 @@ namespace :leads do
         follow_up_date = follow_up_base
         puts " - Postponing #{old_leads.count} Leads for #{property.name} until #{follow_up_date}"
         old_leads.each do |lead|
-          lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up' 
+          lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up'
           lead.follow_up_at = follow_up_base
           lead.trigger_event(event_name: :postpone)
         end
