@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_13_192444) do
+ActiveRecord::Schema.define(version: 2021_02_01_230614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -317,6 +317,8 @@ ActiveRecord::Schema.define(version: 2021_01_13_192444) do
     t.date "end_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "phone_lead_source_id"
+    t.uuid "email_lead_source_id"
     t.index ["property_id", "name"], name: "index_marketing_sources_on_property_id_and_name", unique: true
     t.index ["tracking_email"], name: "index_marketing_sources_on_tracking_email"
     t.index ["tracking_number"], name: "index_marketing_sources_on_tracking_number"

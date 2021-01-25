@@ -2,23 +2,28 @@
 #
 # Table name: marketing_sources
 #
-#  id                 :uuid             not null, primary key
-#  active             :boolean          default(TRUE)
-#  property_id        :uuid             not null
-#  lead_source_id     :uuid
-#  name               :string           not null
-#  description        :text
-#  tracking_code      :string
-#  tracking_email     :string
-#  tracking_number    :string
-#  destination_number :string
-#  fee_type           :integer          default("free"), not null
-#  fee_rate           :decimal(, )      default(0.0)
-#  start_date         :date             not null
-#  end_date           :date
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  id                   :uuid             not null, primary key
+#  active               :boolean          default(TRUE)
+#  property_id          :uuid             not null
+#  lead_source_id       :uuid
+#  name                 :string           not null
+#  description          :text
+#  tracking_code        :string
+#  tracking_email       :string
+#  tracking_number      :string
+#  destination_number   :string
+#  fee_type             :integer          default("free"), not null
+#  fee_rate             :decimal(, )      default(0.0)
+#  start_date           :date             not null
+#  end_date             :date
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  phone_lead_source_id :uuid
+#  email_lead_source_id :uuid
 #
+
+
+# MarketingSource model and logic
 class MarketingSource < ApplicationRecord
   ### Class Concerns/Extensions
   include Seeds::Seedable
@@ -26,7 +31,9 @@ class MarketingSource < ApplicationRecord
   include MarketingSources::MarketingExpenses
 
   ### Constants
-  ALLOWED_PARAMS = %w[active property_id name description tracking_email tracking_number destination_number fee_type fee_rate start_date end_date lead_source_id]
+  ALLOWED_PARAMS = %w[active property_id name description tracking_email tracking_number tracking_code destination_number fee_type fee_rate start_date end_date lead_source_id phone_lead_source_id email_lead_source_id]
+  # NOTE: the tracking_code attribute/column is unused as of 2021/01/28
+
   FREE_FEE = 'free'
   ONETIME_FEE = 'onetime'
   LEAD_FEE = 'lead'
@@ -40,6 +47,8 @@ class MarketingSource < ApplicationRecord
   ### Associations
   belongs_to :property
   belongs_to :lead_source, required: false
+  belongs_to :phone_lead_source, required: false, class_name: 'LeadSource'
+  belongs_to :email_lead_source, required: false, class_name: 'LeadSource'
 
   ### Validations
   validates :property_id, presence: true
@@ -52,6 +61,8 @@ class MarketingSource < ApplicationRecord
 
   ### Callbacks
   before_validation :format_phone_numbers
+  before_save :strip_spaces_from_name
+  before_save :clear_tracking_without_source
 
   ### Scopes
   scope :periodic, -> { where(fee_type: [MONTHLY_FEE, QUARTERLY_FEE, YEARLY_FEE]) }
@@ -113,6 +124,11 @@ class MarketingSource < ApplicationRecord
 
   private
 
+  def strip_spaces_from_name
+    self.name = self.name.strip if self.name.present?
+    self.name
+  end
+
   def validate_end_date
     errors.add(:end_date, 'Must be later than start date') if end_date.present? && start_date.present? && end_date <= start_date
   end
@@ -131,6 +147,22 @@ class MarketingSource < ApplicationRecord
       else
         self.destination_number = self.class.format_phone(self.destination_number)
       end
+    end
+  end
+
+  def clear_tracking_without_source
+    if self.lead_source_id.nil?
+      self.tracking_code = nil
+    else
+      self.email_lead_source_id = nil
+      self.phone_lead_source_id = nil
+    end
+    if self.email_lead_source_id.nil? 
+      self.tracking_email = nil
+    end
+    if self.phone_lead_source_id.nil?
+      self.tracking_number = nil
+      self.destination_number = nil
     end
   end
 end

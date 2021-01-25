@@ -60,8 +60,10 @@ class MarketingSourcesController < ApplicationController
   def form_suggest_tracking_details
     authorize MarketingSource
     property = Property.find(params[:property_id])
-    lead_source = LeadSource.where(id: params[:lead_source_id]).first or raise ActiveRecord::RecordNotFound
-    @helper = MarketingSources::IncomingIntegrationHelper.new(property: property, integration: lead_source)
+    @helper = MarketingSources::IncomingIntegrationHelper.new(
+      property: property,
+      integration: params[:lead_source_id]
+    )
     respond_to do |format|
       format.json { render json: @helper.options_for_integration }
     end

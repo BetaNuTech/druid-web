@@ -1,5 +1,10 @@
 namespace :marketing_sources do
 
+  desc 'Trim whitespace'
+  task :trim_whitespace => :environment do
+    MarketingSource.all.map(&:touch)
+  end
+
   desc 'Generate Marketing Sources for Arrowtel integration from Property Numbers'
   task create_from_property_numbers: :environment do
 
