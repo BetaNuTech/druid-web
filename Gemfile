@@ -100,4 +100,5 @@ group :development do
   gem 'fast_stack', "~> 0.2"
 
   gem 'derailed_benchmarks', "~> 1.8"
+  gem 'meta_request'
 end

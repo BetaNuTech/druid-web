@@ -45,7 +45,7 @@ module Statistics
           SELECT
             user_id,
             CEIL(avg(lead_time)) AS avg_leadtime,
-              'epoch'::timestamptz + '#{resolution} minutes'::INTERVAL * (EXTRACT(epoch FROM timestamp)::int4 / #{resolution * 60}) AS time_start
+            'epoch'::timestamptz + '#{resolution} minutes'::INTERVAL * (EXTRACT(epoch FROM timestamp)::int4 / #{resolution * 60}) AS time_start
           FROM
             contact_events
           WHERE
