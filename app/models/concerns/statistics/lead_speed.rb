@@ -11,7 +11,7 @@ module Statistics
         when (30..120)
           'B'
         when nil
-          'I'
+          'NA'
         else
           'C'
         end

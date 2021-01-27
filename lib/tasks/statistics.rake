@@ -40,6 +40,9 @@ namespace :statistics do
     puts "*** Generating Tenacity for the past 2 months"
     Statistic.generate_tenacity(time_start: Statistic.utc_month_start - 2.months)
 
+    puts "*** Generating Property Tenacity Statistics for the past month"
+    Property.active.each{|property| Statistic.generate_property_tenacity(property: property, time_start: Statistic.utc_month_start - 1.month)}
+
     ### Leadspeed
     puts "*** Generating Leadspeed for the past 2 months"
     Statistic.generate_leadspeed(resolution: 60, time_start: Statistic.utc_month_start - 2.months)
@@ -63,8 +66,11 @@ namespace :statistics do
   namespace :tenacity do
     desc "generate tenacity monthly statistics"
     task :generate => :environment do
-      puts "*** Generating Tenacity Statistics for the past month"
+      puts "*** Generating Agent Tenacity Statistics for the past month"
       Statistic.generate_tenacity(time_start: Statistic.utc_month_start - 1.month)
+
+      puts "*** Generating Property Tenacity Statistics for the past month"
+      Property.active.each{|property| Statistic.generate_property_tenacity(property: property, time_start: Statistic.utc_month_start - 1.month)}
     end
   end
 
