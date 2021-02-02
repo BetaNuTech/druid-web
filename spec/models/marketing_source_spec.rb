@@ -2,22 +2,24 @@
 #
 # Table name: marketing_sources
 #
-#  id                 :uuid             not null, primary key
-#  active             :boolean          default(TRUE)
-#  property_id        :uuid             not null
-#  lead_source_id     :uuid
-#  name               :string           not null
-#  description        :text
-#  tracking_code      :string
-#  tracking_email     :string
-#  tracking_number    :string
-#  destination_number :string
-#  fee_type           :integer          default("free"), not null
-#  fee_rate           :decimal(, )      default(0.0)
-#  start_date         :date             not null
-#  end_date           :date
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  id                   :uuid             not null, primary key
+#  active               :boolean          default(TRUE)
+#  property_id          :uuid             not null
+#  lead_source_id       :uuid
+#  name                 :string           not null
+#  description          :text
+#  tracking_code        :string
+#  tracking_email       :string
+#  tracking_number      :string
+#  destination_number   :string
+#  fee_type             :integer          default("free"), not null
+#  fee_rate             :decimal(, )      default(0.0)
+#  start_date           :date             not null
+#  end_date             :date
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  phone_lead_source_id :uuid
+#  email_lead_source_id :uuid
 #
 require 'rails_helper'
 

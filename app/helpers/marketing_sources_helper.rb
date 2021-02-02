@@ -17,4 +17,19 @@ module MarketingSourcesHelper
       integration: marketing_source.lead_source
     ).options_for_integration
   end
+
+  def marketing_source_lead_source_options(marketing_source)
+    lead_source_id_or_general = marketing_source.lead_source_id ? marketing_source.lead_source_id : (
+      marketing_source.email_lead_source_id.present? || marketing_source.phone_lead_source_id.present? ? 'Phone and Email' : nil
+    )
+    options_for_select(MarketingSources::IncomingIntegrationHelper.lead_source_selection_options, lead_source_id_or_general)
+  end
+
+  def marketing_source_email_lead_source_options(marketing_source)
+    options_for_select(MarketingSources::IncomingIntegrationHelper.lead_email_source_selection_options, marketing_source.email_lead_source_id)
+  end
+
+  def marketing_source_phone_lead_source_options(marketing_source)
+    options_for_select(MarketingSources::IncomingIntegrationHelper.lead_phone_source_selection_options, marketing_source.phone_lead_source_id)
+  end
 end
