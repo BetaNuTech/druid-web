@@ -111,7 +111,8 @@ module Leads
         end
 
         event :show do
-          transitions from: [:prospect], to: :showing
+          transitions from: [:prospect], to: :showing,
+            after: -> (*args) { create_per_lead_marketing_expense }
         end
 
         event :apply do

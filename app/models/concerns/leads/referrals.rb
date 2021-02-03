@@ -89,6 +89,28 @@ module Leads
         return true
       end
 
+      def create_per_lead_marketing_expense
+        if (fee = marketing_source_referral_fee)
+          marketing_source.marketing_expenses.create(
+            property_id: property_id,
+            description: "Lead or showing marketing fee for #{name}",
+            fee_total: fee,
+            fee_type: 'lead',
+            quantity: 1,
+            start_date: Date.today,
+            end_date: Date.today
+          )
+        end
+      end
+
+      def marketing_source_referral_fee
+        marketing_source&.fee_rate
+      end
+
+      def marketing_source
+        property.marketing_sources.current.where(name: referral, fee_type: 'lead').last
+      end
+
     end
 
     class_methods do

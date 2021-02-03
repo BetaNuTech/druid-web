@@ -49,13 +49,9 @@ class MarketingExpense < ApplicationRecord
 
   ### Instance Methods
 
-  def fee_type_period
-
-  end
-
   private
 
   def validate_end_date
-    errors.add(:end_date, 'must be later than start date') if end_date.present? && start_date.present? && end_date <= start_date
+    errors.add(:end_date, 'must be later or same as start date') if end_date.present? && start_date.present? && end_date < start_date
   end
 end

@@ -66,6 +66,8 @@ class MarketingSource < ApplicationRecord
 
   ### Scopes
   scope :periodic, -> { where(fee_type: [MONTHLY_FEE, QUARTERLY_FEE, YEARLY_FEE]) }
+  scope :active, -> { where(active: true) }
+  scope :current, -> { active.where('marketing_sources.start_date <= :now AND marketing_sources.end_date > :now', { now: Time.now })}
 
   ### Class methods
 
@@ -109,6 +111,10 @@ class MarketingSource < ApplicationRecord
     end
 
     return out
+  end
+
+  def self.referral_fee(lead)
+    self.current.where(property_id: lead.property_id, name: lead.referral).first&.fee_rate || 0.0
   end
 
   ### Public methods
@@ -157,7 +163,7 @@ class MarketingSource < ApplicationRecord
       self.email_lead_source_id = nil
       self.phone_lead_source_id = nil
     end
-    if self.email_lead_source_id.nil? 
+    if self.email_lead_source_id.nil?
       self.tracking_email = nil
     end
     if self.phone_lead_source_id.nil?
