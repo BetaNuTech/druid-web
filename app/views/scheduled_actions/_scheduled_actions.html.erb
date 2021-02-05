@@ -4,11 +4,11 @@
   <table class="table">
     <thead>
       <tr>
-        <th>Owner</th>
-        <th>Subject</th>
-        <th>Action</th>
-        <th>Reason</th>
-        <th>Description</th>
+        <th>Subject / Owner</th>
+        <th>
+          Action/Reason
+          & Description
+        </th>
         <th></th>
       </tr>
     </thead>
@@ -16,26 +16,26 @@
       <% scheduled_actions.each do |scheduled_action| %>
         <% next unless policy(scheduled_action).completion_form? %>
         <tr>
-          <td class="text-nowrap"><%= scheduled_action.user.try(:name) || 'None' %></td>
           <td class="text-nowrap">
-            <%= render partial: "scheduled_actions/target_name", locals: {scheduled_action: scheduled_action} %>
+            <%= render partial: "scheduled_actions/target_name", locals: {scheduled_action: scheduled_action} %><br/>
+            <small> (<%= scheduled_action.user.try(:name) || 'None' %>) </small>
           </td>
           <td class="text-nowrap">
-            <%= scheduled_action.lead_action&.name %>
-          </td>
-          <td>
-            <%= scheduled_action.reason&.name %><br/>
-            <small><%= short_datetime(scheduled_action.schedule.to_datetime) if scheduled_action.schedule.present? %></small>
-          </td>
-          <td width="33%">
             <p>
-              <%= scheduled_action.description %>
+              <%= scheduled_action.description %><br/>
+              <small>
+                <%= scheduled_action.reason&.name %>:
+                <%= scheduled_action.lead_action&.name %>
+              </small>
             </p>
-            <small>Posted <%= long_datetime(scheduled_action.created_at) %></small>
-            <% if scheduled_action.created_at != scheduled_action.updated_at %>
-              <br/>
-              <small>Updated <%= long_datetime(scheduled_action.updated_at) %></small>
-            <% end %>
+            <p>
+              <small>Due: <%= short_datetime(scheduled_action.schedule.to_datetime) if scheduled_action.schedule.present? %></small><br/>
+              <small>Posted: <%= long_datetime(scheduled_action.created_at) %></small>
+              <% if scheduled_action.created_at != scheduled_action.updated_at %>
+                <br/>
+                <small>Updated: <%= long_datetime(scheduled_action.updated_at) %></small>
+              <% end %>
+            </p>
           </td>
           <td class="text-nowrap">
             <% if policy(scheduled_action).edit? %>
