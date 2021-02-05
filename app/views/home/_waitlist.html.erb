@@ -12,7 +12,8 @@
     <div class="row">
       <div class="col-md-6">
         <span class="lead">
-          <%= current_user.property.leads.waitlist.count %> Waitlisted Leads
+          <% waitlist_lead_count = current_user.property.leads.waitlist.count %>
+          <%= waitlist_lead_count.zero? ? 'No' : waitlist_lead_count %> Waitlisted Leads
         </span>
       </div>
       <div class="col-md-3">

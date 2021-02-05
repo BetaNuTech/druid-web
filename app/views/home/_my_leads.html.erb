@@ -11,7 +11,8 @@
     <div class="row">
       <div class="col-md-6">
         <span class="lead">
-          <%= current_user.leads.early_pipeline.count %> Active Leads
+          <% active_lead_count = current_user.leads.early_pipeline.count %>
+          <%= active_lead_count.zero? ? 'No' : active_lead_count %> Active Leads
         </span>
       </div>
       <div class="col-md-6">
