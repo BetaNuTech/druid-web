@@ -20,7 +20,6 @@
                 <rect y="60" width="100" height="15" style="fill:rgb(201,208,216)"></rect>
               </svg>
           </span>
-        <%= render partial: 'shared/property_selection' %>
         </div>
       </div>
       <div id="content" class="row">
@@ -28,6 +27,7 @@
           <%= render partial: 'shared/navbar_v1' %>
         </div>
         <div id="viewcontent" class="col-sm-9">
+          <%= render partial: 'shared/property_selection' %>
           <%= render partial: 'shared/notifications' %>
           <%= yield %>
         </div>

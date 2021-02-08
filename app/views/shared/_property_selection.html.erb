@@ -2,16 +2,15 @@
   <%= form_tag(select_current_properties_path, method: :post, remote: false, id: 'propertyselection--form', class: 'form-inline') do %>
   <div id="propertyselection--container" >
     <div class="row">
-      <div class="col-md-4 col-md-offset-8 col-sm-6 col-sm-offset-6 col-xs-6 col-sx-offset-6 text-right">
+      <div class="col-xs-12 col-sm-12 col-md-6" style="float:right;">
         <div class="form-group">
+          <%= select_tag :property_id, property_options_for_current(@current_property&.id), id: 'propertyselection--selector', class: "form-control form-control-sm" %>
           <%= submit_tag 'Select', id: 'propertyselection--submit-button', class: 'btn btn-sm btn-primary hidden' %>
-          <%= select_tag :property_id, property_options_for_current(@current_property&.id), id: 'propertyselection--selector', class: "form-control" %>
         </div>
       </div>
     </div>
   </div>
   <% end %>
-  <br/>
 
   <script>
     document.getElementById('propertyselection--selector').
