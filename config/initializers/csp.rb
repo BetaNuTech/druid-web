@@ -9,7 +9,7 @@ SecureHeaders::Configuration.default do |config|
   config.referrer_policy = %w(origin-when-cross-origin strict-origin-when-cross-origin)
   config.csp = {
     default_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self' 'unsafe-inline'),
-    connect_src: Rails.env.production? ? %w('self' https://capture.trackjs.com https://apm.scoutapp.com https://s3.amazonaws.com/druid-staging-activestorage https://s3.amazonaws.com/druid-prod-activestorage) : %w('self' http://localhost:3035 ws://localhost:3035 https://apm.scoutapp.com https://capture.trackjs.com https://s3.amazonaws.com/druid-staging-activestorage),
+    connect_src: Rails.env.production? ? %w('self' https://capture.trackjs.com https://apm.scoutapp.com https://s3.amazonaws.com/druid-staging-activestorage https://s3.amazonaws.com/druid-prod-activestorage ws://www.blue-sky.app) : %w('self' http://localhost:3035 ws://localhost:3035 https://apm.scoutapp.com https://capture.trackjs.com https://s3.amazonaws.com/druid-staging-activestorage ws://localhost:3000),
     font_src: Rails.env.production? ? %w(https: 'self') :  %w(http: 'self'),
     img_src: Rails.env.production? ? %w(https: 'self' blob:) : %w(http: 'self' blob:),
     object_src: Rails.env.production? ? %w('self' https: blob:) : %w('self' http: blob:),
