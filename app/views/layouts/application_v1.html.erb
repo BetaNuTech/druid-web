@@ -10,7 +10,7 @@
   </head>
 
   <body<%- if @webpack %> data-no-turbolink data-no-transition-cache<% end %>>
-    <div id="app_layout" class="container">
+    <div id="app_layout" class="">
       <div id="headerrow">
         <div class="appname">
           <span id="nav-hamburger" class="hamburger hidden visible-xs visible-sm">
@@ -22,11 +22,11 @@
           </span>
         </div>
       </div>
-      <div id="content" class="row">
+      <div id="content" class="content">
         <div class="hidden-xs hidden-sm col-md-3" style="padding-right: 0;">
           <%= render partial: 'shared/navbar_v1' %>
         </div>
-        <div id="viewcontent" class="col-sm-9">
+        <div id="viewcontent">
           <%= render partial: 'shared/property_selection' %>
           <%= render partial: 'shared/notifications' %>
           <%= yield %>
