@@ -100,7 +100,9 @@ module Properties
       end
 
       def closed_on_day_of_week?(dow)
+        return false if working_hours.nil?
         day_hours = working_hours[dow.to_s]
+        return false if day_hours.nil?
         [day_hours["morning"]["open"], day_hours["morning"]["close"], day_hours["afternoon"]["open"], day_hours["afternoon"]["close"]].
           all? { |h| h == "12:00 PM" }
       end
