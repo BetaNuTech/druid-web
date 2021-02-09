@@ -74,12 +74,14 @@
         <span class="sidebar--item-content">Waitlist</span>
       <% end %>
     </div>
-    <div class="sidebar--item <%= nav_item_class(:leads, :mass_assignment) %>">
-      <%= link_to(mass_assignment_leads_path) do %>
-        <%= image_tag('/icons/pencil_assign.svg') %>
-        <span class="sidebar--item-content">Assign Leads</span>
-      <% end %>
-    </div>
+    <% if policy(Lead).mass_assignment? %>
+      <div class="sidebar--item <%= nav_item_class(:leads, :mass_assignment) %>">
+        <%= link_to(mass_assignment_leads_path) do %>
+          <%= image_tag('/icons/pencil_assign.svg') %>
+          <span class="sidebar--item-content">Assign Leads</span>
+        <% end %>
+      </div>
+    <% end %>
     <div class="sidebar--item <%= nav_item_class(:stats, :manager) %>">
       <%= link_to(stats_manager_path(filter: true, date_range: [ 'month' ], property_ids: [ @current_property&.id ])) do %>
         <%= image_tag('/icons/chart.svg') %>
@@ -115,7 +117,7 @@
         <% end %>
       </div>
     <% end %>
-    <% if policy(UnitType).index? %>
+    <% if ( current_user.admin? || current_user.manager? ) && policy(UnitType).index? %>
       <div class="sidebar--item <%= nav_item_class(:unit_types) %>">
         <%= link_to(unit_types_path) do %>
           <%= image_tag('/icons/unit_types.svg') %>
@@ -131,7 +133,7 @@
         <% end %>
       </div>
     <% end %>
-    <% if policy(Team).index? %>
+    <% if ( current_user.admin? || current_user.manager? ) && policy(Team).index? %>
       <div class="sidebar--item <%= nav_item_class(:teams) %>">
         <%= link_to(teams_path) do %>
           <%= image_tag('/icons/teams.svg') %>
@@ -143,6 +145,7 @@
 
   <div class="sidebar--header">Manage</div>
   <div class="sidebar--item-group">
+    <% if current_user.admin? || current_user.manager? %>
     <% if policy(User).index? %>
       <div class="sidebar--item <%= nav_item_class(:users, :index) %>">
         <%= link_to(users_path) do %>
@@ -198,6 +201,7 @@
           <span class="sidebar--item-content">Reasons</span>
         <% end %>
       </div>
+    <% end %>
     <% end %>
     <% if policy(MessageTemplate).index? %>
       <div class="sidebar--item <%= nav_item_class(:message_templates) %>">
