@@ -129,6 +129,12 @@
         <%= number_to_phone(@property.maintenance_phone) if @property.maintenance_phone.present? %>
       </p>
     </div>
+    <div class="col-md-3">
+      <p>
+        <strong>Leasing Phone:</strong>
+        <%= number_to_phone(@property.leasing_phone) if @property.leasing_phone.present? %>
+      </p>
+    </div>
   </div>
 
   <div class="row">

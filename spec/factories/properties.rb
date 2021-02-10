@@ -30,6 +30,7 @@
 #  maintenance_phone    :string
 #  working_hours        :jsonb
 #  timezone             :string           default("UTC"), not null
+#  leasing_phone        :string
 #
 
 FactoryBot.define do

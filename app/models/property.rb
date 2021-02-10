@@ -30,6 +30,7 @@
 #  maintenance_phone    :string
 #  working_hours        :jsonb
 #  timezone             :string           default("UTC"), not null
+#  leasing_phone        :string
 #
 
 class Property < ApplicationRecord
@@ -45,8 +46,8 @@ class Property < ApplicationRecord
 
   ### Constants
 
-  ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip,
-                    :country, :organization, :contact_name, :phone, :maintenance_phone,
+  ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip, :country,
+                    :organization, :contact_name, :phone, :maintenance_phone, :leasing_phone,
                     :fax, :email, :website, :units, :notes, :school_district,
                     :amenities, :active, :application_url, :team_id, :timezone,
                     :logo, :remove_logo, :call_lead_generation, { working_hours: {} } ]
@@ -131,6 +132,7 @@ class Property < ApplicationRecord
   def format_phones
     self.phone = PhoneNumber.format_phone(self.phone) if self.phone.present?
     self.maintenance_phone = PhoneNumber.format_phone(self.maintenance_phone) if self.maintenance_phone.present?
+    self.leasing_phone = PhoneNumber.format_phone(self.leasing_phone) if self.leasing_phone.present?
     self.fax = PhoneNumber.format_phone(self.fax) if self.fax.present?
   end
 

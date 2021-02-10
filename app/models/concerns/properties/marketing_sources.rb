@@ -17,6 +17,9 @@ module Properties
 
         lead_source = LeadSource.where(slug: 'CallCenter').first
         property_listing = PropertyListing.where(property_id: property.id, source_id: lead_source&.id).first
+        main_number = property.phone
+        maintenance_number = ( property.maintenance_phone || '' ).gsub(' ','').empty? ? property.phone : maintenance_phone
+        leasing_number = ( property.leasing_phone || '' ).gsub(' ','').empty? ? property.phone : leasing_phone
 
         {
           version: '1.0.0',
@@ -24,8 +27,9 @@ module Properties
           dialed: clean_number,
           property_id: property_listing&.code,
           name: property.name,
-          main_number: property.phone,
-          maintenance_number: property.maintenance_phone,
+          main_number: main_number,
+          maintenance_number: maintenance_number,
+          leasing_number: leasing_number,
           hours: property.office_hours_today,
           open: property.office_open?,
           rings: 3,
