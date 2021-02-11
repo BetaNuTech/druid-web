@@ -16,14 +16,12 @@
       <% end %>
     </span>
   </td>
-  <td>
+  <td class="message_body_preview">
     <%= link_to(message_path(message)) do %>
-      <span class="text-nowrap">
+      <span class="message_subject">
         <%= message.subject %>
       </span>
     <% end %>
-  </td>
-  <td class="message_body_preview">
     <% if message.draft? %>
       <%= link_to(edit_message_path(message)) do %>
         <%= message_body_preview(message) %>

@@ -10,9 +10,7 @@ class MessagesController < ApplicationController
   # GET /messages.json
   def index
     authorize Message
-    @messages = index_scope
-      .includes([:messageable, :message_type, :deliveries])
-      .page(params[:page])
+    @messages = index_scope.page(params[:page])
   end
 
   # GET /messages/1
@@ -149,9 +147,17 @@ class MessagesController < ApplicationController
     end
 
     def index_scope
-      return @messageable.present? ?
-        MessagePolicy::IndexScope.new(current_user, @messageable.messages).resolve :
-        MessagePolicy::IndexScope.new(current_user,Message).resolve
+      if @messageable.present?
+        skope = MessagePolicy::IndexScope.new(current_user, @messageable.messages).resolve
+      else
+        skope = MessagePolicy::IndexScope.new(current_user,Message).resolve
+      end
+      if !current_user.monitor_all_messages?
+        skope = skope.for_leads
+      end
+      skope
+        .relevant_to_leads
+        .includes([:messageable, :message_type, :deliveries])
     end
 
     # Use callbacks to share common setup or constraints between actions.

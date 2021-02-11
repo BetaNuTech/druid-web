@@ -32,12 +32,11 @@
           <th></th>
           <th></th>
           <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
         <% @messages.each do |message| %>
-          <% next unless policy(message).show? && policy(message).listable? %>
+          <% next unless policy(message).show? %>
           <tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
             <td>
               <span class="text-nowrap">
@@ -75,7 +74,7 @@
                   <%= message.subject %>
                 <% end %>
               </span>
-              <% if message.draft? %>
+              <% if message.draft? && policy(message).edit? %>
                 <%= link_to(edit_message_path(message)) do %>
                   <%= message_body_preview(message) %>
                 <% end %>
@@ -83,8 +82,8 @@
                 <%= link_to(message_path(message)) do %>
                   <%= message_body_preview(message) %>
                 <% end %>
+                <%= link_to('Reply', new_message_path(reply_to: message.id), class: 'btn btn-primary') if message.incoming? %>
               <% end %>
-              <%= link_to('Reply', new_message_path(reply_to: message.id), class: 'btn btn-primary') %>
             </td>
           </tr>
         <% end %>
@@ -97,6 +96,26 @@
     <%= paginate @messages %>
   </div>
 </div>
+
+<% if current_user.setting_enabled?(:view_all_messages) %>
+  <div class="row">
+    <div class="col-sm-6 alert alert-info">
+      <small>
+        <i>
+          <b>Too many messages?</b><br/>
+          To view only messages to and from YOUR leads:
+          <ol>
+            <li> Go to your <%= link_to('Profile', edit_user_path(current_user)) %> page </li>
+            <li>Find the "Blue Sky Application Settings" section</li>
+            <li>Uncheck "View all messages" option</li>
+            <li>Click "Submit"</li>
+          </ol>
+        </i>
+      </small>
+    </div>
+  </div>
+<% end %>
+
 <div class="row">
   <div class="col-md-6">
     <% if @messageable.present? %>

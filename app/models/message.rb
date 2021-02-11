@@ -140,6 +140,14 @@ class Message < ApplicationRecord
     return message
   end
 
+  def self.for_leads
+    joins('INNER JOIN leads on leads.id = messages.messageable_id')
+  end
+
+  def self.relevant_to_leads
+    where("leads.state != 'disqualified' AND messages.state != 'draft'")
+  end
+
   ### Instance Methods
 
   def new_reply(user:)

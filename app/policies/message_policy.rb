@@ -12,7 +12,7 @@ class MessagePolicy < ApplicationPolicy
           end
         else
           if user.monitor_all_messages?
-            property_skope = skope.joins("INNER JOIN leads ON leads.id = messages.messageable_id AND messages.messageable_type = 'Lead'")
+            property_skope = skope.for_leads
             property_skope.where(user_id: user.id).or(property_skope.where(leads: {property_id: user.property_ids}))
           else
             skope.where(user_id: user.id)
@@ -49,7 +49,7 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def show?
-    is_owner? || user.admin? || property_manager?
+    is_owner? || same_property? || user.admin?
   end
 
   def body_preview?
