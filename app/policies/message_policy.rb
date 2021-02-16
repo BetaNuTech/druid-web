@@ -6,7 +6,7 @@ class MessagePolicy < ApplicationPolicy
       skope = case user
         when ->(u) { u.admin? }
           if user.monitor_all_messages?
-            skope
+            skope.for_leads
           else
             skope.where(user_id: user.id)
           end
