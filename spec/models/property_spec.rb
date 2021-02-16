@@ -31,6 +31,7 @@
 #  working_hours        :jsonb
 #  timezone             :string           default("UTC"), not null
 #  leasing_phone        :string
+#  voice_menu_enabled   :boolean          default(FALSE)
 #
 
 require 'rails_helper'

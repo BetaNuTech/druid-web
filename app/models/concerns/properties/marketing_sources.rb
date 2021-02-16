@@ -34,6 +34,7 @@ module Properties
           open: property.office_open?,
           rings: 3,
           referrer: marketing_source&.name || 'Direct',
+          menu_enabled: property.voice_menu_enabled
         }
       end
 

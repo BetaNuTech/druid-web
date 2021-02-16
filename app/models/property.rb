@@ -31,6 +31,7 @@
 #  working_hours        :jsonb
 #  timezone             :string           default("UTC"), not null
 #  leasing_phone        :string
+#  voice_menu_enabled   :boolean          default(FALSE)
 #
 
 class Property < ApplicationRecord
@@ -50,7 +51,8 @@ class Property < ApplicationRecord
                     :organization, :contact_name, :phone, :maintenance_phone, :leasing_phone,
                     :fax, :email, :website, :units, :notes, :school_district,
                     :amenities, :active, :application_url, :team_id, :timezone,
-                    :logo, :remove_logo, :call_lead_generation, { working_hours: {} } ]
+                    :logo, :remove_logo, :call_lead_generation, :voice_menu_enabled,
+                    { working_hours: {} } ]
 
   ## Associations
   has_many :leads
