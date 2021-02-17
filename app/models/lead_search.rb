@@ -370,7 +370,7 @@ class LeadSearch
   end
 
   def sort
-    @skope = @skope.order(query_sort)
+    @skope = @skope.order(Arel.sql(query_sort))
     return self
   end
 
