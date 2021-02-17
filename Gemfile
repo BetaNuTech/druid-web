@@ -14,7 +14,6 @@ gem 'sass-rails', "~> 6.0"
 gem 'uglifier', "~> 4.2"
 gem 'secure_headers', "~> 6.3"
 gem 'bundler'
-
 gem 'turbolinks', "~> 5.2"
 gem 'jbuilder', "~> 2.11"
 gem 'dotenv', "~> 2.7"
@@ -55,7 +54,7 @@ gem 'froala-editor-sdk', "~> 1.4"
 gem 'flipflop', github: 'Bellingham-DEV/flipflop'
 gem 'descriptive_statistics', "~> 2.5", require: 'descriptive_statistics/safe'
 gem 'working_hours', "~> 1.3"
-
+gem 'migration_data', "~> 0.6"
 
 group :development, :test do
   gem 'pry-doc', "~> 1.1"
