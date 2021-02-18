@@ -52,7 +52,7 @@ RSpec.describe Resident, type: :model do
       unit.save!
       resident.unit = unit
       refute resident.valid?
-      expect(resident.errors.first.last).to eq(Resident::INVALID_UNIT_PROPERTY_ERROR)
+      expect(resident.errors.full_messages.last).to eq(Resident::INVALID_UNIT_PROPERTY_ERROR)
     end
 
     it "must have a unique residentid" do

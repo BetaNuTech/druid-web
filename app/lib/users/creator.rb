@@ -46,7 +46,7 @@ module Users
     def validate
       @errors = ActiveModel::Errors.new(User.new)
       @user.validate
-      @user.errors.each{|e| @errors.add(e)} unless @user.valid?
+      @user.errors.full_messages.each{|e| @errors.add(e)} unless @user.valid?
 
       # Only apply these extended validations on a new record
       if @new_record
