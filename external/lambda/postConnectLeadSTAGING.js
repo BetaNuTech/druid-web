@@ -5,13 +5,23 @@ const querystring = require('querystring');
 
 exports.handler = (event, context) => {
 
+	let firstName = event["Details"]["ContactData"]["Attributes"]["callerFirstName"];
+	let lastName = event["Details"]["ContactData"]["Attributes"]["callerLastName"];
+	let callerID = event["Details"]["ContactData"]["Attributes"]["callerCallerID"];
+
+	if (firstName == '' || firstName == undefined) {
+		firstName = callerID;
+		lastName = ''
+	}
+
 	const callerData = {
 		DialedNumber: event["Details"]["ContactData"]["SystemEndpoint"]["Address"],
 		CallerNumber: event["Details"]["ContactData"]["Attributes"]["callerNumber"],
+		CallerID: callerID,
 		PropertyName: event["Details"]["ContactData"]["Attributes"]["propertyName"],
 		PropertyId: event["Details"]["ContactData"]["Attributes"]["propertyId"],
-		FirstName: event["Details"]["ContactData"]["Attributes"]["callerFirstName"],
-		LastName: event["Details"]["ContactData"]["Attributes"]["callerLastName"],
+		FirstName: firstName,
+		LastName: lastName,
 		Referrer: event["Details"]["ContactData"]["Attributes"]["propertyCallReferrer"],
 		SubmittedAt: Date(Date.now()).toString()
 	};
