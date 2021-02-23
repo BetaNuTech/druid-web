@@ -63,7 +63,7 @@ exports.handler = (event, context) => {
 	if (process.env.BLUESKY_ENABLED == 'true') {
 		// Post Data to Bluesky
 
-		let lead_notes = "Incoming BlueConnect Lead call to " + callerData["DialedNumber"] + " at " + callerData["SubmittedAt"];
+		let lead_notes = "Incoming BlueConnect Lead call referred from" + callerData["Referrer"] + " to " + callerData["DialedNumber"] + " at " + callerData["SubmittedAt"];
 
 		let bluesky_data = JSON.stringify({
 			"property_id": callerData["PropertyId"],
