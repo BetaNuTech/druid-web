@@ -18,8 +18,8 @@ module Properties
         lead_source = LeadSource.where(slug: 'CallCenter').first
         property_listing = PropertyListing.where(property_id: property.id, source_id: lead_source&.id).first
         main_number = property.phone
-        maintenance_number = ( property.maintenance_phone || '' ).gsub(' ','').empty? ? property.phone : maintenance_phone
-        leasing_number = ( property.leasing_phone || '' ).gsub(' ','').empty? ? property.phone : leasing_phone
+        maintenance_number = ( property.maintenance_phone || '' ).gsub(' ','').empty? ? property.phone : property.maintenance_phone
+        leasing_number = ( property.leasing_phone || '' ).gsub(' ','').empty? ? property.phone : property.leasing_phone
 
         {
           version: '1.0.0',
