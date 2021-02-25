@@ -9,10 +9,10 @@ exports.handler = (event, context) => {
 	let lastName = event["Details"]["ContactData"]["Attributes"]["callerLastName"];
 	let callerID = event["Details"]["ContactData"]["Attributes"]["callerCallerID"];
 
-	if (firstName == '' || firstName == undefined) {
-		firstName = callerID;
-		lastName = ''
-	}
+  if (firstName == '' || firstName == ' ' || firstName == undefined) {
+    firstName = 'Unknown';
+    lastName = ''
+  }
 
 	const callerData = {
 		DialedNumber: event["Details"]["ContactData"]["SystemEndpoint"]["Address"],

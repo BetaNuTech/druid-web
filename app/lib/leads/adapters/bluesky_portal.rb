@@ -1,11 +1,32 @@
 module Leads
   module Adapters
     class BlueskyPortal
+      require 'twilio-ruby'
+
       LEAD_SOURCE_SLUG = 'BlueskyPortal'
+
+      # Used Twilio API to fetch CallerID information
+      # CHARGES APPLY!
+      def self.get_callerid(phone)
+        phone_number = PhoneNumber.format_phone(phone, prefixed: true)
+        twilio_account_sid = ENV.fetch('MESSAGE_DELIVERY_TWILIO_SID', '')
+        twilio_auth_token = ENV.fetch('MESSAGE_DELIVERY_TWILIO_TOKEN', '')
+        service = Twilio::REST::Client.new(twilio_account_sid, twilio_auth_token)
+        number_data = service.lookups.v1.phone_numbers(phone_number).fetch(type: 'caller-name')
+        msg = "Twilio API called to lookup phone number in Leads::Adapters::BlueskyPortal.get_callerid: #{phone_number}"
+        Rails.logger.warn(msg)
+        Note.create(content: msg, classification: :external)
+        Rails.logger.debug number_data
+        number_data.caller_name.fetch('caller_name')
+      rescue => e
+        Rails.logger.error('Error fetching Blueconnect Caller ID: ' + e.to_s)
+        'Unknown'
+      end
 
       def initialize(params)
         @property_code = get_property_code(params)
         @data = filter_params(params)
+        @lookup_service = init_lookup_service
       end
 
       def parse
@@ -15,9 +36,17 @@ module Leads
       private
 
       def extract(data)
+        first_name = data.fetch('first_name', 'Unknown')
+        last_name = data.fetch('last_name', 'Unknown')
+
+        if ['Unknown', ' ', '', nil].include?(first_name)
+          caller_name = get_callerid(data.fetch('phone'))
+          first_name, last_name = caller_name.split(',')
+        end
+
         {
-          first_name: data.fetch('first_name'),
-          last_name: data.fetch('last_name'),
+          first_name: first_name,
+          last_name: last_name,
           referral: data.fetch('referrer', 'BlueskyPortal'),
           phone1: data.fetch('phone'),
           phone1_type: 'Cell',
