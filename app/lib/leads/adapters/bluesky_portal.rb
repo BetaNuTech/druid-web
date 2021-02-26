@@ -36,13 +36,8 @@ module Leads
       private
 
       def extract(data)
-        first_name = data.fetch('first_name', 'Unknown')
-        last_name = data.fetch('last_name', 'Unknown')
-
-        if first_name == 'Unknown'
-          caller_name = get_callerid(data.fetch('phone'))
-          first_name, last_name = caller_name.split(',')
-        end
+        caller_name = get_callerid(data.fetch('phone'))
+        first_name, last_name = caller_name.split(',')
 
         {
           first_name: first_name,
