@@ -39,7 +39,7 @@ module Leads
         first_name = data.fetch('first_name', 'Unknown')
         last_name = data.fetch('last_name', 'Unknown')
 
-        if ['Unknown', ' ', '', nil].include?(first_name)
+        if first_name == 'Unknown'
           caller_name = get_callerid(data.fetch('phone'))
           first_name, last_name = caller_name.split(',')
         end
