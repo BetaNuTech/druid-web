@@ -1,9 +1,27 @@
 module Leads
   module Adapters
     # Reference passthrough data adapter
-    # This class corresponds to a LeadSource record with the slug value 'Bluesky'
+    # This class corresponds to a LeadSource record with the slug value 'CallCenter'
     class CallCenter
       LEAD_SOURCE_SLUG = 'CallCenter'
+
+      # Used Twilio API to fetch CallerID information
+      # CHARGES APPLY!
+      def self.get_callerid(phone)
+        phone_number = PhoneNumber.format_phone(phone, prefixed: true)
+        twilio_account_sid = ENV.fetch('MESSAGE_DELIVERY_TWILIO_SID', '')
+        twilio_auth_token = ENV.fetch('MESSAGE_DELIVERY_TWILIO_TOKEN', '')
+        service = Twilio::REST::Client.new(twilio_account_sid, twilio_auth_token)
+        number_data = service.lookups.v1.phone_numbers(phone_number).fetch(type: 'caller-name')
+        msg = "Twilio API called to lookup phone number in Leads::Adapters::BlueskyPortal.get_callerid: #{phone_number}"
+        Rails.logger.warn(msg)
+        Note.create(content: msg, classification: :external)
+        Rails.logger.debug number_data
+        number_data.caller_name.fetch('caller_name')
+      rescue => e
+        Rails.logger.error('Error fetching Blueconnect Caller ID: ' + e.to_s)
+        'Unknown'
+      end
 
       def initialize(params)
         @property_code = get_property_code(params)
@@ -14,12 +32,25 @@ module Leads
       def parse
         lead = Lead.new(@data)
         lead.validate
+        full_name = lookup_name
+        lead.first_name = full_name.first
+        lead.last_name = full_name.last
         status = lead.valid? ? :ok : :invalid
         result = Leads::Creator::Result.new( status: status, lead: @data, errors: lead.errors, property_code: @property_code)
         return result
       end
 
       private
+
+      def lookup_name
+        first_name = @data.fetch('first_name',nil)
+        last_name = @data.fetch('last_name',nil)
+        phone = @data.fetch('phone1',nil)
+        if phone.present? && ( ['Unknown', ' ','', nil].include?(first_name) )
+          first_name, last_name = get_callerid(phone)
+        end
+        [first_name, last_name]
+      end
 
       def get_property_code(params)
         return params[:property_id]
