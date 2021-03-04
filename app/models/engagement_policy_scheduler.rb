@@ -101,7 +101,7 @@ class EngagementPolicyScheduler
       return nil
     end
 
-    due = originator.next_scheduled_attempt(attempt)
+    due = originator.next_scheduled_attempt(basis: Time.now, attempt: attempt)
 
     schedule = Schedule.new(
       date: due.to_date,

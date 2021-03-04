@@ -73,7 +73,7 @@ RSpec.describe ScheduledActionPolicy do
       let(:lead) { create(:lead, user: task_owner, property: task_owner.properties.first)}
 
       describe 'a personal task' do
-        let(:scheduled_action) { ScheduledAction.create(user: task_owner, target: task_owner )}
+        let(:scheduled_action) { ScheduledAction.create!(user: task_owner, target: task_owner )}
 
         it 'should allow admin access' do
           assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).edit?)
@@ -154,7 +154,9 @@ RSpec.describe ScheduledActionPolicy do
           scheduled_action
         end
 
-        let(:scheduled_action) { lead.scheduled_actions.first }
+        let(:scheduled_action) {
+          ScheduledAction.create(user: task_owner, target: lead, state: :pending)
+        }
 
         it 'should allow admin access' do
           assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).completion_form?)
@@ -207,7 +209,9 @@ RSpec.describe ScheduledActionPolicy do
           scheduled_action
         end
 
-        let(:scheduled_action) { lead.scheduled_actions.first }
+        let(:scheduled_action) {
+          ScheduledAction.create!(user: task_owner, target: lead, state: :pending)
+        }
 
         it 'should allow admin access' do
           assert(ScheduledActionPolicy.new(team1_corporate1, scheduled_action).complete?)

@@ -27,7 +27,7 @@
           :deadline: 2
           :retry_count: 4
           :retry_delay: 4
-          :retry_delay_multiplier: none
+          :retry_delay_multiplier: nonlinear
           :score: 5
           :active: true
     - :version: 3

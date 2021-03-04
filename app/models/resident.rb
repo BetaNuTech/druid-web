@@ -82,7 +82,7 @@ class Resident < ApplicationRecord
   def unit_belongs_to_property
     return unless unit.present?
     if unit.property_id != property_id
-      errors[:base] << INVALID_UNIT_PROPERTY_ERROR
+      errors.add(:base, INVALID_UNIT_PROPERTY_ERROR)
     end
   end
 

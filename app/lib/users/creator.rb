@@ -46,7 +46,7 @@ module Users
     def validate
       @errors = ActiveModel::Errors.new(User.new)
       @user.validate
-      @user.errors.full_messages.each{|e| @errors.add(e)} unless @user.valid?
+      @user.errors.full_messages.each{|e| @errors.add(:base, e)} unless @user.valid?
 
       # Only apply these extended validations on a new record
       if @new_record
@@ -188,7 +188,10 @@ module Users
     end
 
     def error_for?(attr)
-      @errors&.keys.present? && @errors.keys.include?(attr.to_sym)
+      return false unless @errors.present?
+
+      error_data = @errors.to_hash
+      error_data&.keys.present? && error_data.keys.include?(attr.to_sym)
     end
 
     private

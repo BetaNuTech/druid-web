@@ -146,7 +146,7 @@ RSpec.describe ScheduledAction, type: :model do
         expect(ContactEvent.count).to eq(full_count + 1)
         event = lead.contact_events.last
         expect(event.article).to eq(scheduled_action_contact)
-        expect(event.lead_time).to eq(60)
+        expect(event.lead_time).to eq(1)
         expect(event.user).to eq(lead.user)
         expect(event.lead).to eq(lead)
       end

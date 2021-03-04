@@ -26,11 +26,11 @@ class Article < ApplicationRecord
     def validate_articletype_for_user_role(record)
       if record.user.present?
         unless record.permitted_articletypes.include?(record.articletype)
-          record.errors[:base] << 'You are not allowed to create this type of article'
+          record.errors.add :base, 'You are not allowed to create this type of article'
         end
       else
         unless Article.articletypes.include?(record.articletype)
-          record.errors[:articletype] << 'Invalid article type'
+          record.errors.add :articletype, 'Invalid article type'
         end
       end
     end
@@ -38,11 +38,11 @@ class Article < ApplicationRecord
     def validate_audience_for_user_role(record)
       if record.user.present?
         unless record.permitted_audiences.include?(record.audience)
-          record.errors[:base] << 'You are not allowed to create an article with this audience'
+          record.errors.add :base, 'You are not allowed to create an article with this audience'
         end
       else
         unless Article.audiences.include?(record.audience)
-          record.errors[:audience] << 'Invalid audience'
+          record.errors.add :audience, 'Invalid audience'
         end
       end
     end

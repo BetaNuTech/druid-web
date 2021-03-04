@@ -4,6 +4,7 @@ module ScheduledActions
 
     included do
       # Referenced object (i.e. a Unit for a Unit showing)
+      attr_accessor :do_cleanup
       belongs_to :article, polymorphic: true, optional: true
       before_update :action_article_cleanup
 
@@ -44,6 +45,7 @@ module ScheduledActions
       ]
 
       def action_article_cleanup
+        return if do_cleanup == false
         unless article_selectable?
           self.article = nil
         end

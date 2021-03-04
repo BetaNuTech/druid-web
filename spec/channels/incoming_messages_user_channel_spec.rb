@@ -5,7 +5,7 @@ RSpec.describe IncomingMessagesUserChannel, type: :channel do
   include_context 'team_members'
   include_context 'messaging'
 
-  let(:user) { team1_agent1; team1_agent1.switch_setting!(:view_all_messages, true); team1_agent1 }
+  let(:user) { team1_agent1; team1_agent1.switch_setting!(:view_all_messages, true); team1_agent1.switch_setting!(:message_web_notifications, true); team1_agent1 }
   let(:user2) { team1_agent2 }
   let(:lead) { create(:lead, property: user.property, user: user, state: 'prospect') }
   let(:property) { user.property }
@@ -23,6 +23,7 @@ RSpec.describe IncomingMessagesUserChannel, type: :channel do
     end
 
     it "successfully subscribes to own stream" do
+      assert(user.setting_enabled?(:message_web_notifications))
       subscribe
       expect(subscription).to be_confirmed
       expect(subscription.current_user).to eq user

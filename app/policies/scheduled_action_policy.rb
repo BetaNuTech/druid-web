@@ -62,9 +62,10 @@ class ScheduledActionPolicy < ApplicationPolicy
 
   def completion_form?
     same_user? ||
-      user.manager? ||
       user.admin? ||
-      (user.user? && (for_lead_in_same_property? && !record.personal_task?))
+      (for_lead_in_same_property? &&
+        ( user.manager? ||
+        (user.user? && !record.personal_task?)))
   end
 
   def complete?

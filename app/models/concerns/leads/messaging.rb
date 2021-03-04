@@ -232,13 +232,14 @@ module Leads
           # Cannot send Message: send Error Notification
           message = Message.new()
           error_message = "Could not send SMS opt-in request"
-          errors[:errors] << error_message
+          errors.add error_message
+          errors
           error = StandardError.new(error_message)
           if message_template.nil?
-            errors[:errors] << "Missing Message Template: '#{message_template_name}'"
+            errors.add "Missing Message Template: '#{message_template_name}'"
           end
           if message_sms_destination.nil?
-            errors[:errors] << "Lead does not have a Phone Number"
+            errors.add "Lead does not have a Phone Number"
           end
           #ErrorNotification.send(error,errors)
           comment_content = "NOT SENT: #{message_template_name} -- #{errors[:errors].join('; ')}"

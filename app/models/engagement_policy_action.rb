@@ -44,22 +44,29 @@ class EngagementPolicyAction < ApplicationRecord
 
   ### Instance Methods
 
-  def next_scheduled_attempt(attempt)
-    delay_multiplier = case retry_delay_multiplier
-      when 'none'
-        1.0
-      when 'double'
-        2.0 * attempt.to_f
-      when 'nonliner'
-        2.0**attempt
-      else
-        1.0
-      end
+  def next_scheduled_attempt(basis: , attempt:)
+    if lead_action&.is_contact?
+      attempt_date = Time.now + variable_interval_reinforcement_delay(attempt: attempt, schedule: retry_delay_multiplier)
+    else
+      attempt_date = Time.now + variable_interval_reinforcement_delay(attempt: attempt, schedule: retry_delay_multiplier)
+    end
 
-    now = DateTime.now.utc
-    attempt_date = now + ( delay_multiplier * retry_delay ).hours
+    attempt_date
+  end
 
-    return attempt_date
+  def variable_interval_reinforcement_delay(attempt:, schedule: 'none')
+    delay_multiplier = case schedule
+                       when 'none', 'fixed'
+                         1.0
+                       when 'double'
+                         2.0 * attempt.to_f
+                       when 'nonlinear'
+                         2.0**( attempt + 1.0 )
+                       else
+                         1.0
+                       end
+
+    ( delay_multiplier * retry_delay ).hours
   end
 
 end

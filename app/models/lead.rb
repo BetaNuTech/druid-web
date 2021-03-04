@@ -202,9 +202,10 @@ class Lead < ApplicationRecord
       return false unless unit.present? && LeadAction.showing.present?
       showing_task = scheduled_actions.where(lead_action: LeadAction.showing).first
       return false unless showing_task.present?
-      showing_task.article_type = 'Unit'
-      showing_task.article_id = unit.id
-      return showing_task.save
+      showing_task.article = unit
+      showing_task.do_cleanup = false
+      showing_task.save
+      return showing_task
     end
 
     def handle_scheduled_action_completion(scheduled_action=nil)
