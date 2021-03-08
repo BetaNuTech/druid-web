@@ -100,7 +100,9 @@ class LeadPolicy < ApplicationPolicy
   # Allow event to be issued if valid,
   #  current_user is admin, no user is associated with lead,
   #  or current_user owns lead
-  def allow_state_event_by_user?(event_name)
+  def allow_state_event_by_user?(event_name=nil)
+    return false unless event_name.present?
+
     event = event_name.to_sym
     record.permitted_state_events.include?(event) &&
       (!record.user.present? || is_owner? || same_property? || user.admin? || property_manager? || team_lead?)
