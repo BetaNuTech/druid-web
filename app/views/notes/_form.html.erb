@@ -37,10 +37,12 @@
         <%= form.label :lead_action_id, "Action" %>
         <%= form.select :lead_action_id, select_action(note.lead_action_id, state: ( note.notable&.respond_to?(:state) ? note.notable&.state : nil )), {include_blank: true},{id: :note_action, class: "form-control"} %>
       </div>
+    <% if @current_user.setting_enabled?(:select_task_reason) %>
       <div class="col-md-4 form-group">
         <%= form.label :reason_id, "Reason" %>
         <%= form.select :reason_id, select_reason(note.reason_id),{include_blank: true},{id: :note_reason, class: "form-control"} %>
       </div>
+    <% end %>
     </div>
     <div class="row">
       <div class="col-md-6">
