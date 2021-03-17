@@ -28,7 +28,7 @@ module Api
         token = params[:token]
         lead_creator = Leads::Creator.new(data: lead_data, agent: nil, token: token)
         @lead = lead_creator.call
-        if @lead.valid?
+        if @lead.valid? && @lead.id.present?
           render :create, status: :created, format: :json
         else
           render json: {errors: lead_creator.errors}, status: :unprocessable_entity, format: :json

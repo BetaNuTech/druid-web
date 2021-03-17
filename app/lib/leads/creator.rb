@@ -87,14 +87,18 @@ module Leads
       rescue => e
         note_message = "Leads::Creator Error parsing incoming Lead data: #{e}\n\n#{@data}"
         Leads::Creator.create_event_note(message: note_message, error: true)
+        return Lead.new
       end
 
+      ### Build lead from parser data
       @lead = Lead.new(parse_result.lead)
+
+      ### Assign additional meta-data
       @lead.user = @agent if @agent.present?
       @lead.priority = "urgent"
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
-      @lead.first_comm = DateTime.now
+      @lead.first_comm ||= Time.now
 
       case parse_result.status
         when :ok

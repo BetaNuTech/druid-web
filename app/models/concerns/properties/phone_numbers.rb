@@ -31,18 +31,20 @@ module Properties
 
       def find_by_phone_number(number)
         return nil unless number.present?
-        self.includes(:phone_numbers).
-          where(phone: PhoneNumber.format_phone(number)).
-          or(includes(:phone_numbers).where(phone_numbers: {number: PhoneNumber.format_phone(number)})).
+
+        formatted_number PhoneNumber.format_phone(number)
+        self.includes(:marketing_sources).
+          where(phone: formatted_number).
+          or(includes(:marketing_sources).where(marketing_sources: {tracking_number: formatted_number})).
           first
       end
 
       def find_all_by_phone_numbers(numbers)
         sanitized_numbers = (numbers ||[]).select{|n| n.present?}
         formatted_numbers = sanitized_numbers.map{|n| PhoneNumber.format_phone(n)}
-        self.includes(:phone_numbers).
+        self.includes(:marketing_sources).
           where(phone: formatted_numbers).
-          or(includes(:phone_numbers).where(phone_numbers: {number: formatted_numbers}))
+          or(includes(:marketing_sources).where(marketing_sources: {tracking_number: formatted_numbers}))
       end
 
     end

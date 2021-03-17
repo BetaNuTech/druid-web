@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# /data/nextiva1/watch_cdr
+# Nextiva CDR processor
+
+# Config ----
+### These envvars should be assigned before or during execution
+# LEAD_API_KEY="XXX" 
+# LEAD_API_HOST="http://localhost:3000"
+# ----------
+
+WATCH_FOLDER="$1"
+PROPERTY_CODE="$2"
+URL="$LEAD_API_HOST/api/v1/leads.json?token=$LEAD_API_KEY&property=$PROPERTY_CODE"
+
+display_usage () {
+  echo "Usage: $0 <path> <propertycode> LEAD_API_KEY=XXX LEAD_API_HOST=https://example:3000"
+}
+
+submit_cdr_file () {
+  echo "! New CDR logfile detected at $WATCH_FOLDER/$2 !"
+  cat $WATCH_FOLDER/$2 | 
+    while read cdr; do
+      curl -X POST -d "$cdr" -H 'Content-Type: application/json' $1
+    done
+}
+
+if [ $# -le 1 ] 
+then
+  display_usage
+  exit 1
+fi
+
+if [[ ( $# == "--help") ||  $# == "-h" ]]
+then
+  display_usage
+  exit 0
+fi
+
+echo "*** Monitoring $WATCH_FOLDER for CDR data for transfer to $API_HOST"
+inotifywait -r -m $WATCH_FOLDER |
+  while read a b file; do
+    [[ $b == *CREATE* ]] && submit_cdr_file $URL "$file"
+  done

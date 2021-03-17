@@ -43,3 +43,7 @@
     :slug: "Arrowtel"
     :incoming: true
     :active: true
+  - :name: "Nextiva"
+    :slug: "Nextiva"
+    :incoming: true
+    :active: true
