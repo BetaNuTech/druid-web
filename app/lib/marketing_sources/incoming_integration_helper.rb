@@ -59,7 +59,7 @@ module MarketingSources
         tracking_email: ->(property) {
           source = LeadSource.where(slug: 'Cloudmailin').first or raise 'Cloudmailin LeadSource not found!'
           cloudmailin_listing = PropertyListing.where(property_id: property.id, source_id: source.id).first
-          outgoing_replyto = Messages::DeliveryAdapters::Actionmailer.new.base_senderid
+          outgoing_replyto = ENV.fetch('CLOUDMAILIN_LEAD_ADDRESS','')
           outgoing_replyto.sub('@',"+#{cloudmailin_listing.code}@")
         },
         tracking_code: false
