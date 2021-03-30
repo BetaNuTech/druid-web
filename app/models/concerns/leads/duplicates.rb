@@ -7,6 +7,7 @@ module Leads
       attr_accessor :skip_dedupe
 
       has_many :duplicate_records, class_name: 'DuplicateLead', foreign_key: 'reference_id', dependent: :destroy
+      has_many :duplicate_records_by_lead_id, class_name: 'DuplicateLead', foreign_key: 'lead_id', dependent: :destroy
       has_many :duplicates, class_name: 'Lead', foreign_key: 'lead_id', through: :duplicate_records, source: :lead
 
       after_create :mark_duplicates, :disqualify_if_resident

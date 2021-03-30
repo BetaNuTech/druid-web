@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_18_205644) do
+ActiveRecord::Schema.define(version: 2021_03_30_173015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -757,7 +757,6 @@ ActiveRecord::Schema.define(version: 2021_03_18_205644) do
   add_foreign_key "duplicate_leads", "leads", column: "reference_id", name: "duplicate_leads_reference_id_fk"
   add_foreign_key "duplicate_leads", "leads", name: "duplicate_leads_lead_id_fk"
   add_foreign_key "engagement_policies", "properties", name: "engagement_policies_property_id_fk"
-  add_foreign_key "engagement_policy_action_compliances", "scheduled_actions", name: "engagement_policy_action_compliances_scheduled_action_id_fk"
   add_foreign_key "engagement_policy_action_compliances", "users", name: "engagement_policy_action_compliances_user_id_fk"
   add_foreign_key "engagement_policy_actions", "engagement_policies", name: "engagement_policy_actions_engagement_policy_id_fk"
   add_foreign_key "engagement_policy_actions", "lead_actions", name: "engagement_policy_actions_lead_action_id_fk"

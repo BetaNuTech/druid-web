@@ -21,7 +21,7 @@ class EngagementPolicyActionCompliance < ApplicationRecord
   ### Constants
 
   ### Associations
-  belongs_to :scheduled_action
+  belongs_to :scheduled_action, dependent: :destroy
   belongs_to :user, optional: true
 
   ### Scopes
