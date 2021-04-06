@@ -85,6 +85,9 @@ module Properties
         with_working_hours do
           Time.now.in_working_hours?
         end
+      rescue
+        # Rescue errors due to invalid working hours data
+        true
       end
 
       def working_hours_difference_in_time(from, to)
