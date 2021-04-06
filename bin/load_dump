@@ -1,0 +1,5 @@
+echo "Loading latest.dump"; \
+dropdb bluesky-web_development; \
+createdb bluesky-web_development -O $USER; \
+pg_restore --verbose --clean --no-acl --no-owner -U $USER -d bluesky-web_development latest.dump; \
+rake db:migrate

@@ -35,4 +35,16 @@ JS
 
     puts "= Wrote #{filename}"
   end
+
+  desc "List Property with invalid Working Hours"
+  task :with_invalid_working_hours => :environment do
+    all_valid = true
+    Property.active.each do |property|
+      unless property.working_hours_valid?
+        puts "!!! #{property.name} has invalid working hours !!!"
+        all_valid = false
+      end
+    end
+    exit(1) unless all_valid
+  end
 end

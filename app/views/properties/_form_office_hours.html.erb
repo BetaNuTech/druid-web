@@ -12,7 +12,19 @@
         <%= form.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Central Time (US & Canada)" }, {class: "form-control"} %>
       </div>
     </div>
-    <% working_hours = OpenStruct.new(property.working_hours || Property::DEFAULT_WORKING_HOURS) %>
+
+    <% unless property.working_hours_valid? %>
+      <div class="row">
+        <div class="col-md-12">
+          <p class="lead bg-danger">
+            There is a problem with the Office Hours information:<br/>
+            <small> <%= property.working_hours_error %> </small>
+          </p>
+        </div>
+      </div>
+    <% end %>
+
+    <% working_hours = property.working_hours_or_defaults %>
     <% %w[sunday monday tuesday wednesday thursday friday saturday].each_with_index do |dow, index| %>
       <div class="row">
         <div class="col-xs-3 form-group">

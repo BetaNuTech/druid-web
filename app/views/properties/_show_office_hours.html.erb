@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        <% working_hours = OpenStruct.new(property.working_hours || Property::DEFAULT_WORKING_HOURS) %>
+        <% working_hours = property.working_hours_or_defaults %>
         <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
         <tr>
           <td><%= day.capitalize %></td>
@@ -25,7 +25,7 @@
           <% end %>
           <td>
             <%= working_hours[day]["morning"]["open"] %> &rarr;
-            <%= working_hours[day]["morning"]["close"] %>
+            <%= working_hours[day]["morning"]["close"]%>
           </td>
           <td>
             <%= working_hours[day]["afternoon"]["open"] %> &rarr;

@@ -30,6 +30,7 @@ $(document).on('turbolinks:load', function() {
     button.toggleClass('glyphicon-chevron-down');
   });
 
+  /* Toggle day closed in Property Office Hours form */
   $('input.working_hours_toggle_closed').on('click', function(e){
     var target = e.target;
     var dow = $(target).data('weekday');
@@ -43,7 +44,7 @@ $(document).on('turbolinks:load', function() {
         inputs.each(function(_i, e){
           var previous_val = $(e).val();
           $(e).data("previous_value", previous_val) });
-          inputs.val("12:00 PM");
+          inputs.val("");
       } else {
         var inputs = $("div.working_hours_" + dow + " select.working_hours_input");
         inputs.each(function(_i, e){ $(e).val($(e).data("previous_value")); });

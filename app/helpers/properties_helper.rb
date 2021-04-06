@@ -56,22 +56,22 @@ module PropertiesHelper
   end
 
   def morning_hours_options(val)
-    option_arr = []
+    option_arr = [[nil,nil]]
     ( 5..11 ).each do |hour|
       opt = "#{hour}:00 AM"
       option_arr << [opt, opt]
       opt = "#{hour}:30 AM"
       option_arr << [opt, opt]
     end
-    option_arr << ["12:00 PM", "12:00 PM"]
-    option_arr << ["12:30 PM", "12:30 PM"]
+    option_arr << ['12:00 PM', '12:00 PM']
+    option_arr << ['12:30 PM', '12:30 PM']
     options_for_select(option_arr, val)
   end
 
   def afternoon_hours_options(val)
-    option_arr = []
-    option_arr << ["12:00 PM", "12:00 PM"]
-    option_arr << ["12:30 PM", "12:30 PM"]
+    option_arr = [[nil,nil]]
+    option_arr << ['12:00 PM', '12:00 PM']
+    option_arr << ['12:30 PM', '12:30 PM']
     ( 1..11 ).each do |hour|
       opt = "#{hour}:00 PM"
       option_arr << [opt, opt]
