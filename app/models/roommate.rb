@@ -18,6 +18,8 @@
 #  updated_at    :datetime         not null
 #
 class Roommate < ApplicationRecord
+  include ActionView::Helpers::NumberHelper
+
   # Class Concerns/Extensions
   audited
 
@@ -65,6 +67,10 @@ class Roommate < ApplicationRecord
 
   def name
     [first_name, last_name].compact.join(' ').strip
+  end
+
+  def phone_formatted
+    phone.present? ? number_to_phone(phone) : ''
   end
 
   private

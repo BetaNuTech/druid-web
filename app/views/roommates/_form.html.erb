@@ -61,11 +61,15 @@
   </div>
 
   <div class="row">
-    <div class="col-md-12 form-group">
-      <br/>
+    <div class="col-md-8 form-group">
       <button type="submit" class="btn btn-primary">Submit</button>
       <%= link_to('Cancel', :back, class: 'btn btn-xs btn-info') %>
     </div>
+    <% if roommate.id %>
+      <div class="col-md-4 text-right">
+        <%= link_to('Remove', lead_roommate_path(lead_id: roommate.lead.id, id: roommate.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger') %>
+      </div>
+    <% end %>
   </div>
 <% end %>
 

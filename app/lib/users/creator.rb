@@ -203,7 +203,7 @@ module Users
       @user.attributes = @user_attributes
       @user.profile ||= UserProfile.new
       @user.profile.appsettings = UserProfile.default_settings.merge(@user.profile.appsettings)
-      @user.profile.enabled_features = UserProfile.default_features.merge(@user.profile.enabled_features)
+      @user.profile.enabled_features = UserProfile.default_features.merge(( @user.profile.enabled_features || {}))
       return @user
     end
 

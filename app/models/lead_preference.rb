@@ -26,6 +26,7 @@
 #
 
 class LeadPreference < ApplicationRecord
+  include ActionView::Helpers::NumberHelper
 
   ### Constants
   DEFAULT_UNIT_SYSTEM = :imperial
@@ -79,6 +80,14 @@ class LeadPreference < ApplicationRecord
   allow_blank: true
 
   ### Instance Methods
+  
+  def price
+    if (price = max_price || min_price)
+      number_to_currency(price)
+    else
+      '$(any)'
+    end
+  end
 
   def unit_type_name
     unit_type.try(:name) || NO_UNIT_PREFERENCE
@@ -132,6 +141,14 @@ class LeadPreference < ApplicationRecord
     !optin_sms
   end
 
+  def email_allowed
+    optin_email? && true
+  end
+
+  def sms_allowed
+    optin_sms? && true
+  end
+
   def source_document
     data = ( JSON.parse(raw_data) rescue nil ) or return nil
     return {html: data.fetch("html", false), text: data.fetch("plain")}
@@ -161,5 +178,12 @@ class LeadPreference < ApplicationRecord
     end
   end
 
+  def floorplan_name
+    unit_type&.name || '(any)'
+  end
+
+  def move_in_date
+    move_in.present? ? move_in.strftime('%m/%-d/%y') : ''
+  end
 
 end

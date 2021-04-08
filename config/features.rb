@@ -13,6 +13,8 @@ Flipflop.configure do
 
   feature :design_v1, default: true, description: 'UI v1 Navigation'
 
+  feature :lead_v1, default: false, description: 'Lead v1 UI'
+
   # Other strategies:
   #
   # strategy :sequel

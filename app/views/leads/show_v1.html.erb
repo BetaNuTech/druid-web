@@ -1,0 +1,193 @@
+<div id="LeadUI" data-lead_id='<%= @lead.id %>'></div>
+
+<div id="lead_<%= @lead.id %>">
+  <div class="Lead" >
+    <div class="priority">
+      <ul>
+        <li>
+          <strong>Priority:</strong>
+          &nbsp;
+          <span><%= @lead.priority %></span>
+        </li>
+        <li>
+          <strong>State:</strong>
+          &nbsp;
+          <span><%= @lead.state %></span>
+        </li>
+        <li>
+          <strong>Agent:</strong>
+          &nbsp;
+          <span><%= @lead.user ? @lead.user.name : "None" %></span>
+        </li>
+        <li>
+          <strong>First Contact:</strong>
+          &nbsp;
+          <span><%= short_datetime(@lead.first_comm) %></span>
+        </li>
+        <li>
+          <strong>Last Contact:</strong>
+          &nbsp;
+          <span><%= short_datetime(@lead.last_comm) %></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="controls row">
+      <div class="col-md-12">
+        <% if @lead.valid? %>
+          <%= render partial: "state_toggle", locals: {lead: @lead} %>
+        <% else %>
+          <div class='alert alert-danger row' >
+            <div class="col-md-1">
+              <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-sm btn-primary" %>
+            </div>
+            <div class='col-md-11'>
+              <p class='lead'>
+                There are problems with this record:
+              </p>
+
+              <ul>
+              <% @lead.errors.to_a.each do |err| %>
+                <li><%= err %></li>
+              <% end %>
+              </ul>
+            </div>
+
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="contact" >
+      <span class="lead_name">
+        <%= @lead.name %> <%= @lead.is_lead? ? '' : "(Not a Lead: #{@lead.classification&.capitalize})" %>
+      <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-xs btn-primary" %>
+      </span><br/>
+      <span class="contact_info" >
+        <% if @lead.phone1.present? %>
+          <span title="Primary Phone" class="glyphicon glyphicon-earphone" ></span>&nbsp;
+          <%= new_lead_sms_message_link(@lead) do %>
+            <%= @lead.phone1 %>
+          <% end %>
+          <br/>
+        <% end %>
+        <% if @lead.phone2.present? %>
+          <span title="Secondary Phone" class="glyphicon glyphicon-earphone"></span>&nbsp;
+          <%= new_lead_sms_message_link(@lead) do %>
+            <%= @lead.phone2 %><br/>
+          <% end %>
+        <% end %>
+        <span title="Email Address" class="glyphicon glyphicon-envelope"></span>&nbsp;
+        <% if @lead.email.present? %>
+          <%= new_lead_email_message_link(@lead) do %>
+            <%= @lead.email %>
+          <% end %>
+        <% else %>
+          <span class="missing_lead_email">Email Required</span>
+        <% end %><br/>
+        <span title="Fax Number" class="glyphicon glyphicon-file"></span>&nbsp;
+        <%= @lead.fax %>
+      </span>
+    </div>
+    <div class="property">
+      <% if @lead.property.present? %>
+        <span>
+          <span class="glyphicon glyphicon-home"></span>&nbsp;
+          <%= @lead.property.name %>
+        </span>
+        <% if @lead.resident.present? %>
+          <span>
+            <%= link_to('Resident', resident_path(@lead.resident)) %>
+          </span>
+        <% end %>
+        <br/>
+        <span>
+          <span class="glyphicon glyphicon-filter"></span>&nbsp;
+          <%= @lead.referral %>
+        </span><br/>
+      <% else %>
+        <span>No Property<br/></span>
+      <% end %>
+      <span>
+        <% @lead.referrals.each do |referral| %>
+          <% if ( referrable = referral.referrable ).present? %>
+            <span title="<%= referral.note %>">
+              <span class="glyphicon glyphicon-user"></span>&nbsp;
+              <%= link_to referrable.name, url_for(referrable) + "?override_scope=true" %><br/>
+            </span>
+          <% end %>
+        <% end %>
+      </span>
+      <span>
+        <em>Yardi ID:</em> <%= @lead.remoteid || 'None' %>
+        <%= tooltip_block('leads-remoteid-duplicate', @lead.duplicate_remoteid?) do %>
+          <%= link_to(search_leads_path(lead_search: {text: @lead.remoteid})) do %>
+            <%= content_tag(:span, glyph(:warning_sign), style: "color: red;")  %>
+          <% end if @lead.duplicate_remoteid? %>
+        <% end %>
+        <% if policy(@lead).update_from_remote? %>
+          <%= link_to('Update', update_from_remote_lead_path(@lead), { method: :post, class: 'btn btn-xs btn-primary', onclick: 'window.Loader.start()' }) %>
+        <% end %>
+      </span>
+    </div>
+    <div class="preferences">
+      <span>
+        <strong>Move-In: </strong>
+        <%= long_date(@lead.preference.move_in) %>
+      </span><br/>
+      <span>
+        <strong>Price: </strong>
+        $<%= @lead.preference.min_price %> - $<%= @lead.preference.max_price %>
+    </span><br/>
+    <span>
+      <strong>Unit Size: </strong>
+      <%= @lead.preference.min_area %> - <%= @lead.preference.max_area %>
+    </span><br/>
+    <span>
+      <strong>Unit Type: </strong>
+      <%= @lead.preference.unit_type.try(:name) %>
+    </span><br/>
+  </div>
+  <div class="notes">
+    <% if @lead.follow_up_at.present? %>
+      <p class="lead_notes">
+        <strong>Follow Up On: </strong>
+        <span>
+          <%= long_date(@lead.follow_up_at) %>
+        </span>
+      </p>
+    <% end %>
+    <p class="lead_notes">
+      <strong>Lead Notes: </strong>
+      <span>
+        <%= @lead.preference.notes %>
+      </span>
+    </p>
+    <% if policy(@lead).show_import_notes? %>
+      <p class="lead_notes">
+        <strong>Import Notes: </strong>
+        <span>
+          <%= @lead.notes %>
+        </span>
+      </p>
+    <% end %>
+  </div>
+
+  <%= render partial: 'source_document', locals: {lead: @lead} if @lead.source_document.present? %>
+  <a name="#duplicates">&nbsp;</a>
+  <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
+  <%= render partial: 'roommates', locals: {lead: @lead} %>
+  <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
+  <%= render partial: 'comments', locals: {lead: @lead, comments: @lead_comments} %>
+  <%= render partial: 'timeline', locals: {lead: @lead, comments: @lead_timeline} %>
+  <%= render partial: 'messages', locals: {lead: @lead} %>
+  <%= render partial: 'calls', locals: {lead: @lead} %>
+
+</div>
+  <div class="row">
+    <div class="col-md-12">
+      <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-sm btn-primary" %>
+      <%= link_to 'Back', :back, class: "btn btn-xs btn-info" %>
+    </div>
+  </div>
+</div>

@@ -59,8 +59,14 @@ class LeadsController < ApplicationController
   def show
     authorize @lead
     note_scope = NotePolicy::Scope.new(current_user, @lead.comments).resolve
+    @webpack = 'lead_ui'
     @lead_comments = note_scope.agent.comments
     @lead_timeline = note_scope.timeline
+    if Flipflop.enabled?(:lead_v1)
+      render "show_v1"
+    else
+      render "show_v0"
+    end
   end
 
   # GET /leads/new

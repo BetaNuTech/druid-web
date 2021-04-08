@@ -1,4 +1,4 @@
-json.extract! lead, :id, :remoteid, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :fax, :email, :created_at, :updated_at, :priority
+json.extract! lead, :id, :remoteid, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :last_comm_relative, :phone1, :phone2, :fax, :email, :created_at, :updated_at, :priority, :phone1_formatted, :phone2_formatted
 json.preference do
   json.partial! 'leads/preference', locals: {preference: lead.preference}
 end
@@ -13,11 +13,15 @@ json.user do
   if lead.user.present?
     json.extract! lead.user, :id, :name
   else
-    json.nil?
+    json.id nil
+    json.name 'Unclaimed'
   end
 end
-#json.comments do
-  #json.array! lead.comments, partial: "notes/note", as: :note
-#end
+json.comments do
+  json.array! lead.comments, partial: "notes/note", as: :note
+end
+json.roommates do
+  json.array! lead.roommates, partial: "roommates/roommate", as: :roommate
+end
 json.url lead_url(id: lead.id, format: :json)
-json.web_url lead_url(id: lead.id, format: :html)
+json.web_url lead_url(id: lead.id)

@@ -38,6 +38,8 @@
 #
 
 class Lead < ApplicationRecord
+  include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::NumberHelper
 
   ### Class Concerns/Extensions
   audited
@@ -212,6 +214,18 @@ class Lead < ApplicationRecord
     def handle_scheduled_action_completion(scheduled_action=nil)
       create_scheduled_action_contact_event(scheduled_action) if scheduled_action
       set_priority
+    end
+
+    def last_comm_relative
+      distance_of_time_in_words(last_comm || first_comm, Time.now) + ' ago'
+    end
+
+    def phone1_formatted
+      phone1.present? ? number_to_phone(phone1) : ''
+    end
+
+    def phone2_formatted
+      phone2.present? ? number_to_phone(phone2) : ''
     end
 
     private
