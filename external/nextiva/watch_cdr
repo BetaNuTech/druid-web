@@ -37,7 +37,7 @@ then
   exit 0
 fi
 
-echo "*** Monitoring $WATCH_FOLDER for CDR data for transfer to $API_HOST"
+echo "*** Monitoring $WATCH_FOLDER for CDR data for transfer to $LEAD_API_HOST"
 inotifywait -r -m $WATCH_FOLDER |
   while read a b file; do
     [[ $b == *CREATE* ]] && submit_cdr_file $URL "$file"
