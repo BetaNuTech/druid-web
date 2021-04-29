@@ -81,7 +81,6 @@ $(document).on('turbolinks:load', function() {
     var tracking_email_container = $('.tracking_email_container');
     var entry_container = $('.tracking_email_entry');
     var entry_input = entry_container.find('input');
-    console.log(entry_container)
     if (data['email_tracking'] != false) {
       tracking_email_container.removeClass('hidden')
     } else {
@@ -129,7 +128,7 @@ $(document).on('turbolinks:load', function() {
     if (data['tracking_number'] !== false) {
       tracking_entry_container.removeClass('hidden');
       destination_entry_container.removeClass('hidden');
-      tracking_entry_input.val(data['tracking_number']);
+      if (data['tracking_number'] != '') { tracking_entry_input.val(data['tracking_number']) }
       destination_entry_input.val(data['destination_number']);
     } else {
       tracking_entry_container.addClass('hidden');
