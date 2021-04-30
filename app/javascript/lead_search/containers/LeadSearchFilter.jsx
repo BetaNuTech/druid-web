@@ -48,7 +48,7 @@ class LeadSearchFilter extends React.Component {
 
   onSubmitSearch = () => {
     this.props.onSubmitSearch(this.props.search)(this.props.search)
-    this.setState({pending: false})
+    this.setState({pending: false, advanced: false})
   }
 
   renderSelects = () => {
