@@ -9,6 +9,7 @@ import Style from './Lead.scss'
 import LeadSummary from '../components/LeadSummary'
 import LeadNotes from '../components/LeadNotes'
 import Roommates from '../components/Roommates'
+import LeadTasks from '../components/LeadTasks'
 
 class Lead extends React.Component {
   componentDidMount() {
@@ -31,6 +32,7 @@ class Lead extends React.Component {
           <LeadSummary lead={this.props.lead} lead_id={this.props.lead_id}/>
           <LeadNotes lead={this.props.lead }/>
           <Roommates lead={this.props.lead }/>
+          <LeadTasks lead={this.props.lead }/>
         </div>
     )
   }

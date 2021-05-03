@@ -97,6 +97,14 @@ class ScheduledAction < ApplicationRecord
     self.schedule.try(:date)
   end
 
+  def schedule_description
+    if start_time
+      ""
+    else
+      return 'Unscheduled'
+    end
+  end
+
   def target_subject(user=nil)
     if target.present?
       if target === user

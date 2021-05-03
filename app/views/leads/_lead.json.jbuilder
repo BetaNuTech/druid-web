@@ -23,5 +23,8 @@ end
 json.roommates do
   json.array! lead.roommates, partial: "roommates/roommate", as: :roommate
 end
+json.tasks do
+  json.array! lead.scheduled_actions, partial: "scheduled_actions/scheduled_action", as: :scheduled_action
+end
 json.url lead_url(id: lead.id, format: :json)
 json.web_url lead_url(id: lead.id)
