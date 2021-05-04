@@ -1,5 +1,5 @@
 <tr>
-  <td><%= long_datetime(DateTime.parse(call_entry["date"]).localtime) rescue '' %></td>
+  <td><%= long_datetime(DateTime.parse(call_entry["date"]) + 7.hours) rescue '' %></td>
   <td>
     <%= call_entry["src"] %>
     <% if call_entry["cnam"].present? %>
