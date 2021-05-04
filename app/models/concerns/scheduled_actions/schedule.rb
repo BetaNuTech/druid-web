@@ -50,5 +50,11 @@ module ScheduledActions
       end
 
     end
+
+    included do
+      def due_today?
+        pending? && schedule.date.present? && schedule.date <= Date.today
+      end
+    end
   end
 end

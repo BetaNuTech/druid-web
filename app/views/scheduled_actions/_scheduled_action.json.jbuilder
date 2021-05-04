@@ -6,6 +6,8 @@ json.set! :lead_action, scheduled_action.lead_action&.name
 json.set! :reason, scheduled_action.reason&.name
 json.set! :start_time, scheduled_action.schedule&.to_datetime
 json.set! :end_time, scheduled_action.schedule&.end_time_to_datetime
+json.set! :schedule_description, scheduled_action&.schedule&.description
 json.set! :article, scheduled_action.article&.name
+json.set! :due, scheduled_action.due_today?
 json.url scheduled_action_url(scheduled_action, format: :json)
 json.web_url scheduled_action_url(scheduled_action)

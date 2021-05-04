@@ -5,9 +5,17 @@ $blue: #4278F0;
 }
 
 .TaskItem {
-
+  padding-bottom: 1em;
 }
 
 .TaskDateTime {
+  font-weight: bold;
   color: $blue;
+}
+
+.PendingIndicator {
+  display: inline;
+  padding-top: 0.25em;
+  color: red;
+  font-size: 2em;
 }

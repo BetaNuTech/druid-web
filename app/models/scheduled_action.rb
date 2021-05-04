@@ -94,15 +94,7 @@ class ScheduledAction < ApplicationRecord
   attr_accessor :impersonate
 
   def start_time
-    self.schedule.try(:date)
-  end
-
-  def schedule_description
-    if start_time
-      ""
-    else
-      return 'Unscheduled'
-    end
+    schedule&.date
   end
 
   def target_subject(user=nil)

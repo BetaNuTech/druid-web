@@ -54,6 +54,11 @@ class Schedule < Schedulable::Model::Schedule
     to_datetime.strftime('%B %e, %Y')
   end
 
+  def description
+    ( long_datetime || '' ) +
+      ( duration.present? ? " [%s - %s]" % [short_time, end_time_to_datetime.strftime('%l:%M%p')] : '' )
+  end
+
   private
 
   def set_end_time
