@@ -2,7 +2,7 @@ module MarketingSources
   class Report
     include ActiveModel::Model
     COLUMNS = %w[source total_cost leads_count prospect_count showing_count leases_count cost_per_prospect cost_per_showing cost_per_lease].freeze
-    REPORT_TYPES = %w[adspend expense_export source_export].freeze
+    REPORT_TYPES = %w[adspend expense_export source_export phone_export].freeze
     DEFAULT_REPORT_TYPE = 'adspend'
 
     attr_accessor :start_date, :end_date, :property_ids, :report_type
@@ -35,6 +35,8 @@ module MarketingSources
           expense_export
         when 'source_export'
           source_export
+        when 'phone_export'
+          phone_export_csv
         else
           raise 'Invalid Report Type'
       end
@@ -48,13 +50,48 @@ module MarketingSources
           'marketing_expense'
         when 'source_export'
           'marketing_source'
+        when 'phone_export'
+          'phone_tracking'
         else
           raise 'Invalid Report Type'
       end
-      DateTime.now.strftime("#{prefix}_report-%Y-%m-%d-%H%M.csv")
+      Time.now.strftime("#{prefix}_report-%Y-%m-%d-%H%M.csv")
     end
 
     private
+
+    def phone_export_csv
+      CSV.generate do |csv|
+        csv << [ 'Source', 'Property', 'Number' ]
+        phone_export.each do |record|
+          csv << [
+            record['source'],
+            record['property'],
+            record['number']
+          ]
+        end
+      end
+    end
+
+    def phone_export
+      sql = <<~SQL
+        SELECT
+          marketing_sources.name AS source,
+            properties.name AS property,
+            marketing_sources.tracking_number AS number
+        FROM marketing_sources
+        INNER JOIN properties
+          ON marketing_sources.property_id = properties.id
+        WHERE
+          marketing_sources.tracking_number IS NOT NULL
+          AND marketing_sources.tracking_number != ''
+        ORDER BY
+          marketing_sources.name ASC, properties.name ASC;
+      SQL
+
+      ActiveRecord::Base.connection.execute(sql).to_a
+    end
+
 
     def spend_report_csv
       CSV.generate do |csv|
