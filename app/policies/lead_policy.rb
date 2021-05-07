@@ -8,14 +8,16 @@ class LeadPolicy < ApplicationPolicy
         when ->(u) { u.administrator? }
           skope
         when ->(u) { u.corporate? }
-          skope.
-            includes(:property).
-            where(properties: {active: [ true, nil]})
+          #skope.
+            #includes(:property).
+            #where(properties: {active: [ true, nil]})
+          skope
         when -> (u) { u.team_lead?}
-          skope.
-            includes(:property).
-            for_team(user.team).
-            where(properties: {active: [ true, nil ]})
+          #skope.
+            #includes(:property).
+            #for_team(user.team).
+            #where(properties: {active: [ true, nil ]})
+          skope.for_team(user.team)
         else
           # Belonging to User
           skope.where(user_id: user.id).
