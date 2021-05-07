@@ -8,6 +8,7 @@ require_relative './forrent_dot_com_parser'
 require_relative './hotpads_parser'
 require_relative './lease_labs_dot_com_parser'
 require_relative './rent_dot_com_parser'
+require_relative './rentcafe_parser'
 require_relative './zillow_parser'
 require_relative './null_parser'
 
@@ -17,6 +18,7 @@ module Leads
 
       # All Valid CloudMailin Parsers except NullParser
       PARSERS = [
+        RentcafeParser,
         CorporatehousingDotComParser, # Goes before all other forrent.com parsers
         KnoxvilleApartmentguideDotComParser,
         LeaseLabsDotComParser,
@@ -29,7 +31,7 @@ module Leads
         HotpadsParser, # Goes before Zillow
         ZillowParser,
         ForrentDotComParser,
-        ZumperParser
+        ZumperParser,
       ]
 
       class Parser
