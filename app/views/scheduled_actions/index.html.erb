@@ -30,9 +30,9 @@
 <div class="row">
   <div class=col-md-12"">
     <% events = @scheduled_actions.sorted_by_due_asc %>
-    <%= month_calendar events: events do |date, scheduled_actions| %>
+    <%= month_calendar events: events.includes(:schedule).where(schedules: {date: @start_date..(@start_date + 1.month)}) do |date, scheduled_actions| %>
       <%= date.day %><br/>
-      <% scheduled_actions.each do |scheduled_action| %>
+      <% scheduled_actions[0..9].each do |scheduled_action| %>
         <div class="<%= scheduled_action_calendar_entry_class(scheduled_action) %>">
           <%= link_to completion_form_scheduled_action_path(scheduled_action), title: scheduled_action.description do %>
             <%= scheduled_action_completion_state_icon(scheduled_action) %>
@@ -53,6 +53,9 @@
           <% end %>
         </div>
       <% end %>
+      <% if scheduled_actions.count > 10 %>
+        <i>(Additional items not displayed)</i>
+      <% end %>
     <% end %>
   </div>
 </div>
@@ -72,7 +75,7 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(50) } %>
+        <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(20) } %>
       </div>
     </div>
   </div>

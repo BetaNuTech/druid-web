@@ -15,6 +15,7 @@ class ScheduledActionsController < ApplicationController
     authorize ScheduledAction
     @show_all = params[:all].present?
     skope = nil
+    @start_date = ( Date.parse(params[:start_date]) rescue Time.now ).beginning_of_month
 
     if @lead
       unless LeadPolicy.new(current_user, @lead).show?
