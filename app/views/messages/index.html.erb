@@ -56,7 +56,13 @@
               <span class="text-nowrap">
                 <span class="btn btn-xs btn-default">
                   <b>From:</b>
-                  <%= truncate(message.sender_name, length: 20) %>
+                  <% if message.messageable_type == 'Lead' %>
+                    <%= link_to(lead_path(id: message.messageable_id)) do %>
+                      <%= truncate(message.sender_name, length: 20) %>
+                    <% end %>
+                  <% else %>
+                    <%= truncate(message.sender_name, length: 20) %>
+                  <% end %>
                 </span>
               </span>
               <br/>
