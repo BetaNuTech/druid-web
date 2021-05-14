@@ -109,6 +109,7 @@ module Leads
           @lead.infer_referral_record
           @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
           @lead.delay.broadcast_to_streams if @lead.valid?
+          send_sms_optin_request
         else
           @lead.validate
           parse_result.errors.each do |err|
