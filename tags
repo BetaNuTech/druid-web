@@ -29,6 +29,7 @@ Adapters	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/^  
 Adapters	./app/lib/leads/adapters/cloud_mailin/null_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^  module Adapters$/;"	m	class:Leads
+Adapters	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/zumper_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloudmailin.rb	/^  module Adapters$/;"	m	class:Leads
@@ -105,6 +106,7 @@ CloudMailin	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/null_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
+CloudMailin	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/zumper_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/messages/delivery_adapters/cloud_mailin.rb	/^    class CloudMailin$/;"	c	class:Messages.DeliveryAdapters
@@ -222,6 +224,7 @@ Leads	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/^modul
 Leads	./app/lib/leads/adapters/cloud_mailin/null_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^module Leads$/;"	m
+Leads	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/zumper_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloudmailin.rb	/^module Leads$/;"	m
@@ -345,6 +348,7 @@ Rendered	./app/models/message_template.rb	/^  class Rendered$/;"	c	class:Message
 RentDotComParser	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^      class RentDotComParser$/;"	c	class:Leads.Adapters.CloudMailin
 RentalType	./app/models/rental_type.rb	/^class RentalType < ApplicationRecord$/;"	c
 RentalTypesHelper	./app/helpers/rental_types_helper.rb	/^module RentalTypesHelper$/;"	m
+RentcafeParser	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^      class RentcafeParser$/;"	c	class:Leads.Adapters.CloudMailin
 Replication	./app/models/concerns/cdrs/replication.rb	/^  module Replication$/;"	m	class:Cdrs
 ReplicationError	./app/models/concerns/cdrs/replication.rb	/^    class ReplicationError < StandardError; end$/;"	c	class:Cdrs.Replication
 Report	./app/lib/marketing_sources/report.rb	/^  class Report$/;"	c	class:MarketingSources
@@ -552,6 +556,7 @@ after_all_events_callback	./app/models/concerns/engagement_policy_action_complia
 after_all_events_callback	./app/models/concerns/leads/state_machine.rb	/^      def after_all_events_callback$/;"	f	class:Leads.StateMachine
 after_all_events_callback	./app/models/concerns/scheduled_actions/state_machine.rb	/^      def after_all_events_callback(user=nil)$/;"	f	class:ScheduledActions.StateMachine
 after_confirmation_path_for	./app/controllers/users/confirmations_controller.rb	/^  def after_confirmation_path_for(resource_name, resource)$/;"	f	class:Users
+after_lead_creation	./app/lib/leads/creator.rb	/^    def after_lead_creation$/;"	f	class:Leads.Creator
 afternoon_hours_options	./app/helpers/properties_helper.rb	/^  def afternoon_hours_options(val)$/;"	f
 agent	./app/models/lead.rb	/^    def agent$/;"	f	class:Lead
 agent	./app/models/role.rb	/^  def self.agent$/;"	F	class:Role
@@ -1097,6 +1102,7 @@ get_date_range	./app/models/stat.rb	/^  def get_date_range(filters)$/;"	f	class:
 get_format_and_body	./app/lib/leads/adapters/cloud_mailin/corporatehousing_dot_com_parser.rb	/^          def get_format_and_body(data)$/;"	f	class:Leads.Adapters.CloudMailin.CorporatehousingDotComParser
 get_format_and_body	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^          def get_format_and_body(data)$/;"	f	class:Leads.Adapters.CloudMailin
 get_format_and_body	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/^          def get_format_and_body(data)$/;"	f	class:Leads.Adapters.CloudMailin.LeaseLabsDotComParser
+get_format_and_body	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.get_format_and_body(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 get_format_and_body	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^          def get_format_and_body(data)$/;"	f	class:Leads.Adapters.CloudMailin.ZillowParser
 get_lead_source	./app/lib/leads/adapters/yardi_voyager.rb	/^      def get_lead_source$/;"	f	class:Leads.Adapters.notes_from_guestcard_events
 get_parser	./app/lib/leads/creator.rb	/^    def get_parser(source)$/;"	f	class:Leads.Creator
@@ -1392,6 +1398,7 @@ match	./app/lib/leads/adapters/cloud_mailin/forrent_dot_com_parser.rb	/^        
 match	./app/lib/leads/adapters/cloud_mailin/knoxville_apartmentguide_dot_com_parser.rb	/^        def self.match?(data)$/;"	F	class:Leads.Adapters.CloudMailin.KnoxvilleApartmentguideDotComParser
 match	./app/lib/leads/adapters/cloud_mailin/null_parser.rb	/^        def self.match?(data)$/;"	F	class:Leads.Adapters.CloudMailin.NullParser
 match	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^        def self.match?(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentDotComParser
+match	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.match?(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 match	./app/lib/leads/adapters/cloud_mailin/zumper_parser.rb	/^        def self.match?(data)$/;"	F	class:Leads.Adapters.CloudMailin.ZumperParser
 match	./app/lib/messages/delivery_adapters/cloudmailin/email_parser.rb	/^        def self.match?(data)$/;"	F	class:Messages.DeliveryAdapters.Cloudmailin.EmailParser
 match	./app/lib/messages/delivery_adapters/cloudmailin/null_parser.rb	/^        def self.match?(data)$/;"	F	class:Messages.DeliveryAdapters.Cloudmailin.NullParser
@@ -1588,6 +1595,7 @@ parse	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/^     
 parse	./app/lib/leads/adapters/cloud_mailin/null_parser.rb	/^        def self.parse(data)$/;"	F	class:Leads.Adapters.CloudMailin.NullParser
 parse	./app/lib/leads/adapters/cloud_mailin/parser.rb	/^        def parse$/;"	f	class:Leads.Adapters.CloudMailin.Parser
 parse	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^        def self.parse(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentDotComParser
+parse	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.parse(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 parse	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^          def parse(data)$/;"	f	class:Leads.Adapters.CloudMailin.ZillowParser
 parse	./app/lib/leads/adapters/cloud_mailin/zumper_parser.rb	/^        def self.parse(data)$/;"	F	class:Leads.Adapters.CloudMailin.ZumperParser
 parse	./app/lib/leads/adapters/cloudmailin.rb	/^      def parse$/;"	f	class:Leads.Adapters.Cloudmailin
@@ -1605,12 +1613,14 @@ parse	./app/lib/messages/delivery_adapters/twilioadapter/sms_parser.rb	/^       
 parse_html	./app/lib/leads/adapters/cloud_mailin/corporatehousing_dot_com_parser.rb	/^          def parse_html(data)$/;"	f	class:Leads.Adapters.CloudMailin.CorporatehousingDotComParser
 parse_html	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^          def parse_html(data)$/;"	f	class:Leads.Adapters.CloudMailin.HotpadsParser
 parse_html	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/^          def parse_html(data)$/;"	f	class:Leads.Adapters.CloudMailin.LeaseLabsDotComParser
+parse_html	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.parse_html(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 parse_html	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^          def parse_html(data)$/;"	f	class:Leads.Adapters.CloudMailin.ZillowParser
 parse_html_v1	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^          def parse_html_v1(data)$/;"	f	class:Leads.Adapters.CloudMailin.HotpadsParser
 parse_html_v2	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^          def parse_html_v2(data)$/;"	f	class:Leads.Adapters.CloudMailin.HotpadsParser
 parse_plain	./app/lib/leads/adapters/cloud_mailin/corporatehousing_dot_com_parser.rb	/^          def parse_plain(data)$/;"	f	class:Leads.Adapters.CloudMailin.CorporatehousingDotComParser
 parse_plain	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^          def parse_plain(data)$/;"	f	class:Leads.Adapters.CloudMailin
 parse_plain	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/^          def parse_plain(data)$/;"	f	class:Leads.Adapters.CloudMailin.LeaseLabsDotComParser
+parse_plain	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.parse_plain(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 parse_plain	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^          def parse_plain(data)$/;"	f	class:Leads.Adapters.CloudMailin.ZillowParser
 parse_status	./app/lib/messages/delivery_adapters/cloudmailin/health.rb	/^        def parse_status(json)$/;"	f	class:Messages.DeliveryAdapters.Cloudmailin.Health
 password_required?	./app/models/concerns/users/devise.rb	/^      def password_required?$/;"	f	class:Users.Devise
@@ -1633,6 +1643,8 @@ permitted_state_events	./app/policies/lead_policy.rb	/^  def permitted_state_eve
 permitted_states	./app/models/concerns/leads/state_machine.rb	/^      def permitted_states$/;"	f	class:Leads.StateMachine
 permitted_states	./app/models/concerns/scheduled_actions/state_machine.rb	/^      def permitted_states$/;"	f	class:ScheduledActions.StateMachine
 personal_task?	./app/models/concerns/scheduled_actions/engagement_policy.rb	/^      def personal_task?$/;"	f	class:ScheduledActions.EngagementPolicy
+phone_export	./app/lib/marketing_sources/report.rb	/^    def phone_export$/;"	f	class:MarketingSources
+phone_export_csv	./app/lib/marketing_sources/report.rb	/^    def phone_export_csv$/;"	f	class:MarketingSources
 phone_whitelist	./app/models/message_delivery.rb	/^  def phone_whitelist$/;"	f	class:MessageDelivery
 plugins	./postcss.config.js	/^  plugins: [$/;"	p	class:module.exports
 policy	./app/channels/incoming_leads_channel.rb	/^  def policy(property_id)$/;"	f	class:IncomingLeadsChannel
@@ -1853,6 +1865,7 @@ sanitize	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^          def
 sanitize	./app/lib/leads/adapters/cloud_mailin/knoxville_apartmentguide_dot_com_parser.rb	/^        def self.sanitize(value)$/;"	F	class:Leads.Adapters.CloudMailin.KnoxvilleApartmentguideDotComParser
 sanitize	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/^          def sanitize(value)$/;"	f	class:Leads.Adapters.CloudMailin.LeaseLabsDotComParser
 sanitize	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^        def self.sanitize(value)$/;"	F	class:Leads.Adapters.CloudMailin.RentDotComParser
+sanitize	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.sanitize(value)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 sanitize	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^          def sanitize(value)$/;"	f	class:Leads.Adapters.CloudMailin.ZillowParser
 sanitize	./app/lib/leads/adapters/cloud_mailin/zumper_parser.rb	/^        def self.sanitize(value)$/;"	F	class:Leads.Adapters.CloudMailin.ZumperParser
 sanitize	./app/lib/leads/adapters/cloudmailin.rb	/^      def sanitize(value)$/;"	f	class:Leads.Adapters.Cloudmailin
@@ -1919,6 +1932,7 @@ sendGuestCard	./app/lib/yardi/voyager/api/guest_cards.rb	/^        def sendGuest
 sendLeads	./app/lib/leads/adapters/yardi_voyager.rb	/^      def sendLeads(leads)$/;"	f	class:Leads.Adapters.YardiVoyager
 send_Leads	./app/lib/leads/adapters/yardi_voyager.rb	/^      def send_Leads(leads)$/;"	f	class:Leads.Adapters.notes_from_guestcard_events
 send_compliance_message	./app/models/concerns/leads/messaging.rb	/^      def send_compliance_message(message_type:, disposition:, assent:)$/;"	f	class:Leads.Messaging
+send_lead_welcome	./app/models/concerns/leads/messaging.rb	/^      def send_lead_welcome$/;"	f	class:Leads.Messaging
 send_notification	./app/models/concerns/scheduled_actions/notification.rb	/^      def send_notification$/;"	f	class:ScheduledActions.Notification
 send_pending_task_notification	./app/models/concerns/users/messaging.rb	/^      def send_pending_task_notification$/;"	f	class:Users.Messaging
 send_pending_task_notifications	./app/models/concerns/users/messaging.rb	/^      def send_pending_task_notifications$/;"	f	class:Users

@@ -131,7 +131,7 @@ module Leads
             after: ->(*args) {
               event_set_user(*args);
               force_complete_all_tasks(*args);
-              # send_sms_optin_request
+              # send_sms_optin_request;
             }
         end
 

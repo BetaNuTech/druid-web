@@ -106,10 +106,7 @@ module Leads
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
           property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
-          @lead.infer_referral_record
-          @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
-          @lead.delay.broadcast_to_streams if @lead.valid?
-          send_sms_optin_request
+          after_lead_creation
         else
           @lead.validate
           parse_result.errors.each do |err|
@@ -127,8 +124,18 @@ module Leads
       return @lead
     end
 
-
     private
+
+    def after_lead_creation
+      if @lead.valid?
+        @lead.infer_referral_record
+        @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
+        @lead.delay.broadcast_to_streams
+        @lead.send_sms_optin_request
+        @lead.send_lead_welcome_email
+        # @lead.send_welcome_email # TODO
+      end
+    end
 
     def assign_property(lead:, property_code: )
       if property_code.present?

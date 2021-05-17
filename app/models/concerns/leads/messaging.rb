@@ -6,6 +6,9 @@ module Leads
     MESSAGE_OPTOUT_LEAD_ACTION = 'Lead Email/SMS Opt-Out'
     MESSAGE_OPTIN_LEAD_ACTION = 'Lead Email/SMS Opt-In'
     MESSAGE_LEAD_PREFERENCE_SET = 'Lead Preference Set'
+    MESSAGE_LEAD_WELCOME_TEMPLATE_NAME = 'Welcome New Lead'
+    MESSAGE_LEAD_WELCOME_LEAD_ACTION = 'Send Email'
+    MESSAGE_LEAD_WELCOME_REASON = 'First Contact'
     SMS_OPT_IN_MESSAGE_TEMPLATE_NAME='SMS Opt-In Request'
     SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-In Confirmation'
     SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-Out Confirmation'
@@ -254,6 +257,82 @@ module Leads
           classification: 'system'
         )
 
+      end
+
+      def send_lead_welcome_email
+        email_template = MessageTemplate.where(name: MESSAGE_LEAD_WELCOME_TEMPLATE_NAME, message_type: MessageType.email).first
+        email_destination = message_email_destination
+        note_lead_action = LeadAction.where(name: MESSAGE_LEAD_WELCOME_LEAD_ACTION).first
+        note_reason = Reason.where(name: MESSAGE_LEAD_WELCOME_REASON).first
+
+        unless email_template.present?
+          Note.create( # create_event_note
+            notable: self,
+            lead_action: note_lead_action,
+            reason: note_reason,
+            content: "Welcome email not sent because the email template '#{MESSAGE_LEAD_WELCOME_TEMPLATE_NAME}' is missing",
+            classification: 'system'
+          )
+          return
+        end
+
+        if email_template.present? && email_destination.present?
+          email_message = Message.new_message(
+            from: agent,
+            to: self,
+            message_type: message_type,
+            message_template: message_template
+          )
+          email_message.save
+          email_message.deliver!
+          email_message.reload
+          comment_content = "SENT EMAIL: #{message_template.name}"
+          note = Note.create( # create_event_note
+            notable: self,
+            lead_action: note_lead_action,
+            reason: note_reason,
+            content: comment_content,
+            classification: 'system'
+          )
+        end
+      end
+
+      def send_lead_welcome_sms
+        sms_template = MessageTemplate.where(name: MESSAGE_LEAD_WELCOME_TEMPLATE_NAME, message_type: MessageType.email).first
+        sms_destination = message_sms_destination
+        note_lead_action = LeadAction.where(name: MESSAGE_LEAD_WELCOME_LEAD_ACTION).first
+        note_reason = Reason.where(name: MESSAGE_LEAD_WELCOME_REASON).first
+
+        unless sms_template.present?
+          Note.create( # create_event_note
+            notable: self,
+            lead_action: note_lead_action,
+            reason: note_reason,
+            content: "Welcome SMS not sent because the SMS template '#{MESSAGE_LEAD_WELCOME_TEMPLATE_NAME}' is missing",
+            classification: 'system'
+          )
+          return
+        end
+
+        if sms_template.present? && sms_destination.present?
+          sms_message = Message.new_message(
+            from: agent,
+            to: self,
+            message_type: message_type,
+            message_template: message_template
+          )
+          sms_message.save
+          sms_message.deliver!
+          sms_message.reload
+          comment_content = "SENT SMS: #{message_template.name}"
+          note = Note.create( # create_event_note
+            notable: self,
+            lead_action: note_lead_action,
+            reason: note_reason,
+            content: comment_content,
+            classification: 'system'
+          )
+        end
       end
 
       def send_sms_optin_request
