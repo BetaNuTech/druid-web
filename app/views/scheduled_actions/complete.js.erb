@@ -1,6 +1,11 @@
 window.Loader.stop();
 <% if @success %>
   $('#scheduled_action_row_<%= @scheduled_action.id %>').remove();
+  <% if @scheduled_action.target.is_a?(Lead) %>
+    $('.state_toggle').html('<%= escape_javascript render(partial: 'leads/state_toggle', locals: {lead: @scheduled_action.target}) %>');
+    $('a.dropdown-toggle').on('mouseover', function(e){ e.target.click() })
+  <% end %>
 <% else %>
   alert('Sorry, there was an error');
 <% end %>
+window.Loader.stop();
