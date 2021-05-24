@@ -75,6 +75,16 @@ namespace :leads do
     end
   end
 
+  desc "Disqualify Null"
+  task :disqualify_null => :environment do
+    Lead.open.where(referral: 'Null').each do |lead|
+      lead.classification = :parse_failure
+      lead.disqualify
+      lead.save
+      print '.'
+    end
+  end
+
   desc "Export"
   task :export, [:property_ids] => :environment do |t, args|
 
