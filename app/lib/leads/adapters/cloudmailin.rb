@@ -10,10 +10,10 @@ module Leads
 
       LEAD_SOURCE_SLUG = 'Cloudmailin'
 
-
       def initialize(params)
         @property_code = get_property_code(params)
         @data = filter_params(params)
+        @parser = nil
       end
 
       def parse
@@ -23,14 +23,16 @@ module Leads
       private
 
       def extract(data)
-        CloudMailin::Parser.new(data).parse
+        service = CloudMailin::Parser.new(data)
+        @parser = service.parser
+        service.parse
       end
 
       def build(data:, property_code:)
         lead = Lead.new(data)
         lead.validate
         status = lead.valid? ? :ok : :invalid
-        result = Leads::Creator::Result.new( status: status, lead: data, errors: lead.errors, property_code: property_code)
+        result = Leads::Creator::Result.new( status: status, lead: data, errors: lead.errors, property_code: property_code, parser: @parser)
         return result
       end
 

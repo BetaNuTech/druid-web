@@ -2,13 +2,14 @@ module Leads
   class Creator
 
     class Result
-      attr_reader :status, :lead, :errors, :property_code
+      attr_reader :status, :lead, :errors, :property_code, :parser
 
-      def initialize(status:, lead:, errors:, property_code:)
+      def initialize(status:, lead:, errors:, property_code:, parser: nil)
         @status = status
         @lead = lead
         @errors= errors
         @property_code = property_code
+        @parser = parser
       end
     end
 
@@ -106,9 +107,13 @@ module Leads
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
           property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
-          @lead.infer_referral_record
-          @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
-          @lead.delay.broadcast_to_streams if @lead.valid?
+          if junk?(@lead)
+            @lead = process_junk(@lead)
+          else
+            @lead.infer_referral_record
+            @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
+            @lead.delay.broadcast_to_streams if @lead.valid?
+          end
         else
           @lead.validate
           parse_result.errors.each do |err|
@@ -126,19 +131,29 @@ module Leads
       return @lead
     end
 
-
     private
+
+    def junk?(lead)
+      lead.referral == 'Null'
+    end
+
+    def process_junk(lead)
+      lead.classification = 'parse_failure'
+      lead.disqualify
+      lead.save
+      lead
+    end
 
     def assign_property(lead:, property_code: )
       if property_code.present?
-        property = Property.find_by_code_and_source(code: property_code, source_id: @lead.source.id)
-        if @lead.source == LeadSource.default
+        property = Property.find_by_code_and_source(code: property_code, source_id: lead.source.id)
+        if lead.source == LeadSource.default
           # Fail over to finding Property By ID if using the default LeadSource (Bluesky WebApp)
           # for compatibility when creating a Lead via the Web UI
           property ||= Property.where(id: property_code).first
         end
         if property.present?
-          @lead.property_id = property.id
+          lead.property_id = property.id
           err_message = nil
         end
       end

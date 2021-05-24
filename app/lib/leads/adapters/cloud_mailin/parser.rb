@@ -52,7 +52,7 @@ module Leads
           begin
             PARSERS.detect{|p| p.match?(data)} || NullParser
           rescue => e
-            note_message = "CloudMailin Lead Parser Error detecting lead source parser:\n" + e.bcktrace
+            note_message = "CloudMailin Lead Parser Error detecting lead source parser:\n" + e.backtrace
             Leads::Creator.create_event_note(message: note_message, error: true)
             NullParser
           end
