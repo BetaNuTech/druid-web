@@ -2,14 +2,19 @@ module Leads
   class Creator
 
     class Result
-      attr_reader :status, :lead, :errors, :property_code, :parser
+      attr_reader :status, :lead, :errors, :property_code, :parser, :classification
 
-      def initialize(status:, lead:, errors:, property_code:, parser: nil)
+      def initialize(status:, lead:, errors:, property_code:, parser: nil, classification: :lead)
         @status = status
         @lead = lead
         @errors= errors
         @property_code = property_code
         @parser = parser
+        @classification = classification
+      end
+
+      def junk?
+        @classification == :other
       end
     end
 
@@ -83,6 +88,7 @@ module Leads
         return @lead
       end
 
+      # Parse incoming lead data
       begin
         parse_result = @parser.new(@data).parse
       rescue => e
@@ -101,18 +107,17 @@ module Leads
       @lead.source = @source
       @lead.first_comm ||= Time.now
 
+      ### Process the Lead record
       case parse_result.status
         when :ok
           @lead.state = 'showing' if @lead.show_unit.present?
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
           property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
-          if junk?(@lead)
+          if parse_result.junk?
             @lead = process_junk(@lead)
           else
-            @lead.infer_referral_record
-            @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
-            @lead.delay.broadcast_to_streams if @lead.valid?
+            @lead = process_valid_lead(@lead)
           end
         else
           @lead.validate
@@ -133,14 +138,17 @@ module Leads
 
     private
 
-    def junk?(lead)
-      lead.referral == 'Null'
-    end
-
     def process_junk(lead)
       lead.classification = 'parse_failure'
       lead.disqualify
       lead.save
+      lead
+    end
+
+    def process_valid_lead(lead)
+      lead.infer_referral_record
+      lead.update_showing_task_unit(lead.show_unit) if lead.state == 'showing'
+      lead.delay.broadcast_to_streams if lead.valid?
       lead
     end
 

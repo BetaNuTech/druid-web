@@ -6,6 +6,18 @@ RSpec.describe Lead, type: :model do
 
   let(:valid_lead_attributes) { valid_lead_creator_attributes }
 
+  let(:junk_lead_attributes) {
+    {'referral': 'Null', 'state': 'open', 'property_id': lead_creator_property_listing.code}
+  }
+
+  let(:valid_lead_attributes_for_junk) {
+    {
+      data: FactoryBot.attributes_for(:lead).merge(junk_lead_attributes),
+      token: default_lead_source.api_token,
+      agent: nil
+    }
+  }
+
   let(:valid_lead_attributes_with_valid_token) {
     {
       data: FactoryBot.attributes_for(:lead),
@@ -198,6 +210,19 @@ RSpec.describe Lead, type: :model do
       lead = creator.call
       assert(lead.valid?)
       expect(lead.property).to eq(lead_creator_property)
+    end
+
+    describe "handling a junk lead record (from Cloudmailin adapter))" do
+      it "should disqualify and classify the lead as 'parse_failure'" do
+        lead_count = Lead.count
+        creator = Leads::Creator.new(**valid_lead_attributes_for_junk)
+        lead = creator.call
+        assert(lead.valid?)
+        expect(Lead.count).to eq(lead_count + 1)
+        expect(lead.classification).to eq('parse_failure')
+        assert(lead.disqualified?)
+        expect(lead.property).to eq(lead_creator_property)
+      end
     end
   end
 end

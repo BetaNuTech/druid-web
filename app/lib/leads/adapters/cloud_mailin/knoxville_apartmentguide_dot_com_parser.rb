@@ -20,7 +20,7 @@ module Leads
           title = nil
           first_name = ( name_arr.first.chomp rescue nil )
           last_name = ( name_arr.last.chomp rescue nil )
-          referral = "KnoxvilleApartmentGuide.com"
+          referral = 'Knoxville Guide'
           phone1 = (body.match(/^Phone: (.+)$/)[1] rescue '(None)')
           phone2 = nil
           email = (body.match(/^Email: (.+)$/)[1] rescue '(None)')

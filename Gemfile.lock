@@ -299,6 +299,7 @@ GEM
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     mysql2 (0.5.3)
+    nbayes (0.1.3)
     nenv (0.3.0)
     nested_form_fields (0.8.4)
       coffee-rails (>= 3.2.1)
@@ -572,6 +573,7 @@ DEPENDENCIES
   migration_data (~> 0.6)
   mini_magick (~> 4.11)
   mysql2 (~> 0.5)
+  nbayes
   nested_form_fields (~> 0.8)
   nokogiri (~> 1.11)
   pessimize (~> 0.4)

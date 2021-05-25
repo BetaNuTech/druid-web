@@ -34,9 +34,9 @@ RSpec.describe LeadTransition, type: :model do
   end
 
   describe "classifications" do
-    let(:valid_classifications) { %w{lead vendor resident duplicate other}  }
+    let(:valid_classifications) { ["lead", "vendor", "resident", "duplicate", "other", "lost", "parse_failure"]  }
     it "has a classification" do
-      expect(LeadTransition.classifications.keys.size).to eq(6)
+      expect(LeadTransition.classifications.keys.size).to eq(valid_classifications.size)
       valid_classifications.each do |c13n|
         lead_transition.classification = c13n
       end

@@ -32,8 +32,15 @@ module Leads
         lead = Lead.new(data)
         lead.validate
         status = lead.valid? ? :ok : :invalid
-        result = Leads::Creator::Result.new( status: status, lead: data, errors: lead.errors, property_code: property_code, parser: @parser)
-        return result
+        classification = get_classification(data)
+        Leads::Creator::Result.new(
+          status: status,
+          lead: data,
+          errors: lead.errors,
+          property_code: property_code,
+          parser: @parser,
+          classification: classification
+        )
       end
 
       def get_property_code(params)
@@ -41,6 +48,15 @@ module Leads
         to_addr = params.fetch(:envelope, {}).fetch(:to,'') || ""
         code = ( to_addr.split('@').first || "" ).split("+").last
         return code
+      end
+
+      def get_classification(data)
+        case data
+        when -> (d) { d.fetch('referral',nil) == 'Null' }
+          :other
+        else
+          :lead
+        end
       end
 
       def filter_params(params)
