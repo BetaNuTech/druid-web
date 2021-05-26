@@ -12,7 +12,7 @@
               <% policy(lead).permitted_state_events.each do |event_name| %>
                 <li>
                   <%= link_to(progress_state_lead_path(id: lead.id, eventid: event_name)) do %>
-                    <%= event_name.to_s.humanize.titlecase %>
+                    <%= event_name.to_s.humanize.titlecase %> &mdash; <small><%= lead_transition_help_text(event_name) %></small>
                   <% end %>
                 </li>
               <% end %>
@@ -29,7 +29,7 @@
                 <% policy(lead).permitted_state_events.each do |event_name| %>
                   <li>
                     <%= link_to(progress_state_lead_path(id: lead.id, eventid: event_name)) do %>
-                      <%= event_name.to_s.humanize.titlecase %>
+                      <%= event_name.to_s.humanize.titlecase %> &mdash; <small><%= lead_transition_help_text(event_name) %></small>
                     <% end %>
                   </li>
                 <% end %>

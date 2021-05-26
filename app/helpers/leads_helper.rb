@@ -80,6 +80,10 @@ module LeadsHelper
     end
   end
 
+  def lead_transition_help_text(event)
+    Lead::TRANSITION_HELP_TEXT.fetch(event, '')
+  end
+
   def call_log_timestamp(lead)
     please_wait_message =  ' (Pending update: please wait)'
     if lead.call_log_updated_at.nil?

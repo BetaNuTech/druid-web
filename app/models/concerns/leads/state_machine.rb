@@ -9,6 +9,24 @@ module Leads
     EARLY_PIPELINE_STATES = %w{open prospect showing application}
     STATE_TRANSITION_LEAD_ACTION = 'State Transition'
     STATE_TRANSITION_REASON = 'Pipeline Event'
+    TRANSITION_HELP_TEXT = {
+      abandon: 'this Lead cannot or will not sign a lease',
+      show: 'this Lead is being shown a Unit',
+      apply: 'the Lead is starting the application process',
+      approve: 'this Lead\'s application was approved',
+      claim: 'assume responsibility for this Lead',
+      deny: 'this Lead\'s application was denied',
+      discharge: 'this is a Resident moving out',
+      disqualify: 'this is not a Lead (vendor, resident, spam, duplicate, etc.)',
+      lodge: 'this Lead is now a Resident',
+      move_in: 'this Lead is about to move in',
+      requalify: 'mark this Lead as Open',
+      release: 'release responsibility for this Lead and make it Open',
+      postpone: 'follow-up on this Lead in the future',
+      revisit: 'mark this Lead as Open again',
+      wait_for_unit: 'put this Lead on waitlist until the Unit is available',
+      revisit_unit_available: 'the Unit is available, so make this Lead Open'
+    }.freeze
 
     class_methods do
 
