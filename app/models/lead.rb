@@ -60,6 +60,14 @@ class Lead < ApplicationRecord
   PRIVILEGED_PARAMS = [:lead_source_id, :user_id, :state, :id, :property_id]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
+  CLASSIFICATION_HELP_TEXT = {
+    lead: 'a typical Lead/Prospect',
+    vendor: 'a non-lead business contact',
+    resident: 'a current resident',
+    duplicate: 'a duplicate of a worked Lead',
+    spam: 'a non-lead contact',
+    lost: 'a Lead that cannot be contacted'
+  }
 
   ### Attributes
   attr_accessor :show_unit

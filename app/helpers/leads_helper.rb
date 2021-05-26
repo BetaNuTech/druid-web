@@ -241,11 +241,15 @@ module LeadsHelper
     state_name.to_s.capitalize.titlecase
   end
 
+  def lead_classification_and_help(classification)
+    "#{humanize_lead_state(classification)} (#{Lead::CLASSIFICATION_HELP_TEXT.fetch(classification.to_sym,'')})"
+  end
+
   def lead_classifications_for_progressing_state(lead:, event:)
     all_classes = Lead.classifications.keys
     all_classes.delete('parse_failure')
     all_classes.delete('lead') if event == 'disqualify'
-    options_for_select(all_classes.map{|lc| [humanize_lead_state(lc), lc]}, lead.classification)
+    options_for_select(all_classes.map{|lc| [lead_classification_and_help(lc), lc]}, lead.classification)
   end
 
 end
