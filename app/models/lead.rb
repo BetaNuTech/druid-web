@@ -66,7 +66,7 @@ class Lead < ApplicationRecord
   attr_accessor :tempid
 
   ### Enums
-  enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, other: 4, lost: 5, parse_failure: 6 }
+  enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, spam: 4, lost: 5, parse_failure: 6 }
 
   ### Associations
   has_one :preference, class_name: 'LeadPreference', dependent: :destroy
