@@ -573,8 +573,6 @@ module Yardi
               'prospect'
             when 'denied'
               'canceled'
-            when 'movein'
-              'current_resident'
             when 'resident'
               'current_resident'
             when 'exresident'

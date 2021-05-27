@@ -70,7 +70,6 @@ module Leads
           application: 2,
           approved: 1,
           denied: 1,
-          movein: 1,
           resident: 0,
           exresident: 0,
           disqualified: 0,

@@ -346,7 +346,7 @@ RSpec.describe Lead, type: :model do
 
       it "should set priorty to zero when lodged" do
         lead.priority_low!
-        lead.state = "movein"
+        lead.state = "approved"
         lead.save!
         expect(lead.priority).to eq("low")
         lead.lodge!
@@ -428,7 +428,7 @@ RSpec.describe Lead, type: :model do
       end
 
       it "should set the conversion date after transition to 'resident'" do
-        lead.state = 'movein'
+        lead.state = 'approved'
         lead.save!
         refute(lead.conversion_date.present?)
         lead.trigger_event(event_name: 'lodge', user: agent)

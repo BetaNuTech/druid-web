@@ -104,20 +104,6 @@
           :active: true
     - :version: 1
       :property_name: null
-      :lead_state: movein
-      :description: Global Engagement Policy for 'movein' Leads
-      :active: true
-      :engagement_policy_actions:
-        - :lead_action_name: Move-In Task
-          :description: Assign tasks for new resident move-in
-          :deadline: 48
-          :retry_count: 0
-          :retry_delay: 0
-          :retry_delay_multiplier: none
-          :score: 1
-          :active: true
-    - :version: 1
-      :property_name: null
       :lead_state: resident
       :description: Global Engagement Policy for 'resident' Leads
       :active: true

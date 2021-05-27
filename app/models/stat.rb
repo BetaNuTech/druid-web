@@ -308,7 +308,7 @@ EOS
 
   def lead_sources_conversion_json
     _filter_sql = filter_sql
-    converted_states = %w{movein resident exresident}
+    converted_states = %w{resident exresident}
     converted_states_sql = "leads.state IN (%s)" % converted_states.map{|s| "'#{s}'"}.join(',')
 
     sql=<<-EOS

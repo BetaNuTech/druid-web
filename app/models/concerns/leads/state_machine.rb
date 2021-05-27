@@ -3,7 +3,7 @@ module Leads
     extend ActiveSupport::Concern
 
     PENDING_STATES = %w{open prospect showing application}
-    CLAIMED_STATES = %w{prospect showing application approved denied movein resident}
+    CLAIMED_STATES = %w{prospect showing application approved denied resident}
     IN_PROGRESS_STATES = %w{prospect showing application }
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future waitlist}
     EARLY_PIPELINE_STATES = %w{open prospect showing application}
@@ -19,7 +19,6 @@ module Leads
       discharge: 'this is a Resident moving out',
       disqualify: 'this is not a Lead (vendor, resident, spam, duplicate, etc.)',
       lodge: 'this Lead is now a Resident',
-      move_in: 'this Lead is about to move in',
       requalify: 'mark this Lead as Open',
       release: 'release responsibility for this Lead and make it Open',
       postpone: 'follow-up on this Lead in the future',
@@ -113,7 +112,6 @@ module Leads
         state :application
         state :approved
         state :denied
-        state :movein
         state :resident
         state :exresident
         state :disqualified
@@ -150,7 +148,7 @@ module Leads
         end
 
         event :deny do
-          transitions from: [:application, :approved, :movein], to: :denied
+          transitions from: [:application, :approved], to: :denied
         end
 
         event :discharge do
@@ -159,18 +157,13 @@ module Leads
         end
 
         event :disqualify do
-          transitions from: [ :open, :prospect, :showing, :application, :denied, :approved, :movein, :resident ], to: :disqualified,
+          transitions from: [ :open, :prospect, :showing, :application, :denied, :approved, :resident ], to: :disqualified,
             after: ->(*args) { set_priority_zero; clear_all_tasks; mark_all_messages_read }
         end
 
         event :lodge do
-          transitions from: [:movein, :approved, :application], to: :resident,
+          transitions from: [:approved, :application], to: :resident,
             after: ->(*args) { set_conversion_date; set_priority_zero },
-            guard: :may_progress?
-        end
-
-        event :move_in do
-          transitions from: [:approved], to: :movein,
             guard: :may_progress?
         end
 

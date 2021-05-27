@@ -457,8 +457,6 @@ module Leads
             priority = 'high'
           when 'approved'
             priority = 'high'
-          when 'movein'
-            priority = 'high'
           when 'open'
             priority = 'urgent'
           when 'disqualified'
