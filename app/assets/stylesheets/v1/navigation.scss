@@ -24,6 +24,10 @@ body {
   z-index: 1000;
 }
 
+#nav-hamburger {
+  display: block;
+}
+
 .appname {
   background: url('/bluesky-header.svg');
   background-color: #133D6B;

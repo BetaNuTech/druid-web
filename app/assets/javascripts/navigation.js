@@ -16,6 +16,7 @@ class SlideNav {
 	init_behaviors() {
 		var that = this;
 		this.toggle_button.on('click', that.handle_button_click.bind(that));
+		this.toggle_button.on('touchend', that.handle_button_click.bind(that));
     this.handle_window_resize();
     this.handle_content_click();
 		return(true);
