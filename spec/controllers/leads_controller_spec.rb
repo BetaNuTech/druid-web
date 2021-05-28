@@ -328,6 +328,7 @@ RSpec.describe LeadsController, type: :controller do
         new_lead = assigns(:lead)
         assert(new_lead.errors.empty?)
         assert(new_lead.showing?)
+        expect(new_lead.user).to eq(agent)
         expect(new_lead.first_name).to eq(walkin_attributes[:first_name])
       end
       it "should create a new ScheduledAction to show the selected unit" do

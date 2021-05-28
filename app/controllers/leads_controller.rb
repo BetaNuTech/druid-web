@@ -85,7 +85,7 @@ class LeadsController < ApplicationController
   def create
     authorize Lead
     set_lead_source
-    assign_user = lead_params['user_id'].present? ? User.find(lead_params['user_id']) : nil
+    assign_user = lead_params['user_id'].present? ? User.find(lead_params['user_id']) : @current_user
     lead_creator = Leads::Creator.new(data: lead_params, agent: assign_user, token: @lead_source.api_token)
     @lead = lead_creator.call
     @entry_type = params[:entry] || :default
