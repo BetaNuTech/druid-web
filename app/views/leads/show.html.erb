@@ -72,8 +72,8 @@
         <% if @lead.phone2.present? %>
           <span title="Secondary Phone" class="glyphicon glyphicon-earphone"></span>&nbsp;
           <%= new_lead_sms_message_link(@lead) do %>
-            <%= @lead.phone2 %><br/>
-          <% end %>
+            <%= @lead.phone2 %>
+          <% end %><br/>
         <% end %>
         <span title="Email Address" class="glyphicon glyphicon-envelope"></span>&nbsp;
         <% if @lead.email.present? %>
