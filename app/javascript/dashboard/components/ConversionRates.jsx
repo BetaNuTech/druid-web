@@ -214,11 +214,11 @@ class ConversionRates extends React.Component {
         .append("text")
           .merge(bargroups)
           .attr("class", "label--value")
-          .attr("font-size", "11")
+          .attr("font-size", "10")
           .attr('text-anchor', "middle")
           .attr("x", d => xScaleBar(d.key) + xScaleBar.bandwidth()/2 )
           .attr("y", d => yScale(d.value) - 5 )
-          .text(d => d.value)
+          .text(d => d.value + "%")
 
 
     this.noDataAdvisory()

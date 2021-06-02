@@ -91,8 +91,8 @@ class ManagerDashboard extends React.Component {
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height={ 300 }
-            width={ 400 }
+            height={ 400 }
+            width={ 700 }
             yAxisLabel='Leads'
             xAxisLabel='Lead Source'
           />
@@ -100,15 +100,15 @@ class ManagerDashboard extends React.Component {
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height={ 300 }
-            width={ 300 }
+            height={ 400 }
+            width={ 700 }
             yAxisLabel='Leads'
             xAxisLabel='Lead State' />
           <PropertyLeads data={this.state.data.property_leads.data}
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height={ 300 }
+            height={ 400 }
             width={ 700 }
             yAxisLabel='Leads'
             xAxisLabel='Property' />
@@ -116,8 +116,8 @@ class ManagerDashboard extends React.Component {
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height={ 300 }
-            width={ 400 }
+            height={ 400 }
+            width={ 700 }
             yAxisLabel='Rate (%)'
             xAxisLabel='Agent'
             rateParameter='user_ids'
@@ -126,8 +126,8 @@ class ManagerDashboard extends React.Component {
             filters={this.state.data.filters}
             selectX={datum => datum.label}
             selectY={datum => datum.val}
-            height={ 300 }
-            width={ 400 }
+            height={ 400 }
+            width={ 700 }
             yAxisLabel='Rate (%)'
             xAxisLabel='Referral'
             rateParameter='referrals'
