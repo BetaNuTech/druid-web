@@ -66,9 +66,11 @@ class PropertiesController < ApplicationController
   # DELETE /properties/1.json
   def destroy
     authorize @property
-    @property.destroy
+    #@property.destroy
+    @property.active = false
+    @property.save
     respond_to do |format|
-      format.html { redirect_to properties_url, notice: 'Property was successfully destroyed.' }
+      format.html { redirect_to properties_url, notice: 'Property was marked as inactive.' }
       format.json { head :no_content }
     end
   end
