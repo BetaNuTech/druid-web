@@ -201,7 +201,7 @@
                 <%= label_tag(:teamrole_id, "Team Role") %>
               <% end %>
               <%= user_creator_form_group(:teamrole_id) do %>
-                <%= select_tag(:teamrole_id, options_for_select(@creator.teamroles_for_select, selected: @creator.teamrole), {include_blank: true, class: "form-control" }) %>
+                <%= select_tag(:teamrole_id, options_for_select(@creator.teamroles_for_select, selected: @creator.teamrole&.id), {include_blank: true, class: "form-control" }) %>
               <% end %>
             </div>
           </div>

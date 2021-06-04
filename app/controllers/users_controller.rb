@@ -30,7 +30,7 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
-    @creator = Users::Creator.new(params: {user: {id: nil}}, creator: current_user)
+    @creator = Users::Creator.new(params: {user: {id: nil}, property_id: params[:property_id]}, creator: current_user)
     @user = @creator.user
     authorize @user
   end

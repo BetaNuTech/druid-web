@@ -19,9 +19,9 @@ module Users
       @new_record = !User.where(id: @user_id).exists?
       @creator = creator
       @property = Property.find(params[:property_id]) rescue nil
-      @property_role = params[:property_role]
-      @team = Team.find(params[:team_id]) rescue nil
-      @teamrole = Teamrole.find(params[:teamrole_id]) rescue nil
+      @property_role = params[:property_role] || PropertyUser::AGENT_ROLE
+      @team = ( params[:team_id] ? Team.find(params[:team_id]) : @property&.team ) rescue nil
+      @teamrole = (params[:teamrole_id] ? Teamrole.find(params[:teamrole_id]) : (@property.present? ? Teamrole.agent : nil)) rescue nil
       @errors = nil
       init_user
     end
