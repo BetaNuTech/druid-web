@@ -8,9 +8,14 @@
   <div class="collapse" id="property_employees">
     <div class="row">
       <div class="col-md-4">
-        <%= form.add_nested_fields_link :property_users, 'Add Employee',
-          class: 'btn btn-sm btn-primary', role: 'button',
-          data: { insert_into: 'property_users'} %>
+        <%= tooltip_block('property-add-employee-link') do %>
+          <%= form.add_nested_fields_link :property_users, 'Add Employee',
+            class: 'btn btn-sm btn-primary', role: 'button',
+            data: { insert_into: 'property_users'} %>
+        <% end %>
+        <%= tooltip_block('property-add-user-link') do %>
+          <%= link_to('Create New User', new_user_path(property_id: property.id), class: 'btn btn-sm btn-primary') %>
+        <% end %>
       </div>
     </div>
     <div class="row">

@@ -3,6 +3,22 @@
   :version: 2
   :key: :slug
   :data:
+    - :slug: property-add-employee-link
+      :title: Properties#Edit#add-employee-link
+      :contextid: Properties#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Make an existing user an employee
+    - :slug: property-add-user-link
+      :title: Properties#Edit#add-user-link-link
+      :contextid: Properties#edit
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Create a new user account
     - :slug: roommate-edit-link
       :title: Roommate#Edit#Link
       :contextid: Leads#show
