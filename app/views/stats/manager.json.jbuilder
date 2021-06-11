@@ -55,5 +55,13 @@ json.data do
     json.recent_activity do
       json.data @stats.recent_activity_json
     end
+  when 'lead_speed'
+    json.lead_speed do
+      json.data @stats.lead_speed_stats_json
+    end
+  when 'tenacity'
+    json.tenacity do
+      json.data @stats.tenacity_stats_json
+    end
   end
 end

@@ -289,6 +289,66 @@ EOS
     return result
   end
 
+  def statistics_collection
+    collection = { team: [], property: [], agent: [] }
+
+    if @team_ids.present?
+      collection[:team] = Team.where(id: @team_ids).order(name: :asc)
+      collection[:property] = Property.active.includes(:team).where(team: {id: @team_ids}).order("properties.name ASC")
+      collection[:agent] = User.active.includes(:profile, :membership).where(team_users: {team_id: @team_ids}).order("user_profiles.last_name ASC, user_profiles.first_name ASC")
+    elsif @user_ids.present?
+      collection[:agent] = User.active.includes(:profile).where(id: @user_ids).order("user_profiles.last_name ASC, user_profiles.first_name ASC")
+      collection[:property] = Property.active.includes(:property_users).where(property_users: {user_id: @user_ids})
+      collection[:team] = Team.includes(:members).where(team_users: {user_id: @user_ids})
+    elsif @property_ids.present?
+      collection[:property] = Property.active.where(id: @property_ids).order(name: :asc)
+      collection[:agent] = User.active.includes(:profile, :assignments).where(property_users: {property_id: @property_ids}).order("user_profiles.last_name ASC, user_profiles.first_name ASC")
+      collection[:team] = Team.includes(:properties).where(properties: {id: @property_ids}).order("teams.name ASC")
+    else
+      collection[:property] = Property.active.order(name: :asc)
+    end
+
+    return collection
+  end
+
+  def tenacity_stats_json
+    collection = statistics_collection
+    interval = Statistic.interval_from_date_range(@date_range)
+    time_start = Statistic.statistic_time_start(interval)
+    stats = {}
+    [:team, :property, :agent].each do |key|
+      collection[key].each do |record|
+        stats[key] ||= []
+        stats[key] << {
+          type: key,
+          label: record.name,
+          id: record.id,
+          value: Statistic.tenacity_grade_for(record, interval: interval, time_start: time_start)
+        }
+      end
+    end
+    return stats
+  end
+
+  def lead_speed_stats_json
+    collection = statistics_collection
+    interval = Statistic.interval_from_date_range(@date_range)
+    time_start = Statistic.statistic_time_start(interval)
+    stats = {}
+    [:team, :property, :agent].each do |key|
+      collection[key].each do |record|
+        stats[key] ||= []
+        stats[key] << {
+          type: key,
+          label: record.name,
+          id: record.id,
+          value: Statistic.lead_speed_grade_for(record, interval: interval, time_start: time_start)
+        }
+      end
+    end
+    return stats
+  end
+
   def lead_states
     skope = apply_skope(Lead)
     if @start_date.present? && @end_date.present?
