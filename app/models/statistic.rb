@@ -55,8 +55,21 @@ class Statistic < ApplicationRecord
     Time.now.utc.beginning_of_day
   end
 
+  def self.utc_week_start
+    Time.now.utc.beginning_of_week
+  end
+
   def self.utc_month_start
     Time.now.utc.beginning_of_month
+  end
+
+  def self.utc_quarter_start
+    q = ( Time.now.utc.month.to_f/4.0 ).ceil
+    self.utc_year_start + q.months
+  end
+
+  def self.utc_year_start
+    Time.now.utc.beginning_of_year
   end
 
   ### Instance Methods

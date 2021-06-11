@@ -229,6 +229,43 @@ module Statistics
         end
         true
       end
+
+      def self.interval_from_date_range(label)
+        {
+          'today': :day,
+          'last_week': :week,
+          'last_month': :month,
+          'last_quarter': :month,
+          'last_year': :year,
+          'all_time': :year,
+          'week': :week,
+          '2weeks': :week,
+          'month': :month,
+          '3months': :month,
+          'year': :year
+        }.fetch(label.to_s, :month)
+      end
+
+      def self.statistic_time_start(interval)
+        last_day = Statistic.utc_day_start - 1.day
+        last_week = Statistic.utc_week_start
+        last_month = Statistic.utc_month_start
+        last_quarter = Statistic.utc_quarter_start
+        last_year = Statistic.utc_year_start
+        {
+          'today': last_day,
+          'last_week': last_week,
+          'last_month': last_month,
+          'last_quarter': last_quarter,
+          'last_year': last_year,
+          'all_time': last_year,
+          'week': last_week,
+          '2weeks': last_week,
+          'month': last_month,
+          '3months': last_quarter,
+          'year':last_year 
+        }.fetch(interval.to_s, last_month)
+      end
     end
   end
 end

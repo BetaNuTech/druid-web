@@ -13,12 +13,14 @@ import RecentActivity from './RecentActivity.jsx'
 import SourcesStats from './SourcesStats.jsx'
 import ConversionRates from './ConversionRates.jsx'
 import MessageResponse  from './MessageResponse.jsx'
+import LeadSpeed from './LeadSpeed.jsx'
+import Tenacity from './Tenacity.jsx'
 
 class ManagerDashboard extends React.Component {
   constructor(props) {
     super(props)
     const container = document.getElementById("Dashboard")
-    this.valid_reports = [ 'lead_sources', 'lead_states', 'agent_conversion_rates', 'referral_conversion_rates', 'response_times', 'property_leads', 'open_leads', 'agent_status', 'recent_activity' ]
+    this.valid_reports = [ 'lead_sources', 'lead_states', 'agent_conversion_rates', 'referral_conversion_rates', 'response_times', 'property_leads', 'open_leads', 'agent_status', 'recent_activity', 'lead_speed', 'tenacity' ]
     this.state = {
       api_root: container.dataset.api,
       initial_data: container.dataset.url,
@@ -33,7 +35,9 @@ class ManagerDashboard extends React.Component {
         lead_sources: { data: { series: [ ] } },
         property_leads: { data: { series: [ ] } },
         recent_activity: { data: [] },
-        response_times: { data: { series: [ ] } }
+        response_times: { data: { series: [ ] } },
+        lead_speed: { data: { properties: [], teams: [], users: []}},
+        tenacity: { data: { properties: [], teams: [], users: []}},
       }
     }
   }
@@ -144,6 +148,9 @@ class ManagerDashboard extends React.Component {
           <OpenLeads data={this.state.data.open_leads} />
           <AgentStatus data={this.state.data.agent_status} />
           <RecentActivity data={this.state.data.recent_activity} />
+          <div className="clear"></div>
+          <LeadSpeed data={this.state.data.lead_speed} />
+          <Tenacity data={this.state.data.tenacity} />
         </div>
       </div>
     )
