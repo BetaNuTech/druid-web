@@ -25,6 +25,7 @@
           <th>Availability</th>
           <th>Size</th>
           <th>Beds</th>
+          <th>Market Rent</th>
           <th></th>
         </tr>
       </thead>
@@ -41,6 +42,7 @@
             <td><%= unit.available_on %></td>
             <td><%= unit.sqft %> ft<sup>2</sup></td>
             <td><%= unit.bedrooms %></td>
+            <td><%= unit.market_rent.present? ? number_to_currency(unit.market_rent) : '' %></td>
             <td>
               <%= link_to unit do %><%= glyph(:show) %><% end if policy(unit).show? %>&nbsp;
               <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end if policy(unit).edit? %>&nbsp;
