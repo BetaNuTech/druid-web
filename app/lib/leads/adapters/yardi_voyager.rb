@@ -191,6 +191,7 @@ module Leads
         unit.occupancy = yardi_unit.occupancy
         unit.available_on = yardi_unit.available_on
         unit.model = yardi_unit.model
+        unit.market_rent = yardi_unit.market_rent
 
         return unit
       end
