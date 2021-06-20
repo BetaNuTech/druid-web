@@ -221,6 +221,12 @@
         <span class="sidebar--item-content">Help</span>
       <% end %>
     </div>
+    <div class="sidebar--item <%= nav_item_class(:articles) %>">
+      <%= link_to("https://bluestone-prop.freshdesk.com/a/tickets/new", target: '_blank') do %>
+        <%= image_tag('/icons/help.svg') %>
+        <span class="sidebar--item-content">Support Ticket</span>
+      <% end %>
+    </div>
     <div class="sidebar--item">
       <%= link_to(destroy_user_session_path, method: :delete) do %>
         <%= image_tag('/icons/logout.svg') %>
