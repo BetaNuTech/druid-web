@@ -157,7 +157,7 @@ module Leads
         end
 
         event :disqualify do
-          transitions from: [ :open, :prospect, :showing, :application, :denied, :approved, :resident ], to: :disqualified,
+          transitions from: [:open, :prospect], to: :disqualified,
             after: ->(*args) { set_priority_zero; clear_all_tasks; mark_all_messages_read }
         end
 
