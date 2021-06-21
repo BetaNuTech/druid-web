@@ -248,8 +248,16 @@ module LeadsHelper
   def lead_classifications_for_progressing_state(lead:, event:)
     all_classes = Lead.classifications.keys
     all_classes.delete('parse_failure')
-    all_classes.delete('lead') if event == 'disqualify'
-    options_for_select(all_classes.map{|lc| [lead_classification_and_help(lc), lc]}, lead.classification)
+    selected_classification = lead.classification
+    case event
+    when 'abandon', 'show', 'apply', 'deny', 'approve', 'lodge', 'requalify', 'postpone', 'revisit', 'wait_for_unit', 'revisit_unit_available'
+      all_classes = ['lead']
+      selected_classification = 'lead'
+    when 'disqualify'
+      all_classes.delete('lead') if event == 'disqualify'
+    end
+
+    options_for_select(all_classes.map{|lc| [lead_classification_and_help(lc), lc]}, selected_classification)
   end
 
 end
