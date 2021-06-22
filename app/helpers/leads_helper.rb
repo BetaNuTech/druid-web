@@ -250,7 +250,7 @@ module LeadsHelper
     all_classes.delete('parse_failure')
     selected_classification = lead.classification
     case event
-    when 'abandon', 'show', 'apply', 'deny', 'approve', 'lodge', 'requalify', 'postpone', 'revisit', 'wait_for_unit', 'revisit_unit_available'
+    when 'abandon', 'show', 'apply', 'deny', 'approve', 'lodge', 'requalify', 'postpone', 'revisit', 'wait_for_unit', 'revisit_unit_available', 'release'
       all_classes = ['lead']
       selected_classification = 'lead'
     when 'disqualify'
