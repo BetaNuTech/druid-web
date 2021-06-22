@@ -1,5 +1,16 @@
-<p>Welcome <%= @email %>!</p>
+<p>
+  Hello <%= @name %>,
+</p>
 
-<p>You can confirm your account email through the link below:</p>
+<p>
+  Welcome to Bluesky, our lead management platform. Your login details are as follows:
+</p>
 
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+<p>
+  Username: <tt><%= @email %></tt>
+</p>
+
+<p>
+  Please click on the following link to complete setting up your account:<br/ >
+  <%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %>
+</p>
