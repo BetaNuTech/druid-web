@@ -25,11 +25,6 @@ module UnitsHelper
   end
 
   def unit_occupancy_class(unit)
-    case unit.occupancy
-    when "vacant"
-      "unit_occupancy_vacant"
-    else
-      "unit_occupancy_occupied"
-    end
+    unit.available? ? 'unit_occupancy_vacant' : 'unit_occupancy_occupied'
   end
 end

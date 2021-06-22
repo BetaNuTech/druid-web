@@ -11,9 +11,14 @@ class UnitsController < ApplicationController
     if @property.present?
       @units = @units.where(property_id: @property.id).
         joins("right outer join unit_types on unit_types.id = units.unit_type_id").
-        order("units.model desc, units.occupancy desc, unit_types.name asc, units.lease_status asc, units.unit asc")
+        order("unit_types.name ASC, units.unit ASC")
     else
       @units = Unit.where("1=0")
+    end
+    @show_all = params[:all] == 'true'
+
+    unless @show_all
+      @units = @units.select{|u| u.available?}
     end
   end
 

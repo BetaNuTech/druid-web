@@ -89,6 +89,13 @@ module Leads
           lead.trigger_event(event_name: 'revisit_unit_available', user: lead.user)
         end
       end
+
+      def can_leave_waitlist
+        waitlist.joins("inner join lead_preferences ON lead_preferences.lead_id = leads.id INNER JOIN unit_types ON lead_preferences.unit_type_id = unit_types.id INNER JOIN units on units.unit_type_id = unit_types.id").
+          where(
+            "(units.occupancy = 'vacant' AND (units.lease_status = 'available' OR units.lease_status = 'lease_reserved') OR (units.occupancy = 'occupied' AND (units.lease_status = 'on_notice' OR units.lease_status = 'lease_reserved')))"
+        )
+      end
     end
 
     included do
@@ -97,10 +104,6 @@ module Leads
 
       after_create :create_initial_transition
       after_save :disqualified_lead_checks
-
-      scope :can_leave_waitlist, -> {
-        waitlist.includes(preference: {unit_type: :units}).where(units: {lease_status: 'available'})
-      }
 
       # https://github.com/aasm/aasm
       include AASM

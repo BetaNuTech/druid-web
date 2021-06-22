@@ -98,4 +98,17 @@ class Unit < ApplicationRecord
     return residents.where(status: 'current')
   end
 
+  def occupancy_and_status
+    [ occupancy, lease_status ].join(':')
+  end
+
+  def available?
+    case occupancy_and_status
+    when 'vacant:available', 'vacant:lease_reserved', 'occupied:on_notice', 'occupied:lease_reserved'
+      true
+    else
+      false
+    end
+  end
+
 end

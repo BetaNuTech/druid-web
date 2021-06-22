@@ -1,9 +1,11 @@
 <div class="row">
-  <div class="col-md-6">
-    <h1>Units at <%= @property&.name || 'Unknown' %></h1>
+  <div class="col-md-10">
+    <h1>
+      Units at <%= @property&.name || 'Unknown' %>
+  </h1>
   </div>
   <% if policy(Unit).new? %>
-    <div class="col-md-6 text-right">
+    <div class="col-md-2 text-right">
       <%= link_to 'Create New Unit', (@property.present? ? new_property_unit_path(property_id: @property.id) : new_unit_path), class: "btn btn-sm btn-primary"  %>
     </div>
   <% end %>
@@ -16,6 +18,9 @@
       No Units found
     </p>
   <% end %>
+    <small>
+      <%= link_to('Show All', units_path(all: true), class: "btn btn-xs btn-primary") unless @show_all  %>
+    </small>
     <table class="table">
       <thead>
         <tr>
