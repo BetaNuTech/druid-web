@@ -42,19 +42,21 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-12 form-group">
-      <%= form.label :show_unit, 'Show Unit' %>
-        <% lead.property.housing_units.for_showings.order(unit: :asc).each do |unit| %>
-          <div class="row">
-            <div class="col-md-12">
-              <%= form.radio_button :show_unit, unit.id, {id: "show_unit_#{unit.id}"} %>
-              <%= form.label :show_unit, unit.display_name2, for: "show_unit_#{unit.id}" %>
+  <% if (model_units = lead.property.housing_units.for_showings.order(unit: :asc)).any? %>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <%= form.label :show_unit, 'Show Unit' %>
+          <% model_units.each do |unit| %>
+            <div class="row">
+              <div class="col-md-12">
+                <%= form.radio_button :show_unit, unit.id, {id: "show_unit_#{unit.id}"} %>
+                <%= form.label :show_unit, unit.display_name2, for: "show_unit_#{unit.id}" %>
+              </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+      </div>
     </div>
-  </div>
+  <% end%>
 
   <div class="row">
     <div class="col-md-12 form-group">
