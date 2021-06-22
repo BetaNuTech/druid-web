@@ -53,7 +53,7 @@ class Message < ApplicationRecord
   scope :display_order, ->() {
     order(Arel.sql("CASE messages.state='draft' WHEN true THEN 0 ELSE 1 END,
           CASE messages.read_at IS NULL WHEN true THEN 0 ELSE 1 END,
-          messages.updated_at DESC"))
+          COALESCE(messages.delivered_at, messages.updated_at) DESC"))
   }
   scope :incoming, ->() { where(incoming: true) }
   scope :outgoing, ->() { where(incoming: false) }
