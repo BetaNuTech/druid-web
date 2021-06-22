@@ -7,15 +7,15 @@ class LeadActions extends React.Component {
     let actions = []
     switch(this.props.lead_state) {
       case 'open':
-        actions = ['Claim', 'Disqualify']
+        actions = ['Claim']
         break
       case 'prospect':
-        actions = ['Disqualify']
+        actions = []
         break
       case 'disqualified':
         actions = ['Requalify']
       default:
-        actions = ['Disqualify']
+        actions = []
     }
     return(actions);
   }
