@@ -181,4 +181,8 @@ class LeadPolicy < ApplicationPolicy
     user.admin? || show?
   end
 
+  def disqualify?
+    !record.disqualified? && edit?
+  end
+
 end
