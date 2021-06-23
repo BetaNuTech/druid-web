@@ -14,7 +14,7 @@
   <%= form.hidden_field :notable_id, id: :note_notable_id %>
   <%= form.hidden_field :notable_type, id: :note_notable_type %>
 
-  <div class="fieldset_content">
+  <div class="">
     <div class="row">
       <div class="col-md-4 form-group">
         <%= form.label :lead_action_id, "Action" %>
@@ -31,19 +31,6 @@
       <div class="form-group col-md-8">
         <%= form.label :content, "New Comment" %>
         <%= form.text_area :content, id: :note_content, class: "form-control", rows: 5%>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">
-        <p>
-          <span class="btn btn-sm btn-info toggle_note_schedule">Schedule</span>
-        </p>
-      </div>
-      <div class="col-md-6">
-        <div class="note_schedule_selection" style="display: none;">
-          <%= form.label :schedule %>
-          <%= form.schedule_select :schedule, style: :bootstrap, until: true, input_types: {date: :date_picker, time: :time_picker, datetime: :datetime_picker} %>
-        </div>
       </div>
     </div>
     <div class="form-group">
