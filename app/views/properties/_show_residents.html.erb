@@ -4,12 +4,6 @@
     <%if @property.residents.empty? %>
       <p>None</p>
     <% end %>
-    <p>
-      <%= link_to(new_property_resident_path(@property)) do %>
-        <%= glyph(:create) %>
-        New
-      <% end %>
-    </p>
     <ul>
       <strong><%= link_to("View All", property_residents_path(@property)) %> </strong>
       <% @property.residents.includes(:unit).order("units.unit ASC, residents.last_name ASC, residents.first_name ASC").limit(10).each do |resident| %>

@@ -5,15 +5,6 @@
     <% end %>
     <h1>Unit Types</h1>
   </div>
-  <% if policy(UnitType).new? %>
-    <div class="col-md-6 text-right">
-      <% if @property.present? %>
-        <%= link_to 'Create New Unit Type', new_property_unit_type_path(@property), class: 'btn btn-sm btn-primary' %>
-      <% else %>
-        <%= link_to 'Create New Unit Type', new_unit_type_path, class: 'btn btn-sm btn-primary' %>
-      <% end %>
-    </div>
-  <% end %>
 </div>
 <div class="row">
   <div class="col-md-12">

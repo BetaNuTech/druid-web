@@ -4,12 +4,6 @@
     <% if @property.unit_types.empty? %>
       <p>None</p>
     <% end %>
-    <p>
-      <%= link_to(new_property_unit_type_path(@property) ) do %>
-        <%= glyph(:create) %>
-        New
-      <% end %>
-    </p>
     <ul>
       <strong><%= link_to("View All", property_unit_types_path(@property)) %> </strong>
       <% @property.unit_types.order(name: 'ASC').limit(10).each do |unit_type| %>
