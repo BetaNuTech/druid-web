@@ -131,6 +131,12 @@ class MessagesController < ApplicationController
     redirect_to messages_path, notice: 'Marked message as read'
   end
 
+  def lead_page_mark_read
+    set_message
+    authorize @message
+    Message.mark_read!(@message, current_user)
+  end
+
 
   private
 

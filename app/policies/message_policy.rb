@@ -99,6 +99,10 @@ class MessagePolicy < ApplicationPolicy
     end
   end
 
+  def lead_page_mark_read?
+    listable?
+  end
+
   def allowed_params
     Message::ALLOWED_PARAMS
   end

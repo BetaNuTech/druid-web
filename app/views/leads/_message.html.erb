@@ -1,4 +1,4 @@
-<tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
+<tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>" id="message-preview-<%= message.id %>">
   <td>
     <span class="text-nowrap">
       <% if message.draft? %>
@@ -15,6 +15,10 @@
         </span>
       <% end %>
     </span>
+    <p>
+      <br/>
+      <%= link_to('Mark As Read', lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), {class: 'btn btn-primary btn-sm', id: "message-read-button-#{message.id}",remote: true, method: :post}) if !message.read? && policy(message).lead_page_mark_read? %>
+    </p>
   </td>
   <td class="message_body_preview">
     <%= link_to(message_path(message)) do %>
