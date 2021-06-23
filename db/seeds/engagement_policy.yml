@@ -1,6 +1,6 @@
 ---
 :engagement_policy:
-  :version: 5
+  :version: 6
   :data:
     - :version: 1
       :property_name: null
@@ -102,20 +102,12 @@
           :retry_delay_multiplier: none
           :score: 1
           :active: true
-    - :version: 1
+    - :version: 2
       :property_name: null
       :lead_state: resident
       :description: Global Engagement Policy for 'resident' Leads
       :active: true
-      :engagement_policy_actions:
-        - :lead_action_name: Other
-          :description: Task for new residents
-          :deadline: 48
-          :retry_count: 0
-          :retry_delay: 0
-          :retry_delay_multiplier: none
-          :score: 1
-          :active: true
+      :engagement_policy_actions: []
     - :version: 2
       :property_name: null
       :lead_state: disqualified
