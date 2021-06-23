@@ -50,10 +50,13 @@ class Message < ApplicationRecord
   scope :for_thread, ->(threadid) { where(threadid: threadid)}
   scope :read, ->() { where.not(read_at: nil)}
   scope :unread, ->() { where(read_at: nil)}
+  #scope :display_order, ->() {
+    #order(Arel.sql("CASE messages.state='draft' WHEN true THEN 0 ELSE 1 END,
+          #CASE messages.read_at IS NULL WHEN true THEN 0 ELSE 1 END,
+          #COALESCE(messages.delivered_at, messages.updated_at) DESC"))
+  #}
   scope :display_order, ->() {
-    order(Arel.sql("CASE messages.state='draft' WHEN true THEN 0 ELSE 1 END,
-          CASE messages.read_at IS NULL WHEN true THEN 0 ELSE 1 END,
-          COALESCE(messages.delivered_at, messages.updated_at) DESC"))
+    order(Arel.sql("COALESCE(messages.delivered_at, messages.updated_at) DESC"))
   }
   scope :incoming, ->() { where(incoming: true) }
   scope :outgoing, ->() { where(incoming: false) }
