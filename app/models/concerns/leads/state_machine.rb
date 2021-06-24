@@ -24,7 +24,8 @@ module Leads
       postpone: 'follow-up on this Lead in the future',
       revisit: 'mark this Lead as Open again',
       wait_for_unit: 'put this Lead on waitlist until the Unit is available',
-      revisit_unit_available: 'the Unit is available, so make this Lead Open'
+      revisit_unit_available: 'the Unit is available, so make this Lead Open',
+      reclaim: 'force this Lead to the Prospect state (unit may not be available)'
     }.freeze
 
     class_methods do
@@ -191,15 +192,20 @@ module Leads
         end
 
         event :wait_for_unit do
-          transitions from: [ :open, :prospect, :showing ], to: :waitlist,
+          transitions from: [ :open, :prospect, :showing, :approved, :application ], to: :waitlist,
             guard: :unit_preference_set?,
-            after: -> (*args) {clear_all_tasks; event_clear_user; set_priority_low}
+            after: -> (*args) {clear_all_tasks; set_priority_low}
         end
 
         event :revisit_unit_available do
           transitions from: :waitlist, to: :open,
             guard: :unit_preference_available?,
             after: -> (*args) { set_priority_urgent }
+        end
+
+        event :reclaim do
+          transitions from: :waitlist, to: :prospect,
+            after: ->(*args) { event_set_user(*args) }
         end
 
       end
