@@ -31,6 +31,7 @@
   <div class=col-md-12"">
     <% events = @scheduled_actions.sorted_by_due_asc %>
     <%= month_calendar events: events do |date, scheduled_actions| %>
+      <% # Sorts events by Object.start_time %>
       <%= date.day %><br/>
       <% scheduled_actions.each do |scheduled_action| %>
         <div class="<%= scheduled_action_calendar_entry_class(scheduled_action) %>">

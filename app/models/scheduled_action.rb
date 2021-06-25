@@ -93,8 +93,9 @@ class ScheduledAction < ApplicationRecord
 
   attr_accessor :impersonate
 
+  # Used by ScheduledActions#index
   def start_time
-    self.schedule.try(:date)
+    self.completed_at || self.schedule.try(:date)
   end
 
   def target_subject(user=nil)
