@@ -185,4 +185,8 @@ class LeadPolicy < ApplicationPolicy
     !record.disqualified? && edit?
   end
 
+  def change_classification?
+    record.disqualified? && edit?
+  end
+
 end

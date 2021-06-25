@@ -14,74 +14,27 @@
   <% end %>
 
     <fieldset>
-      <legend>Assignment</legend>
+      <legend>Lead Information</legend>
 
       <div class="row">
-        <div class="col-md-4 form-group">
-          <%= form.label "Priority" %>
-          <%= form.select :priority, priorities_for_select(lead), {}, {class: "form-control"} %>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-2 form-group">
-          <h3 id="lead_state_name"><%= lead.state&.capitalize %></h3>
-          <% if policy(lead).manually_change_state? %>
+        <% if policy(lead).manually_change_state? %>
+          <div class="col-md-4 form-group">
+            <h3 id="lead_state_name"><%= lead.state&.capitalize %></h3>
             <%= link_to("Change", "#", {id: "lead_toggle_change_state", class: "btn btn-xs btn-default"}) %>
             <div id="lead_force_state" style="display: none;">
               <%= form.label :state %>
               <%= form.select :state, options_for_select(lead.aasm.states.map{|s| [s.human_name, s.name.to_s]}, lead.state), {}, {class: "form-control"} %>
             </div>
-          <% end %>
-        </div>
-        <div class="col-md-4 form-group">
-          <%= form.label "Agent" %>
-          <%= form.select :user_id, users_for_select(lead),
-                { include_blank: true },
-                { class: "form-control", disabled: !policy(lead).change_user? } %>
-        </div>
-        <div class="col-md-4 form-group">
-          <%= form.label "Classified As A" %>
-          <%= form.select :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, lead.classification), {}, { class: "form-control" } %>
-        </div>
-      </div>
-
-    </fieldset>
-
-    <fieldset>
-      <legend>Lead Information</legend>
-
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label 'Property'%><br/>
-          <%= form.select :property_id, properties_for_select(lead.property_id), { include_blank: true }, { class: "form-control" } %>
-        </div>
-        <%= form.hidden_field :lead_source_id, value: LeadSource.default.id %>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :referral, 'Lead Source/Referral Origin' %>
-          <br/>
-          <small>Select or enter a referral source</small>
-          <%= form.select :referral, select_lead_referral_source(lead.referral || 'Drive By'), {include_blank: true}, { id: :lead_referral, class: "form-control selectize" } %>
-        </div>
-        <div class="col-md-6 form-group">
-          <div id="lead_referrable">
-            <%= lead_referrable_select(lead: lead, referral: lead.referral) %>
           </div>
-        </div>
-      </div>
-
-      <% if policy(lead).change_remoteid? %>
-        <div class="row">
+        <% end %>
+        <% if policy(lead).change_classification? %>
           <div class="col-md-4 form-group">
-            <%= form.label :remoteid %>
-            <%= content_tag(:span, glyph(:warning_sign), style: "color: red;") if lead.duplicate_remoteid? %>
-            <%= form.text_field :remoteid, class: "form-control" %>
+            <%= form.label "Classified As" %>
+            <%= form.select :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, lead.classification), {}, { class: "form-control" } %>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
+
 
       <div class="row">
         <div class="col-md-2 form-group">
@@ -164,12 +117,56 @@
           <%= form.date_select :last_comm, {}, { id: :lead_last_comm, class: "form-control form-control-date-select" } %>
         </div>
       </div>
+
+
+      <% if policy(lead).change_remoteid? %>
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <%= form.label :remoteid %>
+            <%= content_tag(:span, glyph(:warning_sign), style: "color: red;") if lead.duplicate_remoteid? %>
+            <%= form.text_field :remoteid, class: "form-control" %>
+          </div>
+        </div>
+      <% end %>
     </fieldset>
 
   <%= render partial: 'preference_form', locals: { form: form } %>
 
+    <fieldset>
+      <legend>Assignment</legend>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label 'Property'%><br/>
+          <%= form.select :property_id, properties_for_select(lead.property_id), { include_blank: true }, { class: "form-control" } %>
+        </div>
+        <div class="col-md-4 form-group">
+          <%= form.label "Agent" %>
+          <%= form.select :user_id, users_for_select(lead),
+                { include_blank: true },
+                { class: "form-control", disabled: !policy(lead).change_user? } %>
+        </div>
+        <%= form.hidden_field :lead_source_id, value: LeadSource.default.id %>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :referral, 'Lead Source/Referral Origin' %>
+          <br/>
+          <small>Select or enter a referral source</small>
+          <%= form.select :referral, select_lead_referral_source(lead.referral || 'Drive By'), {include_blank: true}, { id: :lead_referral, class: "form-control selectize" } %>
+        </div>
+        <div class="col-md-6 form-group">
+          <div id="lead_referrable">
+            <%= lead_referrable_select(lead: lead, referral: lead.referral) %>
+          </div>
+        </div>
+      </div>
+
+    </fieldset>
+
   <div class="form-group">
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Save</button>
     <%= link_to('Cancel', :back, class: 'btn btn-xs btn-info') %>
   </div>
 <% end %>
