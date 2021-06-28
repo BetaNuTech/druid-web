@@ -1,8 +1,7 @@
-echo "Loading Bluesky production database"; \
- rm latest.dump*; \
+echo "Loading Bluesky production database"
+[ ! -f latest.dump ] && heroku pg:backups:download --app druid-prod
 #heroku pg:backups:capture --app druid-prod; \
- heroku pg:backups:download --app druid-prod; \
- dropdb bluesky-web_development; \
- createdb bluesky-web_development -O $USER; \
- pg_restore --verbose --clean --no-acl --no-owner -U $USER -d bluesky-web_development latest.dump; \
- rake db:migrate
+dropdb bluesky-web_development
+createdb bluesky-web_development -O $USER
+pg_restore --verbose --clean --no-acl --no-owner -U $USER -d bluesky-web_development latest.dump; \
+rake db:migrate
