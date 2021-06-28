@@ -3,7 +3,9 @@ module Leads
     module CloudMailin
       class RentcafeParser
         def self.match?(data)
-          return(data&.fetch('headers',{})&.fetch('From','')&.match(/rentcafe\.com/)).present?
+          sender_matches = data&.fetch('headers',{})&.fetch('From','')&.match(/rentcafe\.com/).present?
+          body_matches = data.fetch('body')&.match('The following prospect has requested information about your property').present?
+          return(sender_matches && body_matches)
         end
 
         def self.parse(data)
