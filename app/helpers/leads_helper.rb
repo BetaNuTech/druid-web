@@ -260,4 +260,8 @@ module LeadsHelper
     options_for_select(all_classes.map{|lc| [lead_classification_and_help(lc), lc]}, selected_classification)
   end
 
+  def action_memo_visible?(eventid)
+    Lead::ACTION_MEMO_TRANSITIONS.include?(eventid.to_s)
+  end
+
 end

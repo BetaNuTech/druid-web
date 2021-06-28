@@ -2,11 +2,11 @@ module Leads
   module StateMachine
     extend ActiveSupport::Concern
 
-    PENDING_STATES = %w{open prospect showing application}
-    CLAIMED_STATES = %w{prospect showing application approved denied resident}
-    IN_PROGRESS_STATES = %w{prospect showing application }
-    CLOSED_STATES = %w{ disqualified abandoned resident exresident future waitlist}
-    EARLY_PIPELINE_STATES = %w{open prospect showing application}
+    PENDING_STATES = %w{open prospect showing application}.freeze
+    CLAIMED_STATES = %w{prospect showing application approved denied resident}.freeze
+    IN_PROGRESS_STATES = %w{prospect showing application }.freeze
+    CLOSED_STATES = %w{ disqualified abandoned resident exresident future waitlist}.freeze
+    EARLY_PIPELINE_STATES = %w{open prospect showing application}.freeze
     STATE_TRANSITION_LEAD_ACTION = 'State Transition'
     STATE_TRANSITION_REASON = 'Pipeline Event'
     TRANSITION_HELP_TEXT = {
@@ -27,6 +27,7 @@ module Leads
       revisit_unit_available: 'the Unit is available, so make this Lead Open',
       reclaim: 'force this Lead to the Prospect state (unit may not be available)'
     }.freeze
+    ACTION_MEMO_TRANSITIONS = %w{abandon disqualify release postpone deny}.freeze
 
     class_methods do
 
