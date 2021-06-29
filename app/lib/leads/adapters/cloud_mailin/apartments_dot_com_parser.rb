@@ -22,6 +22,7 @@ module Leads
           last_name = ( name_arr.last.chomp rescue nil )
           referral = "Apartments.com"
           phone1 = (body.match(/PHONE: (.+)$/i)[1] rescue '(None)' ).strip
+          phone1 = nil if (phone1 ||'').gsub(/[^\d]/,'').length < 10
           phone2 = nil
           #email = ( body.match(/Email: (.+)$/)[1] rescue '(None)' ).strip
           email = (data.fetch(:headers,{}).fetch("Reply-To",""))
