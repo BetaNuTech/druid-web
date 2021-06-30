@@ -109,7 +109,10 @@ class Cdr < CdrdbModel
     Rails.logger.warn("CDR Recording Cleanup: Identifying Non-Lead Call recordings")
     keys = self.non_lead_recordings(start_date: start_date, end_date: end_date)
     Rails.logger.warn("CDR Recording Cleanup: Found #{keys.count} keys to delete")
+		self.delete_recordings(keys)
+  end
 
+	def self.delete_recordings(keys)
     # AWS only allows us to delete 1000 objects at a time
     keys.each_slice(1000).each do |key_set|
       Rails.logger.warn("CDR Recording Cleanup: Deleting #{keys.count} objects")
@@ -122,7 +125,27 @@ class Cdr < CdrdbModel
       })
       Rails.logger.warn("CDR Recording Cleanup: Deleted objects: #{response.to_h.inspect}")
     end
+	end
+
+
+  def self.recording_keys(start_date: nil, end_date: nil, number:)
+    phone = self.format_phone(number)
+		return []	unless phone.length == 10
+
+    conditions = {
+      start_date: start_date || 5.years.ago,
+      end_date: end_date || Time.now,
+      source: phone
+    }
+    skope = select(:id, :calldate, :src, :dst, :recordingfile).
+      where("src = :source AND calldate >= :start_date AND calldate <= :end_date", conditions)
+    skope.map{|cdr| cdr.recording_path_key}.compact
   end
+
+	def self.delete_recordings_from(numbers)
+		keys = numbers.compact.map{|number| self.recording_keys(number: number)}.flatten.compact
+		self.delete_recordings(keys)	
+	end
 
   def self.format_phone(number,prefixed: false)
     # Strip non-digits
