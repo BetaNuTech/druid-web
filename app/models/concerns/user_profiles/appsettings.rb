@@ -52,6 +52,10 @@ module UserProfiles
         end
         save!
       end
+
+      def appsettings_with_missing
+        UserProfile.negative_default_settings.merge(appsettings)
+      end
     end
 
     class_methods do
@@ -62,6 +66,13 @@ module UserProfiles
       def default_settings
         managed_settings.inject({}) do |memo, obj|
           memo[obj] = '1'
+          memo
+        end
+      end
+
+      def negative_default_settings
+        managed_settings.inject({}) do |memo, obj|
+          memo[obj] = '0'
           memo
         end
       end
