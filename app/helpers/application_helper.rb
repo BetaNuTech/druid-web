@@ -118,6 +118,12 @@ module ApplicationHelper
     end
     slug = "%s-%s-%s" % [obj.class.to_s.underscore, action.to_s, 'link']
     case action.to_sym
+    when :duplicate
+      tooltip_block(slug) do
+        link_to url_for([obj.class, action: :new]) + "?source_id=#{obj.id}" do
+          glyph(:copy)
+        end
+      end if policy(obj).new?
     when :show
       tooltip_block(slug) do
         link_to objs do

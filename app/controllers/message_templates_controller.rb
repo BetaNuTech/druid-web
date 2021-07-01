@@ -20,6 +20,11 @@ class MessageTemplatesController < ApplicationController
   def new
     @message_template = MessageTemplate.new(user: current_user, message_type: MessageType.email)
     authorize @message_template
+    if (source_template = policy_scope(MessageTemplate).where(id: params[:source_id]).first).present?
+      @message_template.body = source_template.body
+      @message_template.subject = source_template.subject
+      @message_template.message_type = source_template.message_type
+    end
   end
 
   # GET /message_templates/1/edit

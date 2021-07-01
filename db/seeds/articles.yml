@@ -291,6 +291,14 @@
       :audience: all
       :published: true
       :body: Delete Message Template
+    - :slug: message_template-duplicate-link
+      :title: MessageTemplates#Duplicate#Link
+      :contextid: MessageTemplates#new
+      :articletype: tooltip
+      :category: General
+      :audience: all
+      :published: true
+      :body: Duplicate/Copy Message Template
     - :slug: property-show-link
       :title: Properties#Show#Link
       :contextid: Properties#show
