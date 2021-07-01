@@ -30,7 +30,7 @@ class LeadActions extends React.Component {
     let data_target = '_blank'
 
     return(
-      <a href={this.action_url(action.toLowerCase())} className="btn btn-xs btn-primary" data-remote='false' data-method="post" rel="nofollow" target='_blank'>{action}</a>
+      <a href={this.action_url(action.toLowerCase())} className="btn btn-xs btn-primary" data-remote='false' data-method="post" rel="nofollow">{action}</a>
     )
   }
 
