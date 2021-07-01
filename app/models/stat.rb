@@ -50,7 +50,7 @@ class Stat
   end
 
   def filters_json
-    team_properties = @teams.present? ? Property.where(team_id: @team_ids).order("name ASC") : Property.order("name ASC")
+    team_properties = @teams.present? ? Property.active.where(team_id: @team_ids).order("name ASC") : Property.active.order("name ASC")
     filter_properties = @properties.present? ? @properties : team_properties
     users = User.includes(:properties).where(properties: {id: filter_properties.map(&:id)}).sort_by(&:last_name)
     if @date_range.nil?
