@@ -25,23 +25,29 @@
     <% end %>
 
     <% working_hours = property.working_hours_or_defaults %>
-    <% %w[sunday monday tuesday wednesday thursday friday saturday].each_with_index do |dow, index| %>
+    <% %w[monday tuesday wednesday thursday friday saturday sunday].each_with_index do |dow, index| %>
       <div class="row">
         <div class="col-xs-3 form-group">
           <div class="row office_hours_day">
             <div class="col-md-12">
               <span><%= dow.capitalize %></span><br/>
               <small>
-                <label>Closed all day</label>
-                <input type="checkbox" id="working_hours_toggle_closed_<%= dow %>"
-                  class="working_hours_toggle_closed" data-weekday="<%= dow %>"
-                  <%= property.closed_on_day_of_week?(dow) ? 'checked="checked"' : '' %> />
+                <label>Closed mornings</label>
+                <input type="checkbox" id="working_hours_toggle_morning_closed_<%= dow %>"
+                  class="working_hours_toggle_morning_closed" data-weekday="<%= dow %>"
+                  <%= property.closed_on_mornings?(dow) ? 'checked="checked"' : '' %> />
+              </small>
+              <small>
+                <label>Closed afternoons</label>
+                <input type="checkbox" id="working_hours_toggle_afternoon_closed_<%= dow %>"
+                  class="working_hours_toggle_afternoon_closed" data-weekday="<%= dow %>"
+                  <%= property.closed_on_afternoons?(dow) ? 'checked="checked"' : '' %> />
               </small>
             </div>
           </div>
         </div>
-        <div class="col-xs-9 form-group <%= property.closed_on_day_of_week?(dow) ? 'hidden' : '' %> working_hours_<%= dow %>">
-          <div class="row office_hours_block">
+        <div class="col-xs-9 form-group working_hours_<%= dow %>">
+          <div class="row office_hours_block working_hours_<%= dow %>_morning <%= property.closed_on_mornings?(dow) ? 'hidden' : '' %>">
             <div class="col-xs-6 col-md-4">
               Morning (Open)
               <select name="property[working_hours][<%= dow %>][morning][open]" class="form-control working_hours_input">
@@ -55,7 +61,7 @@
               </select>
             </div>
           </div>
-          <div class="row office_hours_block">
+          <div class="row office_hours_block working_hours_<%= dow %>_afternoon <%= property.closed_on_afternoons?(dow) ? 'hidden' : '' %>">
             <div class="col-xs-6 col-md-4">
               Afternoon (Open)
               <select name="property[working_hours][<%= dow %>][afternoon][open]" class="form-control working_hours_input">

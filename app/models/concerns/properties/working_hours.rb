@@ -48,6 +48,18 @@ module Properties
 
       validates_with WorkingHoursValidator
 
+      def office_holidays
+        office_observed_names = ["New Year's Day", "Memorial Day", "Independence Day", "Labor Day", "Thanksgiving", "Christmas Day"]
+        all_federal = Holidays.between(Date.today.beginning_of_year, Date.today.end_of_year - 1.day, :us)
+        all_federal_observed = Holidays.between(Date.today.beginning_of_year, Date.today.end_of_year - 1.day, :us, :observed)
+        office_observed = all_federal_observed.select{|d| office_observed_names.include?(d[:name])}.map{|d| d[:date]}
+        office_observed += all_federal.select{|d| office_observed_names.include?(d[:name])}.map{|d| d[:date]}
+        office_observed << all_federal.select{|d| d[:name] == "Thanksgiving"}.first[:date] + 1.day # Day after thanksgiving
+        office_observed << all_federal.select{|d| d[:name] == "Christmas Day"}.first[:date] - 1.day # Christmas Eve
+        office_observed << Date.new(Date.today.year,12,31)
+        office_observed.sort.uniq
+      end
+
       def office_hours_today
         info = self.working_hours[Date.today.strftime("%A").downcase]
         if info['morning']['close'] == info['afternoon']['open']
@@ -86,6 +98,14 @@ module Properties
             memo[obj.to_s.downcase[0..2].to_sym] = {
               open_morning => close_afternoon
             }
+          elsif open_morning.blank? && close_morning.blank?
+            memo[obj.to_s.downcase[0..2].to_sym] = {
+              open_afternoon => close_afternoon
+            }
+          elsif open_afternoon.blank? && close_afternoon.blank?
+            memo[obj.to_s.downcase[0..2].to_sym] = {
+              open_morning => close_morning,
+            }
           else
             memo[obj.to_s.downcase[0..2].to_sym] = {
               open_morning => close_morning,
@@ -97,14 +117,14 @@ module Properties
 
         {
           working_hours: working_hours,
-          holidays: [],
+          holidays: office_holidays,
           time_zone: timezone
         }
       end
 
-      def office_open?
+      def office_open?(datetime=nil)
         with_working_hours do
-          Time.now.in_working_hours?
+          (datetime || Time.now).in_working_hours?
         end
       rescue
         true
@@ -161,6 +181,27 @@ module Properties
         [day_hours["morning"]["open"], day_hours["morning"]["close"], day_hours["afternoon"]["open"], day_hours["afternoon"]["close"]].
           all? { |h| h.nil? || h.empty? }
       end
+
+      def closed_on_mornings?(dow)
+        return false if working_hours.nil? || working_hours.empty?
+        day_hours = working_hours[dow.to_s]
+
+        return true if day_hours.nil? || day_hours.empty?
+
+        [day_hours["morning"]["open"], day_hours["morning"]["close"]].
+          all? { |h| h.nil? || h.empty? }
+      end
+
+      def closed_on_afternoons?(dow)
+        return false if working_hours.nil? || working_hours.empty?
+        day_hours = working_hours[dow.to_s]
+
+        return true if day_hours.nil? || day_hours.empty?
+
+        [day_hours["afternoon"]["open"], day_hours["afternoon"]["close"]].
+          all? { |h| h.nil? || h.empty? }
+      end
+
 
     end
   end

@@ -64,7 +64,6 @@ module PropertiesHelper
       option_arr << [opt, opt]
     end
     option_arr << ['12:00 PM', '12:00 PM']
-    option_arr << ['12:30 PM', '12:30 PM']
     options_for_select(option_arr, val)
   end
 
@@ -78,6 +77,7 @@ module PropertiesHelper
       opt = "#{hour}:30 PM"
       option_arr << [opt, opt]
     end
+    option_arr << ['12:00 AM', '12:00 AM']
     options_for_select(option_arr, val)
   end
 end

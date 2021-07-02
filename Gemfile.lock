@@ -236,6 +236,7 @@ GEM
       rspec (>= 2.99.0, < 4.0)
     heapy (0.2.0)
       thor
+    holidays (8.4.1)
     htmlentities (4.3.4)
     httparty (0.18.1)
       mime-types (~> 3.0)
@@ -562,6 +563,7 @@ DEPENDENCIES
   froala-editor-sdk (~> 1.4)
   guard-rake (~> 1.0)
   guard-rspec (~> 4.7)
+  holidays (~> 8.4)
   httparty (~> 0.18)
   ice_cube (~> 0.16)
   image_processing (~> 1.12)

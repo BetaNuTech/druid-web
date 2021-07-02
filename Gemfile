@@ -55,6 +55,7 @@ gem 'flipflop', github: 'Bellingham-DEV/flipflop'
 gem 'descriptive_statistics', "~> 2.5", require: 'descriptive_statistics/safe'
 gem 'working_hours', "~> 1.3"
 gem 'migration_data', "~> 0.6"
+gem 'holidays', "~> 8.4"
 
 group :development, :test do
   gem 'pry-doc', "~> 1.1"

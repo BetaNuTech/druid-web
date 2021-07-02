@@ -30,27 +30,36 @@ $(document).on('turbolinks:load', function() {
     button.toggleClass('glyphicon-chevron-down');
   });
 
-  /* Toggle day closed in Property Office Hours form */
-  $('input.working_hours_toggle_closed').on('click', function(e){
-    var target = e.target;
-    var dow = $(target).data('weekday');
-    var is_checked = $(target).is(":checked");
-    var weekday_hours = $('.working_hours_' + dow);
+  /* Toggle morning closed in Property Office Hours form */
+  $('input.working_hours_toggle_morning_closed').on('click', function(e){
+    toggle_working_hours_inputs(e.target,'morning')
+  });
 
-    if (weekday_hours[0] != undefined) {
-      if (is_checked) {
-        weekday_hours.addClass('hidden');
-        var inputs = $("div.working_hours_" + dow + " select.working_hours_input");
-        inputs.each(function(_i, e){
-          var previous_val = $(e).val();
-          $(e).data("previous_value", previous_val) });
-          inputs.val("");
-      } else {
-        var inputs = $("div.working_hours_" + dow + " select.working_hours_input");
-        inputs.each(function(_i, e){ $(e).val($(e).data("previous_value")); });
-        weekday_hours.removeClass('hidden');
-      }
-    }
+  /* Toggle morning closed in Property Office Hours form */
+  $('input.working_hours_toggle_afternoon_closed').on('click', function(e){
+    toggle_working_hours_inputs(e.target,'afternoon')
   });
 
 });
+
+function toggle_working_hours_inputs(target,tod) {
+  var dow = $(target).data('weekday');
+  var is_checked = $(target).is(":checked");
+  var weekday_hours = $('.working_hours_' + dow + "_" + tod);
+  var input_selector = "div.working_hours_" + dow + "_" + tod + " select.working_hours_input"; 
+
+  if (weekday_hours[0] != undefined) {
+    if (is_checked) {
+      weekday_hours.addClass('hidden');
+      var inputs = $(input_selector);
+      inputs.each(function(_i, e){
+        var previous_val = $(e).val();
+        $(e).data("previous_value", previous_val) });
+        inputs.val("");
+    } else {
+      var inputs = $(input_selector);
+      inputs.each(function(_i, e){ $(e).val($(e).data("previous_value")); });
+      weekday_hours.removeClass('hidden');
+    }
+  }
+}

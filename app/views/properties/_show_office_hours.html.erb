@@ -19,17 +19,25 @@
           <td><%= day.capitalize %></td>
           <% if property.closed_on_day_of_week?(day) %>
             <td colspan=2>
-              <b>Closed</b>
+              <em>Closed</em>
             </td>
             <% next %>
           <% end %>
           <td>
-            <%= working_hours[day]["morning"]["open"] %> &rarr;
-            <%= working_hours[day]["morning"]["close"]%>
+            <% if working_hours[day]["morning"]["open"].blank? %>
+              <em>Closed</em>
+            <% else %>
+              <%= working_hours[day]["morning"]["open"] %> &rarr;
+              <%= working_hours[day]["morning"]["close"]%>
+            <% end %>
           </td>
           <td>
-            <%= working_hours[day]["afternoon"]["open"] %> &rarr;
-            <%= working_hours[day]["afternoon"]["close"] %>
+            <% if working_hours[day]["afternoon"]["open"].blank? %>
+              <em>Closed</em>
+            <% else %>
+              <%= working_hours[day]["afternoon"]["open"] %> &rarr;
+              <%= working_hours[day]["afternoon"]["close"] %>
+            <% end %>
           </td>
         </tr>
         <% end %>
