@@ -162,6 +162,27 @@ module Properties
           all? { |h| h.nil? || h.empty? }
       end
 
+      def closed_on_mornings?(dow)
+        return false if working_hours.nil? || working_hours.empty?
+        day_hours = working_hours[dow.to_s]
+
+        return true if day_hours.nil? || day_hours.empty?
+
+        [day_hours["morning"]["open"], day_hours["morning"]["close"]].
+          all? { |h| h.nil? || h.empty? }
+      end
+
+      def closed_on_afternoons?(dow)
+        return false if working_hours.nil? || working_hours.empty?
+        day_hours = working_hours[dow.to_s]
+
+        return true if day_hours.nil? || day_hours.empty?
+
+        [day_hours["afternoon"]["open"], day_hours["afternoon"]["close"]].
+          all? { |h| h.nil? || h.empty? }
+      end
+
+
     end
   end
 end
