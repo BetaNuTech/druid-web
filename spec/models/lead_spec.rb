@@ -610,6 +610,65 @@ RSpec.describe Lead, type: :model do
       end
     end
 
+    describe "requesting sms communication authorization" do
+      let(:lead) { create(:lead, state: 'open',  preference: create(:lead_preference)) }
+      let(:lead2) { create(:lead, state: 'open',  preference: create(:lead_preference)) }
+      let(:lead3) { create(:lead, state: 'open',  preference: create(:lead_preference)) }
+      describe "when there are no duplicates" do
+        it "should send the sms optin request" do
+          lead; lead2; lead3
+          lead.trigger_event(event_name: :claim, user: agent)
+          lead2.trigger_event(event_name: :claim, user: agent)
+          lead3.trigger_event(event_name: :claim, user: agent)
+          expect(lead3.comments.count).to eq(2)
+        end
+      end
+      describe "when there are duplicates with matching phone numbers" do
+        let(:phone) { '5555557777' }
+        before do
+          lead.phone1 = phone; lead.save
+          lead2.phone1 = phone; lead2.save
+          lead3.phone1 = phone; lead3.save
+        end
+        describe "when there are only open duplicates" do
+          it "should send the sms optin request" do
+            lead3.trigger_event(event_name: :claim, user: agent)
+            expect(lead3.comments.count).to eq(2)
+          end
+        end
+        describe "when there is a non-open duplicate that did not authorize sms" do
+          it "should not send the sms optin request" do
+            lead.preference.optin_sms = false
+            lead.preference.save!
+            lead.state = 'prospect'
+            lead.save!
+            lead3.trigger_event(event_name: :claim, user: agent)
+            expect(lead3.comments.count).to eq(1)
+          end
+        end
+        describe "when a phone duplicate has authorized sms" do
+          it "should not send the sms optin request" do
+            lead.preference.optin_sms = true
+            lead.preference.save!
+            lead.state = 'prospect'
+            lead.save!
+            lead3.trigger_event(event_name: :claim, user: agent)
+            expect(lead3.comments.count).to eq(1)
+          end
+          it "should automatically approve sms communication" do
+            lead.preference.optin_sms = true
+            lead.preference.optin_sms_date = 1.day.ago
+            lead.preference.save!
+            lead.state = 'prospect'
+            lead.save!
+            lead3.trigger_event(event_name: :claim, user: agent)
+            lead3.reload
+            expect(lead3.preference.optin_sms).to be true
+          end
+        end
+      end
+    end
+
     describe "returning message_sms_destination" do
       describe "with a Cell number" do
         it "returns a Cell phone number as the  message_sms_destination" do

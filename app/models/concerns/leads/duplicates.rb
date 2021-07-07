@@ -195,6 +195,11 @@ module Leads
       end
 
       handle_asynchronously :disqualify_if_resident, queue: :lead_dedupe
+
+      def duplicates_with_matching_phone
+        return [] unless phone1.present? || phone2.present?
+        duplicates.where("phone1 = :phone OR phone2 = :phone OR phone1 = :phone2 OR phone2 = :phone2", {phone: phone1, phone2: phone2})
+      end
     end
 
     class_methods do

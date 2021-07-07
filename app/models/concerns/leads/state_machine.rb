@@ -149,7 +149,7 @@ module Leads
 
         event :claim do
           transitions from: [ :open, :exresident, :abandoned ], to: :prospect,
-            after: ->(*args) { event_set_user(*args); force_complete_all_tasks(*args); send_sms_optin_request }
+            after: ->(*args) { event_set_user(*args); force_complete_all_tasks(*args); request_sms_communication_authorization }
         end
 
         event :deny do

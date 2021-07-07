@@ -180,7 +180,7 @@ module Leads
 
       def handle_message_delivery(message_delivery)
         if message_delivery&.delivered_at.present?
-          requalify_if_disqualified
+          requalify_if_disqualified if message_delivery.message.incoming?
           make_contact(timestamp: message_delivery.delivered_at, description: 'Message sent to Lead', article: message_delivery.message) unless message_delivery.message.for_compliance?
           preference&.handle_message_response(message_delivery)
           create_message_delivery_comment(message_delivery)
@@ -263,6 +263,23 @@ module Leads
           classification: 'system'
         )
 
+      end
+
+      # Request SMS authorization if not already requested or granted
+      def request_sms_communication_authorization
+        if !duplicates_with_matching_phone.where("leads.state != 'open'").any?
+          send_sms_optin_request
+          return true
+        end
+
+        authorizing_lead = duplicates_with_matching_phone.includes(:preference).
+          where(lead_preferences: { optin_sms: true }).last
+        if authorizing_lead.present?
+          self.preference.optin_sms = true
+          self.preference.optin_sms_date = authorizing_lead.preference.optin_sms_date
+          self.preference.save
+          reload
+        end
       end
 
       def send_sms_optin_request
