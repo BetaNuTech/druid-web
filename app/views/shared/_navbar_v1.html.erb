@@ -244,7 +244,7 @@
       </div>
       <div class="sidebar--account-controls--button sidebar--account-controls--profile">
         <% if @current_user&.profile&.photo.present? %>
-          <%= image_tag(@current_user.profile.photo.variant(resize: "50x50"), alt: "#{@current_user.name || 'User'} photo" )%>
+          <%= image_tag(@current_user.profile.photo.variant(resize: "50x"), alt: "#{@current_user.name || 'User'} photo" )%>
         <% else %>
           <%= @current_user.initials %>
         <% end %>

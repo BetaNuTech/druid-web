@@ -186,6 +186,8 @@ div#sidebar {
     border-radius: 50%;
     height: $profile-image-height;
     width: $profile-image-height;
+    object-fit: cover;
+    object-position: 30% 30%;
   }
 
 
