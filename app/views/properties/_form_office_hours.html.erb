@@ -37,6 +37,7 @@
                   class="working_hours_toggle_morning_closed" data-weekday="<%= dow %>"
                   <%= property.closed_on_mornings?(dow) ? 'checked="checked"' : '' %> />
               </small>
+              <br/>
               <small>
                 <label>Closed afternoons</label>
                 <input type="checkbox" id="working_hours_toggle_afternoon_closed_<%= dow %>"
