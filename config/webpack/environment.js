@@ -1,4 +1,5 @@
 const { environment } = require('@rails/webpacker')
+environment.loaders.delete('nodeModules')
 const sassLoader = environment.loaders.get('sass')
 const cssLoader = sassLoader.use.find(loader => loader.loader === 'css-loader')
 
