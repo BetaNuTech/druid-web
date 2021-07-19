@@ -4,7 +4,7 @@ module Leads
       class RentcafeParser
         def self.match?(data)
           sender_matches = data&.fetch('headers',{})&.fetch('From','')&.match(/rentcafe\.com/).present?
-          body_matches = data.fetch('body','')&.match('The following prospect has requested information about your property').present?
+          body_matches = data.fetch('html','')&.match('The following prospect has requested information about your property').present?
           return(sender_matches && body_matches)
         end
 
