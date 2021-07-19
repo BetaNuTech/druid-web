@@ -4,7 +4,9 @@ module Leads
       class RentcafeParser
         def self.match?(data)
           sender_matches = data&.fetch('headers',{})&.fetch('From','')&.match(/rentcafe\.com/).present?
-          body_matches = data.fetch('html','')&.match('The following prospect has requested information about your property').present?
+          body_text = data.fetch('html','')
+          body_matches = body_text.match('The following prospect has requested information about your property').present? ||
+                         body_text.match('The following prospect has set up an availability alert').present?
           return(sender_matches && body_matches)
         end
 
@@ -65,6 +67,7 @@ module Leads
           phone2 = container.css('div.normaltext span[data-selenium-id="ProspectAltPhone"]')&.text
           email = container.css('div.normaltext span[data-selenium-id="ProspectEmail"]')&.text
           notes = container.css('div.normaltext span[data-selenium-id="ProspectComments"]')&.text
+          remoteid = ( container.css('div.normaltext span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
           baths = nil
           beds = nil
@@ -86,6 +89,7 @@ module Leads
             email: email,
             fax: fax,
             notes: nil,
+            remoteid: remoteid,
             preference_attributes: {
               baths: baths,
               beds: beds,
