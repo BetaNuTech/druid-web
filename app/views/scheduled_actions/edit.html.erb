@@ -9,3 +9,10 @@
     <%= link_to('Back', url_for(@scheduled_action.target), class: "btn btn-sm btn-info") %>
   </div>
 </div>
+
+<script type="text/javascript">
+  var editor = CKEDITOR.instances["scheduled_action_notification_message"];
+  if (editor == undefined) {
+    CKEDITOR.replace("scheduled_action_notification_message");
+  }
+</script>

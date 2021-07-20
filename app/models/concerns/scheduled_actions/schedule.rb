@@ -2,6 +2,17 @@ module ScheduledActions
   module Schedule
     extend ActiveSupport::Concern
 
+    included do
+      before_create :schedule_time_hack! # HACK HACK HACK
+
+      def schedule_time_hack!
+        # HACK HACK HACK
+        ### Schedulable incorrectly converts to UTC for DB storage, off by one hour 
+        ### This magically fixes the problem
+        self.schedule.time = self.schedule.time
+      end
+    end
+
     class_methods do
       def having_schedule
         self.joins("INNER JOIN schedules ON schedules.schedulable_type = 'ScheduledAction' AND schedules.schedulable_id = scheduled_actions.id")
