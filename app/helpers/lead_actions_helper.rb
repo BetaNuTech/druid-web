@@ -1,6 +1,6 @@
 module LeadActionsHelper
   def select_action(val, state: nil)
-    actions = LeadAction.for_state(state).order(name: 'asc')
+    actions = LeadAction.for_state(state).non_system.order(name: 'asc')
     options_for_select(actions.map{|a| [a.name, a.id]},val)
   end
 

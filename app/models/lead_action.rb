@@ -12,6 +12,7 @@
 #  is_contact     :boolean          default(FALSE)
 #  state_affinity :string           default("all")
 #  notify         :boolean          default(FALSE)
+#  is_system      :boolean          default(FALSE)
 #
 
 class LeadAction < ApplicationRecord
@@ -28,6 +29,7 @@ class LeadAction < ApplicationRecord
 
   ### Scopes
   scope :active, -> {where(active: true)}
+  scope :non_system, -> {where(is_system: false)}
 
   ### Validations
   validates :name,

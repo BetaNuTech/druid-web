@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_27_180515) do
+ActiveRecord::Schema.define(version: 2021_07_20_190625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -183,6 +183,7 @@ ActiveRecord::Schema.define(version: 2021_05_27_180515) do
     t.boolean "is_contact", default: false
     t.string "state_affinity", default: "all"
     t.boolean "notify", default: false
+    t.boolean "is_system", default: false
     t.index ["state_affinity"], name: "index_lead_actions_on_state_affinity"
   end
 
