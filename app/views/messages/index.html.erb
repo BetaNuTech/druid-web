@@ -37,7 +37,7 @@
       <tbody>
         <% @messages.each do |message| %>
           <% next unless policy(message).show? %>
-          <tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
+          <tr id="message-preview-<%= message.id%>" class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
             <td>
               <span class="text-nowrap">
                 <% if message.draft? %>
@@ -83,6 +83,7 @@
                   <%= message_body_preview(message) %>
                 <% end %>
                 <%= link_to('Reply', new_message_path(reply_to: message.id), class: 'btn btn-primary') if message.incoming? %>
+                <%= link_to('Mark As Read', lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), {class: 'btn btn-primary', id: "message-read-button-#{message.id}",remote: true, method: :post}) if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
               <% end %>
             </td>
           </tr>
