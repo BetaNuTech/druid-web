@@ -1,6 +1,6 @@
 module ApplicationHelper
   def short_date(datetime)
-    datetime.present? ? datetime.strftime('%m-%d') : nil
+    datetime.present? ? datetime.strftime('%m-%d-%y') : nil
   end
 
   def short_time(datetime)
@@ -8,7 +8,7 @@ module ApplicationHelper
   end
 
   def short_datetime(datetime)
-    datetime.present? ? datetime.strftime('%m-%d %l:%M%p') : nil
+    datetime.present? ? datetime.strftime('%m-%d-%y %l:%M%p') : nil
   end
 
   def long_datetime(datetime)
