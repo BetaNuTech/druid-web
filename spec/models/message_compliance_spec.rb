@@ -7,7 +7,7 @@ RSpec.describe "Lead Message Preference Compliance" do
   include_context "users"
 
   let(:lead) {
-    lead = create(:lead, state: 'open', phone1: '5555555555', phone1_type: 'Cell', user: agent, property: agent.property)
+    lead = create(:lead, state: 'open', phone1: '9555555559', phone1_type: 'Cell', user: agent, property: agent.property)
     lead
   }
 
@@ -108,9 +108,10 @@ RSpec.describe "Lead Message Preference Compliance" do
     describe "when the lead has opted into sms communication" do
 
       before do
+        ENV[MessageType::SMS_MESSAGING_DISABLED_FLAG] = 'false'
         lead.preference.optin_sms = true
         lead.preference.optin_sms_date = DateTime.now
-        lead.preference.save
+        lead.preference.save!
         lead.reload
       end
 
@@ -128,6 +129,7 @@ RSpec.describe "Lead Message Preference Compliance" do
           message.save!
           message.deliver!
           refute(message.deliveries.last.success?)
+          ENV[MessageType::SMS_MESSAGING_DISABLED_FLAG] = 'false'
         end
       end
 

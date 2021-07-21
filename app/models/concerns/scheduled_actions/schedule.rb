@@ -9,7 +9,7 @@ module ScheduledActions
         # HACK HACK HACK
         ### Schedulable incorrectly converts to UTC for DB storage, off by one hour 
         ### This magically fixes the problem
-        self.schedule.time = self.schedule.time
+        schedule.time = schedule.time if schedule.present?
       end
     end
 
