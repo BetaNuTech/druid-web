@@ -324,6 +324,9 @@ RSpec.describe Lead, type: :model do
         end
 
         it "sends an sms opt-in message upon claiming" do
+          lead.preference.optin_sms = false
+          lead.preference.optin_sms_date = nil
+          lead.preference.save!
           lead.phone1 = '5555555555'
           lead.phone1_type = 'Cell'
           lead.property = agent.property
@@ -611,16 +614,42 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "requesting sms communication authorization" do
-      let(:lead) { create(:lead, state: 'open',  preference: create(:lead_preference)) }
-      let(:lead2) { create(:lead, state: 'open',  preference: create(:lead_preference)) }
-      let(:lead3) { create(:lead, state: 'open',  preference: create(:lead_preference)) }
+      let(:lead) { create(:lead, state: 'open',  preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
+      let(:lead2) { create(:lead, state: 'open',  preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
+      let(:lead3) { create(:lead, state: 'open',  preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
       describe "when there are no duplicates" do
-        it "should send the sms optin request" do
-          lead; lead2; lead3
-          lead.trigger_event(event_name: :claim, user: agent)
-          lead2.trigger_event(event_name: :claim, user: agent)
-          lead3.trigger_event(event_name: :claim, user: agent)
-          expect(lead3.comments.count).to eq(2)
+        describe 'when the lead has not responded to an authorization request' do
+          it "should send the sms optin request" do
+            lead; lead2; lead3
+            lead.trigger_event(event_name: :claim, user: agent)
+            lead2.trigger_event(event_name: :claim, user: agent)
+            lead3.trigger_event(event_name: :claim, user: agent)
+            expect(lead3.comments.count).to eq(2)
+          end
+        end
+        describe 'when the lead has responded affirmatively to an authorization request' do
+          it "should not send the sms optin request" do
+            lead; lead2; lead3
+            lead.preference.optin_sms = true
+            lead.preference.optin_sms_date = Time.now
+            lead.preference.save!
+            lead.trigger_event(event_name: :claim, user: agent)
+            lead2.trigger_event(event_name: :claim, user: agent)
+            lead3.trigger_event(event_name: :claim, user: agent)
+            expect(lead3.comments.count).to eq(2)
+          end
+        end
+        describe 'when the lead has responded negatively to an authorization request' do
+          it "should not send the sms optin request" do
+            lead; lead2; lead3
+            lead.preference.optin_sms = false
+            lead.preference.optin_sms_date = Time.now
+            lead.preference.save!
+            lead.trigger_event(event_name: :claim, user: agent)
+            lead2.trigger_event(event_name: :claim, user: agent)
+            lead3.trigger_event(event_name: :claim, user: agent)
+            expect(lead3.comments.count).to eq(2)
+          end
         end
       end
       describe "when there are duplicates with matching phone numbers" do
@@ -742,6 +771,9 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "handling message delivery" do
+      before(:each) do
+        ENV[MessageType::SMS_MESSAGING_DISABLED_FLAG] = 'true'
+      end
 
       let(:lead) { create(:lead, user: agent, property: agent.property) }
       let(:outgoing_email_message) {

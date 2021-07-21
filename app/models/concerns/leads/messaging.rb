@@ -267,11 +267,18 @@ module Leads
 
       # Request SMS authorization if not already requested or granted
       def request_sms_communication_authorization
+        # Lead preference already set, don't send a duplicate authorization request
+        return true if preference.optin_sms || preference.optin_sms_date.present?
+
+        # Send an authorization request if there aren't any >=Prospect duplicates
+        # with the same phone number
         if !duplicates_with_matching_phone.where("leads.state != 'open'").any?
           send_sms_optin_request
           return true
         end
 
+        # There is a duplicate with the same phone number so Use that number's
+        # SMS preferences
         authorizing_lead = duplicates_with_matching_phone.includes(:preference).
           where(lead_preferences: { optin_sms: true }).last
         if authorizing_lead.present?

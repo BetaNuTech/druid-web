@@ -16,6 +16,9 @@ RSpec.describe "Lead Message Preference Compliance" do
 
       let(:token) { twilio_adapter_token }
       let(:claimed_lead) {
+        lead.preference.optin_sms = false
+        lead.preference.optin_sms_date = nil
+        lead.preference.save!
         lead.trigger_event(event_name: 'claim', user: agent)
         lead.reload
         lead
