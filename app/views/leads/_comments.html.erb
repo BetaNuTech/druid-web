@@ -19,9 +19,7 @@
       <div class="col-md-12">
         <div id="comments">
           <% if comments.empty? %>
-            <p class="lead" id="comments_empty_statement">
-              None
-            </p>
+            <span id="comments_empty_statement"><em>None</em></span>
           <% else %>
             <div id="latest_comments">
               <%= render partial: "notes/note", collection: comments.order(created_at: 'desc')[0..4]  %>
