@@ -180,6 +180,7 @@ module Leads
 
       def handle_message_delivery(message_delivery)
         if message_delivery&.delivered_at.present?
+          autocomplete_lead_contact_tasks(message_delivery)
           requalify_if_disqualified if message_delivery.message.incoming?
           make_contact(timestamp: message_delivery.delivered_at, description: 'Message sent to Lead', article: message_delivery.message) unless message_delivery.message.for_compliance?
           preference&.handle_message_response(message_delivery)
@@ -194,6 +195,26 @@ module Leads
         requalify 
         trigger_event(event_name: :claim, user: user) if user
         reload
+      end
+
+      # Automatically complete pending lead message reply tasks if this message was sent by the agent to a Lead
+      def autocomplete_lead_contact_tasks(message_delivery)
+        return false unless message_delivery&.message.present? && message_delivery&.message&.outgoing?
+
+        lead = message_delivery.message.messageable
+        return false unless lead.is_a?(Lead)
+
+        reason = Reason.active.where(name: Reason::MESSAGE_REPLY_TASK_REASON).first
+        action = LeadAction.active.where(name: LeadAction::MESSAGE_REPLY_TASK_ACTION).first
+        return false unless reason.present? && action.present?
+
+        lead_contact_actions = lead.scheduled_actions.contact.pending
+        lead_message_reply_tasks = lead_contact_actions.where(reason: reason, lead_action: action)
+        return false unless lead_message_reply_tasks.any?
+
+        lead_message_reply_tasks.each{|t| t.complete! }
+
+        return true
       end
 
       # Send communication compliance message

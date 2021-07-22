@@ -217,12 +217,12 @@ class EngagementPolicyScheduler
     lead = message.messageable
     return nil unless lead.is_a?(Lead)
 
-    lead_action = LeadAction.active.where(name: 'Send Email').first
+    lead_action = LeadAction.active.where(name: LeadAction::MESSAGE_REPLY_TASK_ACTION).first
     if lead_action.nil?
       raise EngagementPolicyScheduler::Error.new("Lead Action 'Send Email' is missing. Can't create message reply task.")
     end
 
-    reason = Reason.where(name: 'Message Response').first
+    reason = Reason.where(name: Reason::MESSAGE_REPLY_TASK_REASON).first
     if reason.nil?
       raise EngagementPolicyScheduler::Error.new("Reason 'Message Response' is missing. Can't create message reply task.")
     end

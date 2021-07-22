@@ -18,6 +18,7 @@ class Reason < ApplicationRecord
   ### Constants
   ALLOWED_PARAMS = [:id, :name, :description, :active]
   FIRST_CONTACT_REASON = 'First Contact'
+  MESSAGE_REPLY_TASK_REASON = 'Message Response'
 
   ### Validations
   validates :name,

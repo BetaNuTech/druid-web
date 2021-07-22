@@ -882,12 +882,24 @@ RSpec.describe Lead, type: :model do
           expect(lead.scheduled_actions.count).to eq(initial_task_count + 1)
         end
 
-        it "should create a reply task for outgoing messages" do
+        it "should not create a reply task for outgoing messages" do
           seed_engagement_policy
           initial_task_count = lead.scheduled_actions.count
           refute(outgoing_email_message.incoming?)
           lead.reload
           expect(lead.scheduled_actions.count).to eq(initial_task_count)
+        end
+
+        it "should automatically complete a reply task upon delivery of an outgoing message" do
+          seed_engagement_policy
+          initial_task_count = lead.scheduled_actions.count
+          incoming_email_message
+          lead.reload
+          expect(lead.scheduled_actions.count).to eq(initial_task_count + 1)
+          pending_task_count = lead.scheduled_actions.pending.count
+          outgoing_email_message.deliver
+          lead.reload
+          expect(lead.scheduled_actions.pending.count).to eq(pending_task_count - 1)
         end
 
       end

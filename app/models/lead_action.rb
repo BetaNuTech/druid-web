@@ -24,6 +24,7 @@ class LeadAction < ApplicationRecord
   ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active, :is_contact, :state_affinity, :notify]
   SHOWING_ACTION_NAME = 'Show Unit'
   STATE_AFFINITIES = %w{all none} + Lead.state_names
+  MESSAGE_REPLY_TASK_ACTION = 'Send Email'
 
   ### Associations
 
