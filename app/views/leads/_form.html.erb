@@ -102,19 +102,19 @@
       <div class="row">
         <div class="col-md-12 form-group">
           <%= form.label :notes, 'Agent Notes' %>
-          <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 6 %>
+          <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 6, readonly: true %>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-6 form-group">
           <%= form.label 'First Communication'  %><br/>
-          <%= form.date_select :first_comm, {}, { id: :lead_first_comm, class: "form-control form-control-date-select" } %>
+          <%= form.date_select :first_comm, {}, { id: :lead_first_comm, class: "form-control form-control-date-select", readonly: true } %>
         </div>
 
         <div class="col-md-6 form-group">
           <%= form.label 'Last Communication'  %><br/>
-          <%= form.date_select :last_comm, {}, { id: :lead_last_comm, class: "form-control form-control-date-select" } %>
+          <%= form.date_select :last_comm, {}, { id: :lead_last_comm, class: "form-control form-control-date-select", readonly: true } %>
         </div>
       </div>
 
@@ -124,7 +124,7 @@
           <div class="col-md-4 form-group">
             <%= form.label :remoteid %>
             <%= content_tag(:span, glyph(:warning_sign), style: "color: red;") if lead.duplicate_remoteid? %>
-            <%= form.text_field :remoteid, class: "form-control" %>
+            <%= form.text_field :remoteid, class: "form-control", readonly: true %>
           </div>
         </div>
       <% end %>
