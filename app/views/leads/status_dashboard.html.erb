@@ -43,7 +43,7 @@
                 <% lead.messages.outgoing.where(classification: 'default').limit(1).order(delivered_at: :desc).each do |message| %>
                   <p>
                     <small>
-                      (<%= message.delivered_at.strftime("%m/%d %l:%M%p") %>)
+                      (<%= message.delivered_at&.strftime("%m/%d %l:%M%p") || '-' %>)
                       Message
                     </small>&mdash;
                     <%= truncate(strip_tags(message.body||''), length: 100) %>
@@ -52,7 +52,7 @@
                 <% lead.comments.where(classification: ['comment']).order(created_at: :desc).limit(3).each do |comment| %>
                   <p>
                     <small>
-                      (<%= comment.created_at.strftime("%m/%d %l:%M%p") %>)
+                      (<%= comment.created_at&.strftime("%m/%d %l:%M%p") || '-' %>)
                       Comment
                     </small>&mdash;
                     <%= truncate(comment.content, length: 100) %>
