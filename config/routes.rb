@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     collection do
       get 'new/:entry', to: 'leads#new', as: 'custom_new'
       get 'search', to: "leads#search"
+      get 'status_dashboard', to: "leads#status_dashboard"
       get 'mass_assignment', to: 'leads#mass_assignment'
       post 'mass_assign', to: 'leads#mass_assign'
     end

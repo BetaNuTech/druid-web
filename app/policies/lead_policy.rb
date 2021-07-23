@@ -122,6 +122,10 @@ class LeadPolicy < ApplicationPolicy
     edit? && record.can_update_from_remote?
   end
 
+  def status_dashboard?
+    index?
+  end
+
   # Return an array of state events that the User can issue
   # to the Record
   def permitted_state_events

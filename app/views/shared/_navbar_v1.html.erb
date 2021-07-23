@@ -88,6 +88,12 @@
         <span class="sidebar--item-content">Analytics</span>
       <% end %>
     </div>
+    <div class="sidebar--item <%= nav_item_class(:leads, :status_dashboard) %>">
+      <%= link_to(status_dashboard_leads_path) do %>
+        <%= image_tag('/icons/chart.svg') %>
+        <span class="sidebar--item-content">Status Dashboard</span>
+      <% end %>
+    </div>
   </div>
 
 

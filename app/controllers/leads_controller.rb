@@ -203,6 +203,17 @@ class LeadsController < ApplicationController
     redirect_to @lead, notice: notice
   end
 
+  # GET /leads/status_dhasboard
+  # Display the status of active leads for the current property
+  def status_dashboard
+    authorize Lead
+    @leads = @current_property.present? ?
+      @current_property.leads.includes([ :comments, :messages, {user: :profile} ]).
+        where(leads: {state: [ 'prospect', 'showing']}).
+        order("user_profiles.last_name ASC, user_profiles.first_name ASC, leads.last_name ASC, leads.first_name ASC") :
+      Lead.where("1=0") # return empty set if there is no current property
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_lead

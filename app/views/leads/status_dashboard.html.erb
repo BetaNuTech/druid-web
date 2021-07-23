@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>
+      Active Leads for <%= @current_property.name %>
+      <small>(<%= @leads.count %> Prospect/Showing)</small>
+  </h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+  </div>
+</div>
+
+
+<% @leads.group_by{|lead| lead.user&.name || 'Unassigned' }.each do |agent_name, collection| %>
+  <% next if collection.empty? %>
+  <div class="row">
+    <div class="col-md-12">
+      <h3><%= agent_name %> <small>(<%= collection.count %>)</small></h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col" width="20%">Lead</th>
+            <th scope="col" width="20%">Contact</th>
+            <th scope="col">Activity</th>
+          </tr>
+        </thead> 
+        <tbody>
+          <% collection.each do |lead| %>
+            <tr>
+              <td style="white-space: nowrap;">
+                <%= link_to(lead.name, lead_path(lead), target: '_blank') %>
+                <small>(<%= lead.state.humanize %>)</small>
+                <br/>
+                <%= lead_priority_icon(lead) %>
+              </td>
+              <td style="white-space: nowrap;">
+                <em>Latest:</em> <%= short_datetime(lead.last_comm) %>
+                <br/>
+                <em>First:</em> <%= short_datetime(lead.first_comm) %>
+              </td>
+              <td>
+                <% lead.messages.outgoing.where(classification: 'default').limit(1).order(delivered_at: :desc).each do |message| %>
+                  <p>
+                    <small>
+                      (<%= message.delivered_at.strftime("%m/%d %l:%M%p") %>)
+                      Message
+                    </small>&mdash;
+                    <%= truncate(strip_tags(message.body||''), length: 100) %>
+                  </p>
+                <% end %>
+                <% lead.comments.where(classification: ['comment']).order(created_at: :desc).limit(3).each do |comment| %>
+                  <p>
+                    <small>
+                      (<%= comment.created_at.strftime("%m/%d %l:%M%p") %>)
+                      Comment
+                    </small>&mdash;
+                    <%= truncate(comment.content, length: 100) %>
+                  </p>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
