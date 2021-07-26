@@ -182,7 +182,10 @@ class Stat
         ON leads.user_id = users.id
       INNER JOIN lead_transitions
         ON lead_transitions.lead_id = leads.id
-          AND lead_transitions.current_state = 'showing'
+          AND (
+                lead_transitions.current_state = 'showing'
+                OR ( lead_transitions.current_state = 'application' AND lead_transitions.last_state = 'showing' )
+              )
       #{ "WHERE #{_lead_transition_filter_sql}" if _lead_transition_filter_sql.present?}
       GROUP BY users.id
     ) conversion_counts
@@ -248,7 +251,10 @@ EOS
       FROM leads
       INNER JOIN lead_transitions
         ON lead_transitions.lead_id = leads.id
-          AND lead_transitions.current_state = 'showing'
+          AND (
+                lead_transitions.current_state = 'showing'
+                OR ( lead_transitions.current_state = 'application' AND lead_transitions.last_state = 'showing' )
+              )
       #{ "WHERE #{_lead_transition_filter_sql}" if _lead_transition_filter_sql.present?}
       GROUP BY referral_name
     ) conversion_counts

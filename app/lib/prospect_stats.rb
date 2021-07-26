@@ -217,10 +217,12 @@ class ProspectStats
     Rails.logger.info "=== ProspectStats: conversion_rate #{window}"
     return cache(stat: 'conversion_rate', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
-        where(lead_transitions: {
-        current_state: CONVERSION_STATE,
-        created_at: time_window_range(window)
-      }).count
+        where(
+          classification: 'lead',
+          lead_transitions: {
+            current_state: CONVERSION_STATE,
+            created_at: time_window_range(window)
+        }).count
       calculate_lead_pctg(count, skope, window)
     end
   end
@@ -241,10 +243,13 @@ class ProspectStats
     Rails.logger.info "=== ProspectStats: closing_rate #{window}"
     return cache(stat: 'closing_rate', skope: skope, window: window) do
       count = skope.leads.includes(:lead_transitions).
-        where(lead_transitions: {
-        current_state: CLOSING_STATE,
-        created_at: time_window_range(window)
-      }).count
+        where(
+          classification: 'lead',
+          lead_transitions: {
+            current_state: CLOSING_STATE,
+            created_at: time_window_range(window)
+          }
+      ).count
       calculate_lead_pctg(count, skope, window)
     end
   end

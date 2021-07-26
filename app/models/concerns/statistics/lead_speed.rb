@@ -18,7 +18,7 @@ module Statistics
       end
 
       def self.lead_speed_grade_for(obj, interval: :week, time_start:)
-        skope = Statistic.where(quantifiable: obj, time_start: time_start)
+        skope = Statistic.where(quantifiable: obj, time_start: time_start).leadspeed
         statistic_record = case interval
                            when :day
                              skope = skope.daily

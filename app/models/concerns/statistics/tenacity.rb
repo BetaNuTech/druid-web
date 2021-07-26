@@ -21,7 +21,7 @@ module Statistics
 
       def self.tenacity_grade_for(obj, interval: :month, time_start: nil)
         time_start ||= Statistic.utc_month_start - 1.month
-        skope = Statistic.where(quantifiable: obj, time_start: time_start)
+        skope = Statistic.where(quantifiable: obj, time_start: time_start).tenacity
         statistic_record = case interval
                            when :day
                              skope.daily
