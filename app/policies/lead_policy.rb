@@ -141,6 +141,10 @@ class LeadPolicy < ApplicationPolicy
     when ->(u) { u.admin? }
       # NOOP: Full permissions
     when ->(u) { u.user? }
+      # Contact preferences should only be overriden by corporate/administrators
+      reject_params << :optin_sms
+      reject_params << :optout_email
+
       # Only limit params on existing Leads
       if record.is_a?(Lead) && !record.new_record?
         # Disallow reassignment of lead source
@@ -160,7 +164,7 @@ class LeadPolicy < ApplicationPolicy
     end
 
     valid_lead_params = Lead::ALLOWED_PARAMS - reject_params
-    valid_preference_params = [{preference_attributes: LeadPreference::ALLOWED_PARAMS }]
+    valid_preference_params = [{preference_attributes: ( LeadPreference::ALLOWED_PARAMS - reject_params ) }]
     return (valid_lead_params + valid_preference_params)
   end
 
@@ -191,6 +195,10 @@ class LeadPolicy < ApplicationPolicy
 
   def change_classification?
     record.disqualified? && edit?
+  end
+
+  def change_contact_preferences?
+    user.admin?
   end
 
 end
