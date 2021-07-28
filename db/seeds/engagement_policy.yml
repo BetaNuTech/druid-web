@@ -1,6 +1,6 @@
 ---
 :engagement_policy:
-  :version: 6
+  :version: 7
   :data:
     - :version: 1
       :property_name: null
@@ -102,12 +102,28 @@
           :retry_delay_multiplier: none
           :score: 1
           :active: true
-    - :version: 2
+    - :version: 3
       :property_name: null
       :lead_state: resident
       :description: Global Engagement Policy for 'resident' Leads
       :active: true
-      :engagement_policy_actions: []
+      :engagement_policy_actions:
+        - :lead_action_name: Resident Follow-Up Call
+          :description: 30-day check-in with new Resident
+          :deadline: 720 
+          :retry_count: 3
+          :retry_delay: 24 
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
+        - :lead_action_name: Resident Follow-Up Call
+          :description: 90-day check-in with new Resident
+          :deadline: 2160 
+          :retry_count: 3
+          :retry_delay: 24 
+          :retry_delay_multiplier: none
+          :score: 1
+          :active: true
     - :version: 2
       :property_name: null
       :lead_state: disqualified

@@ -1,6 +1,6 @@
 ---
 :lead_actions:
-  :version: 4
+  :version: 5
   :key: :name
   :data:
   - :name: Claim Lead
@@ -58,6 +58,13 @@
     :is_contact: true
     :active: true
     :state_affinity: 'all'
+    :is_system: false
+  - :name: Resident Follow-Up Call
+    :glyph: phone-alt
+    :description: Call to check in on new residents
+    :is_contact: true
+    :active: true
+    :state_affinity: 'resident'
     :is_system: false
   - :name: Send Email
     :glyph: envelope
