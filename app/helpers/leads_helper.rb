@@ -245,7 +245,7 @@ module LeadsHelper
     "#{humanize_lead_state(classification)} (#{Lead::CLASSIFICATION_HELP_TEXT.fetch(classification.to_sym,'')})"
   end
 
-  def lead_classifications_for_progressing_state(lead:, event:)
+  def lead_event_classifications(lead:, event:)
     all_classes = Lead.classifications.keys
     all_classes.delete('parse_failure')
     selected_classification = lead.classification
@@ -256,7 +256,11 @@ module LeadsHelper
     when 'disqualify'
       all_classes.delete('lead') if event == 'disqualify'
     end
+    [all_classes, selected_classification]
+  end
 
+  def lead_classifications_for_progressing_state(lead:, event:)
+    all_classes, selected_classification = lead_event_classifications(lead: lead, event: event)
     options_for_select(all_classes.map{|lc| [lead_classification_and_help(lc), lc]}, selected_classification)
   end
 

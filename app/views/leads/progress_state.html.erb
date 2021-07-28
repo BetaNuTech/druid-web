@@ -9,14 +9,16 @@
   <div class="row">
     <div class="col-md-4 form-group">
       <%= label_tag "Action" %>
-      <%= select_tag :eventid, options_for_select(policy(@lead).permitted_state_events.map{|se| [humanize_lead_state(se), se]}, @eventid), class: "form-control" %>
+      <% options = @eventid.present? ? [ [ humanize_lead_state(@eventid), @eventid ]] : policy(@lead).permitted_state_events.map{|se| [humanize_lead_state(se), se]} %>
+      <%= select_tag :eventid, options_for_select(options, @eventid), class: "form-control" %>
     </div>
   </div>
 
   <div class="row">
     <div class="col-md-4 form-group">
       <%= label_tag "Classify As A"%>
-      <%= select_tag :classification, lead_classifications_for_progressing_state(lead: @lead, event: @eventid), {include_blank: '-- Choose One --', required: true, class: 'form-control'}%>
+      <% classifications, _ = lead_event_classifications(lead: @lead, event: @eventid) %>
+      <%= select_tag :classification, lead_classifications_for_progressing_state(lead: @lead, event: @eventid), {include_blank: '-- Choose One --', required: true, class: 'form-control' }%>
     </div>
   </div>
 
