@@ -1,0 +1,41 @@
+<% if action_memo_visible?(eventid) %>
+  <% if eventid == 'abandon' %>
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <b>Reason</b><br/>
+        <%= radio_button :memo, lead.transition_memo, 'Price Point', {id: 'transition_memo_price', name: 'memo'} %>
+        <%= label_tag "Price Point"%><br/>
+        <%= radio_button :memo, lead.transition_memo, 'Location', {id: 'transition_memo_location', name: 'memo'} %>
+        <%= label_tag "Location"%><br/>
+        <%= radio_button :memo, lead.transition_memo, 'Availability', {id: 'transition_memo_availability', name: 'memo'} %>
+        <%= label_tag "Availability"%> <br/>
+        <%= radio_button :memo, lead.transition_memo, 'Other', {id: 'transition_memo_other', name: 'memo'} %>
+        <%= label_tag "Other"%>
+        <%= text_area_tag :memo_text, lead.transition_memo, rows: 5, class: "form-control", id: 'transition_memo_text', disabled: 'disabled' %>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      $("input[id^='transition_memo_'").on('change', function(e){
+        if(e.target.id == 'transition_memo_other') {
+          $('#transition_memo_text').removeAttr('disabled').focus()
+        } else {
+          $('#transition_memo_text').attr('disabled', 'disabled').val('')
+          $('#transition_memo_other').attr('value', 'Other')
+        }
+      })
+      $('#transition_memo_text').on('keyup', function(e){
+        $('#transition_memo_other').attr('value', e.target.value)
+      })
+      $('#transition_memo_other').click()
+    </script>
+
+  <% else %>
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <%= label_tag "Memo"%>
+        <%= text_area_tag :memo, lead.transition_memo, rows: 5, class: "form-control" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
