@@ -223,12 +223,14 @@ RSpec.describe PropertiesController, type: :controller do
 
   describe "DELETE #destroy" do
     describe "as an corporate" do
-      it "destroys the requested property" do
-        property
+      it "deactivates the requested property" do
+        assert(property.active)
         sign_in corporate
-        expect {
-          delete :destroy, params: {id: property.to_param}
-        }.to change(Property, :count).by(-1)
+        property_count = Property.count
+        delete :destroy, params: {id: property.to_param}
+        property.reload
+        expect(Property.count).to eq(property_count)
+        refute(property.active)
       end
 
       it "redirects to the properties list" do
