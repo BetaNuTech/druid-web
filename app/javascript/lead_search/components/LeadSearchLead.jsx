@@ -111,13 +111,13 @@ class LeadSearchLead extends React.Component {
         </div>
         <div className={Style.notes}>
           <p className={Style.notes.lead_notes}>
-            <strong>Lead Notes: </strong>
+            <strong>Lead Notes: </strong><br/>
             <span>
               {this.props.data.preference.notes}
             </span>
           </p>
         </div>
-        { false && <LeadComments lead_id={this.props.data.id} /> }
+        <LeadComments lead_id={this.props.data.id} comments={this.props.data.comments} />
       </div>
     );
   }

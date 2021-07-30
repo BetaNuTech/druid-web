@@ -90,4 +90,9 @@ class Note < ApplicationRecord
       [ classification.upcase, created_at, content, notable&.name, notable_type, notable_id, lead_action&.name, reason&.name ]
   end
 
+  def status_line_short
+    "%s (%s by %s)" %
+      [ content, created_at.strftime("%H:%M%p %m/%d/%y"), user&.name]
+  end
+
 end

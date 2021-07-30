@@ -16,8 +16,8 @@ json.user do
     json.nil?
   end
 end
-#json.comments do
-  #json.array! lead.comments, partial: "notes/note", as: :note
-#end
+json.comments do
+  json.array! lead.comments.comment.order(created_at: :desc).limit(5), partial: "notes/note", as: :note
+end
 json.url lead_url(id: lead.id, format: :json)
 json.web_url lead_url(id: lead.id, format: :html)
