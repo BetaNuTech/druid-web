@@ -1,6 +1,9 @@
 FactoryBot.define do
   factory :resident do
     status { "current" }
+    sequence :residentid do |n|
+      "residentid-#{n}-#{rand(10000)}"
+    end
     dob { Faker::Date.birthday(min_age: 18, max_age: 99) }
     title { Faker::Name.prefix }
     first_name { Faker::Name.first_name }
@@ -19,7 +22,8 @@ FactoryBot.define do
         resident.property_id = property.id
       end
       resident.unit ||= create(:unit, property_id: resident.property_id)
-      resident.lead ||= create(:lead, property_id: resident.property_id)
+      #resident.lead ||= create(:lead, property_id: resident.property_id)
+      #resident.detail = create(:resident_detail, resident: resident)
     end
 
   end

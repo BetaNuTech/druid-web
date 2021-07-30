@@ -69,6 +69,7 @@ module Leads
         'none@bluestone-prop.zzz',
         'none@bluestone.com',
         'none@bluestone.zzz',
+        'none@none.com',
         'none@gmail.com',
         'none@gmail.com',
         'none@gmail.zzz',

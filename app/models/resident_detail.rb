@@ -38,6 +38,17 @@ class ResidentDetail < ApplicationRecord
 
   ### Class Methods
 
+  def self.unique_phones
+    ( distinct(:phone1).pluck(:phone1) + distinct(:phone2).pluck(:phone2) ).
+      compact.sort.uniq.
+      map{|p| PhoneNumber.format_phone(p)}.
+      uniq
+  end
+
+  def self.unique_emails
+    distinct(:email).order(:email).pluck(:email).compact
+  end
+
   ### Instance Methods
 
   def crypto_key

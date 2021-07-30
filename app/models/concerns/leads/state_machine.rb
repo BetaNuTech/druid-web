@@ -336,6 +336,25 @@ module Leads
         self.follow_up_at = nil
       end
 
+      def force_lodge(memo: '')
+        return false unless %w{prospect showing application approved}.include?(state)
+
+        transaction do
+          last_state = self.state
+          new_state = 'resident'
+          self.transition_memo = 'Forced lodge event'
+          self.transition_memo += " (#{memo})" if memo.present?
+          self.state = new_state
+          clear_all_tasks
+          set_priority_zero
+          save!
+          create_lead_transition(last_state: last_state, current_state: new_state)
+          create_lead_transition_note(last_state: last_state, current_state: new_state)
+          save!
+        end
+        true
+      end
+
     end
 
   end

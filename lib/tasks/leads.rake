@@ -1,5 +1,16 @@
 namespace :leads do
 
+  desc "Detect and associate Residents" 
+  task auto_lodge: :environment do
+    puts "*** Automatically lodging leads matching current residents..."
+    service = Residents::LeadMatcher.new
+    matches = service.call
+    matches.each do |match|
+      puts " - #{match[:lead].name} [#{match[:lead].id}] => #{match[:resident].name} [#{match[:resident].id}]"
+    end
+    puts "* Done processing leads"
+  end
+
   namespace :referrals do
     task standardize: :environment do
       process_leads = ->(referrals, new_referral) { Lead.where(referral: referrals).update_all(referral: new_referral) }
