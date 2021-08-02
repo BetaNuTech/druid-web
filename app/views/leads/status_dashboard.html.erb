@@ -1,16 +1,15 @@
 <div class="row">
   <div class="col-md-12">
-    <h1>
-      Active Leads for <%= @current_property.name %>
-      <small>(<%= @leads.count %> Prospect/Showing)</small>
-  </h1>
+    <% if @current_property %>
+      <h1>
+        Active Leads for <%= @current_property.name %>
+        <small>(<%= @leads.count %> Prospect/Showing)</small>
+      </h1>
+    <% else %>
+      <p class="lead">Select a Property to Continue...</p>
+    <% end %>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-12">
-  </div>
-</div>
-
 
 <% @leads.group_by{|lead| lead.user&.name || 'Unassigned' }.each do |agent_name, collection| %>
   <% next if collection.empty? %>
