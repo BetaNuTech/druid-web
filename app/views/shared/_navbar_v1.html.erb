@@ -28,7 +28,7 @@
         <%= image_tag('/icons/messages.svg') %>
         <span class="sidebar--item-content">Messages</span>
       <% end %>
-      <% if current_user.messages.for_leads.relevant_to_leads.unread.any? %>
+      <% if current_user.messages.for_leads.relevant_to_leads.incoming.unread.any? %>
         <span class="sidebar--item-alert">&#9679;</span>
       <% end %>
     </div>

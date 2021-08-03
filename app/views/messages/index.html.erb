@@ -37,7 +37,7 @@
       <tbody>
         <% @messages.each do |message| %>
           <% next unless policy(message).show? %>
-          <tr id="message-preview-<%= message.id%>" class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
+          <tr id="message-preview-<%= message.id%>" class="<%= ( message.outgoing? || message.read? ) ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
             <td>
               <span class="text-nowrap">
                 <% if message.draft? %>
