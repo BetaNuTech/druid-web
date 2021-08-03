@@ -598,18 +598,34 @@ RSpec.describe Lead, type: :model do
       expect(lead.message_email_destination).to eq(lead.email)
     end
 
-    describe "is reclaimed from disqualified upon reciept of a message" do
-      it "is assigned to the previously assigned agent if there was one" do
-        lead.state = 'prospect'
-        lead.user = agent
-        lead.save
-        lead.disqualify!
-        lead.reload
-        lead
-        lead.requalify_if_disqualified
-        lead.reload
-        expect(lead.user).to eq(agent)
-        expect(lead.state).to eq('prospect')
+    describe "is reclaimed from upon reciept of a message" do
+      describe "when disqualified" do
+        it "is assigned to the previously assigned agent if there was one" do
+          lead.state = 'prospect'
+          lead.user = agent
+          lead.save
+          lead.disqualify!
+          lead.reload
+          lead
+          lead.requalify_if_disqualified
+          lead.reload
+          expect(lead.user).to eq(agent)
+          expect(lead.state).to eq('prospect')
+        end
+      end
+      describe "when abandoned" do
+        it "is assigned to the previously assigned agent if there was one" do
+          lead.state = 'prospect'
+          lead.user = agent
+          lead.save
+          lead.abandon!
+          lead.reload
+          lead
+          lead.requalify_if_disqualified
+          lead.reload
+          expect(lead.user).to eq(agent)
+          expect(lead.state).to eq('prospect')
+        end
       end
     end
 

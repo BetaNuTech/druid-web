@@ -189,11 +189,14 @@ module Leads
         end
       end
 
+      # Re-open the lead if it is disqualified or abandoned
       def requalify_if_disqualified
-        return unless disqualified?
+        return unless ( disqualified? || abandoned? )
+
         user = revisions.map(&:user).compact.last || property&.managers&.first
         requalify 
         trigger_event(event_name: :claim, user: user) if user
+        save
         reload
       end
 

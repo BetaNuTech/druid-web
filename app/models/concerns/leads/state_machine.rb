@@ -173,7 +173,7 @@ module Leads
         end
 
         event :requalify do
-          transitions from: :disqualified, to: :open,
+          transitions from: [ :disqualified, :abandoned ], to: :open,
             after: ->(*args) { event_clear_user; set_priority_low }
         end
 
