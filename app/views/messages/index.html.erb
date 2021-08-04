@@ -17,10 +17,18 @@
   </div>
 <% end %>
 
-<div class="row">
-  <div class="col-md-12">
-    <%= paginate @messages %>
-  </div>
+<div class="bg-info" style="padding: 1em;">
+  <%= form_for(@search, url: messages_path, method: :get, class: 'form') do |form| %>
+    <div class="row">
+      <div class="col-md-10">
+        <%= form.check_box :unread %>
+        <%= form.label :unread, 'Unread Only' %>
+      </div>
+      <div class="col-md-2">
+        <%= form.submit 'Refresh', class: 'btn btn-sm btn-primary' %>
+      </div>
+    </div>
+  <% end %>
 </div>
 
 <div class="row">
@@ -94,7 +102,7 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <%= paginate @messages %>
+    <%= paginate @messages, params: @search.pagination_params %>
   </div>
 </div>
 
