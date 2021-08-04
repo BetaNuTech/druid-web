@@ -1,6 +1,12 @@
 <div class="row">
   <div class="col-md-12">
     <h1><%= lead_form_header_for_entry_type(@entry_type) %></h1>
-    <%= render lead_form_partial_for_entry_type(@entry_type), lead: @lead %>
+    <% if @current_property.present? %>
+      <%= render lead_form_partial_for_entry_type(@entry_type), lead: @lead %>
+    <% else %>
+      <p class="lead">
+        Please select a Property to continue.
+      </p>
+    <% end %>
   </div>
 </div>
