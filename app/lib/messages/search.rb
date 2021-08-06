@@ -4,7 +4,6 @@ module Messages
 
     DEFAULT_OPTIONS = {
       unread: false,
-      leads_only: true,
       #sort_by: :date,
       #sort_dir: :desc,
       paginate: true,
@@ -27,9 +26,9 @@ module Messages
 
     def call
       skope = @scope
+      skope = apply_includes(skope)
       skope = apply_filters(skope)
       skope = apply_sort(skope)
-      skope = apply_includes(skope)
       skope = apply_pagination(skope)
 
       skope
@@ -51,14 +50,6 @@ module Messages
       @options[:unread] = TRUE_VALUES.include?(value)
     end
 
-    def leads_only
-      TRUE_VALUES.include?(@options[:leads_only])
-    end
-
-    def leads_only=(value)
-      @options[:leads_only] = TRUE_VALUES.include?(value)
-    end
-
     def page
       @options[:page]
     end
@@ -70,7 +61,6 @@ module Messages
     private
 
     def apply_filters(skope)
-      skope = skope.relevant_to_leads if leads_only
       skope = skope.where(messages: {read_at: nil, incoming: true}) if unread
       skope
     end
