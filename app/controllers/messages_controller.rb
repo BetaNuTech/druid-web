@@ -32,7 +32,9 @@ class MessagesController < ApplicationController
 
   # GET /messages/new
   def new
+    is_reply = false
     if (@reply_to_id = params[:reply_to]).present?
+      is_reply = true
       origin = Message.find(@reply_to_id)
       @message = origin.new_reply(user: current_user)
       @message.message_type_id = @message_type.id if @message_type.try(:id)
@@ -46,9 +48,10 @@ class MessagesController < ApplicationController
         messageable: @messageable,
         threadid: params[:reply_to]
       )
+      @message.load_signature
     end
     authorize @message
-    @message.load_template
+    @message.load_template(is_reply)
   end
 
   # GET /messages/1/edit

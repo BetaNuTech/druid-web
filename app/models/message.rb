@@ -111,7 +111,7 @@ class Message < ApplicationRecord
   end
 
 
-  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil, classification: 'default')
+  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil, classification: 'default', reply: false)
     message = Message.new(
       message_type: message_type,
       message_template: message_template,
@@ -137,7 +137,7 @@ class Message < ApplicationRecord
       message.incoming = true
     end
 
-    message.load_template if !message.body.present? && !message.subject.present?
+    message.load_template(reply)
     message.load_signature
 
     return message
@@ -162,7 +162,8 @@ class Message < ApplicationRecord
       message_type: message_type,
       threadid: threadid,
       subject: subject || '',
-      body: new_body
+      body: new_body,
+      reply: true
     )
   end
 
@@ -197,8 +198,8 @@ class Message < ApplicationRecord
     return !any_errors
   end
 
-  def load_template
-    if !body.present? && message_template.present?
+  def load_template(force=false)
+    if ( force || !body.present? ) && message_template.present?
       self.subject = message_template.subject_with_data(template_data)
       self.body = message_template.body_with_data(template_data)
     end
