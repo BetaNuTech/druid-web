@@ -48,10 +48,10 @@ class MessagesController < ApplicationController
         messageable: @messageable,
         threadid: params[:reply_to]
       )
-      @message.load_signature
     end
     authorize @message
     @message.load_template(is_reply)
+    @message.load_signature unless is_reply
   end
 
   # GET /messages/1/edit
