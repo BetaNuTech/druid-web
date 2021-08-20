@@ -79,6 +79,16 @@ div#sidebar {
     padding: 5px 10px 5px 18px;
     line-height: 30px;
     height: 35px;
+
+    a { display: inline-block; width: 90%; }
+    a:hover { text-decoration: none !important; }
+    a:hover .sidbar--item-content { font-weight: bold;}
+
+    img {
+      height: 25px;
+      width: 25px;
+    }
+
   }
 
   .sidebar--item:hover, .sidebar--item--active {
@@ -86,13 +96,6 @@ div#sidebar {
     font-weight: bold;
   }
 
-  .sidebar--item a:hover { text-decoration: none !important; }
-  .sidebar--item a:hover .sidbar--item-content { font-weight: bold;}
-
-  .sidebar--item img {
-    height: 25px;
-    width: 25px;
-  }
   .sidebar--item-content {
     display: inline-block;
     line-height: 25px;
