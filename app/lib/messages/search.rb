@@ -4,6 +4,10 @@ module Messages
 
     DEFAULT_OPTIONS = {
       unread: false,
+      incoming: nil,
+      outgoing: nil,
+      failed: false,
+      draft: false,
       #sort_by: :date,
       #sort_dir: :desc,
       paginate: true,
@@ -18,6 +22,7 @@ module Messages
       @user = user
       @scope = base_scope(scope: scope, user: @user)
       @options = filter_params(params.dup)
+      normalize_options
     end
 
     def model_name
@@ -37,17 +42,53 @@ module Messages
     def pagination_params
       {
         message: {
-          unread: unread
+          unread: unread,
+          incoming: incoming,
+          outgoing: outgoing,
+          failed: failed,
+          draft: draft
         }
       }
     end
 
+    def incoming
+      is_true?(@options[:incoming])
+    end
+
+    def incoming=(value)
+      @options[:incoming] = is_true?(value)
+    end
+
+    def outgoing
+      is_true?(@options[:outgoing])
+    end
+
+    def outgoing=(value)
+      @options[:outgoing] = is_true?(value)
+    end
+
     def unread
-      TRUE_VALUES.include?(@options[:unread])
+      is_true?(@options[:unread])
     end
 
     def unread=(value)
-      @options[:unread] = TRUE_VALUES.include?(value)
+      @options[:unread] = is_true?(value)
+    end
+
+    def failed
+      is_true?(@options[:failed])
+    end
+
+    def failed=(value)
+      @options[:failed] = is_true?(value)
+    end
+
+    def draft
+      is_true?(@options[:draft])
+    end
+
+    def draft=(value)
+      @options[:draft] = is_true?(value)
     end
 
     def page
@@ -60,8 +101,20 @@ module Messages
 
     private
 
+    def is_true?(value)
+      TRUE_VALUES.include?(value)
+    end
+
     def apply_filters(skope)
-      skope = skope.where(messages: {read_at: nil, incoming: true}) if unread
+      if outgoing
+        skope = skope.where(messages: {incoming: false}) 
+      else
+        skope = skope.where(messages: {read_at: nil, incoming: true}) if unread
+        skope = skope.where(messages: {incoming: true}) if incoming && !unread
+      end
+
+      skope = skope.where(messages: {state: :failed}) if failed
+      skope = skope.where(messages: {state: :draft}) if draft
       skope
     end
 
@@ -96,6 +149,40 @@ module Messages
 
       DEFAULT_OPTIONS.merge(( params||{} ).to_h.symbolize_keys).
         slice(*VALID_OPTIONS)
+    end
+
+    # Make options logically consistent
+    def normalize_options
+      if draft
+        self.failed = false
+        self.unread = false
+        self.incoming = false
+        self.outgoing = false
+      end
+
+      if failed
+        self.draft = false
+        self.incoming = false
+        self.outgoing = true
+        self.unread = false
+      end
+
+      if unread
+        self.incoming = true
+        self.outgoing = false
+        self.failed = false
+        self.draft = false
+      else
+        if incoming
+          self.outgoing = false
+          self.draft = false
+          self.failed = false
+        elsif outgoing
+          self.unread = nil
+          self.incoming = nil
+        end
+      end
+
     end
 
     def base_scope(scope: nil, user: nil)

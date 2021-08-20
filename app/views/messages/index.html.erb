@@ -22,10 +22,23 @@
     <div class="row">
       <div class="col-md-10">
         <%= form.check_box :unread %>
-        <%= form.label :unread, 'Unread Only' %>
+        <%= form.label :unread, 'Unread' %>
+        &nbsp; &nbsp;
+        <%= form.check_box :incoming %>
+        <%= form.label :incoming, 'Incoming' %>
+        &nbsp; &nbsp;
+        <%= form.check_box :outgoing %>
+        <%= form.label :outgoing, 'Outgoing' %>
+        <br/>
+        <%= form.check_box :draft %>
+        <%= form.label :draft, 'Draft' %>
+        &nbsp; &nbsp;
+        <%= form.check_box :failed %>
+        <%= form.label :failed, 'Failed' %>
       </div>
       <div class="col-md-2">
         <%= form.submit 'Refresh', class: 'btn btn-sm btn-primary' %>
+        <%= link_to('Clear', messages_path, class: '') %>
       </div>
     </div>
   <% end %>
