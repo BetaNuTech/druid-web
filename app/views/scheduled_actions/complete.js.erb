@@ -5,5 +5,9 @@ window.Loader.stop();
     $('.state_toggle').html('<%= escape_javascript(render(partial: 'leads/state_toggle', locals: {lead: @scheduled_action.target} )) %>')
   <% end %>
 <% else %>
-  alert('Sorry, there was an error');
+  <% if @completed %>
+    $('#scheduled_action_row_<%= @scheduled_action.id %>').remove();
+  <% else %>
+    alert('Sorry, there was an error');
+  <% end %>
 <% end %>
