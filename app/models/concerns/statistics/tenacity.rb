@@ -230,6 +230,26 @@ module Statistics
         true
       end
 
+
+      def self.backfill_tenacity(time_start:, time_end: )
+        resolution = 1.week / 60
+        cursor = time_start.beginning_of_hour
+        while cursor <= time_end
+          cursor_end = cursor + resolution.minutes
+          self.generate_tenacity(resolution: resolution, time_start: cursor, time_end: cursor_end)
+          Property.active.each do |property|
+            self.generate_property_tenacity(property: property, resolution: resolution, time_start: cursor, time_end: cursor_end)
+          end
+          cursor += resolution.minutes
+        end
+
+        cursor = time_start.beginning_of_year
+        while cursor <= time_end
+          self.rollup_tenacity(interval: :year, time_start: cursor.beginning_of_year)
+          cursor += 1.month
+        end
+      end
+
       def self.interval_from_date_range(label)
         {
           'today': :day,
@@ -247,11 +267,11 @@ module Statistics
       end
 
       def self.statistic_time_start(interval)
-        last_day = Statistic.utc_day_start - 1.day
-        last_week = Statistic.utc_week_start
-        last_month = Statistic.utc_month_start
-        last_quarter = Statistic.utc_quarter_start
-        last_year = Statistic.utc_year_start
+        last_day = Statistic.utc_day_start - 1.days
+        last_week = Statistic.utc_week_start - 1.week
+        last_month = Statistic.utc_month_start - 1.month
+        last_quarter = Statistic.utc_quarter_start - 3.months
+        last_year = Statistic.utc_year_start - 1.year
         {
           'today': last_day,
           'last_week': last_week,

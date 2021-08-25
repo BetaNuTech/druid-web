@@ -78,10 +78,10 @@ namespace :statistics do
     desc "generate leadspeed hourly statistics"
     task :generate => :environment do
       puts "*** Generating LeadSpeed Statistics for the past 2 hours"
-      Statistic.generate_leadspeed(resolution: 60, time_start: Statistic.utc_hour_start - 2.hours)
+      Statistic.generate_leadspeed(resolution: 1.hour, time_start: Statistic.utc_hour_start - 2.hours)
 
       puts "*** Generating Property LeadSpeed Statistics for the past 2 hours"
-      Property.active.each{|property| Statistic.generate_property_leadspeed(property: property, resolution: 60, time_start: Statistic.utc_hour_start - 2.hours)}
+      Property.active.each{|property| Statistic.generate_property_leadspeed(property: property, resolution: 1.hour, time_start: Statistic.utc_hour_start - 2.hours)}
 
       puts "*** Generating Team LeadSpeed Statistics for the past 2 hours"
       Team.all.each{|team| Statistic.generate_team_leadspeed(team: team, resolution: 60, time_start: Statistic.utc_hour_start - 2.hours)}

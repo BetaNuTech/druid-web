@@ -33,6 +33,46 @@ module Statistics
         self.lead_speed_grade(statistic_record&.value)
       end
 
+      def self.backfill_leadspeed(time_start:, time_end: )
+        resolution = 60
+        cursor = time_start.beginning_of_hour
+        while cursor <= time_end
+          cursor_end = cursor + resolution.minutes
+          self.generate_leadspeed(resolution: resolution, time_start: cursor, time_end: cursor_end)
+          Property.active.each do |property|
+            self.generate_property_leadspeed(property: property, resolution: resolution, time_start: cursor, time_end: cursor_end)
+          end
+          Team.all.each do |team|
+            self.generate_team_leadspeed(team: team, resolution: resolution, time_start: cursor, time_end: cursor_end)
+          end
+          cursor += resolution.minutes
+        end
+
+        cursor = time_start.beginning_of_day
+        while cursor <= time_end
+          self.rollup_leadspeed(interval: :day, time_start: cursor.beginning_of_day)
+          cursor += 1.day
+        end
+
+        cursor = time_start.beginning_of_week
+        while cursor <= time_end
+          self.rollup_leadspeed(interval: :week, time_start: cursor.beginning_of_week)
+          cursor += 1.week
+        end
+
+        cursor = time_start.beginning_of_month
+        while cursor <= time_end
+          self.rollup_leadspeed(interval: :month, time_start: cursor.beginning_of_month)
+          cursor += 1.month
+        end
+
+        cursor = time_start.beginning_of_year
+        while cursor <= time_end
+          self.rollup_leadspeed(interval: :year, time_start: cursor.beginning_of_year)
+          cursor += 1.month
+        end
+      end
+
       # Generate LeadSpeed statistics
       #
       # resolution: Integer (minutes)
