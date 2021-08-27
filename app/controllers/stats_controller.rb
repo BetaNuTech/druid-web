@@ -15,4 +15,17 @@ class StatsController < ApplicationController
     @stats = Stat.new(filters: @filters, url: stats_manager_path(format: :json))
   end
 
+  def report_csv
+    authorize Stat
+    report = params[:report] || 'property_engagement_stats_by_month'
+    report_filename = "#{report}-#{Date.today.to_s}.csv"
+    service = Stat.new
+    report_data = service.send((report + '_csv' ).to_sym)
+    respond_to do |format|
+      format.csv  {
+        send_data report_data, filename: report_filename
+      }
+    end
+  end
+
 end

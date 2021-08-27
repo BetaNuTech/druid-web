@@ -13,4 +13,8 @@ class StatPolicy < ApplicationPolicy
   def manager?
     user.admin? || user.user?
   end
+
+  def report_csv?
+    user.admin?
+  end
 end

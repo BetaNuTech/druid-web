@@ -702,6 +702,304 @@ EOS
     return result
   end
 
+  def property_engagement_stats_all_time
+    sql=<<-EOS
+      SELECT
+        properties.name AS property_name,
+        claim_counts.count AS claim_count,
+        message_counts.sent_messages AS sent_messages,
+        lead_counts.open_leads AS open_leads
+      FROM properties
+      LEFT JOIN
+        (
+          SELECT
+            properties.id AS property_id,
+            COUNT(lead_transitions.id) AS count
+          FROM properties
+          LEFT JOIN property_users
+            ON property_users.property_id = properties.id
+          LEFT JOIN users
+            ON property_users.user_id = users.id
+          LEFT JOIN leads
+            ON leads.user_id = users.id
+          LEFT JOIN lead_transitions
+            ON lead_transitions.lead_id = leads.id
+            AND lead_transitions.last_state = 'open'
+            AND lead_transitions.current_state = 'prospect'
+           GROUP BY properties.id
+        ) AS claim_counts
+      ON claim_counts.property_id = properties.id
+      LEFT JOIN
+       (
+          SELECT
+            properties.id AS property_id,
+            COUNT(messages.id) AS sent_messages
+          FROM properties
+          LEFT JOIN property_users
+            ON property_users.property_id = properties.id
+          LEFT JOIN users
+            ON property_users.user_id = users.id
+          LEFT JOIN messages
+            ON messages.user_id = users.id
+            AND messages.incoming = false
+          GROUP BY properties.id		
+       ) AS message_counts
+       ON message_counts.property_id = properties.id
+      LEFT JOIN
+        (
+          SELECT
+            properties.id AS property_id,
+            COUNT(leads.id) AS open_leads
+          FROM properties
+          LEFT JOIN leads
+            ON leads.property_id = properties.id
+            AND leads.state = 'open'
+          GROUP BY properties.id
+        ) AS lead_counts
+      ON lead_counts.property_id = properties.id
+      WHERE
+        properties.active = true
+      ORDER BY
+        properties.name;
+    EOS
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      [record['property_name'], record['claim_count'], record['sent_messages'], record['open_leads']]
+    end
+  end
+
+
+  def property_engagement_stats_all_time_csv
+    CSV.generate do |csv|
+      csv << ['Property Name', 'Leads Claimed', 'Messages Sent', 'Open Leads']
+      property_engagement_stats_all_time.each do |record|
+        csv << record
+      end
+    end
+  end
+
+  def property_engagement_stats_by_month(year=nil)
+    year ||= Date.today.year
+    sql=<<-EOS
+      -- Engagement stats by Property by Month
+      SELECT
+        to_char(series, 'YYYY/MM') AS report_date,
+        properties.name AS property_name,
+        COALESCE(claim_counts.count,0) AS claim_count,
+        COALESCE(message_counts.sent_messages,0) AS sent_messages
+      FROM generate_series('#{year}-01-01'::date, '#{year}-12-31'::date, '1 month'::interval ) AS series
+      LEFT JOIN properties ON 1=1
+      LEFT JOIN
+        (
+          SELECT
+            properties.id AS property_id,
+            to_char(lead_transitions.created_at, 'YYYY/MM') AS report_date,
+            COUNT(lead_transitions.id) AS count
+          FROM properties
+          LEFT JOIN property_users
+            ON property_users.property_id = properties.id
+          LEFT JOIN users
+            ON property_users.user_id = users.id
+          LEFT JOIN leads
+            ON leads.user_id = users.id
+          LEFT JOIN lead_transitions
+            ON lead_transitions.lead_id = leads.id
+            AND lead_transitions.last_state = 'open'
+            AND lead_transitions.current_state = 'prospect'
+           GROUP BY
+            properties.id,
+            to_char(lead_transitions.created_at, 'YYYY/MM')
+        ) AS claim_counts
+      ON
+        claim_counts.property_id = properties.id
+        AND claim_counts.report_date = to_char(series, 'YYYY/MM')
+      LEFT JOIN
+       (
+          SELECT
+            properties.id AS property_id,
+            to_char(messages.created_at, 'YYYY/MM') AS report_date,
+            COUNT(messages.id) AS sent_messages
+          FROM properties
+          LEFT JOIN property_users
+            ON property_users.property_id = properties.id
+          LEFT JOIN users
+            ON property_users.user_id = users.id
+          LEFT JOIN messages
+            ON messages.user_id = users.id
+            AND messages.incoming = false
+          GROUP BY
+            properties.id,
+            to_char(messages.created_at, 'YYYY/MM')
+       ) AS message_counts
+       ON
+        message_counts.property_id = properties.id
+        AND message_counts.report_date = to_char(series, 'YYYY/MM')
+      WHERE
+        properties.active = true
+      ORDER BY
+        properties.name,
+        to_char(series, 'YYYY/MM');
+    EOS
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      [record['report_date'], record['property_name'], record['claim_count'], record['sent_messages']]
+    end
+  end
+
+  def property_engagement_stats_by_month_csv(year=nil)
+    CSV.generate do |csv|
+      csv << ['Month', 'Property Name', 'Leads Claimed', 'Messages Sent']
+      property_engagement_stats_by_month(year).each do |record|
+        csv << record
+      end
+    end
+  end
+
+  def agent_engagement_stats_all_time
+    sql=<<-EOS
+      SELECT
+        user_profiles.first_name AS first_name,
+        user_profiles.last_name AS last_name,
+        users.email AS email,
+        users.last_sign_in_at,
+        claim_counts.count AS claim_count,
+        message_counts.sent_messages AS sent_messages,
+        impressions.pageviews AS pageviews,
+        users.id AS user_id
+      FROM users
+      INNER JOIN user_profiles
+        ON user_profiles.user_id = users.id
+      LEFT JOIN
+        (
+          SELECT
+            users.id AS user_id,
+            COUNT(lead_transitions.id) AS count
+          FROM users
+          LEFT JOIN leads
+            ON leads.user_id = users.id
+          LEFT JOIN lead_transitions
+            ON lead_transitions.lead_id = leads.id
+            AND lead_transitions.last_state = 'open'
+            AND lead_transitions.current_state = 'prospect'
+           GROUP BY users.id
+        ) AS claim_counts
+        ON claim_counts.user_id = users.id
+      LEFT JOIN
+       (
+          SELECT
+            users.id AS user_id,
+            COUNT(messages.id) AS sent_messages
+          FROM users
+          LEFT JOIN messages
+            ON messages.user_id = users.id
+            AND messages.incoming = false
+          GROUP BY users.id		
+       ) AS message_counts
+       ON message_counts.user_id = users.id
+      LEFT JOIN
+       (
+        SELECT
+          users.id AS user_id,
+          COUNT(user_impressions.id) AS pageviews
+        FROM users
+        LEFT JOIN user_impressions
+          ON user_impressions.user_id = users.id
+        GROUP BY users.id
+       ) AS impressions
+       ON impressions.user_id = users.id
+      WHERE
+        users.deactivated = false
+      ORDER BY
+        user_profiles.last_name, user_profiles.first_name;
+    EOS
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      [record['first_name'], record['last_name'], record['email'], record['last_sign_in_at'], record['claim_count'], record['sent_messages'], record['pageviews']]
+    end
+  end
+
+  def agent_engagement_stats_all_time_csv
+    CSV.generate do |csv|
+      csv << ['First Name', 'Last Name', 'Email', 'Last Signin', 'Leads Claimed', 'Messages Sent', 'Page Views']
+      agent_engagement_stats_all_time.each do |record|
+        csv << record
+      end
+    end
+  end
+
+  def agent_engagement_stats_by_month(year=nil)
+    year ||= Date.today.year
+    sql=<<-EOS
+      SELECT
+        to_char(series, 'YYYY/MM') AS report_date,
+        user_profiles.first_name AS first_name,
+        user_profiles.last_name AS last_name,
+        users.email AS email,
+        COALESCE(claim_counts.count,0) AS claim_count,
+        COALESCE(message_counts.sent_messages,0) AS sent_messages
+      FROM generate_series('#{year}-01-01'::date, '#{year}-12-31'::date, '1 month'::interval ) AS series
+      LEFT JOIN users ON 1=1
+      LEFT JOIN user_profiles
+        ON user_profiles.user_id = users.id
+      LEFT JOIN
+        (
+          SELECT
+            users.id AS user_id,
+            to_char(lead_transitions.created_at, 'YYYY/MM') AS report_date,
+            COUNT(lead_transitions.id) AS count
+          FROM users
+          LEFT JOIN leads
+            ON leads.user_id = users.id
+          LEFT JOIN lead_transitions
+            ON lead_transitions.lead_id = leads.id
+            AND lead_transitions.last_state = 'open'
+            AND lead_transitions.current_state = 'prospect'
+          GROUP BY
+            users.id,
+            to_char(lead_transitions.created_at, 'YYYY/MM')
+        ) AS claim_counts
+        ON
+          claim_counts.user_id = users.id
+          AND claim_counts.report_date = to_char(series, 'YYYY/MM')
+      LEFT JOIN
+       (
+          SELECT
+            users.id AS user_id,
+            to_char(messages.created_at, 'YYYY/MM') AS report_date,
+            COUNT(messages.id) AS sent_messages
+          FROM users
+          LEFT JOIN messages
+            ON messages.user_id = users.id
+            AND messages.incoming = false
+          GROUP BY
+            users.id,
+            to_char(messages.created_at, 'YYYY/MM')
+       ) AS message_counts
+       ON
+        message_counts.user_id = users.id
+        AND message_counts.report_date = to_char(series, 'YYYY/MM')
+      WHERE
+        users.deactivated = false
+      ORDER BY
+        user_profiles.last_name,
+        user_profiles.first_name,
+        to_char(series, 'YYYY/MM');
+    EOS
+    raw_result = ActiveRecord::Base.connection.execute(sql).to_a
+    result = raw_result.map do |record|
+      [record['report_date'], record['first_name'], record['last_name'], record['email'], record['claim_count'], record['sent_messages']]
+    end
+  end
+
+  def agent_engagement_stats_by_month_csv(year=nil)
+    CSV.generate do |csv|
+      csv << ['Month', 'First Name', 'Last Name', 'Email', 'Leads Claimed', 'Messages Sent']
+      agent_engagement_stats_by_month(year).each do |record|
+        csv << record
+      end
+    end
+  end
+
   private
 
   def filter_by_property?

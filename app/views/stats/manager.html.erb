@@ -1,6 +1,28 @@
 <div class="row">
   <div class="col-md-12">
     <h2>Bluesky Manager Dashboard</h2>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-12">
     <div id="Dashboard" data-url=<%= @stats.json_url %> data-api=<%= @stats.url %>></div>
   </div>
 </div>
+
+<% if policy(Stat).report_csv? %>
+  <hr/>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Misc Admin Reports</h3>
+      <%= link_to('Property Engagement (All Time)', stats_report_csv_url(report: 'property_engagement_stats_all_time', format: :csv)) %>
+      &mdash;
+      <%= link_to('Property Engagement (Monthly)', stats_report_csv_url(report: 'property_engagement_stats_by_month', format: :csv)) %>
+      <br/>
+      <%= link_to('Agent Engagement (All Time)', stats_report_csv_url(report: 'agent_engagement_stats_all_time', format: :csv)) %>
+      &mdash;
+      <%= link_to('Agent Engagement (Monthly)', stats_report_csv_url(report: 'agent_engagement_stats_by_month', format: :csv)) %>
+    </div>
+  </div>
+<% end %>
