@@ -4,16 +4,14 @@ module Statistics
 
     included do
 
-      def self.tenacity_grade(count)
-        case count.to_i
-        when 4
-          'A'
-        when 3
-          'B'
+      def self.tenacity_grade(value)
+        case value.to_i
+        when 3,4
+          '10'
         when 2
-          'C'
-        when [0,1]
-          'F'
+          '5'
+        when 0,1
+          '1'
         else
           'NA'
         end
@@ -58,7 +56,7 @@ module Statistics
                 leads.id AS lead_id,
                 COUNT(contact_events.lead_id) AS contact_count,
                 ( CASE
-                  WHEN COUNT(contact_events.lead_id) >= 4 THEN 4
+                  WHEN COUNT(contact_events.lead_id) >= 3 THEN 3
                   ELSE COUNT(contact_events.lead_id)
                 END ) AS normalized_score,
                 date_trunc('month', leads.created_at) AS time_start
@@ -129,7 +127,7 @@ module Statistics
                 leads.id AS lead_id,
                 COUNT(contact_events.lead_id) AS contact_count,
                 ( CASE
-                  WHEN COUNT(contact_events.lead_id) >= 4 THEN 4
+                  WHEN COUNT(contact_events.lead_id) >= 3 THEN 3
                   ELSE COUNT(contact_events.lead_id)
                 END ) AS normalized_score,
                 date_trunc('month', leads.created_at) AS time_start
