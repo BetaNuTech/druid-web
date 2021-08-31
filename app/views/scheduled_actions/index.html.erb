@@ -25,14 +25,15 @@
         <% grouped_tasks = scheduled_actions.to_a.group_by{|t| t.lead_action&.name || 'Misc'} %>
         <% grouped_tasks.keys.each do |lead_action_name| %>
           <% count = grouped_tasks[lead_action_name].size %>
+          <% selector_id = "#{date.month}_#{date.day}_#{lead_action_name.parameterize.underscore}" %>
           <%#= render partial: 'calendar_line_item', collection: grouped_tasks[lead_action_name], as: :scheduled_action %>
           <% if count > 1 %>
             <span class="scheduled_action_calendar_entry">
-              <a role="button" aria-expanded="false" aria-controls="day<%= date.day%>_<%= lead_action_name.parameterize.underscore %>" data-toggle="collapse" href="#day<%= date.day%>_<%= lead_action_name.parameterize.underscore %>">
+              <a role="button" aria-expanded="false" aria-controls="<%= selector_id %>" data-toggle="collapse" href="#<%= selector_id %>"> 
                 <%= lead_action_name %> (<%= count %>)
               </a>
-            </span>
-            <div class="well collapse" id="day<%= date.day%>_<%= lead_action_name.parameterize.underscore %>">
+            </span><br/>
+            <div class="well collapse" id="<%= selector_id %>">
               <%= render partial: 'calendar_line_item', collection: grouped_tasks[lead_action_name], as: :scheduled_action %>
             </div>
           <% else %>
