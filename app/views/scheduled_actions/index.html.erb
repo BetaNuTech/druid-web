@@ -13,6 +13,38 @@
     </div>
   </div>
 </div>
+
+<!-- Calendar component -->
+<div class="row">
+  <div class="col-md-12">
+    <% events = @scheduled_actions.sorted_by_due_asc %>
+    <%= month_calendar events: events do |date, scheduled_actions| %>
+      <% # Sorts events by Object.start_time %>
+      <div class="scheduled_action_calendar_day">
+        <%= date.day %><br/>
+        <% grouped_tasks = scheduled_actions.to_a.group_by{|t| t.lead_action&.name || 'Misc'} %>
+        <% grouped_tasks.keys.each do |lead_action_name| %>
+          <% count = grouped_tasks[lead_action_name].size %>
+          <%#= render partial: 'calendar_line_item', collection: grouped_tasks[lead_action_name], as: :scheduled_action %>
+          <% if count > 1 %>
+            <span class="scheduled_action_calendar_entry">
+              <a role="button" aria-expanded="false" aria-controls="day<%= date.day%>_<%= lead_action_name.parameterize.underscore %>" data-toggle="collapse" href="#day<%= date.day%>_<%= lead_action_name.parameterize.underscore %>">
+                <%= lead_action_name %> (<%= count %>)
+              </a>
+            </span>
+            <div class="well collapse" id="day<%= date.day%>_<%= lead_action_name.parameterize.underscore %>">
+              <%= render partial: 'calendar_line_item', collection: grouped_tasks[lead_action_name], as: :scheduled_action %>
+            </div>
+          <% else %>
+            <%= render partial: 'calendar_line_item', collection: grouped_tasks[lead_action_name], as: :scheduled_action %>
+          <% end %>
+        <% end # each lead_action_name %>
+      </div>
+    <% end # month_calendar %>
+  </div>
+</div>
+
+<!-- Due and Upcoming tasks -->
 <div class="row">
   <div class="col-md-12">
     <div class="row">
@@ -27,36 +59,8 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class=col-md-12"">
-    <% events = @scheduled_actions.sorted_by_due_asc %>
-    <%= month_calendar events: events do |date, scheduled_actions| %>
-      <% # Sorts events by Object.start_time %>
-      <%= date.day %><br/>
-      <% scheduled_actions.each do |scheduled_action| %>
-        <div class="<%= scheduled_action_calendar_entry_class(scheduled_action) %>">
-          <%= link_to completion_form_scheduled_action_path(scheduled_action), title: scheduled_action.description do %>
-            <%= scheduled_action_completion_state_icon(scheduled_action) %>
-            <span>
-              <%= short_time scheduled_action.schedule.to_datetime %>
-            </span>
-            <% if scheduled_action.user_id != current_user.id %>
-              <span>
-                for <%= scheduled_action.user&.name || '(System)' %>:
-              </span><br/>
-            <% end %>
-            <span>
-              <%= scheduled_action.lead_action&.name %><br/>
-            </span>
-            <span class="scheduled_action_calendar_scheduled_action_subject">
-              <%= scheduled_action.target_subject(current_user) %>
-            </span>
-          <% end %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
-</div>
+
+<!-- Previous tasks -->
 <div class="row">
   <div class="col-md-12">
     <div class="row">
