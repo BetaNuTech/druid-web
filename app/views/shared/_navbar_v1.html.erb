@@ -37,7 +37,7 @@
         <%= image_tag('/icons/calendar.svg') %>
         <span class="sidebar--item-content">Calendar</span>
       <% end %>
-      <% if current_user.messages.unread.where.not(state: 'draft').any? %>
+      <% if current_user.scheduled_actions.incomplete.any? %>
         <span class="sidebar--item-alert">&#9679;</span>
       <% end %>
     </div>
