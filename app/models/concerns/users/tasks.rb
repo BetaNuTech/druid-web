@@ -13,6 +13,16 @@ module Users
 
       alias total_score score
 
+      def task_calendar_expiration
+        last_timestamp = ( scheduled_actions.select(:updated_at).order(updated_at: :desc).first&.updated_at || Time.now ).to_i
+        if last_timestamp < (Time.now - 12.hours).to_i
+          # Return current epoch if the last task update time was over 12h ago
+          Time.now.to_i
+        else
+          last_timestamp
+        end
+      end
+
       def weekly_score
         compliances.
           where(completed_at: (Date.today.beginning_of_week)..DateTime.now).
@@ -70,6 +80,7 @@ module Users
 
         return (showings/claimed_leads_count).round(2)
       end
+
 
     end
   end

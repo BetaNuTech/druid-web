@@ -15,7 +15,7 @@
 </div>
 
 <!-- Calendar component -->
-<% cache([@current_user, "calendar_table", @start_date, Time.now.to_i.divmod(5 * 60)[0]]) do %>
+<% cache([@current_user, "calendar_table", @start_date, @current_user.task_calendar_expiration]) do %>
 <div class="row">
   <div class="col-md-12">
     <% events = @scheduled_actions.sorted_by_due_asc %>
@@ -64,7 +64,7 @@
 </div>
 
 <!-- Previous tasks -->
-<% cache([@current_user, "calendar_previous_tasks", @start_date, Time.now.to_i.divmod(5 * 60)[0]]) do %>
+<% cache([@current_user, "calendar_previous_tasks", @start_date, @current_user.task_calendar_expiration]) do %>
 <div class="row">
   <div class="col-md-12">
     <div class="row">
