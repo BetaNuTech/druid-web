@@ -23,7 +23,7 @@
       <div class="scheduled_action_calendar_day">
         <%= date.day %><br/>
         <% grouped_tasks = scheduled_actions.to_a.group_by{|t| t.lead_action&.name || 'Misc'} %>
-        <% grouped_tasks.keys.each do |lead_action_name| %>
+        <% grouped_tasks.keys.sort.each do |lead_action_name| %>
           <% count = grouped_tasks[lead_action_name].size %>
           <% selector_id = "#{date.month}_#{date.day}_#{lead_action_name.parameterize.underscore}" %>
           <%#= render partial: 'calendar_line_item', collection: grouped_tasks[lead_action_name], as: :scheduled_action %>
