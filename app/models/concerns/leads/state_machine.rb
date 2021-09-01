@@ -127,7 +127,7 @@ module Leads
         after_all_events :after_all_events_callback
 
         event :abandon do
-          transitions from: [ :prospect, :application, :showing, :approved, :denied ], to: :abandoned,
+          transitions from: [ :open, :prospect, :application, :showing, :approved, :denied ], to: :abandoned,
             after: ->(*args) { event_clear_user(*args); clear_all_tasks }
         end
 

@@ -57,6 +57,7 @@ class LeadSearchLead extends React.Component {
               {this.props.data.first_name}&nbsp;
               {this.props.data.last_name}
             </a>
+            <br/>
             <LeadActions lead_id={this.props.data.id} lead_state={this.props.data.state} />
           </span><br/>
           <span className={Style.contact_info} >

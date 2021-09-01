@@ -171,7 +171,7 @@ RSpec.describe Lead, type: :model do
     end
 
     it "lists valid events" do
-      expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify, :postpone].sort)
+      expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify, :postpone, :abandon].sort)
       lead.claim!
       expect(lead.state).to eq('prospect')
       expect(lead.permitted_state_events.sort).to eq([:abandon, :apply, :approve, :disqualify, :postpone, :release, :show].sort)
@@ -180,7 +180,7 @@ RSpec.describe Lead, type: :model do
     end
 
     it "lists valid states" do
-      expect(lead.permitted_states).to eq([:prospect, :disqualified, :future])
+      expect(lead.permitted_states.sort).to eq([:prospect, :disqualified, :abandoned, :future].sort)
       lead.claim!
       expect(lead.state).to eq('prospect')
       expect(lead.permitted_states.sort).to eq([:abandoned, :application, :approved, :disqualified, :future, :open, :showing].sort)
@@ -757,6 +757,10 @@ RSpec.describe Lead, type: :model do
       lead.phone2 = "555-555-5512"
       lead.phone1_type = 'Home'
       lead.phone2_type = 'Cell'
+      lead.save
+      lead.preference.optout_email = false
+      lead.preference.optin_sms = true
+      lead.preference.save
       sms_message_type = MessageType.sms || create(:sms_message_type)
       email_message_type = MessageType.email || create(:email_message_type)
       expect(lead.message_recipientid(message_type: sms_message_type)).to eq(Message.format_phone(lead.phone2))
