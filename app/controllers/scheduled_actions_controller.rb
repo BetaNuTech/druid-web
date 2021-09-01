@@ -15,6 +15,7 @@ class ScheduledActionsController < ApplicationController
     authorize ScheduledAction
     @show_all = params[:all].present?
     skope = nil
+    @start_date = (Date.parse(params[:start_date]) rescue Date.today.beginning_of_month)
 
     if @lead
       unless LeadPolicy.new(current_user, @lead).show?
@@ -33,6 +34,7 @@ class ScheduledActionsController < ApplicationController
         skope = current_user.scheduled_actions
       end
     end
+    skope = skope.where("scheduled_actions.created_at > ?", @start_date - 1.month)
 
     @scheduled_actions = skope.includes(:schedule).valid
   end
