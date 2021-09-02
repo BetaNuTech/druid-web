@@ -33,7 +33,10 @@
       <tbody>
         <% @users.each do |user| %>
           <tr class='<%= user.deactivated? ? 'users-deactivated' : '' %>'>
-            <td><%= user.name %></td>
+            <td>
+              <%= user.name %>
+              <br/>
+            </td>
             <td>
               <%= glyph(:email) %> <%= user.email %><br/>
               <% if user.office_phone.present? %>
@@ -47,6 +50,7 @@
               <% end %>
             </td>
             <td>
+              <small><em>Last Login:</em> <%= user.last_sign_in_at || 'Never' %></small><br/>
               <% if user.deactivated? %>
                 <b>DEACTIVATED</b><br/>
               <% end %>
