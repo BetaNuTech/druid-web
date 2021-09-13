@@ -25,6 +25,7 @@ class LeadAction < ApplicationRecord
   SHOWING_ACTION_NAME = 'Show Unit'
   STATE_AFFINITIES = %w{all none} + Lead.state_names
   MESSAGE_REPLY_TASK_ACTION = 'Send Email'
+  MAKE_CALL_ACTION = 'Make Call'
 
   ### Associations
 
@@ -44,6 +45,16 @@ class LeadAction < ApplicationRecord
   before_destroy :check_for_use
 
   ### Class Methods
+  
+  def self.make_call
+    if (record = self.active.where(name: MAKE_CALL_ACTION).first).present?
+      return record
+    else
+      err_msg = "LeadAction with Name '#{MAKE_CALL_ACTION}' is missing!"
+      ErrorNotification.send(StandardError.new(err_msg))
+      return nil
+    end
+  end
 
   def self.showing
     if (record = self.active.where(name: SHOWING_ACTION_NAME).first).present?

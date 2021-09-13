@@ -19,6 +19,7 @@ class Reason < ApplicationRecord
   ALLOWED_PARAMS = [:id, :name, :description, :active]
   FIRST_CONTACT_REASON = 'First Contact'
   MESSAGE_REPLY_TASK_REASON = 'Message Response'
+  FOLLOW_UP_REASON = 'Follow-Up'
 
   ### Validations
   validates :name,
@@ -38,4 +39,13 @@ class Reason < ApplicationRecord
     end
   end
 
+  def self.follow_up
+    if (record = self.active.where(name: FOLLOW_UP_REASON).first).present?
+      return record
+    else
+      err_msg = "Reason with Name '#{FOLLOW_UP_REASON}' is missing!"
+      ErrorNotification.send(StandardError.new(err_msg))
+      return nil
+    end
+  end
 end

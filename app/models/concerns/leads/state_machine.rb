@@ -79,7 +79,7 @@ module Leads
 
       def process_followups
         pending_revisit.each do |lead|
-          next unless lead.member_of_an_active_property?
+          next unless lead.property&.active?
           Rails.logger.warn "Lead #{lead.id} is ready to revisit"
           lead.trigger_event(event_name: 'revisit')
         end
@@ -184,7 +184,7 @@ module Leads
 
         event :postpone do
           transitions from: [:open, :prospect, :showing, :application], to: :future,
-            after: -> (*args) {clear_all_tasks; event_clear_user; set_priority_low}
+            after: -> (*args) {clear_all_tasks; create_follow_up_task; event_clear_user; set_priority_low}
         end
 
         event :revisit do
@@ -334,6 +334,30 @@ module Leads
 
       def unset_follow_up_at
         self.follow_up_at = nil
+      end
+
+      def create_follow_up_task
+        return true unless self.follow_up_at.present?
+
+        reason = Reason.follow_up
+        lead_action = LeadAction.make_call
+        schedule = Schedule.new(
+          date: self.follow_up_at.to_date,
+          time: self.follow_up_at.to_time,
+          rule: "singular",
+          interval: 1
+        )
+        action = ScheduledAction.new(
+          user: self.user,
+          target: self.user,
+          originator_id: nil,
+          lead_action: lead_action,
+          reason: reason,
+          schedule: schedule,
+          description: "Follow up on postponed lead: #{name}"
+        )
+        action.save
+        action
       end
 
       def force_lodge(memo: '')

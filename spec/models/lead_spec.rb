@@ -1100,5 +1100,50 @@ RSpec.describe Lead, type: :model do
         expect(lead.referrals.count).to eq(1)
       end
     end
+
+    describe "future leads and followups" do
+      it "should 'revisit' leads pending revisit" do
+        lead.user = agent
+        lead.state = 'future'
+        lead.follow_up_at = Time.now + 1.day
+        lead.property = agent.property
+        lead.save!
+
+        Lead.process_followups
+
+        lead.reload
+        expect(lead.state).to eq('future')
+
+        lead.follow_up_at = 1.day.ago
+        lead.save!
+
+        Lead.process_followups
+
+        lead.reload
+        expect(lead.state).to eq('open')
+      end
+
+      it "should create a personal task for the associated agent" do
+        user = agent
+        lead.user = user
+        lead.state = 'prospect'
+        lead.property = agent.property
+        lead.save!
+
+        lead.follow_up_at = Time.now + 2.days
+        lead.trigger_event(event_name: 'postpone', user: user)
+
+        lead.reload
+        user.reload
+        tasks = user.scheduled_actions.order(created_at: :desc)
+
+        task = tasks.last
+        expect(lead.state).to eq('future')
+        expect(task.description).to match(/Follow up on postponed lead/)
+        expect(task.user).to eq(user)
+        expect(task.target).to eq(user)
+        expect(user.scheduled_actions).to include(task)
+      end
+    end
   end
 end
