@@ -323,8 +323,8 @@ EOS
 
   def tenacity_stats_json
     collection = statistics_collection
-    interval = Statistic.interval_from_date_range(@date_range)
-    time_start = Statistic.statistic_time_start(interval)
+    interval = Statistic.interval_from_date_range(@date_range, :tenacity)
+    time_start = Statistic.statistic_time_start(interval, :tenacity)
     stats = {}
     [:team, :property, :agent].each do |key|
       collection[key].each do |record|
@@ -342,8 +342,8 @@ EOS
 
   def lead_speed_stats_json
     collection = statistics_collection
-    interval = Statistic.interval_from_date_range(@date_range)
-    time_start = Statistic.statistic_time_start(interval)
+    interval = Statistic.interval_from_date_range(@date_range, :lead_speed)
+    time_start = Statistic.statistic_time_start(interval, :lead_speed)
     stats = {}
     [:team, :property, :agent].each do |key|
       collection[key].each do |record|
