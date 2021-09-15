@@ -417,6 +417,7 @@ EOS
 
     raw_result = ActiveRecord::Base.connection.execute(sql).to_a
     result = raw_result.map do |record|
+      next if record["source_name"] == 'Null'
       {
         label: ( ( record["source_name"] || '' ).empty? ? 'Unknown' : record["source_name"] ).strip,
         val: {
@@ -425,7 +426,7 @@ EOS
              },
         id: record["source_id"]
       }
-    end
+    end.compact
 
     return result
   end
@@ -653,12 +654,12 @@ EOS
      -- count(CASE WHEN since_last > 60 * 5 AND since_last <= 60 * 10 THEN 1 END) AS "10 minutes",
         count(CASE WHEN since_last > 60 * 10 AND since_last <= 60 * 30 THEN 1 END) AS "30 minutes",
         count(CASE WHEN since_last > 60 * 30 AND since_last <= 3600 THEN 1 END) AS "1 hour",
-     -- count(CASE WHEN since_last > 3600 AND since_last <= 3600 * 2 THEN 1 END) AS "2 hours",
+        count(CASE WHEN since_last > 3600 AND since_last <= 3600 * 2 THEN 1 END) AS "2 hours",
         count(CASE WHEN since_last > 3600 * 2 AND since_last <= 3600 * 4 THEN 1 END) AS "4 hours",
-     -- count(CASE WHEN since_last > 3600 * 4 AND since_last <= 3600 * 8 THEN 1 END) AS "8 hours",
-        count(CASE WHEN since_last > 3600 * 8 AND since_last <= 3600 * 24 THEN 1 END) AS "1 day",
+        count(CASE WHEN since_last > 3600 * 4 AND since_last <= 3600 * 8 THEN 1 END) AS "8 hours"
+     -- count(CASE WHEN since_last > 3600 * 8 AND since_last <= 3600 * 24 THEN 1 END) AS "1 day",
      -- count(CASE WHEN since_last > 86400 AND since_last <= 86400 * 2 THEN 1 END) AS "2 days",
-        count(CASE WHEN since_last > 86400 * 2 THEN 1 END) AS ">2 days"
+     -- count(CASE WHEN since_last > 86400 * 2 THEN 1 END) AS ">2 days"
       FROM (
         SELECT
           messages.user_id AS agent_id,
@@ -688,12 +689,12 @@ EOS
               #"10 minutes": record["10 minutes"],
               "30 minutes": record["30 minutes"],
               "1 hour": record["1 hour"],
-            #  "2 hours": record["2 hours"],
+              "2 hours": record["2 hours"],
               "4 hours": record["4 hours"],
-              #"8 hours": record["8 hours"],
-              "1 day": record["1 day"],
-              #"2 days": record["2 days"],
-              ">2 days": record[">2 days"],
+              "8 hours": record["8 hours"],
+            # "1 day": record["1 day"],
+            # "2 days": record["2 days"],
+            # ">2 days": record[">2 days"]
              },
         id: record["agent_id"]
       }
