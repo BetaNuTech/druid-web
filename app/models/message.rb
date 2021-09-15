@@ -382,6 +382,10 @@ class Message < ApplicationRecord
     messageable ? messageable.messages.order(created_at: :desc) : []
   end
 
+  def allows_reply?
+    incoming? && ( messageable.message_types_available.include?(message_type) rescue true )
+  end
+
   private
 
   def detect_incoming_from_recipient
