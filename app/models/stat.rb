@@ -487,13 +487,7 @@ EOS
   end
 
   def agent_status_json
-    skope = User.includes(:properties)
-    if filter_by_agent?
-      skope = skope.where(id: @user_ids)
-    end
-    if filter_by_property?
-      skope = skope.includes(:properties).where(properties: {id: property_ids_for_filter})
-    end
+    skope = User.active.where(id: statistics_collection[:agent].pluck(:id))
 
     return {
         series: skope.map do |user|
@@ -555,17 +549,13 @@ EOS
   def completed_tasks(start_date: 48.hours.ago, end_date: DateTime.now)
     # Completed Lead tasks
     tasks = ScheduledAction.
-        where( state: [:completed, :completed_retry],
-               completed_at: (start_date..end_date),
-               target_type: 'Lead'
-             )
-    if filter_by_agent?
-      tasks = tasks.where(user_id: @user_ids)
-    end
-    if filter_by_property?
-      tasks = tasks.joins("INNER JOIN leads ON leads.user_id = scheduled_actions.user_id AND leads.property_id IN #{property_ids_sql}")
-    end
-    return tasks.limit(10)
+      where(
+        state: [:completed, :completed_retry],
+        completed_at: (start_date..end_date),
+        target_type: 'Lead',
+        user_id: statistics_collection[:agent].pluck(:id)
+    )
+    return tasks.order(updated_at: :desc).limit(10)
   end
 
   def completed_tasks_json(start_date: 48.hours.ago, end_date: DateTime.now)
@@ -588,14 +578,10 @@ EOS
   def messages_sent(start_date: 48.hours.ago, end_date: DateTime.now)
     messages = Message.where(
       delivered_at: (start_date..end_date),
-      messageable_type: 'Lead')
-    if filter_by_agent?
-      messages = messages.where(user_id: @user_ids)
-    end
-    if filter_by_property?
-      messages = messages.joins("INNER JOIN team_users ON team_users.user_id = messages.user_id INNER JOIN teams ON team_users.team_id = teams.id INNER JOIN properties ON ( properties.team_id = teams.id AND properties.id IN #{property_ids_sql} )")
-    end
-    return messages.limit(10)
+      messageable_type: 'Lead',
+      user_id: statistics_collection[:agent].pluck(:id)
+    )
+    return messages.order(created_at: :desc).limit(10)
   end
 
   def messages_sent_json(start_date: 48.hours.ago, end_date: DateTime.now)
@@ -615,17 +601,15 @@ EOS
   end
 
   def lead_state_changed_records(start_date: 48.hours.ago, end_date: DateTime.now)
-    transitions = LeadTransition.where(created_at: start_date..end_date).where.not(last_state: 'none')
-    if @user_ids.present? || filter_by_property?
-      if filter_by_property?
-        transitions = transitions.includes(lead: [:property]).where(properties: {id: [property_ids_for_filter]})
-      end
-      if filter_by_agent?
-        transitions = transitions.includes(:lead).where(leads: {user_id: @user_ids})
-      end
-    end
-
-    return transitions.limit(10)
+    transitions = LeadTransition.includes(:lead).
+      where(
+        created_at: start_date..end_date,
+        leads: { 
+          user_id: statistics_collection[:agent].pluck(:id)
+        }
+      ).
+      where.not(last_state: 'none')
+    return transitions.order(updated_at: :desc).limit(10)
   end
 
   def lead_state_changed_records_json(start_date: 48.hours.ago, end_date: DateTime.now)

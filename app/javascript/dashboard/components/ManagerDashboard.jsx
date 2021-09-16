@@ -148,7 +148,6 @@ class ManagerDashboard extends React.Component {
           <OpenLeads data={this.state.data.open_leads} />
           <AgentStatus data={this.state.data.agent_status} />
           <RecentActivity data={this.state.data.recent_activity} />
-          <div className="clear"></div>
           <LeadSpeed data={this.state.data.lead_speed} />
           <Tenacity data={this.state.data.tenacity} />
         </div>
