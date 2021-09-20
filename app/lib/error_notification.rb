@@ -8,7 +8,9 @@ class ErrorNotification
 
     def send(exception, data={})
       if ErrorNotification.enabled? && !Rails.env.test?
-        ExceptionNotifier.notify_exception(exception, data: data)
+        hostname = "#{ENV.fetch('APPLICATION_DOMAIN','Unknown Domain')} (#{ENV.fetch('APPLICATION_HOST','Unknown Host')})"
+        x_data = data.merge({ host: hostname })
+        ExceptionNotifier.notify_exception(exception, data: x_data)
       end
     end
   end
