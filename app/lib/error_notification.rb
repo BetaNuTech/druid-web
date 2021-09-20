@@ -7,7 +7,7 @@ class ErrorNotification
     end
 
     def send(exception, data={})
-      if ErrorNotification.enabled?
+      if ErrorNotification.enabled? && !Rails.env.test?
         ExceptionNotifier.notify_exception(exception, data: data)
       end
     end
