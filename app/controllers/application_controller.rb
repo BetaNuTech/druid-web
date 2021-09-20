@@ -77,15 +77,15 @@ class ApplicationController < ActionController::Base
 
   def prepare_exception_notifier
     hostname = "#{ENV.fetch('APPLICATION_DOMAIN','Unknown Domain')} (#{ENV.fetch('APPLICATION_HOST','Unknown Host')})"
-    request.env["exception_notifier.exception_data"] = { current_user: current_user.email, host: hostname  }
+    request.env["exception_notifier.exception_data"] = { current_user: current_user&.email, host: hostname  }
   end
 
   def impersonate_user(user)
     allowed = policy(user).impersonate?
-    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user.email, target_user: user.email, allowed: allowed, datetime: DateTime.now, action: 'start' } )
+    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user&.email, target_user: user&.email, allowed: allowed, datetime: DateTime.now, action: 'start' } )
     return false unless allowed
     @true_current_user ||= current_user
-    cookies.encrypted[:true_current_user_id] = true_current_user.id
+    cookies.encrypted[:true_current_user_id] = true_current_user&.id
     sign_out
     sign_in(:user, user)
     return true
