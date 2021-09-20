@@ -252,6 +252,7 @@ SCOUT_LOG_LEVEL=WARN
 SCOUT_MONITOR=false
 SECRET_KEY_BASE=XXX
 SMTP_DOMAIN=localhost
+SLACK_ERROR_NOTIFICATION_WEBHOOK='https://hooks.slack.com/services/XXX/XXX/XXX'
 WEB_CONCURRENCY=1
 YARDI_VOYAGER_DATABASE="gazv_test"
 YARDI_VOYAGER_HOST="www.yardiasp14.com"
@@ -631,7 +632,7 @@ provisions sub-accounts for management.
 
 ### Exception Notification
 
-The `exception_notification` gem is used to email error notifications to developers.
+The `exception_notification` gem is used to email error notifications to developers and post error notifications in Slack
 
 The `ErrorNotification` class is exposed to allow easy notification of errors from anywhere:
 

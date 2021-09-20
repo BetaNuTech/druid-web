@@ -473,6 +473,7 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.1.0)
       tilt (~> 2.0)
+    slack-notifier (2.4.0)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -604,6 +605,7 @@ DEPENDENCIES
   secure_headers (~> 6.3)
   simple_calendar (~> 2.4)
   simplecov (~> 0.21)
+  slack-notifier
   spring (~> 2.1)
   spring-watcher-listen (~> 2.0)
   stackprof (~> 0.2)
