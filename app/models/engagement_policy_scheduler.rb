@@ -20,11 +20,12 @@ class EngagementPolicyScheduler
       for_state(lead.state).
       first
 
-    unless policy.present?
-      msg = "No EngagementPolicy found for Lead[#{ lead.try(:id) }] with state #{lead.state} assigned to Property #{property.try(:name)}"
-      log_error(msg, {lead: lead})
-      return true
-    end
+    #unless policy.present?
+      #msg = "No EngagementPolicy found for Lead[#{ lead.try(:id) }] with state #{lead.state} assigned to Property #{property.try(:name)}"
+      #log_error(msg, {lead: lead})
+      #return true
+    #end
+    return true unless policy.present?
 
     actions = []
     ActiveRecord::Base.transaction do
