@@ -640,7 +640,8 @@ EOS
         count(CASE WHEN since_last > 60 * 30 AND since_last <= 3600 THEN 1 END) AS "1 hour",
         count(CASE WHEN since_last > 3600 AND since_last <= 3600 * 2 THEN 1 END) AS "2 hours",
         count(CASE WHEN since_last > 3600 * 2 AND since_last <= 3600 * 4 THEN 1 END) AS "4 hours",
-        count(CASE WHEN since_last > 3600 * 4 AND since_last <= 3600 * 8 THEN 1 END) AS "8 hours"
+        count(CASE WHEN since_last > 3600 * 4 AND since_last <= 3600 * 8 THEN 1 END) AS "8 hours",
+        count(CASE WHEN since_last > 3600 * 8 THEN 1 END) AS ">8 hours"
      -- count(CASE WHEN since_last > 3600 * 8 AND since_last <= 3600 * 24 THEN 1 END) AS "1 day",
      -- count(CASE WHEN since_last > 86400 AND since_last <= 86400 * 2 THEN 1 END) AS "2 days",
      -- count(CASE WHEN since_last > 86400 * 2 THEN 1 END) AS ">2 days"
@@ -676,6 +677,7 @@ EOS
               "2 hours": record["2 hours"],
               "4 hours": record["4 hours"],
               "8 hours": record["8 hours"],
+              ">8 hours": record[">8 hours"]
             # "1 day": record["1 day"],
             # "2 days": record["2 days"],
             # ">2 days": record[">2 days"]
