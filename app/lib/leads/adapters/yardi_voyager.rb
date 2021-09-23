@@ -462,6 +462,8 @@ module Leads
             priority = 'urgent'
           when 'disqualified'
             priority = 'zero'
+          when 'abandoned'
+            priority = 'zero'
           else
             priority = 'urgent'
         end

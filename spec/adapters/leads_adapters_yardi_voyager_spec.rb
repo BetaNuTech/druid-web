@@ -52,7 +52,7 @@ RSpec.describe Leads::Adapters::YardiVoyager do
       assert updated_lead.new_record?
       assert updated_lead.valid?
       assert updated_lead.save
-      expect( updated_lead.state ).to eq('disqualified')
+      expect( updated_lead.state ).to eq('abandoned')
       expect( updated_lead.priority ).to eq('zero')
     end
   end

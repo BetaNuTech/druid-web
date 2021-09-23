@@ -128,7 +128,7 @@ module Leads
 
         event :abandon do
           transitions from: [ :open, :prospect, :application, :showing, :approved, :denied ], to: :abandoned,
-            after: ->(*args) { event_clear_user(*args); clear_all_tasks }
+            after: ->(*args) { set_priority_zero; event_clear_user(*args); clear_all_tasks; }
         end
 
         event :show do
