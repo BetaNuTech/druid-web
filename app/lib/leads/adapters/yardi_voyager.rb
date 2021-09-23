@@ -436,7 +436,7 @@ module Leads
         record_type_state_map = {
           'applicant' => 'application',
           'approved_applicant' => 'approved',
-          'canceled' => 'disqualified',
+          'canceled' => 'abandoned',
           'current_resident' => 'resident',
           'denied_applicant' => 'denied',
           'former_resident' => 'exresident',
