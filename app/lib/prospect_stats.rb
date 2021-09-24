@@ -1,7 +1,7 @@
 class ProspectStats
   CACHE_DURATION = 1.hour
-  CLOSING_STATE = 'application'
-  CONVERSION_STATE = 'showing'
+  CLOSING_STATES = ['application', 'resident']
+  CONVERSION_STATES = [ 'showing', 'application', 'resident' ]
 
   attr_reader :ids, :filters, :end_date
   attr_accessor :caching
@@ -220,7 +220,7 @@ class ProspectStats
         where(
           classification: 'lead',
           lead_transitions: {
-            current_state: CONVERSION_STATE,
+            current_state: CONVERSION_STATES,
             created_at: time_window_range(window)
         }).count
       calculate_lead_pctg(count, skope, window)
@@ -246,7 +246,7 @@ class ProspectStats
         where(
           classification: 'lead',
           lead_transitions: {
-            current_state: CLOSING_STATE,
+            current_state: CLOSING_STATES,
             created_at: time_window_range(window)
           }
       ).count
