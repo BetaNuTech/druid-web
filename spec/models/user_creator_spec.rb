@@ -111,7 +111,7 @@ RSpec.describe Users::Creator do
         refute(user_creator.save)
       end
 
-      it "should fail to create if invalid property role" do
+      it "should assign the Agent role if an invalid property role is provided" do
         user_creator = Users::Creator.new(
           params: {
             user: user_attributes,
@@ -122,10 +122,9 @@ RSpec.describe Users::Creator do
           },
           creator: creator
         )
-        refute(user_creator.valid?)
-        errs = user_creator.errors.to_a
-        expect(errs).to eq([ 'Property role is invalid' ])
-        refute(user_creator.save)
+        assert(user_creator.valid?)
+        assert(user_creator.save)
+        expect(user_creator.user.property_role).to eq('agent')
       end
 
       it "should fail to create if invalid team" do
@@ -263,13 +262,12 @@ RSpec.describe Users::Creator do
 
       end
 
-      it "should fail to create a user with a missing team" do
+      it "should assign the user to the property's team" do
         user_creator = Users::Creator.new(
           params: {
             user: user_attributes,
             property_id: property.id,
             property_role: 'agent',
-            #team_id: team1.id,
             team_id: nil,
             teamrole_id: Teamrole.agent.id
           },
@@ -277,25 +275,9 @@ RSpec.describe Users::Creator do
         )
 
         user_count = User.count
-        refute(user_creator.save)
-        expect(User.count).to eq(user_count)
-      end
-
-      it "should fail to create a user with an invalid team" do
-        user_creator = Users::Creator.new(
-          params: {
-            user: user_attributes,
-            property_id: property.id,
-            property_role: 'agent',
-            team_id: 'XXX',
-            teamrole_id: Teamrole.agent.id
-          },
-          creator: creator
-        )
-
-        user_count = User.count
-        refute(user_creator.save)
-        expect(User.count).to eq(user_count)
+        #binding.pry
+        assert(user_creator.save)
+        expect(user_creator.user.team).to eq(property.team)
       end
 
       it "should update a user's name" do
