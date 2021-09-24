@@ -182,8 +182,8 @@ class ProspectStats
   # NOTE Limitations: will not report Leads without an initial LeadTransition
   def prospect_count_all_scope(skope, window)
     join_sql = "INNER JOIN lead_transitions ON lead_transitions.lead_id = leads.id"
-    transition_states_sql = %w{resident exresident}.map{|s| "'#{s}'"}.join(',')
-    exclude_lead_states_sql = %w{disqualified abandoned}.map{|s| "'#{s}'"}.join(',')
+    transition_states_sql = %w{exresident}.map{|s| "'#{s}'"}.join(',')
+    exclude_lead_states_sql = %w{disqualified}.map{|s| "'#{s}'"}.join(',')
 
     condition_sql=<<~SQL
       ( leads.classification IS NULL OR leads.classification = 0)
