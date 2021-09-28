@@ -20,6 +20,7 @@ class UnitsController < ApplicationController
     unless @show_all
       @units = @units.select{|u| u.available?}
     end
+
   end
 
   # GET /units/1

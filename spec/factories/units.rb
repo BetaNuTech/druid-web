@@ -48,8 +48,8 @@ FactoryBot.define do
     sequence :remoteid do |n|
       "remote-#{n}"
     end
-    occupancy {Unit::OCCUPANCY_STATUSES[rand(1)]}
-    lease_status {Unit::LEASE_STATUSES[rand(5)]}
+    occupancy { 'vacant' }
+    lease_status { 'available'}
     market_rent { Faker::Number.between(from: 600, to: 2500) }
   end
 end

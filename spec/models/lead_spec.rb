@@ -768,9 +768,12 @@ RSpec.describe Lead, type: :model do
     end
 
     it "returns supported message types depending on data present" do
+      ENV[MessageType::SMS_MESSAGING_DISABLED_FLAG] = 'false'
       sms_message_type
       email_message_type
       lead.phone1_type = 'Cell'
+      lead.save
+      lead.reload
       expect(lead.message_types_available.sort).to eq([sms_message_type,email_message_type].sort)
       lead.phone1 = nil
       expect(lead.message_types_available).to eq([email_message_type])
@@ -868,6 +871,7 @@ RSpec.describe Lead, type: :model do
       end
 
       it "should update last_contact upon delivery of an sms message" do
+        ENV[MessageType::SMS_MESSAGING_DISABLED_FLAG] = 'false'
         last_contact = lead.last_comm
         outgoing_sms_message.deliver!
         lead.reload

@@ -62,10 +62,10 @@ RSpec.describe UnitsController, type: :controller do
       it "should only return associated units" do
         sign_in administrator
         Unit.destroy_all
-        property1 = create(:property)
-        unit1 = create(:unit, property: property1)
-        unit2 = create(:unit, property: property1)
-        unit3 = create(:unit)
+        property1 = create(:property, active: true)
+        unit1 = create(:unit, property: property1, lease_status: :available)
+        unit2 = create(:unit, property: property1, lease_status: :available)
+        unit3 = create(:unit, lease_status: :available)
         get :index, params: {property_id: property1.id}
         expect(assigns(:property)).to eq(property1)
         expect(assigns(:units).count).to eq(2)
