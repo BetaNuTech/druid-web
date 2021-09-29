@@ -28,7 +28,7 @@ class ScheduledActionsController < ApplicationController
       end
       skope = @user.scheduled_actions
     else
-      if @show_all
+      if @current_property && @show_all
         skope = policy_scope(ScheduledAction.for_property(@current_property))
       else
         skope = current_user.scheduled_actions
