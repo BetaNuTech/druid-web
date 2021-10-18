@@ -9,6 +9,8 @@ RSpec.shared_context "messaging" do
                                      message_type: email_message_type) }
 
   before do
+    email_message_type
+    sms_message_type
     email_message_adapter
     sms_message_adapter
     email_delivery_adapter

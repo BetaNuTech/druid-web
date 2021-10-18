@@ -16,6 +16,7 @@
 require 'rails_helper'
 
 RSpec.describe LeadTransition, type: :model do
+  include_context "messaging"
 
   let(:lead_transition) { build(:lead_transition) }
 

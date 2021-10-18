@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Messages::Receiver do
   include_context "cloudmailin_incoming_message"
   include_context "twilio_incoming_message"
+  include_context "messaging"
 
 
   describe "CloudMailin" do

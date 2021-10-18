@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Leads::Adapters::YardiVoyager do
   include_context "users"
+  include_context "messaging"
 
   let(:property_code) { 'marble' }
   let(:property) { create(:property) }

@@ -15,6 +15,7 @@
 require 'rails_helper'
 
 RSpec.describe LeadReferral, type: :model do
+  include_context "messaging"
   let(:lead) { create(:lead) }
 
   it "can be initialized" do

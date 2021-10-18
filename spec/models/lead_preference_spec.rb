@@ -28,6 +28,7 @@
 require 'rails_helper'
 
 RSpec.describe LeadPreference, type: :model do
+  include_context "messaging"
 
   let(:lead_preference) { create(:lead_preference) }
   let(:valid_attributes) {

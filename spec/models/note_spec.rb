@@ -17,6 +17,7 @@
 require 'rails_helper'
 
 RSpec.describe Note, type: :model do
+  include_context "messaging"
 
   describe "initialization" do
     let(:note) { build(:note) }

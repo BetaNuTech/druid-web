@@ -67,14 +67,15 @@ RSpec.describe "Lead Message Preference Compliance" do
         refute(message.deliveries.last.success?)
       end
 
-      describe "when claiming a lead" do
-        it "sends an sms opt-in request" do
-          expect(lead.messages.for_compliance.count).to eq(0)
-          lead.trigger_event(event_name: 'claim', user: agent)
-          lead.reload
-          expect(lead.messages.for_compliance.count).to eq(1)
-        end
-      end
+    ### This is done on create now
+      #describe "when claiming a lead" do
+        #it "sends an sms opt-in request" do
+          #expect(lead.messages.for_compliance.count).to eq(0)
+          #lead.trigger_event(event_name: 'claim', user: agent)
+          #lead.reload
+          #expect(lead.messages.for_compliance.count).to eq(1)
+        #end
+      #end
 
       describe "when receiving a reply" do
 

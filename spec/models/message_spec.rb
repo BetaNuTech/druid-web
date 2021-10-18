@@ -27,8 +27,9 @@
 require 'rails_helper'
 
 RSpec.describe Message, type: :model do
-  let(:message_type) { MessageType.email || create(:email_message_type) }
-  let(:adapter) { create(:email_delivery_adapter, message_type: message_type)}
+  include_context "messaging"
+  let(:message_type) { MessageType.email }
+  let(:adapter) { email_delivery_adapter }
 
   before :each do
     adapter
@@ -158,7 +159,7 @@ RSpec.describe Message, type: :model do
   describe "using the Message.new_message helper" do
     let(:lead) { create(:lead, user: user)}
     let(:user) { create(:user)}
-    let(:message_type) { create(:email_message_type)}
+    let(:message_type) { email_message_type }
     let(:message_template) { create(:message_template, message_type: message_type)}
 
     it "assigns a user" do
@@ -209,7 +210,7 @@ RSpec.describe Message, type: :model do
   describe "message incoming status" do
     let(:lead) { create(:lead, user: user)}
     let(:user) { create(:user)}
-    let(:message_type) { create(:email_message_type)}
+    let(:message_type) { email_message_type }
     let(:message_template) { create(:message_template, message_type: message_type)}
     let(:message1) { Message.new_message(from: user, to: lead, message_type: message_type) }
     let(:message2) { Message.new}
@@ -237,7 +238,7 @@ RSpec.describe Message, type: :model do
     let(:user) { create(:user)}
     let(:message1) { Message.new_message(from: user, to: lead, message_type: message_type, body: 'body', subject: 'subject') }
     let(:message2) { Message.new_message(from: user, to: lead, message_type: message_type, body: 'body', subject: 'subject2') }
-    let(:message_type) { create(:email_message_type)}
+    let(:message_type) { email_message_type }
     let(:message_template) { create(:message_template, message_type: message_type)}
     let(:incoming_message) { create(:message, incoming: true)}
     let(:outgoing_message) { create(:message, incoming: false)}
@@ -296,7 +297,7 @@ RSpec.describe Message, type: :model do
     let(:lead) { create(:lead, user: user)}
     let(:user) { create(:user)}
     let(:user2) { create(:user)}
-    let(:message_type) { create(:email_message_type)}
+    let(:message_type) { email_message_type }
     let(:message_template) { create(:message_template, message_type: message_type)}
     let(:source_message) {
       message = Message.new_message(from: lead, to: user, message_type: message_type, subject: 'Email from Lead', body: 'Body content' )
@@ -349,7 +350,6 @@ RSpec.describe Message, type: :model do
     let(:email) { "lead@example.com"}
     let(:lead) { create(:lead, phone1: phone, phone1_type: 'Cell', email: email )}
     let(:sms_message_type) { create(:sms_message_type)}
-    let(:email_message_type) { create(:email_message_type)}
     let(:sms_message) { create(:message, { messageable: lead, message_type: sms_message_type } )}
     let(:new_sms_message) { build(:message, { messageable: lead, message_type: sms_message_type } )}
 
@@ -460,7 +460,7 @@ RSpec.describe Message, type: :model do
   describe "contact events" do
     let(:lead) { create(:lead, user: user, first_comm: 1.hour.ago)}
     let(:user) { create(:user)}
-    let(:message_type) { create(:email_message_type)}
+    let(:message_type) { email_message_type }
     let(:message_template) { create(:message_template, message_type: message_type)}
 
     it "should create a contact event when an outgoing message is delivered for a lead" do

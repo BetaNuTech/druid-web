@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DuplicateLead do
+  include_context "messaging"
 
   let(:lead_name_dup1) { create(:lead, first_name: 'Foobar', last_name: 'Quux', state: 'open') }
   let(:lead_name_dup2) { create(:lead, first_name: 'Foobar', last_name: 'Quux', state: 'open') }

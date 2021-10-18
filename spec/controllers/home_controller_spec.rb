@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe HomeController, type: :controller do
   include_context "users"
+  include_context "messaging"
   render_views
 
   before(:each) do

@@ -15,6 +15,7 @@ require 'rails_helper'
 RSpec.describe PropertyUser, type: :model do
   include_context "users"
   include_context "engagement_policy"
+  include_context "messaging"
 
   let(:property){ create(:property) }
   let(:user) { agent }

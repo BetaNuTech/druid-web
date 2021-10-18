@@ -17,6 +17,7 @@
 require 'rails_helper'
 
 RSpec.describe MessageDelivery, type: :model do
+  include_context "messaging"
 
   describe "associations" do
     let(:message){ create(:message)}
@@ -72,7 +73,7 @@ RSpec.describe MessageDelivery, type: :model do
 
   describe "Delivery" do
     let(:message_type) { MessageType.email || create(:email_message_type) }
-    let(:adapter) { create(:email_delivery_adapter, message_type: message_type)}
+    let(:adapter) { email_message_adapter }
     let(:message) { create(:message, message_type: message_type)}
     let(:delivery) { create(:message_delivery, message: message, message_type: message_type)}
 

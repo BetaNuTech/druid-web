@@ -7,17 +7,17 @@
     :message_type_id: <%= MessageType.sms&.id %>
     :subject: None
     :body: |
-      Please reply YES if you would like to allow us at {{property_name}} to contact you via text. Reply STOP to cancel at any time.
+      Thanks for your interest in {{property_name}}! If you would like to learn more or set an appointment by text, please reply "yes" to this message. If you rather opt out, please reply "stop".
   - :name: <%= Leads::Messaging::SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME %>
     :message_type_id: <%= MessageType.sms&.id %>
     :subject: None
     :body: |
-      Thank you for choosing {{property_name}}! Reply STOP to cancel at any time.
+      Thank you for choosing {{property_name}}! Reply "stop" to cancel at any time.
   - :name: <%= Leads::Messaging::SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME %>
     :message_type_id: <%= MessageType.sms&.id %>
     :subject: None
     :body: |
-      {{property_name}} will no longer send you SMS messages at this phone number. Reply YES to resume.
+      {{property_name}} will no longer send you SMS messages at this phone number. Reply "yes" to resume.
   - :name: <%= Users::Messaging::PENDING_TASK_NOTIFICATION_TEMPLATE_NAME %>
     :message_type_id: <%= MessageType.email&.id %>
     :subject: 'Bluesky Tasks Due {{ "now" | date: "%B %d, %Y" }}'
@@ -28,3 +28,11 @@
       <p>📌 <a href="{{task[1]}}">{{ task[0] }}</a></p>
       {% endfor %}
       <p><em><span style="font-size: 10px;">If you want to stop these reminders, go to your <a href="{{profile_link}}">profile page</a> and disable &quot;</span></em><span style='color: rgb(51, 51, 51); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 10px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;'><em>Email task reminders &quot;.</em></span></p>
+  - :name: <%= Leads::Messaging::SMS_INITIAL_RESPONSE_TEMPLATE_NAME %>
+    :message_type_id: <%= MessageType.sms&.id %>
+    :subject: None
+    :body: PLACEHOLDER
+  - :name: <%= Leads::Messaging::EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME %>
+    :message_type_id: <%= MessageType.email&.id %>
+    :subject: PLACEHOLDER
+    :body: PLACEHOLDER

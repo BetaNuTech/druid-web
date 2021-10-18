@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe NotePolicy do
   include_context "users"
+  include_context "messaging"
 
   describe "policy" do
     let(:note) { create(:note) }

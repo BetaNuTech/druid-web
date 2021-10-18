@@ -37,6 +37,8 @@
 require 'rails_helper'
 
 RSpec.describe Property, type: :model do
+  include_context "messaging"
+
   let(:valid_attributes) {
     attributes_for(:property)
   }

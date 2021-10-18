@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::LeadsController, type: :controller do
+  include_context "messaging"
   render_views
 
   let(:source) {

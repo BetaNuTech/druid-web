@@ -22,6 +22,7 @@ require 'rails_helper'
 
 RSpec.describe Roommate, type: :model do
   include_context "users"
+  include_context "messaging"
 
   describe "initialization" do
     it "should be valid" do

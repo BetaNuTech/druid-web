@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe LeadSearch do
+  include_context "messaging"
   let(:empty_params) {
     {
       user_ids: [],

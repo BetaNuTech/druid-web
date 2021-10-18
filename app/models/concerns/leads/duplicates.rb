@@ -171,8 +171,16 @@ module Leads
           end
         end
 
+        after_mark_duplicates
+
         return detected
       end
+
+      def after_mark_duplicates
+        send_new_lead_messaging
+      end
+
+      handle_asynchronously :after_mark_duplicates
 
       def duplicate_check_on_update
         mark_duplicates if duplicate_attribute_changed?
@@ -191,6 +199,7 @@ module Leads
           self.classification = :resident
           self.transition_memo = 'Automatically disqualified as a Resident'
           trigger_event(event_name: 'disqualify')
+          save
           reload
         end if property.present?
       end
@@ -214,6 +223,7 @@ module Leads
             lead.classification = :resident
             lead.transition_memo = 'Automatically disqualified as a Resident'
             lead.trigger_event(event_name: 'disqualify')
+            lead.save
           end
         end
       end

@@ -9,11 +9,14 @@ module Leads
     SMS_OPT_IN_MESSAGE_TEMPLATE_NAME='SMS Opt-In Request'
     SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-In Confirmation'
     SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-Out Confirmation'
+    INITIAL_RESPONSE_LEAD_ACTION='First Contact'
+    SMS_INITIAL_RESPONSE_TEMPLATE_NAME='New Lead Response Message-SMS-A'
+    EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME='New Lead Response Message-Email-A'
 
     included do
 
       has_many :messages, as: :messageable, dependent: :destroy
-      #before_save :set_optin_sms_date
+      attr_accessor :send_lead_automatic_reply
 
       def message_template_data
         {
@@ -290,9 +293,19 @@ module Leads
       end
 
       # Request SMS authorization if not already requested or granted
-      def request_sms_communication_authorization
+      def request_sms_communication_authorization(force: false)
+
+        # Send sms optin request if forced
+        if force
+          send_sms_optin_request
+          return true
+        end
+
         # Lead preference already set, don't send a duplicate authorization request
         return true if preference.optin_sms || preference.optin_sms_date.present?
+
+        # Don't send a duplicate SMS compliance message unless forced (above)
+        return true if messages.outgoing.sms.for_compliance.any?
 
         # Send an authorization request if there aren't any >=Prospect duplicates
         # with the same phone number
@@ -313,6 +326,122 @@ module Leads
         end
       end
 
+      # Ensure SMS messaging consent and compliance 
+      def request_first_sms_authorization_if_open_and_unique
+        if open? && !(messages.outgoing.sms.for_compliance.any? || any_sms_compliance_messages_for_recipient? )
+          send_sms_optin_request
+        else
+          false
+        end
+      end
+
+      def any_sms_compliance_messages_for_recipient?
+        recipientid = message_recipientid(message_type: MessageType.sms)
+        Message.outgoing.sms.compliance.where(recipientid: recipientid).any?
+      end
+
+      def any_marketing_messages_for_recipient?
+        recipientid = message_recipientid(message_type: MessageType.sms)
+        Message.outgoing.marketing.where(recipientid: recipientid).any?
+      end
+
+      # Messaging tasks after a lead is created
+      def send_new_lead_messaging
+        request_first_sms_authorization_if_open_and_unique
+        lead_automatic_reply
+      end
+
+      # Automatically send initial marketing messaging
+      # typically for immediately after creation
+      def lead_automatic_reply
+        # Don't send to manually created leads
+        return false if source === LeadSource.default
+
+        # Don't send if we have contacted this recipient before
+        return false if any_marketing_messages_for_recipient?
+
+        unless Flipflop.enabled?(:lead_automatic_reply)
+          message = "*** Lead[#{id}] Initial response messages not sent due to disabled 'lead_automatic_reply' feature setting. Envvar LEAD_AUTOMATIC_REPLY must be set to 'true'"
+          Rails.logger.info message
+          return false
+        end
+
+        send_initial_sms_response
+        send_initial_email_response
+      end
+
+      def send_initial_sms_response
+        note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
+        note_lead_action = LeadAction.where(name: INITIAL_RESPONSE_LEAD_ACTION).first
+        message_template_name = SMS_INITIAL_RESPONSE_TEMPLATE_NAME
+        message_template = MessageTemplate.where(name: message_template_name).first
+
+        return true unless message_sms_destination.present?
+
+        if message_template.present? 
+          message = Message.new_message(
+            from: agent,
+            to: self,
+            message_type: MessageType.sms,
+            message_template: message_template,
+            classification: 'marketing'
+          )
+          message.save!
+          message.deliver!
+          message.reload
+          comment_content = "SENT: #{message_template_name}"
+        else
+          comment_content = "Initial new lead response not sent because the template is missing (#{SMS_INITIAL_RESPONSE_TEMPLATE_NAME})"
+        end
+
+        note = Note.create!(
+          notable: self,
+          lead_action: note_lead_action,
+          reason: note_reason,
+          content: comment_content,
+          classification: 'system'
+        )
+        
+        return true
+      end
+
+      def send_initial_email_response
+        note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
+        note_lead_action = LeadAction.where(name: INITIAL_RESPONSE_LEAD_ACTION).first
+        message_template_name = EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME
+        message_template = MessageTemplate.where(name: message_template_name).first
+
+        return true unless message_email_destination.present?
+
+        if message_template.present? 
+          message = Message.new_message(
+            from: agent,
+            to: self,
+            message_type: MessageType.email,
+            message_template: message_template,
+            classification: 'marketing'
+          )
+          message.save!
+          message.deliver!
+          message.reload
+          comment_content = "SENT: #{message_template_name}"
+        else
+          comment_content = "Initial new lead response not sent because the template is missing (#{EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME})"
+        end
+
+        note = Note.create!(
+          notable: self,
+          lead_action: note_lead_action,
+          reason: note_reason,
+          content: comment_content,
+          classification: 'system'
+        )
+        
+        return true
+      end
+
+      # Avoid calling directly to avoid duplicate requests
+      # Use request_sms_communication_authorization or request_first_sms_authorization_if_open_and_unique
       def send_sms_optin_request
         send_compliance_message(
           message_type: MessageType.sms,
@@ -342,9 +471,12 @@ module Leads
       end
 
       def resend_opt_in_message?
-        messages.for_compliance.empty? ||
-        ( messages.for_compliance.exists? &&
-          messages.for_compliance.last.failed? )
+        #messages.for_compliance.empty? ||
+        #( messages.for_compliance.exists? &&
+          #messages.for_compliance.last.failed? )
+
+        # Always allow resending opt_in message
+        true
       end
 
     end

@@ -15,6 +15,8 @@
 require 'rails_helper'
 
 RSpec.describe LeadSource, type: :model do
+  include_context "messaging"
+
   let(:valid_attributes) {
     {
       name: 'test',

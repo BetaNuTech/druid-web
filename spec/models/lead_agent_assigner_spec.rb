@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Leads::AgentAssigner do
   include_context "users"
+  include_context "messaging"
 
   let(:property1) { create(:property)}
   let(:property1_manager1) {

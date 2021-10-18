@@ -4,6 +4,7 @@ RSpec.describe ScheduledActionPolicy do
   include_context 'team_members'
   include_context 'unroled_user'
   include_context "engagement_policy"
+  include_context "messaging"
 
   describe 'scope' do
     it 'allows access to any admin' do

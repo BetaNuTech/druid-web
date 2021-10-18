@@ -30,6 +30,7 @@ require 'rails_helper'
 RSpec.describe ScheduledAction, type: :model do
   include_context "team_members"
   include_context "engagement_policy"
+  include_context "messaging"
 
   describe "scheduling" do
     include_context "scheduled_actions"

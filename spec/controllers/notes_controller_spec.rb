@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe NotesController, type: :controller do
   include_context "users"
+  include_context "messaging"
   render_views
 
   let(:valid_attributes) { attributes_for(:note) }

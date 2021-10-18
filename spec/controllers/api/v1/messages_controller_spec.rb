@@ -5,6 +5,7 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
 
   include_context "cloudmailin_incoming_message"
   include_context "twilio_incoming_message"
+  include_context "messaging"
 
   describe "Cloudmailin Adapter" do
     describe "POST #create" do

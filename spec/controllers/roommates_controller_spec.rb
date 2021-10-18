@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RoommatesController, type: :controller do
   include_context "users"
+  include_context "messaging"
   render_views
 
   let(:lead) { create(:lead, property: agent.property, user: agent)}

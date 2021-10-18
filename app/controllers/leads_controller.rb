@@ -187,7 +187,7 @@ class LeadsController < ApplicationController
   def resend_sms_opt_in_message
     authorize @lead
     if @lead.resend_opt_in_message?
-      @lead.send_sms_optin_request
+      @lead.request_sms_communication_authorization(force: true)
       redirect_to @lead, notice: 'SMS Opt-In Request was re-sent'
     else
       redirect_to @lead, notice: 'SMS Opt-In Request could not be re-sent'

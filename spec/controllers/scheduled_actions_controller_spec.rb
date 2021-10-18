@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe ScheduledActionsController, type: :controller do
   include_context "team_members"
   include_context "engagement_policy"
+  include_context "messaging"
   render_views
 
   let(:scheduled_action) { create(:scheduled_action, user: team1_agent1) }

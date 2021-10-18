@@ -4,6 +4,7 @@ RSpec.describe ProspectStats do
 
   describe "returning statistics" do
     include_context "users"
+    include_context "messaging"
 
     let(:cobalt_source) { create(:cobalt_source) }
     let(:voyager_source) { create(:yardi_voyager_source) }

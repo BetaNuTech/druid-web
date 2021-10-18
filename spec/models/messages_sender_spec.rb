@@ -1,22 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe Messages::Sender do
+  include_context "messaging"
+
   describe "Initialization" do
     before :each  do
       ENV[MessageDelivery::WHITELIST_FLAG] = 'false'
     end
 
-    let(:message_type) { create(:email_message_type)}
+    let(:message_type) { email_message_type }
     let(:message) { create(:message, message_type: message_type)}
     let(:delivery) { MessageDelivery.create!(message: message, message_type: message.message_type) }
-    let(:message_delivery_adapter_ar) {
-      MessageDeliveryAdapter.create!(
-        message_type: message_type,
-        slug: 'Actionmailer',
-        name: 'ActionMailer',
-        active: true
-      )
-    }
+    let(:message_delivery_adapter_ar) { email_delivery_adapter }
     let(:message_delivery_adapter_ar2) {
       MessageDeliveryAdapter.create(
         message_type: message_type,
@@ -62,8 +57,7 @@ RSpec.describe Messages::Sender do
 
   describe "delivery" do
     describe "whitelisting" do
-      let(:email_delivery_adapter) { create(:email_delivery_adapter)}
-      let(:sms_delivery_adapter) { create(:sms_delivery_adapter)}
+      let(:sms_delivery_adapter) { sms_message_adapter }
 
       let(:whitelist_user) {
         create(:user, profile: build(:user_profile, {cell_phone: whitelist_number1, office_phone: whitelist_number2, fax: whitelist_number3}))

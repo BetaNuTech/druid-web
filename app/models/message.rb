@@ -60,6 +60,8 @@ class Message < ApplicationRecord
   }
   scope :incoming, ->() { where(incoming: true) }
   scope :outgoing, ->() { where(incoming: false) }
+  scope :sms, ->() { includes(:message_type).where(message_type: {name: MessageType::SMS_TYPE_NAME}) }
+  scope :email, ->() { includes(:message_type).where(message_type: {name: MessageType::EMAIL_TYPE_NAME}) }
 
   ### Callbacks
   before_validation :set_meta

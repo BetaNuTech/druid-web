@@ -27,6 +27,7 @@ require 'rails_helper'
 
 RSpec.describe Resident, type: :model do
   include_context "users"
+  include_context "messaging"
 
   let(:valid_attributes) { build(:resident).attributes }
 

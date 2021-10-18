@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Leads::Adapters::Zillow do
+  include_context "messaging"
+
   let(:source) { create(:lead_source, slug: Leads::Adapters::Zillow::LEAD_SOURCE_SLUG) }
   let(:property) { create(:property) }
   let(:listing) { create(:property_listing, source_id: source.id, property_id: property.id) }

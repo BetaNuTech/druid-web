@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Lead, type: :model do
 
   include_context "lead_creator"
+  include_context "messaging"
 
   let(:valid_lead_attributes) { valid_lead_creator_attributes }
 

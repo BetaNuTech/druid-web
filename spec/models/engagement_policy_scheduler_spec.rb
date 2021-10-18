@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe EngagementPolicyScheduler do
   include_context "engagement_policy"
   include_context "users"
+  include_context "messaging"
 
   before(:each) do
     seed_engagement_policy
