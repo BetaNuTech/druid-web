@@ -77,14 +77,22 @@
               <span class="text-nowrap">
                 <span class="btn btn-xs btn-default">
                   <b>From:</b>
-                  <%= truncate(message.sender_name, length: 20) %>
+                  <% if message.incoming? && message.messageable&.is_a?(Lead) %>
+                     <%= link_to(truncate(message.sender_name, length: 20), lead_path(message.messageable)) %>
+                  <% else %>
+                    <%= truncate(message.sender_name, length: 20) %>
+                  <% end %>
                 </span>
               </span>
               <br/>
               <span class="text-nowrap">
                 <span class="btn btn-xs btn-default">
                   <b>To:</b>
-                  <%= truncate(message.recipient_name, length: 20) %>
+                  <% if message.outgoing? && message.messageable&.is_a?(Lead) %>
+                     <%= link_to(truncate(message.recipient_name, length: 20), lead_path(message.messageable)) %>
+                  <% else %>
+                    <%= truncate(message.recipient_name, length: 20) %>
+                  <% end %>
                 </span>
               </span>
               <br/>
