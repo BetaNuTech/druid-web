@@ -308,7 +308,8 @@ RSpec.describe LeadsController, type: :controller do
           last_name: 'WalkinLast',
           phone1: '5555555555',
           email: 'walkin@example.com',
-          show_unit: walkin_unit.id
+          show_unit: walkin_unit.id,
+          notes: 'Walkin lead notes'
         }
       }
 
@@ -326,10 +327,14 @@ RSpec.describe LeadsController, type: :controller do
         expect(Lead.count).to eq(lead_count + 1)
 
         new_lead = assigns(:lead)
+        new_lead.reload
         assert(new_lead.errors.empty?)
         assert(new_lead.showing?)
         expect(new_lead.user).to eq(agent)
         expect(new_lead.first_name).to eq(walkin_attributes[:first_name])
+        # Assign walkin form notes as a note/comment
+        expect(new_lead.notes).to be_nil
+        expect(new_lead.comments.last.content).to eq(walkin_attributes[:notes])
       end
       it "should create a new ScheduledAction to show the selected unit" do
         sign_in agent
