@@ -106,6 +106,14 @@ module Leads
           @lead.state = 'showing' if @lead.show_unit.present?
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
           @lead.save
+
+          # Make the walkin lead note a 'comment'
+          if @data.fetch(:entry_type,'') == 'walkin'
+            note = Note.create(user_id: @lead.user.id, notable: @lead, content: @lead.notes)
+            @lead.notes = nil
+            @lead.save
+          end
+
           property_assignment_warning(lead: @lead, property_code: parse_result.property_code)
           if junk?(@lead)
             @lead = process_junk(@lead)
