@@ -1,3 +1,4 @@
+require_relative './abodo_parser'
 require_relative './after55_dot_com_parser'
 require_relative './knoxville_apartmentguide_dot_com_parser'
 require_relative './apartment_list_dot_com_parser'
@@ -8,6 +9,7 @@ require_relative './forrent_dot_com_parser'
 require_relative './hotpads_parser'
 require_relative './lease_labs_dot_com_parser'
 require_relative './rent_dot_com_parser'
+require_relative './rentable_parser'
 require_relative './rentcafe_parser'
 require_relative './zillow_parser'
 require_relative './null_parser'
@@ -23,6 +25,7 @@ module Leads
         KnoxvilleApartmentguideDotComParser,
         LeaseLabsDotComParser,
         After55DotComParser,
+        RentableParser, # Goes before Abodo
         AbodoParser,
         ApartmentguideDotComParser,
         ApartmentListDotComParser,
