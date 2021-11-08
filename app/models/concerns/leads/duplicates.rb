@@ -10,7 +10,7 @@ module Leads
       has_many :duplicate_records_by_lead_id, class_name: 'DuplicateLead', foreign_key: 'lead_id', dependent: :destroy
       has_many :duplicates, class_name: 'Lead', foreign_key: 'lead_id', through: :duplicate_records, source: :lead
 
-      after_create :mark_duplicates, :disqualify_if_resident
+      after_create :mark_duplicates
       after_save :duplicate_check_on_update
 
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name remoteid}
@@ -177,7 +177,8 @@ module Leads
       end
 
       def after_mark_duplicates
-        send_new_lead_messaging
+        auto_disqualify
+        send_new_lead_messaging unless disqualified?
       end
 
       handle_asynchronously :after_mark_duplicates
@@ -194,14 +195,33 @@ module Leads
 
       handle_asynchronously :mark_duplicates, queue: :lead_dedupe
 
+      def auto_disqualify
+        disqualify_if_resident
+        disqualify_if_duplicate_from_voyager
+
+        true
+      end
+
       def disqualify_if_resident
-        if Lead.open_possible_residents(property).map{|opr| opr['id'] }.include?(id)
-          self.classification = :resident
-          self.transition_memo = 'Automatically disqualified as a Resident'
-          trigger_event(event_name: 'disqualify')
-          save
-          reload
-        end if property.present?
+        return false unless property.present? && Lead.open_possible_residents(property).map{|opr| opr['id'] }.include?(id)
+
+        self.classification = :resident
+        self.transition_memo = 'Automatically disqualified as a Resident'
+        trigger_event(event_name: 'disqualify')
+        save
+        reload
+        true
+      end
+
+      def disqualify_if_duplicate_from_voyager
+        return false unless property.present? && open? && referral == 'Yardi Voyager' && duplicates.any?
+
+        self.classification = :duplicate
+        self.transition_memo = 'Duplicate record from Voyager automatically disqualified'
+        trigger_event(event_name: 'disqualify')
+        save
+        reload
+        true
       end
 
       handle_asynchronously :disqualify_if_resident, queue: :lead_dedupe

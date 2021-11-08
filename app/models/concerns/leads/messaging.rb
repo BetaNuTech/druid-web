@@ -346,8 +346,9 @@ module Leads
       end
 
       def any_marketing_messages_for_recipient?
-        recipientid = message_recipientid(message_type: MessageType.sms)
-        Message.outgoing.marketing.where(recipientid: recipientid).any?
+        sms_recipientid = message_recipientid(message_type: MessageType.sms)
+        email_recipientid = message_recipientid(message_type: MessageType.email)
+        Message.outgoing.marketing.where(recipientid: [sms_recipientid, email_recipientid]).any?
       end
 
       # Messaging tasks after a lead is created
@@ -391,7 +392,7 @@ module Leads
           return false
         end
 
-        send_initial_sms_response
+        # send_initial_sms_response
         send_initial_email_response
       end
 

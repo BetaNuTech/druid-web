@@ -2,6 +2,8 @@ module Leads
   module Adapters
     module CloudMailin
       class RentcafeParser
+        REFERRAL="Property Website"
+
         def self.match?(data)
           sender_matches = data&.fetch('headers',{})&.fetch('From','')&.match(/rentcafe\.com/).present?
           body_text = data.fetch('html','')
@@ -56,7 +58,7 @@ module Leads
           html = Nokogiri::HTML(body)
           container = html.css('table')
 
-          referral = "Property Website"
+          referral = REFERRAL
           message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
           raw_name = container.css('div.normaltext span[data-selenium-id="ProspectName"]')&.text
           name = raw_name.split(' ')

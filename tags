@@ -804,6 +804,7 @@ assigned_properties_agent_ids	./app/models/concerns/users/properties.rb	/^      
 assigned_properties_agents	./app/models/concerns/users/properties.rb	/^      def assigned_properties_agents$/;"	f	class:Users.Properties
 assigned_to_property?	./app/models/concerns/users/properties.rb	/^      def assigned_to_property?(property)$/;"	f	class:Users.Properties
 audiences	./app/models/article.rb	/^    def audiences$/;"	f	class:Article
+auto_disqualify	./app/models/concerns/leads/duplicates.rb	/^      def auto_disqualify$/;"	f	class:Leads.Duplicates
 autocomplete_lead_contact_tasks	./app/models/concerns/leads/messaging.rb	/^      def autocomplete_lead_contact_tasks(message_delivery)$/;"	f	class:Leads.Messaging
 available?	./app/models/unit.rb	/^  def available?$/;"	f	class:Unit
 available_for_user	./app/models/message_template.rb	/^  def self.available_for_user(user)$/;"	F	class:MessageTemplate
@@ -1208,6 +1209,7 @@ display_preference_option	./app/helpers/leads_helper.rb	/^  def display_preferen
 display_usage	./external/nextiva/watch_cdr	/^display_usage () {$/;"	f
 disqualified_lead_checks	./app/models/concerns/leads/state_machine.rb	/^      def disqualified_lead_checks$/;"	f	class:Leads.StateMachine
 disqualify?	./app/policies/lead_policy.rb	/^  def disqualify?$/;"	f
+disqualify_if_duplicate_from_voyager	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_duplicate_from_voyager$/;"	f	class:Leads.Duplicates
 disqualify_if_resident	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_resident$/;"	f	class:Leads.Duplicates
 disqualify_open_resident_leads	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_open_resident_leads(property=nil)$/;"	f	class:Leads.Duplicates
 down	./db/migrate/20171127215600_create_delayed_jobs.rb	/^  def self.down$/;"	F	class:CreateDelayedJobs
