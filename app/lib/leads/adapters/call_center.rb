@@ -48,7 +48,14 @@ module Leads
         last_name = @data.fetch('last_name',nil)
         phone = @data.fetch('phone1',nil)
         if phone.present? && ( ['Unknown', ' ','', nil].include?(first_name) )
-          first_name, last_name = get_callerid(phone).split(' ')
+          callerid_name = get_callerid(phone)
+          if callerid_name
+            cid_first_name, cid_last_name = callerid_name.split(' ')
+            if cid_first_name.present?
+              first_name = cid_first_name
+              last_name = cid_last_name
+            end
+          end
         end
         [first_name, last_name]
       end
