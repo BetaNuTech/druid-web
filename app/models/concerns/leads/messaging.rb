@@ -10,8 +10,10 @@ module Leads
     SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-In Confirmation'
     SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME='SMS Opt-Out Confirmation'
     INITIAL_RESPONSE_LEAD_ACTION='First Contact'
+    INITIAL_RESPONSE_REASON='First Contact'
     SMS_INITIAL_RESPONSE_TEMPLATE_NAME='New Lead Response Message-SMS-A'
     EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME='New Lead Response Message-Email-A'
+    STALE_AGE = 48
 
     included do
 
@@ -347,8 +349,28 @@ module Leads
 
       # Messaging tasks after a lead is created
       def send_new_lead_messaging
+
+        # Don't send if stale
+        stale_hours = STALE_AGE
+        if created_at.present? && ( created_at < stale_hours.hours.ago )
+          message = "*** Lead[#{id}] new lead messaging was skipped because it is >#{stale_hours} old"
+          Rails.logger.warn message
+          note_reason = Reason.where(name: INITIAL_RESPONSE_REASON).first
+          note_lead_action = LeadAction.where(name: MESSAGE_OPTIN_LEAD_ACTION).first
+          note = Note.create(
+            notable: self,
+            lead_action: note_lead_action,
+            reason: note_reason,
+            content:  "New lead messaging was skipped because this record is >#{stale_hours} old",
+            classification: 'system'
+          )
+          return false
+        end
+
         request_first_sms_authorization_if_open_and_unique
         lead_automatic_reply
+
+        true
       end
 
       # Automatically send initial marketing messaging

@@ -714,6 +714,18 @@ RSpec.describe Lead, type: :model do
       end
     end
 
+    describe "new lead messaging" do
+      it "is not sent if the lead is stale" do
+        lead = create(:lead, state: 'open')
+        assert(lead.send_new_lead_messaging)
+        lead2 = create(:lead, state: 'open')
+        lead2.created_at = 7.days.ago
+        lead2.save!
+        refute(lead2.send_new_lead_messaging)
+        assert(lead2.comments.map(&:content).any?{|c| c.match?(/skipped/)})
+      end
+    end
+
     describe "returning message_sms_destination" do
       describe "with a Cell number" do
         it "returns a Cell phone number as the  message_sms_destination" do
@@ -1009,7 +1021,7 @@ RSpec.describe Lead, type: :model do
         first_comment = lead.comments.order(created_at: :asc).first
         expect(lead.messages.count).to eq(message_count)
         expect(lead.comments.count).to eq(comment_count + 2)
-        expect(first_comment.content).to match("NOT SENT: #{template_name}")
+        assert(lead.comments.map(&:content).include?("NOT SENT: #{template_name}"))
         expect(first_comment.content).to match("Lead has no agent")
       end
     end
