@@ -27,8 +27,7 @@ class ApplicationPolicy
   end
 
   def same_property?
-    #user&.properties&.map(&:id)&.include?(record&.property_id)
-    user&.assigned_to_property?(record&.property_id)
+    user&.assigned_to_property?(record&.property_id) || (record&.property && user.team_lead?(property: record&.property))
   end
 
   def property_manager?

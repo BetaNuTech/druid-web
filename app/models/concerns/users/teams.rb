@@ -24,8 +24,12 @@ module Users
         # teamrole.try(:manager?) || false
       end
 
-      def team_lead?
-        teamrole&.lead?
+      def team_lead?(property: nil)
+        if property
+          team_lead? && membership.team.property_ids.include?(property.id)
+        else
+          teamrole&.lead?
+        end
       end
 
       def team_agent?

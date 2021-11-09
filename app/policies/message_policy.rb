@@ -79,7 +79,8 @@ class MessagePolicy < ApplicationPolicy
 
   def same_property?
     record&.messageable&.present? &&
-      user&.properties&.include?(record.messageable.property)
+      (  user&.assigned_to_property?(record.messageable.property_id) ||
+         user&.team_lead?(property: record.messageable.property) )
   end
 
   def property_manager?
