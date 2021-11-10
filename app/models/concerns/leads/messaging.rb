@@ -23,6 +23,9 @@ module Leads
       def message_template_data
         {
           "lead_name" => name,
+          "lead_title" => title,
+          "lead_first_name" => first_name,
+          "lead_last_name" => last_name,
           'lead_floorplan' => preference.try(:unit_type_name),
           "agent_name" => user.try(:name),
           "agent_title" => user.try(:team_title),
