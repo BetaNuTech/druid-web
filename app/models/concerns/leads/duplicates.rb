@@ -13,6 +13,7 @@ module Leads
       after_create :mark_duplicates
       after_save :duplicate_check_on_update
 
+      HIGH_CONFIDENCE_DUPLICATE_MAX_AGE_DAYS = 60
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name remoteid}
       DUPLICATE_IGNORED_VALUES = [
         '(None)',
@@ -196,12 +197,15 @@ module Leads
       handle_asynchronously :mark_duplicates, queue: :lead_dedupe
 
       def auto_disqualify
-        disqualify_if_resident
-        disqualify_if_duplicate_from_voyager
+        disqualify_if_resident and return true
+        #disqualify_if_duplicate_from_voyager and return true
+        disqualify_if_high_confidence_duplicate and return true
 
         true
       end
 
+      # Disqualify this lead if it is likely a resident
+      # returns true only if disqualified
       def disqualify_if_resident
         return false unless property.present? && Lead.open_possible_residents(property).map{|opr| opr['id'] }.include?(id)
 
@@ -213,22 +217,46 @@ module Leads
         true
       end
 
-      def disqualify_if_duplicate_from_voyager
-        return false unless property.present? && open? && referral == 'Yardi Voyager' && duplicates.any?
+      # TODO: not implemented
+      # Disqualify this lead if it is a likely duplicate sourced by Voyager
+      # returns true only if disqualified
+      #def disqualify_if_duplicate_from_voyager
+        #return false unless property.present? && open? && referral == 'Yardi Voyager' && duplicates.any?
+
+        ## TODO: identify presence of high confidence duplicates from Voyager
+        #self.classification = :duplicate
+        #self.transition_memo = 'Automatically disqualified as a likely duplicate from Voyager'
+        #trigger_event(event_name: 'disqualify')
+        #save
+        #reload
+        #true
+      #end
+
+      # Disqualify this lead if it is likely a duplicate
+      # returns true only if disqualified
+      def disqualify_if_high_confidence_duplicate
+        return false unless high_confidence_duplicates.any?
 
         self.classification = :duplicate
-        self.transition_memo = 'Duplicate record from Voyager automatically disqualified'
+        self.transition_memo = 'Automatically disqualified due to high confidence match(es)'
         trigger_event(event_name: 'disqualify')
         save
         reload
         true
       end
 
-      handle_asynchronously :disqualify_if_resident, queue: :lead_dedupe
 
       def duplicates_with_matching_phone
-        return Lead.where('1=1') unless phone1.present? || phone2.present?
+        return Lead.where('1=0') unless phone1.present? || phone2.present?
+
         duplicates.where("phone1 = :phone OR phone2 = :phone OR phone1 = :phone2 OR phone2 = :phone2", {phone: phone1, phone2: phone2})
+      end
+
+      def high_confidence_duplicates
+        return Lead.where('1=0') unless first_name.present? && last_name.present? && ( email.present? || phone1.present? )
+
+        conditions = 'first_name = :first_name AND last_name = :last_name AND (email = :email OR phone1 = :phone1) AND created_at > :end_date'
+        duplicates.where(conditions, {first_name: first_name, last_name: last_name, email: email, phone1: phone1, end_date: HIGH_CONFIDENCE_DUPLICATE_MAX_AGE_DAYS.days.ago})
       end
     end
 

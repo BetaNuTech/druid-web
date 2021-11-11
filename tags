@@ -1210,6 +1210,7 @@ display_usage	./external/nextiva/watch_cdr	/^display_usage () {$/;"	f
 disqualified_lead_checks	./app/models/concerns/leads/state_machine.rb	/^      def disqualified_lead_checks$/;"	f	class:Leads.StateMachine
 disqualify?	./app/policies/lead_policy.rb	/^  def disqualify?$/;"	f
 disqualify_if_duplicate_from_voyager	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_duplicate_from_voyager$/;"	f	class:Leads.Duplicates
+disqualify_if_high_confidence_duplicate	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_high_confidence_duplicate$/;"	f	class:Leads.Duplicates
 disqualify_if_resident	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_resident$/;"	f	class:Leads.Duplicates
 disqualify_open_resident_leads	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_open_resident_leads(property=nil)$/;"	f	class:Leads.Duplicates
 down	./db/migrate/20171127215600_create_delayed_jobs.rb	/^  def self.down$/;"	F	class:CreateDelayedJobs
@@ -1493,6 +1494,7 @@ has_previous_delivery?	./app/models/message_delivery.rb	/^  def has_previous_del
 has_subject?	./app/models/message_type.rb	/^  def has_subject?$/;"	f	class:MessageType
 having_schedule	./app/models/concerns/scheduled_actions/schedule.rb	/^      def having_schedule$/;"	f	class:ScheduledActions.Schedule
 having_schedule	./app/models/note.rb	/^  def self.having_schedule$/;"	F	class:Note
+high_confidence_duplicates	./app/models/concerns/leads/duplicates.rb	/^      def high_confidence_duplicates$/;"	f	class:Leads.Duplicates
 hostname	./external/lambda/postBlueskyCallerInfo.js	/^			hostname: "hooks.slack.com",$/;"	p	class:const
 hostname	./external/lambda/postBlueskyCallerInfo.js	/^			hostname: process.env.BLUESKY_HOST,$/;"	p	class:let
 hostname	./external/lambda/postConnectLead.js	/^			hostname: "hooks.slack.com",$/;"	p	class:const
@@ -2524,7 +2526,7 @@ team_agent?	./app/models/concerns/users/teams.rb	/^      def team_agent?$/;"	f	c
 team_agents	./app/models/concerns/users/teams.rb	/^      def team_agents$/;"	f	class:Users.Teams
 team_corporate?	./app/models/concerns/users/teams.rb	/^      def team_corporate?$/;"	f	class:Users.Teams
 team_ids_sql	./app/models/stat.rb	/^  def team_ids_sql$/;"	f	class:Stat.lead_sources_conversion_json
-team_lead?	./app/models/concerns/users/teams.rb	/^      def team_lead?$/;"	f	class:Users.Teams
+team_lead?	./app/models/concerns/users/teams.rb	/^      def team_lead?(property: nil)$/;"	f	class:Users.Teams
 team_lead?	./app/policies/application_policy.rb	/^  def team_lead?$/;"	f	class:ApplicationPolicy
 team_lead?	./app/policies/property_policy.rb	/^  def team_lead?$/;"	f
 team_lead?	./app/policies/user_policy.rb	/^  def team_lead?$/;"	f	class:UserPolicy
