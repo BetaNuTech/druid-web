@@ -258,10 +258,38 @@ module Leads
       end
 
       def high_confidence_duplicates
-        return Lead.where('1=0') unless first_name.present? && last_name.present? && ( email.present? || phone1.present? )
+        return Lead.where('1=0') unless ( first_name.present? || last_name.present? ) && ( email.present? || phone1.present? )
 
-        conditions = 'first_name = :first_name AND last_name = :last_name AND (email = :email OR phone1 = :phone1) AND created_at > :start_date'
-        duplicates.where(conditions, {first_name: first_name, last_name: last_name, email: email, phone1: phone1, start_date: HIGH_CONFIDENCE_DUPLICATE_MAX_AGE_DAYS.days.ago})
+        condition_hash = {start_date: HIGH_CONFIDENCE_DUPLICATE_MAX_AGE_DAYS.days.ago}
+        conditions_str = '(created_at > :start_date)'
+
+        conditions = []
+        if first_name.present?
+          conditions <<  'first_name = :first_name'
+          condition_hash[:first_name] = first_name
+        else
+          conditions << "( first_name IS NULL OR first_name = '' )"
+        end
+        if last_name.present?
+          conditions <<  'last_name = :last_name'
+          condition_hash[:last_name] = last_name
+        else
+          conditions << "( last_name IS NULL OR last_name = '' )"
+        end
+        conditions_str += ' AND (' + conditions.join(' AND ') + ')'
+        conditions = []
+
+        if email.present?
+          conditions <<  'email = :email'
+          condition_hash[:email] = email
+        end
+        if phone1.present?
+          conditions <<  'phone1 = :phone1'
+          condition_hash[:phone1] = phone1
+        end
+        conditions_str = conditions_str + ' AND (' + conditions.join(' OR ' ) + ')'
+
+        duplicates.where(conditions_str, condition_hash)
       end
     end
 
