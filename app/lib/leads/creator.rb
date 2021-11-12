@@ -62,6 +62,9 @@ module Leads
     end
 
     # Create lead from provided data using detected Source adapter
+    #
+    # NOTE: the next major functional point is mark_duplicates and after_mark_duplicates
+    # which are triggered from an after_create callback in Leads::Duplicates concern
     def call
 
       # Validate Access Token for Lead Source
@@ -120,7 +123,6 @@ module Leads
           else
             @lead.infer_referral_record
             @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
-            @lead.delay.broadcast_to_streams if @lead.valid?
           end
         else
           @lead.validate

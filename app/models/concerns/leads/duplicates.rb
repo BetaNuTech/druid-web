@@ -179,7 +179,12 @@ module Leads
 
       def after_mark_duplicates
         auto_disqualify
-        send_new_lead_messaging unless disqualified?
+        unless disqualified?
+          delay.broadcast_to_streams
+          send_new_lead_messaging
+        end
+
+        true
       end
 
       handle_asynchronously :after_mark_duplicates
