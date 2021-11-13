@@ -50,6 +50,10 @@ module Leads
       def sanitize(value)
         return ActionController::Base.helpers.sanitize(value)
       end
+
+      def exception_list_match?(data)
+        Leads::Adapters::CloudMailin::ContentExceptionList.any?{|str| data.match?(str)}
+      end
     end
   end
 
