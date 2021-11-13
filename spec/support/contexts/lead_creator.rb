@@ -2,6 +2,7 @@ RSpec.shared_context 'lead_creator' do
   include_context "users"
 
   let(:default_lead_source) { create(:lead_source, slug: LeadSource::DEFAULT_SLUG) }
+  let(:call_center_lead_source) { LeadSource.where(slug: 'CallCenter').first || create(:call_center_source) }
   let(:lead_creator_property) { agent.property }
   let(:lead_creator_property_listing) { create(:property_listing, source_id: default_lead_source.id, property_id: lead_creator_property.id) }
 

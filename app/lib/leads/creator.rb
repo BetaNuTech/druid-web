@@ -67,7 +67,7 @@ module Leads
     # which are triggered from an after_create callback in Leads::Duplicates concern
     def call
 
-      # Validate Access Token for Lead Source
+      ### Validate Access Token for Lead Source
       unless ( @source.present? && @token.present? )
         error_message =  "Leads::Creator Error Invalid Access Token '#{@token}'}"
         @errors.add(:base, error_message)
@@ -76,7 +76,7 @@ module Leads
         return @lead
       end
 
-      # Validate Parser
+      ### Validate Parser
       if @parser.nil?
         error_message =  "Leads::Creator Error Parser for Lead Source not found: #{@source.try(:name) || 'UNKNOWN'}"
         @errors.add(:base, error_message)
@@ -86,6 +86,7 @@ module Leads
         return @lead
       end
 
+      ### Parse incoming data
       begin
         parse_result = @parser.new(@data).parse
       rescue => e
@@ -93,9 +94,30 @@ module Leads
         Leads::Creator.create_event_note(message: note_message, error: true)
         return Lead.new
       end
+      parse_status = parse_result.status
 
       ### Build lead from parser data
       @lead = Lead.new(parse_result.lead)
+
+      ### Abort if duplicate incoming phone call
+      if @source.phone_source? && @lead.phone1.present?
+        # Check against residents first for performance
+        if (resident_phone_match = ResidentDetail.where(phone1: @lead.phone1).any?)
+          @lead.errors.add(:phone1, "This lead matches the phone number of a resident [#{@lead.phone1}]")
+          @errors = @lead.errors
+          @lead.phone1 = nil
+          @lead.phone2 = nil
+          return @lead
+        end
+
+        if (lead_phone_match = Lead.where(phone1: @lead.phone1).any?)
+          @lead.errors.add(:phone1, "This lead matches the phone number of an existing recent lead [#{@lead.phone1}]")
+          @errors = @lead.errors
+          @lead.phone1 = nil
+          @lead.phone2 = nil
+          return @lead
+        end
+      end
 
       ### Assign additional meta-data
       @lead.user = @agent if @agent.present?
@@ -104,7 +126,7 @@ module Leads
       @lead.source = @source
       @lead.first_comm ||= Time.now
 
-      case parse_result.status
+      case parse_status
         when :ok
           @lead.state = 'showing' if @lead.show_unit.present?
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)

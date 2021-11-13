@@ -89,5 +89,15 @@ RSpec.describe LeadSource, type: :model do
     it "deletes all listings when deleted" do
       expect{lead_source.destroy}.to change{PropertyListing.count}.by(-3)
     end
+
+    it "identifies as a phone source" do
+      slug1 = 'CallCenter'
+      slug2 = 'Other'
+      source1 = LeadSource.where(slug: slug1).first || create(:lead_source, slug: slug1)
+      source2 = LeadSource.where(slug: slug2).first || create(:lead_source, slug: slug2)
+
+      assert(source1.phone_source?)
+      refute(source2.phone_source?)
+    end
   end
 end

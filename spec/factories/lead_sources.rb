@@ -46,5 +46,12 @@ FactoryBot.define do
       slug { 'Cobalt' }
       active { true }
     end
+
+    factory :call_center_source do
+      name { 'CallCenter' }
+      incoming { true }
+      slug { 'CallCenter' }
+      active { true }
+    end
   end
 end

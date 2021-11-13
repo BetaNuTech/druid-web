@@ -201,5 +201,64 @@ RSpec.describe Lead, type: :model do
       expect(lead.property).to eq(lead_creator_property)
     end
   end
+
+  describe "handling incoming phone leads" do
+    let(:resident_duplicate_phone) { '5555551111'}
+    let(:lead_duplicate_phone) { '5555551122'}
+    let(:lead_unique_phone) { '5555556666'}
+    let(:lead_unique_email) { 'unique1@example.com'}
+    let(:resident1) {
+      resident = create(:resident, detail: create(:resident_detail, phone1: resident_duplicate_phone))
+      resident.reload
+      resident.detail.phone1 = resident_duplicate_phone
+      resident.detail.save!
+      resident.reload
+      resident
+    }
+    let(:resident2) { create(:resident, detail: create(:resident_detail)) }
+    let(:old_lead1) { create(:lead, phone1: lead_duplicate_phone) }
+    let(:old_lead2) { create(:lead) }
+    let(:unique_lead_data) {
+      { first_name: 'Joe', last_name: 'Doe', phone1: lead_unique_phone, email: lead_unique_email }
+    }
+    let(:duplicate_lead_data_resident_phone) {
+      { first_name: 'Joe', last_name: 'Doe', phone1: resident_duplicate_phone}
+    }
+    let(:duplicate_lead_data_lead_phone) {
+      { first_name: 'Joe', last_name: 'Doe', phone1: lead_duplicate_phone}
+    }
+
+
+    before(:each) do
+      call_center_lead_source
+      resident1
+      resident2
+      old_lead1
+      old_lead2
+    end
+
+    describe "when the lead phone matches a resident" do
+      it "should fail to create a lead" do
+        service = Leads::Creator.new(data: duplicate_lead_data_resident_phone, token: call_center_lead_source.api_token)
+        lead = service.call
+        refute(lead.save)
+      end
+    end
+
+    describe "when the lead phone matches another lead" do
+      it "should fail to create the lead" do
+        service = Leads::Creator.new(data: duplicate_lead_data_lead_phone, token: call_center_lead_source.api_token)
+        lead = service.call
+        refute(lead.save)
+      end
+    end
+    describe "with an unknown phone number" do
+      it "creates a lead" do
+        service = Leads::Creator.new(data: unique_lead_data, token: call_center_lead_source.api_token) 
+        lead = service.call
+        assert(lead.save)
+      end
+    end
+  end
 end
 

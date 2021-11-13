@@ -583,7 +583,7 @@ RSpec.describe Lead, type: :model do
     let(:email_message_type) {create(:email_message_type)}
 
     it "returns message_template information" do
-      expected_data_keys = %w{ lead_name lead_floorplan agent_name agent_title
+      expected_data_keys = %w{ lead_name lead_title lead_first_name lead_last_name lead_floorplan agent_name agent_title
                                property_name property_address property_address_html
                                property_city property_amenities property_website
                                property_phone property_school_district property_application_url
@@ -1021,7 +1021,7 @@ RSpec.describe Lead, type: :model do
         first_comment = lead.comments.order(created_at: :asc).first
         expect(lead.messages.count).to eq(message_count)
         expect(lead.comments.count).to eq(comment_count + 2)
-        assert(lead.comments.map(&:content).include?("NOT SENT: #{template_name}"))
+        assert(lead.comments.map(&:content).any?{|c| c.match? "NOT SENT: #{template_name}"})
         expect(first_comment.content).to match("Lead has no agent")
       end
     end

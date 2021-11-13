@@ -18,6 +18,7 @@ class LeadSource < ApplicationRecord
 
   # A LeadSource 'slug' also identifies the parser
   DEFAULT_SLUG = 'Bluesky'
+  PHONE_SOURCES = ['Arrowtel', 'Nextiva', 'CallCenter']
 
   audited
 
@@ -53,6 +54,11 @@ class LeadSource < ApplicationRecord
   def listings_by_property_name
     listings.includes("property").order("properties.name ASC")
   end
+
+  def phone_source?
+    PHONE_SOURCES.include?(slug)
+  end
+
 
   # Private Methods
 

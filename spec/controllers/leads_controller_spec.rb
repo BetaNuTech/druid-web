@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe LeadsController, type: :controller do
   include_context "users"
   include_context "messaging"
+  include_context "message_templates"
 
   render_views
 

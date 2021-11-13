@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Leads::Adapters::Zillow do
   include_context "messaging"
+  include_context "message_templates"
 
   let(:source) { create(:lead_source, slug: Leads::Adapters::Zillow::LEAD_SOURCE_SLUG) }
   let(:property) { create(:property) }
