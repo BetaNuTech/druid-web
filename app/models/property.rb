@@ -89,6 +89,9 @@ class Property < ApplicationRecord
     end
   end
 
+  def self.names_and_ids
+    self.order(:name).pluck(:name, :id)
+  end
 
   ## Instance Methods
 
