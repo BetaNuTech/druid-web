@@ -365,7 +365,7 @@ module Leads
             notable: self,
             lead_action: note_lead_action,
             reason: note_reason,
-            content:  "New lead messaging was skipped because this record is >#{stale_hours} old",
+            content:  "New lead messaging was skipped because this record is >#{stale_hours}h old",
             classification: 'system'
           )
           return false
