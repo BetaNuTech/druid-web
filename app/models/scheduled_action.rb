@@ -79,6 +79,7 @@ class ScheduledAction < ApplicationRecord
     )
   }
   scope :contact, ->() { includes(:lead_action).where(lead_actions: {is_contact: true} ) }
+  scope :showings, ->() { where(lead_action_id: LeadAction.showing&.id) }
 
   ### Validations
   validates :state, presence: true, inclusion: ScheduledAction.state_names

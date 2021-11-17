@@ -1,7 +1,7 @@
 class PropertiesController < ApplicationController
   #http_basic_authenticate_with **http_auth_credentials unless Rails.env.test?
   before_action :authenticate_user!
-  before_action :assign_property, only: [:show, :edit, :update, :destroy, :duplicate_leads]
+  before_action :assign_property, only: [:show, :edit, :update, :destroy, :duplicate_leads, :user_stats]
   after_action :verify_authorized
 
   # GET /properties
@@ -86,6 +86,12 @@ class PropertiesController < ApplicationController
     @current_property = Property.find(params[:property_id])
     cookies[:current_property] = @current_property.id if @current_property
     redirect_to URI(request.referer).path
+  end
+
+  def user_stats
+    authorize @property
+    service = Users::ActivityReport.new(@property)
+    @stats = service.call
   end
 
   private

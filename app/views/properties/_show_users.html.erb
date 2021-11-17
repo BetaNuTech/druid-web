@@ -1,6 +1,7 @@
 <div class="row">
   <div class="col-md-12">
     <h2>Employees</h2>
+    <%= link_to('Monthly Activity Stats', user_stats_property_path(id: @property.id)) %>
     <%if @property.users.active.empty? %>
       <p>None</p>
     <% end %>

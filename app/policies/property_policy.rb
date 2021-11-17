@@ -44,6 +44,10 @@ class PropertyPolicy < ApplicationPolicy
     create?
   end
 
+  def user_stats?
+    user.admin? || (user.manager? && same_property?)
+  end
+
   def create_lead?
     user.admin? || same_property?
   end

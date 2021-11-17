@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>
+      <%= @property.name %>
+      <small>
+        <br/>
+        Agent Activity &mdash;
+        <%= @stats[:start_date] %> &rarr; <%= @stats[:end_date] %>
+      </small>
+    </h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table">
+      <tbody>
+        <% @stats[:users].each_pair do |id,user| %>
+          <tr>
+            <td><h3><%= user.name %></h3></td>
+            <td style="white-space: nowrap;">
+              <b>Logins</b><br/>
+              <ul>
+                <li>
+                  <i>Last Login:</i> <%= long_datetime( @stats[:logins][id][:last] ) rescue 'None' %>
+                </li>
+                <% @stats[:logins][id][:history].each do |login_date| %>
+                  <li><%= login_date %></li>
+                <% end %>
+              </ul>
+            </td>
+            <td style="white-space: nowrap;">
+              <p>
+                <b>Leads</b><br/>
+                <i>Claimed: </i> <%= @stats[:leads][id][:claimed] %>
+                &mdash;
+                <i>Abandoned: </i> <%= @stats[:leads][id][:abandoned] %>
+                &mdash;
+                <i>Disqualified: </i> <%= @stats[:leads][id][:disqualified] %>
+                <br/>
+                <i>Showings: </i> <%= @stats[:leads][id][:showings] %>
+                &mdash;
+                <i>Applications: </i> <%= @stats[:leads][id][:applications] %>
+              </p>
+              <p>
+                <b>Messages</b><br/>
+                <i>Sent:</i> <%= @stats[:messages][id][:sent] %>
+              </p>
+              <p>
+                <b>Tasks</b><br/>
+                <i>Last Completed:</i> <%= long_datetime(@stats[:tasks][id][:last_completed]) rescue 'None'%><br/>
+                <i>Total Completed:</i> <%= @stats[:tasks][id][:completed] %>
+              </p>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

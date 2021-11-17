@@ -144,5 +144,23 @@ class User < ApplicationRecord
     end
   end
 
+  def login_timestamps(start_date: nil)
+    start_date ||= 1.month.ago.beginning_of_month
+    end_date = Time.now
+    audits = Audited::Audit.where(
+      created_at: start_date..end_date,
+      auditable_type: 'User',
+      auditable_id: id,
+    )
+
+    logins = []
+    audits.each do |audit|
+      last_sign_in = audit[:audited_changes].fetch('current_sign_in_at', [])&.last
+      next unless last_sign_in
+      logins <<  last_sign_in
+    end
+    logins
+  end
+
   handle_asynchronously :deactivation_cleanup, queue: :low_priority
 end

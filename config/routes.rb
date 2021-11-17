@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     end
     member do
       get 'duplicate_leads', to: 'properties#duplicate_leads'
+      get 'user_stats', to: 'properties#user_stats'
     end
   end
 
