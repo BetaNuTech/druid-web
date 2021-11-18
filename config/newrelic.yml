@@ -1,0 +1,32 @@
+# Generated November 18, 2021
+#
+# For full documentation of agent configuration options, please refer to
+# https://docs.newrelic.com/docs/agents/ruby-agent/installation-configuration/ruby-agent-configuration
+
+common: &default_settings
+  # Required license key associated with your New Relic account.
+  # license_key: XXX
+  # set by ENVVAR NEW_RELIC_LICENSE_KEY
+  app_name: Bluesky PROD
+  distributed_tracing:
+    enabled: true
+  log_level: info
+
+development:
+  <<: *default_settings
+  monitor_mode: false
+  agent_enabled: false
+
+test:
+  <<: *default_settings
+  monitor_mode: false
+  agent_enabled: false
+
+staging:
+  <<: *default_settings
+  app_name: Bluesky PROD (Staging)
+  monitor_mode: false
+  agent_enabled: false
+
+production:
+  <<: *default_settings
