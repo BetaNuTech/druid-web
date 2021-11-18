@@ -309,6 +309,7 @@ GEM
       coffee-rails (>= 3.2.1)
       jquery-rails
       rails (>= 3.2.0)
+    newrelic_rpm (8.1.0)
     nio4r (2.5.8)
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
@@ -455,8 +456,6 @@ GEM
     schedulable (0.0.10)
       ice_cube
       rails (>= 4.0.3)
-    scout_apm (4.1.1)
-      parser
     secure_headers (6.3.2)
     semantic_range (3.0.0)
     shellany (0.0.1)
@@ -580,6 +579,7 @@ DEPENDENCIES
   mini_magick (~> 4.11)
   mysql2 (~> 0.5)
   nested_form_fields (~> 0.8)
+  newrelic_rpm
   nokogiri (~> 1.12)
   pessimize (~> 0.4)
   pg (~> 1.2)
@@ -601,7 +601,6 @@ DEPENDENCIES
   rubocop-faker (~> 1.1)
   sass-rails (~> 6.0)
   schedulable (~> 0.0)
-  scout_apm (~> 4.1)
   secure_headers (~> 6.3)
   simple_calendar (~> 2.4)
   simplecov (~> 0.21)

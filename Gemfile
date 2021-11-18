@@ -9,7 +9,7 @@ end
 gem 'rails', '~> 6.1'
 gem 'pg', "~> 1.2"
 gem 'mysql2', "~> 0.5"
-gem 'puma', "~> 5.3"
+gem 'puma', "~> 5.5"
 gem 'sass-rails', "~> 6.0"
 gem 'uglifier', "~> 4.2"
 gem 'secure_headers', "~> 6.3"
@@ -56,6 +56,7 @@ gem 'working_hours', "~> 1.4"
 gem 'migration_data', "~> 0.6"
 gem 'holidays', "~> 8.4"
 gem 'slack-notifier', "~> 2.4"
+gem 'newrelic_rpm', "~> 8.1"
 
 group :development, :test do
   gem 'pry-doc', "~> 1.1"
