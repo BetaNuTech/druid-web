@@ -486,12 +486,6 @@ Example Access Policy:
 }
 ```
 
-### ScoutApp
-
-ScoutApp provides performance analysis.
-
-On Heroku, this service is provisioned as an addon using the 'Chairlift' (free) tier.
-
 #### BlueSky Configuration
 
 * Gem: `scout_apm`
