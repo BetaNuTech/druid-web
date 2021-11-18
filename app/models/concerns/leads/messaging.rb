@@ -58,9 +58,9 @@ module Leads
 
       def message_sms_destination
         destination = nil
-        if respond_to?(:phone1_type) && respond_to?(:phone1) && phone1_type == 'Cell'
+        if respond_to?(:phone1_type) && respond_to?(:phone1) && phone1.present? && phone1_type == 'Cell'
           destination = phone1
-        elsif respond_to?(:phone2_type) && respond_to?(:phone2) && phone2_type == 'Cell'
+        elsif respond_to?(:phone2_type) && respond_to?(:phone2) && phone2.present? && phone2_type == 'Cell'
           destination = phone2
         elsif respond_to?(:phone_type) && respond_to?(:phone) && phone_type == 'Cell'
           destination = phone
@@ -69,7 +69,8 @@ module Leads
         else
           destination = [self&.phone1, self&.phone2].compact.first
         end
-        destination = Message.format_phone(destination)
+        destination = destination.present? ? Message.format_phone(destination) : nil
+
         return destination
       end
 
@@ -496,6 +497,9 @@ module Leads
         messages.for_compliance.exists?
       end
 
+      # Allow resending sms opt-in message?
+      #
+      # ALWAYS true
       def resend_opt_in_message?
         #messages.for_compliance.empty? ||
         #( messages.for_compliance.exists? &&

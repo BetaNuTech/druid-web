@@ -738,6 +738,16 @@ RSpec.describe Lead, type: :model do
           lead.phone2_type = 'Cell'
           expect(lead.message_sms_destination).to eq(Message.format_phone( lead.phone2 ))
         end
+        it 'returns the second phone number if the first phone number is not present' do
+          lead.phone1 = ' '
+          lead.phone2 = '555-555-5512'
+          lead.phone1_type = 'Cell'
+          lead.phone2_type = 'Cell'
+          expect(lead.message_sms_destination).to eq(Message.format_phone(lead.phone2))
+          lead.phone1_type = 'Home'
+          lead.phone2_type = 'Home'
+          expect(lead.message_sms_destination).to eq(nil)
+        end
 
       end
 
