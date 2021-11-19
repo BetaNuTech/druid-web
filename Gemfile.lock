@@ -579,7 +579,7 @@ DEPENDENCIES
   mini_magick (~> 4.11)
   mysql2 (~> 0.5)
   nested_form_fields (~> 0.8)
-  newrelic_rpm
+  newrelic_rpm (~> 8.1)
   nokogiri (~> 1.12)
   pessimize (~> 0.4)
   pg (~> 1.2)
@@ -589,7 +589,7 @@ DEPENDENCIES
   pry-doc (~> 1.1)
   pry-rails (~> 0.3)
   pry-stack_explorer (~> 0.6)
-  puma (~> 5.3)
+  puma (~> 5.5)
   pundit (~> 2.1)
   rack-mini-profiler (~> 2.3)
   rails (~> 6.1)
