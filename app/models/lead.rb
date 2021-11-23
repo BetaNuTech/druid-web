@@ -139,8 +139,12 @@ class Lead < ApplicationRecord
       end
     end
 
-
     ### Instance Methods
+
+    def reportable?
+      ['lead', nil].include?( classification ) &&
+        !['resident', 'exresident', 'disqualified'].include?(state)
+    end
 
     def is_lead?
       classification.nil? || classification == 'lead'
@@ -178,9 +182,8 @@ class Lead < ApplicationRecord
       id.to_s.gsub('-','')[0..19]
     end
 
-    # TODO
     def walk_in?
-      false
+      LeadSource.default == source
     end
 
     def agent

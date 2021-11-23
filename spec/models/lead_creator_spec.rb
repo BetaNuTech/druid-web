@@ -219,13 +219,13 @@ RSpec.describe Lead, type: :model do
     let(:old_lead1) { create(:lead, phone1: lead_duplicate_phone) }
     let(:old_lead2) { create(:lead) }
     let(:unique_lead_data) {
-      { first_name: 'Joe', last_name: 'Doe', phone1: lead_unique_phone, email: lead_unique_email }
+      { first_name: 'Joe', last_name: 'Doe', phone1: lead_unique_phone, email: lead_unique_email, property_id: resident1.property_id }
     }
     let(:duplicate_lead_data_resident_phone) {
-      { first_name: 'Joe', last_name: 'Doe', phone1: resident_duplicate_phone}
+      { first_name: 'Joe', last_name: 'Doe', phone1: resident_duplicate_phone, property_id: resident1.property_id}
     }
     let(:duplicate_lead_data_lead_phone) {
-      { first_name: 'Joe', last_name: 'Doe', phone1: lead_duplicate_phone}
+      { first_name: 'Joe', last_name: 'Doe', phone1: lead_duplicate_phone, property_id: resident1.property_id}
     }
 
 
@@ -235,6 +235,7 @@ RSpec.describe Lead, type: :model do
       resident2
       old_lead1
       old_lead2
+      create(:property_listing, source_id: call_center_lead_source.id, property_id: resident1.property_id, code: resident1.property_id)
     end
 
     describe "when the lead phone matches a resident" do

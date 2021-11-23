@@ -3,6 +3,8 @@ module Statistics
     extend ActiveSupport::Concern
 
     included do
+      LEADSPEED_EXCLUDED_LEAD_STATES = [ 'resident', 'exresident', 'disqualified' ]
+      LEADSPEED_EXCLUDED_SOURCES = ['YardiVoyager']
 
       def self.lead_speed_grade(minutes)
         case minutes
@@ -81,27 +83,9 @@ module Statistics
       def self.generate_leadspeed(resolution: 60, time_start:, time_end: nil)
         time_end ||= Time.now
 
-        sql = <<~SQL
-          SELECT
-            user_id,
-            CEIL(avg(lead_time)) AS avg_leadtime,
-            'epoch'::timestamptz + '#{resolution} minutes'::INTERVAL * (EXTRACT(epoch FROM timestamp)::int4 / #{resolution * 60}) AS time_start
-          FROM
-            contact_events
-          WHERE
-            timestamp BETWEEN '#{time_start}' AND '#{time_end}' AND
-            first_contact = true
-          GROUP BY
-            user_id,
-            time_start
-          ORDER BY
-            time_start ASC,
-            user_id ASC;
-        SQL
+        data = Statistic.contact_events_for_user_leadspeed(resolution: resolution, time_start: time_start, time_end: time_end)
 
-        data = ActiveRecord::Base.connection.execute(sql).to_a
-
-        data.each do |stat_data|
+        data.to_a.each do |stat_data|
           begin
             Statistic.create(
               fact: 'leadspeed',
@@ -119,29 +103,75 @@ module Statistics
         true
       end
 
-      def self.generate_property_leadspeed(property:, resolution: 60, time_start:, time_end: nil)
-        return true if property.users.active.empty?
-
+      def self.contact_events_for_user_leadspeed(resolution: 60, time_start:, time_end: nil)
         time_end ||= Time.now
 
         sql = <<~SQL
           SELECT
+            contact_events.user_id,
             CEIL(avg(lead_time)) AS avg_leadtime,
-              'epoch'::timestamptz + '#{resolution} minutes'::INTERVAL * (EXTRACT(epoch FROM timestamp)::int4 / #{resolution * 60}) AS time_start
+            'epoch'::timestamptz + '#{resolution} minutes'::INTERVAL * (EXTRACT(epoch FROM timestamp)::int4 / #{resolution * 60}) AS time_start
           FROM
             contact_events
+          INNER JOIN leads
+            ON leads.id = contact_events.lead_id
           WHERE
             timestamp BETWEEN '#{time_start}' AND '#{time_end}' AND
             first_contact = true AND
-            user_id IN (#{property.users.pluck(:id).map{|i| "'#{i}'"}.join(',')})
+            #{Statistic.leadspeed_exclusion_sql}
           GROUP BY
+            contact_events.user_id,
             time_start
           ORDER BY
-            time_start ASC;
+            time_start ASC,
+            contact_events.user_id ASC;
+        SQL
+
+        ActiveRecord::Base.connection.execute(sql)
+      end
+
+      def self.rolling_month_property_leadspeed(property)
+        return true if property.users.active.empty?
+
+        resolution = 1.week / 60
+        time_start = 1.month.ago
+        time_end = Time.now
+
+        sql = <<~SQL
+          SELECT
+            quantifiable_id,
+            quantifiable_type,
+            CEIL(avg(value)) AS avg_leadtime
+          FROM
+            statistics
+          WHERE
+            fact = 0 AND
+            quantifiable_type = 'Property' AND
+            quantifiable_id = '#{property.id}' AND
+            resolution = #{resolution.to_i} AND
+            time_start BETWEEN '#{time_start}' AND '#{time_end}'
+          GROUP BY
+            quantifiable_id,
+            quantifiable_type;
         SQL
 
         data = ActiveRecord::Base.connection.execute(sql).to_a
-        data.each do |stat_data|
+        data.first&.fetch('avg_leadtime', nil)
+      end
+
+      def self.rolling_month_property_leadspeed_grade(property)
+        Statistic.lead_speed_grade(self.rolling_month_property_leadspeed(property))
+      end
+
+      def self.generate_property_leadspeed(property:, resolution: 60, time_start: , time_end: nil)
+        return true if property.users.active.empty?
+
+        time_end ||= Time.now
+
+        data = Statistic.contact_events_for_property_leadspeed(
+          property: property, resolution: resolution, time_start: time_start, time_end: time_end)
+
+        data.to_a.each do |stat_data|
           begin
             Statistic.create(
               fact: 'leadspeed',
@@ -159,8 +189,8 @@ module Statistics
         true
       end
 
-      def self.generate_team_leadspeed(team:, resolution: 60, time_start:, time_end: nil)
-        return true if team.members.empty?
+      def self.contact_events_for_property_leadspeed(property:, resolution: 60, time_start:, time_end: nil)
+        return ContactEvent.where('1=0') if property.users.empty?
 
         time_end ||= Time.now
 
@@ -170,18 +200,28 @@ module Statistics
               'epoch'::timestamptz + '#{resolution} minutes'::INTERVAL * (EXTRACT(epoch FROM timestamp)::int4 / #{resolution * 60}) AS time_start
           FROM
             contact_events
+          INNER JOIN leads
+            ON leads.id = contact_events.lead_id
           WHERE
             timestamp BETWEEN '#{time_start}' AND '#{time_end}' AND
             first_contact = true AND
-            user_id IN (#{team.members.pluck(:id).map{|i| "'#{i}'"}.join(',')})
+            contact_events.user_id IN (#{property.users.pluck(:id).map{|i| "'#{i}'"}.join(',')}) AND
+            #{Statistic.leadspeed_exclusion_sql}
           GROUP BY
             time_start
           ORDER BY
             time_start ASC;
         SQL
 
-        data = ActiveRecord::Base.connection.execute(sql).to_a
-        data.each do |stat_data|
+        ActiveRecord::Base.connection.execute(sql)
+      end
+
+      def self.generate_team_leadspeed(team:, resolution: 60, time_start:, time_end: nil)
+        return true if team.members.empty?
+
+        data = Statistic.contact_events_for_team_leadspeed(team: team, resolution: resolution, time_start: time_start, time_end: time_end)
+
+        data.to_a.each do |stat_data|
           begin
             Statistic.create(
               fact: 'leadspeed',
@@ -197,6 +237,33 @@ module Statistics
           end
         end
         true
+      end
+
+      def self.contact_events_for_team_leadspeed(team:, resolution: 60, time_start:, time_end: nil)
+        return ContactEvent.where('1=0') if team.members.empty?
+
+        time_end ||= Time.now
+
+        sql = <<~SQL
+          SELECT
+            CEIL(avg(lead_time)) AS avg_leadtime,
+              'epoch'::timestamptz + '#{resolution} minutes'::INTERVAL * (EXTRACT(epoch FROM timestamp)::int4 / #{resolution * 60}) AS time_start
+          FROM
+            contact_events
+          INNER JOIN leads
+            ON leads.id = contact_events.lead_id
+          WHERE
+            timestamp BETWEEN '#{time_start}' AND '#{time_end}' AND
+            first_contact = true AND
+            contact_events.user_id IN (#{team.members.pluck(:id).map{|i| "'#{i}'"}.join(',')}) AND
+            #{Statistic.leadspeed_exclusion_sql}
+          GROUP BY
+            time_start
+          ORDER BY
+            time_start ASC;
+        SQL
+
+        ActiveRecord::Base.connection.execute(sql)
       end
 
       def self.rollup_all_leadspeed_intervals
@@ -267,6 +334,29 @@ module Statistics
           end
         end
         true
+      end
+
+      def self.leadspeed_exclusion_sql
+        out_sql = []
+
+        # Exclude non-leads
+        excluded_lead_states_sql = "leads.state NOT IN (#{LEADSPEED_EXCLUDED_LEAD_STATES.map{|s| "'#{s}'"}.join(', ')})"
+        out_sql << excluded_lead_states_sql
+
+        # Include only real leads or unclassified leads
+        out_sql << "( leads.classification = 0 OR leads.classification IS NULL )"
+
+        # Exclude some sources (especially Yardi Voyager which is prone to delays)
+        excluded_lead_source_ids = LeadSource.where(slug: LEADSPEED_EXCLUDED_SOURCES).pluck(:id)
+        if excluded_lead_source_ids.any?
+          excluded_lead_sources_sql = "leads.lead_source_id NOT IN (#{excluded_lead_source_ids.map{|s| "'#{s}'"}.join(', ')})"
+          out_sql << excluded_lead_sources_sql
+        end
+
+        # Exclude contact events with excessive lead time (indicating a system problem not a person problem)
+        out_sql << "contact_events.lead_time < #{2.days.to_i / 60}"
+
+        out_sql.join(' AND ')
       end
     end
   end

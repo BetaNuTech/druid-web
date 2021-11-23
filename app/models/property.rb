@@ -63,6 +63,7 @@ class Property < ApplicationRecord
   has_many :residents, dependent: :destroy
   has_many :engagement_policies, dependent: :destroy
   has_many :comments, class_name: "Note", as: :notable, dependent: :destroy
+  has_many :contact_events, through: :leads
 
   ### Validations
   validates :name, presence: true, uniqueness: true

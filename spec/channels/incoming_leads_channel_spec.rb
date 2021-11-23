@@ -64,11 +64,11 @@ RSpec.describe IncomingLeadsChannel, type: :channel do
     end
 
     it "should make a broadcast when Leads::Creator creates a Lead" do
-      subscribe(property_id: property.id)
       creator = Leads::Creator.new(**valid_attrs)
+      subscribe(property_id: property.id)
       expect{
         creator.call
-      }.to have_broadcasted_to(property_stream)
+      }.to have_broadcasted_to(property_stream).at_least(:once)
     end
 
   end

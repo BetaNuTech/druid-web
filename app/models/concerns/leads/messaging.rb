@@ -191,7 +191,9 @@ module Leads
         if message_delivery&.delivered_at.present?
           autocomplete_lead_contact_tasks(message_delivery)
           requalify_if_disqualified if message_delivery.message.incoming?
-          make_contact(timestamp: message_delivery.delivered_at, description: 'Message sent to Lead', article: message_delivery.message) unless message_delivery.message.for_compliance?
+          if message_delivery.message.outgoing? && !( message_delivery.message.for_compliance? || message_delivery.message.for_marketing?)
+            make_contact(timestamp: message_delivery.delivered_at, description: 'Message sent to Lead', article: message_delivery.message)
+          end
           preference&.handle_message_response(message_delivery)
           create_message_delivery_comment(message_delivery)
           create_message_delivery_task(message_delivery)
@@ -274,17 +276,8 @@ module Leads
           # Cannot send Message: send Error Notification
           message = Message.new()
           error_message = "Could not send SMS opt-in request"
-          errors.add error_message
-          errors
           error = StandardError.new(error_message)
-          if message_template.nil?
-            errors.add "Missing Message Template: '#{message_template_name}'"
-          end
-          if message_sms_destination.nil?
-            errors.add "Lead does not have a Phone Number"
-          end
-          #ErrorNotification.send(error,errors)
-          comment_content = "NOT SENT: #{message_template_name} -- #{errors[:errors].join('; ')}"
+          comment_content = "NOT SENT: #{message_template_name} -- #{( ( errors[:errors] || [] ) + [ error_message ] ).join('; ')}"
         end
 
         # Add activity entry to Lead timeline

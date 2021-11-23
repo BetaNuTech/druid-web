@@ -59,8 +59,8 @@ class ProspectStats
             "Closings30": closing_rate(property, 30),
             "Closings10": closing_rate(property, 10),
             "UnclaimedLeadsNow": unclaimed_leads_now(property),
-            "Tenacity30": Statistic.tenacity_grade_for(property, interval: :month, time_start: Statistic.utc_month_start - 1.month),
-            "LeadSpeed30": Statistic.lead_speed_grade_for(property, interval: :month, time_start: Statistic.utc_month_start - 1.month)
+            "Tenacity30": Statistic.rolling_month_property_tenacity_grade(property),
+            "LeadSpeed30": Statistic.rolling_month_property_leadspeed_grade(property)
           }
         }
       end

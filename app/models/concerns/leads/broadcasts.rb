@@ -20,6 +20,8 @@ module Leads
 
       def broadcast_to_streams
         broadcast_stream_names.each do |stream_name|
+          msg = "==> Broadcasting to #{stream_name}: #{json_for_broadcast}"
+          logger.debug(msg)
           ActionCable.server.broadcast(stream_name, json_for_broadcast)
         end
       end

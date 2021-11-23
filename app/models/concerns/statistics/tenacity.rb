@@ -56,7 +56,7 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   ( leads.classification = 0 OR leads.classification IS NULL ) AND
                   leads.id = contact_events.lead_id AND
-                  leads.state NOT IN ('resident', 'exresident') AND
+                  leads.state NOT IN ('resident', 'exresident', 'disqualified') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
               GROUP BY
                 contact_events.user_id,
@@ -93,6 +93,40 @@ module Statistics
         true
       end # generate_tenacity
 
+      # TODO
+      def self.rolling_month_property_tenacity(property)
+        return true if property.users.active.empty?
+
+        resolution = 1.month / 60
+        time_start = 2.months.ago
+        time_end = Time.now
+
+        sql = <<~SQL
+          SELECT
+            quantifiable_id,
+            quantifiable_type,
+            round(avg(value)::numeric, 1) AS avg_tenacity
+          FROM
+            statistics
+          WHERE
+            fact = 1 AND
+            quantifiable_type = 'Property' AND
+            quantifiable_id = '#{property.id}' AND
+            resolution = #{resolution.to_i} AND
+            time_start BETWEEN '#{time_start}' AND '#{time_end}'
+          GROUP BY
+            quantifiable_id,
+            quantifiable_type;
+        SQL
+
+        data = ActiveRecord::Base.connection.execute(sql).to_a
+        tenacity = data.first&.fetch('avg_tenacity', nil)
+      end
+
+      def self.rolling_month_property_tenacity_grade(property)
+        Statistic.tenacity_grade(self.rolling_month_property_tenacity(property))
+      end
+
       # Tenacity is a function of the number of times an agent has
       # contacted leads.
       #
@@ -125,7 +159,7 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   ( leads.classification = 0 OR leads.classification IS NULL ) AND
                   leads.id = contact_events.lead_id AND
-                  leads.state NOT IN ('resident', 'exresident') AND
+                  leads.state NOT IN ('resident', 'exresident', 'disqualified') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
               GROUP BY
                 contact_events.user_id,
@@ -196,7 +230,7 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   ( leads.classification = 0 OR leads.classification IS NULL ) AND
                   leads.id = contact_events.lead_id AND
-                  leads.state NOT IN ('resident', 'exresident') AND
+                  leads.state NOT IN ('resident', 'exresident', 'disqualified') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
               GROUP BY
                 contact_events.user_id,
@@ -289,7 +323,7 @@ module Statistics
 
 
       def self.backfill_tenacity(time_start:, time_end: )
-        resolutions = [ 1.month.to_i / 60 ]
+        resolutions = [1.month.to_i / 60]
 
         resolutions.each do |resolution|
           cursor = time_start.beginning_of_hour

@@ -12,6 +12,10 @@ module Messages
         classification == 'compliance'
       end
 
+      def for_marketing?
+        classification == 'marketing'
+      end
+
     end
 
   end

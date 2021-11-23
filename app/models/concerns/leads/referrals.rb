@@ -5,7 +5,7 @@ module Leads
     included do
       has_many :referrals, dependent: :destroy, class_name: 'LeadReferral'
       accepts_nested_attributes_for :referrals, allow_destroy: true
-      after_update :create_referral_comment
+      after_save :create_referral_comment
 
       SUPPORTED_REFERRALS = [
         {

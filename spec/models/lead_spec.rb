@@ -791,13 +791,14 @@ RSpec.describe Lead, type: :model do
 
     it "returns supported message types depending on data present" do
       ENV[MessageType::SMS_MESSAGING_DISABLED_FLAG] = 'false'
-      sms_message_type
-      email_message_type
+      sms_message_type = MessageType.sms || create(:sms_message_type)
+      email_message_type = MessageType.email || create(:email_message_type)
       lead.phone1_type = 'Cell'
       lead.save
       lead.reload
       expect(lead.message_types_available.sort).to eq([sms_message_type,email_message_type].sort)
-      lead.phone1 = nil
+      lead.phone1 = lead.phone2 = nil
+      lead.save!
       expect(lead.message_types_available).to eq([email_message_type])
     end
 
@@ -901,20 +902,20 @@ RSpec.describe Lead, type: :model do
         expect(lead.last_comm.to_i).to eq(outgoing_sms_message.delivered_at.to_i)
       end
 
-      it "should update last_contact upon receipt of an email message" do
+      it "should not update last_contact upon receipt of an email message" do
         last_contact = lead.last_comm
         incoming_email_message
         lead.reload
         expect(lead.last_comm).to_not eq(last_contact)
-        expect(lead.last_comm).to eq(incoming_email_message.delivered_at)
+        expect(lead.last_comm).to_not eq(incoming_email_message.delivered_at)
       end
 
-      it "should update last_contact upon receipt of an sms message" do
+      it "should not update last_contact upon receipt of an sms message" do
         last_contact = lead.last_comm
         incoming_sms_message
         lead.reload
         expect(lead.last_comm).to_not eq(last_contact)
-        expect(lead.last_comm).to eq(incoming_sms_message.delivered_at)
+        expect(lead.last_comm).to_not eq(incoming_sms_message.delivered_at)
       end
 
       describe "creating a reply task upon message receipt" do
@@ -1028,11 +1029,10 @@ RSpec.describe Lead, type: :model do
         lead.save!
         lead.reload
         latest_message = lead.messages.order(created_at: :desc).first
-        first_comment = lead.comments.order(created_at: :asc).first
         expect(lead.messages.count).to eq(message_count)
         expect(lead.comments.count).to eq(comment_count + 2)
         assert(lead.comments.map(&:content).any?{|c| c.match? "NOT SENT: #{template_name}"})
-        expect(first_comment.content).to match("Lead has no agent")
+        assert(lead.comments.map(&:content).any?{|c| c.match? "Lead has no agent"})
       end
     end
 

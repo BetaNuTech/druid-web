@@ -1,4 +1,5 @@
 module Leads
+  # Arrowtel CDR database integration
   module CallLog
     extend ActiveSupport::Concern
 
