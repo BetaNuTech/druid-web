@@ -209,7 +209,9 @@ class Message < ApplicationRecord
 
   def body_with_layout
     if incoming?
-      "<pre>" + body + "</pre>"
+      <<~EOF
+        <tt>#{body}</tt>
+      EOF
     else
       (message_template || MessageTemplate.default(self)).apply_layout(body)
     end
