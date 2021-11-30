@@ -103,7 +103,7 @@ namespace :statistics do
   namespace :impressions do
     desc "Page Impressions"
     task by_reference: :environment do
-      data = UserImpression.select('reference as ref, count(reference) as ct').group(:reference).order('ct desc').map{|r| [r.ref, r.ct]}
+      data = UserImpression.where(created_at: 1.month.ago..Time.now).select('reference as ref, count(reference) as ct').group(:reference).order('ct desc').map{|r| [r.ref, r.ct]}
       csv_data = CSV.generate do |csv|
         csv << ['Page', 'Count']
         data.each do |row|
