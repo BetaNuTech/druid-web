@@ -240,6 +240,8 @@ module Leads
       # Disqualify this lead if it is likely a duplicate
       # returns true only if disqualified
       def disqualify_if_high_confidence_duplicate
+        return false unless Flipflop.enabled?(:lead_automatic_dedupe)
+
         return false unless high_confidence_duplicates.any?
 
         self.classification = :duplicate
