@@ -222,34 +222,52 @@ module Leads
         true
       end
 
-      # TODO: not implemented
-      # Disqualify this lead if it is a likely duplicate sourced by Voyager
-      # returns true only if disqualified
-      #def disqualify_if_duplicate_from_voyager
-        #return false unless property.present? && open? && referral == 'Yardi Voyager' && duplicates.any?
-
-        ## TODO: identify presence of high confidence duplicates from Voyager
-        #self.classification = :duplicate
-        #self.transition_memo = 'Automatically disqualified as a likely duplicate from Voyager'
-        #trigger_event(event_name: 'disqualify')
-        #save
-        #reload
-        #true
-      #end
-
       # Disqualify this lead if it is likely a duplicate
       # returns true only if disqualified
       def disqualify_if_high_confidence_duplicate
-        return false unless Flipflop.enabled?(:lead_automatic_dedupe)
-
-        return false unless high_confidence_duplicates.any?
+        return false unless auto_disqualify_lead?
 
         self.classification = :duplicate
         self.transition_memo = 'Automatically disqualified due to high confidence match(es)'
         trigger_event(event_name: 'disqualify')
         save
         reload
+
         true
+      end
+
+      def auto_disqualify_lead?
+        # Check for feature flag
+        return false unless Flipflop.enabled?(:lead_automatic_dedupe)
+
+        # Abort if there are no matches
+        dupes = high_confidence_duplicates.to_a
+        return false unless dupes.any?
+
+        # Abort if all matches are already disqualified
+        return false if dupes.all?{|lead| lead.classification == 'duplicate'}
+
+        # At least one of the matches is in progress already
+        in_progress_states = ['prospect', 'showing', 'application', 'approved']
+        if ( matches = dupes.select{|lead| in_progress_states.include?(lead.state) } ).present?
+          if open?
+            # A match is currently being worked, so mark this new one as duplicate
+            return true
+          else
+            # Mark as duplicate if any of the other currently worked matches were created first
+            return true if matches.any?{|lead| lead.created_at < created_at }
+          end
+        end
+
+        non_worked_states = ['abandoned', 'future', 'waitlist', 'resident', 'exresident']
+        if (matches = dupes.select{|lead| non_worked_states.include?(lead.state)}).present?
+          # Presence of resident matches implies a Resident contact, so this would be a duplicate
+          # Otherwise this may be a valid contact
+          return matches.any?{|lead| lead.resident?}
+        end
+
+        # Default to false (do not classify as duplicate)
+        return false
       end
 
 
@@ -260,24 +278,25 @@ module Leads
       end
 
       def high_confidence_duplicates
-        return Lead.where('1=0') unless ( first_name.present? || last_name.present? ) && ( email.present? || phone1.present? )
+        return Lead.where('1=0') unless ( first_name.present? && last_name.present? ) && ( email.present? || phone1.present? )
 
         condition_hash = {start_date: HIGH_CONFIDENCE_DUPLICATE_MAX_AGE_DAYS.days.ago}
         conditions_str = '(created_at > :start_date)'
-
         conditions = []
-        if first_name.present?
-          conditions <<  'first_name = :first_name'
-          condition_hash[:first_name] = first_name
-        else
-          conditions << "( first_name IS NULL OR first_name = '' )"
+
+        # Match same property
+        if property_id.present?
+          conditions << 'property_id = :property_id'
+          condition_hash[:property_id] = property_id
+          conditions_str += ' AND (' + conditions.join(' AND ') + ')'
+          conditions = []
         end
-        if last_name.present?
-          conditions <<  'last_name = :last_name'
-          condition_hash[:last_name] = last_name
-        else
-          conditions << "( last_name IS NULL OR last_name = '' )"
-        end
+
+        # Match first and last name
+        conditions <<  'first_name = :first_name'
+        condition_hash[:first_name] = first_name
+        conditions <<  'last_name = :last_name'
+        condition_hash[:last_name] = last_name
         conditions_str += ' AND (' + conditions.join(' AND ') + ')'
         conditions = []
 

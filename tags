@@ -11,6 +11,7 @@ Actionmailer	./app/lib/messages/delivery_adapters/actionmailer.rb	/^    class Ac
 ActiveRecord	./app/lib/active_record_extensions.rb	/^class ActiveRecord::Base$/;"	c
 ActiveSupport	./test/test_helper.rb	/^class ActiveSupport::TestCase$/;"	c
 ActivityEntry	./app/models/stat.rb	/^  class ActivityEntry$/;"	c	class:Stat
+ActivityReport	./app/lib/users/activity_report.rb	/^  class ActivityReport$/;"	c	class:Users
 Adapters	./app/lib/leads/adapters.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/bluesky.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/bluesky_portal.rb	/^  module Adapters$/;"	m	class:Leads
@@ -21,6 +22,7 @@ Adapters	./app/lib/leads/adapters/cloud_mailin/apartment_list_dot_com_parser.rb	
 Adapters	./app/lib/leads/adapters/cloud_mailin/apartmentguide_dot_com_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/apartments_dot_com_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/cloud_mailin.rb	/^  module Adapters$/;"	m	class:Leads
+Adapters	./app/lib/leads/adapters/cloud_mailin/content_exception_list.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/corporatehousing_dot_com_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/forrent_dot_com_parser.rb	/^  module Adapters$/;"	m	class:Leads
 Adapters	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^  module Adapters$/;"	m	class:Leads
@@ -175,6 +177,7 @@ CloudMailin	./app/lib/leads/adapters/cloud_mailin/apartment_list_dot_com_parser.
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/apartmentguide_dot_com_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/apartments_dot_com_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/cloud_mailin.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
+CloudMailin	./app/lib/leads/adapters/cloud_mailin/content_exception_list.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/corporatehousing_dot_com_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/forrent_dot_com_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
 CloudMailin	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^    module CloudMailin$/;"	m	class:Leads.Adapters
@@ -198,6 +201,7 @@ Configuration	./app/lib/yardi/voyager/api/configuration.rb	/^      class Configu
 Connection	./app/channels/application_cable/connection.rb	/^  class Connection < ActionCable::Connection::Base$/;"	c	class:ApplicationCable
 ContactEvent	./app/models/contact_event.rb	/^class ContactEvent < ApplicationRecord$/;"	c
 ContactEvents	./app/models/concerns/leads/contact_events.rb	/^  module ContactEvents$/;"	m	class:Leads
+ContentExceptionList	./app/lib/leads/adapters/cloud_mailin/content_exception_list.rb	/^      module ContentExceptionList$/;"	m	class:Leads.Adapters.CloudMailin
 CorporatehousingDotComParser	./app/lib/leads/adapters/cloud_mailin/corporatehousing_dot_com_parser.rb	/^      class CorporatehousingDotComParser$/;"	c	class:Leads.Adapters.CloudMailin
 Costar	./app/lib/leads/adapters/costar.rb	/^    class Costar$/;"	c	class:Leads.Adapters
 CreateActiveStorageTables	./db/migrate/20190227175632_create_active_storage_tables.active_storage.rb	/^class CreateActiveStorageTables < ActiveRecord::Migration[5.2]$/;"	c
@@ -346,6 +350,7 @@ Leads	./app/lib/leads/adapters/cloud_mailin/apartment_list_dot_com_parser.rb	/^m
 Leads	./app/lib/leads/adapters/cloud_mailin/apartmentguide_dot_com_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/apartments_dot_com_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/cloud_mailin.rb	/^module Leads$/;"	m
+Leads	./app/lib/leads/adapters/cloud_mailin/content_exception_list.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/corporatehousing_dot_com_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/forrent_dot_com_parser.rb	/^module Leads$/;"	m
 Leads	./app/lib/leads/adapters/cloud_mailin/hotpads_parser.rb	/^module Leads$/;"	m
@@ -611,6 +616,7 @@ UnitTypesHelper	./app/helpers/unit_types_helper.rb	/^module UnitTypesHelper$/;"	
 Units	./app/lib/yardi/voyager/api/units.rb	/^      class Units < Base$/;"	c	class:Yardi.Voyager.Api
 UnitsController	./app/controllers/units_controller.rb	/^class UnitsController < ApplicationController$/;"	c
 UnitsHelper	./app/helpers/units_helper.rb	/^module UnitsHelper$/;"	m
+UpdateAuditIdsToUuids	./db/migrate/20211116213642_update_audit_ids_to_uuids.rb	/^class UpdateAuditIdsToUuids < ActiveRecord::Migration[6.1]$/;"	c
 UpgradeMarketingSourceData	./db/migrate/20210201230614_upgrade_marketing_source_data.rb	/^class UpgradeMarketingSourceData < ActiveRecord::Migration[6.0]$/;"	c
 User	./app/models/user.rb	/^class User < ApplicationRecord$/;"	c
 UserImpression	./app/models/user_impression.rb	/^class UserImpression < ApplicationRecord$/;"	c
@@ -627,6 +633,7 @@ Users	./app/controllers/users/passwords_controller.rb	/^class Users::PasswordsCo
 Users	./app/controllers/users/registrations_controller.rb	/^class Users::RegistrationsController < Devise::RegistrationsController$/;"	c
 Users	./app/controllers/users/sessions_controller.rb	/^class Users::SessionsController < Devise::SessionsController$/;"	c
 Users	./app/controllers/users/unlocks_controller.rb	/^class Users::UnlocksController < Devise::UnlocksController$/;"	c
+Users	./app/lib/users/activity_report.rb	/^module Users$/;"	m
 Users	./app/lib/users/creator.rb	/^module Users$/;"	m
 Users	./app/lib/users/policy.rb	/^module Users$/;"	m
 Users	./app/models/concerns/properties/users.rb	/^  module Users$/;"	m	class:Properties
@@ -805,6 +812,7 @@ assigned_properties_agents	./app/models/concerns/users/properties.rb	/^      def
 assigned_to_property?	./app/models/concerns/users/properties.rb	/^      def assigned_to_property?(property)$/;"	f	class:Users.Properties
 audiences	./app/models/article.rb	/^    def audiences$/;"	f	class:Article
 auto_disqualify	./app/models/concerns/leads/duplicates.rb	/^      def auto_disqualify$/;"	f	class:Leads.Duplicates
+auto_disqualify_lead?	./app/models/concerns/leads/duplicates.rb	/^      def auto_disqualify_lead?$/;"	f	class:Leads.Duplicates
 autocomplete_lead_contact_tasks	./app/models/concerns/leads/messaging.rb	/^      def autocomplete_lead_contact_tasks(message_delivery)$/;"	f	class:Leads.Messaging
 available?	./app/models/unit.rb	/^  def available?$/;"	f	class:Unit
 available_for_user	./app/models/message_template.rb	/^  def self.available_for_user(user)$/;"	F	class:MessageTemplate
@@ -858,6 +866,7 @@ call	./app/lib/messages/delivery_adapters/cloudmailin/health.rb	/^        def ca
 call	./app/lib/messages/receiver.rb	/^    def call$/;"	f	class:Messages.Receiver
 call	./app/lib/messages/search.rb	/^    def call$/;"	f	class:Messages.Search
 call	./app/lib/residents/lead_matcher.rb	/^    def call$/;"	f	class:Residents.LeadMatcher
+call	./app/lib/users/activity_report.rb	/^    def call$/;"	f	class:Users.ActivityReport
 call	./app/models/concerns/leads/cleanup.rb	/^    def call$/;"	f	class:Leads.Cleanup
 call	./app/models/engagement_policy_loader.rb	/^  def call$/;"	f	class:EngagementPolicyLoader
 call	./db/seeds/seed_properties.rb	/^  def call(filename=nil)$/;"	f	class:SeedProperties
@@ -987,6 +996,7 @@ change	./db/migrate/20210527180515_remove_movein_lead_state.rb	/^  def change$/;
 change	./db/migrate/20210720190625_add_system_to_lead_actions.rb	/^  def change$/;"	f	class:AddSystemToLeadActions
 change	./db/migrate/20210802211544_add_index_to_resident_details.rb	/^  def change$/;"	f	class:AddIndexToResidentDetails
 change	./db/migrate/20210802211722_add_index_to_residents.rb	/^  def change$/;"	f	class:AddIndexToResidents
+change	./db/migrate/20211116213642_update_audit_ids_to_uuids.rb	/^  def change$/;"	f	class:UpdateAuditIdsToUuids
 change_classification?	./app/policies/lead_policy.rb	/^  def change_classification?$/;"	f
 change_contact_preferences?	./app/policies/lead_policy.rb	/^  def change_contact_preferences?$/;"	f
 change_remoteid?	./app/policies/lead_policy.rb	/^  def change_remoteid?$/;"	f
@@ -1209,7 +1219,6 @@ display_preference_option	./app/helpers/leads_helper.rb	/^  def display_preferen
 display_usage	./external/nextiva/watch_cdr	/^display_usage () {$/;"	f
 disqualified_lead_checks	./app/models/concerns/leads/state_machine.rb	/^      def disqualified_lead_checks$/;"	f	class:Leads.StateMachine
 disqualify?	./app/policies/lead_policy.rb	/^  def disqualify?$/;"	f
-disqualify_if_duplicate_from_voyager	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_duplicate_from_voyager$/;"	f	class:Leads.Duplicates
 disqualify_if_high_confidence_duplicate	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_high_confidence_duplicate$/;"	f	class:Leads.Duplicates
 disqualify_if_resident	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_if_resident$/;"	f	class:Leads.Duplicates
 disqualify_open_resident_leads	./app/models/concerns/leads/duplicates.rb	/^      def disqualify_open_resident_leads(property=nil)$/;"	f	class:Leads.Duplicates
@@ -1317,6 +1326,7 @@ estimated_priority	./app/models/concerns/leads/priority.rb	/^      def estimated
 event_clear_user	./app/models/concerns/leads/state_machine.rb	/^      def event_clear_user(claimant=nil)$/;"	f	class:Leads.StateMachine
 event_name_for_transition	./app/models/concerns/leads/state_machine.rb	/^      def event_name_for_transition(from: , to: )$/;"	f	class:Leads.StateMachine
 event_set_user	./app/models/concerns/leads/state_machine.rb	/^      def event_set_user(claimant=nil)$/;"	f	class:Leads.StateMachine
+exception_list_match?	./app/lib/leads/adapters/cloudmailin.rb	/^      def exception_list_match?(data)$/;"	f	class:Leads.Adapters.Cloudmailin
 expected_expenses_this_billing_period	./app/models/concerns/marketing_sources/marketing_expenses.rb	/^      def expected_expenses_this_billing_period(reference_date = DateTime.now)$/;"	f	class:MarketingSources.MarketingExpenses
 expense_export	./app/lib/marketing_sources/report.rb	/^    def expense_export$/;"	f	class:MarketingSources
 export_csv	./app/models/concerns/leads/export.rb	/^      def export_csv(search: nil, ids: [])$/;"	f	class:Leads.Export
@@ -1599,6 +1609,7 @@ initialize	./app/lib/messages/receiver.rb	/^    def initialize(data:, token:)$/;
 initialize	./app/lib/messages/search.rb	/^    def initialize(params: nil, scope: nil, user: nil)$/;"	f	class:Messages.Search
 initialize	./app/lib/messages/sender.rb	/^    def initialize(delivery)$/;"	f	class:Messages.Sender
 initialize	./app/lib/prospect_stats.rb	/^  def initialize(ids: nil, filters: {})$/;"	f	class:ProspectStats
+initialize	./app/lib/users/activity_report.rb	/^    def initialize(property)$/;"	f	class:Users.ActivityReport
 initialize	./app/lib/users/creator.rb	/^    def initialize(params:, creator: nil)$/;"	f	class:Users.Creator
 initialize	./app/lib/yardi/voyager/api/base.rb	/^        def initialize(conf=nil)$/;"	f	class:Yardi.Voyager.Api.Base
 initialize	./app/lib/yardi/voyager/api/configuration.rb	/^        def initialize(source=:env)$/;"	f	class:Yardi.Voyager.Api.Configuration
@@ -1676,8 +1687,10 @@ lead_state_for	./app/lib/leads/adapters/yardi_voyager.rb	/^      def lead_state_
 lead_state_label	./app/helpers/leads_helper.rb	/^  def lead_state_label(lead)$/;"	f
 lead_states	./app/models/stat.rb	/^  def lead_states$/;"	f	class:Stat
 lead_states_json	./app/models/stat.rb	/^  def lead_states_json$/;"	f	class:Stat
+lead_stats	./app/lib/users/activity_report.rb	/^    def lead_stats$/;"	f	class:Users.ActivityReport
 lead_transition_filter_sql	./app/models/stat.rb	/^  def lead_transition_filter_sql$/;"	f	class:Stat.lead_sources_conversion_json
 lead_transition_help_text	./app/helpers/leads_helper.rb	/^  def lead_transition_help_text(event)$/;"	f
+lead_transitions	./app/lib/users/activity_report.rb	/^    def lead_transitions(user:, start_date:, end_date:, last_state:, current_state:)$/;"	f	class:Users.ActivityReport
 leads	./app/models/marketing_source.rb	/^  def leads$/;"	f	class:MarketingSource
 leads_accessible?	./app/policies/property_policy.rb	/^  def leads_accessible?$/;"	f
 leads_for_cancelling	./app/models/concerns/properties/yardi_voyager.rb	/^      def leads_for_cancelling$/;"	f	class:Properties.YardiVoyager
@@ -1704,6 +1717,8 @@ load_yaml	./app/models/engagement_policy_loader.rb	/^  def load_yaml(filename)$/
 log	./app/models/concerns/leads/cleanup.rb	/^    def log(message)$/;"	f	class:Leads.Cleanup
 log_error	./app/models/engagement_policy_scheduler.rb	/^  def log_error(msg, notification=true)$/;"	f	class:EngagementPolicyScheduler
 log_message_data	./app/controllers/api/v1/messages_controller.rb	/^      def log_message_data(data)$/;"	f	class:Api.V1.MessagesController
+login_stats	./app/lib/users/activity_report.rb	/^    def login_stats$/;"	f	class:Users.ActivityReport
+login_timestamps	./app/models/user.rb	/^  def login_timestamps(start_date: nil)$/;"	f	class:User
 long_date	./app/helpers/application_helper.rb	/^  def long_date(datetime)$/;"	f	class:ApplicationHelper
 long_date	./app/models/schedule.rb	/^  def long_date$/;"	f	class:Schedule
 long_datetime	./app/helpers/application_helper.rb	/^  def long_datetime(datetime)$/;"	f	class:ApplicationHelper
@@ -1799,6 +1814,7 @@ message_recipientid	./app/models/concerns/leads/messaging.rb	/^      def message
 message_recipientid	./app/models/concerns/users/messaging.rb	/^      def message_recipientid(message_type: )$/;"	f	class:Users.Messaging
 message_sms_destination	./app/models/concerns/leads/messaging.rb	/^      def message_sms_destination$/;"	f	class:Leads.Messaging
 message_sms_destination	./app/models/concerns/users/messaging.rb	/^      def message_sms_destination$/;"	f	class:Users.Messaging
+message_stats	./app/lib/users/activity_report.rb	/^    def message_stats$/;"	f	class:Users.ActivityReport
 message_template_data	./app/models/concerns/leads/messaging.rb	/^      def message_template_data$/;"	f	class:Leads.Messaging
 message_template_data	./app/models/concerns/users/messaging.rb	/^      def message_template_data$/;"	f	class:Users.Messaging
 message_template_layout	./app/models/message_template.rb	/^  def message_template_layout$/;"	f
@@ -1832,6 +1848,7 @@ name	./app/models/unit.rb	/^  def name$/;"	f	class:Unit
 name	./app/models/user.rb	/^  def name$/;"	f	class:User
 name_and_unit	./app/models/resident.rb	/^  def name_and_unit$/;"	f	class:Resident
 name_for_phone_number	./app/models/concerns/properties/phone_numbers.rb	/^      def name_for_phone_number(number)$/;"	f	class:Properties.PhoneNumbers
+names_and_ids	./app/models/property.rb	/^  def self.names_and_ids$/;"	F	class:Property
 nav_active_class	./app/helpers/application_helper.rb	/^  def nav_active_class(path)$/;"	f	class:ApplicationHelper
 nav_active_dropdown_class	./app/helpers/application_helper.rb	/^  def nav_active_dropdown_class(path)$/;"	f	class:ApplicationHelper
 nav_item_active?	./app/helpers/application_helper.rb	/^  def nav_item_active?(key, action=nil)$/;"	f	class:ApplicationHelper
@@ -2006,6 +2023,8 @@ parse_plain	./app/lib/leads/adapters/cloud_mailin/lease_labs_dot_com_parser.rb	/
 parse_plain	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.parse_plain(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 parse_plain	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^          def parse_plain(data)$/;"	f	class:Leads.Adapters.CloudMailin.ZillowParser
 parse_status	./app/lib/messages/delivery_adapters/cloudmailin/health.rb	/^        def parse_status(json)$/;"	f	class:Messages.DeliveryAdapters.Cloudmailin.Health
+parse_variant_1	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.parse_variant_1(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
+parse_variant_2	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.parse_variant_2(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 password_required?	./app/models/concerns/users/devise.rb	/^      def password_required?$/;"	f	class:Users.Devise
 path	./external/lambda/postBlueskyCallerInfo.js	/^			path: slackWebhookPath$/;"	p	class:const
 path	./external/lambda/postConnectLead.js	/^			path: slackWebhookPath$/;"	p	class:const
@@ -2028,6 +2047,7 @@ permitted_states	./app/models/concerns/scheduled_actions/state_machine.rb	/^    
 personal_task?	./app/models/concerns/scheduled_actions/engagement_policy.rb	/^      def personal_task?$/;"	f	class:ScheduledActions.EngagementPolicy
 phone_export	./app/lib/marketing_sources/report.rb	/^    def phone_export$/;"	f	class:MarketingSources
 phone_export_csv	./app/lib/marketing_sources/report.rb	/^    def phone_export_csv$/;"	f	class:MarketingSources
+phone_source?	./app/models/lead_source.rb	/^  def phone_source?$/;"	f	class:LeadSource
 phone_whitelist	./app/models/message_delivery.rb	/^  def phone_whitelist$/;"	f	class:MessageDelivery
 plugins	./postcss.config.js	/^  plugins: [$/;"	p	class:module.exports
 policy	./app/channels/incoming_leads_channel.rb	/^  def policy(property_id)$/;"	f	class:IncomingLeadsChannel
@@ -2447,6 +2467,7 @@ show_import_notes?	./app/policies/lead_policy.rb	/^  def show_import_notes?$/;"	
 showing	./app/models/lead_action.rb	/^  def self.showing$/;"	F	class:LeadAction
 showing_rate	./app/models/concerns/users/tasks.rb	/^      def showing_rate(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)$/;"	f	class:Users.Tasks
 showing_unit_selection_options	./app/helpers/leads_helper.rb	/^  def showing_unit_selection_options(property)$/;"	f
+showings	./app/lib/users/activity_report.rb	/^    def showings(user:, start_date: nil, end_date: nil)$/;"	f	class:Users.ActivityReport
 showings	./app/models/lead.rb	/^    def showings$/;"	f	class:Lead
 sign_in	./spec/support/request_spec_helper.rb	/^  def sign_in(resource)$/;"	f	class:RequestSpecHelper
 sign_out	./spec/support/request_spec_helper.rb	/^  def sign_out(resource)$/;"	f	class:RequestSpecHelper
@@ -2519,6 +2540,7 @@ target_subject	./app/models/scheduled_action.rb	/^  def target_subject(user=nil)
 task_calendar_expiration	./app/models/concerns/users/tasks.rb	/^      def task_calendar_expiration$/;"	f	class:Users.Tasks
 task_completion_rate	./app/models/concerns/users/tasks.rb	/^      def task_completion_rate(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)$/;"	f	class:Users.Tasks
 task_deadline_score	./app/models/concerns/leads/priority.rb	/^      def task_deadline_score$/;"	f	class:Leads.Priority
+task_stats	./app/lib/users/activity_report.rb	/^    def task_stats$/;"	f	class:Users.ActivityReport
 tasks_completed	./app/models/concerns/users/tasks.rb	/^      def tasks_completed(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)$/;"	f	class:Users.Tasks
 tasks_pending	./app/models/concerns/users/tasks.rb	/^      def tasks_pending$/;"	f	class:Users.Tasks
 team_admin?	./app/models/concerns/users/teams.rb	/^      def team_admin?$/;"	f	class:Users.Teams
@@ -2721,6 +2743,8 @@ user_ids_sql	./app/models/stat.rb	/^  def user_ids_sql$/;"	f	class:Stat.lead_sou
 user_incoming_messages_stream_base	./app/models/concerns/messages/broadcasts.rb	/^      def user_incoming_messages_stream_base$/;"	f	class:Messages.Broadcasts
 user_incoming_messages_stream_name	./app/models/concerns/messages/broadcasts.rb	/^      def user_incoming_messages_stream_name$/;"	f	class:Messages.Broadcasts
 user_not_authorized	./app/controllers/application_controller.rb	/^  def user_not_authorized$/;"	f	class:ApplicationController
+user_stats	./app/controllers/properties_controller.rb	/^  def user_stats$/;"	f	class:PropertiesController
+user_stats?	./app/policies/property_policy.rb	/^  def user_stats?$/;"	f
 user_timezone	./app/controllers/application_controller.rb	/^  def user_timezone(&block)$/;"	f	class:ApplicationController
 users_available_for_assignment	./app/models/concerns/properties/users.rb	/^      def users_available_for_assignment$/;"	f	class:Properties.Users
 users_available_for_lead_assignment	./app/models/concerns/properties/users.rb	/^      def users_available_for_lead_assignment$/;"	f	class:Properties.Users
@@ -2756,6 +2780,7 @@ validate_settings	./app/lib/yardi/voyager/api/configuration.rb	/^        def val
 validate_source_token	./app/controllers/api_controller.rb	/^  def validate_source_token(source: , token:)$/;"	f	class:ApiController
 validate_target	./app/models/scheduled_action.rb	/^  def validate_target$/;"	f	class:ScheduledAction
 variable_interval_reinforcement_delay	./app/models/engagement_policy_action.rb	/^  def variable_interval_reinforcement_delay(attempt:, schedule: 'none')$/;"	f	class:EngagementPolicyAction
+variant	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        def self.variant(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentcafeParser
 versioned_layout	./app/controllers/application_controller.rb	/^  def versioned_layout$/;"	f	class:ApplicationController
 violates_whitelist?	./app/models/message_delivery.rb	/^  def violates_whitelist?$/;"	f	class:MessageDelivery
 voyager_guestcard	./app/models/concerns/leads/remote.rb	/^      def voyager_guestcard(debug=false)$/;"	f	class:Leads.Remote
