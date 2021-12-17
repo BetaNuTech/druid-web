@@ -1,7 +1,7 @@
 namespace :post_deployment do
 
   desc "task20211216"
-  task task2021216: :environment do
+  task task20211216: :environment do
     # Backfill incoming phone lead first contact events for 6 months (`Lead.backfill_incoming_call_contact_events(time_start: )`)
     # Delete Statistics for the past 6 months
     # Backfill tenacity 6 months
