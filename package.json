@@ -38,5 +38,8 @@
   "repository": "git@github.com:BetaNuTech/druid-web.git",
   "author": "BlueStone Properties",
   "license": "ProprietaryConfidential",
-  "devDependencies": {}
+  "devDependencies": {},
+  "engines": {
+    "node": "14.x"
+  },
 }
