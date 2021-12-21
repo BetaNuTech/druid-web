@@ -28,6 +28,8 @@ module Leads
           "lead_last_name" => last_name,
           'lead_floorplan' => preference.try(:unit_type_name),
           "agent_name" => user.try(:name),
+          "agent_first_name" => user.try(:first_name),
+          "agent_last_name" => user.try(:last_name),
           "agent_title" => user.try(:team_title),
           "property_name" => property.try(:name),
           "property_address" => property.try(:address),
