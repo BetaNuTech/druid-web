@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.7.5'
+ruby '3.0.3'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -18,7 +18,7 @@ gem 'turbolinks', "~> 5.2"
 gem 'jbuilder', "~> 2.11"
 gem 'dotenv', "~> 2.7"
 gem 'foreman', "~> 0.87"
-gem 'delayed_job_active_record', "~> 4.1"
+gem 'delayed_job_active_record'
 gem 'amazing_print', "~> 1.3"
 gem 'pry-rails', "~> 0.3"
 gem 'webpacker', "~> 5.2"
@@ -33,7 +33,7 @@ gem 'ice_cube', "~> 0.16"
 gem 'schedulable', "~> 0.0"
 gem 'simple_calendar', "~> 2.4"
 gem 'httparty', "~> 0.18"
-gem 'nokogiri', "~> 1.12"
+gem 'nokogiri'
 gem 'liquid', "~> 5.0"
 gem 'twilio-ruby', "~> 5.56"
 gem 'kaminari', "~> 1.2"
@@ -46,7 +46,7 @@ gem 'connection_pool', "~> 2.2"
 gem 'premailer', "~> 1.15"
 gem 'image_processing', "~> 1.12"
 gem 'mini_magick', "~> 4.11"
-gem 'delayed_job_web', "~> 1.4"
+gem 'delayed_job_web'
 gem 'immigrant', "~> 0.3"
 gem "wysiwyg-rails", github: 'codeprimate/wysiwyg-rails'
 gem 'froala-editor-sdk', "~> 1.4"
@@ -56,21 +56,21 @@ gem 'working_hours', "~> 1.4"
 gem 'migration_data', "~> 0.6"
 gem 'holidays', "~> 8.4"
 gem 'slack-notifier', "~> 2.4"
-gem 'newrelic_rpm', "~> 8.1"
+gem 'newrelic_rpm'
 
 group :development, :test do
-  gem 'pry-doc', "~> 1.1"
-  gem 'pry-stack_explorer', "~> 0.6"
-  gem 'pry-byebug', "~> 3.9"
-  gem 'byebug', "~> 11.1"
-  gem 'bundler-audit', "~> 0.8"
-  gem 'faker', "~> 2.18"
-  gem 'factory_bot_rails', "~> 6.2"
+  gem 'pry-doc'
+  gem 'pry-stack_explorer'
+  gem 'pry-byebug'
+  gem 'byebug'
+  gem 'bundler-audit'
+  gem 'faker'
+  gem 'factory_bot_rails'
 end
 
 group :test do
-  gem 'rspec', "~> 3.10"
-  gem 'warden-rspec-rails', "~> 0.2"
+  gem 'rspec'
+  gem 'warden-rspec-rails'
   gem 'capybara', "~> 3.35"
   gem 'guard-rspec', "~> 4.7"
   gem 'guard-rake', "~> 1.0"

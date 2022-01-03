@@ -36,7 +36,7 @@ RSpec.describe RoommatesController, type: :controller do
       it "should create a new roommate record" do
         sign_in agent
         expect(lead.roommates.count).to eq(0)
-        post :create, {params: {lead_id: lead.id, roommate: valid_attributes}}
+        post( :create, params: {lead_id: lead.id, roommate: valid_attributes} )
         expect(response).to have_http_status(302)
         expect(assigns[:roommate]).to be_valid
         expect(lead.roommates.count).to eq(1)
@@ -47,7 +47,7 @@ RSpec.describe RoommatesController, type: :controller do
       it "should re-render the form" do
         sign_in agent
         expect(lead.roommates.count).to eq(0)
-        post :create, {params: {lead_id: lead.id, roommate: invalid_attributes}}
+        post(:create, params: {lead_id: lead.id, roommate: invalid_attributes})
         expect(response).to have_http_status(200)
         expect(response).to render_template('new')
         expect(assigns[:roommate]).to be_invalid
@@ -60,7 +60,7 @@ RSpec.describe RoommatesController, type: :controller do
     describe "as an agent" do
       it "should be successful" do
         sign_in agent
-        get :edit, {params: {lead_id: lead.id, id: roommate.id}}
+        get(:edit, params: {lead_id: lead.id, id: roommate.id})
         expect(response).to render_template('edit')
         expect(response).to have_http_status(200)
         expect(assigns[:roommate]).to eq(roommate)

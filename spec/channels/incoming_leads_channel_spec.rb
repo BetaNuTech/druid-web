@@ -30,7 +30,7 @@ RSpec.describe IncomingLeadsChannel, type: :channel do
     it "streams broadcasts" do
       subscribe(property_id: property.id)
       expect {
-        ActionCable.server.broadcast(property_stream, lead: lead1.to_json)
+        ActionCable.server.broadcast(property_stream, { lead: lead1.to_json })
       }.to have_broadcasted_to(property_stream)
     end
 

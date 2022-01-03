@@ -55,7 +55,7 @@ module Leads
         if scheduled_action.lead_action&.is_contact?
           description = 'Completed a Contact action'
           timestamp = scheduled_action.completed_at || Time.now
-          create_contact_event(timestamp: timestamp, description: description, article: scheduled_action)
+          create_contact_event({ timestamp: timestamp, description: description, article: scheduled_action })
         end
       end
 
@@ -66,8 +66,11 @@ module Leads
       # lead_time: Integer (default: 1 minute),
       # article: Polymorphic (ScheduledAction or Message)
       #
-      def create_contact_event(timestamp: nil, description: 'Unspecified Lead contact event' , lead_time: nil, article: nil)
-        timestamp ||= Time.now
+      def create_contact_event(options)
+        timestamp = options.fetch(:timestamp, Time.now)
+        description = options.fetch(:description, 'Unspecified Lead contact event')
+        lead_time = options.fetch(:lead_time, nil)
+        article = options.fetch(:article, nil)
         event_user_id = ( user_id || property&.primary_agent&.id )
         is_first_contact = contact_events.where(first_contact: true).empty? && ( last_comm.nil? || timestamp < last_comm )
 
@@ -101,7 +104,7 @@ module Leads
       def make_contact(timestamp: nil, description: nil, article: nil)
         description ||= 'Lead contacted (misc)'
         timestamp = timestamp || Time.now
-        create_contact_event(timestamp: timestamp, description: description, article: article)
+        create_contact_event({ timestamp: timestamp, description: description, article: article })
       end
 
       def lead_speed

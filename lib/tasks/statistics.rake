@@ -16,15 +16,21 @@ namespace :statistics do
             when Message
               next if article.for_compliance?
               article.messageable.create_contact_event_without_delay(
-                timestamp: article.delivered_at,
-                description: 'Historical contact event for message',
-                article: article
+                {
+                  timestamp: article.delivered_at,
+                  description: 'Historical contact event for message',
+                  article: article
+                }
               )
             when ScheduledAction
+              next unless article.target.is_a?(Lead)
+
               article.target.create_contact_event_without_delay(
-                timestamp: article.completed_at,
-                description: 'Historical contact event for task',
-                article: article
+                {
+                  timestamp: article.completed_at,
+                  description: 'Historical contact event for task',
+                  article: article
+                }
               )
             end
           rescue => e

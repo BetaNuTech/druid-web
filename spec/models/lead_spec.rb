@@ -583,15 +583,16 @@ RSpec.describe Lead, type: :model do
     let(:email_message_type) {create(:email_message_type)}
 
     it "returns message_template information" do
-      expected_data_keys = %w{ lead_name lead_title lead_first_name lead_last_name lead_floorplan agent_name agent_title
-                               property_name property_address property_address_html
-                               property_city property_amenities property_website
-                               property_phone property_school_district property_application_url
-                               html_email_header_image email_bluestone_logo email_housing_logo
-                               email_unsubscribe_link }
-                               attrs = lead.message_template_data
-                               assert attrs.is_a?(Hash)
-                               expect(attrs.keys).to eq(expected_data_keys)
+      expected_data_keys = %w{ lead_name lead_title lead_first_name
+                              lead_last_name lead_floorplan agent_name agent_title property_name
+                              property_address property_address_html property_city property_amenities
+                              property_website property_phone property_school_district
+                              property_application_url html_email_header_image email_bluestone_logo
+                              email_housing_logo agent_first_name agent_last_name
+                              email_unsubscribe_link }
+     attrs = lead.message_template_data
+     assert attrs.is_a?(Hash)
+     expect(attrs.keys.sort).to eq(expected_data_keys.sort)
     end
 
     it "returns the preferred message_email_destination" do

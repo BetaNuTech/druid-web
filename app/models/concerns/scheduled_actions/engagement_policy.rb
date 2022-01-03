@@ -60,15 +60,16 @@ module ScheduledActions
       end
 
       def next_scheduled_attempt(this_attempt=nil)
-        default = ( Time.now + 1.day )
+        basis = Time.now
+        default = ( basis + 1.day )
         if completion_retry_delay_value.present? && completion_retry_delay_unit.present?
           # Use override delay information
           retry_value = [completion_retry_delay_value.to_i, 1].max
           case completion_retry_delay_unit
           when 'hours'
-            return (Time.now + retry_value.hours)
+            return (basis + retry_value.hours)
           when 'days'
-            return (Time.now + retry_value.days)
+            return (basis + retry_value.days)
           else
             # The Retry Unit is invalid, so default to using the Policy retry_delay
             self.completion_retry_delay_unit = nil
@@ -78,7 +79,7 @@ module ScheduledActions
           # If this is a personal task, return Now + 1 day
           # If this is a Compliance Task, return the date as dictated by Policy
           return default if personal_task? || engagement_policy_action.nil?
-          return engagement_policy_action.next_scheduled_attempt(this_attempt)
+          return engagement_policy_action.next_scheduled_attempt(basis: basis, attempt: this_attempt[:attempt])
         end
       end
 
