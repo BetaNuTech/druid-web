@@ -229,7 +229,7 @@ RSpec.describe Message, type: :model do
       expect(Note.count).to eq(0)
       message1.save
       message1.deliver
-      expect(Note.count).to eq(1)
+      expect(Note.count).to eq(3)
     end
   end
 
