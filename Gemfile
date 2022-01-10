@@ -59,6 +59,7 @@ gem 'slack-notifier', "~> 2.4"
 gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
+gem 'net-imap', require: false
 
 group :development, :test do
   gem 'pry-doc'
