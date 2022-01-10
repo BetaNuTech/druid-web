@@ -170,8 +170,6 @@ class LeadsController < ApplicationController
   end
 
   def call_log_partial
-    raise ActiveRecord::RecordNotFound
-
     authorize @lead
     if @lead.should_update_call_log?
       @lead.update_call_log
