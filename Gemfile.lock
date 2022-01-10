@@ -316,6 +316,10 @@ GEM
       coffee-rails (>= 3.2.1)
       jquery-rails
       rails (>= 3.2.0)
+    net-pop (0.1.1)
+      digest
+      net-protocol
+      timeout
     net-protocol (0.1.2)
       io-wait
       timeout
@@ -596,6 +600,7 @@ DEPENDENCIES
   mini_magick (~> 4.11)
   mysql2 (~> 0.5)
   nested_form_fields (~> 0.8)
+  net-pop
   net-smtp
   newrelic_rpm
   nokogiri
