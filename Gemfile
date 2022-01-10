@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.0.3'
+ruby '3.1.0'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -57,6 +57,7 @@ gem 'migration_data', "~> 0.6"
 gem 'holidays', "~> 8.4"
 gem 'slack-notifier', "~> 2.4"
 gem 'newrelic_rpm'
+gem 'net-smtp', require: false
 
 group :development, :test do
   gem 'pry-doc'

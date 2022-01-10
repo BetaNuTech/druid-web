@@ -173,6 +173,7 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.5.0)
+    digest (3.1.0)
     docile (1.4.0)
     dotenv (2.7.6)
     encryptor (3.0.0)
@@ -252,6 +253,7 @@ GEM
       ruby-vips (>= 2.0.17, < 3)
     immigrant (0.3.6)
       activerecord (>= 3.0)
+    io-wait (0.2.1)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -302,7 +304,7 @@ GEM
     mini_histogram (0.3.1)
     mini_magick (4.11.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.6.1)
+    mini_portile2 (2.7.1)
     minitest (5.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -314,10 +316,17 @@ GEM
       coffee-rails (>= 3.2.1)
       jquery-rails
       rails (>= 3.2.0)
+    net-protocol (0.1.2)
+      io-wait
+      timeout
+    net-smtp (0.3.1)
+      digest
+      net-protocol
+      timeout
     newrelic_rpm (8.2.0)
     nio4r (2.5.8)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.13.0)
+      mini_portile2 (~> 2.7.0)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -494,8 +503,9 @@ GEM
       unicode-display_width (>= 1.1.1, < 3)
     terrapin (0.6.0)
       climate_control (>= 0.0.3, < 1.0)
-    thor (1.1.0)
+    thor (1.2.1)
     tilt (2.0.10)
+    timeout (0.2.0)
     trollop (2.9.10)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
@@ -586,6 +596,7 @@ DEPENDENCIES
   mini_magick (~> 4.11)
   mysql2 (~> 0.5)
   nested_form_fields (~> 0.8)
+  net-smtp
   newrelic_rpm
   nokogiri
   pessimize (~> 0.4)
@@ -625,7 +636,7 @@ DEPENDENCIES
   wysiwyg-rails!
 
 RUBY VERSION
-   ruby 3.0.3p157
+   ruby 3.1.0p0
 
 BUNDLED WITH
    2.2.32
