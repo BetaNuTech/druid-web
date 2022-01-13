@@ -172,7 +172,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def change_remoteid?
-    edit? && ( !record.valid? || user.manager? || user.admin?)
+    edit? && (user.manager? || user.admin?)
   end
 
   def resend_sms_opt_in_message?
