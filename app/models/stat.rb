@@ -488,6 +488,8 @@ EOS
 
   def agent_status_json
     skope = User.active.where(id: statistics_collection[:agent].pluck(:id))
+    start_date = (Date.today - 7.days).beginning_of_day.strftime("%Y-%m-%d")
+    end_date = Time.now.strftime("%Y-%m-%d")
 
     return {
         series: skope.map do |user|
@@ -499,9 +501,11 @@ EOS
             tasks_completed: user.tasks_completed.count,
             tasks_pending: user.tasks_pending.count,
             task_completion_rate: user.task_completion_rate,
-            claimed_leads: user.claimed_leads.count,
-            closed_leads: user.closed_leads.count,
-            url: "/users/#{user.id}"
+            claimed_leads: user.claimed_leads(start_date: start_date, end_date: end_date).count,
+            closed_leads: user.closed_leads(start_date: start_date, end_date: end_date).count,
+            url: "/users/#{user.id}",
+            start_date: start_date,
+            end_date: end_date
           }
         end
       }

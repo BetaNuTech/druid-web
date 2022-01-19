@@ -14,8 +14,8 @@ class AgentStatus extends React.Component {
     this.setState({data: nextProps.data.data})
   }
 
-  leadSearchLink(userid) {
-    return(`/leads/search?lead_search[user_ids][]=${userid}`)
+  leadSearchLink(userid, start_date, end_date) {
+    return(`/leads/search?lead_search[user_ids][]=${userid}&lead_search[start_date][]=${start_date}&lead_search[end_date][]=${end_date}`)
   }
 
   agentRows(){
@@ -33,9 +33,9 @@ class AgentStatus extends React.Component {
         </td>
         <td>
           <em>Claimed:</em>&nbsp;
-            <a href={this.leadSearchLink(d.id)} target="_blank">{d.claimed_leads}</a><br/>
+            <a href={this.leadSearchLink(d.id, d.start_date, d.end_date)} target="_blank">{d.claimed_leads}</a><br/>
           <em>Closed:</em>&nbsp;
-            <a href={this.leadSearchLink(d.id)} target="_blank">{d.closed_leads}</a><br/>
+            <a href={this.leadSearchLink(d.id, d.start_date, d.end_date)} target="_blank">{d.closed_leads}</a><br/>
         </td>
       </tr>
     ))
