@@ -14,8 +14,12 @@ class AgentStatus extends React.Component {
     this.setState({data: nextProps.data.data})
   }
 
-  leadSearchLink(userid) {
-    return(`/leads/search?lead_search[user_ids][]=${userid}`)
+  leadSearchLink(userid, states, start_date, end_date) {
+    let state_filter = '';
+    for (const state of states) {
+      state_filter += `&lead_search[states][]=${state}`
+    }
+    return(`/leads/search?lead_search[user_ids][]=${userid}&lead_search[start_date][]=${start_date}&lead_search[end_date][]=${end_date}${state_filter}`)
   }
 
   agentRows(){
@@ -33,9 +37,9 @@ class AgentStatus extends React.Component {
         </td>
         <td>
           <em>Claimed:</em>&nbsp;
-            <a href={this.leadSearchLink(d.id)} target="_blank">{d.claimed_leads}</a><br/>
+            <a href={this.leadSearchLink(d.id, ['prospect', 'showing', 'application', 'approved', 'denied'] ,d.start_date, d.end_date)} target="_blank">{d.claimed_leads}</a><br/>
           <em>Closed:</em>&nbsp;
-            <a href={this.leadSearchLink(d.id)} target="_blank">{d.closed_leads}</a><br/>
+            <a href={this.leadSearchLink(d.id, ['disqualified', 'abandoned', 'future', 'waitlist'], d.start_date, d.end_date)} target="_blank">{d.closed_leads}</a><br/>
         </td>
       </tr>
     ))
