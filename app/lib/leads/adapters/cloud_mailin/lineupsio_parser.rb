@@ -12,7 +12,7 @@ module Leads
         end
 
         def self.parse(data)
-          body = data.fetch(:html)
+          body = data.fetch('html',{})
           return parse_html(data.merge({body: body}))
         end
 
@@ -21,13 +21,6 @@ module Leads
         end
 
         def self.parse_html(data)
-          first_name = 'Error'
-          last_name = 'Error'
-          phone1 = nil
-          email = nil
-          notes = nil
-          move_in = nil
-          beds = nil
 
           begin
             body = data[:body]
@@ -46,6 +39,15 @@ module Leads
             notes = lead_data['comments']
             move_in = lead_data['desired_move_in']
             beds = lead_data['desired_bedrooms']
+          rescue => e
+            ErrorNotification.send(e, {message: 'Error parsing lead from Lineups.io'})
+            first_name = 'Error'
+            last_name = 'Error'
+            phone1 = nil
+            email = 'Error'
+            notes = nil
+            move_in = nil
+            beds = nil
           end
 
           remoteid = nil
