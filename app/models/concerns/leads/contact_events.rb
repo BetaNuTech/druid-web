@@ -66,6 +66,8 @@ module Leads
       # lead_time: Integer (default: 1 minute),
       # article: Polymorphic (ScheduledAction or Message)
       #
+      # Lead owner is given credit for any lead contact events to prevent unfair tenacity scores
+      #
       def create_contact_event(options)
         timestamp = options.fetch(:timestamp, Time.now)
         description = options.fetch(:description, 'Unspecified Lead contact event')
