@@ -12,7 +12,7 @@ module Leads
         end
 
         def self.parse(data)
-          body = data.fetch('html','')
+          body = data.fetch('html',{})
           return parse_html(data.merge({body: body}))
         end
 
