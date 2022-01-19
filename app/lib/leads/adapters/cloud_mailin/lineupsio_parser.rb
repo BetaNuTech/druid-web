@@ -12,8 +12,7 @@ module Leads
         end
 
         def self.parse(data)
-          body = data.fetch('html',{})
-          return parse_html(data.merge({body: body}))
+          return parse_html(data)
         end
 
         def self.sanitize(value)
@@ -23,7 +22,7 @@ module Leads
         def self.parse_html(data)
 
           begin
-            body = data[:body]
+            body = data['html']
             doc = Nokogiri::XML(body)
 
             referral = REFERRAL

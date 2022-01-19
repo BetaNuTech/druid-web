@@ -101,6 +101,8 @@ module Leads
         compare_timestamp = (first_contact ? created_at : last_comm).to_time
         
         ( [ ( timestamp.to_time - compare_timestamp ).to_i, 1 ].max / 60 ).to_i
+      rescue
+        1
       end
 
       def make_contact(timestamp: nil, description: nil, article: nil)
