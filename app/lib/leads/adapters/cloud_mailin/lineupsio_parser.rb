@@ -21,22 +21,32 @@ module Leads
         end
 
         def self.parse_html(data)
-          body = data[:body]
-          doc = Nokogiri::XML(body)
+          first_name = 'Error'
+          last_name = 'Error'
+          phone1 = nil
+          email = nil
+          notes = nil
+          move_in = nil
+          beds = nil
 
-          referral = REFERRAL
-          message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
+          begin
+            body = data[:body]
+            doc = Nokogiri::XML(body)
 
-          lead_data = doc.xpath('//comment()[contains(.,\'PROSPECT\')]').inner_text.sub(/PROSPECT = /i,'')
-          lead_data = JSON.parse(lead_data)
+            referral = REFERRAL
+            message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
 
-          first_name = lead_data['first_name']
-          last_name = lead_data['last_name']
-          phone1 = lead_data['cell_phone']
-          email = lead_data['email']
-          notes = lead_data['comments']
-          move_in = lead_data['desired_move_in']
-          beds = lead_data['desired_bedrooms']
+            lead_data = doc.xpath('//comment()[contains(.,\'PROSPECT\')]').inner_text.sub(/PROSPECT = /i,'')
+            lead_data = JSON.parse(lead_data)
+
+            first_name = lead_data['first_name']
+            last_name = lead_data['last_name']
+            phone1 = lead_data['cell_phone']
+            email = lead_data['email']
+            notes = lead_data['comments']
+            move_in = lead_data['desired_move_in']
+            beds = lead_data['desired_bedrooms']
+          end
 
           remoteid = nil
           title = nil
