@@ -28,8 +28,8 @@ module Leads
             referral = REFERRAL
             message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
 
-            lead_data = doc.xpath('//comment()[contains(.,\'PROSPECT\')]').inner_text.sub(/PROSPECT = /i,'')
-            lead_data = JSON.parse(lead_data)
+            embedded_lead_data = doc.xpath('//comment()[contains(.,\'PROSPECT\')]').inner_text.sub(/PROSPECT = /i,'').gsub("\n",'')
+            lead_data = JSON.parse(embedded_lead_data)
 
             first_name = lead_data['first_name']
             last_name = lead_data['last_name']
