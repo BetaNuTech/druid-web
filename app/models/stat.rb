@@ -328,12 +328,17 @@ EOS
     stats = {}
     [:team, :property, :agent].each do |key|
       collection[key].each do |record|
+        if key == :property && interval == :month
+          value = Statistic.rolling_month_property_tenacity_grade(record)  
+        else
+          value = Statistic.tenacity_grade_for(record, interval: interval, time_start: time_start)
+        end
         stats[key] ||= []
         stats[key] << {
           type: key,
           label: record.name,
           id: record.id,
-          value: Statistic.tenacity_grade_for(record, interval: interval, time_start: time_start)
+          value: value
         }
       end
     end
@@ -342,17 +347,22 @@ EOS
 
   def lead_speed_stats_json
     collection = statistics_collection
+    stats = {}
     interval = Statistic.interval_from_date_range(@date_range, :lead_speed)
     time_start = Statistic.statistic_time_start(interval, :lead_speed)
-    stats = {}
     [:team, :property, :agent].each do |key|
       collection[key].each do |record|
+        if key == :property && (['month', 'last_month'].include?(interval.to_s))
+          value = Statistic.rolling_month_property_leadspeed_grade(record)  
+        else
+          value = Statistic.lead_speed_grade_for(record, interval: interval, time_start: time_start)
+        end
         stats[key] ||= []
         stats[key] << {
           type: key,
           label: record.name,
           id: record.id,
-          value: Statistic.lead_speed_grade_for(record, interval: interval, time_start: time_start)
+          value: value,
         }
       end
     end

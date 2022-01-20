@@ -130,11 +130,12 @@ module Statistics
         ActiveRecord::Base.connection.execute(sql)
       end
 
+      # Gets stats starting 2 months ago
       def self.rolling_month_property_leadspeed(property)
         return true if property.users.active.empty?
 
         resolution = 1.week / 60
-        time_start = 1.month.ago
+        time_start = 2.months.ago
         time_end = Time.now
 
         sql = <<~SQL
