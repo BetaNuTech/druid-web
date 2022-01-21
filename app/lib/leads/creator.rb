@@ -24,7 +24,8 @@ module Leads
       :saved,
       :source,
       :token,
-      :agent
+      :agent,
+      :status
 
     def self.create_event_note(message:, notable: nil, error: false)
       classification = error ? 'error' : 'external'
@@ -59,6 +60,7 @@ module Leads
       @source = get_source(@token)
       @parser = get_parser(@source)
       @agent = agent
+      @status = nil
     end
 
     # Create lead from provided data using detected Source adapter
@@ -94,7 +96,8 @@ module Leads
         Leads::Creator.create_event_note(message: note_message, error: true)
         return Lead.new
       end
-      parse_status = parse_result.status
+      @status = parse_status = parse_result.status
+      @errors = parse_result.errors
 
       ### Build lead from parser data
       @lead = Lead.new(parse_result.lead)
@@ -146,7 +149,7 @@ module Leads
             @lead.infer_referral_record
             @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
           end
-        else
+        when :invalid
           @lead.validate
           parse_result.errors.each do |err|
             @lead.errors.add(:base, err)
@@ -158,7 +161,7 @@ module Leads
           Leads::Creator.create_event_note(message: note_message, notable: notable, error: true)
       end
 
-      @errors = @lead.errors
+      @errors = @lead.errors.full_messages
 
       return @lead
     end

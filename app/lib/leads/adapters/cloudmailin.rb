@@ -17,7 +17,20 @@ module Leads
       end
 
       def parse
-        return build(data: extract(@data), property_code: @property_code)
+        if ( errors = reject?(@data) )
+          Leads::Creator::Result.new(
+            status: :nonlead,
+            lead: @data,
+            errors: errors,
+            property_code: property_code,
+            parser: @parser)
+        else
+          build(data: extract(@data), property_code: @property_code)
+        end
+      end
+
+      def reject?(data)
+        ( str = exception_list_match?(@data) ) ? ["Email rejected as non-lead. Exception list match: #{str}"] : false
       end
 
       private
@@ -52,7 +65,11 @@ module Leads
       end
 
       def exception_list_match?(data)
-        Leads::Adapters::CloudMailin::ContentExceptionList.any?{|str| data.match?(str)}
+        Leads::Adapters::CloudMailin::ContentExceptionList::REJECT.each do |str|
+          email_data = data.to_s
+          return str if email_data.match?(str)
+        end
+        false
       end
     end
   end
