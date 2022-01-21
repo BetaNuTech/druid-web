@@ -127,16 +127,18 @@ class Lead < ApplicationRecord
 
     def self.reparse(lead)
       if lead.lead_source_id.present? && lead.property_id.present? && lead.preference.try(:raw_data).present?
-        creator = Leads::Creator.new(
-          data: JSON.parse(lead.preference.raw_data).with_indifferent_access,
-          token: lead.source.api_token )
-          new_lead = creator.call
-          new_lead.first_comm = lead.first_comm || lead.created_at || DateTime.now
-          new_lead.validate
-          return new_lead
+        creator = Lead.reparser(lead)
+        new_lead = creator.call
+        new_lead.first_comm = lead.first_comm || lead.created_at || DateTime.now
+        new_lead.validate
+        return new_lead
       else
         return Lead.new
       end
+    end
+
+    def self.reparser(lead)
+      Leads::Creator.new(data: JSON.parse(lead.preference.raw_data).with_indifferent_access, token: lead.source.api_token )
     end
 
     ### Instance Methods
