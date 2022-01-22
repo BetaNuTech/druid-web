@@ -30,7 +30,7 @@ module Leads
       end
 
       def reject?(data)
-        ( str = exception_list_match?(@data) ) ? ["Email exception list match: #{str}"] : false
+        ( str = exception_list_match?(@data) ) ? ["Email exception list match: '#{str}'"] : false
       end
 
       private

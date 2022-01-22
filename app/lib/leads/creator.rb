@@ -92,13 +92,16 @@ module Leads
       begin
         parse_result = @parser.new(@data).parse
         @status = parse_status = parse_result.status
-        @errors = parse_result.errors
+        add_parse_errors(parse_result)
       rescue => e
         @status = :error
-        @errors = [e.to_s]
+        add_parse_errors(parse_result) if defined?(parse_result)
+        @errors.add(:base, e.to_s)
         note_message = "Leads::Creator Error parsing incoming Lead data: #{e}\n\n#{@data}"
         Leads::Creator.create_event_note(message: note_message, error: true)
-        return Lead.new
+        lead = Lead.new
+        @errors.full_messages.each{|e| lead.errors.add(:base, e)}
+        return lead
       end
 
       ### Build lead from parser data
@@ -163,12 +166,19 @@ module Leads
           Leads::Creator.create_event_note(message: note_message, notable: notable, error: true)
       end
 
-      @errors += @lead.errors.full_messages
+      @errors.full_messages.each{|e| @lead.errors.add(:base, e)}
 
       return @lead
     end
 
     private
+
+    def add_parse_errors(parse_result)
+      if parse_result&.errors&.present?
+        parse_errors = parse_result.errors
+        parse_errors.each{|e| @errors.add(:base, e)}
+      end
+    end
 
     def junk?(lead)
       lead.referral == 'Null'

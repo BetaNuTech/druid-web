@@ -3,12 +3,27 @@ module Leads
     module CloudMailin
       class ApartmentListDotComParser
         def self.match?(data)
-          return data.fetch(:envelope, {}).fetch(:from, '').
+          self.envelope_matches?(data) || self.header_matches?(data)
+        end
+
+        def self.envelope_matches?(data)
+          data.fetch(:envelope, {}).fetch(:from, '').
+                  match?(/apartmentlist.com/).
+                  present?
+        end
+
+        def self.header_matches?(data)
+          data.fetch('headers', {}).to_s.
                   match?(/apartmentlist.com/).
                   present?
         end
 
         def self.parse(data)
+          self.parse_v1(data)
+        end
+
+        def self.parse_v1(data)
+
           Date::DATE_FORMATS[:default] = "%m/%d/%Y"
           # TODO
           #  * beds

@@ -4,12 +4,26 @@ module Leads
       class ApartmentguideDotComParser
 
         def self.match?(data)
-          return data.fetch("envelope",{}).fetch("from",'').
-            match?(/apartmentguide.com$/).
+          self.envelope_matches?(data) || self.header_matches?(data)
+        end
+
+        def self.envelope_matches?(data)
+          data.fetch('envelope',{}).fetch('from','').to_s.
+            match?(/apartmentguide.com/).
+            present?
+        end
+
+        def self.header_matches?(data)
+          data.fetch('headers',{}).fetch('From','').to_s.
+            match?(/apartmentguide.com/).
             present?
         end
 
         def self.parse(data)
+          self.parse_v1(data)
+        end
+
+        def self.parse_v1(data)
           body = data.fetch("html","")
 
           name = ""

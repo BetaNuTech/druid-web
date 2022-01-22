@@ -130,7 +130,7 @@ class Lead < ApplicationRecord
         creator = Lead.reparser(lead)
         new_lead = creator.call
         new_lead.first_comm = lead.first_comm || lead.created_at || DateTime.now
-        new_lead.validate
+        #new_lead.validate
         return new_lead
       else
         return Lead.new
