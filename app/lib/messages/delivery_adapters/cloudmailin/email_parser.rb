@@ -26,7 +26,12 @@ module Messages
           threadid = ( recipientid.split('@').first || "" ).split("+").last
 
           if (last_message = Message.where(threadid: threadid).order("delivered_at DESC").first)
-            user_id = last_message.user_id
+            if last_message.messageable&.respond_to?(:user_id)
+              user_id =  last_message.messageable.user_id
+            else
+              user_id = nil
+            end
+            user_id ||= last_message.user_id
             messageable_id = last_message.messageable_id
             messageable_type = last_message.messageable_type
           else
