@@ -137,21 +137,22 @@ module Properties
       end
 
       def with_working_hours(&block)
-        ::WorkingHours::Config.with_config(working_hours_config) do
+        ::WorkingHours::Config.with_config(**working_hours_config) do
           yield
         end
       end
 
       def working_hours_valid?
-        ::WorkingHours::Config.with_config(working_hours_config) do
+        ::WorkingHours::Config.with_config(**working_hours_config) do
           true
         end
-      rescue
+      rescue => e
+        binding.pry
         false
       end
 
       def working_hours_error
-        ::WorkingHours::Config.with_config(working_hours_config) do
+        ::WorkingHours::Config.with_config(**working_hours_config) do
           nil
         end
       rescue => e
