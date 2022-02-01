@@ -13,8 +13,8 @@ module Cdrs
         begin
           result = self.connection.execute('SHOW SLAVE STATUS')
           return Hash[result.fields.zip(result.to_a.first)]
-        rescue
-          return false
+        rescue => e
+          return {bluesky_error: e.to_s}
         end
       end
 
