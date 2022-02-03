@@ -48,7 +48,8 @@ gem 'image_processing', "~> 1.12"
 gem 'mini_magick', "~> 4.11"
 gem 'delayed_job_web'
 gem 'immigrant', "~> 0.3"
-gem "wysiwyg-rails", github: 'codeprimate/wysiwyg-rails'
+#gem "wysiwyg-rails", github: 'codeprimate/wysiwyg-rails'
+gem "wysiwyg-rails"
 gem 'froala-editor-sdk', "~> 1.4"
 gem 'flipflop', github: 'Bellingham-DEV/flipflop'
 gem 'descriptive_statistics', "~> 2.5", require: 'descriptive_statistics/safe'
