@@ -81,6 +81,8 @@ module Leads
         'unknown@noemail.com'
       ]
 
+      RECENT=48.hours
+
       def has_duplicates?
         duplicate_records.any?
       end
@@ -225,10 +227,10 @@ module Leads
       # Disqualify this lead if it is likely a duplicate
       # returns true only if disqualified
       def disqualify_if_high_confidence_duplicate
-        return false unless auto_disqualify_lead?
+        return false unless (message = auto_disqualify_lead?)
 
         self.classification = :duplicate
-        self.transition_memo = 'Automatically disqualified due to high confidence match(es)'
+        self.transition_memo = "Automatically disqualified because #{message}" 
         trigger_event(event_name: 'disqualify')
         save
         reload
@@ -252,18 +254,37 @@ module Leads
         if ( matches = dupes.select{|lead| in_progress_states.include?(lead.state) } ).present?
           if open?
             # A match is currently being worked, so mark this new one as duplicate
-            return true
+            return 'a matching lead is already being worked'
           else
             # Mark as duplicate if any of the other currently worked matches were created first
-            return true if matches.any?{|lead| lead.created_at < created_at }
+            if matches.any?{|lead| lead.created_at < created_at }
+              return 'a matching lead is already being worked'
+            end
           end
+        end
+
+        # One of the matches is:
+        #  1. from the same ILS
+        #  2. submitted within 48h of each-other
+        #  3. still open
+        matches = dupes.select do |lead|
+          create_delta = ( lead.created_at - created_at ).abs
+          recent =  create_delta < RECENT
+          same_referral = lead.referral == referral
+          is_open = lead.open?
+          same_referral && recent && is_open
+        end
+        if matches.any?
+          return 'a matching lead was recently submitted by the same referrer'
         end
 
         non_worked_states = ['abandoned', 'future', 'waitlist', 'resident', 'exresident']
         if (matches = dupes.select{|lead| non_worked_states.include?(lead.state)}).present?
           # Presence of resident matches implies a Resident contact, so this would be a duplicate
           # Otherwise this may be a valid contact
-          return matches.any?{|lead| lead.resident?}
+          if matches.any?{|lead| lead.resident?}
+            return 'a matching lead is a resident'
+          end
         end
 
         # Default to false (do not classify as duplicate)
