@@ -32,13 +32,13 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12 form-group">
+      <div class="col-md-6 form-group">
         <%= form.label :name %>
         <%= form.text_field :name, id: :message_template_name, class: 'form-control' %>
       </div>
     </div>
     <div class="row" id="message_template_subject_input">
-      <div class="col-md-12 form-group">
+      <div class="col-md-6 form-group">
         <%= form.label :subject %>
         <%= form.text_field :subject, id: :message_template_subject, class: 'form-control' %>
       </div>
@@ -51,10 +51,18 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <button type="submit" class="btn btn-primary">Save</button>
-      <%= link_to('Back', :back, class: "btn btn-xs btn-info")  %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <%= link_to('Back', :back, class: "btn btn-xs btn-info")  %>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <%= link_to('Delete', message_template, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger') if policy(message_template).destroy? %>
+      </div>
     </div>
+
 
     <%= render partial: "template_help" %>
   <% end %>
