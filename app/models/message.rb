@@ -321,7 +321,7 @@ class Message < ApplicationRecord
 
   def handle_message_delivery(delivery)
     messageable&.handle_message_delivery(delivery)
-    self.delay.broadcast_to_streams
+    self.delay.broadcast_to_streams if incoming?
     return true
   end
 
