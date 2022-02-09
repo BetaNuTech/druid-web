@@ -72,7 +72,7 @@ namespace :leads do
         start_date = 7.days.ago
       end
       start_date = start_date.strftime("%Y-%m-%d")
-      end_date = ( Date.today + 1.day ).strftime("%Y-%m-%d")
+      end_date = ( Date.current + 1.day ).strftime("%Y-%m-%d")
       data = ActiveRecord::Base.connection.execute("
         SELECT properties.name, properties.id, leads.referral, date(leads.created_at) as lead_day, count(leads.id) as lead_count
         FROM properties
@@ -128,7 +128,7 @@ namespace :leads do
       property_ids = properties.map(&:id)
     end
 
-    filename = File.join("tmp", "leads-#{DateTime.now.strftime("%Y%m%d")}.csv")
+    filename = File.join("tmp", "leads-#{DateTime.current.strftime("%Y%m%d")}.csv")
 
     puts "* Exporting CSV for Properties: #{properties.map(&:name).join(', ') || 'All'}"
     print "** Output to #{filename}"
@@ -149,7 +149,7 @@ namespace :leads do
     Lead.auditing_enabled = false
     LeadPreference.auditing_enabled = false
 
-    Lead.open.where("created_at < ?", (Date.today - 7.days)).each{|l| l.destroy}
+    Lead.open.where("created_at < ?", (Date.current - 7.days)).each{|l| l.destroy}
     Audited::Audit.destroy_all
 
     Lead.auditing_enabled = true
@@ -177,7 +177,7 @@ namespace :leads do
 
       msg = " * Creating Leads from recent calls up to #{minutes_ago} minutes ago"
       puts msg; Rails.logger.warn msg
-      prospective_leads = Lead.from_recent_calls(start_date: minutes_ago.minutes.ago, end_date: DateTime.now).to_a
+      prospective_leads = Lead.from_recent_calls(start_date: minutes_ago.minutes.ago, end_date: DateTime.current).to_a
 
       msg = "   - Found #{prospective_leads.size} Prospective Leads"
       puts msg; Rails.logger.warn msg
@@ -203,7 +203,7 @@ namespace :leads do
     desc "Check CDR database health"
     task :db_check => :environment do
       status = Cdr.check_replication_status
-      puts "=== CDR Replication Check [#{DateTime.now.to_s}]: #{status ? "OK" : "FAILED"}"
+      puts "=== CDR Replication Check [#{DateTime.current.to_s}]: #{status ? "OK" : "FAILED"}"
     end
   end
 
@@ -239,11 +239,11 @@ namespace :leads do
         msg = " * Processing Leads for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
-        leads = adapter.processLeads(start_date: start_date, end_date: DateTime.now)
+        leads = adapter.processLeads(start_date: start_date, end_date: DateTime.current)
         msg = " * Processing Residents for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
-        residents = adapter.processResidents(start_date: start_date, end_date: DateTime.now)
+        residents = adapter.processResidents(start_date: start_date, end_date: DateTime.current)
 
         lead_count = leads.size
         lead_succeeded = leads.select{|l| l.id.present? }.size
@@ -346,20 +346,20 @@ namespace :leads do
 
       adapter = Yardi::Voyager::Api::GuestCards.new
       all_guestcards = []
-      prefix = DateTime.now.to_i
+      prefix = DateTime.current.to_i
       property_ids.each do |property_id|
-        start_time = DateTime.now
+        start_time = DateTime.current
         puts "  - Fetching #{property_id}"
         if days.present?
           guestcards = adapter.getGuestCards(property_id,
                                                start_date: days.days.ago,
-                                               end_date: DateTime.now,
+                                               end_date: DateTime.current,
                                                filter: true)
         else
           guestcards = adapter.getGuestCards(property_id, filter: true)
         end
         filename = File.join(Rails.root, "tmp", "#{prefix}_#{property_id}_guestcards.csv")
-        elapsed = DateTime.now.to_i - start_time.to_i
+        elapsed = DateTime.current.to_i - start_time.to_i
         puts "  --- [#{elapsed}s]"
         puts "  --- Output #{guestcards.size} GuestCards to #{filename}"
         File.open(filename, "wb"){|f| f.puts Yardi::Voyager::Data::GuestCard.to_csv(guestcards)}
@@ -393,7 +393,7 @@ namespace :leads do
     task :reparse => :environment do
 
       start_date = 1.month.ago.beginning_of_day
-      null_leads = Lead.where(first_name: 'Null', referral: 'Null', created_at: start_date..DateTime.now)
+      null_leads = Lead.where(first_name: 'Null', referral: 'Null', created_at: start_date..DateTime.current)
       puts "* Re-Processing #{null_leads.count} 'Null' Leads since #{start_date.to_s(:long)}"
       processed = 0
       failed = 0
@@ -519,7 +519,7 @@ namespace :leads do
     end
 
     start_date = 5.years.ago
-    follow_up_base = Time.now.beginning_of_day + 2.months
+    follow_up_base = DateTime.current.beginning_of_day + 2.months
 
     unless (ENV.fetch('CONFIRM', 'true') == 'false')
       puts "*** Processing old Open Leads before #{end_date} for #{properties.count} properties (Press ENTER to continue)"

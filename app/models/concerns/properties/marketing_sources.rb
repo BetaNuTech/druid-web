@@ -23,7 +23,7 @@ module Properties
 
         {
           version: '1.0.0',
-          date: Time.now,
+          date: DateTime.current,
           dialed: clean_number,
           property_id: property_listing&.code,
           name: property.name,

@@ -23,17 +23,17 @@ RSpec.describe LeadsHelper, type: :helper do
     end
 
     it "should return the short_date for Date" do
-      val = Date.today
+      val = Date.current
       expect(display_preference_option(val)).to be_a(String)
     end
 
     it "should return the short_date for DateTime" do
-      val = DateTime.now
+      val = DateTime.current
       expect(display_preference_option(val)).to be_a(String)
     end
 
     it "should return the short_date for TimeWithZone" do
-      val = Time.zone.now
+      val = DateTime.current
       expect(display_preference_option(val)).to be_a(String)
     end
 

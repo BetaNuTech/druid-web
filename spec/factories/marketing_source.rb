@@ -10,6 +10,6 @@ FactoryBot.define do
     destination_number { Faker::PhoneNumber.phone_number }
     fee_type { MarketingSource.fee_types.keys[rand(6)] }
     fee_rate { Faker::Number.decimal(l_digits: 2) }
-    start_date { DateTime.now }
+    start_date { DateTime.current }
   end
 end

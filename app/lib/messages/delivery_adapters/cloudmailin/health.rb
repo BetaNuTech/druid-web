@@ -21,7 +21,7 @@ module Messages
 
         def initialize(window: 1.hour, threshold: 0.05)
           @window = window
-          @end_time = Time.now
+          @end_time = DateTime.current
           @start_time = @end_time - @window
           @threshold = threshold
           @messages_url = ENV.fetch(MESSAGE_STATUS_URL_KEY, nil) or raise "Missing ENV #{MESSAGE_STATUS_URL_KEY}"

@@ -17,7 +17,7 @@ module ScheduledActions
       end
 
       def notified?
-        notified_at.present? && notified_at <= DateTime.now
+        notified_at.present? && notified_at <= DateTime.current
       end
 
       def notification_message_template_data

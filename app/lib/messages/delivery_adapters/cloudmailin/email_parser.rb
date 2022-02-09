@@ -21,7 +21,7 @@ module Messages
           body = data.fetch(:plain, nil) || data.fetch(:html, nil) || ''
           message_template_id = nil
           message_type_id = MessageType.email.try(:id)
-          delivered_at = DateTime.now
+          delivered_at = DateTime.current
 
           threadid = ( recipientid.split('@').first || "" ).split("+").last
 

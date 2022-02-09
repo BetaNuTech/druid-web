@@ -60,7 +60,7 @@ module ScheduledActions
       end
 
       def next_scheduled_attempt(this_attempt=nil)
-        basis = Time.now
+        basis = DateTime.current
         default = ( basis + 1.day )
         if completion_retry_delay_value.present? && completion_retry_delay_unit.present?
           # Use override delay information

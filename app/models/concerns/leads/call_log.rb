@@ -51,7 +51,7 @@ module Leads
                 recording_path: cdr.recording_path,
                 recording_type: cdr.recording_media_type }
             }.to_json
-            self.call_log_updated_at = DateTime.now
+            self.call_log_updated_at = DateTime.current
             save
           end
         end
@@ -59,7 +59,7 @@ module Leads
       end
 
       def should_update_call_log?
-        return (call_log.nil? || call_log.empty? || call_log_updated_at.nil? || call_log_updated_at < (DateTime.now - CALL_LOG_FREQUENCY.minutes))
+        return (call_log.nil? || call_log.empty? || call_log_updated_at.nil? || call_log_updated_at < (DateTime.current - CALL_LOG_FREQUENCY.minutes))
       end
     end
 

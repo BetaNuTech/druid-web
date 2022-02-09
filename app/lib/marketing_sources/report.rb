@@ -55,7 +55,7 @@ module MarketingSources
         else
           raise 'Invalid Report Type'
       end
-      Time.now.strftime("#{prefix}_report-%Y-%m-%d-%H%M.csv")
+      DateTime.current.strftime("#{prefix}_report-%Y-%m-%d-%H%M.csv")
     end
 
     private
@@ -168,8 +168,8 @@ module MarketingSources
 
 
     def process_dates(options)
-      default_start = Date.today.beginning_of_year
-      default_end = Date.today
+      default_start = Date.current.beginning_of_year
+      default_end = Date.current
       start_date = Date.parse(options[:start_date]) rescue default_start
       end_date = Date.parse(options[:end_date]) rescue default_end
       end_date = start_date if start_date > end_date

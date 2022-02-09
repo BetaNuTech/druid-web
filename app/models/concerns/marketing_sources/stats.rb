@@ -9,7 +9,7 @@ module MarketingSources
 
       def total_spend_ytd
         marketing_expenses.
-          where(start_date: DateTime.now.beginning_of_year..DateTime.now.end_of_year).
+          where(start_date: DateTime.current.beginning_of_year..DateTime.current.end_of_year).
           sum(:fee_total)
       end
 
@@ -26,7 +26,7 @@ module MarketingSources
       end
 
       def total_conversions_ytd
-        conversions.where( first_comm: DateTime.now.beginning_of_year..DateTime.now).count
+        conversions.where( first_comm: DateTime.current.beginning_of_year..DateTime.current).count
       end
 
       def total_leads
@@ -34,7 +34,7 @@ module MarketingSources
       end
 
       def total_leads_ytd
-        leads.where( first_comm: DateTime.now.beginning_of_year..DateTime.now).count
+        leads.where( first_comm: DateTime.current.beginning_of_year..DateTime.current).count
       end
     end
 
@@ -49,7 +49,7 @@ module MarketingSources
       def total_spend_ytd(property=nil)
         skope = MarketingExpense
         skope = MarketingExpense.where(property: property) if property
-        skope.where(start_date: DateTime.now.beginning_of_year..DateTime.now.end_of_year).
+        skope.where(start_date: DateTime.current.beginning_of_year..DateTime.current.end_of_year).
           sum(:fee_total)
       end
 
@@ -66,7 +66,7 @@ module MarketingSources
       end
 
       def total_conversions_ytd(property)
-        all_conversions(property).where( first_comm: DateTime.now.beginning_of_year..DateTime.now).count
+        all_conversions(property).where( first_comm: DateTime.current.beginning_of_year..DateTime.current).count
       end
 
       def total_leads(property)
@@ -74,7 +74,7 @@ module MarketingSources
       end
 
       def total_leads_ytd(property)
-        all_leads(property).where( first_comm: DateTime.now.beginning_of_year..DateTime.now).count
+        all_leads(property).where( first_comm: DateTime.current.beginning_of_year..DateTime.current).count
       end
     end
   end

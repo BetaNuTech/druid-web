@@ -18,7 +18,7 @@ module Users
       def message_template_data
         tasks_today = ScheduledAction.includes(:schedule, :lead_action, :target).
           for_agent(self).incomplete.having_schedule.
-          where("schedules.date <= ?", Date.today)
+          where("schedules.date <= ?", Date.current)
         tasks_today_count = tasks_today.count
         tasks_today = tasks_today.sorted_by_due_desc.limit(20)
         summary_data = tasks_today.map(&:summary_data)

@@ -43,7 +43,7 @@ class EngagementPolicyScheduler
           next
         end
 
-        due = DateTime.now.utc + policy_action.deadline.hours
+        due = DateTime.current.utc + policy_action.deadline.hours
         schedule = Schedule.new(
           date: due.to_date,
           time: due.to_time,
@@ -102,7 +102,7 @@ class EngagementPolicyScheduler
       return nil
     end
 
-    due = originator.next_scheduled_attempt(basis: Time.now, attempt: attempt)
+    due = originator.next_scheduled_attempt(basis: DateTime.current, attempt: attempt)
 
     schedule = Schedule.new(
       date: due.to_date,

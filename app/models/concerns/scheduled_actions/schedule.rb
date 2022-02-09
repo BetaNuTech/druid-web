@@ -20,7 +20,7 @@ module ScheduledActions
 
       def upcoming
         return incomplete.having_schedule.
-          where("schedules.date >= ?", Date.today)
+          where("schedules.date >= ?", Date.current)
       end
 
       def upcoming_or_incomplete
@@ -30,7 +30,7 @@ module ScheduledActions
 
       def due_today
         return incomplete.having_schedule.
-          where("schedules.date <= ?", Date.today).
+          where("schedules.date <= ?", Date.current).
           sorted_by_due_asc
       end
 
@@ -40,7 +40,7 @@ module ScheduledActions
       end
 
       def previous_month
-        previous.where("schedules.date >= ? AND schedules.date <= ?", 1.month.ago.beginning_of_day, Date.today)
+        previous.where("schedules.date >= ? AND schedules.date <= ?", 1.month.ago.beginning_of_day, Date.current)
       end
 
       def sorted_by_due_asc
@@ -54,7 +54,7 @@ module ScheduledActions
       end
 
       def with_start_date(date)
-        start_date = ( Date.parse(date).beginning_of_month rescue (Date.today.beginning_of_month) )
+        start_date = ( Date.parse(date).beginning_of_month rescue (Date.current.beginning_of_month) )
         self.having_schedule.
           where("schedules.date >= ?", start_date).
           or(self.having_schedule.where(state: 'pending'))

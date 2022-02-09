@@ -129,7 +129,7 @@ class Lead < ApplicationRecord
       if lead.lead_source_id.present? && lead.property_id.present? && lead.preference.try(:raw_data).present?
         creator = Lead.reparser(lead)
         new_lead = creator.call
-        new_lead.first_comm = lead.first_comm || lead.created_at || DateTime.now
+        new_lead.first_comm = lead.first_comm || lead.created_at || DateTime.current
         #new_lead.validate
         return new_lead
       else

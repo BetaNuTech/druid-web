@@ -42,6 +42,6 @@ class MessageDeliveryAdapter < ApplicationRecord
   ### Instance Methods
 
   def assign_api_token
-    self.api_token ||= Digest::SHA256.hexdigest(Time.now.to_s + rand.to_s)[0..31]
+    self.api_token ||= Digest::SHA256.hexdigest(DateTime.current.to_s + rand.to_s)[0..31]
   end
 end

@@ -17,13 +17,13 @@ module ScheduledActionsHelper
   def scheduled_action_status(action)
     return case action.state
     when 'pending',
-      if action.schedule.to_datetime < DateTime.now
+      if action.schedule.to_datetime < DateTime.current
         glyph(:fire)
       else
         glyph(:ok)
       end
     when 'completed'
-      if action.schedule.to_datetime < DateTime.now
+      if action.schedule.to_datetime < DateTime.current
         glyph(:time)
       else
         glyph(:ok)

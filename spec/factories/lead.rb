@@ -30,8 +30,8 @@ FactoryBot.define do
     referral {%w{newspaper walk-in call friend}[rand(4)]}
     state { ::Lead.aasm.states.map(&:name)[rand(::Lead.aasm.states.count - 1)] }
     notes { Faker::Lorem.sentence }
-    first_comm { DateTime.now }
-    last_comm { DateTime.now }
+    first_comm { DateTime.current }
+    last_comm { DateTime.current }
     phone1 { Faker::PhoneNumber.phone_number }
     phone1_type { 'Work' }
     phone1_tod { 'Day' }

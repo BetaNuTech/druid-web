@@ -33,7 +33,7 @@ namespace :marketing_sources do
             merge({
               description: "Incoming calls from #{name}",
               active: true,
-              start_date: DateTime.now.beginning_of_year,
+              start_date: DateTime.current.beginning_of_year,
               fee_type: 'free',
               tracking_number: phone
             })

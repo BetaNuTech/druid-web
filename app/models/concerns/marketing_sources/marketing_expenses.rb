@@ -33,12 +33,12 @@ module MarketingSources
         )
       end
 
-      def expected_expenses_this_billing_period(reference_date = DateTime.now)
+      def expected_expenses_this_billing_period(reference_date = DateTime.current)
         marketing_expenses.where(start_date: current_billing_period(reference_date), fee_type: fee_type)
       end
 
       # Returns a DateTime range depending on the fee_type
-      def current_billing_period(reference_date = DateTime.now)
+      def current_billing_period(reference_date = DateTime.current)
         case fee_type
         when MarketingSource::MONTHLY_FEE
           proposed_start = reference_date.beginning_of_month

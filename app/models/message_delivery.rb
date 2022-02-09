@@ -85,7 +85,7 @@ class MessageDelivery < ApplicationRecord
 
   def set_attempt
     self.attempt ||= MessageDelivery.previous_attempt_number(message) + 1
-    self.attempted_at ||= DateTime.now
+    self.attempted_at ||= DateTime.current
     return true
   end
 
@@ -137,7 +137,7 @@ class MessageDelivery < ApplicationRecord
   private
 
   def refuse_delivery(log_message)
-    self.attempted_at = DateTime.now
+    self.attempted_at = DateTime.current
     self.status = FAILED
     self.log = log_message
     self.save

@@ -14,10 +14,10 @@ module Users
       alias total_score score
 
       def task_calendar_expiration
-        last_timestamp = ( scheduled_actions.select(:updated_at).order(updated_at: :desc).first&.updated_at || Time.now ).to_i
-        if last_timestamp < (Time.now - 12.hours).to_i
+        last_timestamp = ( scheduled_actions.select(:updated_at).order(updated_at: :desc).first&.updated_at || DateTime.current ).to_i
+        if last_timestamp < (DateTime.current - 12.hours).to_i
           # Return current epoch if the last task update time was over 12h ago
-          Time.now.to_i
+          DateTime.current.to_i
         else
           last_timestamp
         end
@@ -25,11 +25,11 @@ module Users
 
       def weekly_score
         compliances.
-          where(completed_at: (Date.today.beginning_of_week)..DateTime.now).
+          where(completed_at: (Date.current.beginning_of_week)..DateTime.current).
           sum(:score)
       end
 
-      def tasks_completed(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+      def tasks_completed(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
         ScheduledAction.includes(:engagement_policy_action_compliance).
           where( engagement_policy_action_compliances: {completed_at: start_date..end_date},
                 scheduled_actions: {user_id: id} )
@@ -42,7 +42,7 @@ module Users
       end
 
       # On-time Task completion rate
-      def task_completion_rate(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+      def task_completion_rate(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
         skope = ScheduledAction.includes(:engagement_policy_action_compliance).
           where(scheduled_actions: {user_id: id})
         due_actions = skope.where(engagement_policy_action_compliances: {expires_at: start_date..end_date})
@@ -61,7 +61,7 @@ module Users
         return (completed_actions.count.to_f / due_actions.count.to_f).round(2)
       end
 
-      def showing_rate(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+      def showing_rate(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
         claimed_leads_count = self.leads.includes(:transitions).
           where(lead_transitions: {created_at: start_date..end_date, current_state: 'prospect'}).
           count.to_f

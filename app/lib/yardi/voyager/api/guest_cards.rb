@@ -4,7 +4,7 @@ module Yardi
       class GuestCards < Base
 
         # Return GuestCards for the given property id
-        def getGuestCards(propertyid, start_date: nil, end_date: DateTime.now, filter: true)
+        def getGuestCards(propertyid, start_date: nil, end_date: DateTime.current, filter: true)
           if start_date.present?
             return getGuestCardsDateRange(propertyid, start_date: start_date, end_date: end_date)
           end
@@ -68,7 +68,7 @@ module Yardi
         end
 
         # Return GuestCards for the given property id and date window
-        def getGuestCardsDateRange(propertyid, start_date: nil, end_date: DateTime.now)
+        def getGuestCardsDateRange(propertyid, start_date: nil, end_date: DateTime.current)
           request_options = {
             method: 'GetYardiGuestActivity_DateRange',
             resource: 'ItfILSGuestCard.asmx',

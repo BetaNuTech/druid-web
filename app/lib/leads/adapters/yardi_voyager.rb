@@ -54,7 +54,7 @@ module Leads
 
       # Fetch New Leads from YardiVoyager
       # or progress Lead state if the Lead is already in BlueSky
-      def processLeads(start_date: nil, end_date: DateTime.now)
+      def processLeads(start_date: nil, end_date: DateTime.current)
         @data ||= fetch_GuestCards(start_date: start_date, end_date: end_date, filter: false)
         leads = []
         ActiveRecord::Base.transaction do
@@ -71,7 +71,7 @@ module Leads
       end
 
       # Fetch Residents from YardiVoyager
-      def processResidents(start_date: nil, end_date: DateTime.now)
+      def processResidents(start_date: nil, end_date: DateTime.current)
         @data ||= fetch_GuestCards(start_date: start_date, end_date: end_date)
         residents = []
         ActiveRecord::Base.transaction do
@@ -113,7 +113,7 @@ module Leads
         return updated_leads
       end
 
-      def getGuestCards(start_date: nil, end_date: DateTime.now, filter: false, debug: false)
+      def getGuestCards(start_date: nil, end_date: DateTime.current, filter: false, debug: false)
         adapter = Yardi::Voyager::Api::GuestCards.new
         adapter.debug = debug
         return adapter.
@@ -138,18 +138,18 @@ module Leads
       end
 
       def createGuestCards(start_date: 1.day.ago)
-        return sendLeads(@property.new_leads_for_sync.where(created_at: start_date..DateTime.now))
+        return sendLeads(@property.new_leads_for_sync.where(created_at: start_date..DateTime.current))
       end
 
       def updateGuestCards(start_date: 1.day.ago)
-        return sendLeads(@property.leads_for_sync.where(updated_at: start_date..DateTime.now))
+        return sendLeads(@property.leads_for_sync.where(updated_at: start_date..DateTime.current))
       end
 
       def cancelGuestCards(start_date: 1.day.ago)
-        return sendLeads(@property.leads_for_cancelling.where(updated_at: start_date..DateTime.now))
+        return sendLeads(@property.leads_for_cancelling.where(updated_at: start_date..DateTime.current))
       end
 
-      def fetch_GuestCards(start_date: nil, end_date: DateTime.now, filter: false)
+      def fetch_GuestCards(start_date: nil, end_date: DateTime.current, filter: false)
         adapter = Yardi::Voyager::Api::GuestCards.new
         adapter.debug = true if debug?
         return adapter.getGuestCards(@property_code, start_date: start_date, end_date: end_date, filter: filter)
@@ -253,7 +253,7 @@ module Leads
           lead.state = lead_state_for(guestcard)
           lead.priority = priority_from_state(lead.state)
           lead.notes = guestcard.summary
-          lead.first_comm = DateTime.now
+          lead.first_comm = DateTime.current
           lead.referral = guestcard.referral || 'Yardi Voyager'
 
           preference.move_in = guestcard.expected_move_in || guestcard.actual_move_in
@@ -377,7 +377,7 @@ module Leads
 							notable_id: lead.id,
 							notable_type: 'Lead',
 							content: event_content,
-              created_at: ( event_date_parsed || DateTime.now ),
+              created_at: ( event_date_parsed || DateTime.current ),
               classification: 'system'
 						)
 					end

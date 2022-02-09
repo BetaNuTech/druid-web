@@ -49,16 +49,16 @@ RSpec.describe Note, type: :model do
     end
 
     it "returns the schedule start time" do
-      t = Time.now
-      d = Date.today
+      t = DateTime.current
+      d = Date.current
       note.schedule = Schedule.new(time: t, date: d)
       note.save!
       expect(note.start_time).to eq(d)
     end
 
     it "returns notes after a scheduled date" do
-      t = Time.now
-      d = Date.today
+      t = DateTime.current
+      d = Date.current
       note.schedule = Schedule.new(time: t, date: d)
       note.save!
       expect(Note.with_start_date(d)).to eq([note])
@@ -82,7 +82,7 @@ RSpec.describe Note, type: :model do
   describe "callbacks" do
     it "should update the Lead's last_comm if the LeadAction is a contact event" do
       lead_action = create(:lead_action, is_contact: true)
-      lead = create(:lead, last_comm: DateTime.now)
+      lead = create(:lead, last_comm: DateTime.current)
       expect{
         note = create(:note, notable: lead, lead_action: lead_action)
       }.to change{ lead.last_comm }

@@ -89,7 +89,7 @@ module LeadsHelper
     if lead.call_log_updated_at.nil?
       last_updated_message = please_wait_message
     else
-      last_updated_message = 'Last updated ' + distance_of_time_in_words(lead.call_log_updated_at || DateTime.now, DateTime.now) + ' ago.'
+      last_updated_message = 'Last updated ' + distance_of_time_in_words(lead.call_log_updated_at || DateTime.current, DateTime.current) + ' ago.'
       if lead.should_update_call_log?
         last_updated_message += please_wait_message
       end

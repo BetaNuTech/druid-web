@@ -223,7 +223,7 @@ RSpec.describe EngagementPolicyScheduler do
       original_action.reload
       new_actions = ScheduledAction.where(originator_id: original_action.id)
       expect(new_actions.count).to eq(1)
-      expect(new_actions.first.schedule.to_datetime.day).to eq(( DateTime.now + 10.days ).day)
+      expect(new_actions.first.schedule.to_datetime.day).to eq(( DateTime.current + 10.days ).day)
 
     end
 
@@ -238,7 +238,7 @@ RSpec.describe EngagementPolicyScheduler do
                               state: 'sent',
                               senderid: lead.email,
                               recipientid: 'incoming@example.com',
-                              delivered_at: DateTime.now
+                              delivered_at: DateTime.current
                             )}
 
       it "given a Message record it should create a message reply task assigned to the associated Lead" do

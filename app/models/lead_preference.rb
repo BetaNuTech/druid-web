@@ -90,7 +90,7 @@ class LeadPreference < ApplicationRecord
 
   def optout_email!
     self.optout_email = true
-    self.optout_email_date ||= DateTime.now
+    self.optout_email_date ||= DateTime.current
     save
   end
 
@@ -103,7 +103,7 @@ class LeadPreference < ApplicationRecord
   def optin_sms!
     unless self.optin_sms
       self.optin_sms = true
-      self.optin_sms_date = DateTime.now
+      self.optin_sms_date = DateTime.current
       save
       lead.send_sms_optin_confirmation
     end
@@ -111,7 +111,7 @@ class LeadPreference < ApplicationRecord
 
   def optout_sms!
     self.optin_sms = false
-    self.optin_sms_date = DateTime.now
+    self.optin_sms_date = DateTime.current
     save
     lead.send_sms_optout_confirmation
   end

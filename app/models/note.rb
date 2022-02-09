@@ -52,18 +52,18 @@ class Note < ApplicationRecord
 
   def self.upcoming
     skope = self.having_schedule.
-      where("schedules.date > ?", Date.today)
+      where("schedules.date > ?", Date.current)
     return skope
   end
 
   def self.previous
     skope = self.having_schedule.
-      where("schedules.date < ?", Date.today)
+      where("schedules.date < ?", Date.current)
     return skope
   end
 
   def self.with_start_date(date)
-    start_date = ( Date.parse(date).beginning_of_month rescue (Date.today.beginning_of_month) )
+    start_date = ( Date.parse(date).beginning_of_month rescue (Date.current.beginning_of_month) )
     self.having_schedule.
       where("schedules.date >= ?", start_date)
   end

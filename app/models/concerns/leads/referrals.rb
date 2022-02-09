@@ -97,8 +97,8 @@ module Leads
             fee_total: fee,
             fee_type: 'lead',
             quantity: 1,
-            start_date: Date.today,
-            end_date: Date.today
+            start_date: Date.current,
+            end_date: Date.current
           )
         end
       end

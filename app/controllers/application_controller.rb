@@ -82,7 +82,7 @@ class ApplicationController < ActionController::Base
 
   def impersonate_user(user)
     allowed = policy(user).impersonate?
-    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user&.email, target_user: user&.email, allowed: allowed, datetime: DateTime.now, action: 'start' } )
+    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user&.email, target_user: user&.email, allowed: allowed, datetime: DateTime.current, action: 'start' } )
     return false unless allowed
     @true_current_user ||= current_user
     cookies.encrypted[:true_current_user_id] = true_current_user&.id
@@ -92,7 +92,7 @@ class ApplicationController < ActionController::Base
   end
 
   def terminate_impersonation
-    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user.email, target_user: true_current_user.email, allowed: true, datetime: DateTime.now, action: 'stop' } )
+    ErrorNotification.send(StandardError.new("Impersonation Event"), {current_user: current_user.email, target_user: true_current_user.email, allowed: true, datetime: DateTime.current, action: 'stop' } )
     if true_current_user.present?
       sign_out
       @true_current_user = nil

@@ -45,7 +45,7 @@ class EngagementPolicyAction < ApplicationRecord
   ### Instance Methods
 
   def next_scheduled_attempt(basis: nil, attempt:)
-    basis ||= Time.now
+    basis ||= DateTime.current
     if lead_action&.is_contact?
       attempt_date = basis + variable_interval_reinforcement_delay(attempt: attempt, schedule: retry_delay_multiplier)
     else

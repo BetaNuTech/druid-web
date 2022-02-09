@@ -18,7 +18,7 @@ class StatsController < ApplicationController
   def report_csv
     authorize Stat
     report = params[:report] || 'property_engagement_stats_by_month'
-    report_filename = "#{report}-#{Date.today.to_s}.csv"
+    report_filename = "#{report}-#{Date.current.to_s}.csv"
     service = Stat.new
     report_data = service.send((report + '_csv' ).to_sym)
     respond_to do |format|

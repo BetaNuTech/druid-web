@@ -5,7 +5,7 @@ module Users
       @property = property
       @skope = property.users.active
       @start_date = 1.month.ago.beginning_of_month
-      @end_date = Time.now
+      @end_date = DateTime.current
     end
 
     def call

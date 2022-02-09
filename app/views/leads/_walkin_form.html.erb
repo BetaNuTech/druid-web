@@ -7,7 +7,7 @@
   <%= hidden_field_tag 'lead[id]', lead.id, id: 'lead_id' %>
   <%= hidden_field_tag 'lead[classification]', 'lead' %>
   <%= hidden_field_tag 'lead[property_id]', @current_property.id %>
-  <%= hidden_field_tag 'lead[first_comm]', DateTime.now %>
+  <%= hidden_field_tag 'lead[first_comm]', DateTime.current %>
 
   <% if lead.errors.any? %>
     <div id="error_explanation">

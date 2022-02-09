@@ -91,8 +91,8 @@ RSpec.describe MarketingExpense, type: :model do
               assert(new_expense.persisted?)
               expect(MarketingExpense.count).to eq(count + 1)
               expect(new_expense.fee_type).to eq(marketing_source.fee_type)
-              expect(new_expense.start_date).to eq(Date.today.beginning_of_month)
-              expect(new_expense.end_date).to eq(Date.today.end_of_month)
+              expect(new_expense.start_date).to eq(Date.current.beginning_of_month)
+              expect(new_expense.end_date).to eq(Date.current.end_of_month)
             end
           end
           describe 'when the MarketingSource activity period is partially within the implied fee type period' do
@@ -100,18 +100,18 @@ RSpec.describe MarketingExpense, type: :model do
             #it 'creates a marketing expense of the same fee type as the MarketingSource with a period within the MarketingSource activity period' do
               #marketing_source.update!(
                 #start_date: 3.weeks.ago,
-                #end_date: DateTime.now.end_of_month + 2.days
+                #end_date: DateTime.current.end_of_month + 2.days
               #)
               #assert(marketing_source.create_pending_expense)
               #new_expense = MarketingExpense.order(created_at: :desc).first
               #assert(new_expense.persisted?)
               #expect(new_expense.start_date.to_s).to eq(marketing_source.start_date.to_s)
-              #expect(new_expense.end_date.to_s).to eq(Date.today.end_of_month.to_s)
+              #expect(new_expense.end_date.to_s).to eq(Date.current.end_of_month.to_s)
 
               #MarketingExpense.destroy_all
               #marketing_source.update!(
                 #start_date: 3.weeks.ago,
-                #end_date: Date.today.end_of_month - 2.days
+                #end_date: Date.current.end_of_month - 2.days
               #)
               #assert(marketing_source.create_pending_expense)
               #new_expense = MarketingExpense.order(created_at: :desc).first

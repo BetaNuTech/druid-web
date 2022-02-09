@@ -23,7 +23,7 @@ module Messages
           body = data.fetch('Body','(No Body)')
           message_template_id = nil
           message_type_id = MessageType.sms.try(:id)
-          delivered_at = DateTime.now
+          delivered_at = DateTime.current
 
           last_message = Message.sent.where(recipientid: senderid).
             order(created_at: 'desc').first

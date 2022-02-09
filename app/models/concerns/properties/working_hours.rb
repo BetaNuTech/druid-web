@@ -50,18 +50,18 @@ module Properties
 
       def office_holidays
         office_observed_names = ["New Year's Day", "Memorial Day", "Independence Day", "Labor Day", "Thanksgiving", "Christmas Day"]
-        all_federal = Holidays.between(Date.today.beginning_of_year, Date.today.end_of_year - 1.day, :us)
-        all_federal_observed = Holidays.between(Date.today.beginning_of_year, Date.today.end_of_year - 1.day, :us, :observed)
+        all_federal = Holidays.between(Date.current.beginning_of_year, Date.current.end_of_year - 1.day, :us)
+        all_federal_observed = Holidays.between(Date.current.beginning_of_year, Date.current.end_of_year - 1.day, :us, :observed)
         office_observed = all_federal_observed.select{|d| office_observed_names.include?(d[:name])}.map{|d| d[:date]}
         office_observed += all_federal.select{|d| office_observed_names.include?(d[:name])}.map{|d| d[:date]}
         office_observed << all_federal.select{|d| d[:name] == "Thanksgiving"}.first[:date] + 1.day # Day after thanksgiving
         office_observed << all_federal.select{|d| d[:name] == "Christmas Day"}.first[:date] - 1.day # Christmas Eve
-        office_observed << Date.new(Date.today.year,12,31)
+        office_observed << Date.new(Date.current.year,12,31)
         office_observed.sort.uniq
       end
 
       def office_hours_today
-        info = self.working_hours[Date.today.strftime("%A").downcase]
+        info = self.working_hours[Date.current.strftime("%A").downcase]
         if info['morning']['close'] == info['afternoon']['open']
           "%s to %s" % [
             info['morning']['open'],
@@ -124,7 +124,7 @@ module Properties
 
       def office_open?(datetime=nil)
         with_working_hours do
-          (datetime || Time.now).in_working_hours?
+          (datetime || DateTime.current).in_working_hours?
         end
       rescue
         true

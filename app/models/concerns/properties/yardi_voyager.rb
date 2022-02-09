@@ -35,7 +35,7 @@ module Properties
         adapter.cancelGuestCards
       end
 
-      def voyager_guestcards(start_date: nil, end_date: DateTime.now, filter: false)
+      def voyager_guestcards(start_date: nil, end_date: DateTime.current, filter: false)
         adapter = Leads::Adapters::YardiVoyager.new(self)
         return adapter.fetch_GuestCards(start_date: start_date, end_date: end_date, filter: filter)
       end

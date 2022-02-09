@@ -76,14 +76,14 @@ module Yardi
         end
 
         def fetch_data(url:, body:, headers: {}, options: {})
-          @request_id = Digest::SHA1.hexdigest(rand(Time.now.to_i).to_s)[0..11]
+          @request_id = Digest::SHA1.hexdigest(rand(DateTime.current.to_i).to_s)[0..11]
           data = nil
           retries = 0
           begin
-            start_time = Time.now
+            start_time = DateTime.current
             Rails.logger.warn "Yardi::Voyager::Api Requesting Data at #{url}, Action #{headers['SOAPAction']} #{format_request_id}"
             data = HTTParty.post(url, body: body, headers: headers)
-            elapsed = ( Time.now - start_time ).round(2)
+            elapsed = ( DateTime.current - start_time ).round(2)
             Rails.logger.warn "Yardi::Voyager::Api Completed request in #{elapsed}s #{format_request_id} "
           rescue Net::ReadTimeout => e
             if retries < 3

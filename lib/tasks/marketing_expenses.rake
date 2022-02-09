@@ -16,7 +16,7 @@ namespace :marketing_expenses do
           notable_id: expense.property.id,
           notable_type: 'Property',
           content: message,
-          created_at: DateTime.now,
+          created_at: DateTime.current,
           classification: 'system'
         )
       end

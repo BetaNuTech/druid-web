@@ -306,7 +306,7 @@ RSpec.describe LeadsController, type: :controller do
         {
           classification: 'lead',
           property_id: agent.property.id,
-          first_comm: DateTime.now.to_s,
+          first_comm: DateTime.current.to_s,
           first_name: 'WalkinFirst',
           last_name: 'WalkinLast',
           phone1: '5555555555',

@@ -241,7 +241,7 @@ class LeadSearch
         end
       end
       @skope = @skope.
-        where(first_comm: ( start_date || DEFAULT_START_DATE )..( end_date || DateTime.now ))
+        where(first_comm: ( start_date || DEFAULT_START_DATE )..( end_date || DateTime.current ))
       @filter_applied = true
     end
     return self

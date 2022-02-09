@@ -13,7 +13,7 @@ class ProspectStats
     @cache_data = {}
     @voyager_source = voyager_source
     @filters = filters
-    @end_date = ( DateTime.parse(filters[:date]).end_of_day rescue DateTime.now )
+    @end_date = ( DateTime.parse(filters[:date]).end_of_day rescue DateTime.current )
   end
 
   def refresh_cache
@@ -39,7 +39,7 @@ class ProspectStats
           "Name": property.name,
           "ID": property_voyager_id(property),
           "BlueskyID": property.id,
-          "ReportDate": DateTime.now,
+          "ReportDate": DateTime.current,
           "EndDate": @end_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(property, 365),
@@ -81,7 +81,7 @@ class ProspectStats
           "Name": user.name,
           "ID": user.id,
           "BlueskyID": user.id,
-          "ReportDate": DateTime.now,
+          "ReportDate": DateTime.current,
           "EndDate": @end_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(user, 365),
@@ -122,7 +122,7 @@ class ProspectStats
           "Name": team.name,
           "ID": team.id,
           "BlueskyID": team.id,
-          "ReportDate": DateTime.now,
+          "ReportDate": DateTime.current,
           "EndDate": @end_date,
           "Stats": {
             "Prospects365_all": prospect_count_all(team, 365),

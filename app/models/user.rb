@@ -106,7 +106,7 @@ class User < ApplicationRecord
   end
 
   # User's leads which changed state from 'open' to 'prospect'
-  def claimed_leads(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+  def claimed_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
     return Lead.includes(:lead_transitions).
               where(leads: { user_id: self.id }).
               where(lead_transitions: {
@@ -116,7 +116,7 @@ class User < ApplicationRecord
   end
 
   # User's lead which changed state to 'approved'
-  def closed_leads(start_date: (Date.today - 7.days).beginning_of_day, end_date: DateTime.now)
+  def closed_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
     return Lead.includes(:lead_transitions).
               where(leads: { user_id: self.id } ).
               where(lead_transitions: {
@@ -146,7 +146,7 @@ class User < ApplicationRecord
 
   def login_timestamps(start_date: nil)
     start_date ||= 1.month.ago.beginning_of_month
-    end_date = Time.now
+    end_date = DateTime.current
     audits = Audited::Audit.where(
       created_at: start_date..end_date,
       auditable_type: 'User',

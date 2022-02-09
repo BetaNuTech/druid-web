@@ -45,7 +45,7 @@ module Leads
 
       def pending_revisit
         where(state: 'future').
-          where("follow_up_at IS NOT NULL AND follow_up_at <= ?", DateTime.now)
+          where("follow_up_at IS NOT NULL AND follow_up_at <= ?", DateTime.current)
       end
 
       def state_names
@@ -302,7 +302,7 @@ module Leads
       end
 
       def set_conversion_date
-        self.conversion_date ||= DateTime.now
+        self.conversion_date ||= DateTime.current
       end
 
       def create_initial_transition

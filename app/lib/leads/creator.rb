@@ -132,7 +132,7 @@ module Leads
       @lead.priority = "urgent"
       @lead.build_preference unless @lead.preference.present?
       @lead.source = @source
-      @lead.first_comm ||= Time.now
+      @lead.first_comm ||= DateTime.current
 
       case parse_status
         when :ok

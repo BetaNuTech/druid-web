@@ -22,7 +22,7 @@ namespace :residents do
         msg = " * Processing Residents for #{property[:name]} [YARDI ID: #{property[:code]}]"
         puts msg
         Rails.logger.warn msg
-        residents = adapter.processResidents(start_date: nil, end_date: DateTime.now)
+        residents = adapter.processResidents(start_date: nil, end_date: DateTime.current)
 
         resident_count = residents.size
         resident_succeeded = residents.select{|l| l.id.present? }.size

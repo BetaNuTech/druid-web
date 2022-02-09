@@ -81,7 +81,7 @@ module Leads
       end
 
       def last_contact_score
-        elapsed = [ ( DateTime.now.to_i - ( last_comm.to_i || first_comm.to_i || DateTime.now.to_i) ), 1].max.to_f
+        elapsed = [ ( DateTime.current.to_i - ( last_comm.to_i || first_comm.to_i || DateTime.current.to_i) ), 1].max.to_f
         ratio = [ ( elapsed / 7.0.days.to_f ), 1.0 ].min
         score = ( 3.0 * ratio ).round
         return score
@@ -94,7 +94,7 @@ module Leads
 
         return 0.0 unless last_action_due.present?
 
-        elapsed = [ (DateTime.now.to_i - last_action_due.created_at.to_i), 1 ].max.to_f
+        elapsed = [ (DateTime.current.to_i - last_action_due.created_at.to_i), 1 ].max.to_f
         duration = [( last_action_due.schedule.to_datetime.to_i - last_action_due.created_at.to_i ), 1].max.to_f
         ratio = [(elapsed / duration), 1.0].min
         score = (3.0 * ratio ).round

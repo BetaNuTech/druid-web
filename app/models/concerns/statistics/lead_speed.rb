@@ -81,7 +81,7 @@ module Statistics
       # time_start: Time
       # time_end: Time (default: Now)
       def self.generate_leadspeed(resolution: 60, time_start:, time_end: nil)
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         data = Statistic.contact_events_for_user_leadspeed(resolution: resolution, time_start: time_start, time_end: time_end)
 
@@ -104,7 +104,7 @@ module Statistics
       end
 
       def self.contact_events_for_user_leadspeed(resolution: 60, time_start:, time_end: nil)
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -136,7 +136,7 @@ module Statistics
 
         resolution = 1.week / 60
         time_start = 2.months.ago
-        time_end = Time.now
+        time_end = DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -167,7 +167,7 @@ module Statistics
       def self.generate_property_leadspeed(property:, resolution: 60, time_start: , time_end: nil)
         return true if property.users.active.empty?
 
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         data = Statistic.contact_events_for_property_leadspeed(
           property: property, resolution: resolution, time_start: time_start, time_end: time_end)
@@ -193,7 +193,7 @@ module Statistics
       def self.contact_events_for_property_leadspeed(property:, resolution: 60, time_start:, time_end: nil)
         return ContactEvent.where('1=0') if property.users.empty?
 
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -243,7 +243,7 @@ module Statistics
       def self.contact_events_for_team_leadspeed(team:, resolution: 60, time_start:, time_end: nil)
         return ContactEvent.where('1=0') if team.members.empty?
 
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -300,7 +300,7 @@ module Statistics
           raise 'Invalid rollup interval'
         end
 
-        return false if time_end > Time.now
+        return false if time_end > DateTime.current
 
         sql = <<~SQL
           SELECT

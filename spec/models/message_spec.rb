@@ -435,7 +435,7 @@ RSpec.describe Message, type: :model do
     describe "scope" do
       let(:read_messages) {
         read_messages = messages[0..1]
-        read_messages.each{|m| m.read_at = DateTime.now; m.save}
+        read_messages.each{|m| m.read_at = DateTime.current; m.save}
         read_messages
       }
       let(:unread_messages) {

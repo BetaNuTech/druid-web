@@ -65,7 +65,7 @@ module ScheduledActions
         case self.state
         when 'completed', 'completed_retry'
           if !self.completed_at.present?
-            self.completed_at = DateTime.now
+            self.completed_at = DateTime.current
             self.save
           end
         end

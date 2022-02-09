@@ -2,12 +2,12 @@ namespace :statistics do
 
   desc "Bootstrap Statistics and LeadSpeed"
   task :bootstrap => :environment do
-    time_basis = Time.now.utc.beginning_of_day
+    time_basis = DateTime.current.utc.beginning_of_day
     two_months_ago = time_basis.beginning_of_month - 2.months
 
     if ContactEvent.count < 100
       puts "*** Generating contact events for the past 2 months"
-      Lead.where(created_at: two_months_ago..Time.now).each do |lead|
+      Lead.where(created_at: two_months_ago..DateTime.current).each do |lead|
         messages = lead.messages.outgoing.where(classification: 'default').to_a
         tasks = lead.scheduled_actions.contact.completed.to_a
         (messages + tasks).sort_by(&:created_at).each do |article|
@@ -15,7 +15,7 @@ namespace :statistics do
             case article
             when Message
               next if article.for_compliance?
-              article.messageable.create_contact_event_without_delay(
+              article.messageable.create_contact_event(
                 {
                   timestamp: article.delivered_at,
                   description: 'Historical contact event for message',
@@ -25,7 +25,7 @@ namespace :statistics do
             when ScheduledAction
               next unless article.target.is_a?(Lead)
 
-              article.target.create_contact_event_without_delay(
+              article.target.create_contact_event(
                 {
                   timestamp: article.completed_at,
                   description: 'Historical contact event for task',
@@ -109,7 +109,7 @@ namespace :statistics do
   namespace :impressions do
     desc "Page Impressions"
     task by_reference: :environment do
-      data = UserImpression.where(created_at: 1.month.ago..Time.now).select('reference as ref, count(reference) as ct').group(:reference).order('ct desc').map{|r| [r.ref, r.ct]}
+      data = UserImpression.where(created_at: 1.month.ago..DateTime.current).select('reference as ref, count(reference) as ct').group(:reference).order('ct desc').map{|r| [r.ref, r.ct]}
       csv_data = CSV.generate do |csv|
         csv << ['Page', 'Count']
         data.each do |row|

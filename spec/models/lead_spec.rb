@@ -648,7 +648,7 @@ RSpec.describe Lead, type: :model do
           it "should not send the sms optin request" do
             lead; lead2; lead3
             lead.preference.optin_sms = true
-            lead.preference.optin_sms_date = Time.now
+            lead.preference.optin_sms_date = DateTime.current
             lead.preference.save!
             lead.trigger_event(event_name: :claim, user: agent)
             lead2.trigger_event(event_name: :claim, user: agent)
@@ -660,7 +660,7 @@ RSpec.describe Lead, type: :model do
           it "should not send the sms optin request" do
             lead; lead2; lead3
             lead.preference.optin_sms = false
-            lead.preference.optin_sms_date = Time.now
+            lead.preference.optin_sms_date = DateTime.current
             lead.preference.save!
             lead.trigger_event(event_name: :claim, user: agent)
             lead2.trigger_event(event_name: :claim, user: agent)
@@ -842,7 +842,7 @@ RSpec.describe Lead, type: :model do
           recipientid: 'incomingemailaddress@example.com',
           subject: 'Test Incoming EMAIL Message1',
           body: 'Test incoming EMAIL message',
-          delivered_at: DateTime.now,
+          delivered_at: DateTime.current,
           message_type: email_message_type,
           incoming: true
         )
@@ -868,7 +868,7 @@ RSpec.describe Lead, type: :model do
           recipientid: 'incomingsms',
           subject: 'Test Incoming SMS Message1',
           body: 'Test incoming SMS message',
-          delivered_at: DateTime.now,
+          delivered_at: DateTime.current,
           message_type: sms_message_type,
           incoming: true
         )
@@ -1133,7 +1133,7 @@ RSpec.describe Lead, type: :model do
       it "should 'revisit' leads pending revisit" do
         lead.user = agent
         lead.state = 'future'
-        lead.follow_up_at = Time.now + 1.day
+        lead.follow_up_at = DateTime.current + 1.day
         lead.property = agent.property
         lead.save!
 
@@ -1158,7 +1158,7 @@ RSpec.describe Lead, type: :model do
         lead.property = agent.property
         lead.save!
 
-        lead.follow_up_at = Time.now + 2.days
+        lead.follow_up_at = DateTime.current + 2.days
         lead.trigger_event(event_name: 'postpone', user: user)
 
         lead.reload

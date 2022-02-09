@@ -25,7 +25,7 @@ class EngagementPolicyActionCompliance < ApplicationRecord
   belongs_to :user, optional: true
 
   ### Scopes
-  #scope :expired, ->{where("expired_at < ?", DateTime.now)}
+  #scope :expired, ->{where("expired_at < ?", DateTime.current)}
 
   ### Validations
   validates :state, presence: true,

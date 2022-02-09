@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ApplicationHelper, type: :helper do
   describe "short_date" do
     it "should format a short date" do
-      d = DateTime.now
+      d = DateTime.current
       out = short_date d
       expect(out).to match(d.strftime("%m-%d"))
     end
@@ -11,7 +11,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "long_datetime" do
     it "should format a long date" do
-      d = DateTime.now
+      d = DateTime.current
       out = long_datetime d
       expect(out).to match(d.strftime('%B %e, %Y at %l:%M%p'))
     end

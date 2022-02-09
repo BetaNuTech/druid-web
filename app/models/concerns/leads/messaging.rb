@@ -194,7 +194,7 @@ module Leads
           autocomplete_lead_contact_tasks(message_delivery)
           requalify_if_disqualified if message_delivery.message.incoming?
           if message_delivery.message.outgoing? && !( message_delivery.message.for_compliance? || message_delivery.message.for_marketing?)
-            make_contact(timestamp: message_delivery.delivered_at, description: 'Message sent to Lead', article: message_delivery.message)
+            make_contact(timestamp: ( message_delivery.delivered_at || DateTime.current ), description: 'Message sent to Lead', article: message_delivery.message)
           end
           preference&.handle_message_response(message_delivery)
           create_message_delivery_comment(message_delivery)

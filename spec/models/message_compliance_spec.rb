@@ -114,7 +114,7 @@ RSpec.describe "Lead Message Preference Compliance" do
       before do
         ENV[MessageType::SMS_MESSAGING_DISABLED_FLAG] = 'false'
         lead.preference.optin_sms = true
-        lead.preference.optin_sms_date = DateTime.now
+        lead.preference.optin_sms_date = DateTime.current
         lead.preference.save!
         lead.reload
       end

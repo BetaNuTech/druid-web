@@ -35,7 +35,7 @@ module Statistics
         baseline_score = 10.0
         resolution ||= 1.month.to_i / 60
         time_start ||= Statistic.utc_month_start - 1.month
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -99,7 +99,7 @@ module Statistics
 
         resolution = 1.month / 60
         time_start = 2.months.ago
-        time_end = Time.now
+        time_end = DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -138,7 +138,7 @@ module Statistics
         resolution ||= 1.month.to_i / 60
         baseline_score = 10.0
         time_start ||= Statistic.utc_month_start - 1.month
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -209,7 +209,7 @@ module Statistics
         resolution ||= 1.month.to_i / 60
         baseline_score = 10.0
         time_start ||= Statistic.utc_month_start - 1.month
-        time_end ||= Time.now
+        time_end ||= DateTime.current
 
         sql = <<~SQL
           SELECT
@@ -270,7 +270,7 @@ module Statistics
       end # generate_property_tenacity
 
       def self.rollup_all_tenacity_intervals
-        self.rollup_tenacity(interval: :year, time_start: Time.now.utc.beginning_of_year - 1.year)
+        self.rollup_tenacity(interval: :year, time_start: DateTime.current.utc.beginning_of_year - 1.year)
       end
 
       def self.rollup_tenacity(interval:, time_start:)
@@ -284,7 +284,7 @@ module Statistics
           raise 'Invalid rollup interval'
         end
 
-        return false if time_end > Time.now
+        return false if time_end > DateTime.current
 
         sql = <<~SQL
           SELECT

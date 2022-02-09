@@ -134,7 +134,7 @@ class Cdr < CdrdbModel
 
     conditions = {
       start_date: start_date || 5.years.ago,
-      end_date: end_date || Time.now,
+      end_date: end_date || DateTime.current,
       source: phone
     }
     skope = select(:id, :calldate, :src, :dst, :recordingfile).

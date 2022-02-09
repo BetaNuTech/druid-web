@@ -42,6 +42,6 @@ FactoryBot.define do
     optout_email { false }
     optout_email_date { nil }
     optin_sms { true }
-    optin_sms_date { DateTime.now }
+    optin_sms_date { DateTime.current }
   end
 end

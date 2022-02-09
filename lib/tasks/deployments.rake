@@ -17,9 +17,9 @@ namespace :post_deployment do
     Statistic.where('time_start > :start_date', start_date: start_date).destroy_all
 
     puts "*** Backfilling tenacity stats after #{start_date}"
-    Statistic.backfill_tenacity(time_start: start_date, time_end: Time.now)
+    Statistic.backfill_tenacity(time_start: start_date, time_end: DateTime.current)
 
     puts "*** Backfilling lead speed stats after #{start_date}"
-    Statistic.backfill_leadspeed(time_start: start_date, time_end: Time.now)
+    Statistic.backfill_leadspeed(time_start: start_date, time_end: DateTime.current)
   end
 end

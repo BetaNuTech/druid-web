@@ -75,7 +75,7 @@ class Message < ApplicationRecord
   def self.mark_read!(collection,user=nil)
     collection = Array(collection) if collection.is_a?(Message)
     collection.each do |record|
-      record.read_at ||= DateTime.now
+      record.read_at ||= DateTime.current
       ( record.read_by ||= user ) if user
       record.save!
     end

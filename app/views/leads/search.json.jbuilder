@@ -4,7 +4,7 @@ json.data do
 end
 json.meta do
   json.version '1.0'
-  json.generated_at DateTime.now
+  json.generated_at DateTime.current
   json.total_count @search.record_count
   json.count @search.paginated.size
 end

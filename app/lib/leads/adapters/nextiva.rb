@@ -111,7 +111,7 @@ module Leads
       end
 
       def matching_lead?(lead)
-        time_window = ( ( lead.first_comm || Time.now ) - 1.day )..Time.now
+        time_window = ( ( lead.first_comm || DateTime.current ) - 1.day )..DateTime.current
         Lead.where(created_at: time_window).where("notes ILIKE '%#{lead.tempid}%'")
           .or(Lead.where(phone1: lead.phone1))
           .any?

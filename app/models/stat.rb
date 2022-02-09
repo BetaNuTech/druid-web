@@ -104,7 +104,7 @@ class Stat
     #if @start_date.nil?
       #_filters << "leads.first_comm BETWEEN '%s' AND '%s'" % [
         #7.days.ago.strftime("%Y-%m-%d"),
-        #(Date.today + 1.day).strftime("%Y-%m-%d"),
+        #(Date.current + 1.day).strftime("%Y-%m-%d"),
       #]
     #end
     #sql=<<-EOS
@@ -486,7 +486,7 @@ EOS
           {
             id: lead.id,
             label: lead.name,
-            created_at: distance_of_time_in_words(lead.first_comm, DateTime.now),
+            created_at: distance_of_time_in_words(lead.first_comm, DateTime.current),
             url: "/leads/#{lead.id}",
             priority: lead.priority,
             property_id: lead.property_id,
@@ -498,8 +498,8 @@ EOS
 
   def agent_status_json
     skope = User.active.where(id: statistics_collection[:agent].pluck(:id))
-    start_date = (Date.today - 7.days).beginning_of_day.strftime("%Y-%m-%d")
-    end_date = Time.now.strftime("%Y-%m-%d")
+    start_date = (Date.current - 7.days).beginning_of_day.strftime("%Y-%m-%d")
+    end_date = DateTime.current.strftime("%Y-%m-%d")
 
     return {
         series: skope.map do |user|
@@ -521,7 +521,7 @@ EOS
       }
   end
 
-  def recent_activity_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
+  def recent_activity_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.current)
     activity = []
     activity += completed_tasks_json(start_date: start_date, end_date: end_date)
     activity += messages_sent_json(start_date: start_date, end_date: end_date)
@@ -532,7 +532,7 @@ EOS
     return activity
   end
 
-  def notes_created(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
+  def notes_created(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.current)
     notes = Note.where( notable_type: 'Lead', created_at: (start_date..end_date)).comments
     if filter_by_agent?
       notes = notes.where(user_id: @user_ids)
@@ -543,7 +543,7 @@ EOS
     return notes
   end
 
-  def notes_created_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.now)
+  def notes_created_json(start_date: 2.days.ago.beginning_of_day, end_date: DateTime.current)
     return notes_created(start_date: start_date, end_date: end_date).map{|note|
       ActivityEntry.new(
         entry_type: 'Note',
@@ -560,7 +560,7 @@ EOS
   end
 
 
-  def completed_tasks(start_date: 48.hours.ago, end_date: DateTime.now)
+  def completed_tasks(start_date: 48.hours.ago, end_date: DateTime.current)
     # Completed Lead tasks
     tasks = ScheduledAction.
       where(
@@ -572,7 +572,7 @@ EOS
     return tasks.order(updated_at: :desc).limit(10)
   end
 
-  def completed_tasks_json(start_date: 48.hours.ago, end_date: DateTime.now)
+  def completed_tasks_json(start_date: 48.hours.ago, end_date: DateTime.current)
     return completed_tasks(start_date: start_date, end_date: end_date).map{|scheduled_action|
       desc = scheduled_action.activity_summary
       ActivityEntry.new(
@@ -589,7 +589,7 @@ EOS
     }
   end
 
-  def messages_sent(start_date: 48.hours.ago, end_date: DateTime.now)
+  def messages_sent(start_date: 48.hours.ago, end_date: DateTime.current)
     messages = Message.where(
       delivered_at: (start_date..end_date),
       messageable_type: 'Lead',
@@ -598,7 +598,7 @@ EOS
     return messages.order(created_at: :desc).limit(10)
   end
 
-  def messages_sent_json(start_date: 48.hours.ago, end_date: DateTime.now)
+  def messages_sent_json(start_date: 48.hours.ago, end_date: DateTime.current)
     return messages_sent(start_date: start_date, end_date: end_date).map{|message|
       ActivityEntry.new(
         entry_type: 'Message',
@@ -614,7 +614,7 @@ EOS
     }
   end
 
-  def lead_state_changed_records(start_date: 48.hours.ago, end_date: DateTime.now)
+  def lead_state_changed_records(start_date: 48.hours.ago, end_date: DateTime.current)
     transitions = LeadTransition.includes(:lead).
       where(
         created_at: start_date..end_date,
@@ -626,7 +626,7 @@ EOS
     return transitions.order(updated_at: :desc).limit(10)
   end
 
-  def lead_state_changed_records_json(start_date: 48.hours.ago, end_date: DateTime.now)
+  def lead_state_changed_records_json(start_date: 48.hours.ago, end_date: DateTime.current)
     return lead_state_changed_records(start_date: start_date, end_date: end_date).map{|rec|
       ActivityEntry.new(
         entry_type: 'Lead State',
@@ -642,7 +642,7 @@ EOS
     }.compact
   end
 
-  def response_times_json(start_date: 48.hours.ago, end_date: DateTime.now)
+  def response_times_json(start_date: 48.hours.ago, end_date: DateTime.current)
     _filter_sql = filter_sql
     sql=<<-EOS
       SELECT
@@ -780,7 +780,7 @@ EOS
   end
 
   def property_engagement_stats_by_month(year=nil)
-    year ||= Date.today.year
+    year ||= Date.current.year
     sql=<<-EOS
       -- Engagement stats by Property by Month
       SELECT
@@ -929,7 +929,7 @@ EOS
   end
 
   def agent_engagement_stats_by_month(year=nil)
-    year ||= Date.today.year
+    year ||= Date.current.year
     sql=<<-EOS
       SELECT
         to_char(series, 'YYYY/MM') AS report_date,
@@ -1096,31 +1096,31 @@ EOS
     else
       date_range = date_range.last
     end
-    end_date = DateTime.now
+    end_date = DateTime.current
     case date_range
     when [], nil, 'all_time'
       start_date = nil
       end_date = nil
       date_range = nil
     when 'today'
-      start_date = DateTime.now.beginning_of_day
+      start_date = DateTime.current.beginning_of_day
     when 'week'
-      start_date = DateTime.now - 1.week
+      start_date = DateTime.current - 1.week
     when 'last_week'
-      start_date = DateTime.now.beginning_of_week - 1.week
-      end_date = DateTime.now.end_of_week - 1.week
+      start_date = DateTime.current.beginning_of_week - 1.week
+      end_date = DateTime.current.end_of_week - 1.week
     when '2weeks'
-      start_date = DateTime.now - 2.weeks
+      start_date = DateTime.current - 2.weeks
     when 'month'
-      start_date = DateTime.now - 1.month
+      start_date = DateTime.current - 1.month
     when 'last_month'
-      start_date = DateTime.now.beginning_of_month - 1.month
-      end_date = DateTime.now.end_of_month - 1.month
+      start_date = DateTime.current.beginning_of_month - 1.month
+      end_date = DateTime.current.end_of_month - 1.month
     when '3months'
-      start_date = DateTime.now - 3.months
+      start_date = DateTime.current - 3.months
     when 'last_quarter'
-      this_year = Date.today.year
-      case Date.today.month
+      this_year = Date.current.year
+      case Date.current.month
       when 1,2,3
         start_date = DateTime.new(this_year,1,1)
         end_date = DateTime.new(this_year,3,31)
@@ -1135,14 +1135,14 @@ EOS
         end_date = DateTime.new(this_year,12,31)
       end
     when 'year'
-      start_date = DateTime.now - 1.year
+      start_date = DateTime.current - 1.year
     when 'last_year'
-      start_date = DateTime.now.beginning_of_year - 1.year
-      end_date = DateTime.now.end_of_year - 1.year
+      start_date = DateTime.current.beginning_of_year - 1.year
+      end_date = DateTime.current.end_of_year - 1.year
     else
       date_range = 'custom'
       start_date = Date.parse(filters.fetch(:start_date, '')) rescue 99.years.ago
-      end_date = Date.parse(filters.fetch(:end_date, '')) rescue DateTime.now
+      end_date = Date.parse(filters.fetch(:end_date, '')) rescue DateTime.current
     end
     return [date_range, start_date, end_date]
   end

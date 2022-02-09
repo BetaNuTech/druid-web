@@ -61,7 +61,7 @@ module Messages
     end
 
     def record_success
-      delivery.delivered_at = DateTime.now
+      delivery.delivered_at = DateTime.current
       delivery.status = MessageDelivery::SUCCESS
       delivery.save!
       delivery.message.incoming = false

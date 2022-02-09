@@ -65,7 +65,7 @@ RSpec.describe MessageDelivery, type: :model do
     it "returns whether it has been delivered" do
       md1 = MessageDelivery.create(message: message, message_type: message.message_type)
       refute md1.delivered?
-      md1.delivered_at = DateTime.now
+      md1.delivered_at = DateTime.current
       md1.save
       assert md1.delivered?
     end

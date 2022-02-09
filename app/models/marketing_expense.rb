@@ -43,7 +43,7 @@ class MarketingExpense < ApplicationRecord
   validate :validate_end_date
 
   ### Scopes
-  scope :this_month, -> { where(start_date: DateTime.now.beginning_of_month..DateTime.now) }
+  scope :this_month, -> { where(start_date: DateTime.current.beginning_of_month..DateTime.current) }
 
   ### Class Methods
 

@@ -68,7 +68,7 @@ class MarketingSource < ApplicationRecord
   ### Scopes
   scope :periodic, -> { where(fee_type: [MONTHLY_FEE, QUARTERLY_FEE, YEARLY_FEE]) }
   scope :active, -> { where(active: true) }
-  scope :current, -> { active.where('marketing_sources.start_date <= :now AND marketing_sources.end_date > :now', { now: Time.now })}
+  scope :current, -> { active.where('marketing_sources.start_date <= :now AND marketing_sources.end_date > :now', { now: DateTime.current })}
 
   ### Class methods
 

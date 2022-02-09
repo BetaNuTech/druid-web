@@ -10,7 +10,6 @@ module Leads
         leads = Lead.includes(:source, :contact_events).
           where(lead_sources: {slug: LeadSource::PHONE_SOURCES}).
           where('leads.created_at >= :created_at', { created_at: time_start})
-        puts "*** Found #{leads.count} phone leads for processing"
         leads.each do |lead|
           first_contact_events = lead.contact_events.first_contact
           if first_contact_events.where(description: INCOMING_CALL_LEAD_EVENT_DESCRIPTION).any?
@@ -38,7 +37,6 @@ module Leads
 
       def create_first_contact_event_for_incoming_call_leads(force=false)
         if source&.phone_source? && !contact_events.first_contact.any?
-          # TODO replace `create!` with `create`
           ContactEvent.create(
             lead_id: self.id,
             user_id: ( user_id || property&.primary_agent&.id ),
@@ -54,7 +52,7 @@ module Leads
       def create_scheduled_action_contact_event(scheduled_action)
         if scheduled_action.lead_action&.is_contact?
           description = 'Completed a Contact action'
-          timestamp = scheduled_action.completed_at || Time.now
+          timestamp = scheduled_action.completed_at || DateTime.current
           create_contact_event({ timestamp: timestamp, description: description, article: scheduled_action })
         end
       end
@@ -69,7 +67,7 @@ module Leads
       # Lead owner is given credit for any lead contact events to prevent unfair tenacity scores
       #
       def create_contact_event(options)
-        timestamp = options.fetch(:timestamp, Time.now)
+        timestamp = options.fetch(:timestamp, DateTime.current)
         description = options.fetch(:description, 'Unspecified Lead contact event')
         lead_time = options.fetch(:lead_time, nil)
         article = options.fetch(:article, nil)
@@ -93,8 +91,6 @@ module Leads
         event
       end
 
-      handle_asynchronously :create_contact_event, queue: :low_priority
-
       def contact_lead_time(first_contact, timestamp)
         # Use created_at rather than first_comm so agents are not penalized for system delays
         # compare_timestamp = (first_contact ? first_comm : last_comm).to_time
@@ -107,7 +103,7 @@ module Leads
 
       def make_contact(timestamp: nil, description: nil, article: nil)
         description ||= 'Lead contacted (misc)'
-        timestamp = timestamp || Time.now
+        timestamp = timestamp || DateTime.current
         create_contact_event({ timestamp: timestamp, description: description, article: article })
       end
 

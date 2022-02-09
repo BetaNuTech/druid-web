@@ -138,7 +138,7 @@ RSpec.describe Stat, type: :model do
                 })
       expect(stat.date_range).to eq('week')
       expect(stat.start_date.to_date).to eq(1.week.ago.to_date)
-      expect(stat.end_date.to_date).to eq(DateTime.now.to_date)
+      expect(stat.end_date.to_date).to eq(DateTime.current.to_date)
     end
 
     it "should handle 'week' as a single value" do
@@ -151,7 +151,7 @@ RSpec.describe Stat, type: :model do
                 })
       expect(stat.date_range).to eq('week')
       expect(stat.start_date.to_date).to eq(1.week.ago.to_date)
-      expect(stat.end_date.to_date).to eq(DateTime.now.to_date)
+      expect(stat.end_date.to_date).to eq(DateTime.current.to_date)
     end
 
     it "should handle '2weeks' as an array" do
@@ -164,7 +164,7 @@ RSpec.describe Stat, type: :model do
                 })
       expect(stat.date_range).to eq('2weeks')
       expect(stat.start_date.to_date).to eq(2.weeks.ago.to_date)
-      expect(stat.end_date.to_date).to eq(DateTime.now.to_date)
+      expect(stat.end_date.to_date).to eq(DateTime.current.to_date)
     end
 
     it "should handle '2week' as a single value" do
@@ -177,7 +177,7 @@ RSpec.describe Stat, type: :model do
                 })
       expect(stat.date_range).to eq('2weeks')
       expect(stat.start_date.to_date).to eq(2.weeks.ago.to_date)
-      expect(stat.end_date.to_date).to eq(DateTime.now.to_date)
+      expect(stat.end_date.to_date).to eq(DateTime.current.to_date)
     end
 
     it "should handle 'month' as an array" do

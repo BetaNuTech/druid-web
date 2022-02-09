@@ -42,7 +42,7 @@ module Cdrs
 
       def check_replication_status
         all_passed = true
-        ts = DateTime.now.to_s
+        ts = DateTime.current.to_s
         status = self.replication_status
 
         checks = {

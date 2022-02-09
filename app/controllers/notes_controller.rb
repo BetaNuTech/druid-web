@@ -9,7 +9,7 @@ class NotesController < ApplicationController
   # GET /notes.json
   def index
     authorize Note
-    @start_date = (params[:start_date] || Date.today.beginning_of_month.to_s )
+    @start_date = (params[:start_date] || Date.current.beginning_of_month.to_s )
     @notes = policy_scope(Note).limit(set_limit)
   end
 
