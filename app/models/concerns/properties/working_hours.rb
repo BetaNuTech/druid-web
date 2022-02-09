@@ -147,7 +147,6 @@ module Properties
           true
         end
       rescue => e
-        binding.pry
         false
       end
 
