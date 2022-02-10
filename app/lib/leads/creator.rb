@@ -162,7 +162,7 @@ module Leads
           notable = parse_result.property_code.present? ?
             Leads::Adapters::YardiVoyager.property(parse_result.property_code) :
             nil
-          note_message = "Leads::Creator Error (#{@lead.parser}) New Lead has validation errors: " + @lead.errors.to_a.join(', ')
+          note_message = "Leads::Creator Error (#{@lead.parser}) New Lead has validation errors: " + @lead.errors.full_messages.join(', ')
           Leads::Creator.create_event_note(message: note_message, notable: notable, error: true)
       end
 
