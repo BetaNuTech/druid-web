@@ -81,12 +81,12 @@ module Leads
           message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
           raw_name = container.css('div.normaltext span[data-selenium-id="ProspectName"]')&.text
           name = raw_name.split(' ')
-          first_name = name.first
-          last_name = name.last
+          first_name = name.first || 'Null'
+          last_name = name.last || 'Null'
           last_name = nil if last_name == first_name
           phone1 = container.css('div.normaltext span[data-selenium-id="ProspectPhone"]')&.text
           phone2 = container.css('div.normaltext span[data-selenium-id="ProspectAltPhone"]')&.text
-          email = container.css('div.normaltext span[data-selenium-id="ProspectEmail"]')&.text
+          email = container.css('div.normaltext span[data-selenium-id="ProspectEmail"]')&.text || 'Null'
           notes = container.css('div.normaltext span[data-selenium-id="ProspectComments"]')&.text
           remoteid = ( container.css('div.normaltext span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
