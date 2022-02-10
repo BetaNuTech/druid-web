@@ -70,6 +70,7 @@ module Leads
           phone2: nil,
           email: sanitize( data[:email] ),
           fax: nil,
+          parser: 'Zillow',
           preference_attributes: {
 						baths: sanitize( data[:numBathroomsSought] ),
 						beds: sanitize( data[:numBedroomsSought] ),

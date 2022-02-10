@@ -31,7 +31,7 @@ module Api
         if @lead.valid? && @lead.id.present?
           render :create, status: :created, format: :json
         else
-          render json: {errors: @lead.errors}, status: :unprocessable_entity, format: :json
+          render json: {errors: @lead.errors, parser: @lead.parser}, status: :unprocessable_entity, format: :json
         end
       end
 

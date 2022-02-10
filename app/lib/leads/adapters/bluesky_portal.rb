@@ -23,6 +23,7 @@ module Leads
           phone1_type: 'Cell',
           email: data.fetch('email'),
           notes: "Bluesky Portal Lead from #{data.fetch('referrer')}; Creative: #{data.fetch('creative')}; Referrer URL: #{data.fetch('referrer_url')}; Timestamp: #{data.fetch('timestamp')}; Submission: #{data.fetch('submission')}",
+          parser: 'BlueskyPortal',
           preference_attributes: {
             baths: data.fetch('bathrooms'),
             beds: data.fetch('bedrooms'),

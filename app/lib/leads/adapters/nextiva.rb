@@ -78,6 +78,7 @@ module Leads
           notes: notes,
           tempid: record_id,
           first_comm: timestamp,
+          parser: 'Nextiva',
           preference_attributes: {
             raw_data: {plain: data}.to_json
           }

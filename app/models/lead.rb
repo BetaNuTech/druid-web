@@ -72,6 +72,7 @@ class Lead < ApplicationRecord
   ### Attributes
   attr_accessor :show_unit
   attr_accessor :tempid
+  attr_accessor :parser
 
   ### Enums
   enum classification: { lead: 0, vendor: 1, resident: 2, duplicate: 3, spam: 4, lost: 5, parse_failure: 6 }

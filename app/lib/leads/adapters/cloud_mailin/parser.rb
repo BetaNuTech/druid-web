@@ -48,7 +48,8 @@ module Leads
         end
 
         def parse
-          @parser.parse(@data)
+          meta = { parser: @parser.class_name }
+          @parser.parse(@data).merge(meta)
         end
 
         private

@@ -16,6 +16,7 @@ module Leads
         full_name = lookup_name
         @data['first_name'] = full_name.first
         @data['last_name'] = full_name.last
+        @data['parser'] = 'CallCenter'
         lead = Lead.new(@data)
         lead.validate
         status = lead.valid? ? :ok : :invalid
