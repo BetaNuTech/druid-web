@@ -163,4 +163,12 @@ class User < ApplicationRecord
   end
 
   handle_asynchronously :deactivation_cleanup, queue: :low_priority
+
+  def reassign_leads(user:)
+    transaction do
+      leads.in_progress.each do |lead|
+        lead.reassign(user: user)
+      end
+    end
+  end
 end

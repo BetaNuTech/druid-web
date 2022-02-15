@@ -227,6 +227,17 @@ class Lead < ApplicationRecord
       set_priority
     end
 
+    def reassign(user:)
+      transaction do
+        self.user = user
+        save!
+        scheduled_actions.incomplete.each do |task|
+          task.user = user
+          task.save!
+        end
+      end
+    end
+
     private
 
     def format_phones
