@@ -1,5 +1,18 @@
 namespace :leads do
 
+  desc 'Reassign leads (USAGE: rake leads:reassign[from@example.com,to@example.com])'
+  task :reassign, [:from, :to] => :environment do |t, args|
+    from_user = User.find_by_email(args[:from]) rescue nil
+    to_user = User.find_by_email(args[:to]) rescue nil
+
+    raise 'Invalid origin user email address' if from_user.nil?
+    raise 'Invalid destination user email address' if to_user.nil?
+
+    puts "*** Reassigning active leads for #{from_user.name} to #{to_user.name}..."
+    from_user.reassign_leads(user: to_user)
+    puts "Done."
+  end
+
   desc "Detect and associate Residents" 
   task auto_lodge: :environment do
     puts "*** Automatically lodging leads matching current residents..."
