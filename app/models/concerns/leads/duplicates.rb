@@ -246,6 +246,9 @@ module Leads
         dupes = high_confidence_duplicates.to_a
         return false unless dupes.any?
 
+        # Abort if all of the duplicates belong to other properties
+        return false if dupes.all?{|lead| lead.property_id != property_id }
+
         # Abort if all matches are already disqualified
         return false if dupes.all?{|lead| lead.classification == 'duplicate'}
 
