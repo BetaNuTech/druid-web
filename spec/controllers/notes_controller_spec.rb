@@ -93,6 +93,12 @@ RSpec.describe NotesController, type: :controller do
 
   describe "POST #create" do
     describe "as an unauthenticated user" do
+      before do
+        sign_in agent
+        sign_out agent
+        valid_attributes
+      end
+
       it "should fail and redirect" do
         post :create, params: {note: valid_attributes}
         expect(response).to be_redirect
@@ -155,6 +161,7 @@ RSpec.describe NotesController, type: :controller do
     describe "as an administrator" do
       before do
         sign_in administrator
+        valid_attributes
       end
 
       it "should create a Note with valid attributes" do

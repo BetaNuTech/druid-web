@@ -33,7 +33,7 @@ RSpec.describe Lead, type: :model do
 
   let(:invalid_lead_attributes) {
     {
-      data: FactoryBot.attributes_for(:lead).merge(first_name: nil),
+      data: FactoryBot.attributes_for(:lead).merge(first_name: nil, last_name: nil),
       token: default_lead_source.api_token,
       agent: nil
     }

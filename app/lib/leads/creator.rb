@@ -54,7 +54,7 @@ module Leads
     def initialize(data:, agent: nil, token: DEFAULT_TOKEN)
       @lead = Lead.new
       @saved = false
-      @errors = ActiveModel::Errors.new(Lead)
+      @errors = ActiveModel::Errors.new(Lead.new)
       @data = data
       @token = token
       @source = get_source(@token)
@@ -138,7 +138,12 @@ module Leads
         when :ok
           @lead.state = 'showing' if @lead.show_unit.present?
           @lead = assign_property(lead: @lead, property_code: parse_result.property_code)
-          @lead.save
+          valid_lead = @lead.save
+
+          unless valid_lead
+            @lead.errors.full_messages.each{|e| @errors.add(:base, e)}
+            return @lead
+          end
 
           # Make the walkin lead note a 'comment'
           if @data.fetch(:entry_type,'') == 'walkin'
@@ -159,14 +164,13 @@ module Leads
           parse_result.errors.each do |err|
             @lead.errors.add(:base, err)
           end
+          @lead.errors.full_messages.each{|e| @errors.add(:base, e) }
           notable = parse_result.property_code.present? ?
             Leads::Adapters::YardiVoyager.property(parse_result.property_code) :
             nil
           note_message = "Leads::Creator Error New Lead has validation errors: " + @lead.errors.to_a.join(', ')
           Leads::Creator.create_event_note(message: note_message, notable: notable, error: true)
       end
-
-      @errors.full_messages.each{|e| @lead.errors.add(:base, e)}
 
       return @lead
     end
