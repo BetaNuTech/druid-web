@@ -224,100 +224,114 @@ RSpec.describe DuplicateLead do
       end
     end
 
-    it 'should not disqualify if first or last name is missing' do
-      property = default_property
-      existing_lead_1 = create(:lead, state: 'prospect', property: property, last_name: nil)
-      matching_lead_1 = create(:lead, state: 'open', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               phone1: existing_lead_1.phone1,
-                               email: existing_lead_1.email)
-      existing_lead_1.reload
-      matching_lead_1.reload
-      refute(matching_lead_1.disqualified?)
+    describe 'when the feature is enabled' do
+      before(:each) do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:lead_automatic_dedupe, true)
+      end
+      it 'should not disqualify if first or last name is missing' do
+        property = default_property
+        existing_lead_1 = create(:lead, state: 'prospect', property: property, last_name: nil)
+        matching_lead_1 = create(:lead, state: 'open', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 phone1: existing_lead_1.phone1,
+                                 email: existing_lead_1.email)
+        existing_lead_1.reload
+        matching_lead_1.reload
+        refute(matching_lead_1.disqualified?)
+      end
+
+      it 'should still disqualify if phone or email is missing' do
+        property = default_property
+        Lead.destroy_all
+        existing_lead_1 = create(:lead, state: 'prospect', property: property)
+        existing_lead_1.reload
+        matching_lead_1 = create(:lead, state: 'open', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 email: existing_lead_1.email)
+        existing_lead_1.reload
+        matching_lead_1.reload
+
+        assert(matching_lead_1.disqualified?)
+      end
+
+
+      it "should not disqualify if all matches are already disqualified" do
+        property = default_property
+        existing_lead_1 = create(:lead, state: 'prospect', property: property)
+        existing_lead_1.reload
+        matching_lead_1 = create(:lead, state: 'open', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 email: existing_lead_1.email)
+        matching_lead_2 = create(:lead, state: 'open', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 phone1: existing_lead_1.phone1)
+        existing_lead_1.reload
+        matching_lead_1.reload
+        matching_lead_2.reload
+        assert(matching_lead_1.disqualified?)
+        assert(matching_lead_2.disqualified?)
+      end
+
+      it "should not disqualify if there is an newer in-progress match" do
+        property = default_property
+        existing_lead_1 = create(:lead, state: 'disqualified', property: property)
+        matching_lead_1 = create(:lead, state: 'open', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 phone1: existing_lead_1.phone1,
+                                 email: existing_lead_1.email)
+        matching_lead_2 = create(:lead, state: 'prospect', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 phone1: existing_lead_1.phone1,
+                                 email: existing_lead_1.email)
+        existing_lead_1.reload
+        matching_lead_1.reload
+        matching_lead_2.reload
+        refute(matching_lead_1.auto_disqualify_lead?)
+      end
+
+      it "should disqualify if there is an older in-progress match" do
+        property = default_property
+        Lead.destroy_all
+        existing_lead_1 = create(:lead, state: 'disqualified', property: property)
+        existing_lead_1.reload
+        matching_lead_1 = create(:lead, state: 'prospect', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 phone1: existing_lead_1.phone1,
+                                 email: existing_lead_1.email)
+        matching_lead_2 = create(:lead, state: 'open', property: property,
+                                 first_name: existing_lead_1.first_name,
+                                 last_name: existing_lead_1.last_name,
+                                 phone1: existing_lead_1.phone1,
+                                 email: existing_lead_1.email)
+        existing_lead_1.reload
+        matching_lead_1.reload
+        matching_lead_2.reload
+
+        assert(matching_lead_2.disqualified?)
+      end
+
+
+      it "should automatically disqualify full matches" do
+        Lead.destroy_all
+        reference_lead1; reference_lead2; reference_lead3;
+        matching_by_email; matching_by_phone; match_by_name_only
+        matching_by_email.reload; matching_by_phone.reload; match_by_name_only.reload
+
+        assert(matching_by_email.disqualified?)
+        assert(matching_by_phone.disqualified?)
+        refute(match_by_name_only.disqualified?)
+        refute(miss_by_date.disqualified?)
+      end
     end
 
-    it 'should still disqualify if phone or email is missing' do
-      property = default_property
-      existing_lead_1 = create(:lead, state: 'prospect', property: property)
-      matching_lead_1 = create(:lead, state: 'open', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               email: existing_lead_1.email)
-      existing_lead_1.reload
-      matching_lead_1.reload
-      assert(matching_lead_1.disqualified?)
-    end
-
-
-    it "should not disqualify if all matches are already disqualified" do
-      property = default_property
-      existing_lead_1 = create(:lead, state: 'prospect', property: property)
-      matching_lead_1 = create(:lead, state: 'open', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               email: existing_lead_1.email)
-      matching_lead_2 = create(:lead, state: 'open', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               phone1: existing_lead_1.phone1)
-      existing_lead_1.reload
-      matching_lead_1.reload
-      matching_lead_2.reload
-      assert(matching_lead_1.disqualified?)
-      assert(matching_lead_2.disqualified?)
-    end
-
-    it "should not disqualify if there is an newer in-progress match" do
-      property = default_property
-      existing_lead_1 = create(:lead, state: 'disqualified', property: property)
-      matching_lead_1 = create(:lead, state: 'open', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               phone1: existing_lead_1.phone1,
-                               email: existing_lead_1.email)
-      matching_lead_2 = create(:lead, state: 'prospect', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               phone1: existing_lead_1.phone1,
-                               email: existing_lead_1.email)
-      existing_lead_1.reload
-      matching_lead_1.reload
-      matching_lead_2.reload
-      refute(matching_lead_1.auto_disqualify_lead?)
-    end
-
-    it "should disqualify if there is an older in-progress match" do
-      property = default_property
-      existing_lead_1 = create(:lead, state: 'disqualified', property: property)
-      matching_lead_1 = create(:lead, state: 'prospect', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               phone1: existing_lead_1.phone1,
-                               email: existing_lead_1.email)
-      matching_lead_2 = create(:lead, state: 'open', property: property,
-                               first_name: existing_lead_1.first_name,
-                               last_name: existing_lead_1.last_name,
-                               phone1: existing_lead_1.phone1,
-                               email: existing_lead_1.email)
-      existing_lead_1.reload
-      matching_lead_1.reload
-      matching_lead_2.reload
-
-      assert(matching_lead_2.disqualified?)
-    end
-
-
-    it "should automatically disqualify full matches" do
-      reference_lead1; reference_lead2; reference_lead3;
-      matching_by_email; matching_by_phone; match_by_name_only
-      matching_by_email.reload; matching_by_phone.reload; match_by_name_only.reload
-
-      assert(matching_by_email.disqualified?)
-      assert(matching_by_phone.disqualified?)
-      refute(match_by_name_only.disqualified?)
-      refute(miss_by_date.disqualified?)
-    end
 
     describe 'resident matching leads helpers' do
       before(:each) do

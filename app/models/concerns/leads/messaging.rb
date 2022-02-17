@@ -49,9 +49,9 @@ module Leads
 
       def message_recipientid(message_type:)
         return case message_type
-          when -> (mt) { mt.email? }
+          when -> (mt) { mt&.email? }
             message_email_destination
-          when -> (mt) { mt.sms? }
+          when -> (mt) { mt&.sms? }
             message_sms_destination
           else
             'unknown'
