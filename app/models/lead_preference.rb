@@ -158,6 +158,10 @@ class LeadPreference < ApplicationRecord
       optin_sms!
     when 'stop'
       optout_sms!
+    else
+      if optout_sms? && body.match?(/yes|ok|okay|sure|start/i)
+        optin_sms!
+      end
     end
   end
 
