@@ -98,6 +98,14 @@ module Leads
           smoker = nil
           raw_data = data.to_json
 
+          if first_name.nil? && last_name.nil?
+            first_name = 'Null'
+            last_name = 'Null'
+          end
+          if phone1.nil? && email.nil?
+            email = 'Null'
+          end
+
           parsed = {
             title: title,
             first_name: first_name,
@@ -150,6 +158,14 @@ module Leads
           pets = nil
           smoker = nil
           raw_data = data.to_json
+
+          if first_name.nil? && last_name.nil?
+            first_name = 'Null'
+            last_name = 'Null'
+          end
+          if phone1.nil? && email.nil?
+            email = 'Null'
+          end
 
           parsed = {
             title: title,
