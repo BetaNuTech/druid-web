@@ -10,6 +10,7 @@ module Yardi
           end
 
           request_options = {
+            service: 'ItfILSGuestCard',
             method: 'GetYardiGuestActivity_Login',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid

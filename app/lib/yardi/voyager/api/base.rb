@@ -3,8 +3,7 @@ module Yardi
     module Api
       class Base
         include HTTParty
-        attr_reader :configuration
-        attr_accessor :debug
+        attr_accessor :configuration, :debug
 
         # Initialize with an optional Yardi::Voyager::Configuration instance
         def initialize(conf=nil)
@@ -13,12 +12,12 @@ module Yardi
           @request_id = nil
         end
 
-        def request_headers(method:, content_length:)
+        def request_headers(method:, content_length:, service:)
           {
             'Content-Type' => 'text/xml; charset=utf-8',
             'Content-Length' => content_length.to_s,
-            'SOAPAction' => ( "http://%{host}/YSI.Interfaces.WebServices/ItfILSGuestCard/%{method}" %
-                             {host: 'tempuri.org', method: method} )
+            'SOAPAction' => ( "http://%{host}/YSI.Interfaces.WebServices/%{service}/%{method}" %
+                             {host: 'tempuri.org', method: method, service: service} )
           }
         end
 
@@ -49,7 +48,7 @@ module Yardi
         def getData(options, dry_run: false)
           url = "%{api_root}/%{resource}" % {api_root: api_root, resource: options[:resource]}
           body = request_body(options)
-          headers = request_headers(method: options[:method], content_length: body.length)
+          headers = request_headers(method: options[:method], service: options[:service], content_length: body.length)
 
           if @debug
             msg = " * Request URL:\n" + url

@@ -6,6 +6,7 @@ module Yardi
         def getUnits(propertyid)
           # TODO
           request_options = {
+            service: 'ItfILSGuestCard',
             method: 'UnitAvailability_Login',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid

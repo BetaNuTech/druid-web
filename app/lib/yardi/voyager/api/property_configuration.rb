@@ -6,6 +6,7 @@ module Yardi
         # Return GuestCards for the given property id
         def getConfig(option=nil)
           request_options = {
+            service: 'ItfILSGuestCard',
             method: 'GetPropertyConfigurations',
             resource: 'ItfILSGuestCard.asmx'
           }

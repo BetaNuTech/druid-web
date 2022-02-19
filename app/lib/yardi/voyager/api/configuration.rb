@@ -30,8 +30,6 @@ module Yardi
           @valid
         end
 
-        private
-
         def load_hash_settings(data)
           @errors = []
           @username = data.fetch(:username, nil)
@@ -39,7 +37,7 @@ module Yardi
           @servername = data.fetch(:servername, nil)
           @host = data.fetch(:host, nil)
           @webshare = data.fetch(:webshare, nil)
-          @platform = DEFAULT_PLATFORM
+          @platform = data.fetch(:platform, DEFAULT_PLATFORM)
           @database = data.fetch(:database, nil)
           @vendorname = data.fetch(:vendorname, nil)
           @license = data.fetch(:license, nil)
@@ -57,6 +55,8 @@ module Yardi
           @vendorname = get_prefixed_env(:vendorname)
           @license = get_prefixed_env(:license)
         end
+
+        private
 
         def get_prefixed_env(var)
           val = ENV.fetch("#{ENV_PREFIX}_#{var.to_s.upcase}", nil)

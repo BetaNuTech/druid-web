@@ -72,6 +72,8 @@ module Leads
 
       # Fetch Residents from YardiVoyager
       def processResidents(start_date: nil, end_date: DateTime.current)
+        ActiveSupport::Deprecation.warn('Leads::Adapters::YardiVoyager.processResidents() is DEPRECATED')
+
         @data ||= fetch_GuestCards(start_date: start_date, end_date: end_date)
         residents = []
         ActiveRecord::Base.transaction do
@@ -222,6 +224,8 @@ module Leads
       end
 
       def resident_collection_from_guestcards(guestcards)
+        ActiveSupport::Deprecation.warn('Leads::Adapters::YardiVoyager.resident_collection_from_guestcards() is DEPRECATED')
+
         return guestcards.
           select{|g| Yardi::Voyager::Data::GuestCard::RESIDENT_TYPES.include?(g.record_type) }.
           map{|guestcard| resident_from_guestcard(guestcard)}
