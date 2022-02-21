@@ -145,8 +145,39 @@ RSpec.describe LeadPreference, type: :model do
         refute(lead.preference.optin_sms?)
       end
       describe 'incoming message handling' do
-        it 'should set authorization when appropriate' 
-        it 'should deauthorize when appropriate'
+        let(:message_delivery) {
+          message = create(:message, subject: 'none', body: 'test', message_type: sms_message_type, state: 'sent')
+          MessageDelivery.create(message: message, message_type: message.message_type) 
+        }
+        let(:message) { message_delivery.message }
+
+        describe 'when sms is not already authorized' do
+          describe 'when the message exactly matches an affirmative keyword' do
+            it 'should optin sms' do
+              ['yes', 'start', 'si'].each do |keyword|
+                lead.preference.optin_sms = false; lead.preference.save
+                refute(lead.preference.optin_sms?)
+                message.body = keyword; message.save; message_delivery.reload
+                lead.preference.handle_sms_reply(message_delivery)
+                assert(lead.preference.optin_sms?)
+              end
+
+              keyword = 'foobar'
+              lead.preference.optin_sms = false; lead.preference.save
+              refute(lead.preference.optin_sms?)
+              message.body = keyword; message.save; message_delivery.reload
+              lead.preference.handle_sms_reply(message_delivery)
+              refute(lead.preference.optin_sms?)
+            end
+          end
+          describe 'when the message exactly matches a dissenting keyword' do
+            it 'should do nothing' do
+            end
+          end
+        end
+        describe 'when sms is currently authorized' do
+
+        end
       end
     end
     describe 'email authorization' do
