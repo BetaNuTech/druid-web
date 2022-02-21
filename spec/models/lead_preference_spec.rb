@@ -146,19 +146,19 @@ RSpec.describe LeadPreference, type: :model do
       end
       describe 'incoming message handling' do
         let(:message_delivery) {
-          message = create(:message, subject: 'none', body: 'test', message_type: sms_message_type, state: 'sent')
-          MessageDelivery.create(message: message, message_type: message.message_type) 
+          message = create(:message, subject: 'none', body: 'test', message_type: sms_message_type, state: 'sent', incoming: true)
+          MessageDelivery.create(message: message, message_type: message.message_type)
         }
         let(:message) { message_delivery.message }
 
         describe 'when sms is not already authorized' do
           describe 'when the message exactly matches an affirmative keyword' do
             it 'should optin sms' do
-              ['yes', 'start', 'si'].each do |keyword|
+              ['yes', 'start', 'si', 'ok', 'okay','sure'].each do |keyword|
                 lead.preference.optin_sms = false; lead.preference.save
                 refute(lead.preference.optin_sms?)
                 message.body = keyword; message.save; message_delivery.reload
-                lead.preference.handle_sms_reply(message_delivery)
+                lead.preference.handle_message_response(message_delivery)
                 assert(lead.preference.optin_sms?)
               end
 
@@ -166,17 +166,57 @@ RSpec.describe LeadPreference, type: :model do
               lead.preference.optin_sms = false; lead.preference.save
               refute(lead.preference.optin_sms?)
               message.body = keyword; message.save; message_delivery.reload
-              lead.preference.handle_sms_reply(message_delivery)
+              lead.preference.handle_message_response(message_delivery)
+              lead.reload
               refute(lead.preference.optin_sms?)
+            end
+          end
+          describe 'when the message partially matches an affirmative keyword' do
+            it 'should optin sms' do
+              ['yes', 'start', 'si', 'ok', 'okay','sure'].each do |keyword|
+                lead.preference.optin_sms = false; lead.preference.save
+                refute(lead.preference.optin_sms?)
+                message.body = keyword + ' other content'; message.save; message_delivery.reload
+                lead.preference.handle_message_response(message_delivery)
+                lead.reload
+                assert(lead.preference.optin_sms?)
+              end
             end
           end
           describe 'when the message exactly matches a dissenting keyword' do
             it 'should do nothing' do
+              ['stop', 'detener'].each do |keyword|
+                lead.preference.optin_sms = false; lead.preference.save; lead.reload
+                refute(lead.preference.optin_sms?)
+                last_update = lead.updated_at
+                message.body = keyword; message.save; message_delivery.reload
+                lead.preference.handle_message_response(message_delivery)
+                lead.reload
+                refute(lead.preference.optin_sms?)
+                expect(lead.updated_at.to_i).to eq(last_update.to_i)
+              end
             end
           end
         end
         describe 'when sms is currently authorized' do
-
+          describe 'when the message exactly matches an affirmative keyword' do
+            it 'should do nothing' do
+              ['yes', 'start', 'si', 'ok', 'okay','sure'].each do |keyword|
+                lead.preference.optin_sms = false; lead.preference.save
+                refute(lead.preference.optin_sms?)
+                last_update = lead.updated_at
+                message.body = keyword + ' other content'; message.save; message_delivery.reload
+                lead.preference.handle_message_response(message_delivery)
+                lead.reload
+                assert(lead.preference.optin_sms?)
+                expect(lead.updated_at.to_i).to eq(last_update.to_i)
+              end
+            end
+          end
+          describe 'when the message partially matches an affirmative keyword' do
+          end
+          describe 'when the message exactly matches a dissenting keyword' do
+          end
         end
       end
     end
@@ -211,7 +251,7 @@ RSpec.describe LeadPreference, type: :model do
         refute(lead.preference.optout_email?)
       end
     end
-  
+
   end
 
 end

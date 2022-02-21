@@ -154,7 +154,7 @@ class LeadPreference < ApplicationRecord
     body = message_delivery&.message&.body || ''
     body = body.downcase.strip
     case body
-    when 'yes', 'start', 'si'
+    when 'yes', 'start', 'si', 'ok', 'okay', 'sure'
       optin_sms!
     when 'stop', 'detener'
       optout_sms!
