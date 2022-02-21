@@ -34,32 +34,36 @@ module Leads
         return JSON.parse(call_log || '[]')
       end
 
+      # Deprecated
       def update_call_log
-        if should_update_call_log?
-          transaction do
-            self.call_log = Cdr.calls_for([phone1, phone2]).
-              to_a.
-              uniq{|l| l.calldate}.
-              map{|cdr|
-              { id: cdr.id,
-                date: cdr.calldate,
-                src: cdr.src,
-                dst: cdr.dst,
-                cnam: cdr.cnam,
-                disposition: cdr.disposition,
-                recordingfile: cdr.recordingfile,
-                recording_path: cdr.recording_path,
-                recording_type: cdr.recording_media_type }
-            }.to_json
-            self.call_log_updated_at = DateTime.current
-            save
-          end
-        end
-        return JSON.parse(self.call_log)
+        return {}
+        #if should_update_call_log?
+          #transaction do
+            #self.call_log = Cdr.calls_for([phone1, phone2]).
+              #to_a.
+              #uniq{|l| l.calldate}.
+              #map{|cdr|
+              #{ id: cdr.id,
+                #date: cdr.calldate,
+                #src: cdr.src,
+                #dst: cdr.dst,
+                #cnam: cdr.cnam,
+                #disposition: cdr.disposition,
+                #recordingfile: cdr.recordingfile,
+                #recording_path: cdr.recording_path,
+                #recording_type: cdr.recording_media_type }
+            #}.to_json
+            #self.call_log_updated_at = DateTime.current
+            #save
+          #end
+        #end
+        #return JSON.parse(self.call_log)
       end
 
+      # Deprecated
       def should_update_call_log?
-        return (call_log.nil? || call_log.empty? || call_log_updated_at.nil? || call_log_updated_at < (DateTime.current - CALL_LOG_FREQUENCY.minutes))
+        return false
+        #return (call_log.nil? || call_log.empty? || call_log_updated_at.nil? || call_log_updated_at < (DateTime.current - CALL_LOG_FREQUENCY.minutes))
       end
     end
 
