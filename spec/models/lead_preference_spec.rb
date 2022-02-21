@@ -115,4 +115,72 @@ RSpec.describe LeadPreference, type: :model do
     expect(pref.unit_system).to eq(:imperial)
   end
 
+  describe 'messaging preferences' do
+    let(:lead) { create(:lead, state: 'prospect') }
+    describe 'sms authorization' do
+      it 'should set sms optin flag and timestamp' do
+        lead.preference.optin_sms = false
+        lead.preference.optin_sms_date = nil
+        lead.preference.save!
+        lead.preference.optin_sms!
+        expect(lead.preference.optin_sms).to eq(true)
+        expect(lead.preference.optin_sms_date).to_not eq(nil)
+      end
+      it 'should set sms optout flag and timestamp' do
+        timestamp = DateTime.current
+        lead.preference.optin_sms = true
+        lead.preference.optin_sms_date = timestamp
+        lead.preference.save!
+        lead.preference.optout_sms!
+        expect(lead.preference.optin_sms).to eq(false)
+        expect(lead.preference.optin_sms_date).to_not eq(timestamp)
+        lead.preference.optin_sms!
+        expect(lead.preference.optin_sms).to eq(true)
+        expect(lead.preference.optin_sms_date).to_not eq(nil)
+      end
+      it 'should return sms authorization status' do
+        lead.preference.optin_sms!
+        assert(lead.preference.optin_sms?)
+        lead.preference.optout_sms!
+        refute(lead.preference.optin_sms?)
+      end
+      describe 'incoming message handling' do
+        it 'should set authorization when appropriate' 
+        it 'should deauthorize when appropriate'
+      end
+    end
+    describe 'email authorization' do
+      it 'should set email optin flag and timestamp' do
+        lead.preference.optout_email = true
+        lead.preference.optout_email_date = nil
+        lead.preference.save!
+        lead.preference.optout_email!
+        expect(lead.preference.optout_email).to eq(true)
+        expect(lead.preference.optout_email_date).to_not eq(nil)
+        lead.preference.optin_email!
+        expect(lead.preference.optout_email).to eq(false)
+        expect(lead.preference.optout_email_date).to eq(nil)
+      end
+      it 'should set email optout flag and timestamp' do
+        timestamp = DateTime.current
+        lead.preference.optout_email = false
+        lead.preference.optout_email_date = nil
+        lead.preference.save!
+        lead.preference.optout_email!
+        expect(lead.preference.optout_email).to eq(true)
+        expect(lead.preference.optout_email_date).to_not eq(nil)
+        lead.preference.optin_email!
+        expect(lead.preference.optout_email).to eq(false)
+        expect(lead.preference.optout_email_date).to eq(nil)
+      end
+      it 'should return email authorization status' do
+        lead.preference.optout_email!
+        assert(lead.preference.optout_email?)
+        lead.preference.optin_email!
+        refute(lead.preference.optout_email?)
+      end
+    end
+  
+  end
+
 end
