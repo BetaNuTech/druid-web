@@ -73,14 +73,14 @@ module Leads
       # Fetch Residents from YardiVoyager
       def processResidents(start_date: nil, end_date: DateTime.current)
         ActiveSupport::Deprecation.warn('Leads::Adapters::YardiVoyager.processResidents() is DEPRECATED')
-
-        @data ||= fetch_GuestCards(start_date: start_date, end_date: end_date)
-        residents = []
-        ActiveRecord::Base.transaction do
-          residents = resident_collection_from_guestcards(@data)
-          residents.map(&:save) if commit
-        end
-        return residents
+        return []
+        #@data ||= fetch_GuestCards(start_date: start_date, end_date: end_date)
+        #residents = []
+        #ActiveRecord::Base.transaction do
+          #residents = resident_collection_from_guestcards(@data)
+          #residents.map(&:save) if commit
+        #end
+        #return residents
       end
 
       # Fetch New UnitTypes from YardiVoyager
