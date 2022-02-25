@@ -1,5 +1,12 @@
 namespace :messages do
 
+  desc 'Retry Delivery'
+  task retry: :environment do
+    start_time = 2.days.ago
+    puts "*** Retrying failed delivery of #{Message.pending_retry(start_time: start_time).count} outgoing messages"
+    Message.retry_deliveries(start_time: start_time)
+  end
+
   desc "Fix Disqualified Lead Messages"
   task :fix_notifications => :environment do
     skope = Message.joins("inner join leads on messages.messageable_id = leads.id").where(leads: {state: 'disqualified'}, messages: {read_at: nil})

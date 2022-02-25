@@ -62,7 +62,6 @@ class Message < ApplicationRecord
   scope :outgoing, ->() { where(incoming: false) }
   scope :sms, ->() { includes(:message_type).where(message_type: {name: MessageType::SMS_TYPE_NAME}) }
   scope :email, ->() { includes(:message_type).where(message_type: {name: MessageType::EMAIL_TYPE_NAME}) }
-
   ### Callbacks
   before_validation :set_meta
 
@@ -70,6 +69,29 @@ class Message < ApplicationRecord
   delegate :sms?, :email?, to: :message_type, allow_nil: true
 
   ### Class Methods
+
+  def self.pending_retry(start_time: 1.day.ago, end_time: Time.current)
+    includes(:deliveries).
+      outgoing.failed.
+      where(
+        messages: { created_at: start_time..end_time },
+        deliveries: {
+          status: MessageDelivery::FAILED,
+          attempt: [1,2],
+          log: MessageDelivery::PROVIDER_ERRORS
+        }
+      )
+  end
+
+  def self.retry_deliveries(start_time: 1.day.ago, end_time: Time.current)
+    self.pending_retry(start_time: start_time, end_time: end_time).each do |message|
+      begin
+        message.deliver!
+      rescue => e
+        # noop
+      end
+    end
+  end
 
   # Mark collection as read by user
   def self.mark_read!(collection,user=nil)
