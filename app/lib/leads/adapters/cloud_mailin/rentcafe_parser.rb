@@ -81,12 +81,12 @@ module Leads
           message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
           raw_name = container.css('div.normaltext span[data-selenium-id="ProspectName"]')&.text
           name = raw_name.split(' ')
-          first_name = name.first
-          last_name = name.last
+          first_name = name.first || ''
+          last_name = name.last || ''
           last_name = nil if last_name == first_name
-          phone1 = container.css('div.normaltext span[data-selenium-id="ProspectPhone"]')&.text
-          phone2 = container.css('div.normaltext span[data-selenium-id="ProspectAltPhone"]')&.text
-          email = container.css('div.normaltext span[data-selenium-id="ProspectEmail"]')&.text
+          phone1 = container.css('div.normaltext span[data-selenium-id="ProspectPhone"]')&.text || ''
+          phone2 = container.css('div.normaltext span[data-selenium-id="ProspectAltPhone"]')&.text || ''
+          email = container.css('div.normaltext span[data-selenium-id="ProspectEmail"]')&.text || ''
           notes = container.css('div.normaltext span[data-selenium-id="ProspectComments"]')&.text
           remoteid = ( container.css('div.normaltext span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
@@ -98,11 +98,11 @@ module Leads
           smoker = nil
           raw_data = data.to_json
 
-          if first_name.nil? && last_name.nil?
+          if first_name.empty? && last_name.empty?
             first_name = 'Null'
             last_name = 'Null'
           end
-          if phone1.nil? && email.nil?
+          if phone1.empty? && email.empty?
             email = 'Null'
           end
 
@@ -142,12 +142,12 @@ module Leads
           message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
           raw_name = container.css('li span[data-selenium-id="ProspectName"]')&.text
           name = raw_name.split(' ')
-          first_name = name.first
-          last_name = name.last
+          first_name = name.first || ''
+          last_name = name.last || ''
           last_name = nil if last_name == first_name
-          phone1 = container.css('li span[data-selenium-id="ProspectPhone"]')&.text
+          phone1 = container.css('li span[data-selenium-id="ProspectPhone"]')&.text || ''
           phone2 = container.css('li span[data-selenium-id="ProspectAltPhone"]')&.text
-          email = container.css('li span[data-selenium-id="ProspectEmail"]')&.text
+          email = container.css('li span[data-selenium-id="ProspectEmail"]')&.text || ''
           notes = container.css('li span[data-selenium-id="ProspectComments"]')&.text
           remoteid = ( container.css('li span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
@@ -159,11 +159,11 @@ module Leads
           smoker = nil
           raw_data = data.to_json
 
-          if first_name.nil? && last_name.nil?
+          if first_name.empty? && last_name.empty?
             first_name = 'Null'
             last_name = 'Null'
           end
-          if phone1.nil? && email.nil?
+          if phone1.empty? && email.empty?
             email = 'Null'
           end
 
