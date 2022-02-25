@@ -25,6 +25,7 @@ class MessageDelivery < ApplicationRecord
   FORBIDDEN_RECIPIENT_MESSAGE='Message recipient does not want this message type'
   WHITELIST_FLAG = 'MESSAGE_WHITELIST_ENABLED'
   MESSAGE_TYPE_DISABLED_MESSAGE="Delivery for this Message Type is disabled by a system flag ('#{MessageType::SMS_MESSAGING_DISABLED_FLAG}' or '#{MessageType::EMAIL_MESSAGING_DISABLED_FLAG}')"
+  PROVIDER_ERRORS = ['Net::SMTPAuthenticationError', 'Net::SMTPSyntaxError', 'Net::SMTPUnknownError']
 
   ### Associations
   belongs_to :message
