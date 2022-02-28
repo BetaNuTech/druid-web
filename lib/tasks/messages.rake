@@ -1,8 +1,9 @@
 namespace :messages do
 
   desc 'Retry Delivery'
-  task retry: :environment do
-    start_time = 2.days.ago
+  task :retry, [:minutes_ago] => :environment do |t,args|
+    minutes_ago = ( args[:minutes_ago] || 2880).to_i
+    start_time = minutes_ago.minutes.ago
     puts "*** Retrying failed delivery of #{Message.pending_retry(start_time: start_time).count} outgoing messages"
     Message.retry_deliveries(start_time: start_time)
   end
