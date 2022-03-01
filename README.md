@@ -309,27 +309,6 @@ On Heroku, this service is provisioned as an addon using the 'standard-0' tier.
 DATABASE_URL=XXX (automatically set by addon configuration)
 ```
 
-### Asterisk CDR Database
-
-In production, the Asterisk CDR database is a replicated MySQL database containing call records. This database backs the `Cdr` ActiveRecord model.
-
-A schema SQL file is provided in `db/cdrdb-schema.sql`
-
-Heroku requires special configuration in order to contact Amazon RDS database hosts:
-A custom CA certificate is required. (see: https://devcenter.heroku.com/articles/amazon-rds)
-
-This CA certificate was downloaded and committed to SCM:
-
-```
-curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > ./config/amazon-rds-ca-cert.pem
-```
-
-This problem can identified in logs with the following error message:
-
-```
-Mysql2::Error::ConnectionError: Can't connect to MySQL server on 'asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com'
-```
-
 #### Scheduled Tasks
 
 Leads should be automatically created based on incoming calls. A rake task should be run every 10 minutes to create Leads: `rake leads:calls:generate_leads[60]`  The parameter to this task indicates how recent call records should be in minutes. Always provide a parameter to this rake task to prevent long running times.

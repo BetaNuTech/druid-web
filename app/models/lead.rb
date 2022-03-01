@@ -46,7 +46,6 @@ class Lead < ApplicationRecord
   include Leads::Priority
   include Leads::Search
   include Leads::Messaging
-  include Leads::CallLog
   include Leads::Duplicates
   include Leads::Export
   include Leads::Referrals

@@ -163,50 +163,6 @@ namespace :leads do
     Lead.process_followups
   end
 
-  namespace :recordings do
-    desc "Cleanup old non-lead recordings"
-    task :cleanup => :environment do
-      Cdr.cleanup_non_lead_recordings(start_date: 2.weeks.ago, end_date: 1.week.ago)
-    end
-  end
-
-  namespace :calls do
-    desc "Create Leads from Recent Calls"
-    task :generate_leads, [:minutes_ago] => :environment do |t,args|
-      minutes_ago = ( args[:minutes_ago] || 15).to_i
-
-      msg = " * Creating Leads from recent calls up to #{minutes_ago} minutes ago"
-      puts msg; Rails.logger.warn msg
-      prospective_leads = Lead.from_recent_calls(start_date: minutes_ago.minutes.ago, end_date: DateTime.current).to_a
-
-      msg = "   - Found #{prospective_leads.size} Prospective Leads"
-      puts msg; Rails.logger.warn msg
-
-      msg = "   - Processing Leads"
-      puts msg; Rails.logger.warn msg
-      prospective_leads.each do |lead|
-        print (lead.save ? "." : "!")
-      end
-      puts "\n"
-
-      failed_records = prospective_leads.select{|l| l.errors.any?}
-      success_records = prospective_leads.select{|l| !l.errors.any?}
-      failed_count = failed_records.size
-      success_count = success_records.count
-
-      msg = "   - Created #{success_count} Leads with #{failed_count} failures. " + success_records.map{|r| [r.id, r.first_name].join(":")}.join(' ')
-      puts msg; Rails.logger.warn msg
-
-      puts "Done."
-    end
-
-    desc "Check CDR database health"
-    task :db_check => :environment do
-      status = Cdr.check_replication_status
-      puts "=== CDR Replication Check [#{DateTime.current.to_s}]: #{status ? "OK" : "FAILED"}"
-    end
-  end
-
   namespace :yardi do
 
     desc "Import GuestCards"

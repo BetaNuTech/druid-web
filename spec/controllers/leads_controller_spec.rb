@@ -132,16 +132,6 @@ RSpec.describe LeadsController, type: :controller do
     end
   end
 
-  #describe "GET #call_log_partial" do
-    #let(:lead) { create(:lead, property: agent.property) }
-    #describe "as an agent" do
-      #it "returns a success response" do
-        #sign_in agent
-        #get :call_log_partial, xhr: true, params: {id: lead.id }, format: :js
-      #end
-    #end
-  #end
-
   describe "GET #progress_state" do
     let(:lead) { Lead.create! valid_attributes }
 
