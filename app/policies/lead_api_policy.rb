@@ -15,4 +15,8 @@ class LeadApiPolicy < ApplicationPolicy
     "CallCenter" == record.name
   end
 
+  def property_schedule_availability?
+    "Lineups" == record.name
+  end
+
 end

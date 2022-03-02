@@ -62,6 +62,45 @@ module Api
         render json: Property.property_info_for_incoming_number(params[:number])
       end
 
+      
+      # REQUEST: (DRAFT)
+      # {
+      #  "propertyId": "XXXXX",
+      #  "category": "onsite-tour", // this could be the type of appointment
+      #  "fromDate": "MM/DD/YYYY", // optional, default todays date
+      #  "toDate": "MM/DD/YYYY". // optional, default todays date + 14 days
+      # }
+      #
+      # RESPONSE: (DRAFT)
+      # {
+      #   "propertyId": "XXXXX",
+      #   "appointmentLength": "45",
+      #   "category": "onsite-tour",
+      #   "availability": [
+      #     {
+      #       "date": "10/12/2021",
+      #       "day": "Monday",
+      #       "times": [
+      #         "11:00:00MST",
+      #         "12:00:00MST",
+      #         "13:00:00MST",
+      #         "14:00:00MST"
+      #       ]
+      #     },
+      #     // other days with times available for onsite tours
+      #   ]
+      # } 
+
+      def property_schedule_availability
+        unless access_policy.property_schedule_availability?
+          Leads::Creator.create_event_note(message: 'Schedule API Access Denied', error: true)
+          render json: {errors: {base: [ 'Access Denied' ]}}, status: :forbidden
+          return
+        end
+
+        render json: Property.schedule_availability(params)
+      end
+
       private
 
       def validate_lead_source_token

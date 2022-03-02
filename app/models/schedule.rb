@@ -54,6 +54,11 @@ class Schedule < Schedulable::Model::Schedule
     to_datetime.strftime('%B %e, %Y')
   end
 
+  def conflict?(time)
+    t = to_datetime
+    time >= t && t < ( t + (duration ||0) )
+  end
+
   private
 
   def set_end_time

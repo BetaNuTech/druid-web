@@ -47,3 +47,7 @@
     :slug: "Nextiva"
     :incoming: true
     :active: true
+  - :name: "Lineups"
+    :slug: "Lineups"
+    :incoming: false
+    :active: true
