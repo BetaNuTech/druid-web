@@ -44,6 +44,7 @@ module Leads
         'Null',
         'TOLL',
         'Unavailable',
+        'Unknown',
         'WIRELESS',
         'didnothaveemail@gmail.com',
         'didnotwanttogive@gmail.com',
@@ -153,7 +154,7 @@ module Leads
 
         # Processing more than 10 duplicate candidates is a waste of resources
         # and consistently causes backlogs in the queue
-        detected = possible_duplicates.limit(10)
+        detected = possible_duplicates.order(created_at: :desc).limit(50)
 
         transaction do
           old_duplicates = duplicates.to_a
