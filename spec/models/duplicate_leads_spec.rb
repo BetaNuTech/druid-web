@@ -134,6 +134,20 @@ RSpec.describe DuplicateLead do
       describe "when some duplicates are already marked as a duplicate" do
       end
 
+      describe "spam calls" do
+        before(:each) do
+          test_strategy = Flipflop::FeatureSet.current.test!
+          test_strategy.switch!(:lead_automatic_dedupe, true)
+        end
+        let(:spam_number) {  '1555556666'} 
+        let(:spam_lead) { create(:lead, first_name: 'Test', last_name: 'foo', phone1: spam_number, state: 'disqualified', property_id: agent.property.id, classification: 'spam') }
+        it "should disqualify leads matching the phone number of spam leads" do
+          spam_lead
+          new_lead = create(:lead, first_name: 'Test2', phone1: spam_number, state: 'prospect', property_id: agent.property.id)
+          assert(new_lead.auto_disqualify_lead?)
+        end
+      end
+
     end
   end
 

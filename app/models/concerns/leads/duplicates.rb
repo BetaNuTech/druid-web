@@ -17,6 +17,7 @@ module Leads
       DUPLICATE_ATTRIBUTES = %w{phone1 phone2 email first_name last_name remoteid}
       DUPLICATE_IGNORED_VALUES = [
         '(None)',
+        '(None)',
         '00000000',
         '000000000',
         '0000000000',
@@ -25,27 +26,30 @@ module Leads
         '1234567890',
         '1234567891',
         '2222222222',
+        '5',
         '5025555555',
+        '5175551212',
         '5555555',
         '5555555555',
         '7777777777',
         '9999999999',
-        '5175551212',
         'CALLER',
         'CELLULAR',
         'FREE',
-        'abc123@gmail.com',
-        'noemail@xyz.com',
-        '5',
         'Noemail@gmail.com',
         'None',
         'None@none.com',
         'None@none.zzz',
         'Null',
+        'THE',
         'TOLL',
+        'UNAVAILABLE',
+        'UNKNOWN',
         'Unavailable',
         'Unknown',
         'WIRELESS',
+        '[V]',
+        'abc123@gmail.com',
         'didnothaveemail@gmail.com',
         'didnotwanttogive@gmail.com',
         'didntgive@nowhere.com',
@@ -55,11 +59,12 @@ module Leads
         'noemail@bluestone-prop.zzz',
         'noemail@bluestone.com',
         'noemail@dont.com',
+        'noemail@fake.com',
         'noemail@gmail.com',
         'noemail@gmail.zzz',
-        'noemail@fake.com',
         'noemail@noemail.com',
         'noemail@noemail.zzz',
+        'noemail@xyz.com',
         'noemail@xyz.zzz',
         'noemail@yahoo.com',
         'noemail@yahoo.zzz',
@@ -71,15 +76,15 @@ module Leads
         'none@bluestone-prop.zzz',
         'none@bluestone.com',
         'none@bluestone.zzz',
-        'none@none.com',
         'none@gmail.com',
         'none@gmail.com',
         'none@gmail.zzz',
         'none@none.com',
+        'none@none.com',
         'none@noreply.com',
         'noone@bluestone.zzz',
         'noreply@noreply.com',
-        'unknown@noemail.com'
+        'unknown@noemail.com',
       ]
 
       RECENT=48.hours
@@ -228,6 +233,7 @@ module Leads
       # Disqualify this lead if it is likely a duplicate
       # returns true only if disqualified
       def disqualify_if_high_confidence_duplicate
+        return false if disqualified?
         return false unless (message = auto_disqualify_lead?)
 
         self.classification = :duplicate
@@ -240,6 +246,9 @@ module Leads
       end
 
       def auto_disqualify_lead?
+        # Phone number Matches disqualified leads classified as spam
+        return 'this lead originated from a spam call' if spam_matches.any?
+
         # Check for feature flag
         return false unless Flipflop.enabled?(:lead_automatic_dedupe)
 
@@ -291,6 +300,7 @@ module Leads
           end
         end
 
+
         # Default to false (do not classify as duplicate)
         return false
       end
@@ -337,6 +347,37 @@ module Leads
 
         duplicates.where(conditions_str, condition_hash)
       end
+    end
+
+    def spam_matches
+      return Lead.where('1=0') unless phone1.present?
+
+      conditions_hash = {}
+      conditions_str = ''
+      conditions = []
+
+      # Match same property
+      if property_id.present?
+        conditions << 'property_id = :property_id'
+        conditions_hash[:property_id] = property_id
+        conditions_str += '(' + conditions.join(' AND ') + ') AND'
+      end
+
+      # Match leads marked as spam
+      conditions = []
+      conditions << 'state = :state'
+      conditions << 'classification = :classification'
+      conditions_hash[:state] = 'disqualified'
+      conditions_hash[:classification] = Lead.classifications['spam']
+      conditions_str += '(' + conditions.join(' AND ') + ')'
+
+      # Match Phone
+      conditions = []
+      conditions << 'phone1 = :phone1'
+      conditions_hash[:phone1] = phone1
+      conditions_str += ' AND (' + conditions.join(' AND ' ) + ')'
+
+      Lead.where(conditions_str, conditions_hash)
     end
 
     class_methods do
