@@ -349,7 +349,7 @@ module Leads
         )
         action = ScheduledAction.new(
           user: self.user,
-          target: self.user,
+          target: self,
           originator_id: nil,
           lead_action: lead_action,
           reason: reason,
