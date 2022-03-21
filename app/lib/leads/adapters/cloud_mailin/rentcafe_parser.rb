@@ -30,6 +30,7 @@ module Leads
         end
 
         def self.get_format_and_body(data)
+          return [ :html, html_body ]
           if data.is_a?(ActionController::Parameters)
             d = data
           else
@@ -39,15 +40,9 @@ module Leads
           plain_body = d.fetch(:plain, nil)
           html_body = d.fetch(:html, nil)
 
-          if ( plain_body || '' ).empty?
-            if ( html_body || '' ).empty?
-              return [:err, '']
-            else
-              return [ :html, html_body ]
-            end
-          else
-            return [ :plain, plain_body ]
-          end
+          return [:html, html_body] if html_body.present?
+          return [:plain, plain_body] if html_body.present?
+          return [:err, '']
         end
 
         def self.parse_plain(data)
@@ -87,7 +82,7 @@ module Leads
           phone1 = container.css('div.normaltext span[data-selenium-id="ProspectPhone"]')&.text || ''
           phone2 = container.css('div.normaltext span[data-selenium-id="ProspectAltPhone"]')&.text || ''
           email = container.css('div.normaltext span[data-selenium-id="ProspectEmail"]')&.text || ''
-          notes = container.css('div.normaltext span[data-selenium-id="ProspectComments"]')&.text
+          notes = container.css('div.normaltext span[data-selenium-id="ProspectComments"]')&.text || ''
           remoteid = ( container.css('div.normaltext span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
           baths = nil
@@ -146,9 +141,9 @@ module Leads
           last_name = name.last || ''
           last_name = nil if last_name == first_name
           phone1 = container.css('li span[data-selenium-id="ProspectPhone"]')&.text || ''
-          phone2 = container.css('li span[data-selenium-id="ProspectAltPhone"]')&.text
+          phone2 = container.css('li span[data-selenium-id="ProspectAltPhone"]')&.text || ''
           email = container.css('li span[data-selenium-id="ProspectEmail"]')&.text || ''
-          notes = container.css('li span[data-selenium-id="ProspectComments"]')&.text
+          notes = container.css('li span[data-selenium-id="ProspectComments"]')&.text || ''
           remoteid = ( container.css('li span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
           baths = nil
