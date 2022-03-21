@@ -1,13 +1,15 @@
 module Properties
   class Scheduler
+    DEFAULT_APPOINTMENT_LENGTH = 30
 
-    attr_reader :property
+    attr_reader :property, :appintment_length
 
     def initialize(property)
       @property = property
+      @appointment_length = DEFAULT_APPOINTMENT_LENGTH
     end
 
-    def availability(category: 'showing', start_time: Time.current, end_time: nil)
+    def availability(category: 'showing', start_time: Time.current, end_time: nil, appt_length: DEFAULT_APPOINTMENT_LENGTH)
       end_time ||= Time.current + 1.week
       possible_conflicts = showings(start_time: start_time, end_time: end_time).map do |task|
         task_start = next_30m(task.schedule.to_datetime) - 30.minutes
@@ -15,7 +17,7 @@ module Properties
         [task_start, task_end]
       end
       possible_times = all_possible_times(start_time:, end_time:).
-        select{ |t| property.office_open?(t) && !possible_conflicts.any?{|window| conflict?(t, window)} }
+        select{ |t| property.office_open?(t) && !possible_conflicts.any?{|window| conflict?(t, window) || conflict(t+appt_length.minutes, window)} }
     end
     
     private

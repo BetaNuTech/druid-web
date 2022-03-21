@@ -93,12 +93,22 @@ module Api
 
       def property_schedule_availability
         unless access_policy.property_schedule_availability?
-          Leads::Creator.create_event_note(message: 'Schedule API Access Denied', error: true)
+          Leads::Creator.create_event_note(message: "Schedule API Access Denied for token #{api_token}", error: true)
           render json: {errors: {base: [ 'Access Denied' ]}}, status: :forbidden
           return
         end
 
-        render json: Property.schedule_availability(params)
+        property_listing_code = params[:propertyId]
+        property = PropertyListing.active.where(source: @source, code: property_listing_code).first&.property or
+          raise ActiveRecord::RecordNotFound
+
+        service_params = {
+          start_time: ( DateTime.parse(params[:fromDate]) rescue nil ),
+          end_time:  ( DateTime.parse(params[:toDate]) rescue Time.current + 14.days ),
+          property_code: property_listing_code
+        }
+
+        render json: Property.schedule_availability(property, service_params)
       end
 
       private
