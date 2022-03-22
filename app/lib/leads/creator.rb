@@ -107,6 +107,13 @@ module Leads
       ### Build lead from parser data
       @lead = Lead.new(parse_result.lead)
 
+      # Ensure the record passes validation so that the lead can be reconstructed
+      # in the event of parser malfunction
+      #
+      @lead.first_name ||= 'Null'
+      @lead.last_name ||= 'Null'
+      @lead.email ||= 'Null'
+
       ### Abort if duplicate incoming phone call
       if @source.phone_source? && @lead.phone1.present?
         # Check against residents first for performance
@@ -168,7 +175,9 @@ module Leads
           notable = parse_result.property_code.present? ?
             Leads::Adapters::YardiVoyager.property(parse_result.property_code) :
             nil
-          note_message = "Leads::Creator Error New Lead has validation errors: " + @lead.errors.to_a.join(', ')
+          note_message = "Leads::Creator Error New Lead has validation errors: " +
+            @lead.errors.full_messages.join(', ') +
+            ' SOURCE DATA: ----' + data.to_s + '----'
           Leads::Creator.create_event_note(message: note_message, notable: notable, error: true)
       end
 
