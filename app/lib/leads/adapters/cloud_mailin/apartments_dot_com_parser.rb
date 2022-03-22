@@ -3,8 +3,11 @@ module Leads
     module CloudMailin
       class ApartmentsDotComParser
         def self.match?(data)
-          return (data.fetch(:envelope,{}).fetch(:from, "")).
-            match("lead@apartments.com")
+          sender_addresses = []
+          sender_addresses << data.fetch(:envelope,{}).fetch(:from, '')
+          sender_addresses << data.fetch('headers',{}).fetch('X-Original-From', '')
+
+          return sender_addresses.any?{|a| a.match("lead@apartments.com")}
         end
 
         def self.parse(data)
