@@ -110,10 +110,10 @@ module Leads
       # Ensure the record passes validation so that the lead can be reconstructed
       # in the event of parser malfunction
       #
-      @lead.first_name = 'Null' if @lead.first_name.empty?
-      @lead.last_name = 'Null' if @lead.first_name.empty?
-      @lead.email = 'Null' if @lead.first_name.empty?
-      @lead.phone1 = 'Null' if @lead.first_name.empty?
+      @lead.first_name = 'Null' unless @lead.first_name.present?
+      @lead.last_name = 'Null' unless @lead.last_name.present?
+      @lead.email = 'Null' unless @lead.email.present?
+      @lead.phone1 = 'Null' unless @lead.phone1.present?
 
       ### Abort if duplicate incoming phone call
       if @source.phone_source? && @lead.phone1.present?
