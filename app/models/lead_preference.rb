@@ -134,7 +134,7 @@ class LeadPreference < ApplicationRecord
 
   def source_document
     data = ( JSON.parse(raw_data) rescue nil ) or return nil
-    return {html: data.fetch("html", false), text: data.fetch("plain")}
+    return {html: data.fetch("html", false), text: data.fetch("plain", false)}
   end
 
   def handle_message_response(message_delivery)
