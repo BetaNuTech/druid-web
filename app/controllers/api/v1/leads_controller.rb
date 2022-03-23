@@ -32,6 +32,8 @@ module Api
         @lead.first_name = 'Null' unless @lead.first_name.present?
         @lead.email = 'Null' unless ( @lead.email.present? || @lead.phone1.present? )
         @lead.phone1 = 'Null' unless ( @lead.email.present? || @lead.phone1.present? )
+        @lead.build_preference unless @lead.preference.present?
+        @lead.preference.raw_data ||= lead_data.to_json
         @lead.save
 
         if @lead.valid? && @lead.id.present?
