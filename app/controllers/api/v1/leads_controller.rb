@@ -28,6 +28,12 @@ module Api
         token = params[:token]
         lead_creator = Leads::Creator.new(data: lead_data, agent: nil, token: token)
         @lead = lead_creator.call
+
+        @lead.first_name = 'Null' unless @lead.first_name.present?
+        @lead.email = 'Null' unless ( @lead.email.present? || @lead.phone1.present? )
+        @lead.phone1 = 'Null' unless ( @lead.email.present? || @lead.phone1.present? )
+        @lead.save
+
         if @lead.valid? && @lead.id.present?
           render :create, status: :created, format: :json
         else
