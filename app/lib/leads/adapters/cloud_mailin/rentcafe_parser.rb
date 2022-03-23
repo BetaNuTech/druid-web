@@ -5,7 +5,8 @@ module Leads
         REFERRAL="Property Website"
 
         def self.match?(data)
-          sender_matches = data&.fetch('headers',{})&.fetch('From','')&.match(/rentcafe\.com/).present?
+          header_data = data.fetch('headers', '').to_s
+          sender_matches = header_data.match('no-reply@rentcafe.com')
           body_text = data.fetch('html','')
           body_matches = body_text.match('The following prospect has requested information about your property').present? ||
                          body_text.match('The following prospect has set up an availability alert').present? ||
