@@ -5,7 +5,8 @@ module Leads
         REFERRAL="Property Website"
 
         def self.match?(data)
-          sender_matches = data&.fetch('headers',{})&.fetch('From','')&.match(/rentcafe\.com/).present?
+          header_data = data.fetch('headers', '').to_s
+          sender_matches = header_data.match('no-reply@rentcafe.com').present?
           body_text = data.fetch('html','')
           body_matches = body_text.match('The following prospect has requested information about your property').present? ||
                          body_text.match('The following prospect has set up an availability alert').present? ||
@@ -30,19 +31,17 @@ module Leads
         end
 
         def self.get_format_and_body(data)
-          return [ :html, html_body ]
           if data.is_a?(ActionController::Parameters)
             d = data
           else
             d = data.symbolize_keys
           end
 
-          plain_body = d.fetch(:plain, nil)
+          # plain_body = d.fetch(:plain, nil)
           html_body = d.fetch(:html, nil)
 
-          return [:html, html_body] if html_body.present?
-          return [:plain, plain_body] if html_body.present?
-          return [:err, '']
+          # Only parse HTML
+          return [:html, html_body]
         end
 
         def self.parse_plain(data)
@@ -50,11 +49,14 @@ module Leads
         end
 
         def self.variant(data)
+          subject = data.fetch('headers',{}).fetch('Subject','')
+          return 3 if subject.match('Portal Information Request').present?
+
           body_text = data.fetch('html','')
-          if body_text.match('Good news! Someone is highly interested to rent the')
-            2
+          if body_text.match('Good news! Someone is highly interested to rent the').present?
+            return 2
           else
-            1
+            return 1
           end
         end
 
@@ -64,6 +66,8 @@ module Leads
             self.parse_variant_1(data)
           when 2
             self.parse_variant_2(data)
+          when 3
+            self.parse_variant_3(data)
           end
         end
 
@@ -82,7 +86,7 @@ module Leads
           phone1 = container.css('div.normaltext span[data-selenium-id="ProspectPhone"]')&.text || ''
           phone2 = container.css('div.normaltext span[data-selenium-id="ProspectAltPhone"]')&.text || ''
           email = container.css('div.normaltext span[data-selenium-id="ProspectEmail"]')&.text || ''
-          notes = container.css('div.normaltext span[data-selenium-id="ProspectComments"]')&.text || ''
+          notes = container.css('div.normaltext span[data-selenium-id="ProspectComments"]')&.text
           remoteid = ( container.css('div.normaltext span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
           baths = nil
@@ -141,9 +145,9 @@ module Leads
           last_name = name.last || ''
           last_name = nil if last_name == first_name
           phone1 = container.css('li span[data-selenium-id="ProspectPhone"]')&.text || ''
-          phone2 = container.css('li span[data-selenium-id="ProspectAltPhone"]')&.text || ''
+          phone2 = container.css('li span[data-selenium-id="ProspectAltPhone"]')&.text
           email = container.css('li span[data-selenium-id="ProspectEmail"]')&.text || ''
-          notes = container.css('li span[data-selenium-id="ProspectComments"]')&.text || ''
+          notes = container.css('li span[data-selenium-id="ProspectComments"]')&.text
           remoteid = ( container.css('li span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
           title = nil
           baths = nil
@@ -188,7 +192,69 @@ module Leads
 
           return parsed
         end
+
+        def self.parse_variant_3(data)
+          body = data[:body]
+          html = Nokogiri::HTML(body)
+          container = html
+
+          referral = REFERRAL
+          message_id = data.fetch('headers',{}).fetch("Message-ID","").strip
+          raw_name = container.css('span[data-selenium-id="ProspectName"]')&.text
+          name = raw_name.split(' ')
+          first_name = name.first || ''
+          last_name = name.last || ''
+          last_name = nil if last_name == first_name
+          phone1 = container.css('span[data-selenium-id="ProspectPhone"]')&.text || ''
+          phone2 = container.css('span[data-selenium-id="ProspectAltPhone"]')&.text
+          email = container.css('span[data-selenium-id="ProspectEmail"]')&.text || ''
+          notes = container.css('span[data-selenium-id="ProspectComments"]')&.text || ''
+          remoteid = ( container.css('span[data-selenium-id="ProspectMatch"]')&.text&.match(/Voyager Code: (.+)/)[1] rescue nil )
+          title = nil
+          baths = nil
+          beds = nil
+          fax = nil
+          move_in = nil
+          pets = nil
+          smoker = nil
+          raw_data = data.to_json
+
+          if first_name.empty? && last_name.empty?
+            first_name = 'Null'
+            last_name = 'Null'
+          end
+          if phone1.empty? && email.empty?
+            email = 'Null'
+          end
+
+          parsed = {
+            title: title,
+            first_name: first_name,
+            last_name: last_name,
+            referral: referral,
+            phone1: phone1,
+            phone1_type: 'Cell',
+            phone2: phone2,
+            phone2_type: 'Cell',
+            email: email,
+            fax: fax,
+            notes: nil,
+            remoteid: remoteid,
+            preference_attributes: {
+              baths: baths,
+              beds: beds,
+              notes: notes,
+              smoker: smoker,
+              raw_data: raw_data,
+              pets: pets,
+              move_in: move_in
+            }
+          }
+
+          return parsed
+        end
       end
+
     end
   end
 end
