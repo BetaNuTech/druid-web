@@ -2,16 +2,15 @@ module Properties
   module Scheduling
     extend ActiveSupport::Concern
 
-    DEFAULT_SCHEDULING_TIMEZONE =  'Central Time (US & Canada)'
+    DEFAULT_TIMEZONE =  'Central Time (US & Canada)'
 
     class_methods do
       def schedule_availability(property, params)
         property_listing_code = params[:property_code]
         start_time = params[:start_time]
         end_time = params[:end_time]
+        timezone = property.timezone || DEFAULT_TIMEZONE
         service = Properties::Scheduler.new(property)
-
-        timezone = property.timezone || DEFAULT_SCHEDULING_TIMEZONE
         availability = nil
         Time.use_zone(property.timezone) do
           abbr_timezone = Time.zone.tzinfo.abbr
@@ -19,14 +18,19 @@ module Properties
               start_time: start_time,
               end_time: end_time,
             ).
-            group_by{|opening| opening.first.to_date}.
-            inject([]) do |obj, memo|
+            group_by{|opening| opening.first.to_date}.to_a.
+            inject([]) do |memo, obj|
               if obj.present?
+                begin
                 record = {
                   date: obj.first.strftime('%m/%d/%Y'),
                   day: Date::DAYNAMES[obj.first.wday],
-                  times: obj.last.map{|opening| opening.first.strftime("%H:%H") + abbr_timezone }
+                  times: obj.last.map{|opening| opening.first.strftime("%H:%M") + abbr_timezone }
                 }
+                rescue => e
+                  puts '*** EXCEPTION CAUGHT! ***'
+                  binding.pry; true
+                end
                 memo << record
               end
               memo

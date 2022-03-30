@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       resources :leads, only: [:index, :create ]
       get 'leads/prospect_stats', to: "leads#prospect_stats"
       get 'property_info', to: "leads#property_info"
+      get 'property_schedule_availability.:format', to: "leads#property_schedule_availability"
       resources :messages, only: [:create]
     end
   end

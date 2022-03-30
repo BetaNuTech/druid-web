@@ -103,7 +103,7 @@ module Api
           raise ActiveRecord::RecordNotFound
 
         service_params = {
-          start_time: ( DateTime.parse(params[:fromDate]) rescue nil ),
+          start_time: ( DateTime.parse(params[:fromDate]) rescue Time.current ),
           end_time:  ( DateTime.parse(params[:toDate]) rescue Time.current + 14.days ),
           property_code: property_listing_code
         }

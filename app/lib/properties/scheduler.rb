@@ -20,7 +20,7 @@ module Properties
         select{ |t|
                   property.office_open?(t) &&
                   !possible_conflicts.any?{ |window|
-                    end_of_time_window = t.first + appt_length.minutes
+                    end_of_time_window = t.first + appt_length.minutes - 1
                     conflict?(t, window) || conflict?([end_of_time_window, end_of_time_window], window)
                   }
                }
