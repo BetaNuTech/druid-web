@@ -42,6 +42,7 @@ class Property < ApplicationRecord
   include Properties::MarketingSources
   include Properties::Logo
   include Properties::WorkingHours
+  include Properties::Scheduling
   include Properties::YardiVoyager
   audited
 

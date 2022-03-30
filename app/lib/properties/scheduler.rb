@@ -2,7 +2,7 @@ module Properties
   class Scheduler
     DEFAULT_APPOINTMENT_LENGTH = 30
 
-    attr_reader :property, :appintment_length
+    attr_reader :property, :appointment_length
 
     def initialize(property)
       @property = property
@@ -17,7 +17,13 @@ module Properties
         [task_start, task_end]
       end
       possible_times = all_possible_times(start_time:, end_time:).
-        select{ |t| property.office_open?(t) && !possible_conflicts.any?{|window| conflict?(t, window) || conflict(t+appt_length.minutes, window)} }
+        select{ |t|
+                  property.office_open?(t) &&
+                  !possible_conflicts.any?{ |window|
+                    end_of_time_window = t.first + appt_length.minutes
+                    conflict?(t, window) || conflict?([end_of_time_window, end_of_time_window], window)
+                  }
+               }
     end
     
     private
