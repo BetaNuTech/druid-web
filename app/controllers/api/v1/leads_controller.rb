@@ -104,7 +104,7 @@ module Api
 
         service_params = {
           start_time: ( DateTime.parse(params[:fromDate]) rescue Time.current ),
-          end_time:  ( DateTime.parse(params[:toDate]) rescue Time.current + 14.days ),
+          end_time:  ( DateTime.parse(params[:toDate]) rescue Time.current + 14.days ).end_of_day,
           property_code: property_listing_code
         }
 
