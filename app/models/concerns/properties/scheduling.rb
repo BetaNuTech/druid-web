@@ -21,16 +21,11 @@ module Properties
             group_by{|opening| opening.first.to_date}.to_a.
             inject([]) do |memo, obj|
               if obj.present?
-                begin
                 record = {
                   date: obj.first.strftime('%m/%d/%Y'),
                   day: Date::DAYNAMES[obj.first.wday],
                   times: obj.last.map{|opening| opening.first.strftime("%H:%M") + abbr_timezone }
                 }
-                rescue => e
-                  puts '*** EXCEPTION CAUGHT! ***'
-                  binding.pry; true
-                end
                 memo << record
               end
               memo
