@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-12 text-center">
+  <div class="col-md-12 text-center" id="site-features-list"> 
     <strong>Site Features: </strong>
     <% UserProfile.managed_features.each do |feature| %>
       <span class="btn btn-sm btn-<%= Flipflop.enabled?(feature) ? 'success' : 'default' %>">

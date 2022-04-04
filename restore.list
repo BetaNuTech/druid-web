@@ -1,0 +1,324 @@
+;
+; Archive created at 2022-01-31 07:29:19 PST
+;     dbname: d23ue3oe4h3ukg
+;     TOC Entries: 321
+;     Compression: -1
+;     Dump Version: 1.13-0
+;     Format: CUSTOM
+;     Integer: 4 bytes
+;     Offset: 8 bytes
+;     Dumped from database version: 10.19 (Ubuntu 10.19-2.pgdg20.04+1)
+;     Dumped by pg_dump version: 10.3
+;
+;
+; Selected TOC Entries:
+;
+4396; 1262 16385 DATABASE - d23ue3oe4h3ukg u8aj9m5htgkq1d
+6; 2615 2200 SCHEMA - public u8aj9m5htgkq1d
+4397; 0 0 COMMENT - SCHEMA "public" u8aj9m5htgkq1d
+1; 3079 13809 EXTENSION - plpgsql 
+4398; 0 0 COMMENT - EXTENSION "plpgsql" 
+4; 3079 16394 EXTENSION - pg_stat_statements 
+4399; 0 0 COMMENT - EXTENSION "pg_stat_statements" 
+3; 3079 16401 EXTENSION - pgcrypto 
+4400; 0 0 COMMENT - EXTENSION "pgcrypto" 
+2; 3079 16438 EXTENSION - uuid-ossp 
+4401; 0 0 COMMENT - EXTENSION "uuid-ossp" 
+241; 1259 32352 TABLE public active_storage_attachments u8aj9m5htgkq1d
+240; 1259 32350 SEQUENCE public active_storage_attachments_id_seq u8aj9m5htgkq1d
+4402; 0 0 SEQUENCE OWNED BY public active_storage_attachments_id_seq u8aj9m5htgkq1d
+239; 1259 32340 TABLE public active_storage_blobs u8aj9m5htgkq1d
+238; 1259 32338 SEQUENCE public active_storage_blobs_id_seq u8aj9m5htgkq1d
+4403; 0 0 SEQUENCE OWNED BY public active_storage_blobs_id_seq u8aj9m5htgkq1d
+255; 1259 214949 TABLE public active_storage_variant_records u8aj9m5htgkq1d
+254; 1259 214947 SEQUENCE public active_storage_variant_records_id_seq u8aj9m5htgkq1d
+4404; 0 0 SEQUENCE OWNED BY public active_storage_variant_records_id_seq u8aj9m5htgkq1d
+236; 1259 16841 TABLE public ar_internal_metadata u8aj9m5htgkq1d
+245; 1259 83424 TABLE public articles u8aj9m5htgkq1d
+252; 1259 201842 TABLE public contact_events u8aj9m5htgkq1d
+203; 1259 16468 TABLE public delayed_jobs u8aj9m5htgkq1d
+202; 1259 16466 SEQUENCE public delayed_jobs_id_seq u8aj9m5htgkq1d
+4406; 0 0 SEQUENCE OWNED BY public delayed_jobs_id_seq u8aj9m5htgkq1d
+237; 1259 20800 TABLE public duplicate_leads u8aj9m5htgkq1d
+204; 1259 16480 TABLE public engagement_policies u8aj9m5htgkq1d
+205; 1259 16492 TABLE public engagement_policy_action_compliances u8aj9m5htgkq1d
+206; 1259 16505 TABLE public engagement_policy_actions u8aj9m5htgkq1d
+250; 1259 174866 TABLE public flipflop_features u8aj9m5htgkq1d
+249; 1259 174864 SEQUENCE public flipflop_features_id_seq u8aj9m5htgkq1d
+4407; 0 0 SEQUENCE OWNED BY public flipflop_features_id_seq u8aj9m5htgkq1d
+207; 1259 16520 TABLE public lead_actions u8aj9m5htgkq1d
+208; 1259 16531 TABLE public lead_preferences u8aj9m5htgkq1d
+243; 1259 46238 TABLE public lead_referral_sources u8aj9m5htgkq1d
+244; 1259 66217 TABLE public lead_referrals u8aj9m5htgkq1d
+209; 1259 16541 TABLE public lead_sources u8aj9m5htgkq1d
+210; 1259 16551 TABLE public lead_transitions u8aj9m5htgkq1d
+211; 1259 16561 TABLE public leads u8aj9m5htgkq1d
+248; 1259 172425 TABLE public marketing_expenses u8aj9m5htgkq1d
+247; 1259 172410 TABLE public marketing_sources u8aj9m5htgkq1d
+212; 1259 16575 TABLE public message_deliveries u8aj9m5htgkq1d
+213; 1259 16585 TABLE public message_delivery_adapters u8aj9m5htgkq1d
+214; 1259 16598 TABLE public message_templates u8aj9m5htgkq1d
+215; 1259 16607 TABLE public message_types u8aj9m5htgkq1d
+216; 1259 16618 TABLE public messages u8aj9m5htgkq1d
+217; 1259 16632 TABLE public notes u8aj9m5htgkq1d
+218; 1259 16642 TABLE public phone_numbers u8aj9m5htgkq1d
+219; 1259 16655 TABLE public properties u8aj9m5htgkq1d
+220; 1259 16667 TABLE public property_listings u8aj9m5htgkq1d
+242; 1259 36698 TABLE public property_users u8aj9m5htgkq1d
+221; 1259 16679 TABLE public reasons u8aj9m5htgkq1d
+222; 1259 16689 TABLE public rental_types u8aj9m5htgkq1d
+223; 1259 16698 TABLE public resident_details u8aj9m5htgkq1d
+224; 1259 16708 TABLE public residents u8aj9m5htgkq1d
+225; 1259 16719 TABLE public roles u8aj9m5htgkq1d
+246; 1259 148365 TABLE public roommates u8aj9m5htgkq1d
+226; 1259 16728 TABLE public scheduled_actions u8aj9m5htgkq1d
+227; 1259 16742 TABLE public schedules u8aj9m5htgkq1d
+235; 1259 16833 TABLE public schema_migrations u8aj9m5htgkq1d
+253; 1259 201855 TABLE public statistics u8aj9m5htgkq1d
+228; 1259 16751 TABLE public team_users u8aj9m5htgkq1d
+229; 1259 16758 TABLE public teamroles u8aj9m5htgkq1d
+230; 1259 16768 TABLE public teams u8aj9m5htgkq1d
+231; 1259 16777 TABLE public unit_types u8aj9m5htgkq1d
+232; 1259 16791 TABLE public units u8aj9m5htgkq1d
+251; 1259 177702 TABLE public user_impressions u8aj9m5htgkq1d
+233; 1259 16805 TABLE public user_profiles u8aj9m5htgkq1d
+234; 1259 16815 TABLE public users u8aj9m5htgkq1d
+3951; 2604 32355 DEFAULT public active_storage_attachments id u8aj9m5htgkq1d
+3950; 2604 32343 DEFAULT public active_storage_blobs id u8aj9m5htgkq1d
+3979; 2604 214952 DEFAULT public active_storage_variant_records id u8aj9m5htgkq1d
+3864; 2604 16471 DEFAULT public delayed_jobs id u8aj9m5htgkq1d
+3971; 2604 174869 DEFAULT public flipflop_features id u8aj9m5htgkq1d
+4376; 0 32352 TABLE DATA public active_storage_attachments u8aj9m5htgkq1d
+4374; 0 32340 TABLE DATA public active_storage_blobs u8aj9m5htgkq1d
+4390; 0 214949 TABLE DATA public active_storage_variant_records u8aj9m5htgkq1d
+4371; 0 16841 TABLE DATA public ar_internal_metadata u8aj9m5htgkq1d
+4380; 0 83424 TABLE DATA public articles u8aj9m5htgkq1d
+4387; 0 201842 TABLE DATA public contact_events u8aj9m5htgkq1d
+4338; 0 16468 TABLE DATA public delayed_jobs u8aj9m5htgkq1d
+4372; 0 20800 TABLE DATA public duplicate_leads u8aj9m5htgkq1d
+4339; 0 16480 TABLE DATA public engagement_policies u8aj9m5htgkq1d
+4340; 0 16492 TABLE DATA public engagement_policy_action_compliances u8aj9m5htgkq1d
+4341; 0 16505 TABLE DATA public engagement_policy_actions u8aj9m5htgkq1d
+4385; 0 174866 TABLE DATA public flipflop_features u8aj9m5htgkq1d
+4342; 0 16520 TABLE DATA public lead_actions u8aj9m5htgkq1d
+4343; 0 16531 TABLE DATA public lead_preferences u8aj9m5htgkq1d
+4378; 0 46238 TABLE DATA public lead_referral_sources u8aj9m5htgkq1d
+4379; 0 66217 TABLE DATA public lead_referrals u8aj9m5htgkq1d
+4344; 0 16541 TABLE DATA public lead_sources u8aj9m5htgkq1d
+4345; 0 16551 TABLE DATA public lead_transitions u8aj9m5htgkq1d
+4346; 0 16561 TABLE DATA public leads u8aj9m5htgkq1d
+4383; 0 172425 TABLE DATA public marketing_expenses u8aj9m5htgkq1d
+4382; 0 172410 TABLE DATA public marketing_sources u8aj9m5htgkq1d
+4347; 0 16575 TABLE DATA public message_deliveries u8aj9m5htgkq1d
+4348; 0 16585 TABLE DATA public message_delivery_adapters u8aj9m5htgkq1d
+4349; 0 16598 TABLE DATA public message_templates u8aj9m5htgkq1d
+4350; 0 16607 TABLE DATA public message_types u8aj9m5htgkq1d
+4351; 0 16618 TABLE DATA public messages u8aj9m5htgkq1d
+4352; 0 16632 TABLE DATA public notes u8aj9m5htgkq1d
+4353; 0 16642 TABLE DATA public phone_numbers u8aj9m5htgkq1d
+4354; 0 16655 TABLE DATA public properties u8aj9m5htgkq1d
+4355; 0 16667 TABLE DATA public property_listings u8aj9m5htgkq1d
+4377; 0 36698 TABLE DATA public property_users u8aj9m5htgkq1d
+4356; 0 16679 TABLE DATA public reasons u8aj9m5htgkq1d
+4357; 0 16689 TABLE DATA public rental_types u8aj9m5htgkq1d
+4358; 0 16698 TABLE DATA public resident_details u8aj9m5htgkq1d
+4359; 0 16708 TABLE DATA public residents u8aj9m5htgkq1d
+4360; 0 16719 TABLE DATA public roles u8aj9m5htgkq1d
+4381; 0 148365 TABLE DATA public roommates u8aj9m5htgkq1d
+4361; 0 16728 TABLE DATA public scheduled_actions u8aj9m5htgkq1d
+4362; 0 16742 TABLE DATA public schedules u8aj9m5htgkq1d
+4370; 0 16833 TABLE DATA public schema_migrations u8aj9m5htgkq1d
+4388; 0 201855 TABLE DATA public statistics u8aj9m5htgkq1d
+4363; 0 16751 TABLE DATA public team_users u8aj9m5htgkq1d
+4364; 0 16758 TABLE DATA public teamroles u8aj9m5htgkq1d
+4365; 0 16768 TABLE DATA public teams u8aj9m5htgkq1d
+4366; 0 16777 TABLE DATA public unit_types u8aj9m5htgkq1d
+4367; 0 16791 TABLE DATA public units u8aj9m5htgkq1d
+4386; 0 177702 TABLE DATA public user_impressions u8aj9m5htgkq1d
+4368; 0 16805 TABLE DATA public user_profiles u8aj9m5htgkq1d
+4369; 0 16815 TABLE DATA public users u8aj9m5htgkq1d
+4408; 0 0 SEQUENCE SET public active_storage_attachments_id_seq u8aj9m5htgkq1d
+4409; 0 0 SEQUENCE SET public active_storage_blobs_id_seq u8aj9m5htgkq1d
+4410; 0 0 SEQUENCE SET public active_storage_variant_records_id_seq u8aj9m5htgkq1d
+4412; 0 0 SEQUENCE SET public delayed_jobs_id_seq u8aj9m5htgkq1d
+4413; 0 0 SEQUENCE SET public flipflop_features_id_seq u8aj9m5htgkq1d
+4116; 2606 32360 CONSTRAINT public active_storage_attachments active_storage_attachments_pkey u8aj9m5htgkq1d
+4113; 2606 32348 CONSTRAINT public active_storage_blobs active_storage_blobs_pkey u8aj9m5htgkq1d
+4160; 2606 214957 CONSTRAINT public active_storage_variant_records active_storage_variant_records_pkey u8aj9m5htgkq1d
+4106; 2606 16848 CONSTRAINT public ar_internal_metadata ar_internal_metadata_pkey u8aj9m5htgkq1d
+4130; 2606 83435 CONSTRAINT public articles articles_pkey u8aj9m5htgkq1d
+4154; 2606 201852 CONSTRAINT public contact_events contact_events_pkey u8aj9m5htgkq1d
+3986; 2606 16478 CONSTRAINT public delayed_jobs delayed_jobs_pkey u8aj9m5htgkq1d
+4108; 2606 20805 CONSTRAINT public duplicate_leads duplicate_leads_pkey u8aj9m5htgkq1d
+3990; 2606 16490 CONSTRAINT public engagement_policies engagement_policies_pkey u8aj9m5htgkq1d
+3992; 2606 16501 CONSTRAINT public engagement_policy_action_compliances engagement_policy_action_compliances_pkey u8aj9m5htgkq1d
+3998; 2606 16518 CONSTRAINT public engagement_policy_actions engagement_policy_actions_pkey u8aj9m5htgkq1d
+4146; 2606 174875 CONSTRAINT public flipflop_features flipflop_features_pkey u8aj9m5htgkq1d
+4001; 2606 16530 CONSTRAINT public lead_actions lead_actions_pkey u8aj9m5htgkq1d
+4003; 2606 16540 CONSTRAINT public lead_preferences lead_preferences_pkey u8aj9m5htgkq1d
+4123; 2606 46246 CONSTRAINT public lead_referral_sources lead_referral_sources_pkey u8aj9m5htgkq1d
+4127; 2606 66225 CONSTRAINT public lead_referrals lead_referrals_pkey u8aj9m5htgkq1d
+4006; 2606 16549 CONSTRAINT public lead_sources lead_sources_pkey u8aj9m5htgkq1d
+4010; 2606 16559 CONSTRAINT public lead_transitions lead_transitions_pkey u8aj9m5htgkq1d
+4019; 2606 16570 CONSTRAINT public leads leads_pkey u8aj9m5htgkq1d
+4143; 2606 172435 CONSTRAINT public marketing_expenses marketing_expenses_pkey u8aj9m5htgkq1d
+4141; 2606 172421 CONSTRAINT public marketing_sources marketing_sources_pkey u8aj9m5htgkq1d
+4022; 2606 16583 CONSTRAINT public message_deliveries message_deliveries_pkey u8aj9m5htgkq1d
+4027; 2606 16594 CONSTRAINT public message_delivery_adapters message_delivery_adapters_pkey u8aj9m5htgkq1d
+4030; 2606 16606 CONSTRAINT public message_templates message_templates_pkey u8aj9m5htgkq1d
+4032; 2606 16617 CONSTRAINT public message_types message_types_pkey u8aj9m5htgkq1d
+4038; 2606 16627 CONSTRAINT public messages messages_pkey u8aj9m5htgkq1d
+4042; 2606 16640 CONSTRAINT public notes notes_pkey u8aj9m5htgkq1d
+4045; 2606 16653 CONSTRAINT public phone_numbers phone_numbers_pkey u8aj9m5htgkq1d
+4049; 2606 16664 CONSTRAINT public properties properties_pkey u8aj9m5htgkq1d
+4053; 2606 16676 CONSTRAINT public property_listings property_listings_pkey u8aj9m5htgkq1d
+4121; 2606 36703 CONSTRAINT public property_users property_users_pkey u8aj9m5htgkq1d
+4055; 2606 16688 CONSTRAINT public reasons reasons_pkey u8aj9m5htgkq1d
+4057; 2606 16697 CONSTRAINT public rental_types rental_types_pkey u8aj9m5htgkq1d
+4061; 2606 16706 CONSTRAINT public resident_details resident_details_pkey u8aj9m5htgkq1d
+4066; 2606 16716 CONSTRAINT public residents residents_pkey u8aj9m5htgkq1d
+4068; 2606 16727 CONSTRAINT public roles roles_pkey u8aj9m5htgkq1d
+4136; 2606 148377 CONSTRAINT public roommates roommates_pkey u8aj9m5htgkq1d
+4075; 2606 16738 CONSTRAINT public scheduled_actions scheduled_actions_pkey u8aj9m5htgkq1d
+4077; 2606 16750 CONSTRAINT public schedules schedules_pkey u8aj9m5htgkq1d
+4104; 2606 16840 CONSTRAINT public schema_migrations schema_migrations_pkey u8aj9m5htgkq1d
+4158; 2606 201864 CONSTRAINT public statistics statistics_pkey u8aj9m5htgkq1d
+4080; 2606 16756 CONSTRAINT public team_users team_users_pkey u8aj9m5htgkq1d
+4083; 2606 16766 CONSTRAINT public teamroles teamroles_pkey u8aj9m5htgkq1d
+4085; 2606 16776 CONSTRAINT public teams teams_pkey u8aj9m5htgkq1d
+4089; 2606 16788 CONSTRAINT public unit_types unit_types_pkey u8aj9m5htgkq1d
+4093; 2606 16802 CONSTRAINT public units units_pkey u8aj9m5htgkq1d
+4150; 2606 177710 CONSTRAINT public user_impressions user_impressions_pkey u8aj9m5htgkq1d
+4096; 2606 16813 CONSTRAINT public user_profiles user_profiles_pkey u8aj9m5htgkq1d
+4102; 2606 16828 CONSTRAINT public users users_pkey u8aj9m5htgkq1d
+4128; 1259 83436 INDEX public article_info_idx u8aj9m5htgkq1d
+3980; 1259 16462 INDEX public auditable_index u8aj9m5htgkq1d
+4151; 1259 201853 INDEX public contact_events_contact_and_timestamp u8aj9m5htgkq1d
+4152; 1259 201854 INDEX public contact_events_general_idx u8aj9m5htgkq1d
+3988; 1259 16491 INDEX public covering u8aj9m5htgkq1d
+3987; 1259 16479 INDEX public delayed_jobs_priority u8aj9m5htgkq1d
+3996; 1259 16519 INDEX public engagement_policy_action_covering u8aj9m5htgkq1d
+3993; 1259 16502 INDEX public epac_expires_at u8aj9m5htgkq1d
+3994; 1259 16503 INDEX public epac_state u8aj9m5htgkq1d
+3995; 1259 16504 INDEX public epac_user_id_sa_id u8aj9m5htgkq1d
+4124; 1259 66227 INDEX public idx_referrable u8aj9m5htgkq1d
+4117; 1259 32361 INDEX public index_active_storage_attachments_on_blob_id u8aj9m5htgkq1d
+4118; 1259 32362 INDEX public index_active_storage_attachments_uniqueness u8aj9m5htgkq1d
+4114; 1259 32349 INDEX public index_active_storage_blobs_on_key u8aj9m5htgkq1d
+4161; 1259 214963 INDEX public index_active_storage_variant_records_uniqueness u8aj9m5htgkq1d
+4131; 1259 83437 INDEX public index_articles_on_articletype u8aj9m5htgkq1d
+4132; 1259 83438 INDEX public index_articles_on_contextid u8aj9m5htgkq1d
+4133; 1259 83440 INDEX public index_articles_on_created_at u8aj9m5htgkq1d
+4134; 1259 83439 INDEX public index_articles_on_title u8aj9m5htgkq1d
+4109; 1259 23419 INDEX public index_duplicate_leads_on_lead_id u8aj9m5htgkq1d
+4110; 1259 20806 INDEX public index_duplicate_leads_on_reference_id u8aj9m5htgkq1d
+4111; 1259 20807 INDEX public index_duplicate_leads_on_reference_id_and_lead_id u8aj9m5htgkq1d
+3999; 1259 67419 INDEX public index_lead_actions_on_state_affinity u8aj9m5htgkq1d
+4125; 1259 66226 INDEX public index_lead_referrals_on_lead_id u8aj9m5htgkq1d
+4004; 1259 16550 INDEX public index_lead_sources_on_active_and_api_token u8aj9m5htgkq1d
+4007; 1259 22915 INDEX public index_lead_transitions_on_last_state_and_current_state u8aj9m5htgkq1d
+4008; 1259 16560 INDEX public index_lead_transitions_on_lead_id u8aj9m5htgkq1d
+4012; 1259 16571 INDEX public index_leads_on_classification u8aj9m5htgkq1d
+4013; 1259 19121 INDEX public index_leads_on_follow_up_at u8aj9m5htgkq1d
+4014; 1259 16572 INDEX public index_leads_on_priority u8aj9m5htgkq1d
+4015; 1259 16573 INDEX public index_leads_on_remoteid u8aj9m5htgkq1d
+4016; 1259 16574 INDEX public index_leads_on_state u8aj9m5htgkq1d
+4137; 1259 172422 INDEX public index_marketing_sources_on_property_id_and_name u8aj9m5htgkq1d
+4138; 1259 172424 INDEX public index_marketing_sources_on_tracking_email u8aj9m5htgkq1d
+4139; 1259 199882 INDEX public index_marketing_sources_on_tracking_number u8aj9m5htgkq1d
+4020; 1259 16584 INDEX public index_message_deliveries_on_message_id u8aj9m5htgkq1d
+4023; 1259 16595 INDEX public index_message_delivery_adapters_on_api_token u8aj9m5htgkq1d
+4024; 1259 16596 INDEX public index_message_delivery_adapters_on_message_type_id u8aj9m5htgkq1d
+4025; 1259 16597 INDEX public index_message_delivery_adapters_on_slug u8aj9m5htgkq1d
+4028; 1259 45076 INDEX public index_message_templates_on_shared_and_user_id u8aj9m5htgkq1d
+4033; 1259 16629 INDEX public index_messages_on_state u8aj9m5htgkq1d
+4034; 1259 16630 INDEX public index_messages_on_threadid u8aj9m5htgkq1d
+4035; 1259 16631 INDEX public index_messages_on_user_id u8aj9m5htgkq1d
+4039; 1259 102365 INDEX public index_notes_on_classification u8aj9m5htgkq1d
+4040; 1259 16641 INDEX public index_notes_on_user_id_and_notable_id_and_notable_type u8aj9m5htgkq1d
+4043; 1259 16654 INDEX public index_phone_numbers_on_phoneable_type_and_phoneable_id u8aj9m5htgkq1d
+4046; 1259 16665 INDEX public index_properties_on_active u8aj9m5htgkq1d
+4047; 1259 16666 INDEX public index_properties_on_team_id u8aj9m5htgkq1d
+4050; 1259 16677 INDEX public index_property_listings_on_active_and_code u8aj9m5htgkq1d
+4051; 1259 16678 INDEX public index_property_listings_on_property_id_and_source_id_and_active u8aj9m5htgkq1d
+4119; 1259 36704 INDEX public index_property_users_on_property_id_and_user_id u8aj9m5htgkq1d
+4058; 1259 16707 INDEX public index_resident_details_on_resident_id u8aj9m5htgkq1d
+4062; 1259 16717 INDEX public index_residents_on_property_id_and_status_and_unit_id u8aj9m5htgkq1d
+4063; 1259 16718 INDEX public index_residents_on_residentid u8aj9m5htgkq1d
+4069; 1259 16739 INDEX public index_scheduled_actions_on_originator_id u8aj9m5htgkq1d
+4070; 1259 16741 INDEX public index_scheduled_actions_on_user_id u8aj9m5htgkq1d
+4155; 1259 201866 INDEX public index_statistics_on_created_at u8aj9m5htgkq1d
+4078; 1259 16757 INDEX public index_team_users_on_user_id u8aj9m5htgkq1d
+4081; 1259 16767 INDEX public index_teamroles_on_slug u8aj9m5htgkq1d
+4086; 1259 16789 INDEX public index_unit_types_on_property_id_and_name u8aj9m5htgkq1d
+4087; 1259 16790 INDEX public index_unit_types_on_remoteid u8aj9m5htgkq1d
+4090; 1259 16803 INDEX public index_units_on_property_id_and_unit u8aj9m5htgkq1d
+4091; 1259 16804 INDEX public index_units_on_remoteid u8aj9m5htgkq1d
+4147; 1259 177712 INDEX public index_user_impressions_on_reference_and_created_at u8aj9m5htgkq1d
+4148; 1259 177711 INDEX public index_user_impressions_on_user_id_and_reference u8aj9m5htgkq1d
+4094; 1259 16814 INDEX public index_user_profiles_on_user_id u8aj9m5htgkq1d
+4097; 1259 16829 INDEX public index_users_on_confirmation_token u8aj9m5htgkq1d
+4098; 1259 16830 INDEX public index_users_on_email u8aj9m5htgkq1d
+4099; 1259 16831 INDEX public index_users_on_reset_password_token u8aj9m5htgkq1d
+4100; 1259 16832 INDEX public index_users_on_unlock_token u8aj9m5htgkq1d
+4017; 1259 20799 INDEX public lead_dedupe_idx u8aj9m5htgkq1d
+4036; 1259 16628 INDEX public message_messageable u8aj9m5htgkq1d
+4071; 1259 75379 INDEX public notification_idx u8aj9m5htgkq1d
+4144; 1259 172436 INDEX public query_idx u8aj9m5htgkq1d
+4059; 1259 424368 INDEX public resident_details_contact u8aj9m5htgkq1d
+4064; 1259 424369 INDEX public residents_name u8aj9m5htgkq1d
+4072; 1259 16740 INDEX public scheduled_action_target u8aj9m5htgkq1d
+4073; 1259 55166 INDEX public scheduled_actions_article_idx u8aj9m5htgkq1d
+4011; 1259 17832 INDEX public state_xtn u8aj9m5htgkq1d
+4156; 1259 201865 INDEX public statistics_general_idx u8aj9m5htgkq1d
+4205; 2606 70121 FK CONSTRAINT public duplicate_leads duplicate_leads_lead_id_fk u8aj9m5htgkq1d
+4206; 2606 70126 FK CONSTRAINT public duplicate_leads duplicate_leads_reference_id_fk u8aj9m5htgkq1d
+4162; 2606 70131 FK CONSTRAINT public engagement_policies engagement_policies_property_id_fk u8aj9m5htgkq1d
+4163; 2606 70141 FK CONSTRAINT public engagement_policy_action_compliances engagement_policy_action_compliances_user_id_fk u8aj9m5htgkq1d
+4164; 2606 70146 FK CONSTRAINT public engagement_policy_actions engagement_policy_actions_engagement_policy_id_fk u8aj9m5htgkq1d
+4165; 2606 70151 FK CONSTRAINT public engagement_policy_actions engagement_policy_actions_lead_action_id_fk u8aj9m5htgkq1d
+4212; 2606 214958 FK CONSTRAINT public active_storage_variant_records fk_rails_993965df05 u8aj9m5htgkq1d
+4207; 2606 71194 FK CONSTRAINT public active_storage_attachments fk_rails_c3b3935057 u8aj9m5htgkq1d
+4166; 2606 70156 FK CONSTRAINT public lead_preferences lead_preferences_lead_id_fk u8aj9m5htgkq1d
+4167; 2606 70161 FK CONSTRAINT public lead_preferences lead_preferences_unit_type_id_fk u8aj9m5htgkq1d
+4210; 2606 70166 FK CONSTRAINT public lead_referrals lead_referrals_lead_id_fk u8aj9m5htgkq1d
+4211; 2606 70171 FK CONSTRAINT public lead_referrals lead_referrals_lead_referral_source_id_fk u8aj9m5htgkq1d
+4168; 2606 70176 FK CONSTRAINT public lead_transitions lead_transitions_lead_id_fk u8aj9m5htgkq1d
+4169; 2606 70181 FK CONSTRAINT public leads leads_lead_source_id_fk u8aj9m5htgkq1d
+4170; 2606 70186 FK CONSTRAINT public leads leads_property_id_fk u8aj9m5htgkq1d
+4171; 2606 70191 FK CONSTRAINT public leads leads_user_id_fk u8aj9m5htgkq1d
+4172; 2606 70196 FK CONSTRAINT public message_deliveries message_deliveries_message_id_fk u8aj9m5htgkq1d
+4173; 2606 70201 FK CONSTRAINT public message_deliveries message_deliveries_message_type_id_fk u8aj9m5htgkq1d
+4174; 2606 70206 FK CONSTRAINT public message_delivery_adapters message_delivery_adapters_message_type_id_fk u8aj9m5htgkq1d
+4175; 2606 70211 FK CONSTRAINT public message_templates message_templates_message_type_id_fk u8aj9m5htgkq1d
+4176; 2606 70216 FK CONSTRAINT public message_templates message_templates_user_id_fk u8aj9m5htgkq1d
+4177; 2606 70221 FK CONSTRAINT public messages messages_message_type_id_fk u8aj9m5htgkq1d
+4178; 2606 70226 FK CONSTRAINT public messages messages_read_by_user_id_fk u8aj9m5htgkq1d
+4179; 2606 70231 FK CONSTRAINT public messages messages_user_id_fk u8aj9m5htgkq1d
+4180; 2606 70236 FK CONSTRAINT public notes notes_lead_action_id_fk u8aj9m5htgkq1d
+4181; 2606 70241 FK CONSTRAINT public notes notes_reason_id_fk u8aj9m5htgkq1d
+4182; 2606 70246 FK CONSTRAINT public notes notes_user_id_fk u8aj9m5htgkq1d
+4183; 2606 70251 FK CONSTRAINT public properties properties_team_id_fk u8aj9m5htgkq1d
+4184; 2606 70256 FK CONSTRAINT public property_listings property_listings_property_id_fk u8aj9m5htgkq1d
+4185; 2606 70261 FK CONSTRAINT public property_listings property_listings_source_id_fk u8aj9m5htgkq1d
+4208; 2606 70266 FK CONSTRAINT public property_users property_users_property_id_fk u8aj9m5htgkq1d
+4209; 2606 70271 FK CONSTRAINT public property_users property_users_user_id_fk u8aj9m5htgkq1d
+4186; 2606 70276 FK CONSTRAINT public resident_details resident_details_resident_id_fk u8aj9m5htgkq1d
+4187; 2606 70281 FK CONSTRAINT public residents residents_lead_id_fk u8aj9m5htgkq1d
+4188; 2606 70286 FK CONSTRAINT public residents residents_property_id_fk u8aj9m5htgkq1d
+4189; 2606 70291 FK CONSTRAINT public residents residents_unit_id_fk u8aj9m5htgkq1d
+4190; 2606 70296 FK CONSTRAINT public scheduled_actions scheduled_actions_engagement_policy_action_compliance_id_fk u8aj9m5htgkq1d
+4191; 2606 70301 FK CONSTRAINT public scheduled_actions scheduled_actions_engagement_policy_action_id_fk u8aj9m5htgkq1d
+4192; 2606 70306 FK CONSTRAINT public scheduled_actions scheduled_actions_lead_action_id_fk u8aj9m5htgkq1d
+4193; 2606 70311 FK CONSTRAINT public scheduled_actions scheduled_actions_originator_id_fk u8aj9m5htgkq1d
+4194; 2606 70316 FK CONSTRAINT public scheduled_actions scheduled_actions_reason_id_fk u8aj9m5htgkq1d
+4195; 2606 70321 FK CONSTRAINT public scheduled_actions scheduled_actions_user_id_fk u8aj9m5htgkq1d
+4196; 2606 70326 FK CONSTRAINT public team_users team_users_team_id_fk u8aj9m5htgkq1d
+4197; 2606 70331 FK CONSTRAINT public team_users team_users_teamrole_id_fk u8aj9m5htgkq1d
+4198; 2606 70336 FK CONSTRAINT public team_users team_users_user_id_fk u8aj9m5htgkq1d
+4199; 2606 70341 FK CONSTRAINT public unit_types unit_types_property_id_fk u8aj9m5htgkq1d
+4200; 2606 70346 FK CONSTRAINT public units units_property_id_fk u8aj9m5htgkq1d
+4201; 2606 70351 FK CONSTRAINT public units units_rental_type_id_fk u8aj9m5htgkq1d
+4202; 2606 70356 FK CONSTRAINT public units units_unit_type_id_fk u8aj9m5htgkq1d
+4203; 2606 70361 FK CONSTRAINT public user_profiles user_profiles_user_id_fk u8aj9m5htgkq1d
+4204; 2606 70366 FK CONSTRAINT public users users_role_id_fk u8aj9m5htgkq1d

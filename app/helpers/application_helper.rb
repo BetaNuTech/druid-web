@@ -1,6 +1,6 @@
 module ApplicationHelper
   def short_date(datetime)
-    datetime.present? ? datetime.strftime('%m-%d-%y') : nil
+    datetime.present? ? datetime.strftime('%m/%d/%y') : nil
   end
 
   def short_time(datetime)
@@ -8,7 +8,7 @@ module ApplicationHelper
   end
 
   def short_datetime(datetime)
-    datetime.present? ? datetime.strftime('%m-%d-%y %l:%M%p') : nil
+    datetime.present? ? datetime.strftime('%m/%d/%y %l:%M%p') : nil
   end
 
   def long_datetime(datetime)
@@ -181,6 +181,7 @@ module ApplicationHelper
   end
 
   def nav_item_class(key, action=nil)
-    nav_item_active?(key,action) ? 'sidebar--item--active' : ''
+    active_class = Flipflop.enabled?(:design_v2) ? ' active' : ' sidebar--item--active' 
+    nav_item_active?(key,action) ? active_class : ''
   end
 end

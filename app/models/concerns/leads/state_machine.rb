@@ -3,6 +3,7 @@ module Leads
     extend ActiveSupport::Concern
 
     PENDING_STATES = %w{open prospect showing application}.freeze
+    DEFAULT_SEARCH_STATES = %w{open prospect showing application approved future waitlist}.freeze
     CLAIMED_STATES = %w{prospect showing application approved denied resident}.freeze
     IN_PROGRESS_STATES = %w{prospect showing application }.freeze
     CLOSED_STATES = %w{ disqualified abandoned resident exresident future waitlist}.freeze

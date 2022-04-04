@@ -1,0 +1,21 @@
+<div class="row">
+  <!-- Left Column -->
+  <div class="col-md-12">
+    <%= render partial: "today" %>
+    <%= render partial: "upcoming", locals: {scheduled_actions: @upcoming_actions} %>
+  </div>
+  <!-- End Left Column -->
+
+  <!-- Right Column -->
+  <!-- End Right Column -->
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <%= render partial: 'my_leads' %>
+    <%#= render partial: 'my_property_leads' %>
+    <%= render partial: 'waitlist' %>
+    <%#= render partial: 'my_team' %>
+    <%#= render partial: 'stats' %>
+  </div>
+
+</div>

@@ -245,7 +245,7 @@ class LeadsController < ApplicationController
     end
 
     def search_defaults
-      defaults = { states: Lead::PENDING_STATES }
+      defaults = { states: Lead::DEFAULT_SEARCH_STATES }
       if @current_property
         defaults.merge!({property_ids: [@current_property.id]})
       elsif current_user.property.present?

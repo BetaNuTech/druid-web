@@ -13,11 +13,10 @@ class ApplicationController < ActionController::Base
   before_action :prepare_exception_notifier
 
   def versioned_layout
-    if Flipflop.enabled?(:design_v1)
-      'application_v1'
-    else
-      'application'
-    end
+    return 'application_v2' if Flipflop.enabled?(:design_v2)
+    return 'application_v1' if Flipflop.enabled?(:design_v1)
+
+    'application'
   end
 
   def create_user_impression

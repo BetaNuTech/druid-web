@@ -1,0 +1,644 @@
+/* ------------------------------------------------------------------------------------- */
+
+/* RESPONSIVE CODE STARTS HERE */
+
+/* ------------------------------------------------------------------------------------- */
+
+
+
+/* MOBILE-ONLY STYLES */
+@media (max-width: 575.98px) {
+  #search-results-overview .italic {
+    letter-spacing: normal;
+  }
+
+  #UnitOverview .user-email {
+    letter-spacing: normal;
+  }
+
+  #LeadTimelineFilters .form-control {
+    max-width: 280px;
+  }
+
+  #ContactLead .btn-group .btn {
+    min-width: 100px;
+    padding: 6px;
+  }
+
+  #EmailLead {
+    text-align: center;
+  }
+
+  #EmailLeadButton {
+    margin-bottom: 30px;
+  }
+
+  #PropertyDetailsUnits {
+    grid-template-columns: 1fr;
+  }
+
+  #PropertyUnits2 {
+    display: none;
+  }
+
+  .property-overview-title, .property-overview-details, .property-contact-info-title, .property-contact-info-details {
+    display: block;
+    width: auto;
+  }
+
+  .property-overview-title {
+    margin-bottom: 0;
+  }
+  
+  .property-overview-details {
+    margin-bottom: 15px;
+  }
+
+  .container-fluid {
+    padding: 0 10px 20px;
+  }
+
+  ul#crumbs ul.dropdown-menu {
+    top: 205px;
+    left: 10px;
+    right: 10px;
+  }
+
+  #RoommatesMobileLink, #PotentialUnitsMobileLink {
+    display: block;
+  }
+
+  #RoommatesContent, #PotentialUnitsContent {
+    display: none;
+  }
+
+}
+
+
+
+@media (max-width: 767.99px) {
+
+  #DashboardLeadLinks .right {
+    float: none;
+  }
+
+  #DashboardLeadLinks div {
+    text-align: center;
+    padding: 5px;
+  }
+
+  #DashboardLeadLinks {
+    margin-bottom: 30px;
+  }
+
+  .tab-content > .active {
+    padding: 20px 10px;
+  }
+
+  .appt-date {
+    font-size: 24px;
+  }
+
+  .appt-time {
+    font-family: Futura hv bt;
+  }
+
+  #ActiveLeads .form-group {
+    margin: 0;
+  }
+
+  .h2-with-padding {
+    margin-top: 40px;
+  }
+
+  .pagination .page-item .page-link {
+    padding: 0.375rem 0.5rem;
+  }
+
+  #EditTaskForm .form-radio-buttons .form-group {
+    display: block;
+  }
+
+  #MarketingMainTable > thead > tr.filter-row {
+    display: none;
+  }
+
+  #Marketing .responsiveTable {
+    margin-bottom: 30px;
+  }
+
+  #MarketingSources {
+    margin-top: 30px;
+  }
+
+  #MarketingSources .right {
+    float: none;
+    text-align: center;
+  } 
+
+  .form-actions .left, .left {
+    float: none;
+    display: block;
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  #UserOverview {
+    display: block;
+    margin-top: 30px;
+  }
+
+  #UserOverview .user-photo {
+    text-align: center;
+    margin-bottom: 10px; 
+  }
+
+  #UserOverview .btn-black {
+    width: 146px;
+    margin-bottom: 10px;
+  }
+
+  #UserOverview h3, #UserOverview .user-email, #UnitOverview h3, #UnitOverview .user-email, #PropertyOverview h3, #PropertyOverview .property-address {
+    text-align: center;
+  }
+
+  .user-overview-title {
+    display: block;
+    width: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .user-overview-details {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  #UserDetails .greybox {
+    max-width: calc(100% - 20px);
+  }
+
+  ul#crumbs {
+    display: block;
+    width: 100%;
+    background-color: #256968;
+    padding: none;
+    text-align: center;
+  }
+
+  ul#crumbs li.crumb a {
+    margin: none;
+    padding: none;
+  }
+
+  ul#crumbs li.crumb a.crumb-inactive {
+    display: none;
+  }
+
+  ul#crumbs li.crumb a.crumb-active:after {
+    border-left: none;
+  }
+
+  ul#crumbs li.crumb a.crumb-link:before {
+    content: "";
+    border: none;
+  }
+
+  ul#crumbs li.crumb a.crumb-active {
+    width: 100%;
+  }
+
+}
+
+
+
+@media (max-width: 991.99px) {
+
+  #ActiveLeadsTabs {
+    display: none;
+  }
+
+  #ActiveLeads .tab-pane {
+    height: auto;
+    overflow: none;
+  }
+  
+  #SearchLeadsForm .row {
+    margin-top: 30px;
+  }
+
+  #SearchLeadsForm .form-group {
+    margin-bottom: 0;
+  }
+
+  #MessagesFilters {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    row-gap: 10px;
+  }
+
+  #MessagesFilters .message-filter {
+    align-self: auto;
+  }
+  
+  #MessagesFilters .message-filter label, #MessagesFilters .message-filter div {
+    vertical-align: top;
+  }
+
+  #MessagesFilters .message-filter:nth-child(2) {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  #MessagesFilters .message-filter .form-group {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  #CallInProgress .btn-secondary {
+    margin-bottom: 40px;
+  }
+
+  .top-left-link {
+    float: none;
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    width: 100%;
+  }
+
+  #ScheduledTasks .top-right-link {
+    margin-bottom: 20px;
+  }
+
+}
+
+
+
+@media (max-width: 1278.99px) { 
+
+  /* START CODE FOR RESPONSIVE TABLES */
+  .responsiveTable table, .responsiveTable thead, .responsiveTable tbody, .responsiveTable th, .responsiveTable td, .responsiveTable tr { 
+		display: block; 
+	}
+
+  .responsiveTable table {
+    border-top-width: 1px !important;
+  }
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.responsiveTable thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+  .responsiveTable thead tr.filter-row { 
+		position: static;
+		top: 0;
+		left: 0;
+	}
+	
+	.responsiveTable td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+    padding-bottom: 10px;
+	}
+	
+	.responsiveTable td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+
+  .responsiveTable tr:nth-of-type(1) > td:nth-of-type(1) {
+    border-top: none;
+  }
+  
+  .responsiveTable td:nth-of-type(1) {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .responsiveTable td:nth-of-type(2) {
+    border-top: none;
+  }
+
+  .responsiveTable .table-bordered tr td {
+    padding: 0 10px 20px;
+  }
+
+  .responsiveTable .table-bordered td:first-child {
+    padding-top: 15px;
+  }
+
+  .responsiveTable .table-bordered td:last-child {
+    padding-bottom: 20px;
+  }
+
+  .responsiveTable .btn-urgent {
+    margin: 10px;
+  }
+  /* END CODE FOR RESPONSIVE TABLES */
+
+  #ScheduledTasksTable td.center {
+    text-align: left !important;
+  }
+
+  #ScheduledTasksTable .form-select-small {
+    max-width: 250px;
+  }
+
+  .form-bg {
+    padding-top: 20px;
+  }
+
+ .mobile-first-child {
+    margin-top: 15px !important;
+  }
+
+  .accordion-body {
+    padding: 30px 10px;
+  }
+
+  #view-current-stats {
+    display: none;
+  }
+
+  .hide-on-mobile {
+    display: none !important;
+  } 
+
+  .hide-on-mobile-flex {
+    display: none !important;
+  }
+
+  .hide-on-mobile-table-footer-group {
+    display: none !important;
+  }
+
+  .hide-on-desktop {
+    display: block !important;
+  } 
+
+  .center-on-desktop {
+    text-align: left;
+  }
+
+  #CreateTemplateFormGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    row-gap: 0;
+  }
+
+  #ListingIDsTable > tbody > tr > td:nth-child(4) {
+    text-align: left;
+  }
+
+  #ListingIDsTable > tbody > tr > td:nth-child(4) label {
+    font-family: Futura Bk Bt;
+    margin-left: 5px;
+  }
+
+  #ClaimIfOpen, #AssignedTo {
+    float: none;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+}
+
+
+@media (max-width: 1399.99px) {
+
+  #BigCalendarWrapper {
+    display: none;
+  }
+
+  #Calendar .top-right-link {
+    letter-spacing: normal;
+    margin-bottom: 20px;
+  }
+
+  .message-subject {
+    width: auto;
+    display: block;
+  }
+
+  .container-message-template {
+    border-left: none;
+    border-right: none;
+    margin-left: 0 !important;
+    margin-right: 0;
+    grid-template-columns: 100%;
+    grid-template-rows: auto;
+  }
+
+  #UserDetails .greybox, #UnitDetails .greybox, #PropertyDetails .greybox {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  #SearchLeadsForm {
+    letter-spacing: normal;
+  }
+
+  .msg-template-form {
+    padding: 20px 10px;
+    border-right: none;
+    border-bottom: 2px solid #12487f;
+  }
+  
+  .msg-template-help {
+    padding: 20px 10px;
+  } 
+
+  .trash-can {
+    padding-top: 0;
+    margin-top: -25px;
+    text-align: right;
+  }
+
+  .role-dropdown {
+    margin-top: -25px;
+  }
+
+  #PropertyOverview {
+    margin-bottom: 15px;
+  }
+
+  .hide-on-large-desktop {
+    display: block;
+  }
+
+}
+
+
+@media (max-width: 399.99px) {
+  ul#crumbs ul.dropdown-menu {
+    top: 240px;
+  }
+}
+
+
+
+
+
+
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~ MIN-WIDTH STYLES FOR THE VARIOUS BREAKPOINTS START HERE ~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+@media (min-width: 576px) { 
+
+  .hide-on-mobile {
+    display: block;
+  } 
+
+  .hide-on-mobile-flex {
+    display: flex;
+  }
+
+  .hide-on-mobile-table {
+    display: table-cell;
+  }
+
+  .hide-on-mobile-table-footer-group {
+    display: table-footer-group;
+  }
+
+  .hide-on-desktop {
+    display: none;
+  } 
+
+  .center-on-desktop {
+    text-align: center;
+  }
+
+  .modal-dialog {
+    max-width: 750px;
+  }
+
+  #RoommatesMobileLink, #PotentialUnitsMobileLink {
+    display: none;
+  }
+
+  #RoommatesContent, #PotentialUnitsContent {
+    display: block;
+  }
+
+}
+
+
+@media (min-width: 768px) { 
+
+  .container-fluid {
+    padding: 30px;
+  }
+
+  .dropdown-toggle::after {
+    display: inline-block;
+    vertical-align: 0.255em;
+    content: "";
+    border: none;
+  }
+
+}
+
+
+@media (min-width: 992px) { 
+
+  #select-property {
+    max-width: 343px;
+  }  
+
+  .h1, h1 {
+    font-size: 35px;
+  }
+  
+  .h2, h2 {
+    font-size: 29px;
+  }
+  
+  .h3, h3 {
+    font-size: 24px;
+  }
+  
+  .h4, h4 {
+    font-size: 22px;
+  }
+  
+  .h5, h5 {
+    font-size: 18px;
+  }
+
+  #header-property {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* FOOTER STARTS HERE */
+  .footer {
+    height: 40px;
+    padding-top: 10px;
+  }
+
+  .footer .footer-icons {
+    display: inline-block;
+  }
+
+  #customer-support-form-container {
+    max-width: 622px;
+  }
+
+  .top-right-link, #view-current-stats {
+    float: right;
+    margin-top: -50px;
+    width: auto;
+  }
+
+  .responsiveTable .table-bordered td:last-child {
+    padding-bottom: 0;
+  }
+
+}
+
+
+@media (min-width: 1279px) { 
+
+  .show-on-mobile {
+    display: none;
+  }
+  
+  .show-on-desktop {
+    display: block;
+  }
+
+  #CreateTemplateFormGrid .form-group {
+    margin-right: 15px;
+  }
+
+  .responsiveTable .table-bordered td.hide-on-mobile {
+    display: table-cell !important;
+  }
+
+}
+
+@media (min-width: 1400px) { 
+
+  .hide-on-large-desktop {
+    display: none;
+  }
+
+}

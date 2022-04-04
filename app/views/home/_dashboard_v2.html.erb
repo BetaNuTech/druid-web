@@ -1,0 +1,74 @@
+<h1>
+  Unclaimed Leads
+  <span id="num-unclaimed-leads" class="italic">
+    (<%= @dashboard_service.unclaimed_leads.count %>)
+  </span>
+</h1>
+
+<div id="view-current-stats">
+
+</div>
+<div class="row">
+  <div class="co-xxl-9">
+    <div class="responsiveTable">
+      <table class="table table-bordered table-hover" id="UnclaimedLeadsTable">
+        <thead>
+          <th>Date/Time</th>
+          <th>Name</th>
+          <th>Contact Info</th>
+          <th></th>
+          <th>Assign</th>
+        </thead>
+        <tbody>
+          <% @dashboard_service.unclaimed_leads.each do |lead| %>
+            <tr>
+              <td>
+                <span class="show-on-mobile bold">
+                  Date/Time:<br/>
+                </span>
+                <%= short_datetime lead.created_at %>
+              </td>
+              <td>
+                <span class="show-on-mobile bold">
+                  Name:<br/>
+                </span>
+                <%= link_to(lead.name, lead_path(lead), class: 'lead-urgent') %>
+              </td>
+              <td>
+                <span class="show-on-mobile bold">
+                  Contact Info:<br/>
+                </span>
+                <% if lead.phone1 %>
+                  <%= number_to_phone lead.phone1 %><br/>
+                <% end %>
+                <% if lead.email %>
+                  <%= lead.email %><br/>
+                <% end %>
+              </td>
+              <td class="center">
+                <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'claim'), method: 'post', local: true ) do %>
+                  <%= submit_tag('CLAIM', class: "btn btn-urgent" ) %>
+                <% end %>
+                <span class="small italic">
+                  <%= duplicate_reference_link(lead) %>
+                </span>
+              </td>
+              <td class="hide-on-mobile">
+                <!-- TODO Assign lead dropdown --> 
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="co-xxl-3">
+
+  </div>
+</div>
+<div id="unclaimed_leads">
+  <%= render partial: 'unclaimed_leads' %>
+</div>
+<div id="active_leads">
+  <%= render partial: 'active_leads' %>
+</div>

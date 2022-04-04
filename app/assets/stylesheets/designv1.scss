@@ -5,6 +5,8 @@
  * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
  * vendor/assets/stylesheets directory can be referenced here using a relative path.
  *
+ *= require bootstrap/dist/css/bootstrap
+ *= require simple_calendar
  *= require_tree ./v1/
  *= require_self
  */

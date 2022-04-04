@@ -1,0 +1,9 @@
+//= require rails-ujs
+//= require turbolinks
+//= require jquery/dist/jquery
+//= require jquery-ui-dist/jquery-ui
+//= require bootstrap/dist/js/bootstrap
+//= require ckeditor/init*/
+//= require nested_form_fields
+//= require_tree ./ckeditor/ 
+//= require_tree ./v1/ 
