@@ -165,7 +165,7 @@ module Statistics
       end
 
       def self.generate_property_leadspeed(property:, resolution: 60, time_start: , time_end: nil)
-        return true if property.users.active.empty?
+        return true if (!property.active? || property.users.active.empty?)
 
         time_end ||= DateTime.current
 
