@@ -93,7 +93,7 @@ module Leads
       end
 
       def can_leave_waitlist
-        waitlist.joins("inner join lead_preferences ON lead_preferences.lead_id = leads.id INNER JOIN unit_types ON lead_preferences.unit_type_id = unit_types.id INNER JOIN units on units.unit_type_id = unit_types.id").
+        waitlist.joins("inner join properties on properties.id = leads.property_id AND properties.active = true inner join lead_preferences ON lead_preferences.lead_id = leads.id INNER JOIN unit_types ON lead_preferences.unit_type_id = unit_types.id INNER JOIN units on units.unit_type_id = unit_types.id").
           where(
             "(units.occupancy = 'vacant' AND (units.lease_status = 'available' OR units.lease_status = 'lease_reserved') OR (units.occupancy = 'occupied' AND (units.lease_status = 'on_notice' OR units.lease_status = 'lease_reserved')))"
         )

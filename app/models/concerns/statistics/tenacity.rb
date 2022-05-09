@@ -133,6 +133,8 @@ module Statistics
       # Default 'resolution' is one month
       # Default time_start is one year
       def self.generate_property_tenacity(property:, resolution: nil, time_start: nil, time_end: nil)
+        return true if !property.active?
+
         user_ids = property.property_users.pluck(:user_id)
         user_ids_sql = "(" + user_ids.map {|uid| "'#{uid}'"}.join(', ') + ")"
         resolution ||= 1.month.to_i / 60

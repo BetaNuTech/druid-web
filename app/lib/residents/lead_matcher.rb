@@ -18,6 +18,8 @@ module Residents
 
     def matching_active_leads
       join_sql = <<~SQL
+        INNER JOIN properties ON
+          leads.property_id = properties.id AND properties.active = true
         INNER JOIN resident_details ON
         ((leads.phone1 IS NOT NULL AND leads.phone1 = resident_details.phone1) OR
          (leads.phone2 IS NOT NULL AND leads.phone2 = resident_details.phone2) OR

@@ -8,10 +8,11 @@ module Leads
 
       def self.set_priorities
         errors = []
-        skope = self.where(state: ['prospect', 'showing', 'application'])
+        skope = self.includes(:property).
+          where( properties: { active: true},
+                 leads: { state: ['prospect', 'showing', 'application'] } )
         skope.find_in_batches do |leads_to_prioritize|
           leads_to_prioritize.each do |lead|
-            next unless lead.member_of_an_active_property?
             begin
               old_priority = lead.priority
               lead.calculate_priority
