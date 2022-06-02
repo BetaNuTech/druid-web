@@ -57,7 +57,6 @@ class ApplicationController < ActionController::Base
     property_id = params[:property_id] || cookies[:current_property] || current_user&.properties&.first || 0
     property = Property.where(id: property_id).first ||
       PropertyListing.active.where(code: property_id).first&.property
-    raise ActiveRecord::RecordNotFound unless property.present?
     @property = @current_property = property
   end
 
