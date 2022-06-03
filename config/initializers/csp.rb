@@ -2,7 +2,7 @@ SecureHeaders::Configuration.default do |config|
   config.cookies = {
     secure: true,
     httponly: true,
-    samesite: { strict: true }
+    samesite: { strict: false }
   }
   config.x_content_type_options = "nosniff"
   config.x_xss_protection = "1; mode=block"
