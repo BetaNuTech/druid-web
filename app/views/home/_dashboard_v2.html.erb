@@ -6,10 +6,11 @@
 </h1>
 
 <div id="view-current-stats">
-
+  [TODO] View Current Stats
 </div>
+
 <div class="row">
-  <div class="co-xxl-9">
+  <div class="col-xxl-9">
     <div class="responsiveTable">
       <table class="table table-bordered table-hover" id="UnclaimedLeadsTable">
         <thead>
@@ -24,16 +25,56 @@
         </tbody>
       </table>
     </div>
+    <div id="active_leads">
+      <%= render partial: 'active_leads' %>
+    </div>
   </div>
-  <div class="co-xxl-3">
 
+  <div class="col-xxl-3">
+    <div id="MotivationalIcons">
+      <div>
+        <div class="motivational-icon">
+          <img src="/icons/icon-leadspeed.svg" height="54"><br>
+          <span id="LeadSpeedScore">A</span>
+        </div>
+      </div>
+      <div>
+        <div class="motivational-icon">
+          <img src="/icons/icon-tenacity.svg" height="54"><br>
+          <span id="LeadSpeedScore">9.0</span>
+        </div>
+      </div>
+      <div>
+        <div class="motivational-icon">
+          <!--show the div below if the user has achieved Star status-->
+          <div id="StarDiv">
+            <img src="/icons/icon-star.svg" height="54"><br>
+            <span id="StarText">You're a Star!</span>
+          </div>
+          <!--show the div below if the user has NOT achieved Star status-->
+          <div id="NotStarDiv">
+            <img src="/icons/icon-star.svg" height="54"><br>
+            <span id="NotStarText">Future Star</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="motivational-icon">
+          <!--show the div below if the user has achieved Superstar status-->
+          <div id="SuperstarDiv">
+            <img src="/icons/icon-superstar.svg" height="54"><br>
+            <span id="SuperstarText">SUPER STAR!</span>
+          </div>
+          <!--show the div below if the user has NOT achieved Superstar status-->
+          <div id="NotSuperstarDiv">
+            <img src="/icons/icon-superstar.svg" height="54"><br>
+            <span id="NotSuperstarText">Future Super Star</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
-<div id="unclaimed_leads">
-  <%= render partial: 'unclaimed_leads' %>
-</div>
-<div id="active_leads">
-  <%= render partial: 'active_leads' %>
 </div>
 
 <script type="text/javascript">

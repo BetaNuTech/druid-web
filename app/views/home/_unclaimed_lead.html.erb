@@ -23,8 +23,10 @@
     <% end %>
   </td>
   <td class="center">
-    <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'claim'), method: 'post', local: true ) do %>
-      <%= submit_tag('CLAIM', class: "btn btn-urgent" ) %>
+    <% if policy(lead).change_user? %>
+      <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'claim'), method: 'post', local: true ) do %>
+        <%= submit_tag('CLAIM', class: "btn btn-urgent" ) %>
+      <% end %>
     <% end %>
     <span class="small italic">
       <%= duplicate_reference_link(lead) %>
