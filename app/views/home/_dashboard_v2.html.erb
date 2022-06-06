@@ -20,44 +20,7 @@
           <th>Assign</th>
         </thead>
         <tbody>
-          <% @dashboard_service.unclaimed_leads.each do |lead| %>
-            <tr>
-              <td>
-                <span class="show-on-mobile bold">
-                  Date/Time:<br/>
-                </span>
-                <%= short_datetime lead.created_at %>
-              </td>
-              <td>
-                <span class="show-on-mobile bold">
-                  Name:<br/>
-                </span>
-                <%= link_to(lead.name, lead_path(lead), class: 'lead-urgent') %>
-              </td>
-              <td>
-                <span class="show-on-mobile bold">
-                  Contact Info:<br/>
-                </span>
-                <% if lead.phone1 %>
-                  <%= number_to_phone lead.phone1 %><br/>
-                <% end %>
-                <% if lead.email %>
-                  <%= lead.email %><br/>
-                <% end %>
-              </td>
-              <td class="center">
-                <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'claim'), method: 'post', local: true ) do %>
-                  <%= submit_tag('CLAIM', class: "btn btn-urgent" ) %>
-                <% end %>
-                <span class="small italic">
-                  <%= duplicate_reference_link(lead) %>
-                </span>
-              </td>
-              <td class="hide-on-mobile">
-                <!-- TODO Assign lead dropdown --> 
-              </td>
-            </tr>
-          <% end %>
+          <%= render collection: @dashboard_service.unclaimed_leads.limit(10), partial: 'unclaimed_lead', as: :lead %>
         </tbody>
       </table>
     </div>
@@ -72,3 +35,16 @@
 <div id="active_leads">
   <%= render partial: 'active_leads' %>
 </div>
+
+<script type="text/javascript">
+  $(document).on('turbolinks:load', function() {
+    $('form.lead-assignment select.form-select').on('change', function(e){
+      var submit_buttons = $(e.target.parentElement).find('input[type=submit]')
+      if (e.target.selectedIndex > 0) {
+        submit_buttons.show()
+      } else {
+        submit_buttons.hide()
+      }
+    })
+  })
+</script>

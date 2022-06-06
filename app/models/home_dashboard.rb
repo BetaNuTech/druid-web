@@ -1,12 +1,16 @@
 class HomeDashboard
-  attr_reader :current_user, :params
-  def initialize(current_user:, params:)
+  attr_reader :current_user, :params, :current_property
+
+  def initialize(current_user:, current_property: nil, params:)
     @current_user = current_user
+    @current_property = current_property || user.properties.first
     @params = params
   end
 
   def unclaimed_leads
-    Lead.for_agent(current_user).in_progress.is_lead
+    return Lead.where('1=0') unless @current_property.present?
+
+    @current_property.leads.open
   end
 
   def my_leads

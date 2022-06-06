@@ -14,7 +14,7 @@ class HomeController < ApplicationController
     @limit_leads = [ ( params[:limit_leads] || 5 ).to_i,  @open_leads.count ].min
 
     #v2 logic
-    @dashboard_service = HomeDashboard.new(current_user: current_user, params: params)
+    @dashboard_service = HomeDashboard.new(current_user: current_user, current_property: @current_property, params: params)
     @assigner = Leads::AgentAssigner.new( user: current_user, property: current_property)
   end
 

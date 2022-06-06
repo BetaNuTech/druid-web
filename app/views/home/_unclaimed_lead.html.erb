@@ -1,0 +1,42 @@
+<tr id="unclaimed-lead-<%= lead.id %>">
+  <td>
+    <span class="show-on-mobile bold">
+      Date/Time:<br/>
+    </span>
+    <%= short_datetime lead.created_at %>
+  </td>
+  <td>
+    <span class="show-on-mobile bold">
+      Name:<br/>
+    </span>
+    <%= link_to(lead.name, lead_path(lead), class: 'lead-urgent') %>
+  </td>
+  <td>
+    <span class="show-on-mobile bold">
+      Contact Info:<br/>
+    </span>
+    <% if lead.phone1 %>
+      <%= number_to_phone lead.phone1 %><br/>
+    <% end %>
+    <% if lead.email %>
+      <%= lead.email %><br/>
+    <% end %>
+  </td>
+  <td class="center">
+    <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'claim'), method: 'post', local: true ) do %>
+      <%= submit_tag('CLAIM', class: "btn btn-urgent" ) %>
+    <% end %>
+    <span class="small italic">
+      <%= duplicate_reference_link(lead) %>
+    </span>
+  </td>
+  <td class="hide-on-mobile">
+    <%= form_tag('/leads/mass_assign', remote: true, class: 'lead-assignment') do%>
+      <%= hidden_field_tag "assignments[][lead_id]", lead.id %>
+      <%= select_tag "assignments[][agent_id]",
+                      options_from_collection_for_select(lead&.property&.users_available_for_lead_assignment||[], 'id', 'name', lead.user&.id),
+                      { include_blank: '- Select employee -', class: 'form-select' } %>
+                    <%= submit_tag('OK', id: "submit-assignment-#{lead.id}", class: 'form-select bg-info', style: 'display: none;') %>
+    <% end %>
+  </td>
+</tr>

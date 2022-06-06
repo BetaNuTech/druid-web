@@ -108,6 +108,12 @@ module Leads
       return @all_leads
     end
 
+    def assigned_leads
+      return Lead.where('1=0') unless @processed
+
+      Lead.find @last_assignments.map{|a| a.lead.id}
+    end
+
     private
 
     def continue

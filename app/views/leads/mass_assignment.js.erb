@@ -1,0 +1,3 @@
+<% @assigner.assigned_leads.each do |lead | %>
+  $("#unclaimed-lead-<%= lead.id %>").remove()
+<% end %>
