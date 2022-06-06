@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   root to: redirect('/users/sign_in')
 
   get 'v2', to: 'home#design2'
+  
+  get '/home', to: 'home#dashboard'
 
   namespace :api do
     namespace :v1 do
