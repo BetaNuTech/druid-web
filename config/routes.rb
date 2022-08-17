@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     mount DelayedJobWeb, at: "/delayed_job"
   end
 
-  devise_for :users, controllers: { sessions: 'users/sessions',
+  devise_for :users, path: 'auth', controllers: { sessions: 'users/sessions',
                                     confirmations: 'users/confirmations',
                                     unlocks: 'users/unlocks',
                                     passwords: 'users/passwords' }
