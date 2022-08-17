@@ -9,6 +9,7 @@ require_relative './forrent_dot_com_parser'
 require_relative './hotpads_parser'
 require_relative './lease_labs_dot_com_parser'
 require_relative './lineupsio_parser'
+require_relative './loopnet_parser'
 require_relative './rent_dot_com_parser'
 require_relative './rentable_parser'
 require_relative './rentcafe_parser'
@@ -36,7 +37,8 @@ module Leads
         HotpadsParser, # Goes before Zillow
         ZillowParser,
         ForrentDotComParser,
-        ZumperParser
+        ZumperParser,
+        LoopnetParser
       ]
 
       class Parser
@@ -57,7 +59,7 @@ module Leads
           begin
             PARSERS.detect{|p| p.match?(data)} || NullParser
           rescue => e
-            note_message = "CloudMailin Lead Parser Error detecting lead source parser:\n" + e.backtrace
+            note_message = "CloudMailin Lead Parser Error detecting lead source parser:\n" + e.backtrace.join("\n")
             Leads::Creator.create_event_note(message: note_message, error: true)
             NullParser
           end
