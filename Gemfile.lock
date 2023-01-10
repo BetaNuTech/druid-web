@@ -136,7 +136,7 @@ GEM
     crass (1.0.6)
     css_parser (1.13.0)
       addressable
-    dalli (2.7.11)
+    dalli (3.2.3)
     date (3.3.3)
     debug_inspector (1.1.0)
     delayed_job (4.1.11)
@@ -546,7 +546,7 @@ DEPENDENCIES
   ckeditor (~> 4.3)
   colorize (~> 0.8)
   connection_pool (~> 2.2)
-  dalli (~> 2.7)
+  dalli (~> 3.2)
   delayed_job_active_record
   delayed_job_web
   derailed_benchmarks (~> 1.8)
