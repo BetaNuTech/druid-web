@@ -191,7 +191,8 @@ class ScheduledActionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def scheduled_action_params
-      params.require(:scheduled_action).permit(policy(@scheduled_action || ScheduledAction).allowed_params)
+      valid_params = policy(@scheduled_action || ScheduledAction).allowed_params
+      params.require(:scheduled_action).permit(*valid_params)
     end
 
     def new_scheduled_action_params

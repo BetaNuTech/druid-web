@@ -28,5 +28,6 @@ module BlueskyWeb
 
     config.active_job.queue_adapter = :delayed_job
     config.action_view.sanitized_allowed_attributes = ['href', 'title', 'style']
+    config.active_record.use_yaml_unsafe_load = true
   end
 end
