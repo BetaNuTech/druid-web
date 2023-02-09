@@ -27,6 +27,8 @@ FactoryBot.define do
     title { Faker::Name.prefix }
     first_name { Faker::Name.first_name + rand(10000).to_s }
     last_name{ Faker::Name.last_name  + rand(10000).to_s}
+    company { Faker::Company.name }
+    company_title { Faker::Job.title }
     referral {%w{newspaper walk-in call friend}[rand(4)]}
     state { ::Lead.aasm.states.map(&:name)[rand(::Lead.aasm.states.count - 1)] }
     notes { Faker::Lorem.sentence }

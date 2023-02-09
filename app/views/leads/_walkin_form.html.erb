@@ -33,6 +33,17 @@
 
   <div class="row">
     <div class="col-md-6 form-group">
+      <%= form.label :company %>
+      <%= form.text_field :company, id: :lead_company, class: "form-control" %>
+    </div>
+    <div class="col-md-6 form-group">
+      <%= form.label :company_title, 'Title' %>
+      <%= form.text_field :company_title, id: :lead_company_title, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 form-group">
       <%= form.label :phone1, 'Phone Number (primary)' %>
       <%= form.telephone_field :phone1, class: "form-control" %>
     </div>
