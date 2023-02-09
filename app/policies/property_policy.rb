@@ -72,16 +72,11 @@ class PropertyPolicy < ApplicationPolicy
     valid_property_user_params = [ {property_users_attributes: PropertyUser::ALLOWED_PARAMS}]
     case user
     when ->(u) { u.administrator? }
-      # NOOP all valid fields allowed
+      valid_property_params += [ Property::APPSETTING_PARAMS ]
     when ->(u) { u.corporate? }
-      # NOOP all valid fields allowed
+      valid_property_params += [ Property::APPSETTING_PARAMS ]
     when ->(u) { u.manager? }
-      # NOOP all valid fields allowed
-    when ->(u) { u.user? }
-      valid_property_params = []
-      valid_listing_params = []
-      valid_phone_number_params = []
-      valid_property_user_params = []
+      valid_property_params += [ Property::APPSETTING_PARAMS ]
     else
       valid_property_params = []
       valid_listing_params = []

@@ -20,3 +20,28 @@
     </div>
   </div>
 </fieldset>
+
+<fieldset></fieldset> 
+  <legend>
+    Bluesky Application Settings
+    <a href="#property_appsettings" data-toggle="collapse" aria-expanded="false" aria-controls="property_appsettings" class="btn btn-xs btn-info">
+      More...
+    </a>
+  </legend>
+  <%= fields_for 'property[appsettings]', OpenStruct.new(@property.appsettings) do |appsettings| %>
+  <div class="collapse" id="property_appsettings">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-row">
+          <% Property.managed_settings.each do |setting| %>
+            <div class="col-xs-6 col-md-4 form-group form-check">
+              <%= appsettings.check_box setting, class: 'form-check-input' %>
+              <%= appsettings.label setting, class: 'form-check-label' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    </div>
+  <% end %>
+</fieldset>

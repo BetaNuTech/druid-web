@@ -36,6 +36,7 @@
 
 class Property < ApplicationRecord
   ### Class Concerns/Extensions
+  include Properties::Appsettings
   include Properties::Team
   include Properties::Users
   include Properties::PhoneNumbers
