@@ -149,7 +149,7 @@ module Leads
 
         event :claim do
           transitions from: [ :open, :exresident, :abandoned ], to: :prospect,
-            after: ->(*args) { event_set_user(*args); force_complete_all_tasks(*args); request_sms_communication_authorization }
+            after: ->(*args) { after_claim(*args) }
         end
 
         event :deny do
@@ -299,6 +299,18 @@ module Leads
         create_lead_transition
         create_lead_transition_note
         create_scheduled_actions # Leads::EngagementPolicy#create_scheduled_actions
+      end
+
+      def after_claim(user=nil)
+        event_set_user(user)
+        force_complete_all_tasks(user)
+        if property&.setting_enabled?(:lead_auto_welcome)
+          request_sms_communication_authorization
+        else
+          message = "*** Lead[#{id}] Automatic SMS authorization request not sent due to disabled 'lead_auto_welcome' Property Appsetting"
+          Rails.logger.info message
+          return false
+        end
       end
 
       def set_conversion_date
