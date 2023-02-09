@@ -31,16 +31,18 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6 form-group">
-      <%= form.label :company %>
-      <%= form.text_field :company, id: :lead_company, class: "form-control" %>
+  <% if lead.property.setting_enabled?(:lead_company_information) %>
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <%= form.label :company %>
+        <%= form.text_field :company, id: :lead_company, class: "form-control" %>
+      </div>
+      <div class="col-md-6 form-group">
+        <%= form.label :company_title, 'Title' %>
+        <%= form.text_field :company_title, id: :lead_company_title, class: "form-control" %>
+      </div>
     </div>
-    <div class="col-md-6 form-group">
-      <%= form.label :company_title, 'Title' %>
-      <%= form.text_field :company_title, id: :lead_company_title, class: "form-control" %>
-    </div>
-  </div>
+  <% end %>
 
   <div class="row">
     <div class="col-md-6 form-group">

@@ -55,6 +55,7 @@
         </div>
       </div>
 
+    <% if lead.property.setting_enabled?(:lead_company_information) %>
       <div class="row">
         <div class="col-md-6 form-group">
           <%= form.label :company %>
@@ -65,6 +66,7 @@
           <%= form.text_field :company_title, id: :lead_company_title, class: "form-control" %>
         </div>
       </div>
+    <% end %>
 
       <div class="row">
         <div class="col-md-12 form-group">
