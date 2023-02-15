@@ -128,7 +128,7 @@ if User.count == 0
   agent = User.new(email: agent_email, password: agent_password, password_confirmation: agent_password)
   if agent.save
     agent.confirm
-    agent.role = Role.agent
+    agent.role = Role.property
     agent.save!
     puts "(password: '#{agent_password}') [OK]".green
   else
