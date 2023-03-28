@@ -17,4 +17,8 @@ class StatPolicy < ApplicationPolicy
   def report_csv?
     user.admin?
   end
+
+  def lead_engagement_csv?
+    user.admin?
+  end
 end

@@ -13,6 +13,15 @@ module Properties
 
       serialize :appsettings
 
+      ### Helper methods
+
+      def lead_auto_welcome?
+        setting_enabled?(:lead_auto_welcome)
+      end
+
+
+      ### Core Logic
+
       def setting_enabled?(setting)
         key = setting.to_s
         self.appsettings ||= {}
@@ -47,6 +56,9 @@ module Properties
       def appsettings_with_missing
         Property.negative_default_settings.merge(appsettings)
       end
+
+
+
     end
 
     class_methods do
