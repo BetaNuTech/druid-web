@@ -56,6 +56,11 @@ class LeadEngagementReport
   def report(force=false)
     return @report if @report.present? && !force
 
+    base_url = "%{protocol}://%{host}/leads/" % { 
+      protocol: ENV.fetch('APPLICATION_PROTOCOL', 'https'),
+      host: ENV.fetch('APPLICATION_HOST','www.blue-sky.app')
+    }
+
     @report = lead_scope.includes(:property, :user).all.inject([]) do |memo, lead|
       contacts = lead.contact_events.where(article_type: %w{Message LeadAction})
       total_contacts = contacts.count
@@ -70,7 +75,8 @@ class LeadEngagementReport
         messages_sent: messages_sent,
         total_contacts: total_contacts,
         lead_speed: lead.lead_speed,
-        tenacity: ( lead.tenacity.round(1) rescue 0.0 )
+        tenacity: ( lead.tenacity.round(1) rescue 0.0 ),
+        lead_url: base_url + lead.id
       }
 
       memo
