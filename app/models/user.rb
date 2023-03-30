@@ -68,8 +68,11 @@ class User < ApplicationRecord
   end
 
   def deactivate!
-    self.deactivated = true
-    self.save
+    transaction do
+      assignments.destroy_all
+      update(deactivated: true)
+    end
+    reload
   end
 
   def active_for_authentication?

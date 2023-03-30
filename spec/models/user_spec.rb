@@ -177,6 +177,12 @@ RSpec.describe User, type: :model do
       expect(user.property_role(property2)).to eq(property2_role)
       expect(user.property_role(property3)).to be_nil
     end
+
+    it "removes assignments on user deactivation" do
+      expect(user.property_role).to eq(property1_role)
+      user.deactivate!
+      expect(user.property_role).to be_nil
+    end
   end
 
 
