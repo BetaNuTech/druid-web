@@ -66,7 +66,7 @@ class MarketingSourcePolicy < ApplicationPolicy
   def allowed_properties
     return case user
     when -> (u) { u.admin? }
-      Property.order(name: :asc)
+      Property.active.order(name: :asc)
     when -> (u) { u.manager? }
       #user.managed_properties.order(name: :asc)
       []
