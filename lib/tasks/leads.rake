@@ -30,25 +30,26 @@ namespace :leads do
 
       process_leads = ->(referrals, new_referral) { Lead.where(referral: referrals).update_all(referral: new_referral) }
 
-      process_leads.call(['360', '360\'s', '360\'s Tours', '360 Tours'],'360\'s Tours')
-      process_leads.call(['abodo', 'Abodo', 'Abodo Email', 'Abodo Phone','Rentable_Abodo'],'Abodo.com')
-      process_leads.call(['Apartmentlist', 'Apartment List', 'Apartmentlist.com', 'Apartment List Phone'],'ApartmentList.com')
-      process_leads.call(['Apartments.com Email'],'Apartments.com')
-      process_leads.call(['Craigslist'],'CraigsList.com')
-      process_leads.call(['Drive By'],'Drive-by')
-      process_leads.call(['LeadMail'],'Lead Mail')
-      process_leads.call(['Null'],'None')
-      process_leads.call(['Facebook', 'facebook', 'Facebook Email', 'Facebook Phone', 'FaceBook.com'],'Facebook.com')
-      process_leads.call(['Forrent','For Rent','Forrent.com', 'Apartments.com/ForRent'],'ForRent.com')
-      process_leads.call(['Google','Google search', 'Google Search'],'Google.com')
-      process_leads.call(['Hotpads','HotPads.com'],'Hotpads.com')
-      process_leads.call(['Knoxville Guide'],'KnoxvilleApartmentGuide.com')
-      process_leads.call(['RentPath LeadMail','Rentpath','Rent Path','RentPath','Rentpath.com'],'RentPath.com')
-      process_leads.call(['Resident Referral','Resident'],'Referral')
-      process_leads.call(['Zillow', 'Zillow Email'],'Zillow.com')
-      process_leads.call(['Zumper', 'Zumper Phone'],'Zumper.com')
-      process_leads.call(['Rent.com & ApartmentGuide'], 'Rent.com')
-      process_leads.call(['Rentable'],'Rentable.com')
+      Lead.transaction do
+        process_leads.call(['360', '360\'s', '360\'s Tours', '360 Tours'], '360\'s Tours')
+        process_leads.call(['Apartmentlist', 'Apartment List', 'Apartmentlist.com', 'Apartment List Phone'], 'ApartmentList.com')
+        process_leads.call(['Apartments.com Email'], 'Apartments.com')
+        process_leads.call(['Craigslist'], 'CraigsList.com')
+        process_leads.call(['Drive By'], 'Drive-by')
+        process_leads.call(['LeadMail'], 'Lead Mail')
+        process_leads.call(['Null'], 'None')
+        process_leads.call(['Facebook', 'facebook', 'Facebook Email', 'Facebook Phone', 'FaceBook.com'], 'Facebook.com')
+        process_leads.call(['Forrent','For Rent','Forrent.com', 'Apartments.com/ForRent'], 'ForRent.com')
+        process_leads.call(['Google','Google search', 'Google Search'], 'Google.com')
+        process_leads.call(['Hotpads','HotPads.com'], 'Hotpads.com')
+        process_leads.call(['Knoxville Guide'], 'KnoxvilleApartmentGuide.com')
+        process_leads.call(['RentPath LeadMail','Rentpath','Rent Path','RentPath','Rentpath.com','RentPath.com'], 'Rent.com')
+        process_leads.call(['Resident Referral','Resident'], 'Referral')
+        process_leads.call(['Zillow', 'Zillow Email'], 'Zillow.com')
+        process_leads.call(['Zumper', 'Zumper Phone'], 'Zumper.com')
+        process_leads.call(['Rent.com & ApartmentGuide'], 'Rent.com')
+        process_leads.call(['abodo', 'Abodo', 'Abodo Email', 'Abodo Phone','Rentable_Abodo', 'Abodo.com', 'Rentable/Abodo', 'Rentable'], 'Rentable.com')
+      end
     end
   end
 
@@ -512,5 +513,4 @@ namespace :leads do
       end
     end
   end
-
 end
