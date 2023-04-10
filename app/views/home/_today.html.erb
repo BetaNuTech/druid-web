@@ -11,7 +11,7 @@
       </div>
       <div class="col-xs-6 col-md-6" style="margin-top: 22px;">
         <span style="">
-          <%= link_to("View Calendar", scheduled_actions_path, {class: "btn btn-xs btn-primary"})  %>
+          <%= link_to("View Calendar", scheduled_actions_path(team: true), {class: "btn btn-xs btn-primary"})  %>
         </span>
         <span style="">
           <%= link_to("Schedule a Task", new_scheduled_action_path, {class: "btn btn-xs btn-primary"}) %>

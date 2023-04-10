@@ -13,31 +13,49 @@ class ScheduledActionsController < ApplicationController
   # GET /scheduled_actions.json
   def index
     authorize ScheduledAction
-    @show_all = params[:all].present?
+    @all_tasks = (params[:all] || 'false') == 'true'
+    @team_tasks = (params[:team] || 'false') == 'true'
     skope = nil
     @start_date = (Date.parse(params[:start_date]) rescue Date.current.beginning_of_month)
 
     if @lead
+      # Lead id provide: scope Tasks to that Lead.
       unless LeadPolicy.new(current_user, @lead).show?
         raise Pundit::NotAuthorizedError, "not allowed to view this Lead's Tasks"
       end
       skope = @lead.scheduled_actions
     elsif @user
+      # User id provided: scope Tasks to that User
       unless UserPolicy.new(current_user, @user).show?
         raise Pundit::NotAuthorizedError, "not allowed to view this User's Tasks"
       end
       skope = @user.scheduled_actions
-    else
-      if @current_property && @show_all
-        skope = policy_scope(ScheduledAction.for_property(@current_property))
+    elsif @current_property
+      if @team_tasks
+        skope = policy_scope(ScheduledAction.for_property(@current_property).where(target_type: 'Lead'))
       else
         skope = current_user.scheduled_actions
       end
+    else
+      if @team_tasks
+        # Show Lead Tasks for all users assigned to the current user's properties
+        user_ids = PropertyUser.where(property_id: current_user.property_ids).pluck(:user_id).uniq
+        skope = ScheduledAction.where(user_id: user_ids, target_type: 'Lead')
+      else
+        # Show only user Tasks
+        skope = current_user.scheduled_actions
+      end
     end
-    skope = skope.where("scheduled_actions.created_at > ?", @start_date - 1.month)
 
+    unless @all_tasks
+      skope = skope.includes(:lead_action).
+        where(lead_actions: {name: LeadAction::SHOWING_ACTION_NAME})
+    end
+
+    skope = skope.where("scheduled_actions.created_at > ?", @start_date - 1.month)
     @scheduled_actions = skope.includes(:schedule).valid
   end
+
 
   # GET /scheduled_actions/1
   # GET /scheduled_actions/1.json
@@ -181,7 +199,7 @@ class ScheduledActionsController < ApplicationController
 
     def set_user
       user_id = params[:user_id]
-      @user = user_id.present? ? User.find(user_id) : nil
+      @user = user_id.present? ? User.active.find(user_id) : nil
     end
 
     def set_lead
