@@ -52,6 +52,12 @@ class LeadSearchLead extends React.Component {
         </div>
         <div className={Style.contact} >
           <span className={Style.lead_name}>
+            {
+              this.props.data.vip == true ?
+              <React.Fragment>
+                <span className={Style.vip_icon}><span className="glyphicon glyphicon-heart" aria-hidden="true"> </span></span>
+              </React.Fragment> : <span></span>
+            }
             <a href={this.props.data.web_url}>
               {this.props.data.title}&nbsp;
               {this.props.data.first_name}&nbsp;

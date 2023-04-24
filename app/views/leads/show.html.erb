@@ -58,8 +58,9 @@
 
     <div class="contact" >
       <span class="lead_name">
+        <span style="color: red;"><%= glyph(:heart) if @lead.vip? %></span>
         <%= @lead.name %> <%= @lead.is_lead? ? '' : "(Not a Lead: #{@lead.classification&.capitalize})" %>
-      <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-xs btn-primary" %>
+        <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-xs btn-primary" %>
       </span>
       <br/>
       <span>

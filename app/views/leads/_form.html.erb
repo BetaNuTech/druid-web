@@ -33,6 +33,13 @@
             <%= form.select :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, lead.classification), {}, { class: "form-control" } %>
           </div>
         <% end %>
+        <div class="col-md-2 form-group">
+          <%= form.label :vip, style: 'font-size: 1.2em;' do %>
+           <span style="color: red;"><%= glyph(:heart) %></span>
+            VIP
+          <% end %>
+          <%= form.check_box :vip, id: :lead_vip, class: 'form-check-input' %>
+        </div>
       </div>
 
 

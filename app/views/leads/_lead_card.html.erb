@@ -1,5 +1,6 @@
 <div class="lead_card">
   <span class="lead">
+    <span style="color: red;"><%= glyph(:heart) if lead.vip? %></span>
     <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span>
   </span>
   <% if lead.property.present? %>

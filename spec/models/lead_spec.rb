@@ -37,6 +37,7 @@
 #  follow_up_at        :datetime
 #  company             :string
 #  company_title       :string
+#  vip                 :boolean          default(FALSE)
 #
 
 require 'rails_helper'

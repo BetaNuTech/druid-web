@@ -37,8 +37,9 @@ class SearchSelect extends React.Component {
   }
 
   isAllOptionsSelected(selected) {
+
     let allOptions = this.props.search.Filters[this.props.filter].options
-    return(allOptions.length == selected.length)
+    return(allOptions.length != 1 && allOptions.length == selected.length)
   }
 
   isPending() {

@@ -37,6 +37,7 @@
 #  follow_up_at        :datetime
 #  company             :string
 #  company_title       :string
+#  vip                 :boolean          default(FALSE)
 #
 
 class Lead < ApplicationRecord
@@ -57,7 +58,7 @@ class Lead < ApplicationRecord
   include Leads::ContactEvents
 
   ### Constants
-  ALLOWED_PARAMS = [:lead_source_id, :remoteid, :property_id, :title, :first_name, :middle_name, :last_name, :company, :company_title, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at, :show_unit, { referrals_attributes: LeadReferral::ALLOWED_PARAMS }]
+  ALLOWED_PARAMS = [:lead_source_id, :remoteid, :property_id, :title, :first_name, :middle_name, :last_name, :company, :company_title, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone1_type, :phone1_tod, :phone2, :phone2_type, :phone2_tod, :dob, :id_number, :id_state, :email, :fax, :user_id, :priority, :transition_memo, :classification, :follow_up_at, :show_unit, :vip, { referrals_attributes: LeadReferral::ALLOWED_PARAMS }]
   PRIVILEGED_PARAMS = [:lead_source_id, :user_id, :state, :id, :property_id]
   PHONE_TYPES = ["Cell", "Home", "Work"]
   PHONE_TOD = [ "Any Time", "Morning", "Afternoon", "Evening"]
@@ -98,6 +99,7 @@ class Lead < ApplicationRecord
     join_sql = "INNER JOIN properties on leads.property_id = properties.id INNER JOIN teams on properties.team_id = teams.id"
     joins(join_sql).where(teams: {id: team.id})
   }
+  scope :vip, -> { where(vip: true) }
 
   ### Validations
   validates :first_name, presence: { message: 'must be provided' }

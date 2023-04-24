@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_09_062348) do
+ActiveRecord::Schema.define(version: 2023_04_24_195853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -286,10 +286,12 @@ ActiveRecord::Schema.define(version: 2023_02_09_062348) do
     t.datetime "follow_up_at"
     t.string "company"
     t.string "company_title"
+    t.boolean "vip", default: false
     t.index ["classification"], name: "index_leads_on_classification"
     t.index ["follow_up_at"], name: "index_leads_on_follow_up_at"
     t.index ["phone1", "phone2", "first_name", "last_name", "email"], name: "lead_dedupe_idx"
     t.index ["priority"], name: "index_leads_on_priority"
+    t.index ["property_id", "state", "vip"], name: "idx_leads_vip"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"
   end

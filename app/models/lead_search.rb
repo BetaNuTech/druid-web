@@ -1,5 +1,5 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date, :bedrooms]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date, :bedrooms, :vip]
   LEAD_TABLE = Lead.table_name
   DEFAULT_PER_PAGE = 10
   MAX_PER_PAGE = 100
@@ -24,13 +24,13 @@ class LeadSearch
 
   def initialize(options={}, skope=Lead, user=nil)
     @default_skope = skope
-    @options = (options || {})
-    @options = @options.to_unsafe_h unless @options.is_a?(Hash)
+    @options = process_options(options)
     @skope = @default_skope
     @filter_applied = false
     @perform_sort = true
     @user = user
   end
+
 
   def collection
     query_skope.skope
@@ -42,6 +42,7 @@ class LeadSearch
       filter_by_referral.
       filter_by_state.
       filter_by_priority.
+      filter_by_vip.
       filter_by_user.
       filter_by_property.
       filter_by_first_name.
@@ -62,7 +63,13 @@ class LeadSearch
   def full_options
     opts = {
       "Filters" => {
-        "_index" => ["Start Date", "End Date", "Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search", "Bedrooms"],
+        "_index" => ["Start Date", "End Date", "Vip", "Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search", "Bedrooms"],
+        "Vip" => {
+          param: "vip",
+          type: "select",
+          values: vip_values,
+          options: [{label: 'Yes', value: 'vip'}, {label: 'No', value: 'notvip' }]
+        },
         "Agents" => {
           param: "user_ids",
           type: "select",
@@ -268,6 +275,25 @@ class LeadSearch
     return self
   end
 
+  def filter_by_vip(vip=nil)
+    vip_options = vip || @options[:vip]
+    vip_options = Array(vip_options) unless vip_options.is_a?(Array)
+    return self if vip_options.blank?
+
+    vip_options.map!(&:to_sym)
+    vip = vip_options.include?(:vip)
+    notvip = vip_options.include?(:notvip)
+
+    # No filter if both are set or both are unset
+    return self if ( vip && notvip ) || ( !vip && !notvip )
+
+    is_vip = vip ? true : !notvip
+
+    @skope = @skope.where(vip: is_vip)
+    @filter_applied = true
+    return self
+  end
+
   def filter_by_user(user_ids=nil)
     user_ids ||= @options[:user_ids]
     if user_ids.present?
@@ -376,6 +402,18 @@ class LeadSearch
 
   private
 
+  def process_options(options)
+    out = (options || {})
+    out = options.to_unsafe_h unless options.is_a?(Hash)
+    out[:vip] = normalize_vip_options(out[:vip])
+    out
+  end
+
+  def normalize_vip_options(options)
+    # TODO
+    options
+  end
+
   def query_sort
     SORT_OPTIONS.fetch(query_sort_by).fetch(query_sort_dir)
   end
@@ -402,6 +440,16 @@ class LeadSearch
   def query_sort_dir
     sort_dir = (Array(@options[:sort_dir]).first || :none).to_sym
     SORT_OPTIONS[query_sort_by].keys.include?(sort_dir) ? sort_dir : DEFAULT_SORT[1]
+  end
+
+  def vip_values
+    vip_options = ( @options[:vip] || [] ).map(&:to_sym)
+    vip = vip_options.include?(:vip)
+    notvip = vip_options.include?(:notvip)
+    [
+      {label: 'Yes', value: (vip ? 'vip' : false)},
+      {label: 'No', value: (notvip ? 'notvip' : false)}
+    ]
   end
 
   def property_values
