@@ -16,10 +16,11 @@ class LeadEngagementReport
 
   def generate_csv
     data = report(true)
-    return '' unless data.present?
+    return 'No data' unless data.present?
 
     CSV.generate do |csv|
-      csv << data.first.keys
+      header = data.first.keys.map{|k| k.to_s.humanize.titlecase }
+      csv << header
       data.each do |row|
         csv << row.values
       end
@@ -61,21 +62,30 @@ class LeadEngagementReport
       host: ENV.fetch('APPLICATION_HOST','www.blue-sky.app')
     }
 
-    @report = lead_scope.includes(:property, :user).all.inject([]) do |memo, lead|
+    @report = lead_scope.includes(:property, :user).all.
+        sort_by{|lead| [lead.property.name, lead.user.last_name, lead.user.first_name, lead.last_name, lead.first_name]}.
+        inject([]) do |memo, lead|
       contacts = lead.contact_events.where(article_type: %w{Message LeadAction})
       total_contacts = contacts.count
       messages_sent = contacts.where(article_type: %w{Message}).count
+      converted_to_resident = lead.conversion_date.present? || lead.state == 'resident' || lead.resident.present? 
+      showing_completed = lead.showings.any? || lead.state == 'showing'
       memo << {
-        agent_name: lead.user.name,
         property_name: lead.property.name,
-        lead_name: lead.name,
+        agent_name: lead.user.name,
+        referral: lead.referral,
         lead_state: lead.state,
+        lead_name: lead.name,
         first_contact: lead.first_comm,
         last_contact: lead.last_comm,
+        agent_response_time: lead.contact_events.first_contact.first&.lead_time,
         messages_sent: messages_sent,
         total_contacts: total_contacts,
         lead_speed: lead.lead_speed,
         tenacity: ( lead.tenacity.round(1) rescue 0.0 ),
+        conversion: ( showing_completed || converted_to_resident),
+        showing: showing_completed,
+        lease: converted_to_resident,
         lead_url: base_url + lead.id
       }
 
