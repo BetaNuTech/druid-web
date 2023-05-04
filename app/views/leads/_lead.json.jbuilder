@@ -13,7 +13,7 @@ json.user do
   if lead.user.present?
     json.extract! lead.user, :id, :name
   else
-    json.nil?
+    json.nil!
   end
 end
 json.comments do
