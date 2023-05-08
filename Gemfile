@@ -25,7 +25,7 @@ gem 'webpacker', "~> 5.2"
 gem 'devise', "~> 4.8"
 gem 'colorize', "~> 0.8"
 gem 'pundit', "~> 2.1"
-gem 'audited', "~> 4.10"
+gem 'audited', '~> 5.3'
 gem 'aasm', "~> 5.2"
 gem 'pg_search', "~> 2.3"
 gem 'attr_encrypted', "~> 3.1"
