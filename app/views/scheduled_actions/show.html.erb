@@ -58,7 +58,7 @@
     <div class="row">
       <div class="col-md-4">
         <%= link_to 'Edit', edit_scheduled_action_path(@scheduled_action) %> |
-        <%= link_to 'Back', scheduled_actions_path %>
+        <%= link_to 'Back', scheduled_actions_path(all: @all_tasks, team: @team_tasks) %>
       </div>
     </div>
 

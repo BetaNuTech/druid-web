@@ -26,6 +26,7 @@
 
       <tbody>
         <% @properties.each do |property| %>
+          <% next unless (property.active? || @current_user.administrator?) %>
           <tr class="<%= property_active_table_row_class(property) %>">
             <td class="first-column"><%= property.name %></td>
             <td><%= property.team.try(:name) || '-' %></td>

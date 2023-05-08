@@ -8,7 +8,7 @@ class LeadPolicy < ApplicationPolicy
         when ->(u) { u.administrator? }
           skope
         when ->(u) { u.corporate? }
-          skope
+          skope.includes(:property).where(property: {active: true})
         when -> (u) { u.team_lead?}
           #skope.
             #includes(:property).

@@ -33,7 +33,7 @@
       <% end %>
     </div>
     <div class="sidebar--item <%= nav_item_class(:scheduled_actions) %>">
-      <%= link_to(scheduled_actions_path) do %>
+      <%= link_to(scheduled_actions_path(team: true)) do %>
         <%= image_tag('/icons/calendar.svg') %>
         <span class="sidebar--item-content">Calendar</span>
       <% end %>

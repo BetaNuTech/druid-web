@@ -48,7 +48,8 @@ RSpec.describe LeadSearch do
              user: agent,
              property: property1,
              source: lead_source1,
-             first_comm: 1.day.ago
+             first_comm: 1.day.ago,
+             vip: false
             )
     }
 
@@ -57,11 +58,12 @@ RSpec.describe LeadSearch do
              state: 'disqualified', priority: 'low', id_number: "11223344",
              property: property2,
              source: lead_source2,
-             first_comm: 2.days.ago
+             first_comm: 2.days.ago,
+             vip: true
             )
     }
 
-    let(:lead3) { create(:lead, state: 'open', priority: 'high', first_comm: 3.days.ago) }
+    let(:lead3) { create(:lead, state: 'open', priority: 'high', first_comm: 3.days.ago, vip: false) }
 
     let(:property1) { create(:property) }
     let(:property2) { create(:property) }
@@ -120,6 +122,13 @@ RSpec.describe LeadSearch do
     it "searches with text" do
       search = LeadSearch.new({text: "11223344"})
       expect(search.collection.to_a).to eq([lead2])
+    end
+
+    it "searches by vip" do
+      search = LeadSearch.new({vip: "vip"})
+      expect(search.collection.to_a).to eq([lead2])
+      search = LeadSearch.new
+      expect(search.collection.size).to eq(3)
     end
 
     it "searches by date" do

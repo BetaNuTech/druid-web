@@ -31,8 +31,12 @@ module PropertiesHelper
       available_users = property.users_available_for_assignment
     end
 
+    available_users ||= []
+
     selected_user = selected.present? ? [ User.active.find(selected) ] : []
-    select_users = (selected_user + available_users).sort_by{|u| u.profile&.last_name + u.profile&.first_name}
+    select_users = (selected_user + available_users).sort_by do |u|
+      ( u.profile&.last_name || '' ) + ( u.profile&.first_name || '' )
+    end
 
     user_options = select_users.map{|u|
       property_list = ['none']

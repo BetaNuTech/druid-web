@@ -5,11 +5,12 @@
       Task Calendar
     </h1>
     <div>
-      <%= link_to("My Calender", scheduled_actions_path, class: "btn btn-xs btn-#{@show_all ? 'primary' : 'default'}") %>
-      <%= link_to("Team Calender", scheduled_actions_path(all: true), class: "btn btn-xs btn-#{@show_all ? 'default' : 'primary'}") %>
       <% if policy(ScheduledAction).new? %>
-        <small><%= link_to "Schedule New Task", new_scheduled_action_path, class: "btn btn-sm btn-primary"%></small>
+        <small><%= link_to "Schedule New Task", new_scheduled_action_path, class: "btn btn-success"%></small>
       <% end %>
+      <%= link_to("Tours", scheduled_actions_path(team: true), class: "btn btn-sm btn-#{@all_tasks ? 'primary' : 'default'}") %>
+      <%= link_to("My Tasks", scheduled_actions_path(all: true), class: "btn btn-sm btn-#{@all_tasks && !@team_tasks ? 'default' : 'primary'}") %>
+      <%= link_to("Team Tasks", scheduled_actions_path(all: true, team: true), class: "btn btn-sm btn-#{@all_tasks && @team_tasks ? 'default' : 'primary'}") %>
     </div>
   </div>
 </div>
@@ -73,7 +74,7 @@
       </div>
       <% unless @limit_set %>
         <div class="col-md-6 text-right" style="position: relative; top: 2em;">
-          <%= link_to(scheduled_actions_path(limit: 200, start_date: @start_date)) do %>
+          <%= link_to(scheduled_actions_path(limit: 200, start_date: @start_date, all: @all_tasks, team: @team_tasks)) do %>
             <span class="btn btn-xs btn-info">View All</span>
           <% end %>
         </div>
@@ -81,7 +82,7 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(50) } %>
+        <%= render partial: "scheduled_actions", locals: { scheduled_actions: @scheduled_actions.previous_month.sorted_by_due_desc.limit(20) } %>
       </div>
     </div>
   </div>

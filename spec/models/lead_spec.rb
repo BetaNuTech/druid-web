@@ -35,6 +35,9 @@
 #  call_log_updated_at :datetime
 #  classification      :integer
 #  follow_up_at        :datetime
+#  company             :string
+#  company_title       :string
+#  vip                 :boolean          default(FALSE)
 #
 
 require 'rails_helper'
@@ -1161,8 +1164,6 @@ RSpec.describe Lead, type: :model do
         lead.follow_up_at = DateTime.current + 2.days
         lead.trigger_event(event_name: 'postpone', user: user)
 
-        lead.reload
-        user.reload
         tasks = user.scheduled_actions.order(created_at: :desc)
 
         task = tasks.last

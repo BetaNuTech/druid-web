@@ -13,7 +13,7 @@ module Leads
           Date::DATE_FORMATS[:default] = "%m/%d/%Y"
           body = data.fetch("plain",nil) || ''
 
-          referral = "Abodo.com"
+          referral = 'Rentable.com'
           message_id = data.fetch("headers",{}).fetch("Message-ID","").strip
           agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
 

@@ -198,11 +198,11 @@ module Messages
       when nil
         Message
       else
+        property_skope = skope.for_leads.where(leads: {property_id: user.property_ids})
         if user.monitor_all_messages?
-          property_skope = skope.for_leads
-          property_skope.where(user_id: user.id).or(property_skope.where(leads: {property_id: user.property_ids}))
+          property_skope
         else
-          skope.where(user_id: user.id)
+          property_skope.where(user_id: user.id)
         end
       end
     end

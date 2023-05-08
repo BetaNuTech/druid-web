@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.1.0'
+ruby '3.1.3'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -41,7 +41,7 @@ gem 'ckeditor', "~> 4.3"
 gem 'exception_notification', "~> 4.4"
 gem 'aws-sdk-s3', "~> 1.96"
 gem 'nested_form_fields', "~> 0.8"
-gem 'dalli', "~> 2.7"
+gem 'dalli', "~> 3.2"
 gem 'connection_pool', "~> 2.2"
 gem 'premailer', "~> 1.15"
 gem 'image_processing', "~> 1.12"

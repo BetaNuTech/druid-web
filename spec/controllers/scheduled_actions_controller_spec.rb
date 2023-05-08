@@ -7,6 +7,36 @@ RSpec.describe ScheduledActionsController, type: :controller do
   render_views
 
   let(:scheduled_action) { create(:scheduled_action, user: team1_agent1) }
+  let(:schedule_attributes) {
+    {"rule"=>"singular",
+     "date(1i)"=>"2023",
+     "date(2i)"=>"1",
+     "date(3i)"=>"11",
+     "day"=>[""],
+     "day_of_week"=>{"monday"=>[""], "tuesday"=>[""], "wednesday"=>[""], "thursday"=>[""], "friday"=>[""], "saturday"=>[""], "sunday"=>[""]},
+     "time(1i)"=>"2023",
+     "time(2i)"=>"1",
+     "time(3i)"=>"11",
+     "time(4i)"=>"9",
+     "time(5i)"=>"33",
+     "interval"=>"1",
+     "until(1i)"=>"2023",
+     "until(2i)"=>"1",
+     "until(3i)"=>"11",
+     "until(4i)"=>"09",
+     "until(5i)"=>"33",
+     "count"=>"0",
+     "duration"=>"0"}
+  }
+  let(:valid_attributes) {
+    {
+      target_id: @lead.id, target_type: 'Lead',
+      user_id: user.id,
+      lead_action_id: lead_action.id,
+      description: 'Test action',
+      schedule_attributes: schedule_attributes
+    }
+  }
 
   before(:each) do
     seed_engagement_policy
@@ -107,9 +137,14 @@ RSpec.describe ScheduledActionsController, type: :controller do
 
   describe "POST #create" do
     describe "as the owner" do
-      #it "should be successful" do
-        #pending 'TODO'
-      #end
+      let(:user) { team1_agent1 }
+      let(:lead_action) { LeadAction.first }
+      it "should be successful" do
+        sign_in team1_agent1
+        expect{
+          post :create, params: {scheduled_action: valid_attributes } 
+        }.to change{ScheduledAction.count}
+      end
     end
   end
 

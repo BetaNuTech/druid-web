@@ -68,8 +68,11 @@ class User < ApplicationRecord
   end
 
   def deactivate!
-    self.deactivated = true
-    self.save
+    transaction do
+      assignments.destroy_all
+      update(deactivated: true)
+    end
+    reload
   end
 
   def active_for_authentication?
@@ -95,7 +98,7 @@ class User < ApplicationRecord
 
   def initials
     first_char = first_name ? first_name[0] : last_name[0]
-    second_char = first_name ? last_name[0] : last_name[1]
+    second_char = last_name ? last_name[0] : first_name[1]
     [first_char, second_char].join.upcase
   end
 

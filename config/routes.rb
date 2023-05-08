@@ -122,6 +122,7 @@ Rails.application.routes.draw do
   namespace :stats do
     get 'manager', to: 'manager'
     get 'report_csv', to: 'report_csv'
+    get 'lead_engagement_csv', to: 'lead_engagement_csv'
   end
 
   namespace :home do

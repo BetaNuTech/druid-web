@@ -189,7 +189,14 @@ module Leads
         auto_disqualify
         unless disqualified?
           delay.broadcast_to_streams
-          send_new_lead_messaging
+          
+          if property&.setting_enabled?(:lead_auto_welcome)
+            send_new_lead_messaging
+          else
+            message = "*** Lead[#{id}] Initial response messages not sent due to disabled 'lead_auto_welcome' Property Appsetting"
+            Rails.logger.info message
+            return false
+          end
         end
 
         true

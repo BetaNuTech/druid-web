@@ -28,4 +28,18 @@ class StatsController < ApplicationController
     end
   end
 
+  def lead_engagement_csv
+    authorize Stat
+    options = {}
+    options[:properties] = params[:property_ids] if params[:property_ids].present?
+    report = params[:report] || 'lead_engagement'
+    report_data = LeadEngagementReport.new(options:).generate_csv
+    report_filename = "#{report}-#{Date.current.to_s}.csv"
+    respond_to do |format|
+      format.csv {
+        send_data report_data, filename: report_filename
+      }
+    end
+  end
+
 end

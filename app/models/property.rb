@@ -32,10 +32,12 @@
 #  timezone             :string           default("UTC"), not null
 #  leasing_phone        :string
 #  voice_menu_enabled   :boolean          default(FALSE)
+#  appsettings          :jsonb
 #
 
 class Property < ApplicationRecord
   ### Class Concerns/Extensions
+  include Properties::Appsettings
   include Properties::Team
   include Properties::Users
   include Properties::PhoneNumbers

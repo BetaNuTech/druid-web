@@ -51,3 +51,15 @@
     :slug: "Lineups"
     :incoming: false
     :active: true
+  - :name: "CallCenter"
+    :slug: "CallCenter"
+    :incoming: true
+    :active: true
+  - :name: "Nextiva"
+    :slug: "Nextiva"
+    :incoming: true
+    :active: true
+  - :name: "RentPath"
+    :slug: "Zillow"
+    :incoming: true
+    :active: true

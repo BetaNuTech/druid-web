@@ -33,6 +33,13 @@
             <%= form.select :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, lead.classification), {}, { class: "form-control" } %>
           </div>
         <% end %>
+        <div class="col-md-2 form-group">
+          <%= form.label :vip, style: 'font-size: 1.2em;' do %>
+           <span style="color: red;"><%= glyph(:heart) %></span>
+            VIP
+          <% end %>
+          <%= form.check_box :vip, id: :lead_vip, class: 'form-check-input' %>
+        </div>
       </div>
 
 
@@ -54,6 +61,19 @@
           <%= form.text_field :last_name, id: :lead_last_name, class: "form-control" %>
         </div>
       </div>
+
+    <% if lead.property.setting_enabled?(:lead_company_information) %>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <%= form.label :company %>
+          <%= form.text_field :company, id: :lead_company, class: "form-control" %>
+        </div>
+        <div class="col-md-6 form-group">
+          <%= form.label :company_title, 'Title' %>
+          <%= form.text_field :company_title, id: :lead_company_title, class: "form-control" %>
+        </div>
+      </div>
+    <% end %>
 
       <div class="row">
         <div class="col-md-12 form-group">

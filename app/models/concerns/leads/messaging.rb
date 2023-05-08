@@ -388,6 +388,12 @@ module Leads
           return false
         end
 
+        unless property.setting_enabled?(:lead_auto_welcome)
+          message = "*** Lead[#{id}] Initial response messages not sent due to disabled 'lead_auto_welcome' Property Appsetting"
+          Rails.logger.info message
+          return false
+        end
+
         # send_initial_sms_response
         send_initial_email_response
       end

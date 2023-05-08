@@ -1,4 +1,4 @@
-json.extract! lead, :id, :remoteid, :title, :first_name, :middle_name, :last_name, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :fax, :email, :created_at, :updated_at, :priority
+json.extract! lead, :id, :remoteid, :title, :first_name, :middle_name, :last_name, :company, :company_title, :referral, :state, :notes, :first_comm, :last_comm, :phone1, :phone2, :fax, :email, :created_at, :updated_at, :priority, :vip
 json.preference do
   json.partial! 'leads/preference', locals: {preference: lead.preference}
 end
@@ -13,7 +13,7 @@ json.user do
   if lead.user.present?
     json.extract! lead.user, :id, :name
   else
-    json.nil?
+    json.nil!
   end
 end
 json.comments do
