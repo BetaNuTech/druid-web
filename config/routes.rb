@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     root to: "home#dashboard", as: :authenticated_root
   end
 
-  root to: redirect('/users/sign_in')
+  root to: redirect('/auth/sign_in')
 
   get 'v2', to: 'home#design2'
   
