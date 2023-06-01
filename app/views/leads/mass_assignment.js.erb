@@ -1,3 +1,8 @@
+<% if @assigner.errors? %>
+  alert('There was an error assigning this Lead') 
+<% end %>
+
 <% @assigner.assigned_leads.each do |lead | %>
   $("#unclaimed-lead-<%= lead.id %>").remove()
 <% end %>
+

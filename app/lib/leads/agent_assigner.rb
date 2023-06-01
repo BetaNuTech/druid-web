@@ -30,7 +30,7 @@ module Leads
         can_assign_agent = params_present && LeadPolicy.new(@user, @lead).change_user?
         valid_agent_for_assignment = params_present &&
                                      @agent.properties.include?(@lead.property) &&
-                                     @user.properties.include?(@lead.property)
+                                     ( @user.admin? || @user.properties.include?(@lead.property))
 
         @errors = []
         add_error "Invalid Lead Reference" unless @lead.present?
@@ -93,6 +93,10 @@ module Leads
       @assignments = assignments
       @processed = false
       preprocess!
+    end
+
+    def errors?
+      @errors.any?
     end
 
     def call
