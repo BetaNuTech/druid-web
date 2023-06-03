@@ -1,0 +1,84 @@
+<div id="ActiveLeads">
+
+  <h2>Active Leads</h2>
+
+  <ul class="nav nav-tabs" id="ActiveLeadsTabs" role="tablist">
+    <li class="nav-item active" role="presentation">
+      <button class="nav-link active" id="upcoming-appointments-tab" data-bs-toggle="tab" data-bs-target="#upcoming-appointments" type="button" role="tab" aria-controls="upcoming-appointments" aria-selected="true">Upcoming Appointments <em>(17)</em></button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="my-leads-tab" data-bs-toggle="tab" data-bs-target="#my-leads" type="button" role="tab" aria-controls="my-leads" aria-selected="false">My Leads <em>(55)</em></button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="all-leads-tab" data-bs-toggle="tab" data-bs-target="#all-leads" type="button" role="tab" aria-controls="all-leads" aria-selected="false">All Leads <em>(132)</em></button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link urgent" id="stale-tab" data-bs-toggle="tab" data-bs-target="#stale" type="button" role="tab" aria-controls="stale" aria-selected="false">Stale <em>(12)</em></button>
+    </li>
+  </ul>
+
+  <div id="ActiveLeadsDropdownWrapper" class="show-on-mobile">
+    <div class="form-group">
+      <select id="ActiveLeadsDropdown" name="ActiveLeadsDropdown" class="form-select" aria-label="">
+        <option value="default">Select the type of leads to view</option>
+        <option value="upcoming-appointments">Appointments (17)</option>
+        <option value="my-leads">My Leads (55)</option>
+        <option value="all-leads">All Leads (132)</option>
+        <option value="stale">Stale (12)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active scrolling" id="upcoming-appointments" role="tabpanel" aria-labelledby="upcoming-appointments-tab">
+
+      <div class="responsiveTable">
+        
+        <table class="table table-bordered table-hover" id="UpcomingAppointmentsTable">
+          <thead>
+            <tr class="filter-row">
+              <th colspan="7">
+                <div class="form-group">
+                  <input class="form-control small" type="text" id="filter-upcomingAppointmentsTable" name=""  placeholder="Start typing to filter by keyword..." aria-label="" />
+                </div>
+              </th>
+            </tr>
+            <tr>
+              <th>Appt Time</th>
+              <th>Name</th>
+              <th>Last Contact</th>
+              <th>Status</th>
+              <th>Contact Info</th>
+              <th>Tasks</th>
+              <th>Lead Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td class="appt-date">11/11/2021  <span class="appt-time">9:15AM</span></td>
+            <td><span class="show-on-mobile bold">Name:<br /></span>
+              <a href="#!" class="link-attention">Nazjai Morgan</a>
+            </td>
+            <td><span class="show-on-mobile bold">Last Contact:<br /></span>
+              10/27/2021 <em>2:32PM</em>
+            </td>
+            <td><span class="show-on-mobile bold">Status:<br /></span>
+              Prospect
+            </td>
+            <td><span class="show-on-mobile bold">Contact Info:<br /></span>
+              (323) 987-6543<br />
+              nazmorgan@aol.zzz
+            </td>
+            <td class="center-on-desktop"><span class="show-on-mobile bold">Tasks:<br /></span>
+              <a class="btn btn-small-attention">2</a>
+            </td>
+            <td class="hide-on-mobile">
+              10/11/2021 <em>12:11PM</em>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>

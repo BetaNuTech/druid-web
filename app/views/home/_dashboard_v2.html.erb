@@ -25,9 +25,10 @@
         </tbody>
       </table>
     </div>
-    <div id="active_leads">
-      <%= render partial: 'active_leads' %>
-    </div>
+    <br />
+    <hr />
+    <br />
+    <%= render partial: 'active_leads' %>
   </div>
 
   <div class="col-xxl-3">
@@ -87,5 +88,30 @@
         submit_buttons.hide()
       }
     })
+
+    //hide the Active Leads default visible tab content on mobile
+    /*
+    if($("#ActiveLeadsTabs").css('display') == "none") {
+        $("#upcoming-appointments").removeClass("show active");
+        $("#my-leads").removeClass("show active");
+        $("#all-leads").removeClass("show active");
+        $("#stale").removeClass("show active");
+    }
+    */
+
+    //when the user makes a change to the ActiveLeadsDropdown (only visible on mobile))
+    $("#ActiveLeadsDropdown").change(function() {
+
+        //hide any visible tab content
+        $("#upcoming-appointments").removeClass("show active");
+        $("#my-leads").removeClass("show active");
+        $("#all-leads").removeClass("show active");
+        $("#stale").removeClass("show active");
+
+        //show the appropriate tab content based on the dropdown selection
+        var currentValue = $(this).val();
+        $("#" + currentValue).addClass("show active");
+
+    });
   })
 </script>

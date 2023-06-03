@@ -62,6 +62,7 @@ gem 'net-smtp', require: false
 gem 'net-pop', require: false
 gem 'net-imap', require: false
 
+
 group :development, :test do
   gem 'pry-doc'
   gem 'pry-stack_explorer'
@@ -108,4 +109,5 @@ group :development do
 
   # Supports the Rails Panel plugin for Chrome/Firefox # Broken by Rails 6.1
   #gem 'meta_request'
+  gem 'ask_chatgpt'
 end
