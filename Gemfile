@@ -61,6 +61,7 @@ gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
 gem 'net-imap', require: false
+gem 'classifier-reborn'
 
 group :development, :test do
   gem 'pry-doc'
