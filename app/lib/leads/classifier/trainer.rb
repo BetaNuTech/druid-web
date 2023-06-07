@@ -6,8 +6,8 @@ module Leads
 
       VERSION = '1.0' 
       CATEGORIES = %w{lead vendor spam}
-      WEIGHTS = {lead: 0.8, vendor: 0.3, spam: 0.1}
-      SAMPLE_SIZE = 1000
+      WEIGHTS = {lead: 0.9, vendor: 0.3, spam: 0.1}
+      SAMPLE_SIZE = 5000
       SAMPLE_SOURCE = 'Cloudmailin'
       TEST_SAMPLE_SIZE = 100
       SAMPLE_START_DATE = 12 # months ago
@@ -52,16 +52,21 @@ module Leads
                   limit(TEST_SAMPLE_SIZE)
 
         print "*** Testing lead classifier on #{sample.count} records"
-        results = {ok: 0, fail: 0}
-        failures = []
+        results = {}
+        failures = {}
 
         sample.each do |lead|
           classification = classifier.classify(classifier_content(lead)).downcase
+          lead_classification = lead.classification.to_sym
+          results[lead_classification] ||= {}
           if classification == lead.classification
-            results[:ok] = results[:ok] + 1
+            results[lead_classification][:ok] ||= 0
+            results[lead_classification][:ok] = results[lead_classification][:ok] + 1
           else
-            results[:fail] = results[:fail] + 1
-            failures << [classification, lead.id, lead.classification]
+            results[lead_classification][:fail] ||= 0
+            results[lead_classification][:fail] = results[lead_classification][:fail] + 1
+            failures[lead_classification] ||= []
+            failures[lead_classification] << [lead.id, lead.classification, classification]
           end
           print '.'
         end
@@ -69,16 +74,29 @@ module Leads
 
         if failures.any?
           puts "=== Failures ==="
-          failures.each do |failure|
-            puts "#{failure[1]} #{failure[2]} != #{failure[0]} (predicted)"
+          CATEGORIES.each do |category|
+            cat = category.to_sym
+            next unless failures[cat]
+
+            failures[cat].each do |failure|
+              puts "#{failure[0]} #{failure[1]} != #{failure[2]} (predicted)"
+            end
           end
-          puts "========================"
         end
 
-        rate = (results[:ok].to_f / TEST_SAMPLE_SIZE.to_f).round(3)
-        puts " * OK: #{results[:ok]}"
-        puts " * Failed: #{results[:fail]}"
-        puts " * Accuracy: #{rate}"
+        CATEGORIES.each do |category|
+          cat = category.to_sym
+          next unless results[cat]
+
+          total = (( results[cat][:ok] || 0 ) + ( results[cat][:fail] || 0 )).to_f
+          rate = (results[cat][:ok].to_f / total).round(2)
+          puts "=== #{category} === "
+          puts " * OK: #{results[cat][:ok]}"
+          puts " * Failed: #{results[cat][:fail]}"
+          puts " * Accuracy: #{rate}"
+        end
+
+        true
       end
 
       private
