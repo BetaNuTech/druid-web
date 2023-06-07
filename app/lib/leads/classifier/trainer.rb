@@ -9,7 +9,7 @@ module Leads
       WEIGHTS = {lead: 0.9, vendor: 0.3, spam: 0.1}
       SAMPLE_SIZE = 5000
       SAMPLE_SOURCE = 'Cloudmailin'
-      TEST_SAMPLE_SIZE = 100
+      TEST_SAMPLE_SIZE = 500
       SAMPLE_START_DATE = 12 # months ago
       CLASSIFIER_DATAFILE = File.join(Rails.root, "tmp/lead_classifier-#{VERSION}.dat")
       EXCLUDE_PROPERTIES = [ 'Summercrest' ]
