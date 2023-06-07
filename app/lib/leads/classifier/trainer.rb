@@ -6,11 +6,11 @@ module Leads
 
       VERSION = '1.0' 
       CATEGORIES = %w{lead vendor spam}
-      SAMPLE_SIZE = 10000
+      WEIGHTS = {lead: 0.8, vendor: 0.3, spam: 0.1}
+      SAMPLE_SIZE = 1000
       SAMPLE_SOURCE = 'Cloudmailin'
       TEST_SAMPLE_SIZE = 100
-      SAMPLE_START_DATE = 6 # months ago
-      BATCH_SIZE = 500
+      SAMPLE_START_DATE = 12 # months ago
       CLASSIFIER_DATAFILE = File.join(Rails.root, "tmp/lead_classifier-#{VERSION}.dat")
       EXCLUDE_PROPERTIES = [ 'Summercrest' ]
 
@@ -68,16 +68,17 @@ module Leads
         puts "DONE"
 
         if failures.any?
+          puts "=== Failures ==="
           failures.each do |failure|
             puts "#{failure[1]} #{failure[2]} != #{failure[0]} (predicted)"
           end
+          puts "========================"
         end
 
         rate = (results[:ok].to_f / TEST_SAMPLE_SIZE.to_f).round(3)
         puts " * OK: #{results[:ok]}"
         puts " * Failed: #{results[:fail]}"
         puts " * Accuracy: #{rate}"
-        true
       end
 
       private
@@ -88,25 +89,27 @@ module Leads
 
       def train
         skope = Lead.includes(:preference).
-                  where(created_at: SAMPLE_START_DATE.months.ago..).
-                  where(classification: CATEGORIES, lead_source_id: @sample_source.id).
-                  where.not(property_id: @exclude_properties).
+                  where(created_at: SAMPLE_START_DATE.months.ago..,
+                        lead_source_id: @sample_source.id).
+                  where.not(property_id: @exclude_properties, user_id: nil).
                   order('RANDOM()').
                   limit(SAMPLE_SIZE)
 
-        print "*** Training classifier on #{skope.count} leads"
+        print "*** Training classifier"
 
-        skope.find_in_batches(batch_size: BATCH_SIZE) do |batch|
-          batch.each do |lead|
+        CATEGORIES.each do |category|
+          skope.where(classification: category).each do |lead|
             next unless lead&.preference&.raw_data.present?
 
             classifier.train(lead.classification, classifier_content(lead))
             print '.' if @debug
           end
         end
-        puts "DONE training using #{skope.count} leads" if @debug
 
+        puts "DONE" if @debug
         test if @debug
+
+        true
       end
 
       def classifier_content(lead)
@@ -139,7 +142,7 @@ module Leads
           puts "OK" if @debug
         else
           print '*** Initializing new classifier' if @debug
-          @classifier = ClassifierReborn::Bayes.new(categories: CATEGORIES)
+          @classifier = ClassifierReborn::Bayes.new(categories: CATEGORIES, weights: WEIGHTS)
           puts "OK" if @debug
         end
         @classifier
