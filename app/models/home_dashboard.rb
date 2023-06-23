@@ -14,19 +14,19 @@ class HomeDashboard
   end
 
   def my_leads
-    # TODO
+    @current_property.leads.where(user: @current_user).in_progress
   end
 
   def all_leads
-    # TODO
+    @current_property.leads.early_pipeline
   end
 
   def stale_leads
-    # TODO
+    @current_property.leads.stale
   end
 
   def upcoming_appointments
-    # TODO
+    @current_user.scheduled_actions.appointments.pending
   end
 
   def my_tasks

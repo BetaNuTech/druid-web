@@ -1,0 +1,27 @@
+<div class="tab-pane fade" id="my-leads" role="tabpanel" aria-labelledby="my-leads-tab">
+  <div class="responsiveTable">
+    <table class="table table-bordered table-hover" id="MyLeadsTable">
+      <thead>
+        <tr class="filter-row">
+          <th colspan="7">
+            <div class="form-group">
+              <input class="form-control small" type="text" id="filter-myLeadsTable" name=""  placeholder="Start typing to filter by keyword..." aria-label="" />
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>Name</th>
+          <th>Priority</th>
+          <th>Last Contact</th>
+          <th>Status</th>
+          <th>Contact Info</th>
+          <th>Tasks</th>
+          <th>Lead Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: 'active_leads_table_lead', collection: leads, as: :lead %>
+      </tbody>
+    </table>
+  </div>
+</div>

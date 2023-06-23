@@ -23,6 +23,7 @@ class LeadAction < ApplicationRecord
   ### Constants
   ALLOWED_PARAMS = [:id, :name, :glyph, :description, :active, :is_contact, :state_affinity, :notify]
   SHOWING_ACTION_NAME = 'Show Unit'
+  MEETING_ACTION_NAME = 'Meeting'
   STATE_AFFINITIES = %w{all none} + Lead.state_names
   MESSAGE_REPLY_TASK_ACTION = 'Send Email'
   MAKE_CALL_ACTION = 'Make Call'
@@ -61,6 +62,16 @@ class LeadAction < ApplicationRecord
       return record
     else
       err_msg = 'LeadAction with Name "Show Unit" is missing!'
+      ErrorNotification.send(StandardError.new(err_msg))
+      return nil
+    end
+  end
+
+  def self.meeting
+    if (record = self.active.where(name: MEETING_ACTION_NAME).first).present?
+      return record
+    else
+      err_msg = 'LeadAction with Name "Meeting" is missing!'
       ErrorNotification.send(StandardError.new(err_msg))
       return nil
     end

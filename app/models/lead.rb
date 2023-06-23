@@ -100,6 +100,7 @@ class Lead < ApplicationRecord
     joins(join_sql).where(teams: {id: team.id})
   }
   scope :vip, -> { where(vip: true) }
+  scope :stale, -> { in_progress.where(last_comm: 2.months.ago..4.days.ago) }
 
   ### Validations
   validates :first_name, presence: { message: 'must be provided' }

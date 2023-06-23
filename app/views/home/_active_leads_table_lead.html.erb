@@ -1,0 +1,33 @@
+<tr>
+  <td>
+    <span class="show-on-mobile bold">Name:<br /></span>
+    <%= link_to(lead.name, lead_path(lead), class: 'link-attention', target: '_blank' ) %>
+  </td>
+  <td>
+    <span class="show-on-mobile bold">Priority:<br /></span>
+    <%= lead_priority_icon(lead) %>
+  </td>
+  <td>
+    <span class="show-on-mobile bold">Last Contact:<br /></span>
+    <% contact_date = (lead.last_comm || lead.first_comm ) %>
+    <%= contact_date.strftime('%m/%d/%Y') %>
+    <em><%= contact_date.strftime('%I:%M%p') %></em>
+  </td>
+  <td>
+    <span class="show-on-mobile bold">Status:<br /></span>
+    <%= lead.state.humanize %>
+  </td>
+  <td>
+    <span class="show-on-mobile bold">Contact Info:<br /></span>
+    <%= lead.phone1 || lead.phone2 %>
+    <br />
+    <%= lead.email %>
+  </td>
+  <td class="center-on-desktop"><span class="show-on-mobile bold">Tasks:<br /></span>
+    <a class="btn btn-small-attention"><%= lead.scheduled_actions.pending.count %></a>
+  </td>
+  <td class="hide-on-mobile">
+    <%= lead.created_at.strftime('%m/%d/%Y') %>
+    <em><%= lead.created_at.strftime('%I:%M%p') %></em>
+  </td>
+</tr>

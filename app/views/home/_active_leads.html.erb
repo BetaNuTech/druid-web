@@ -1,84 +1,38 @@
 <div id="ActiveLeads">
-
-  <h2>Active Leads</h2>
-
+  <h1>Active Leads</h1>
   <div class="container mt-5">
-		<ul class="nav nav-tabs" role="tablist">
-			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true">Appointments</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="my-leads-tab" data-bs-toggle="tab" data-bs-target="#my-leads" type="button" role="tab" aria-controls="my-leads" aria-selected="false">My Leads</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="all-leads-tab" data-bs-toggle="tab" data-bs-target="#all-leads" type="button" role="tab" aria-controls="all-leads" aria-selected="false">All Leads</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="stale-tab" data-bs-toggle="tab" data-bs-target="#stale" type="button" role="tab" aria-controls="stale" aria-selected="false">Stale</button>
-			</li>
-		</ul>
-		<div class="tab-content">
-			<div class="tab-pane fade show active" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
-				<h1>Appointments</h1>
-        <div class="responsiveTable">
-          <table class="table table-bordered table-hover" id="UpcomingAppointmentsTable">
-            <thead>
-              <tr class="filter-row">
-                <th colspan="7">
-                  <div class="form-group">
-                    <input class="form-control small" type="text" id="filter-upcomingAppointmentsTable" name=""  placeholder="Start typing to filter by keyword..." aria-label="" />
-                  </div>
-                </th>
-              </tr>
-              <tr>
-                <th>Appt Time</th>
-                <th>Name</th>
-                <th>Last Contact</th>
-                <th>Status</th>
-                <th>Contact Info</th>
-                <th>Tasks</th>
-                <th>Lead Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              <td class="appt-date">11/11/2021  <span class="appt-time">9:15AM</span></td>
-              <td><span class="show-on-mobile bold">Name:<br /></span>
-                <a href="#!" class="link-attention">Nazjai Morgan</a>
-              </td>
-              <td><span class="show-on-mobile bold">Last Contact:<br /></span>
-                10/27/2021 <em>2:32PM</em>
-              </td>
-              <td><span class="show-on-mobile bold">Status:<br /></span>
-                Prospect
-              </td>
-              <td><span class="show-on-mobile bold">Contact Info:<br /></span>
-                (323) 987-6543<br />
-                nazmorgan@aol.zzz
-              </td>
-              <td class="center-on-desktop"><span class="show-on-mobile bold">Tasks:<br /></span>
-                <a class="btn btn-small-attention">2</a>
-              </td>
-              <td class="hide-on-mobile">
-                10/11/2021 <em>12:11PM</em>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-			</div>
-			<div class="tab-pane fade" id="my-leads" role="tabpanel" aria-labelledby="my-leads-tab">
-				<h1>My Leads</h1>
-				<p>Phasellus at felis vel lorem cursus lacinia. Fusce quis erat vitae magna bibendum suscipit vel ac nulla.</p>
-			</div>
-			<div class="tab-pane fade" id="all-leads" role="tabpanel" aria-labelledby="all-leads-tab">
-				<h1>All Leads</h1>
-				<p>Sed euismod metus nec magna consectetur, quis dictum quam eleifend. Sed ut dapibus augue.</p>
-			</div>
-			<div class="tab-pane fade" id="stale" role="tabpanel" aria-labelledby="stale-tab">
-				<h1>Stale</h1>
-				<p>Nam vel ligula euismod, posuere purus at, venenatis sapien. Integer nec purus a est luctus varius.</p>
-			</div>
-		</div>
-	</div>
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true">
+          Appointments
+          (<%= @dashboard_service.upcoming_appointments.count %>)
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="my-leads-tab" data-bs-toggle="tab" data-bs-target="#my-leads" type="button" role="tab" aria-controls="my-leads" aria-selected="false">
+          My Leads
+          (<%= @dashboard_service.my_leads.count %>)
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="all-leads-tab" data-bs-toggle="tab" data-bs-target="#all-leads" type="button" role="tab" aria-controls="all-leads" aria-selected="false">
+          All Leads
+          (<%= @dashboard_service.all_leads.count %>)
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="stale-leads-tab" data-bs-toggle="tab" data-bs-target="#stale-leads" type="button" role="tab" aria-controls="stale-leads" aria-selected="false">
+          Stale
+          (<%= @dashboard_service.stale_leads.count %>)
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <%= render partial: 'active_leads_appointments', locals: { appointments: @dashboard_service.upcoming_appointments } %>
+      <%= render partial: 'active_leads_my_leads', locals: { leads: @dashboard_service.my_leads } %>
+      <%= render partial: 'active_leads_all_leads', locals: { leads: @dashboard_service.all_leads } %>
+      <%= render partial: 'active_leads_stale_leads', locals: { leads: @dashboard_service.stale_leads } %>
+    </div>
+  </div>
 
 </div>
