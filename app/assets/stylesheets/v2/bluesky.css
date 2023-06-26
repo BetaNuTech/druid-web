@@ -31,7 +31,7 @@
 
 #header-property-logo {
   align-self: center;
-  
+
 }
 
 #header-property-logo img, #header-property-logo svg {
@@ -345,7 +345,7 @@ body {
   text-align: center;
   padding-top: 10px;
   padding-bottom: 10px;
-  
+
 }
 
 #alert-bar a {
@@ -409,7 +409,7 @@ ul,ol {
   margin-bottom: 20px;
   line-height: 28px;
   padding-inline-start: 40px;
-}  
+}
 
 .close {
   float: right;
@@ -755,7 +755,7 @@ input[type=checkbox], input[type=radio] {
 
 .table-bordered .filter-row th {
   background-color: #6292c3;
-  border-bottom: 1px solid #333333; 
+  border-bottom: 1px solid #333333;
 }
 
 .table-bordered .filter-row .form-group {
@@ -876,7 +876,7 @@ td:last-child, th:last-child {
   background-color: #eeeeee;
   font-family: Futura Hv BT;
   color: #333333;
-  
+
 }
 
 .nav-tabs .nav-link.urgent {
@@ -943,7 +943,7 @@ td:last-child, th:last-child {
 .modal {
   overflow-x: hidden;
   overflow-y: auto;
-  
+
 }
 
 .modal-content {
@@ -1084,7 +1084,7 @@ td:last-child, th:last-child {
 }
 
 #ActiveLeads .tab-pane {
-  height: 530px;
+  min-height: 530px;
 }
 
 #ActiveLeads #stale {
@@ -1885,7 +1885,7 @@ ul#crumbs ul.dropdown-menu a.inactive {
 
 #ScheduledTasksTable svg {
   height: 2.25em;
-} 
+}
 
 #ScheduledTasksTable .form-select-small {
   width: 100%;
@@ -1905,3 +1905,10 @@ ul#crumbs ul.dropdown-menu a.inactive {
   font-size: 10px;
   padding: 0.2em 0.5em;
 }
+
+/*
+div.active-leads-pane {
+  max-height: 30em;
+  overflow-y: scroll;
+}
+*/

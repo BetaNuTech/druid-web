@@ -1,11 +1,11 @@
-<div class="tab-pane fade" id="stale-leads" role="tabpanel" aria-labelledby="stale-leads-tab">
+<div class="active-leads-pane tab-pane fade" id="stale-leads" role="tabpanel" aria-labelledby="stale-leads-tab">
   <div class="responsiveTable">
-    <table class="table table-bordered table-hover" id="MyLeadsTable">
+    <table class="table table-bordered table-hover" id="StaleLeadsTable">
       <thead>
         <tr class="filter-row">
           <th colspan="7">
             <div class="form-group">
-              <input class="form-control small" type="text" id="filter-myLeadsTable" name=""  placeholder="Start typing to filter by keyword..." aria-label="" />
+              <input class="form-control small" type="text" id="filter-staleLeadsTable" name=""  placeholder="Start typing to filter by keyword..." aria-label="" />
             </div>
           </th>
         </tr>
@@ -25,3 +25,6 @@
     </table>
   </div>
 </div>
+<script>
+  filterTableRows('StaleLeadsTable', [1,3,4,5,7])
+</script>

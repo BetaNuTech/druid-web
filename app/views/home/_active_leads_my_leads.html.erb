@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="my-leads" role="tabpanel" aria-labelledby="my-leads-tab">
+<div class="active-leads-pane tab-pane fade" id="my-leads" role="tabpanel" aria-labelledby="my-leads-tab">
   <div class="responsiveTable">
     <table class="table table-bordered table-hover" id="MyLeadsTable">
       <thead>
@@ -25,3 +25,7 @@
     </table>
   </div>
 </div>
+
+<script>
+  filterTableRows('MyLeadsTable', [1,3,4,5,7])
+</script>

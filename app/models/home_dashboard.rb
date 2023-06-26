@@ -14,19 +14,23 @@ class HomeDashboard
   end
 
   def my_leads
-    @current_property.leads.where(user: @current_user).in_progress
+    @current_property.leads.where(user: @current_user).in_progress.
+      order(last_name: :asc, first_name: :asc)
   end
 
   def all_leads
-    @current_property.leads.early_pipeline
+    @current_property.leads.early_pipeline.
+      order(priority: :desc, last_name: :asc, first_name: :asc)
   end
 
   def stale_leads
-    @current_property.leads.stale
+    @current_property.leads.stale.
+      order(last_name: :asc, first_name: :asc)
   end
 
   def upcoming_appointments
-    @current_user.scheduled_actions.appointments.pending
+    @current_user.scheduled_actions.appointments.having_schedule.pending.
+      order('schedules.date ASC')
   end
 
   def my_tasks

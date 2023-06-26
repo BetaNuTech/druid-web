@@ -1,62 +1,66 @@
-  <div class="tab-pane fade show active" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
-    <div class="responsiveTable">
-      <table class="table table-bordered table-hover" id="UpcomingAppointmentsTable">
-        <thead>
-          <tr class="filter-row">
-            <th colspan="7">
-              <div class="form-group">
-                <input class="form-control small" type="text" id="filter-upcomingAppointmentsTable" name=""  placeholder="Start typing to filter by keyword..." aria-label="" />
-              </div>
-            </th>
-          </tr>
+<div class="active-leads-pane tab-pane fade show active" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+  <div class="responsiveTable">
+    <table class="table table-bordered table-hover" id="UpcomingAppointmentsTable">
+      <thead>
+        <tr class="filter-row">
+          <th colspan="7">
+            <div class="form-group">
+              <input class="form-control small" type="text" id="filter-upcomingAppointmentsTable" name=""  placeholder="Start typing to filter by keyword..." aria-label="" />
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>Appt Time</th>
+          <th>Name</th>
+          <th>Last Contact</th>
+          <th>Status</th>
+          <th>Contact Info</th>
+          <th>Tasks</th>
+          <th>Lead Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% appointments.each do |appointment| %>
+          <% lead = appointment.target ; next unless lead.is_a?(Lead) %>
           <tr>
-            <th>Appt Time</th>
-            <th>Name</th>
-            <th>Last Contact</th>
-            <th>Status</th>
-            <th>Contact Info</th>
-            <th>Tasks</th>
-            <th>Lead Created</th>
+            <td class="appt-date">
+              <%= appointment.start_time.strftime('%m/%d/%Y') %>
+              <span class="appt-time"><%= appointment.start_time.strftime('%I:%M%p') %></span>
+            </td>
+            <td>
+              <span class="show-on-mobile bold">Name:<br /></span>
+              <%= link_to(lead.name, lead_path(lead), class: 'link-attention', target: '_blank' ) %>
+            </td>
+            <td>
+              <span class="show-on-mobile bold">Last Contact:<br /></span>
+              <% contact_date = (lead.last_comm || lead.first_comm ) %>
+              <%= contact_date.strftime('%m/%d/%Y') %>
+              <em><%= contact_date.strftime('%I:%M%p') %></em>
+            </td>
+            <td>
+              <span class="show-on-mobile bold">Status:<br /></span>
+              <%= lead.state.humanize %>
+            </td>
+            <td>
+              <span class="show-on-mobile bold">Contact Info:<br /></span>
+              <%= lead.phone1 || lead.phone2 %>
+              <br />
+              <%= lead.email %>
+            </td>
+            <td class="center-on-desktop"><span class="show-on-mobile bold">Tasks:<br /></span>
+              <a class="btn btn-small-attention"><%= lead.scheduled_actions.pending.count %></a>
+            </td>
+            <td class="hide-on-mobile">
+              <%= lead.created_at.strftime('%m/%d/%Y') %>
+              <em><%= lead.created_at.strftime('%I:%M%p') %></em>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% appointments.each do |appointment| %>
-            <% lead = appointment.target ; next unless lead.is_a?(Lead) %>
-            <tr>
-              <td class="appt-date">
-                <%= appointment.start_time.strftime('%m/%d/%Y') %>
-                <span class="appt-time"><%= appointment.start_time.strftime('%I:%M%p') %></span>
-              </td>
-              <td>
-                <span class="show-on-mobile bold">Name:<br /></span>
-                <%= link_to(lead.name, lead_path(lead), class: 'link-attention', target: '_blank' ) %>
-              </td>
-              <td>
-                <span class="show-on-mobile bold">Last Contact:<br /></span>
-                <% contact_date = (lead.last_comm || lead.first_comm ) %>
-                <%= contact_date.strftime('%m/%d/%Y') %>
-                <em><%= contact_date.strftime('%I:%M%p') %></em>
-              </td>
-              <td>
-                <span class="show-on-mobile bold">Status:<br /></span>
-                <%= lead.state.humanize %>
-              </td>
-              <td>
-                <span class="show-on-mobile bold">Contact Info:<br /></span>
-                <%= lead.phone1 || lead.phone2 %>
-                <br />
-                <%= lead.email %>
-              </td>
-              <td class="center-on-desktop"><span class="show-on-mobile bold">Tasks:<br /></span>
-                <a class="btn btn-small-attention"><%= lead.scheduled_actions.pending.count %></a>
-              </td>
-              <td class="hide-on-mobile">
-                <%= lead.created_at.strftime('%m/%d/%Y') %>
-                <em><%= lead.created_at.strftime('%I:%M%p') %></em>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+        <% end %>
+      </tbody>
+    </table>
   </div>
+</div>
+
+<script>
+  filterTableRows('UpcomingAppointmentsTable', [1,2,3,4,5,7])
+</script>
