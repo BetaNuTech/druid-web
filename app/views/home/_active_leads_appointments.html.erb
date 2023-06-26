@@ -43,7 +43,8 @@
             </td>
             <td>
               <span class="show-on-mobile bold">Contact Info:<br /></span>
-              <%= lead.phone1 || lead.phone2 %>
+                <%= number_to_phone(lead.phone1) %>
+                <%= number_to_phone(lead.phone2) %>
               <br />
               <%= lead.email %>
             </td>

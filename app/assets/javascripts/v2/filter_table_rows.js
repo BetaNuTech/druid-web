@@ -1,19 +1,19 @@
 function filterTableRows(tableId, columnIndexes) {
   document.addEventListener("turbolinks:load", function() {
-    console.log('Filtering Table #', tableId, ' on columns ', columnIndexes)
-    // Get the search input field and table rows
+    var table = document.querySelector(`#${tableId}`);
     var searchInput = document.querySelector(`#${tableId} .filter-row input[type="text"]`);
     var tableRows = document.querySelectorAll(`#${tableId} tbody tr`);
+    var noMatchesRow = document.createElement("tr");
+    var noMatchesCell = document.createElement("td");
+    noMatchesCell.colSpan = table.rows[1].cells.length;
+    noMatchesCell.textContent = "No Matches";
+    noMatchesRow.appendChild(noMatchesCell);
+    noMatchesRow.style.display = "none";
+    tableRows[0].parentNode.insertBefore(noMatchesRow, tableRows[0]);
 
-    console.log('searchInput: ', searchInput)
-    console.log('tableRows: ', tableRows.length)
-
-    // Add event listener to search input field
     searchInput.addEventListener("keyup", function() {
-      // Get the search term and convert to lowercase
       var searchTerm = searchInput.value.toLowerCase();
-
-      // Loop through table rows and hide/show based on search term
+      var hasMatches = false;
       tableRows.forEach(function(row) {
         var columnsText = "";
         columnIndexes.forEach(function(columnIndex) {
@@ -23,9 +23,11 @@ function filterTableRows(tableId, columnIndexes) {
 
         if (searchTerm === "" || columnsText.includes(searchTerm)) {
           row.style.display = "table-row";
+          hasMatches = true;
         } else {
           row.style.display = "none";
         }
+        noMatchesRow.style.display = hasMatches ? "none" : "table-row";
       });
     });
   });

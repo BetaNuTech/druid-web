@@ -11,24 +11,8 @@
 
 <div class="row">
   <div class="col-xxl-9">
-    <div class="responsiveTable">
-      <table class="table table-bordered table-hover" id="UnclaimedLeadsTable">
-        <thead>
-          <th>Date/Time</th>
-          <th>Name</th>
-          <th>Contact Info</th>
-          <th></th>
-          <th>Assign</th>
-        </thead>
-        <tbody>
-          <%= render collection: @dashboard_service.unclaimed_leads.limit(10), partial: 'unclaimed_lead', as: :lead %>
-        </tbody>
-      </table>
-    </div>
-    <br />
-    <hr />
-    <br />
-    <%= render partial: 'active_leads' %>
+    <%= render partial: 'unclaimed_leads', locals: { leads: @dashboard_service.unclaimed_leads.limit(10)} %>
+    <%= render partial: 'active_leads', locals: { service: @dashboard_service } %>
   </div>
 
   <div class="col-xxl-3">
@@ -90,14 +74,12 @@
     })
 
     //hide the Active Leads default visible tab content on mobile
-    /*
     if($("#ActiveLeadsTabs").css('display') == "none") {
         $("#upcoming-appointments").removeClass("show active");
         $("#my-leads").removeClass("show active");
         $("#all-leads").removeClass("show active");
         $("#stale").removeClass("show active");
     }
-    */
 
     //when the user makes a change to the ActiveLeadsDropdown (only visible on mobile))
     $("#ActiveLeadsDropdown").change(function() {

@@ -1,0 +1,14 @@
+<div class="responsiveTable">
+  <table class="table table-bordered table-hover" id="UnclaimedLeadsTable">
+    <thead>
+      <th>Date/Time</th>
+      <th>Name</th>
+      <th>Contact Info</th>
+      <th></th>
+      <th>Assign</th>
+    </thead>
+    <tbody>
+      <%= render collection: leads, partial: 'unclaimed_lead', as: :lead %>
+    </tbody>
+  </table>
+</div>

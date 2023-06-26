@@ -4,32 +4,32 @@
     <li class="nav-item" role="presentation">
       <button class="nav-link active" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true">
         Appointments
-        (<%= @dashboard_service.upcoming_appointments.count %>)
+        (<%= service.upcoming_appointments.count %>)
       </button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="my-leads-tab" data-bs-toggle="tab" data-bs-target="#my-leads" type="button" role="tab" aria-controls="my-leads" aria-selected="false">
         My Leads
-        (<%= @dashboard_service.my_leads.count %>)
+        (<%= service.my_leads.count %>)
       </button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="all-leads-tab" data-bs-toggle="tab" data-bs-target="#all-leads" type="button" role="tab" aria-controls="all-leads" aria-selected="false">
         All Leads
-        (<%= @dashboard_service.all_leads.count %>)
+        (<%= service.all_leads.count %>)
       </button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="stale-leads-tab" data-bs-toggle="tab" data-bs-target="#stale-leads" type="button" role="tab" aria-controls="stale-leads" aria-selected="false">
         Stale
-        (<%= @dashboard_service.stale_leads.count %>)
+        (<%= service.stale_leads.count %>)
       </button>
     </li>
   </ul>
   <div class="tab-content">
-    <%= render partial: 'active_leads_appointments', locals: { appointments: @dashboard_service.upcoming_appointments } %>
-    <%= render partial: 'active_leads_my_leads', locals: { leads: @dashboard_service.my_leads } %>
-    <%= render partial: 'active_leads_all_leads', locals: { leads: @dashboard_service.all_leads } %>
-    <%= render partial: 'active_leads_stale_leads', locals: { leads: @dashboard_service.stale_leads } %>
+    <%= render partial: 'active_leads_appointments', locals: { appointments: service.upcoming_appointments } %>
+    <%= render partial: 'active_leads_my_leads', locals: { leads: service.my_leads } %>
+    <%= render partial: 'active_leads_all_leads', locals: { leads: service.all_leads } %>
+    <%= render partial: 'active_leads_stale_leads', locals: { leads: service.stale_leads } %>
   </div>
 </div>
