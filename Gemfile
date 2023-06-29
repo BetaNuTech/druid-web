@@ -61,6 +61,7 @@ gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
 gem 'net-imap', require: false
+gem 'inline_svg'
 
 
 group :development, :test do

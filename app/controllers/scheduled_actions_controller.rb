@@ -39,8 +39,9 @@ class ScheduledActionsController < ApplicationController
     else
       if @team_tasks
         # Show Lead Tasks for all users assigned to the current user's properties
-        user_ids = PropertyUser.where(property_id: current_user.property_ids).pluck(:user_id).uniq
-        skope = ScheduledAction.where(user_id: user_ids, target_type: 'Lead')
+        # user_ids = PropertyUser.where(property_id: current_user.property_ids).pluck(:user_id).uniq
+        # skope = ScheduledAction.where(user_id: user_ids, target_type: 'Lead')
+        skope = current_user.team_tasks
       else
         # Show only user Tasks
         skope = current_user.scheduled_actions

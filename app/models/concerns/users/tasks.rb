@@ -81,6 +81,11 @@ module Users
         return (showings/claimed_leads_count).round(2)
       end
 
+      def team_tasks
+        user_ids = PropertyUser.where(property_id: self.property_ids).pluck(:user_id).uniq
+        ScheduledAction.where(user_id: user_ids, target_type: 'Lead')
+      end
+
 
     end
   end

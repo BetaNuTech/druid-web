@@ -97,7 +97,7 @@ class ScheduledAction < ApplicationRecord
 
   # Used by ScheduledActions#index
   def start_time
-    self.completed_at || self.schedule.try(:date)
+    self.completed_at || self.schedule.try(:to_datetime) || self.created_at
   end
 
   def target_subject(user=nil)
@@ -196,6 +196,12 @@ class ScheduledAction < ApplicationRecord
 
   def completed?
     return completed_at.present?
+  end
+
+  def urgent?
+    return false if start_time.nil?
+
+    start_time <= Time.current + 1.day
   end
 
   private

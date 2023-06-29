@@ -1,0 +1,29 @@
+<div class="greybox">
+
+  <h4>
+    <%= inline_svg_tag('list-check.svg', height: '20px') %>
+    Tasks
+  </h4>
+
+  <div class="task-pills">
+    <div class="btn-group">
+      <%= link_to "My Tasks", "#", class: "btn btn-primary active", "aria-current": "page", id: "MyTasks-button", "data-showhide": "tasks" %>
+      <%= link_to "All Tasks", "#", class: "btn btn-primary", id: "TeamTasks-button", "data-showhide": "tasks" %>
+    </div>
+  </div>
+
+  <div class="dashboard-tasks g-0" id="MyTasks" data-showhide="tasks">
+    <% service.my_tasks.each do |task| %>
+      <%= my_task_icon(task) %>
+    <% end %>
+  </div>
+  <div></div>
+
+  <div class="dashboard-tasks g-0 d-none" id="TeamTasks" data-showhide="tasks">
+    <% service.all_tasks.each do |task| %>
+      <%= my_task_icon(task) %>
+    <% end %>
+  </div>
+
+</div>
+

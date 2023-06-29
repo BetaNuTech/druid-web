@@ -14,51 +14,9 @@
     <%= render partial: 'unclaimed_leads', locals: { leads: @dashboard_service.unclaimed_leads.limit(10)} %>
     <%= render partial: 'active_leads', locals: { service: @dashboard_service } %>
   </div>
-
   <div class="col-xxl-3">
-    <div id="MotivationalIcons">
-      <div>
-        <div class="motivational-icon">
-          <img src="/icons/icon-leadspeed.svg" height="54"><br>
-          <span id="LeadSpeedScore">A</span>
-        </div>
-      </div>
-      <div>
-        <div class="motivational-icon">
-          <img src="/icons/icon-tenacity.svg" height="54"><br>
-          <span id="LeadSpeedScore">9.0</span>
-        </div>
-      </div>
-      <div>
-        <div class="motivational-icon">
-          <!--show the div below if the user has achieved Star status-->
-          <div id="StarDiv">
-            <img src="/icons/icon-star.svg" height="54"><br>
-            <span id="StarText">You're a Star!</span>
-          </div>
-          <!--show the div below if the user has NOT achieved Star status-->
-          <div id="NotStarDiv">
-            <img src="/icons/icon-star.svg" height="54"><br>
-            <span id="NotStarText">Future Star</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="motivational-icon">
-          <!--show the div below if the user has achieved Superstar status-->
-          <div id="SuperstarDiv">
-            <img src="/icons/icon-superstar.svg" height="54"><br>
-            <span id="SuperstarText">SUPER STAR!</span>
-          </div>
-          <!--show the div below if the user has NOT achieved Superstar status-->
-          <div id="NotSuperstarDiv">
-            <img src="/icons/icon-superstar.svg" height="54"><br>
-            <span id="NotSuperstarText">Future Super Star</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <%= render partial: 'motivational_icons', locals: { service: @dashboard_service } %>
+    <%= render partial: 'my_tasks', locals: { service: @dashboard_service } %>
   </div>
 </div>
 

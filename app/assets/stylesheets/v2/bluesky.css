@@ -1154,10 +1154,6 @@ td:last-child, th:last-child {
   font-family: Futura Hv Bt;
 }
 
-#AllTasks {
-  display: none;
-}
-
 #SelectContactLeadName, #EmployeeName, #MetricsDates {
   font-family: Futura hv bt;
 }
