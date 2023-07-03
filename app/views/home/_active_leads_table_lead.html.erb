@@ -19,8 +19,8 @@
   </td>
   <td>
     <span class="show-on-mobile bold">Contact Info:<br /></span>
-    <%= number_to_phone(lead.phone1) %>
-    <%= number_to_phone(lead.phone2) %>
+    <span class="text-nowrap"><%= number_to_phone(lead.phone1) %></span>
+    <span class="text-nowrap"><%= number_to_phone(lead.phone2) %></span>
     <br/>
     <%= lead.email %>
   </td>

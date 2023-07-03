@@ -63,7 +63,7 @@ module LeadsHelper
       urgent: {icon_count: 5, color: 'red'}
     }
 
-    container_class = "lead_priority_icon_#{priority}"
+    container_class = "lead_priority_icon_#{priority} text-nowrap"
     color = icon_settings[priority][:color]
     count = icon_settings[priority][:icon_count]
 
