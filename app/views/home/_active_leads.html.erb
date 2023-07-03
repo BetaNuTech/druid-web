@@ -33,3 +33,30 @@
     <%= render partial: 'active_leads_stale_leads', locals: { leads: service.stale_leads } %>
   </div>
 </div>
+
+<div class="row" id="DashboardLeadLinks">
+  <div class="col-md-4 hide-on-mobile">
+    <div>
+      <%= link_to(search_leads_path(lead_search: {states: ['waitlist']}), class: 'icon-link') do %>
+        <%= image_tag('icon-waitlist.png') %>
+        Lead Waitlist
+      <% end %>
+    </div>
+  </div>
+  <div class="col-md-4 center">
+    <div>
+      <%= link_to(search_leads_path, class: 'icon-link' + nav_item_class(:leads, :search)) do %>
+        <%= inline_svg_tag('magnifying-glass.svg') %>
+        Search Leads
+      <% end %>
+    </div>
+  </div>
+  <div class="col-md-4" id="dashboard-link-new-lead">
+    <div>
+      <%= link_to(custom_new_leads_path(entry: 'walkin'), class: 'icon-link right' + nav_item_class(:leads, :new)) do %>
+        <%= inline_svg_tag('plus.svg') %>
+        Create A New Lead
+      <% end %>
+    </div>
+  </div>
+</div>
