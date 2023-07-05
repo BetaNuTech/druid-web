@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_24_195853) do
+ActiveRecord::Schema.define(version: 2023_07_05_202108) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -499,6 +499,17 @@ ActiveRecord::Schema.define(version: 2023_04_24_195853) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "referral_bounces", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "property_id", null: false
+    t.string "propertycode", null: false
+    t.string "campaignid", null: false
+    t.string "trackingid"
+    t.string "referer"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["property_id"], name: "index_referral_bounces_on_property_id"
+  end
+
   create_table "rental_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -790,6 +801,7 @@ ActiveRecord::Schema.define(version: 2023_04_24_195853) do
   add_foreign_key "property_listings", "properties", name: "property_listings_property_id_fk"
   add_foreign_key "property_users", "properties", name: "property_users_property_id_fk"
   add_foreign_key "property_users", "users", name: "property_users_user_id_fk"
+  add_foreign_key "referral_bounces", "properties"
   add_foreign_key "resident_details", "residents", name: "resident_details_resident_id_fk"
   add_foreign_key "residents", "leads", name: "residents_lead_id_fk"
   add_foreign_key "residents", "properties", name: "residents_property_id_fk"

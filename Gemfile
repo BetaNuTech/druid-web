@@ -108,4 +108,5 @@ group :development do
 
   # Supports the Rails Panel plugin for Chrome/Firefox # Broken by Rails 6.1
   #gem 'meta_request'
+  gem 'tty-progressbar'
 end
