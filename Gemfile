@@ -61,12 +61,8 @@ gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
 gem 'net-imap', require: false
-<<<<<<< HEAD
 gem 'inline_svg'
-
-=======
 gem 'faker'
->>>>>>> master
 
 group :development, :test do
   gem 'pry-doc'
