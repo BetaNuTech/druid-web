@@ -42,4 +42,9 @@ class StatsController < ApplicationController
     end
   end
 
+  def referral_bounces
+    authorize Stat
+    @service = ReferralBounceService.new
+  end
+
 end

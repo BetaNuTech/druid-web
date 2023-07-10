@@ -22,3 +22,8 @@ public/assets/
 spec/examples.txt
 storage/
 yarn-debug.log*
+.DS_Store
+._.DS_Store
+.vectordatadb
+.vectordatadb
+node_modules

@@ -21,4 +21,8 @@ class StatPolicy < ApplicationPolicy
   def lead_engagement_csv?
     user.admin?
   end
+
+  def referral_bounces?
+    user.admin?
+  end
 end

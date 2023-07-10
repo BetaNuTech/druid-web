@@ -1,4 +1,5 @@
 require_relative '../../db/seeds/seed_property_teams.rb'
+require 'faker'
 
 namespace :db do
 
@@ -199,6 +200,46 @@ namespace :db do
     desc "Load Lead Referral Sources"
     task :lead_referral_sources => :environment do
       LeadReferralSource.load_seed_data
+    end
+
+    desc "Create Sample Referral Bounces (dev only)"
+    task :referral_bounces => :environment do
+      if Rails.env.production?
+        puts "Refusing to create test data in production!"
+        return true
+      end
+
+
+      record_count = 50
+      campaigns = Array.new(5) do
+        random_string = "C-" + ('A'..'Z').to_a.sample(6).join
+        url = Faker::Internet.url
+        [random_string, url]
+      end
+      properties = Property.active.all.map{|f| [f, f.name[0..4].downcase]}
+
+      puts "*** Creating sample Referral Bounce Records (#{record_count} per property)"
+
+      properties.each do |property|
+        puts "* #{property.first.name} "
+        bar = TTY::ProgressBar.new('[:bar]', total: record_count)
+        record_count.times do
+          campaign = campaigns.sample(1).first
+          bounce = FactoryBot.create(:referral_bounce,
+                                     property: property.first,
+                                     propertycode: property.last,
+                                     campaignid: campaign.first,
+                                     referer: campaign.last,
+                                     trackingid: 'T-' + SecureRandom.hex(10).upcase
+                                    )
+          new_timestamp = Time.current - rand(15_000_000)
+          bounce.updated_at = bounce.created_at = new_timestamp
+          bounce.update_columns(created_at: new_timestamp, updated_at: new_timestamp)
+          bar.advance
+        end
+        puts
+      end
+      puts "DONE."
     end
 
   end # namespace :seed

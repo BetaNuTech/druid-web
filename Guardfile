@@ -68,6 +68,12 @@ guard :rspec, cmd: "NO_TEST_COVERAGE=true rspec " do
   watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$}) do |m|
     Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
   end
+
+  # Run ctags on file changes
+  if system('which ctags > /dev/null')
+    watch(%r{^app/(.+)\.rb$}) { `bin/update_tags` }
+    watch(%r{^lib/(.+)\.rb$}) { `bin/update_tags` }
+  end
 end
 
 guard 'rake', task: 'docs:compile:dot', run_on_all: true do

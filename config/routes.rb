@@ -18,11 +18,12 @@ Rails.application.routes.draw do
   root to: redirect('/auth/sign_in')
 
   get 'v2', to: 'home#design2'
-  
+
   get '/home', to: 'home#dashboard'
 
   namespace :api do
     namespace :v1 do
+      get 'referral_bounces/refer'
       get 'docs/swagger.:format', to: "swagger#index"
       get 'docs', to: "swagger#apidocs"
       resources :leads, only: [:index, :create ]
@@ -123,6 +124,7 @@ Rails.application.routes.draw do
     get 'manager', to: 'manager'
     get 'report_csv', to: 'report_csv'
     get 'lead_engagement_csv', to: 'lead_engagement_csv'
+    get 'referral_bounces', to: 'referral_bounces'
   end
 
   namespace :home do

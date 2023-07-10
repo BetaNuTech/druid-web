@@ -63,3 +63,7 @@
     :slug: "Zillow"
     :incoming: true
     :active: true
+  - :name: "AdBounce"
+    :slug: "adbounce"
+    :incoming: true
+    :active: true

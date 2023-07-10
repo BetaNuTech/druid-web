@@ -2,6 +2,12 @@ module Properties
   module YardiVoyager
     extend ActiveSupport::Concern
 
+    class_methods do
+      def with_yardi_code(code)
+        Leads::Adapters::YardiVoyager.property(code)
+      end
+    end
+
     included do
 
       def new_leads_for_sync

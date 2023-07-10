@@ -61,8 +61,12 @@ gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
 gem 'net-imap', require: false
+<<<<<<< HEAD
 gem 'inline_svg'
 
+=======
+gem 'faker'
+>>>>>>> master
 
 group :development, :test do
   gem 'pry-doc'
@@ -70,7 +74,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'byebug'
   gem 'bundler-audit'
-  gem 'faker'
   gem 'factory_bot_rails'
 end
 
@@ -111,4 +114,5 @@ group :development do
   # Supports the Rails Panel plugin for Chrome/Firefox # Broken by Rails 6.1
   #gem 'meta_request'
   gem 'ask_chatgpt'
+  gem 'tty-progressbar'
 end
