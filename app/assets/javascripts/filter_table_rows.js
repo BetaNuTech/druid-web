@@ -35,8 +35,13 @@ function filterTableRows(tableId, columnIndexes) {
 function sumFilteredTable(tableId) {
   document.addEventListener("turbolinks:load", function() {
     const table = document.getElementById(tableId);
-    const filterRow = table?.querySelector('tr.filter-row');
-    const filterInput = filterRow?.querySelector('input');
+    if (!table) return;
+
+    const filterRow = table.querySelector('tr.filter-row');
+
+    if (!filterRow) return;
+
+    const filterInput = filterRow.querySelector('input');
 
     if (!filterInput) return;
 
