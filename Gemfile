@@ -61,6 +61,7 @@ gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
 gem 'net-imap', require: false
+gem 'faker'
 
 group :development, :test do
   gem 'pry-doc'
@@ -68,7 +69,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'byebug'
   gem 'bundler-audit'
-  gem 'faker'
   gem 'factory_bot_rails'
 end
 
