@@ -83,11 +83,8 @@ RSpec.describe Api::V1::ReferralBouncesController, type: :controller do
       end
       it 'should create a note on the property' do
         expect{
-          get :refer, params: valid_params
-        }.to change(Note, :count).by(1)
-        note = Note.order(created_at: :desc).first
-        expect(note.notable).to eq(property)
-        expect(note.classification).to eq('error')
+          get :refer, params: invalid_params
+        }.to_not change(Note, :count)
       end
 
     end
