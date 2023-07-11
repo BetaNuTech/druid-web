@@ -19,3 +19,5 @@ Prefer using service objects like Leads::Creator and Users::Creator
 Use Pundit policies defined in app/policies/ to restrict access to both controller actions and data Scope.
 Use Pundit model policy allowed_params to determine valid model_params in controllers.
 Tokens in Bluesky usually refer to the api_token of a LeadSource.
+Lead data from incoming calls is processed by the CallCenter lead adapter for Blueconnect.
+Modules located in app/leads/adapters process external Lead data coming into Bluesky.
