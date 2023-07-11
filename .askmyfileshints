@@ -1,8 +1,8 @@
-### INSTRUCTIONS
 My application is called Bluesky. It is written in Ruby 3 using the Ruby on Rails framework version 6.
 My application Views use Bootstrap 4 framework css classes
 My application uses both the asset pipeline and webpacker.
-Prefer and consider sources in app/models/ and app/controllers/ and spec/models to answer questions about models and services.
+Important: there is a tags file containing class and method data.
+Important: Prefer and consider sources in app/models/ and app/lib and and app/controllers/ and spec/models to answer questions about models and services.
 Model files are in app/models
 Controller files are in app/controllers
 Services files are in app/lib
@@ -10,12 +10,12 @@ Consider the header of model files when determining table columns.
 Consider sources in app/controllers/ to answer questions about controllers
 Consider sources in app/lib/ to answer questions about models and services
 Prefer and consider db/schema.rb when answering questions about the database schema and model columns or attributes.
-Consider Gemfile when answering questions about gems used in Bluesky. 
+Consider Gemfile when answering questions about gems used in Bluesky.
 Model table schemas are detailed in the model files in app/models/
 The application schema and schema for all models are described in db/schema.rb as a Rails migration.
 Files in app/views are less important.
 Assume questions are in the context of my application and the libraries and frameworks used in it.
-###
-
-
-
+Prefer using service objects like Leads::Creator and Users::Creator
+Use Pundit policies defined in app/policies/ to restrict access to both controller actions and data Scope.
+Use Pundit model policy allowed_params to determine valid model_params in controllers.
+Tokens in Bluesky usually refer to the api_token of a LeadSource.

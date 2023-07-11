@@ -53,3 +53,4 @@ test/fixtures/
 tmp/
 yarn-debug.log
 yarn.lock
+doc/yardi/api/samples/
