@@ -324,6 +324,7 @@ RSpec.describe Lead, type: :model do
 
         before do
           seed_engagement_policy
+          agent.property.switch_setting!(:lead_auto_welcome, true)
         end
 
         it "sends an sms opt-in message upon claiming" do
@@ -634,9 +635,15 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "requesting sms communication authorization" do
-      let(:lead) { create(:lead, state: 'open',  preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
-      let(:lead2) { create(:lead, state: 'open',  preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
-      let(:lead3) { create(:lead, state: 'open',  preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
+      let(:property) {
+        agent_property = agent.property
+        agent_property.switch_setting!(:lead_auto_welcome, true)
+        agent_property.save!
+        agent_property
+      }
+      let(:lead) { create(:lead, state: 'open', property:, preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
+      let(:lead2) { create(:lead, state: 'open', property:, preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
+      let(:lead3) { create(:lead, state: 'open', property:, preference: create(:lead_preference, { optin_sms: false, optin_sms_date: nil })) }
       describe "when there are no duplicates" do
         describe 'when the lead has not responded to an authorization request' do
           it "should send the sms optin request" do
@@ -1170,7 +1177,7 @@ RSpec.describe Lead, type: :model do
         expect(lead.state).to eq('future')
         expect(task.description).to match(/Follow up on postponed lead/)
         expect(task.user).to eq(user)
-        expect(task.target).to eq(user)
+        expect(task.target).to eq(lead)
         expect(user.scheduled_actions).to include(task)
       end
     end

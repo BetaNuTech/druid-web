@@ -16,6 +16,8 @@ module Leads
       end
 
       def reassign_scheduled_actions
+        return true unless self.user
+
         EngagementPolicyScheduler.new.reassign_lead_agent(lead: self, agent: self.user)
       end
 
