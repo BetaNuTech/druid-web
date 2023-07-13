@@ -43,6 +43,7 @@ RSpec.describe "Lead Message Preference Compliance" do
       }
 
     before do
+      lead.property.switch_setting!(:lead_auto_welcome, true)
       seed_engagement_policy
     end
 
