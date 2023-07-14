@@ -63,12 +63,15 @@ RSpec.describe LeadsController, type: :controller do
       end
 
       describe "as a corporate user" do
-        it "should display all leads" do
+        it "should display leads from active properties" do
           Lead.destroy_all; lead1; lead2
           assert(lead1.property.active)
           refute(lead2.property.active)
           assert(Lead.count == 2)
           sign_in corporate
+          get :index, params: {lead_search: {states: ['open']}}
+          expect(assigns[:leads].count).to eq(1)
+          lead2.property.update(active: true)
           get :index, params: {lead_search: {states: ['open']}}
           expect(assigns[:leads].count).to eq(2)
         end
