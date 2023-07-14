@@ -125,6 +125,8 @@ module Leads
     end
 
     def possible_property_leads
+      return Lead.none unless @property
+
       @property.leads.open.ordered_by_created
     end
 
@@ -139,7 +141,7 @@ module Leads
             @assignments = AgentAssignment.collection_from_leads(leads: @leads, user: @user)
           else
             # Assignments empty, leads empty, property missing
-            raise "An array of leads or property must be provided to Leads::AgentAssigner"
+            return []
           end
         else
           # Assignments empty, leads present
