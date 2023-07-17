@@ -40,29 +40,6 @@ Whenever a new config file MUST be created, be sure to:
   * add the config file to `.gitignore`
   * we do not want to create configuration files intended only for development/developers to be checked into source control
 
-### CDR Database
-
-Setup of the Asterisk Call Data Record database is not performed by `bin/setup`.
-
-In production, this database is a replica MySQL instance. In development, it is best to load a database
-dump into a local instance.
-
-Example development setup would look like this:
-
-```
-mysql -e 'create database asteriskcdrdb; grant all privileges on asteriskcdrdb.* to 'cdrdb'@'localhost' identified by 'cdrdb_Password';"
-mysql asteriskcdrdb < db/cdrdb-schema.sql
-# OR
-mysql asteriskcdrdb < path/to/cdrdb-dump.sql
-```
-
-And add the `CDRDB_URL` environment variable to `.env`:
-
-```
-CDRDB_URL='mysql2://cdrdb:cdrdb_Password@localhost/asteriskcdrdb'
-```
-
-
 ## Running
 
 In development it is recommended to use the `bin/server` script to run the
@@ -106,6 +83,8 @@ The following libraries/tools are used for testing:
 
 We suggest running `bundle exec guard` in a dedicated console window/tab.
 Guard automatically runs tests when files are added/updated.
+
+Guard also automatically updates the application `tags` file for use in code editors.
 
 Run `bundle exec rspec` to run the entire test suite. When Rspec has completed
 running the tests, a test coverage report is automatically created in `coverage/index.html`
@@ -153,6 +132,13 @@ git push heroku-staging staging:master && \
 ### Deployment Helper
 
 The `bin/deploy` script handles creation of a git tag, deployment of the application to Heroku, and running of migrations on Heroku
+
+First, the remotes for staging and production must be set up:
+
+```
+git remote add heroku-staging https://git.heroku.com/druid-staging.git
+git remote add heroku-prod https://git.heroku.com/druid-prod.git
+```
 
 For example: `bin/deploy staging` will use the current branch, create a staging-YYYYMMDD tag, push the tag to origin, push the code to the `heroku-staging` origin, then run migrations on the staging application.
 
@@ -210,12 +196,6 @@ ACTIVESTORAGE_S3_ACCESS_KEY
 ACTIVESTORAGE_S3_SECRET_KEY
 APPLICATION_HOST=www.druidapp.com
 APPLICATION_DOMAIN=druidapp.com
-CDRDB_S3_ACCESS_KEY=''
-CDRDB_S3_BUCKET='druidaudio'
-CDRDB_S3_REGION='us-east-2'
-CDRDB_AWSCLI_PROFILE='asterisk-druidaudio'
-CDRDB_S3_SECRET_KEY=''
-CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'
 CRYPTO_KEY=XXX
 DEBUG_MESSAGE_API=false
 EXCEPTION_NOTIFIER_ENABLED=true
@@ -315,102 +295,6 @@ Leads should be automatically created based on incoming calls. A rake task shoul
 
 Problems with replication can magnify beyond repair if they are not corrected in a timely fashion. A scheduled rake task performs checks on the CDR database and sends notifications if any problems are found: `rake leads:calls:db_check`
 
-#### BlueSky Configuration
-
-The `CDRDB_URL` for production should look like this:
-
-```
-CDRDB_URL='mysql2://USERNAME:PASSWORD@asterisk-druid.ckdn2rnrfzse.us-east-2.rds.amazonaws.com/asteriskcdrdb?sslca=config/amazon-rds-ca-cert.pem'
-```
-
-### CDR Recordings
-
-Call recordings in WAV format are synchronized from the Asterisk phone system to an S3 bucket on Amazon.
-
-#### BlueSky Configuration
-
-Integration with this S3 bucket requires the following environment variables to be set:
-
-```
-CDRDB_S3_BUCKET='druidaudio'
-CDRDB_S3_REGION='us-east-2'
-CDRDB_S3_ACCESS_KEY=XXX
-CDRDB_S3_SECRET_KEY=XXX
-```
-
-#### Determine CDR Recording Bucket Usage
-
-A helpful script at `bin/bucket_size` can be used to determine S3 bucket usage. This tool requires the `awscli` tools to be installed, and configuration placed in `~/.aws/credentials`
-
-```
-# ~/.aws/credentials
-
-[asterisk-druidaudio]
-aws_access_key_id = XXX
-aws_secret_access_key = XXX
-region = us-east-2
-```
-
-The following environment variables must be set in `.env`:
-
-```
-CDRDB_S3_BUCKET='druidaudio'
-CDRDB_AWSCLI_PROFILE='asterisk-druidaudio'
-```
-
-#### Amazon Configuration
-
-The access key and secret are credentials assocated with the `asterisk-druidaudio` IAM user.
-
-Access Policy (`druid-S3-druidaudio`):
-
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListBucketMultipartUploads",
-                "s3:ListBucket",
-                "s3:GetBucketLocation"
-            ],
-            "Resource": "arn:aws:s3:::druidaudio"
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": [
-                "s3:PutObject",
-                "s3:GetObjectAcl",
-                "s3:GetObject",
-                "s3:AbortMultipartUpload",
-                "s3:DeleteObjectVersion",
-                "s3:GetObjectVersionAcl",
-                "s3:DeleteObject",
-                "s3:PutObjectAcl",
-                "s3:GetObjectVersion"
-            ],
-            "Resource": "arn:aws:s3:::druidaudio/*"
-        }
-    ]
-}
-```
-
-### Papertrail
-
-Papertrail provides log aggregation services.
-
-On Heroku, this service is provisioned as an addon using the 'Choklad' (free) tier.
-
-#### BlueSky Configuration
-
-```
-# Environment Variables
-RAILS_LOG_TO_STDOUT=enabled
-PAPERTRAIL_API_TOKEN=XXX (automatically set by addon configuration)
-```
 
 ### ActiveStorage
 
@@ -465,17 +349,6 @@ Example Access Policy:
         }
     ]
 }
-```
-
-#### BlueSky Configuration
-
-* Gem: `scout_apm`
-
-```
-# Environment Variables
-SCOUT_LOG_LEVEL=WARN
-SCOUT_MONITOR=true
-SCOUT_KEY=XXX
 ```
 
 ### Mailgun
