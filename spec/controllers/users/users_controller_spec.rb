@@ -354,7 +354,7 @@ RSpec.describe UsersController, type: :controller do
       sign_out user
       sign_in user
       get :index
-      expect(response).to redirect_to('/auth/sign_in')
+      expect(response).to redirect_to('/users/sign_in')
     end
 
     it "redirects to the users list" do

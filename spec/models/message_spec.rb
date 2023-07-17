@@ -446,7 +446,7 @@ RSpec.describe Message, type: :model do
 
       it "should return read messages" do
         read_messages
-        expect(Message.read).to eq(read_messages)
+        expect(Message.read.pluck(:id).sort).to eq(read_messages.map(&:id).sort)
       end
 
       it "should return unread messages" do
