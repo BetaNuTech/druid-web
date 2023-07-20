@@ -247,6 +247,15 @@ RSpec.describe MessageTemplatesController, type: :controller do
         expect(MessageTemplate.count).to eq(count - 1)
       end
     end
+    describe "as a corporate user" do
+      it 'Should delete the message template' do
+        sign_in corporate
+        count = MessageTemplate.count
+        delete :destroy, params: {id: agent1_shared_email_template.id}
+        expect(response).to redirect_to(message_templates_path)
+        expect(MessageTemplate.count).to eq(count - 1)
+      end
+    end
   end
 
 end
