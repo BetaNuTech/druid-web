@@ -1,0 +1,34 @@
+In the Bluesky application, the Lead model has a state machine that defines the possible states and events for a Lead record. The possible states for a Lead are 'open', 'prospect', 'showing', 'application', 'approved', 'denied', 'resident', 'exresident', 'disqualified', 'abandoned', 'future', and 'waitlist'. The state machine is defined in the Leads::StateMachine concern.
+
+The state machine includes the following states:
+- 'open': This is the default state for a new Lead record. It represents a Lead that has been created but not yet progressed to the prospect stage.
+- 'prospect': This state represents a Lead that has progressed beyond the open stage and is now considered a prospect.
+- 'showing': This state represents a Lead that is scheduled for a showing.
+- 'application': This state represents a Lead that has submitted an application.
+- 'approved': This state represents a Lead whose application has been approved.
+- 'denied': This state represents a Lead whose application has been denied.
+- 'resident': This state represents a Lead that has become a resident.
+- 'exresident': This state represents a Lead that was previously a resident but is no longer.
+- 'disqualified': This state represents a Lead that has been disqualified for some reason.
+- 'abandoned': This state represents a Lead that has been marked as abandoned.
+- 'future': This state represents a Lead that has been postponed for future consideration.
+- 'waitlist': This state represents a Lead that has been placed on a waitlist.
+
+The state machine also defines several events that can transition a Lead from one state to another. These events include:
+- 'claim': This event transitions a Lead from the open state to the prospect state. It is triggered when a user claims a Lead.
+- 'disqualify': This event transitions a Lead from any state to the disqualified state. It is used to mark a Lead as disqualified for some reason.
+- 'postpone': This event transitions a Lead from any state to the future state. It is used to postpone the progress of a Lead.
+- 'abandon': This event transitions a Lead from any state to the abandoned state. It is used to mark a Lead as abandoned.
+- 'apply': This event transitions a Lead from the prospect state to the application state. It is triggered when a Lead submits an application.
+- 'approve': This event transitions a Lead from the application state to the approved state. It is triggered when a Lead's application is approved.
+- 'deny': This event transitions a Lead from the application state to the denied state. It is triggered when a Lead's application is denied.
+- 'requalify': This event transitions a Lead from the disqualified state back to the prospect state. It is used to requalify a Lead that was previously disqualified.
+
+When a Lead transitions from one state to another, several actions are performed. These actions include:
+- Creating a LeadTransition record: A LeadTransition record is created to track the transition from the previous state to the current state. This record includes information such as the last state, current state, classification, and memo.
+- Creating a LeadTransitionNote: A LeadTransitionNote is created to provide additional information about the transition. This note includes details about the transition, such as the previous state, current state, and any additional comments or reasons for the transition.
+- Creating scheduled actions: After a Lead transitions to a new state, additional scheduled actions may be created based on the new state. These actions can include tasks or reminders related to the Lead's progress.
+
+In addition to the state machine, the Lead model includes other concerns and modules that provide additional functionality and behavior for Leads, such as engagement policy actions, priority, search, messaging, duplicates, export, referrals, broadcasts, remote synchronization, roommates, and contact events. These concerns define additional methods and logic that can be used to manipulate and interact with Lead records.
+
+Overall, the state machine and related concerns provide a structured way to manage the progress and lifecycle of Lead records in the Bluesky application.

@@ -44,4 +44,11 @@ class MessageDeliveryAdapter < ApplicationRecord
   def assign_api_token
     self.api_token ||= Digest::SHA256.hexdigest(DateTime.current.to_s + rand.to_s)[0..31]
   end
+
+  def reset_api_token
+    self.api_token = nil
+    assign_api_token
+    save
+    self.api_token
+  end
 end
