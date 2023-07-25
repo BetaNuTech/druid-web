@@ -213,6 +213,65 @@ Incoming SMS messages from Twilio are processed using a webhook at `https://www.
 
 # Amazon AWS
 
+## ActiveStorage
+
+In staging and production we use ActiveStorage backed by Amazon S3 to store binary attachments.
+
+### BlueSky Configuration
+
+```
+# Environment Variables
+ACTIVESTORAGE_S3_BUCKET="druid-prod-activestorage"
+ACTIVESTORAGE_S3_REGION="us-east-1"
+ACTIVESTORAGE_S3_ACCESS_KEY="XXX"
+ACTIVESTORAGE_S3_SECRET_KEY="XXX"
+```
+
+### Amazon Configuration
+
+The S3 bucket is configured to block all public access.
+
+The access key and secret are credentials assocated with the `druid-staging-activestorage` or `druid-prod-activestorage` IAM users.
+
+Example Access Policy:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation",
+                "s3:ListBucketMultipartUploads"
+            ],
+            "Resource": "arn:aws:s3:::druid-staging-activestorage"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:AbortMultipartUpload",
+                "s3:DeleteObject",
+                "s3:DeleteObjectVersion",
+                "s3:GetObject",
+                "s3:GetObjectAcl",
+                "s3:GetObjectVersion",
+                "s3:GetObjectVersionAcl",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:PutObjectAclVersion"
+            ],
+            "Resource": "arn:aws:s3:::druid-staging-activestorage/*"
+        }
+    ]
+}
+```
+
+## Blueconnect (AWS Callcenter)
+
+
+
 ## TODO
 
 # Slack
