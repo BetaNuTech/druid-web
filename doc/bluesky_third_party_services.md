@@ -33,16 +33,23 @@ The following buildpacks are necessary for operation.
 * `heroku/nodejs`
 * `heroku/ruby`
 
+### Processes
+
+* 2x Web - Puma
+* 2x Worker - Rails ActionJob worker backed by PostgreSQL
+
+( See Procfile )
+
 ### Add-ons
 
 Heroku addons provide all of the essential services used by the application:
 
 #### Critical Services
 * Database - Heroku Postgres (Plans - Staging: `Basic`, Production: `Standard-0`)
-* Memcached Key/Value Store for Caching - MemCachier (Staging: `developer`, Production: `developer`)
-* SMTP Outgoing Email - Mailgun (Staging: `Concept 50k`, Production: `Concept-50`)
+* Cache - Memcached - MemCachier (Staging: `developer`, Production: `developer`)
 
 #### Necessary Services
+* SMTP Outgoing Email - Mailgun (Staging: `Concept 50k`, Production: `Concept-50`)
 * Scheduled Workers - Heroku Scheduler
 
 #### Optional Services
