@@ -2084,6 +2084,7 @@ parse_plain	./app/lib/leads/adapters/cloud_mailin/rentcafe_parser.rb	/^        d
 parse_plain	./app/lib/leads/adapters/cloud_mailin/sample_parser.rb	/^          def parse_plain(data)$/;"	f	class:Leads.Adapters.CloudMailin.SampleParser
 parse_plain	./app/lib/leads/adapters/cloud_mailin/zillow_parser.rb	/^          def parse_plain(data)$/;"	f	class:Leads.Adapters.CloudMailin.ZillowParser
 parse_status	./app/lib/messages/delivery_adapters/cloudmailin/health.rb	/^        def parse_status(json)$/;"	f	class:Messages.DeliveryAdapters.Cloudmailin.Health
+parse_text_v1	./app/lib/leads/adapters/cloud_mailin/rent_dot_com_parser.rb	/^        def self.parse_text_v1(data)$/;"	F	class:Leads.Adapters.CloudMailin.RentDotComParser
 parse_v1	./app/lib/leads/adapters/cloud_mailin/apartment_list_dot_com_parser.rb	/^        def self.parse_v1(data)$/;"	F	class:Leads.Adapters.CloudMailin.ApartmentListDotComParser
 parse_v1	./app/lib/leads/adapters/cloud_mailin/apartmentguide_dot_com_parser.rb	/^        def self.parse_v1(data)$/;"	F	class:Leads.Adapters.CloudMailin.ApartmentguideDotComParser
 parse_variant_1	./app/lib/leads/adapters/cloud_mailin/lineupsio_parser.rb	/^        def self.parse_variant_1(data)$/;"	F	class:Leads.Adapters.CloudMailin.LineupsioParser

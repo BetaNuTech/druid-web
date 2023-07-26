@@ -4,22 +4,77 @@ module Leads
 
       class RentDotComParser
         def self.match?(data)
+          data = data.with_indifferent_access
           return (data.fetch(:envelope,{}).fetch(:from,'')).
             match?(/(?<!for)rent.com/) ||
           (data.fetch('headers',{}).fetch('From','')).
+            match?(/(?<!for)rent.com/)||
+          (data.fetch('headers',{}).fetch('Reply-To','')).
             match?(/(?<!for)rent.com/)
         end
 
         def self.parse(data)
-          body = data.fetch(:html,'')
+          data = data.with_indifferent_access
 
-          if ( body.match?(/checked you guys out/) rescue false )
+          if data.fetch(:plain,'').match?(/First Name/)
+            return self.parse_text_v1(data)
+          end
+
+          if (data.fetch(:html,'').match?(/checked you guys out/) rescue false )
             return self.parse_html_v2(data)
           else
             return self.parse_html_v1(data)
           end
 
         end
+
+        def self.parse_text_v1(data)
+          referral = "Rent.com"
+          message_id = data.fetch(:headers,{}).fetch("Message-ID","").strip
+          agent_notes = message_id.empty? ? nil : "/// Message-ID: #{message_id}"
+
+          text_body = data.fetch(:plain,'')
+          first_name = ( text_body.match(/First Name: (.*)$/)[1] rescue '').strip
+          last_name = ( text_body.match(/Last Name: (.*)$/)[1] rescue '').strip
+          phone1 = ( text_body.match(/Phone: (.*)$/)[1] rescue '').strip
+          email = ( text_body.match(/Email: (.*)$/)[1] rescue '').strip
+          notes = ( text_body.match(/Message: (.*)$/)[1] rescue '').strip
+          move_in = ( text_body.match(/Move In Date: (.*)$/)[1] rescue '').strip
+
+          title = nil
+          phone2 = nil
+          fax = nil
+          baths = nil
+          beds = nil
+          smoker = nil
+          pets = nil
+
+          parsed = {
+            title: title,
+            first_name: first_name,
+            last_name: last_name,
+            referral: referral,
+            phone1: phone1,
+            phone1_type: 'Cell',
+            phone2: phone2,
+            phone2_type: 'Cell',
+            email: email,
+            fax: fax,
+            notes: agent_notes,
+            preference_attributes: {
+              baths: baths,
+              beds: beds,
+              notes: notes,
+              smoker: smoker,
+              raw_data: data.to_json,
+              pets: pets,
+              move_in: move_in
+            }
+          }
+
+          return parsed
+        end
+
 
         def self.parse_html_v2(data)
           body = data.fetch(:html,'')
@@ -67,7 +122,7 @@ module Leads
             title: title,
             first_name: first_name,
             last_name: last_name,
-            referral: "Rent.com",
+            referral: referral,
             phone1: phone1,
             phone1_type: 'Cell',
             phone2: phone2,

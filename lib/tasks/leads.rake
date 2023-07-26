@@ -13,7 +13,7 @@ namespace :leads do
     puts "Done."
   end
 
-  desc "Detect and associate Residents" 
+  desc "Detect and associate Residents"
   task auto_lodge: :environment do
     puts "*** Automatically lodging leads matching current residents..."
     service = Residents::LeadMatcher.new
@@ -350,7 +350,7 @@ namespace :leads do
     task :reparse => :environment do
 
       start_date = 1.month.ago.beginning_of_day
-      null_leads = Lead.where(first_name: 'Null', referral: 'Null', created_at: start_date..DateTime.current)
+      null_leads = Lead.where(created_at: start_date.., classification: 'parse_failure')
       puts "* Re-Processing #{null_leads.count} 'Null' Leads since #{start_date.to_s(:long)}"
       processed = 0
       failed = 0
@@ -375,7 +375,7 @@ namespace :leads do
       end
       puts "DONE. #{processed} records saved out of #{new_leads.size}"
 
-      new_leads.each do |new_lead|
+      new_leads.select{|lead| lead.valid?}.each do |new_lead|
         if new_lead.valid?
           puts " - Added: %s://%s/leads/%s" % [
             ENV['APPLICATION_PROTOCOL'],
