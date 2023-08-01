@@ -67,10 +67,22 @@ When lead emails data is posted to the Lead API endpoint at /api/v1/leads.json, 
 8. If the lead record is successfully created, the `LeadsController` returns a JSON response with the newly created lead record.
 9. If there are any errors or validation failures during the lead creation process, the `LeadsController` returns an error response with the appropriate error messages.
 
+### Adding a New Cloudmailin Parser
+
+So, marketing is now using a new Lead source, what to do?
+
+1. Marketing should provide the office email for the property (which should be configured to forward emails to the Cloudmailin email address).
+2. Submit a test contact from the Ad source
+3. After a minute go to the Lead search page and search for today's Disqualified leads, use "Null" in the search text, and sort by date.
+4. Look at the source email for a few "Null" leads and find your contact. Copy/record the Lead ID.
+5. 
+
 
 
 ## Blueconnect (AWS CallCenter)
 
 Blueconnect (AWS callcenter) is managed at [https://blueconnect01.my.connect.aws](https://blueconnect01.my.connect.aws).
+
+
 
 
