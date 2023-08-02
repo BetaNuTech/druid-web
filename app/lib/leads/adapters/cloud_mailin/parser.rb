@@ -45,7 +45,7 @@ module Leads
         attr_reader :parser, :data
 
         def initialize(data)
-          @data = data
+          @data = data.to_h.with_indifferent_access
           @parser = detect_source(@data)
         end
 
