@@ -246,6 +246,7 @@ CreateRentalTypes	./db/migrate/20180223195150_create_rental_types.rb	/^class Cre
 CreateResidentDetails	./db/migrate/20180301201857_create_resident_details.rb	/^class CreateResidentDetails < ActiveRecord::Migration[5.1]$/;"	c
 CreateResidents	./db/migrate/20180301200215_create_residents.rb	/^class CreateResidents < ActiveRecord::Migration[5.1]$/;"	c
 CreateRoles	./db/migrate/20180108220517_create_roles.rb	/^class CreateRoles < ActiveRecord::Migration[5.1]$/;"	c
+CreateRoommatePreferences	./db/migrate/20230808225603_create_roommate_preferences.rb	/^class CreateRoommatePreferences < ActiveRecord::Migration[6.1]$/;"	c
 CreateRoommates	./db/migrate/20200615182137_create_roommates.rb	/^class CreateRoommates < ActiveRecord::Migration[6.0]$/;"	c
 CreateScheduledActions	./db/migrate/20180410160239_create_scheduled_actions.rb	/^class CreateScheduledActions < ActiveRecord::Migration[5.1]$/;"	c
 CreateSchedules	./db/migrate/20180309172152_create_schedules.rb	/^class CreateSchedules < ActiveRecord::Migration[5.1]$/;"	c
@@ -550,6 +551,7 @@ RolesTest	./test/system/roles_test.rb	/^class RolesTest < ApplicationSystemTestC
 Roommate	./app/lib/yardi/voyager/data/roommate.rb	/^      class Roommate$/;"	c	class:Yardi.Voyager.Data
 Roommate	./app/models/roommate.rb	/^class Roommate < ApplicationRecord$/;"	c
 RoommatePolicy	./app/policies/roommate_policy.rb	/^class RoommatePolicy < ApplicationPolicy$/;"	c
+RoommatePreference	./app/models/roommate_preference.rb	/^class RoommatePreference < ApplicationRecord$/;"	c
 Roommates	./app/models/concerns/leads/roommates.rb	/^  module Roommates$/;"	m	class:Leads
 RoommatesController	./app/controllers/roommates_controller.rb	/^class RoommatesController < ApplicationController$/;"	c
 RoommatesHelper	./app/helpers/roommates_helper.rb	/^module RoommatesHelper$/;"	m
@@ -1033,6 +1035,7 @@ change	./db/migrate/20230209054040_add_company_and_company_title_to_leads.rb	/^ 
 change	./db/migrate/20230209062348_add_appsettings_to_properties.rb	/^  def change$/;"	f	class:AddAppsettingsToProperties
 change	./db/migrate/20230424195853_add_vip_to_leads.rb	/^  def change$/;"	f	class:AddVipToLeads
 change	./db/migrate/20230705202108_create_referral_bounces.rb	/^  def change$/;"	f	class:CreateReferralBounces
+change	./db/migrate/20230808225603_create_roommate_preferences.rb	/^  def change$/;"	f	class:CreateRoommatePreferences
 change_classification?	./app/policies/lead_policy.rb	/^  def change_classification?$/;"	f
 change_contact_preferences?	./app/policies/lead_policy.rb	/^  def change_contact_preferences?$/;"	f
 change_remoteid?	./app/policies/lead_policy.rb	/^  def change_remoteid?$/;"	f
@@ -1541,9 +1544,11 @@ handle_message_delivery	./app/models/concerns/leads/messaging.rb	/^      def han
 handle_message_delivery	./app/models/concerns/users/messaging.rb	/^      def handle_message_delivery(*_args)$/;"	f	class:Users.Messaging
 handle_message_delivery	./app/models/message.rb	/^  def handle_message_delivery(delivery)$/;"	f	class:Message
 handle_message_response	./app/models/lead_preference.rb	/^  def handle_message_response(message_delivery)$/;"	f	class:LeadPreference
+handle_message_response	./app/models/roommate_preference.rb	/^  def handle_message_response(message_delivery)$/;"	f	class:RoommatePreference
 handle_scheduled_action_completion	./app/models/engagement_policy_scheduler.rb	/^  def handle_scheduled_action_completion(scheduled_action, user: nil)$/;"	f	class:EngagementPolicyScheduler
 handle_scheduled_action_completion	./app/models/lead.rb	/^    def handle_scheduled_action_completion(scheduled_action=nil)$/;"	f	class:Lead
 handle_sms_reply	./app/models/lead_preference.rb	/^  def handle_sms_reply(message_delivery)$/;"	f	class:LeadPreference
+handle_sms_reply	./app/models/roommate_preference.rb	/^  def handle_sms_reply(message_delivery)$/;"	f	class:RoommatePreference
 has_body?	./app/models/message_type.rb	/^  def has_body?$/;"	f	class:MessageType
 has_duplicates?	./app/models/concerns/leads/duplicates.rb	/^      def has_duplicates?$/;"	f	class:Leads.Duplicates
 has_preferences?	./app/lib/yardi/voyager/data/guest_card.rb	/^				def has_preferences?$/;"	f	class:Yardi.Voyager.Data.GuestCard
@@ -1999,23 +2004,31 @@ open_possible_residents_csv	./app/models/concerns/leads/duplicates.rb	/^      de
 opt_in_message_sent?	./app/models/concerns/leads/messaging.rb	/^      def opt_in_message_sent?$/;"	f	class:Leads.Messaging
 optin_email!	./app/models/concerns/leads/messaging.rb	/^      def optin_email!$/;"	f	class:Leads.Messaging
 optin_email!	./app/models/lead_preference.rb	/^  def optin_email!$/;"	f	class:LeadPreference
+optin_email!	./app/models/roommate_preference.rb	/^  def optin_email!$/;"	f	class:RoommatePreference
 optin_email?	./app/models/concerns/leads/messaging.rb	/^      def optin_email?$/;"	f	class:Leads.Messaging
 optin_email?	./app/models/lead_preference.rb	/^  def optin_email?$/;"	f	class:LeadPreference
+optin_email?	./app/models/roommate_preference.rb	/^  def optin_email?$/;"	f	class:RoommatePreference
 optin_sms!	./app/models/concerns/leads/messaging.rb	/^      def optin_sms!$/;"	f	class:Leads.Messaging
 optin_sms!	./app/models/lead_preference.rb	/^  def optin_sms!$/;"	f	class:LeadPreference
+optin_sms!	./app/models/roommate_preference.rb	/^  def optin_sms!$/;"	f	class:RoommatePreference
 optin_sms?	./app/models/concerns/leads/messaging.rb	/^      def optin_sms?$/;"	f	class:Leads.Messaging
 optin_sms?	./app/models/lead_preference.rb	/^  def optin_sms?$/;"	f	class:LeadPreference
+optin_sms?	./app/models/roommate_preference.rb	/^  def optin_sms?$/;"	f	class:RoommatePreference
 options_for_accessible_to	./app/lib/app_context.rb	/^    def options_for_accessible_to(user)$/;"	f	class:AppContext.list0
 options_for_integration	./app/lib/marketing_sources/incoming_integration_helper.rb	/^    def options_for_integration$/;"	f
 optout_email!	./app/models/concerns/leads/messaging.rb	/^      def optout_email!$/;"	f	class:Leads.Messaging
 optout_email!	./app/models/lead_preference.rb	/^  def optout_email!$/;"	f	class:LeadPreference
+optout_email!	./app/models/roommate_preference.rb	/^  def optout_email!$/;"	f	class:RoommatePreference
 optout_email?	./app/models/concerns/leads/messaging.rb	/^      def optout_email?$/;"	f	class:Leads.Messaging
 optout_email?	./app/models/concerns/users/messaging.rb	/^      def optout_email?$/;"	f	class:Users.Messaging
 optout_email?	./app/models/lead_preference.rb	/^  def optout_email?$/;"	f	class:LeadPreference
+optout_email?	./app/models/roommate_preference.rb	/^  def optout_email?$/;"	f	class:RoommatePreference
 optout_sms!	./app/models/concerns/leads/messaging.rb	/^      def optout_sms!$/;"	f	class:Leads.Messaging
 optout_sms!	./app/models/lead_preference.rb	/^  def optout_sms!$/;"	f	class:LeadPreference
+optout_sms!	./app/models/roommate_preference.rb	/^  def optout_sms!$/;"	f	class:RoommatePreference
 optout_sms?	./app/models/concerns/leads/messaging.rb	/^      def optout_sms?$/;"	f	class:Leads.Messaging
 optout_sms?	./app/models/lead_preference.rb	/^  def optout_sms?$/;"	f	class:LeadPreference
+optout_sms?	./app/models/roommate_preference.rb	/^  def optout_sms?$/;"	f	class:RoommatePreference
 ordered	./app/models/article_search.rb	/^  def ordered$/;"	f	class:ArticleSearch
 outgoing	./app/lib/messages/search.rb	/^    def outgoing$/;"	f	class:Messages.Search
 outgoing=	./app/lib/messages/search.rb	/^    def outgoing=(value)$/;"	f	class:Messages.Search
