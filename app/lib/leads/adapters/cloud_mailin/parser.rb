@@ -45,7 +45,11 @@ module Leads
         attr_reader :parser, :data
 
         def initialize(data)
-          @data = data.to_unsafe_h.with_indifferent_access
+          if data.respond_to?(:to_unsafe_h)
+            @data = data.to_unsafe_h.with_indifferent_access
+          else
+            @data = data.with_indifferent_access
+          end
           @parser = detect_source(@data)
         end
 
