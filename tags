@@ -2278,6 +2278,7 @@ request_template	./app/lib/yardi/voyager/api/units.rb	/^        def request_temp
 resend_opt_in_message?	./app/models/concerns/leads/messaging.rb	/^      def resend_opt_in_message?$/;"	f	class:Leads.Messaging
 resend_sms_opt_in_message	./app/controllers/leads_controller.rb	/^  def resend_sms_opt_in_message$/;"	f	class:LeadsController
 resend_sms_opt_in_message?	./app/policies/lead_policy.rb	/^  def resend_sms_opt_in_message?$/;"	f
+reset_api_token	./app/models/message_delivery_adapter.rb	/^  def reset_api_token$/;"	f	class:MessageDeliveryAdapter
 reset_completion_status	./app/models/concerns/scheduled_actions/engagement_policy.rb	/^      def reset_completion_status$/;"	f	class:ScheduledActions.EngagementPolicy
 reset_completion_status	./app/models/engagement_policy_scheduler.rb	/^  def reset_completion_status(scheduled_action)$/;"	f	class:EngagementPolicyScheduler
 reset_errors	./app/lib/leads/agent_assigner.rb	/^      def reset_errors$/;"	f	class:Leads.AgentAssigner.AgentAssignment
