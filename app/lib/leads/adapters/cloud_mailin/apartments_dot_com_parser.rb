@@ -26,7 +26,6 @@ module Leads
           body = data.fetch(:html,nil) || ''
           html = Nokogiri::HTML(body)
           container = html.css('td:contains("Name:")')
-          binding.pry
           text = container.text
 
           name = ( text.match(/Name: (.+)/)[1] rescue '(None)' ).strip
