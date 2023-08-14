@@ -142,6 +142,20 @@ git remote add heroku-prod https://git.heroku.com/druid-prod.git
 
 For example: `bin/deploy staging` will use the current branch, create a staging-YYYYMMDD tag, push the tag to origin, push the code to the `heroku-staging` origin, then run migrations on the staging application.
 
+Full Example for Production Deployment:
+
+```
+git checkout master
+git merge feature-branch
+# Edit VERSION file to update version, and save
+git add VERSION && git commit -m 'Incremented VERSION to 1.9.XX'
+git push
+git checkout production
+git merge master
+git push
+bin/deploy prod
+```
+
 ## Users
 
 The `User` model corresponds to User identities in BlueSky.
