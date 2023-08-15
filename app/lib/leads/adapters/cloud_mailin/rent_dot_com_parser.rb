@@ -4,18 +4,15 @@ module Leads
 
       class RentDotComParser
         def self.match?(data)
-          data = data.with_indifferent_access
           return (data.fetch(:envelope,{}).fetch(:from,'')).
             match?(/(?<!for)rent.com/) ||
-          (data.fetch('headers',{}).fetch('From','')).
+          (data.fetch(:headers,{}).fetch('From','')).
             match?(/(?<!for)rent.com/)||
-          (data.fetch('headers',{}).fetch('Reply-To','')).
+          (data.fetch(:headers,{}).fetch('Reply-To','')).
             match?(/(?<!for)rent.com/)
         end
 
         def self.parse(data)
-          data = data.with_indifferent_access
-
           if data.fetch(:plain,'').match?(/First Name/)
             return self.parse_text_v1(data)
           end
