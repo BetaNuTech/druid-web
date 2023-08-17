@@ -9,6 +9,5 @@ class CreateRoommatePreferences < ActiveRecord::Migration[6.1]
 
       t.timestamps
     end
-    add_index :roommate_preferences, :roommate_id
   end
 end
