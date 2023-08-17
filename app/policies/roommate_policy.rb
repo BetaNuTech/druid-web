@@ -58,4 +58,8 @@ class RoommatePolicy < ApplicationPolicy
     user.properties.pluck(:id).include?(record&.lead&.property_id)
   end
 
+  def compose_message?
+    LeadPolicy.new(user, ( record&.lead || Lead.new )).compose_message?
+  end
+
 end

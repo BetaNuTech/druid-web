@@ -1076,6 +1076,7 @@ completion_form?	./app/policies/scheduled_action_policy.rb	/^  def completion_fo
 completion_user	./app/controllers/scheduled_actions_controller.rb	/^    def completion_user$/;"	f	class:ScheduledActionsController
 compliance_task?	./app/models/concerns/scheduled_actions/engagement_policy.rb	/^      def compliance_task?$/;"	f	class:ScheduledActions.EngagementPolicy
 compose_message?	./app/policies/lead_policy.rb	/^  def compose_message?$/;"	f
+compose_message?	./app/policies/roommate_policy.rb	/^  def compose_message?$/;"	f
 conditional_redirect_to_default_search	./app/controllers/leads_controller.rb	/^    def conditional_redirect_to_default_search$/;"	f	class:LeadsController
 config	./app/lib/yardi/voyager/api/base.rb	/^        def config$/;"	f	class:Yardi.Voyager.Api.Base
 confirmation_instructions	./app/mailers/bluesky_devise_mailer.rb	/^  def confirmation_instructions(record, token, opts={})$/;"	f	class:BlueskyDeviseMailer
