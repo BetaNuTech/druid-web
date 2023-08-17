@@ -32,9 +32,6 @@
     <div class="row">
       <div class="col-md-8">
         <%= render partial: "messages/new_message_callout", locals: {messageable: lead} %>
-        <% lead.roommates.each do |roommate| %>
-          <%= render partial: "messages/new_message_callout", locals: {messageable: roommate} %>
-        <% end %>
       </div>
     </div>
 
@@ -57,6 +54,34 @@
         <% end %>
       </div>
     </div>
+
+    <% lead.roommates.each do |roommate| %>
+      <div class="row">
+        <div class="col-md-8">
+          <%= render partial: "messages/new_message_callout", locals: {messageable: roommate} %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <% if roommate.messages.any? %>
+          <table class="table message_list">
+            <thead>
+              <th></th>
+              <th></th>
+              <th></th>
+            </thead>
+            <tbody>
+              <% roommate.messages.display_order.each do |message| %>
+                <% next unless policy(message).show? %>
+                <%= render partial: 'message', locals: { lead: roommate, message: message } %>
+              <% end %>
+            </tbody>
+          </table>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
 
   </div>
 </div>

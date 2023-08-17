@@ -1,5 +1,7 @@
 <tr class="<%= message.read? ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>" id="message-preview-<%= message.id %>">
   <td>
+    To: <%= message.recipient_name %><br>
+    From: <%= message.sender_name %><br>
     <span class="text-nowrap">
       <% if message.draft? %>
         <%= tooltip_block('message-edit-link') do %>
