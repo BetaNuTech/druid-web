@@ -107,11 +107,6 @@ module Leads
         if preference.present?
           preference.optout_email!
           create_optout_comment(content: "Lead used email unsubscribe link to opt out of automated emails")
-        else
-          pref = build_preference
-          pref.save
-          preference.reload
-          optout_email!
         end
       end
 
@@ -119,11 +114,6 @@ module Leads
         if preference.present?
           preference.optin_email!
           create_optin_comment(content: "Lead used email unsubscribe link to opt back into automated emails")
-        else
-          pref = build_preference
-          pref.save!
-          preference.reload
-          optin_email!
         end
       end
 
@@ -139,11 +129,6 @@ module Leads
         if preference.present?
           preference.optin_sms!
           create_optin_comment(content: "Lead used email unsubscribe link to opt back into automated sms messaging")
-        else
-          pref = build_preference
-          pref.save!
-          preference.reload
-          optin_sms!
         end
       end
 
@@ -151,11 +136,6 @@ module Leads
         if preference.present?
           preference.optout_sms!
           create_optin_comment(content: "Lead used email unsubscribe link to opt out of automated sms messaging")
-        else
-          pref = build_preference
-          pref.save!
-          preference.reload
-          optout_sms!
         end
       end
 
@@ -202,11 +182,10 @@ module Leads
       end
 
       def create_message_delivery_task(message_delivery)
-        if is_a?(Lead)
-          message = message_delivery.message
-          if message.incoming?
-            EngagementPolicyScheduler.new.create_lead_incoming_message_reply_task(message)
-          end
+        message = message_delivery.message
+        if message.incoming?
+          EngagementPolicyScheduler.new.
+            create_lead_incoming_message_reply_task(message)
         end
       end
 
@@ -225,12 +204,10 @@ module Leads
 
       # Re-open the lead if it is disqualified or abandoned
       def requalify_if_disqualified
-        return unless is_a?(Lead)
-
         return unless ( disqualified? || abandoned? )
 
         user = revisions.map(&:user).compact.last || property&.managers&.first
-        requalify
+        requalify 
         trigger_event(event_name: :claim, user: user) if user
         save
         reload
@@ -238,7 +215,6 @@ module Leads
 
       # Automatically complete pending lead message reply tasks if this message was sent by the agent to a Lead
       def autocomplete_lead_contact_tasks(message_delivery)
-        return unless is_a?(Lead)
         return false unless message_delivery&.message.present? && message_delivery&.message&.outgoing?
 
         lead = message_delivery.message.messageable
@@ -351,7 +327,7 @@ module Leads
         end
       end
 
-      # Ensure SMS messaging consent and compliance
+      # Ensure SMS messaging consent and compliance 
       def request_first_sms_authorization_if_open_and_unique
         if open? && !(messages.outgoing.sms.for_compliance.any? || any_sms_compliance_messages_for_recipient? )
           send_sms_optin_request
@@ -430,7 +406,7 @@ module Leads
 
         return true unless message_sms_destination.present?
 
-        if message_template.present?
+        if message_template.present? 
           message = Message.new_message(
             from: agent,
             to: self,
@@ -453,7 +429,7 @@ module Leads
           content: comment_content,
           classification: 'system'
         )
-
+        
         return true
       end
 
@@ -465,7 +441,7 @@ module Leads
 
         return true unless message_email_destination.present?
 
-        if message_template.present?
+        if message_template.present? 
           message = Message.new_message(
             from: agent,
             to: self,
@@ -488,7 +464,7 @@ module Leads
           content: comment_content,
           classification: 'system'
         )
-
+        
         return true
       end
 
