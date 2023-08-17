@@ -1,0 +1,33 @@
+When a Lead is posted to the Lead API endpoint, the following logic flow occurs:
+
+1. The request is handled by the `create` action in the `Api::V1::LeadsController`.
+   - This action is responsible for creating a new Lead record based on the data received in the request.
+
+2. The `create` action checks if the user has the necessary permissions to create a Lead.
+   - If the user does not have the required permissions, an error message is returned in the API response.
+   - If the user has the required permissions, the process continues.
+
+3. The `create` action calls the `Leads::Creator` service object.
+   - The `Leads::Creator` service object is responsible for creating a new Lead record and performing any necessary validations or transformations on the data.
+
+4. The `Leads::Creator` service object creates a new Lead record in the database.
+   - This involves setting the initial state of the Lead to 'open' and populating the record with the data received in the request.
+
+5. After the Lead record is created, the `Leads::Creator` service object performs additional actions.
+   - These actions include:
+     - Creating a `LeadTransition` record to track the transition from the previous state to the current state.
+       - The `LeadTransition` record includes information such as the last state, current state, classification, and memo.
+     - Creating a `LeadTransitionNote` to provide additional information about the transition.
+       - The `LeadTransitionNote` includes details about the previous state, current state, and any additional comments or reasons for the transition.
+     - Creating scheduled actions based on the new state.
+       - These actions can include tasks or reminders related to the Lead's progress.
+
+6. The `Leads::Creator` service object checks if the created Lead record is valid and has an ID.
+   - If the Lead record is valid and has an ID, the process continues.
+   - If the Lead record is not valid or does not have an ID, an error message is returned in the API response.
+
+7. The `create` action in the `Api::V1::LeadsController` checks the validity of the Lead record returned by the `Leads::Creator` service object.
+   - If the Lead record is valid and has an ID, the API response returns the created Lead record with a status of 'created'.
+   - If the Lead record is not valid or does not have an ID, an error message is returned in the API response with a status of 'unprocessable_entity'.
+
+In summary, when a Lead is posted to the Lead API endpoint, the `Api::V1::LeadsController` checks the user's permissions, calls the `Leads::Creator` service object to create a new Lead record, and performs additional actions such as tracking the transition, adding transition notes, and creating scheduled actions. The validity of the created Lead record is checked, and the API response returns the created Lead record or an error message based on the validity of the record.

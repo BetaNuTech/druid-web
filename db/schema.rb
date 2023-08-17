@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_08_225603) do
+ActiveRecord::Schema.define(version: 2023_07_05_202108) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "articles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "articles", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "articletype"
     t.string "category"
     t.boolean "published", default: false
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
   end
 
-  create_table "contact_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "contact_events", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lead_id", null: false
     t.uuid "user_id", null: false
     t.uuid "article_id"
@@ -115,7 +115,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "duplicate_leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "duplicate_leads", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "reference_id"
     t.uuid "lead_id"
     t.index ["lead_id"], name: "index_duplicate_leads_on_lead_id"
@@ -123,7 +123,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["reference_id"], name: "index_duplicate_leads_on_reference_id"
   end
 
-  create_table "engagement_policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "engagement_policies", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "property_id"
     t.string "lead_state"
     t.text "description"
@@ -134,7 +134,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["active", "lead_state", "property_id", "version"], name: "covering"
   end
 
-  create_table "engagement_policy_action_compliances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "engagement_policy_action_compliances", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "scheduled_action_id"
     t.uuid "user_id"
     t.string "state", default: "pending"
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["user_id", "scheduled_action_id"], name: "epac_user_id_sa_id"
   end
 
-  create_table "engagement_policy_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "engagement_policy_actions", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "engagement_policy_id"
     t.uuid "lead_action_id"
     t.text "description"
@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "lead_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "lead_actions", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.boolean "active", default: true
@@ -185,7 +185,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["state_affinity"], name: "index_lead_actions_on_state_affinity"
   end
 
-  create_table "lead_preferences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "lead_preferences", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lead_id"
     t.integer "min_area"
     t.integer "max_area"
@@ -208,13 +208,13 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.datetime "optin_sms_date"
   end
 
-  create_table "lead_referral_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "lead_referral_sources", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "lead_referrals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "lead_referrals", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lead_id", null: false
     t.uuid "lead_referral_source_id"
     t.uuid "referrable_id"
@@ -226,7 +226,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["referrable_id", "referrable_type"], name: "idx_referrable"
   end
 
-  create_table "lead_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "lead_sources", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.boolean "incoming"
     t.string "slug"
@@ -237,7 +237,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["active", "api_token"], name: "index_lead_sources_on_active_and_api_token"
   end
 
-  create_table "lead_transitions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "lead_transitions", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lead_id", null: false
     t.string "last_state", null: false
     t.string "current_state", null: false
@@ -251,7 +251,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["lead_id"], name: "index_lead_transitions_on_lead_id"
   end
 
-  create_table "leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "leads", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "lead_source_id"
     t.string "title"
@@ -296,7 +296,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["state"], name: "index_leads_on_state"
   end
 
-  create_table "marketing_expenses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "marketing_expenses", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "property_id", null: false
     t.uuid "marketing_source_id", null: false
     t.string "invoice"
@@ -311,7 +311,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["property_id", "marketing_source_id", "start_date"], name: "query_idx"
   end
 
-  create_table "marketing_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "marketing_sources", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true
     t.uuid "property_id", null: false
     t.uuid "lead_source_id"
@@ -334,7 +334,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["tracking_number"], name: "index_marketing_sources_on_tracking_number"
   end
 
-  create_table "message_deliveries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "message_deliveries", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "message_id"
     t.uuid "message_type_id"
     t.integer "attempt"
@@ -347,7 +347,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["message_id"], name: "index_message_deliveries_on_message_id"
   end
 
-  create_table "message_delivery_adapters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "message_delivery_adapters", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "message_type_id", null: false
     t.string "slug", null: false
     t.string "name", null: false
@@ -361,7 +361,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["slug"], name: "index_message_delivery_adapters_on_slug", unique: true
   end
 
-  create_table "message_templates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "message_templates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "message_type_id", null: false
     t.uuid "user_id"
     t.string "name", null: false
@@ -373,7 +373,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["shared", "user_id"], name: "index_message_templates_on_shared_and_user_id"
   end
 
-  create_table "message_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "message_types", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
     t.boolean "active", default: true, null: false
@@ -382,7 +382,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.boolean "html", default: false
   end
 
-  create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "messages", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "messageable_id"
     t.string "messageable_type"
     t.uuid "user_id", null: false
@@ -408,7 +408,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
-  create_table "notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "notes", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "lead_action_id"
     t.uuid "reason_id"
@@ -422,7 +422,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["user_id", "notable_id", "notable_type"], name: "index_notes_on_user_id_and_notable_id_and_notable_type"
   end
 
-  create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "phone_numbers", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "number"
     t.string "prefix", default: "1"
@@ -435,7 +435,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["phoneable_type", "phoneable_id"], name: "index_phone_numbers_on_phoneable_type_and_phoneable_id"
   end
 
-  create_table "properties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "properties", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "address1"
     t.string "address2"
@@ -470,7 +470,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["team_id"], name: "index_properties_on_team_id"
   end
 
-  create_table "property_listings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "property_listings", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "code"
     t.string "description"
     t.uuid "property_id"
@@ -482,7 +482,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["property_id", "source_id", "active"], name: "index_property_listings_on_property_id_and_source_id_and_active"
   end
 
-  create_table "property_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "property_users", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "property_id"
     t.uuid "user_id"
     t.integer "role"
@@ -491,7 +491,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["property_id", "user_id"], name: "index_property_users_on_property_id_and_user_id", unique: true
   end
 
-  create_table "reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "reasons", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.boolean "active", default: true
@@ -499,7 +499,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "referral_bounces", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "referral_bounces", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "property_id", null: false
     t.string "propertycode", null: false
     t.string "campaignid", null: false
@@ -510,13 +510,13 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["property_id"], name: "index_referral_bounces_on_property_id"
   end
 
-  create_table "rental_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "rental_types", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "resident_details", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "resident_details", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "resident_id"
     t.string "phone1"
     t.string "phone1_type"
@@ -535,7 +535,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["resident_id"], name: "index_resident_details_on_resident_id"
   end
 
-  create_table "residents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "residents", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lead_id"
     t.uuid "property_id"
     t.uuid "unit_id"
@@ -559,7 +559,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["residentid"], name: "index_residents_on_residentid", unique: true
   end
 
-  create_table "roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "roles", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "slug"
     t.text "description"
@@ -567,18 +567,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "roommate_preferences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigint "roommate_id"
-    t.boolean "optout_email", default: false
-    t.datetime "optout_email_date"
-    t.boolean "optin_sms", default: false
-    t.datetime "optin_sms_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["roommate_id"], name: "index_roommate_preferences_on_roommate_id"
-  end
-
-  create_table "roommates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "roommates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lead_id"
     t.string "first_name"
     t.string "last_name"
@@ -594,7 +583,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "scheduled_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "scheduled_actions", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "target_id"
     t.string "target_type"
@@ -622,7 +611,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["user_id"], name: "index_scheduled_actions_on_user_id"
   end
 
-  create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "schedules", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "schedulable_type"
     t.uuid "schedulable_id"
     t.date "date"
@@ -639,7 +628,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.time "end_time"
   end
 
-  create_table "statistics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "statistics", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.integer "fact", null: false
     t.uuid "quantifiable_id", null: false
     t.string "quantifiable_type", null: false
@@ -652,7 +641,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["fact", "quantifiable_id", "quantifiable_type", "resolution", "time_start"], name: "statistics_general_idx", unique: true
   end
 
-  create_table "team_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "team_users", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "team_id"
     t.uuid "user_id"
     t.uuid "teamrole_id"
@@ -661,7 +650,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["user_id"], name: "index_team_users_on_user_id", unique: true
   end
 
-  create_table "teamroles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "teamroles", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "slug"
     t.string "description"
@@ -670,14 +659,14 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["slug"], name: "index_teamroles_on_slug", unique: true
   end
 
-  create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "teams", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "unit_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "unit_types", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.boolean "active", default: true
     t.datetime "created_at", null: false
@@ -693,7 +682,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["remoteid"], name: "index_unit_types_on_remoteid"
   end
 
-  create_table "units", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "units", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "property_id"
     t.uuid "unit_type_id"
     t.uuid "rental_type_id"
@@ -721,7 +710,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["remoteid"], name: "index_units_on_remoteid"
   end
 
-  create_table "user_impressions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "user_impressions", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.string "reference"
     t.string "path"
@@ -732,7 +721,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["user_id", "reference"], name: "index_user_impressions_on_user_id_and_reference"
   end
 
-  create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "user_profiles", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.string "name_prefix"
     t.string "first_name"
@@ -751,7 +740,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.index ["user_id"], name: "index_user_profiles_on_user_id", unique: true
   end
 
-  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
