@@ -3,7 +3,7 @@ module Leads
     extend ActiveSupport::Concern
 
     included do
-      has_many :roommates
+      has_many :roommates, dependent: :destroy
     end
 
   end
