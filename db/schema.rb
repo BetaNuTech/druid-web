@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_08_225603) do
+ActiveRecord::Schema.define(version: 2023_07_05_202108) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -565,17 +565,6 @@ ActiveRecord::Schema.define(version: 2023_08_08_225603) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "roommate_preferences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigint "roommate_id"
-    t.boolean "optout_email", default: false
-    t.datetime "optout_email_date"
-    t.boolean "optin_sms", default: false
-    t.datetime "optin_sms_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["roommate_id"], name: "index_roommate_preferences_on_roommate_id"
   end
 
   create_table "roommates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
