@@ -277,6 +277,12 @@ Example Access Policy:
 
 ## Blueconnect (AWS Callcenter)
 
+"Blueconnect" is a service backed by AWS Callcenter and Lambda which routes marketing tracking phone numbers to property main office phones.
+
+It's usage and function is as follows:
+
+1. Marketing requests a new marketing phone number for a given property and listing or campaign.
+2. 
 
 
 ## TODO
