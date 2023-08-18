@@ -109,7 +109,10 @@ Edit the Property record in Bluesky and make sure that there is a Listing ID act
 
 ### Adding a new Marketing Phone Number
 
-TODO: AWS CallCenter
+TODO: adding the number in AWS Callcenter
+1. Login to AWS CallCenter
+2. 
+
 TODO: Document number in the Google docs spreadsheet
 TODO: Setup the Marketing source phone number in Bluesky
-TODO: Testing
+TODO: Updating the API token
