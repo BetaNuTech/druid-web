@@ -65,7 +65,8 @@
     <div class='col-md-6 form-group'>
       <button type='submit' class='btn btn-info'>Save Draft and Preview</button>
       <button id="send_now_button" type='submit' class='btn btn-primary'>Send Now</button>
-      <%= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn-xs btn-info" if @message.messageable.present? %>
+      <%#= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn-xs btn-info" if @message.messageable.present? %>
+      <%= link_to 'Back', :back, class: "btn btn-xs btn-info"  %>
     </div>
   </div>
 <% end %>

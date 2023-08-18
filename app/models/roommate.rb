@@ -19,6 +19,7 @@
 #
 class Roommate < ApplicationRecord
   # Class Concerns/Extensions
+  include Roommates::Messaging
   audited
 
   ### Constants
@@ -30,6 +31,8 @@ class Roommate < ApplicationRecord
 
   ### Associations
   belongs_to :lead
+  has_one :property, through: :lead
+  has_one :user, through: :lead
 
   ### Validations
   validates :first_name, :last_name, presence: {message: 'must be provided'}

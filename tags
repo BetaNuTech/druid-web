@@ -450,6 +450,7 @@ MessagesController	./app/controllers/api/v1/messages_controller.rb	/^    class M
 MessagesController	./app/controllers/messages_controller.rb	/^class MessagesController < ApplicationController$/;"	c
 MessagesHelper	./app/helpers/messages_helper.rb	/^module MessagesHelper$/;"	m
 Messaging	./app/models/concerns/leads/messaging.rb	/^  module Messaging$/;"	m	class:Leads
+Messaging	./app/models/concerns/roommates/messaging.rb	/^  module Messaging$/;"	m	class:Roommates
 Messaging	./app/models/concerns/users/messaging.rb	/^  module Messaging$/;"	m	class:Users
 NewLeadColumns	./db/migrate/20180119161906_new_lead_columns.rb	/^class NewLeadColumns < ActiveRecord::Migration[5.1]$/;"	c
 Nextiva	./app/lib/leads/adapters/nextiva.rb	/^    class Nextiva$/;"	c	class:Leads.Adapters
@@ -551,6 +552,7 @@ Roommate	./app/lib/yardi/voyager/data/roommate.rb	/^      class Roommate$/;"	c	c
 Roommate	./app/models/roommate.rb	/^class Roommate < ApplicationRecord$/;"	c
 RoommatePolicy	./app/policies/roommate_policy.rb	/^class RoommatePolicy < ApplicationPolicy$/;"	c
 Roommates	./app/models/concerns/leads/roommates.rb	/^  module Roommates$/;"	m	class:Leads
+Roommates	./app/models/concerns/roommates/messaging.rb	/^module Roommates$/;"	m
 RoommatesController	./app/controllers/roommates_controller.rb	/^class RoommatesController < ApplicationController$/;"	c
 RoommatesHelper	./app/helpers/roommates_helper.rb	/^module RoommatesHelper$/;"	m
 SampleParser	./app/lib/leads/adapters/cloud_mailin/sample_parser.rb	/^      class SampleParser$/;"	c	class:Leads.Adapters.CloudMailin
@@ -1074,6 +1076,7 @@ completion_form?	./app/policies/scheduled_action_policy.rb	/^  def completion_fo
 completion_user	./app/controllers/scheduled_actions_controller.rb	/^    def completion_user$/;"	f	class:ScheduledActionsController
 compliance_task?	./app/models/concerns/scheduled_actions/engagement_policy.rb	/^      def compliance_task?$/;"	f	class:ScheduledActions.EngagementPolicy
 compose_message?	./app/policies/lead_policy.rb	/^  def compose_message?$/;"	f
+compose_message?	./app/policies/roommate_policy.rb	/^  def compose_message?$/;"	f
 conditional_redirect_to_default_search	./app/controllers/leads_controller.rb	/^    def conditional_redirect_to_default_search$/;"	f	class:LeadsController
 config	./app/lib/yardi/voyager/api/base.rb	/^        def config$/;"	f	class:Yardi.Voyager.Api.Base
 confirmation_instructions	./app/mailers/bluesky_devise_mailer.rb	/^  def confirmation_instructions(record, token, opts={})$/;"	f	class:BlueskyDeviseMailer
@@ -1157,6 +1160,7 @@ create_lead_incoming_message_reply_task	./app/models/engagement_policy_scheduler
 create_lead_transition	./app/models/concerns/leads/state_machine.rb	/^      def create_lead_transition(last_state: nil, current_state: nil)$/;"	f	class:Leads.StateMachine
 create_lead_transition_note	./app/models/concerns/leads/state_machine.rb	/^      def create_lead_transition_note(last_state: nil, current_state: nil)$/;"	f	class:Leads.StateMachine
 create_message_delivery_comment	./app/models/concerns/leads/messaging.rb	/^      def create_message_delivery_comment(message_delivery)$/;"	f	class:Leads.Messaging
+create_message_delivery_comment	./app/models/concerns/roommates/messaging.rb	/^    def create_message_delivery_comment(message_delivery)$/;"	f	class:Roommates.Messaging
 create_message_delivery_task	./app/models/concerns/leads/messaging.rb	/^      def create_message_delivery_task(message_delivery)$/;"	f	class:Leads.Messaging
 create_optin_comment	./app/models/concerns/leads/messaging.rb	/^      def create_optin_comment(content:)$/;"	f	class:Leads.Messaging
 create_optout_comment	./app/models/concerns/leads/messaging.rb	/^      def create_optout_comment(content:)$/;"	f	class:Leads.Messaging
@@ -1538,6 +1542,7 @@ groups_annotated	./app/models/duplicate_lead.rb	/^  def self.groups_annotated(pr
 guarantor?	./app/models/roommate.rb	/^  def guarantor?$/;"	f	class:Roommate
 handle_delivery_exception	./app/lib/messages/sender.rb	/^    def handle_delivery_exception(e)$/;"	f	class:Messages.Sender
 handle_message_delivery	./app/models/concerns/leads/messaging.rb	/^      def handle_message_delivery(message_delivery)$/;"	f	class:Leads.Messaging
+handle_message_delivery	./app/models/concerns/roommates/messaging.rb	/^    def handle_message_delivery(message_delivery)$/;"	f	class:Roommates.Messaging
 handle_message_delivery	./app/models/concerns/users/messaging.rb	/^      def handle_message_delivery(*_args)$/;"	f	class:Users.Messaging
 handle_message_delivery	./app/models/message.rb	/^  def handle_message_delivery(delivery)$/;"	f	class:Message
 handle_message_response	./app/models/lead_preference.rb	/^  def handle_message_response(message_delivery)$/;"	f	class:LeadPreference
@@ -1864,15 +1869,19 @@ message_body_preview_content	./app/helpers/messages_helper.rb	/^  def message_bo
 message_delivery_indicator	./app/helpers/messages_helper.rb	/^  def message_delivery_indicator(message)$/;"	f	class:MessagesHelper
 message_delivery_indicator_link	./app/helpers/messages_helper.rb	/^  def message_delivery_indicator_link(message)$/;"	f	class:MessagesHelper
 message_email_destination	./app/models/concerns/leads/messaging.rb	/^      def message_email_destination$/;"	f	class:Leads.Messaging
+message_email_destination	./app/models/concerns/roommates/messaging.rb	/^    def message_email_destination$/;"	f	class:Roommates.Messaging
 message_email_destination	./app/models/concerns/users/messaging.rb	/^      def message_email_destination$/;"	f	class:Users.Messaging
 message_params	./app/controllers/messages_controller.rb	/^    def message_params$/;"	f	class:MessagesController
 message_recipient_whitelist	./app/models/message_delivery.rb	/^  def message_recipient_whitelist$/;"	f	class:MessageDelivery
 message_recipientid	./app/models/concerns/leads/messaging.rb	/^      def message_recipientid(message_type:)$/;"	f	class:Leads.Messaging
+message_recipientid	./app/models/concerns/roommates/messaging.rb	/^      def message_recipientid(message_type:)$/;"	f	class:Roommates.Messaging
 message_recipientid	./app/models/concerns/users/messaging.rb	/^      def message_recipientid(message_type: )$/;"	f	class:Users.Messaging
 message_sms_destination	./app/models/concerns/leads/messaging.rb	/^      def message_sms_destination$/;"	f	class:Leads.Messaging
+message_sms_destination	./app/models/concerns/roommates/messaging.rb	/^    def message_sms_destination$/;"	f	class:Roommates.Messaging
 message_sms_destination	./app/models/concerns/users/messaging.rb	/^      def message_sms_destination$/;"	f	class:Users.Messaging
 message_stats	./app/lib/users/activity_report.rb	/^    def message_stats$/;"	f	class:Users.ActivityReport
 message_template_data	./app/models/concerns/leads/messaging.rb	/^      def message_template_data$/;"	f	class:Leads.Messaging
+message_template_data	./app/models/concerns/roommates/messaging.rb	/^      def message_template_data$/;"	f	class:Roommates.Messaging
 message_template_data	./app/models/concerns/users/messaging.rb	/^      def message_template_data$/;"	f	class:Users.Messaging
 message_template_layout	./app/models/message_template.rb	/^  def message_template_layout$/;"	f
 message_template_layout_filename	./app/models/message_template.rb	/^  def message_template_layout_filename$/;"	f
@@ -1881,6 +1890,7 @@ message_template_params	./app/controllers/message_templates_controller.rb	/^    
 message_type_disabled?	./app/models/message_delivery.rb	/^  def message_type_disabled?$/;"	f	class:MessageDelivery
 message_type_indicator	./app/helpers/messages_helper.rb	/^  def message_type_indicator(message)$/;"	f	class:MessagesHelper
 message_types_available	./app/models/concerns/leads/messaging.rb	/^      def message_types_available$/;"	f	class:Leads.Messaging
+message_types_available	./app/models/concerns/roommates/messaging.rb	/^    def message_types_available$/;"	f	class:Roommates.Messaging
 messages_sent	./app/models/stat.rb	/^  def messages_sent(start_date: 48.hours.ago, end_date: DateTime.current)$/;"	f	class:Stat.lead_sources_conversion_json
 messages_sent_json	./app/models/stat.rb	/^  def messages_sent_json(start_date: 48.hours.ago, end_date: DateTime.current)$/;"	f	class:Stat.lead_sources_conversion_json
 messages_status_url	./app/lib/messages/delivery_adapters/cloudmailin/health.rb	/^        def self.messages_status_url$/;"	F	class:Messages.DeliveryAdapters.Cloudmailin.Health
@@ -1998,23 +2008,31 @@ open_possible_residents	./app/models/concerns/leads/duplicates.rb	/^      def op
 open_possible_residents_csv	./app/models/concerns/leads/duplicates.rb	/^      def open_possible_residents_csv$/;"	f	class:Leads.Duplicates
 opt_in_message_sent?	./app/models/concerns/leads/messaging.rb	/^      def opt_in_message_sent?$/;"	f	class:Leads.Messaging
 optin_email!	./app/models/concerns/leads/messaging.rb	/^      def optin_email!$/;"	f	class:Leads.Messaging
+optin_email!	./app/models/concerns/roommates/messaging.rb	/^    def optin_email!$/;"	f	class:Roommates.Messaging
 optin_email!	./app/models/lead_preference.rb	/^  def optin_email!$/;"	f	class:LeadPreference
 optin_email?	./app/models/concerns/leads/messaging.rb	/^      def optin_email?$/;"	f	class:Leads.Messaging
+optin_email?	./app/models/concerns/roommates/messaging.rb	/^    def optin_email?$/;"	f	class:Roommates.Messaging
 optin_email?	./app/models/lead_preference.rb	/^  def optin_email?$/;"	f	class:LeadPreference
 optin_sms!	./app/models/concerns/leads/messaging.rb	/^      def optin_sms!$/;"	f	class:Leads.Messaging
+optin_sms!	./app/models/concerns/roommates/messaging.rb	/^    def optin_sms!$/;"	f	class:Roommates.Messaging
 optin_sms!	./app/models/lead_preference.rb	/^  def optin_sms!$/;"	f	class:LeadPreference
 optin_sms?	./app/models/concerns/leads/messaging.rb	/^      def optin_sms?$/;"	f	class:Leads.Messaging
+optin_sms?	./app/models/concerns/roommates/messaging.rb	/^    def optin_sms?$/;"	f	class:Roommates.Messaging
 optin_sms?	./app/models/lead_preference.rb	/^  def optin_sms?$/;"	f	class:LeadPreference
 options_for_accessible_to	./app/lib/app_context.rb	/^    def options_for_accessible_to(user)$/;"	f	class:AppContext.list0
 options_for_integration	./app/lib/marketing_sources/incoming_integration_helper.rb	/^    def options_for_integration$/;"	f
 optout_email!	./app/models/concerns/leads/messaging.rb	/^      def optout_email!$/;"	f	class:Leads.Messaging
+optout_email!	./app/models/concerns/roommates/messaging.rb	/^    def optout_email!$/;"	f	class:Roommates.Messaging
 optout_email!	./app/models/lead_preference.rb	/^  def optout_email!$/;"	f	class:LeadPreference
 optout_email?	./app/models/concerns/leads/messaging.rb	/^      def optout_email?$/;"	f	class:Leads.Messaging
+optout_email?	./app/models/concerns/roommates/messaging.rb	/^    def optout_email?$/;"	f	class:Roommates.Messaging
 optout_email?	./app/models/concerns/users/messaging.rb	/^      def optout_email?$/;"	f	class:Users.Messaging
 optout_email?	./app/models/lead_preference.rb	/^  def optout_email?$/;"	f	class:LeadPreference
 optout_sms!	./app/models/concerns/leads/messaging.rb	/^      def optout_sms!$/;"	f	class:Leads.Messaging
+optout_sms!	./app/models/concerns/roommates/messaging.rb	/^    def optout_sms!$/;"	f	class:Roommates.Messaging
 optout_sms!	./app/models/lead_preference.rb	/^  def optout_sms!$/;"	f	class:LeadPreference
 optout_sms?	./app/models/concerns/leads/messaging.rb	/^      def optout_sms?$/;"	f	class:Leads.Messaging
+optout_sms?	./app/models/concerns/roommates/messaging.rb	/^    def optout_sms?$/;"	f	class:Roommates.Messaging
 optout_sms?	./app/models/lead_preference.rb	/^  def optout_sms?$/;"	f	class:LeadPreference
 ordered	./app/models/article_search.rb	/^  def ordered$/;"	f	class:ArticleSearch
 outgoing	./app/lib/messages/search.rb	/^    def outgoing$/;"	f	class:Messages.Search
@@ -2104,7 +2122,9 @@ perform	./app/models/message_delivery.rb	/^  def perform$/;"	f	class:MessageDeli
 perform_delivery	./app/models/message.rb	/^  def perform_delivery$/;"	f	class:Message
 periodically_billable?	./app/models/concerns/marketing_sources/marketing_expenses.rb	/^      def periodically_billable?$/;"	f	class:MarketingSources.MarketingExpenses
 permit_email_messaging?	./app/models/concerns/leads/messaging.rb	/^      def permit_email_messaging?$/;"	f	class:Leads.Messaging
+permit_email_messaging?	./app/models/concerns/roommates/messaging.rb	/^    def permit_email_messaging?$/;"	f	class:Roommates.Messaging
 permit_sms_messaging?	./app/models/concerns/leads/messaging.rb	/^      def permit_sms_messaging?$/;"	f	class:Leads.Messaging
+permit_sms_messaging?	./app/models/concerns/roommates/messaging.rb	/^    def permit_sms_messaging?$/;"	f	class:Roommates.Messaging
 permitted_articletypes	./app/models/article.rb	/^  def permitted_articletypes$/;"	f
 permitted_audiences	./app/models/article.rb	/^  def permitted_audiences$/;"	f
 permitted_state_events	./app/models/concerns/leads/state_machine.rb	/^      def permitted_state_events$/;"	f	class:Leads.StateMachine

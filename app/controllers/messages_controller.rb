@@ -147,7 +147,12 @@ class MessagesController < ApplicationController
     def deliver_message
       @message.deliver!
       Message.mark_read!(@message, current_user)
-      redirect_to @message.messageable, notice: 'Message Sent'
+      case @message.messageable
+      when Roommate
+        redirect_to @message.messageable.lead, notice: 'Message Sent'
+      else
+        redirect_to @message.messageable, notice: 'Message Sent'
+      end
     end
 
     def record_scope

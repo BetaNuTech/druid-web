@@ -12,7 +12,7 @@ This code is proprietary and distribution is strictly prohibited.
 * Ruby version: 2.6.3 (in Gemfile)
 * System dependencies
   * Typical Rails 5 dependencies
-  * Node.js 8
+  * Node.js 14.x
   * npm
   * yarn
 
