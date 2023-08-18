@@ -180,6 +180,9 @@ module Leads
           end
         end
 
+        # TODO: MAYBE? for performance
+        # self.skip_deupe = true
+
         after_mark_duplicates
 
         return detected
