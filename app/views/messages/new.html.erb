@@ -8,6 +8,9 @@
     </p>
     <%= render partial: 'form', locals: { message: @message, message_type: @message.message_type }  %>
   </div>
+
+  <%= render partial: 'leads/source_document', locals: {lead: @messageable} if (@messageable.is_a? Lead) && @messageable.source_document.present? %>
+
   <div class="row">
     <div class="col-md-12">
       <h4>Previous Messages</h4>
