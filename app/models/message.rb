@@ -135,7 +135,7 @@ class Message < ApplicationRecord
   end
 
 
-  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil, classification: 'default', reply: false)
+  def self.new_message(from:, to:, message_type:, message_template: nil, threadid: nil, subject: nil, body: nil, classification: 'default', reply: false, add_signature: true)
     message = Message.new(
       message_type: message_type,
       message_template: message_template,
@@ -162,7 +162,7 @@ class Message < ApplicationRecord
     end
 
     message.load_template(reply)
-    message.load_signature
+    message.load_signature if add_signature
 
     return message
   end
@@ -187,7 +187,8 @@ class Message < ApplicationRecord
       threadid: threadid,
       subject: subject || '',
       body: new_body,
-      reply: true
+      reply: true,
+      add_signature: false
     )
   end
 

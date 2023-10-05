@@ -51,7 +51,7 @@ class MessagesController < ApplicationController
     end
     authorize @message
     @message.load_template(is_reply)
-    @message.load_signature unless is_reply
+    # Signature is added on create, which can be previewed after being persisted.
   end
 
   # GET /messages/1/edit
@@ -69,11 +69,14 @@ class MessagesController < ApplicationController
       message_type: @message_type,
       message_template: @message_template,
       subject: params[:message][:subject],
-      body: params[:message][:body]
+      body: params[:message][:body],
+      add_signature: false
     )
 
     respond_to do |format|
       if @message.save
+        @message.load_signature
+        @message.save!
         format.html do
           if params[:send_now].present?
             deliver_message
