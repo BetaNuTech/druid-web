@@ -18,7 +18,7 @@
       <%= link_to('Marketing Sources CSV Export', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id], report_type: 'source_export'}, format: :csv), class: 'btn btn-xs btn-info') %>
       <%= link_to('Marketing Expenses CSV Export', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id], report_type: 'expense_export'}, format: :csv), class: 'btn btn-xs btn-info') %>
       <%= link_to('Phone Numbers CSV Export', report_marketing_sources_path(marketing_sources_report: {report_type: 'phone_export'}, format: :csv), class: 'btn btn-xs btn-info') %>
-      <%= link_to('Ad Spend Report', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id]}), class: 'btn btn-xs btn-info') %>
+      <%= link_to('Ad Spend Report', report_marketing_sources_path(marketing_sources_report: {property_ids: [@property_id], report_type: 'adspend'}, format: :csv), class: 'btn btn-xs btn-info') %>
       <%= link_to('Ad Redirects', stats_referral_bounces_path, class: 'btn btn-xs btn-info') %>
     </div>
   </div>
