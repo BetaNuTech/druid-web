@@ -1,5 +1,5 @@
 class ReferralBounceService
-  DEFAULT_URL =  'https://www.bluestonemap.com/'.freeze
+  DEFAULT_URL =  'https://bluecrestliving.com/'.freeze
   NOTE_LEAD_ACTION = 'External Referral'.freeze
   NOTE_REASON = 'Lead Referral'.freeze
   NOTE_CLASSIFICATION = 'external'.freeze

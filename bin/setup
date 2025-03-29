@@ -25,7 +25,7 @@ FileUtils.chdir APP_ROOT do
       puts " * #{f} already exists"
     else
       puts "  * #{f} copied"
-      cp "#{f}.example", f
+      FileUtils.cp "#{f}.example", f
     end
   end
 

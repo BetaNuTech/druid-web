@@ -1,7 +1,7 @@
 module Api
   module V1
     class ReferralBouncesController < ApiController
-      DEFAULT_URL =  'https://www.bluestonemap.com/'.freeze
+      DEFAULT_URL =  'https://bluecrestliving.com/'.freeze
 
       # This method handles referral logic and redirects to the website URL.
       # It creates a referral bounce record and handles any errors that occur.

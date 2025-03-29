@@ -278,7 +278,7 @@ class Message < ApplicationRecord
 
   def from_address
     if message_type.email? && outgoing?
-      return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluestone Properties'}\" <#{senderid}>"
+      return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluecrest Residential'}\" <#{senderid}>"
     else
       return senderid
     end
