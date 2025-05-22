@@ -189,16 +189,26 @@ module Leads
         end
       end
 
-      def handle_message_delivery(message_delivery)
-        if message_delivery&.delivered_at.present?
-          autocomplete_lead_contact_tasks(message_delivery)
-          requalify_if_disqualified if message_delivery.message.incoming?
-          if message_delivery.message.outgoing? && !( message_delivery.message.for_compliance? || message_delivery.message.for_marketing?)
-            make_contact(timestamp: ( message_delivery.delivered_at || DateTime.current ), description: 'Message sent to Lead', article: message_delivery.message)
-          end
-          preference&.handle_message_response(message_delivery)
-          create_message_delivery_comment(message_delivery)
-          create_message_delivery_task(message_delivery)
+      def create_reply_task
+        EngagementPolicyScheduler.new.create_lead_incoming_message_reply_task(self)
+      end
+
+      def handle_message_delivery(delivery)
+        message = delivery.message # Get the Message
+
+        if message.outgoing? && delivery.delivered? && message.delivered_at.present?
+          # For outgoing messages, create a contact event.
+          # The user for the contact event will default to self.user (Lead's assigned user)
+          # inside create_contact_event.
+          create_contact_event(
+            article: message,
+            timestamp: message.delivered_at,
+            description: "Outgoing Message: #{message.subject}"
+            # No user: param, so it defaults to self.user (lead's assigned user)
+          )
+          autocomplete_lead_contact_tasks(delivery)
+        elsif message.incoming? && open?
+          create_message_delivery_task(delivery)
         end
       end
 
@@ -220,16 +230,23 @@ module Leads
         lead = message_delivery.message.messageable
         return false unless lead.is_a?(Lead)
 
+        # First try to find specific reply tasks
         reason = Reason.active.where(name: Reason::MESSAGE_REPLY_TASK_REASON).first
         action = LeadAction.active.where(name: LeadAction::MESSAGE_REPLY_TASK_ACTION).first
-        return false unless reason.present? && action.present?
-
-        lead_contact_actions = lead.scheduled_actions.contact.pending
-        lead_message_reply_tasks = lead_contact_actions.where(reason: reason, lead_action: action)
-        return false unless lead_message_reply_tasks.any?
-
-        lead_message_reply_tasks.each{|t| t.complete! }
-
+        
+        if reason.present? && action.present?
+          lead_contact_actions = lead.scheduled_actions.contact.pending
+          lead_message_reply_tasks = lead_contact_actions.where(reason: reason, lead_action: action)
+          
+          if lead_message_reply_tasks.any?
+            lead_message_reply_tasks.each{|t| t.complete! }
+            return true
+          end
+        end
+        
+        # If no specific reply tasks were found, try to complete any pending contact tasks
+        lead.scheduled_actions.contact.pending.each{|t| t.complete! }
+        
         return true
       end
 

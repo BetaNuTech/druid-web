@@ -142,8 +142,11 @@ class MessageDelivery < ApplicationRecord
     self.status = FAILED
     self.log = log_message
     self.save
+
     message.reload
-    message.fail!
+    if log_message != ALREADY_SENT_MESSAGE && message.state != 'sent'
+      message.fail! unless message.failed?
+    end
   end
 
   def email_whitelist

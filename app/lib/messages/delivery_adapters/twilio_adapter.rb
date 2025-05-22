@@ -61,19 +61,23 @@ module Messages
       def deliver(from: nil, to:, subject: nil, body:)
         if Rails.env.test?
           Rails.logger.warn "!!! Refusing to deliver SMS messages in TEST"
-          return true
+          return { success: true, log: "SMS delivery skipped in test environment" }
         end
 
-        result = nil
-        msg = "Messages::DeliveryAdapters::TwilioAdapter sending SMS message to #{to}: #{body}"
-        Rails.logger.info msg
+        begin
+          msg = "Messages::DeliveryAdapters::TwilioAdapter sending SMS message to #{to}: #{body}"
+          Rails.logger.info msg
 
-        result = client.api.account.messages.create(
-          from: format_phone(@phone_number),
-          to: format_phone(to),
-          body: body
-        )
-        return result
+          result = client.api.account.messages.create(
+            from: format_phone(@phone_number),
+            to: format_phone(to),
+            body: body
+          )
+          
+          return { success: true, log: "Message successfully delivered via Twilio" }
+        rescue => e
+          return { success: false, log: "Twilio delivery failed: #{e.message}" }
+        end
       end
 
       private

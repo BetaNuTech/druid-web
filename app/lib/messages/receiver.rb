@@ -88,6 +88,12 @@ module Messages
         delivered_at: message.delivered_at
       )
       message.handle_message_delivery(delivery)
+      
+      # Add call to handle_message_response for lead preferences
+      if message.messageable.is_a?(Lead) && message.messageable.preference.present?
+        message.messageable.preference.handle_message_response(delivery)
+      end
+      
       return delivery
     end
 

@@ -22,7 +22,7 @@ module Messages
         state :failed
 
         event :deliver do
-          transitions from: [ :draft, :failed ], to: :sent, after: :perform_delivery
+          transitions from: [ :draft, :failed ], to: :sent, after: [:mark_as_read_by_sender, :perform_delivery]
         end
 
         event :fail do

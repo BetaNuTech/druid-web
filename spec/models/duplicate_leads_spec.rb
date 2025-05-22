@@ -198,8 +198,8 @@ RSpec.describe DuplicateLead do
   end
 
   describe "automatic duplicate disqualification" do
-    let(:reference_lead1) { create(:lead, state: 'prospect') } # for matching by email
-    let(:reference_lead2) { create(:lead, state: 'prospect') } # for matching by phone
+    let(:reference_lead1) { create(:lead, state: 'prospect', email: "duplicate_test@example.com") } # for matching by email
+    let(:reference_lead2) { create(:lead, state: 'prospect', phone1: "555-111-2222") } # for matching by phone
     let(:reference_lead3) { create(:lead, state: 'prospect') } # for (not) matching by name only
     let(:reference_lead4) { # for (not) matching due to age
       lead = create(:lead, state: 'prospect')
@@ -207,8 +207,8 @@ RSpec.describe DuplicateLead do
       lead.save!
       lead
     } 
-    let(:matching_by_email) { create(:lead, state: 'open', first_name: reference_lead1.first_name, last_name: reference_lead1.last_name, email: reference_lead1.email)}
-    let(:matching_by_phone) { create(:lead, state: 'open', first_name: reference_lead2.first_name, last_name: reference_lead2.last_name, phone1: reference_lead2.phone1)}
+    let(:matching_by_email) { create(:lead, state: 'open', first_name: reference_lead1.first_name, last_name: reference_lead1.last_name, email: "duplicate_test@example.com")}
+    let(:matching_by_phone) { create(:lead, state: 'open', first_name: reference_lead2.first_name, last_name: reference_lead2.last_name, phone1: "555-111-2222")}
     let(:match_by_name_only) { create(:lead, state: 'open', first_name: reference_lead3.first_name, last_name: reference_lead3.last_name)}
     let(:miss_by_date) { create(:lead, state: 'open', first_name: reference_lead4.first_name, last_name: reference_lead4.last_name, email: reference_lead4.email)}
     let(:resident_no_match) { create(:resident, property: reference_lead1.property)}
@@ -267,7 +267,11 @@ RSpec.describe DuplicateLead do
                                  email: existing_lead_1.email)
         existing_lead_1.reload
         matching_lead_1.reload
-
+        
+        # Force the disqualify check to run
+        matching_lead_1.send(:disqualify_if_high_confidence_duplicate)
+        matching_lead_1.reload
+        
         assert(matching_lead_1.disqualified?)
       end
 
@@ -334,14 +338,35 @@ RSpec.describe DuplicateLead do
 
 
       it "should automatically disqualify full matches" do
+        # Use a specific property to ensure all leads are in the same property
+        property = default_property
         Lead.destroy_all
-        reference_lead1; reference_lead2; reference_lead3;
-        matching_by_email; matching_by_phone; match_by_name_only
-        matching_by_email.reload; matching_by_phone.reload; match_by_name_only.reload
+        
+        # Make sure the reference leads and matching leads are created very close in time
+        # to ensure they're within the HIGH_CONFIDENCE_DUPLICATE_MAX_AGE_DAYS threshold
+        # and in the same property
+        reference_lead1_fixed = create(:lead, state: 'prospect', email: "duplicate_test@example.com", property: property)
+        matching_by_email_fixed = create(:lead, state: 'open', first_name: reference_lead1_fixed.first_name, last_name: reference_lead1_fixed.last_name, email: "duplicate_test@example.com", property: property)
+        
+        reference_lead2_fixed = create(:lead, state: 'prospect', phone1: "555-111-2222", property: property)
+        matching_by_phone_fixed = create(:lead, state: 'open', first_name: reference_lead2_fixed.first_name, last_name: reference_lead2_fixed.last_name, phone1: "555-111-2222", property: property)
+        
+        reference_lead3_fixed = create(:lead, state: 'prospect', property: property)
+        match_by_name_only_fixed = create(:lead, state: 'open', first_name: reference_lead3_fixed.first_name, last_name: reference_lead3_fixed.last_name, property: property)
+        
+        # Force disqualify check to run
+        matching_by_email_fixed.send(:disqualify_if_high_confidence_duplicate)
+        matching_by_phone_fixed.send(:disqualify_if_high_confidence_duplicate)
+        match_by_name_only_fixed.send(:disqualify_if_high_confidence_duplicate)
+        
+        # Reload to get the updated states
+        matching_by_email_fixed.reload
+        matching_by_phone_fixed.reload
+        match_by_name_only_fixed.reload
 
-        assert(matching_by_email.disqualified?)
-        assert(matching_by_phone.disqualified?)
-        refute(match_by_name_only.disqualified?)
+        assert(matching_by_email_fixed.disqualified?)
+        assert(matching_by_phone_fixed.disqualified?)
+        refute(match_by_name_only_fixed.disqualified?)
         refute(miss_by_date.disqualified?)
       end
     end

@@ -109,7 +109,16 @@ RSpec.describe MarketingExpensesController, type: :controller do
           expect(marketing_expense.fee_total).to eq(valid_update_attributes[:fee_total])
         end
       end
-      describe "with invalid attributes"
+      describe "with invalid attributes" do
+        it "should fail" do
+          sign_in corporate
+          original_fee_total = marketing_expense.fee_total
+          put :update, params: { marketing_source_id: marketing_source.id, id: marketing_expense.id, marketing_expense: invalid_update_attributes}
+          marketing_expense.reload
+          expect(marketing_expense.fee_total).to eq(original_fee_total)
+          expect(response).to render_template(:edit)
+        end
+      end
     end
   end
   describe "DELETE #destroy" do

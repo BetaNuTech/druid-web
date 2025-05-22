@@ -9,13 +9,21 @@ module Messages
       end
 
       def deliver(from:, to:, subject:, body:)
-        ::ActionMailer::Base.mail(
-          from: from,
-          to: to,
-          subject: subject,
-          body: body,
-          content_type: 'text/html'
-        ).deliver
+        begin
+          ::ActionMailer::Base.mail(
+            from: from,
+            to: to,
+            subject: subject,
+            body: body,
+            content_type: 'text/html'
+          ).deliver
+          
+          # Return success response
+          return { success: true, log: "Message successfully delivered via ActionMailer" }
+        rescue => e
+          # Return failure response
+          return { success: false, log: "ActionMailer delivery failed: #{e.message}" }
+        end
       end
 
     end

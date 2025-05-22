@@ -63,7 +63,11 @@ class Message < ApplicationRecord
   scope :sms, ->() { includes(:message_type).where(message_type: {name: MessageType::SMS_TYPE_NAME}) }
   scope :email, ->() { includes(:message_type).where(message_type: {name: MessageType::EMAIL_TYPE_NAME}) }
   ### Callbacks
-  before_validation :set_meta
+  before_validation :set_meta, on: [ :create ]
+  before_validation :load_template, on: [ :create ]
+  after_save :log_activity
+  after_save :update_messageable_last_comm
+  after_touch :update_messageable_last_comm
 
   ### Delegates
   delegate :sms?, :email?, to: :message_type, allow_nil: true
@@ -268,10 +272,21 @@ class Message < ApplicationRecord
     delivery = MessageDelivery.create!( message: self, message_type: message_type )
     delivery.perform
     delivery.reload
-    save!
-    if !delivery.success?
+    reload
+
+    if delivery.success?
+      new_since_last = calculate_time_since_last_message
+      if self.since_last != new_since_last # Only update if it changed or was nil
+        update_column(:since_last, new_since_last)
+      end
+
+      create_sent_message_note_if_needed
+
+    else
       self.fail! unless failed?
     end
+
+    return delivery.success?
   end
 
   handle_asynchronously :perform_delivery, queue: :messages
@@ -359,40 +374,25 @@ class Message < ApplicationRecord
   end
 
   def calculate_time_since_last_message
-    return nil unless messageable.present?
-    # find delivered messages which are of the opposite source
-    skope = messageable.messages.sent.
-      where.not(delivered_at: nil).
-      where("delivered_at < ?", delivered_at)
-    if id.present?
-      skope = skope.where.not(id: id)
-    end
-    last_messages = skope.order(delivered_at: :desc)
-    if last_messages.first&.incoming == incoming
-      # The last message was from the same sender, so ignore
-      return nil
+    return nil unless messageable.present? && self.delivered_at.present?
+
+    prior_messages = messageable.messages.where.not(id: self.id).where('delivered_at < ?', self.delivered_at).order(delivered_at: :desc)
+    last_message_in_thread = prior_messages.first
+
+    if last_message_in_thread.present?
+      if last_message_in_thread.incoming == self.incoming # Last message was from SAME sender as current message
+        return nil # Not a direct reply to the other party, or continuation of own monologue
+      else # Last message was from OTHER sender
+        return self.delivered_at.to_i - last_message_in_thread.delivered_at.to_i
+      end
     else
-      last_message = last_messages.select{|m| m.incoming != incoming}.first
-    end
-    if last_message.present?
-      if self.incoming != last_message.incoming
-        return self.delivered_at.to_i - last_message.delivered_at.to_i
+      # No prior messages in thread from anyone. This is the first message for this messageable.
+      if !self.incoming && messageable.is_a?(Lead) && messageable.respond_to?(:first_comm) && messageable.first_comm.present?
+        return self.delivered_at.to_i - messageable.first_comm.to_i
       else
-        # The last message was from the same sender, so ignore
         return nil
       end
-    else
-      if !incoming && messageable.present? && messageable.respond_to?(:first_comm) && messageable.first_comm.present?
-        # If this is the first outgoing message to a Lead, then return the time since the Lead was acquired
-        return self.delivered_at.to_i - messageable.first_comm.to_i
-      end
-      return nil
     end
-  end
-
-  def set_time_since_last_message
-    self.since_last ||= calculate_time_since_last_message
-    return self.since_last
   end
 
   def load_signature
@@ -411,6 +411,62 @@ class Message < ApplicationRecord
 
   def allows_reply?
     incoming? && ( messageable.message_types_available.include?(message_type) rescue true )
+  end
+
+  def mark_as_read_by_sender
+    if outgoing? && user.present?
+      self.read_at ||= Time.current
+      self.read_by_user_id = user.id
+      self.save if persisted?
+    end
+    true # Return true to ensure callback chain continues
+  end
+
+  def log_activity
+    return true unless messageable.present? && messageable.is_a?(Lead) && messageable.persisted?
+    note_body = nil
+    note_action = nil
+
+    if state == 'received' && incoming? && saved_change_to_state?(from: 'draft', to: 'received')
+      note_body = "RECEIVED: #{subject}"
+      note_action = 'Incoming Message'
+    end
+
+    if state == 'sent' && outgoing? && (saved_change_to_state?(to: 'sent') || saved_change_to_delivered_at?)
+      note_body = "SENT: #{subject}"
+      note_action = 'Outgoing Message'
+    end
+
+    if note_body.present?
+      lead_action = LeadAction.find_or_create_by(name: note_action)
+      messageable.comments.create(
+        user: user,
+        lead_action: lead_action,
+        content: note_body,
+        notable: self
+      )
+    end
+    return true
+  end
+
+  def update_messageable_last_comm
+    return true unless messageable.present? && messageable.respond_to?(:last_comm=)
+
+    if outgoing? && state == 'sent' && delivered_at.present? && (saved_change_to_delivered_at? || saved_change_to_state?(to: 'sent'))
+      if messageable.last_comm.nil? || delivered_at > messageable.last_comm
+        messageable.update_column(:last_comm, delivered_at)
+      end
+    end
+    return true
+  end
+
+  # Helper method to check if since_last was already calculated and persisted for current delivered_at
+  def persisted_since_last?
+    self.since_last.present?
+  end
+
+  def handle_twilio_status_change(params)
+    # Implementation of handle_twilio_status_change method
   end
 
   private
@@ -435,6 +491,24 @@ class Message < ApplicationRecord
     else
       return false
     end
+  end
+
+  def create_sent_message_note_if_needed
+    return true unless messageable.is_a?(Lead) && messageable.persisted?
+    return true unless state == 'sent' && outgoing?
+
+    note_action = 'Outgoing Message'
+    lead_action = LeadAction.find_or_create_by(name: note_action)
+    
+    unless messageable.comments.exists?(notable: self, lead_action: lead_action)
+      messageable.comments.create(
+        user: user,
+        lead_action: lead_action,
+        content: "SENT: #{subject}",
+        notable: self
+      )
+    end
+    true
   end
 
 end

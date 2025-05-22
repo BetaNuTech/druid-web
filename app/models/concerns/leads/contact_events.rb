@@ -86,7 +86,7 @@ module Leads
         )
 
         self.last_comm = timestamp if ( last_comm.nil? || timestamp > last_comm )
-        save
+        save!
 
         event
       end

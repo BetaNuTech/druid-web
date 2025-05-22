@@ -43,41 +43,49 @@ module Messages
     def deliver
       begin
         deliver_via_adapter
-        record_success
       rescue => e
-        handle_delivery_exception(e)
+        @delivery.status = MessageDelivery::FAILED
+        @delivery.log = e.inspect.to_s
+        if @delivery.message.persisted? && !@delivery.message.destroyed?
+          @delivery.message.reload
+        end
+        if @delivery.message.persisted?
+          @delivery.message.fail! unless @delivery.message.failed?
+        end
       end
+      @delivery.attempted_at = DateTime.current
+      @delivery.save!
+
+      @delivery.reload
+
+      if @delivery.delivered? && @delivery.status == MessageDelivery::SUCCESS && @delivery.message.persisted?
+        @delivery.message.delivered_at = @delivery.delivered_at
+        @delivery.message.save!
+      end
+
+      return @delivery
     end
 
     private
 
     def deliver_via_adapter
-      @adapter.deliver(
+      adapter_response = @adapter.deliver(
         from: delivery.message.from_address,
         to: delivery.message.to_address,
         subject: delivery.message.subject,
         body: delivery.message.body_with_layout
       )
-    end
 
-    def record_success
-      delivery.delivered_at = DateTime.current
-      delivery.status = MessageDelivery::SUCCESS
-      delivery.save!
-      delivery.message.incoming = false
-      delivery.message.delivered_at = delivery.delivered_at
-      delivery.message.read_at = delivery.delivered_at
-      delivery.message.read_by_user_id = delivery.message.user_id
-      delivery.message.set_time_since_last_message
-      delivery.message.save
-    end
-
-    def handle_delivery_exception(e)
-      delivery.status = MessageDelivery::FAILED
-      delivery.log = e.to_s
-      delivery.save!
-      delivery.message.reload
-      delivery.message.fail!
+      if adapter_response[:success]
+        @delivery.status = MessageDelivery::SUCCESS
+        @delivery.delivered_at = DateTime.current
+        if @delivery.message
+          @delivery.message.delivered_at = @delivery.delivered_at
+        end
+      else
+        @delivery.status = MessageDelivery::FAILED
+      end
+      @delivery.log = adapter_response[:log]
     end
 
     def find_adapter!(message)

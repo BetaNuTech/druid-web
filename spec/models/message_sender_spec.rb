@@ -15,7 +15,16 @@ RSpec.describe Messages::Sender do
   let(:lead) { create(:lead, user: agent, property: agent.property) }
 
   it "automatically sets 'read' status on outgoing messages" do
+    # Verify initial state
+    expect(message.read_at).to be_nil
+    expect(message.read_by_user_id).to be_nil
+    
     message.deliver
+    
+    puts "After deliver - read_at: #{message.read_at.inspect}, read_by_user_id: #{message.read_by_user_id.inspect}"
+    puts "Message state: #{message.state.inspect}"
+    puts "Outgoing? #{message.outgoing?.inspect}, User present? #{message.user.present?.inspect}"
+    
     expect(message.read_at).to_not be_nil
     expect(message.read_by_user_id).to eq(agent.id)
   end
