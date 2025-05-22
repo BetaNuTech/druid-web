@@ -13,7 +13,7 @@ elsif ErrorNotification.enabled?
 	Rails.application.config.middleware.use ExceptionNotification::Rack,
 		:email => {
 		:email_prefix => "Exception raised on #{exception_host} ",
-		:sender_address => %{"BlueSky Errors (#{exception_host})" <bluesky@bluestone-prop.com>},
+		:sender_address => %{"BlueSky Errors (#{exception_host})" <bluesky@bluecrestresidential.com>},
 		:exception_recipients => exception_recipients,
 		:sections => %w{request environment backtrace}
 	},
