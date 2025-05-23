@@ -77,7 +77,9 @@ module Users
         elsif property_manager?
           recipient = property.team.teamleads.map(&:email).join(',') rescue nil
         end
-        return true unless recipient
+        
+        # Return early if no recipient or empty recipient
+        return true if recipient.blank?
 
         message = Message.new(
           message_type: MessageType.email,
