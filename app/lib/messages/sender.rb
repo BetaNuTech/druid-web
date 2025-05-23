@@ -69,12 +69,19 @@ module Messages
     private
 
     def deliver_via_adapter
-      adapter_response = @adapter.deliver(
+      adapter_params = {
         from: delivery.message.from_address,
         to: delivery.message.to_address,
         subject: delivery.message.subject,
         body: delivery.message.body_with_layout
-      )
+      }
+      
+      # Add reply_to if the message has one
+      if delivery.message.respond_to?(:reply_to_address) && delivery.message.reply_to_address.present?
+        adapter_params[:reply_to] = delivery.message.reply_to_address
+      end
+      
+      adapter_response = @adapter.deliver(**adapter_params)
 
       if adapter_response[:success]
         @delivery.status = MessageDelivery::SUCCESS

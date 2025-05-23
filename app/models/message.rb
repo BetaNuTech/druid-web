@@ -293,9 +293,20 @@ class Message < ApplicationRecord
 
   def from_address
     if message_type.email? && outgoing?
-      return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluecrest Residential'}\" <#{senderid}>"
+      # Use verified domain for sending
+      verified_sender = "bluesky@#{ENV.fetch('SMTP_DOMAIN', 'mail.druidsite.com')}"
+      return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluecrest Residential'}\" <#{verified_sender}>"
     else
       return senderid
+    end
+  end
+
+  def reply_to_address
+    if message_type.email? && outgoing?
+      # Use threaded CloudMailin address for replies
+      return outgoing_senderid
+    else
+      return nil
     end
   end
 

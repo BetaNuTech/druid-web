@@ -8,15 +8,20 @@ module Messages
         return ENV.fetch(MESSAGE_DELIVERY_REPLY_TO_ENV, 'default@example.com')
       end
 
-      def deliver(from:, to:, subject:, body:)
+      def deliver(from:, to:, subject:, body:, reply_to: nil)
         begin
-          ::ActionMailer::Base.mail(
+          mail_options = {
             from: from,
             to: to,
             subject: subject,
             body: body,
             content_type: 'text/html'
-          ).deliver
+          }
+          
+          # Add reply_to if provided
+          mail_options[:reply_to] = reply_to if reply_to.present?
+          
+          ::ActionMailer::Base.mail(mail_options).deliver
           
           # Return success response
           return { success: true, log: "Message successfully delivered via ActionMailer" }
