@@ -293,8 +293,9 @@ class Message < ApplicationRecord
 
   def from_address
     if message_type.email? && outgoing?
-      # Use verified domain for sending
-      verified_sender = "bluesky@#{ENV.fetch('SMTP_DOMAIN', 'mail.druidsite.com')}"
+      # Use different email prefixes based on messageable type
+      email_prefix = (messageable.is_a?(Lead) || messageable.is_a?(Roommate)) ? 'leasing' : 'bluesky'
+      verified_sender = "#{email_prefix}@#{ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')}"
       return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluecrest Residential'}\" <#{verified_sender}>"
     else
       return senderid
@@ -321,8 +322,11 @@ class Message < ApplicationRecord
     when message_type.sms?
       return Messages::Sender.find_adapter(self).base_senderid
     when message_type.email?
-      return Messages::Sender.find_adapter(self).base_senderid.
-              sub('@',"+#{threadid}@")
+      # Use different email prefixes based on messageable type for threading
+      email_prefix = (messageable.is_a?(Lead) || messageable.is_a?(Roommate)) ? 'leasing' : 'bluesky'
+      base_domain = ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')
+      base_address = "#{email_prefix}@#{base_domain}"
+      return base_address.sub('@',"+#{threadid}@")
     end
   end
 
