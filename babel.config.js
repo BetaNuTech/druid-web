@@ -32,7 +32,10 @@ module.exports = function(api) {
           useBuiltIns: 'entry',
           corejs: 3,
           modules: false,
-          exclude: ['transform-typeof-symbol']
+          exclude: ['transform-typeof-symbol'],
+          targets: {
+            browsers: ['> 1%', 'last 2 versions', 'not ie <= 11']
+          }
         }
       ]
     ].filter(Boolean),
@@ -65,12 +68,6 @@ module.exports = function(api) {
           helpers: false,
           regenerator: true,
           corejs: false
-        }
-      ],
-      [
-        require('@babel/plugin-transform-regenerator').default,
-        {
-          async: false
         }
       ]
     ].filter(Boolean)

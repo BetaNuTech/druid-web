@@ -4,17 +4,25 @@ This is the BlueSky Web Application created by and for BlueStone Properties.
 
 # License
 
-Copyright 2017-2018 BlueStone Properties
+Copyright 2017-2025 BlueStone Properties
 This code is proprietary and distribution is strictly prohibited.
 
 # Dependencies
 
-* Ruby version: 2.6.3 (in Gemfile)
+* Ruby version: 3.2.8 (in Gemfile)
 * System dependencies
-  * Typical Rails 5 dependencies
-  * Node.js 14.x
+  * Typical Rails 6 dependencies
+  * Node.js 20.x
   * npm
   * yarn
+
+Why Node.js is needed:
+The app uses Rails Webpacker (version 4.0.7) for frontend asset compilation, which requires Node.js for:
+- Webpack bundling
+- JavaScript transpilation with Babel
+- SASS/CSS processing
+- React components
+- Various frontend dependencies
 
 # Development
 

@@ -8,4 +8,12 @@ cssLoader.options = Object.assign(cssLoader.options, {
   }
 })
 
+// Configure Babel loader to exclude D3 modules from transpilation
+const babelLoader = environment.loaders.get('babel')
+const originalExclude = babelLoader.exclude
+babelLoader.exclude = [
+  ...(Array.isArray(originalExclude) ? originalExclude : [originalExclude]),
+  /node_modules\/d3.*/
+].filter(Boolean)
+
 module.exports = environment

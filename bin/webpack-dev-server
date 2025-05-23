@@ -10,6 +10,9 @@ ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile",
 require "rubygems"
 require "bundler/setup"
 
+# Fix for Ruby 3.1+ compatibility with Rails 6.1 Logger issue
+require 'logger'
+
 require "webpacker"
 require "webpacker/dev_server_runner"
 

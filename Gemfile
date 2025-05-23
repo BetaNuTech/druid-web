@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
-ruby '3.1.3'
+ruby '3.1.7'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 6.1'
+gem 'rails', '6.1.7.10'
 gem 'pg', "~> 1.2"
 gem 'mysql2', "~> 0.5"
 gem 'puma', "~> 5.5"
@@ -21,7 +21,7 @@ gem 'foreman', "~> 0.87"
 gem 'delayed_job_active_record'
 gem 'amazing_print', "~> 1.3"
 gem 'pry-rails', "~> 0.3"
-gem 'webpacker', "~> 5.2"
+gem 'webpacker', "~> 5.4"
 gem 'devise', "~> 4.8"
 gem 'colorize', "~> 0.8"
 gem 'pundit', "~> 2.1"
