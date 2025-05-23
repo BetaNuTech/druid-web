@@ -47,9 +47,5 @@
   },
   "engines": {
     "node": "20.x"
-  },
-  "scripts": {
-    "build": "webpack --mode production",
-    "dev": "webpack --mode development"
   }
 }
