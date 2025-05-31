@@ -538,3 +538,166 @@ The Heroku Scheduler should be configured to run the following tasks
 |-----------+-----------------------------------------+-------------------------------------------------------------|
 ```
 
+
+# Managing Marketing Source Tracking Numbers
+
+## Disassociating Tracking Numbers from Properties
+
+When properties are no longer managed or you need to free up tracking phone numbers for reuse, you can clear all tracking numbers for a property while preserving the historical lead attribution data.
+
+### Steps to Clear Tracking Numbers on Production:
+
+1. **Access the Production Rails Console:**
+   ```bash
+   heroku run rails console --remote heroku-prod
+   ```
+
+2. **Find the Property:**
+   ```ruby
+   # Find by exact name
+   property = Property.find_by(name: 'Property Name Here')
+   
+   # Or search if unsure of exact name
+   Property.where("name LIKE ?", "%PartialName%").pluck(:name, :id)
+   ```
+
+3. **Review Current Tracking Numbers (Optional):**
+   ```ruby
+   # See all marketing sources with tracking numbers
+   property.marketing_sources.where.not(tracking_number: [nil, '']).each do |ms|
+     puts "#{ms.name}: #{ms.tracking_number} (Active: #{ms.active})"
+   end
+   
+   # Count tracking numbers
+   count = property.marketing_sources.where.not(tracking_number: [nil, '']).count
+   puts "Total tracking numbers: #{count}"
+   ```
+
+4. **Clear All Tracking Numbers:**
+   ```ruby
+   # This preserves all marketing source data but frees the phone numbers
+   property.marketing_sources.update_all(tracking_number: nil)
+   ```
+
+5. **Clear Multiple Properties:**
+   ```ruby
+   # Example for multiple properties
+   property_names = ['Old Property 1', 'Old Property 2']
+   property_names.each do |name|
+     property = Property.find_by(name: name)
+     if property
+       count = property.marketing_sources.where.not(tracking_number: [nil, '']).count
+       property.marketing_sources.update_all(tracking_number: nil)
+       puts "Cleared #{count} tracking numbers from #{name}"
+     else
+       puts "Property '#{name}' not found"
+     end
+   end
+   ```
+
+### Finding Tracking Numbers on Inactive Properties:
+
+To identify tracking numbers that are tied to inactive properties (and might be good candidates for reuse):
+
+```ruby
+# List all tracking numbers from inactive properties
+inactive_numbers = []
+Property.where(active: false).each do |property|
+  property.marketing_sources.where.not(tracking_number: [nil, '']).each do |ms|
+    inactive_numbers << {
+      property_name: property.name,
+      property_id: property.id,
+      marketing_source: ms.name,
+      tracking_number: ms.tracking_number,
+      ms_active: ms.active,
+      ms_end_date: ms.end_date
+    }
+  end
+end
+
+# Display results (choose one option):
+
+# Option 1: Display to console
+puts "TRACKING NUMBERS ON INACTIVE PROPERTIES:"
+puts "=" * 80
+inactive_numbers.each do |item|
+  puts "Property: #{item[:property_name]}"
+  puts "  Marketing Source: #{item[:marketing_source]}"
+  puts "  Tracking Number: #{item[:tracking_number]}"
+  puts "  MS Active: #{item[:ms_active]}, End Date: #{item[:ms_end_date]}"
+  puts ""
+end
+puts "Total tracking numbers on inactive properties: #{inactive_numbers.count}"
+
+# Option 2: Write to a file
+File.open('/tmp/inactive_tracking_numbers.txt', 'w') do |file|
+  file.puts "TRACKING NUMBERS ON INACTIVE PROPERTIES"
+  file.puts "Generated: #{DateTime.now}"
+  file.puts "=" * 80
+  inactive_numbers.each do |item|
+    file.puts "Property: #{item[:property_name]}"
+    file.puts "  Marketing Source: #{item[:marketing_source]}"
+    file.puts "  Tracking Number: #{item[:tracking_number]}"
+    file.puts "  MS Active: #{item[:ms_active]}, End Date: #{item[:ms_end_date]}"
+    file.puts ""
+  end
+  file.puts "Total tracking numbers on inactive properties: #{inactive_numbers.count}"
+end
+puts "Report saved to: /tmp/inactive_tracking_numbers.txt"
+
+# Option 3: Export as CSV
+require 'csv'
+CSV.open('/tmp/inactive_tracking_numbers.csv', 'w') do |csv|
+  csv << ['Property Name', 'Property ID', 'Marketing Source', 'Tracking Number', 'MS Active', 'End Date']
+  inactive_numbers.each do |item|
+    csv << [item[:property_name], item[:property_id], item[:marketing_source], 
+            item[:tracking_number], item[:ms_active], item[:ms_end_date]]
+  end
+end
+puts "CSV saved to: /tmp/inactive_tracking_numbers.csv"
+
+# Get summary by property
+Property.where(active: false).each do |property|
+  count = property.marketing_sources.where.not(tracking_number: [nil, '']).count
+  if count > 0
+    puts "#{property.name}: #{count} tracking numbers"
+  end
+end
+
+# Note: Files in /tmp are lost when you exit the console. To save locally, use one of these methods:
+
+# Method 1: Run everything in one command (recommended for CSV):
+heroku run rails runner "
+require 'csv'
+inactive_numbers = []
+Property.where(active: false).each do |property|
+  property.marketing_sources.where.not(tracking_number: [nil, '']).each do |ms|
+    inactive_numbers << {
+      property_name: property.name,
+      marketing_source: ms.name,
+      tracking_number: ms.tracking_number,
+      ms_active: ms.active,
+      ms_end_date: ms.end_date
+    }
+  end
+end
+CSV.open('/tmp/inactive_tracking_numbers.csv', 'w') do |csv|
+  csv << ['Property Name', 'Marketing Source', 'Tracking Number', 'MS Active', 'End Date']
+  inactive_numbers.each do |item|
+    csv << [item[:property_name], item[:marketing_source], 
+            item[:tracking_number], item[:ms_active], item[:ms_end_date]]
+  end
+end
+puts File.read('/tmp/inactive_tracking_numbers.csv')
+" --remote heroku-prod > inactive_numbers.csv
+
+# Method 2: Copy and paste from console output (for smaller lists)
+# Run the console commands above and copy the output directly
+```
+
+### Important Notes:
+- This operation preserves all historical data including leads, conversions, and ROI metrics
+- The phone numbers become immediately available for reuse by other marketing sources
+- Marketing sources remain active but without phone tracking capability
+- This operation cannot be undone through the Rails console (though you could reassign numbers later)
+- Alternative: You can also clear individual tracking numbers through the web UI by editing each marketing source
