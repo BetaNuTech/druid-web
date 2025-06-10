@@ -142,9 +142,23 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     
     # Lead preference attributes
     preference_attrs = {}
-    preference_attrs[:notes] = lead_info['notes'] if lead_info['notes'].present?
-    preference_attrs[:move_in] = lead_info['preferred_move_in_date'] if lead_info['preferred_move_in_date'].present?
-    preference_attrs[:unit_type] = lead_info['unit_type'] if lead_info['unit_type'].present?
+    
+    # Build notes from OpenAI notes and unit type
+    notes_parts = []
+    notes_parts << lead_info['notes'] if lead_info['notes'].present?
+    notes_parts << "Unit type requested: #{lead_info['unit_type']}" if lead_info['unit_type'].present?
+    preference_attrs[:notes] = notes_parts.join("\n\n") if notes_parts.any?
+    
+    # Parse move-in date if provided
+    if lead_info['preferred_move_in_date'].present?
+      begin
+        preference_attrs[:move_in] = Date.parse(lead_info['preferred_move_in_date'])
+      rescue ArgumentError
+        # If date parsing fails, add it to notes instead
+        notes_parts << "Preferred move-in: #{lead_info['preferred_move_in_date']}"
+        preference_attrs[:notes] = notes_parts.join("\n\n") if notes_parts.any?
+      end
+    end
     preference_attrs[:raw_data] = raw_email.raw_data.to_json
     
     clean_lead_data[:preference_attributes] = preference_attrs if preference_attrs.any?
