@@ -32,7 +32,9 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         'last_name' => 'Doe',
         'email' => 'john.doe@example.com',
         'phone1' => '555-123-4567',
-        'message' => 'Interested in Test Property'
+        'notes' => 'Interested in Test Property',
+        'unit_type' => 'A01',
+        'preferred_move_in_date' => '2025-07-01'
       },
       'classification_reason' => 'Email contains rental inquiry'
     }
@@ -49,7 +51,7 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         'last_name' => 'Plumbing',
         'email' => 'service@abcplumbing.com',
         'phone1' => '555-999-8888',
-        'message' => 'Invoice for plumbing services',
+        'notes' => 'Invoice for plumbing services',
         'company' => 'ABC Plumbing'
       },
       'classification_reason' => 'Email appears to be from a service vendor'
@@ -137,6 +139,44 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         
         lead = raw_email.reload.lead
         expect(lead.source).to eq(zillow_source)
+      end
+      
+      it "properly handles notes, unit type, and move-in date" do
+        allow(openai_client).to receive(:analyze_email).and_return(openai_lead_response)
+        
+        described_class.perform_now(raw_email)
+        
+        lead = raw_email.reload.lead
+        preference = lead.preference
+        
+        # Check that notes combine OpenAI notes and unit type
+        expect(preference.notes).to include('Interested in Test Property')
+        expect(preference.notes).to include('Unit type requested: A01')
+        
+        # Check that move-in date is parsed correctly
+        expect(preference.move_in).to eq(Date.parse('2025-07-01'))
+        
+        # Check that raw data is preserved
+        expect(preference.raw_data).to be_present
+        expect(JSON.parse(preference.raw_data)).to eq(email_data.stringify_keys)
+      end
+      
+      it "handles invalid move-in date by adding to notes" do
+        invalid_date_response = openai_lead_response.deep_merge(
+          'lead_data' => { 'preferred_move_in_date' => 'invalid-date' }
+        )
+        allow(openai_client).to receive(:analyze_email).and_return(invalid_date_response)
+        
+        described_class.perform_now(raw_email)
+        
+        lead = raw_email.reload.lead
+        preference = lead.preference
+        
+        # Move-in should not be set
+        expect(preference.move_in).to be_nil
+        
+        # Invalid date should be in notes
+        expect(preference.notes).to include('Preferred move-in: invalid-date')
       end
     end
     
