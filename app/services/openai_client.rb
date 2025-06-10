@@ -162,6 +162,9 @@ class OpenaiClient
   def build_analysis_prompt(email_content, property, active_sources)
     sources_list = active_sources.map(&:name).join(', ')
     
+    # Handle both string and symbol keys
+    content = email_content.with_indifferent_access
+    
     <<~PROMPT
       Property: #{property.name}
       Property Address: #{property.address}
@@ -169,16 +172,16 @@ class OpenaiClient
       
       Email to analyze:
       
-      From: #{email_content.dig(:headers, 'From') || email_content.dig(:envelope, :from)}
-      To: #{email_content.dig(:headers, 'To') || email_content.dig(:envelope, :to)}
-      Subject: #{email_content.dig(:headers, 'Subject')}
-      Date: #{email_content.dig(:headers, 'Date')}
+      From: #{content.dig('headers', 'From') || content.dig('envelope', 'from')}
+      To: #{content.dig('headers', 'To') || content.dig('envelope', 'to')}
+      Subject: #{content.dig('headers', 'Subject')}
+      Date: #{content.dig('headers', 'Date')}
       
       Plain Text Content:
-      #{email_content[:plain] || 'No plain text content'}
+      #{content['plain'].presence || 'No plain text content'}
       
       HTML Content (if no plain text):
-      #{email_content[:plain].blank? ? email_content[:html] : 'Omitted - plain text available'}
+      #{content['plain'].blank? ? content['html'] : 'Omitted - plain text available'}
       
       Analyze this email and return the required JSON structure.
     PROMPT
