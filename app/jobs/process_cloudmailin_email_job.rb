@@ -167,7 +167,8 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     notes_parts = []
     notes_parts << lead_info['notes'] if lead_info['notes'].present?
     notes_parts << "Unit type requested: #{lead_info['unit_type']}" if lead_info['unit_type'].present?
-    preference_attrs[:notes] = notes_parts.join("\n\n") if notes_parts.any?
+    notes_parts << "Processed by AI"
+    preference_attrs[:notes] = notes_parts.join("\n\n")
     
     # Parse move-in date if provided
     if lead_info['preferred_move_in_date'].present?
@@ -176,7 +177,7 @@ class ProcessCloudmailinEmailJob < ApplicationJob
       rescue ArgumentError
         # If date parsing fails, add it to notes instead
         notes_parts << "Preferred move-in: #{lead_info['preferred_move_in_date']}"
-        preference_attrs[:notes] = notes_parts.join("\n\n") if notes_parts.any?
+        preference_attrs[:notes] = notes_parts.join("\n\n")
       end
     end
     preference_attrs[:raw_data] = raw_email.raw_data.to_json

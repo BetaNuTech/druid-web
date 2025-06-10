@@ -156,6 +156,7 @@ class OpenaiClient
       - If no clear first/last name, use descriptive placeholders like "Vendor" or "Unknown Sender"
       - Be conservative - only mark as spam if clearly spam
       - Match source based on email subject patterns, sender domains, or content mentions
+      - Notes should add additional context from the lead data that would be helpful for the leasing agent to know.
     PROMPT
   end
   

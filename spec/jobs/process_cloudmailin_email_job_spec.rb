@@ -150,9 +150,10 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         lead = raw_email.reload.lead
         preference = lead.preference
         
-        # Check that notes combine OpenAI notes and unit type
+        # Check that notes combine OpenAI notes, unit type, and AI processing indicator
         expect(preference.notes).to include('Interested in Test Property')
         expect(preference.notes).to include('Unit type requested: A01')
+        expect(preference.notes).to include('Processed by AI')
         
         # Check that move-in date is parsed correctly
         expect(preference.move_in).to eq(Date.parse('2025-07-01'))
@@ -176,8 +177,9 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         # Move-in should not be set
         expect(preference.move_in).to be_nil
         
-        # Invalid date should be in notes
+        # Invalid date should be in notes along with AI processing indicator
         expect(preference.notes).to include('Preferred move-in: invalid-date')
+        expect(preference.notes).to include('Processed by AI')
       end
     end
     
