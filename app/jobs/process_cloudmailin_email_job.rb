@@ -86,13 +86,30 @@ class ProcessCloudmailinEmailJob < ApplicationJob
   end
   
   def create_lead_from_analysis(raw_email, analysis, property)
+    # Check if Cloudmailin source exists and is active for this property
+    cloudmailin_source = LeadSource.find_by(slug: 'Cloudmailin')
+    unless cloudmailin_source
+      error_message = "Cloudmailin lead source not found in system"
+      raw_email.mark_failed!(error_message)
+      return
+    end
+    
+    # Check if property has active Cloudmailin listing
+    cloudmailin_listing = property.listings.active
+      .joins(:source)
+      .where(lead_sources: { slug: 'Cloudmailin' })
+      .first
+    
+    unless cloudmailin_listing
+      error_message = "Property #{property.id} does not have active Cloudmailin listing"
+      raw_email.mark_failed!(error_message)
+      return
+    end
+    
     lead_data = build_lead_data(analysis, raw_email, property)
     
-    # Create lead directly since we've already processed the data
-    source = determine_source(analysis, property) || LeadSource.find_by(slug: 'Cloudmailin')
-    
     lead = Lead.new(lead_data)
-    lead.lead_source_id = source&.id
+    lead.lead_source_id = cloudmailin_source.id
     
     if lead.save
       raw_email.update!(
@@ -140,6 +157,9 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     clean_lead_data[:company] = lead_info['company'] if lead_info['company'].present?
     clean_lead_data[:property_id] = property.id
     
+    # Set referral to the ILS (Internet Listing Service) that OpenAI identified
+    clean_lead_data[:referral] = analysis['source_match'] if analysis['source_match'].present?
+    
     # Lead preference attributes
     preference_attrs = {}
     
@@ -166,15 +186,6 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     clean_lead_data
   end
   
-  def determine_source(analysis, property)
-    source_name = analysis['source_match']
-    return nil unless source_name
-    
-    property.listings.active
-      .joins(:source)
-      .where(lead_sources: { name: source_name })
-      .first&.source
-  end
   
   def create_fallback_lead(raw_email)
     # Extract basic info from raw email
@@ -182,18 +193,23 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     from = headers['From'] || raw_email.raw_data.dig('envelope', 'from')
     subject = headers['Subject'] || 'No Subject'
     
+    # Find the property for this email
+    property_code = raw_email.property_code
+    property = find_property(property_code)
+    
     lead_data = {
       first_name: 'OpenAI Processing',
       last_name: 'Failed - Review',
       email: extract_email_from_header(from),
+      property_id: property&.id,
       preference_attributes: {
         notes: "Subject: #{subject}\n\nOpenAI processing failed. Please review raw email data."
       }
     }
     
-    source = LeadSource.find_by(slug: 'Cloudmailin')
+    cloudmailin_source = LeadSource.find_by(slug: 'Cloudmailin')
     lead = Lead.new(lead_data)
-    lead.lead_source_id = source&.id
+    lead.lead_source_id = cloudmailin_source&.id
     
     if lead.save
       raw_email.update!(

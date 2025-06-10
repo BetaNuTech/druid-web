@@ -130,3 +130,9 @@ Located in `lib/` directory with clear separation by domain:
 ## Configuration
 
 Development configuration uses `.env` file (copy from `env.example`). Key environment variables include Yardi credentials, Twilio settings, AWS keys, and database URLs.
+
+## Production Console Commands
+
+- When running rails console on production, use heroku and rails runner and pass in commands
+  - Production app: druid-prod
+  - Staging app: druid-staging

@@ -132,13 +132,14 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         expect(lead.last_name).to eq('Unknown')
       end
       
-      it "matches lead to appropriate source" do
+      it "always uses Cloudmailin as lead source and sets referral from OpenAI" do
         allow(openai_client).to receive(:analyze_email).and_return(openai_lead_response)
         
         described_class.perform_now(raw_email)
         
         lead = raw_email.reload.lead
-        expect(lead.source).to eq(zillow_source)
+        expect(lead.source).to eq(cloudmailin_source)
+        expect(lead.referral).to eq('Zillow')
       end
       
       it "properly handles notes, unit type, and move-in date" do
@@ -250,6 +251,34 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
       end
     end
     
+    context "with missing Cloudmailin configuration" do
+      it "marks email as failed when Cloudmailin source doesn't exist" do
+        cloudmailin_source.destroy
+        allow(openai_client).to receive(:analyze_email).and_return(openai_lead_response)
+        
+        expect {
+          described_class.perform_now(raw_email)
+        }.not_to change { Lead.count }
+        
+        raw_email.reload
+        expect(raw_email.status).to eq('failed')
+        expect(raw_email.error_message).to include('Cloudmailin lead source not found')
+      end
+      
+      it "marks email as failed when property has no active Cloudmailin listing" do
+        property_listing.destroy
+        allow(openai_client).to receive(:analyze_email).and_return(openai_lead_response)
+        
+        expect {
+          described_class.perform_now(raw_email)
+        }.not_to change { Lead.count }
+        
+        raw_email.reload
+        expect(raw_email.status).to eq('failed')
+        expect(raw_email.error_message).to include('does not have active Cloudmailin listing')
+      end
+    end
+
     context "with lead creation failures" do
       before do
         allow(openai_client).to receive(:analyze_email).and_return(
