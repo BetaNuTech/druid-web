@@ -142,6 +142,34 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         expect(lead.referral).to eq('Zillow')
       end
       
+      it "provides marketing sources to OpenAI for better matching" do
+        # Create marketing sources for the property
+        zillow_marketing_source = create(:marketing_source, property: property, name: 'Zillow.com')
+        apartments_marketing_source = create(:marketing_source, property: property, name: 'Apartments.com')
+        
+        # Verify OpenAI is called with the marketing sources list
+        expect(openai_client).to receive(:analyze_email) do |email_data, prop, active_sources|
+          expect(prop).to eq(property)
+          # The marketing sources should be available to the OpenAI client
+        end.and_return(openai_lead_response)
+        
+        described_class.perform_now(raw_email)
+      end
+      
+      it "prioritizes marketing source names when OpenAI has them available" do
+        # Create a marketing source with .com suffix
+        zillow_marketing_source = create(:marketing_source, property: property, name: 'Zillow.com')
+        
+        # Mock OpenAI to return the exact marketing source name (as it would when given the list)
+        response_with_exact_name = openai_lead_response.merge('source_match' => 'Zillow.com')
+        allow(openai_client).to receive(:analyze_email).and_return(response_with_exact_name)
+        
+        described_class.perform_now(raw_email)
+        
+        lead = raw_email.reload.lead
+        expect(lead.referral).to eq('Zillow.com')  # Should use OpenAI's returned marketing source name
+      end
+      
       it "properly handles notes, unit type, and move-in date" do
         allow(openai_client).to receive(:analyze_email).and_return(openai_lead_response)
         

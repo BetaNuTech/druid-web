@@ -157,7 +157,8 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     clean_lead_data[:company] = lead_info['company'] if lead_info['company'].present?
     clean_lead_data[:property_id] = property.id
     
-    # Set referral to the ILS (Internet Listing Service) that OpenAI identified
+    # Set referral to the source that OpenAI identified
+    # OpenAI now receives marketing source names and prioritizes matching against them
     clean_lead_data[:referral] = analysis['source_match'] if analysis['source_match'].present?
     
     # Lead preference attributes

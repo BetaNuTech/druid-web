@@ -23,7 +23,10 @@ class OpenaiClient
   def analyze_email(email_content, property, active_sources)
     return nil if circuit_open?
     
-    prompt = build_analysis_prompt(email_content, property, active_sources)
+    # Get marketing sources for this property to help with matching
+    marketing_sources = MarketingSource.where(property: property).active.pluck(:name)
+    
+    prompt = build_analysis_prompt(email_content, property, active_sources, marketing_sources)
     
     request_body = {
       model: @model,
@@ -155,13 +158,17 @@ class OpenaiClient
       - Phone numbers should be in format XXX-XXX-XXXX
       - If no clear first/last name, use descriptive placeholders like "Vendor" or "Unknown Sender"
       - Be conservative - only mark as spam if clearly spam
-      - Match source based on email subject patterns, sender domains, or content mentions
+      - For source_match: FIRST try to match against the Marketing Sources list provided for the property
+      - If no Marketing Source matches, then identify the actual source from email patterns, domains, or content
+      - Marketing Sources are the property's configured lead attribution sources (e.g., "Zillow.com", "Apartments.com")
+      - Examples: if email mentions "Zillow" and Marketing Sources includes "Zillow.com", return "Zillow.com"
       - Notes should add additional context from the lead data that would be helpful for the leasing agent to know.
     PROMPT
   end
   
-  def build_analysis_prompt(email_content, property, active_sources)
+  def build_analysis_prompt(email_content, property, active_sources, marketing_sources = [])
     sources_list = active_sources.map(&:name).join(', ')
+    marketing_sources_list = marketing_sources.join(', ')
     
     # Handle both string and symbol keys
     content = email_content.with_indifferent_access
@@ -170,6 +177,7 @@ class OpenaiClient
       Property: #{property.name}
       Property Address: #{property.address}
       Active Lead Sources: #{sources_list}
+      Marketing Sources for this Property: #{marketing_sources_list.present? ? marketing_sources_list : 'None configured'}
       
       Email to analyze:
       
