@@ -134,7 +134,7 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     # Lead model attributes
     clean_lead_data[:first_name] = first_name
     clean_lead_data[:last_name] = last_name
-    clean_lead_data[:email] = lead_info['email'] if lead_info['email'].present?
+    clean_lead_data[:email] = lead_info['email'].presence || extract_email_from_header(raw_email.raw_data.dig('headers', 'From'))
     clean_lead_data[:phone1] = lead_info['phone1'] if lead_info['phone1'].present?
     clean_lead_data[:phone2] = lead_info['phone2'] if lead_info['phone2'].present?
     clean_lead_data[:company] = lead_info['company'] if lead_info['company'].present?
