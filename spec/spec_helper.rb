@@ -1,5 +1,4 @@
 require 'support/simplecov'
-require 'support/factory_bot'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

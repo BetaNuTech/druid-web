@@ -14,6 +14,8 @@ require_relative './rent_dot_com_parser'
 require_relative './rentable_parser'
 require_relative './rentcafe_parser'
 require_relative './zillow_parser'
+require_relative './zumper_parser'
+require_relative './openai_parser'
 require_relative './null_parser'
 
 module Leads
@@ -22,6 +24,7 @@ module Leads
 
       # All Valid CloudMailin Parsers except NullParser
       PARSERS = [
+        OpenaiParser, # Check first if enabled
         LineupsioParser,
         RentcafeParser,
         CorporatehousingDotComParser, # Goes before all other forrent.com parsers

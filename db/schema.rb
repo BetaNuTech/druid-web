@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_05_202108) do
+ActiveRecord::Schema.define(version: 2025_06_10_194747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -83,6 +83,26 @@ ActiveRecord::Schema.define(version: 2023_07_05_202108) do
     t.index ["auditable_id", "auditable_type"], name: "auditable_index"
     t.index ["created_at"], name: "index_audits_on_created_at"
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
+  end
+
+  create_table "cloudmailin_raw_emails", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "raw_data", null: false
+    t.string "property_code"
+    t.uuid "property_id"
+    t.string "status", default: "pending"
+    t.string "parser_used"
+    t.uuid "lead_id"
+    t.text "error_message"
+    t.integer "retry_count", default: 0
+    t.datetime "processed_at"
+    t.jsonb "openai_response"
+    t.float "openai_confidence_score"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_at"], name: "index_cloudmailin_raw_emails_on_created_at"
+    t.index ["lead_id"], name: "index_cloudmailin_raw_emails_on_lead_id"
+    t.index ["property_id"], name: "index_cloudmailin_raw_emails_on_property_id"
+    t.index ["status"], name: "index_cloudmailin_raw_emails_on_status"
   end
 
   create_table "contact_events", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|

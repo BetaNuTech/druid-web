@@ -17,7 +17,10 @@ module Leads
       end
 
       def parse
-        if ( errors = reject?(@data) )
+        # Store raw email for async processing if OpenAI parser is enabled
+        if should_use_openai_parser?
+          store_and_process_async
+        elsif ( errors = reject?(@data) )
           Leads::Creator::Result.new(
             status: :nonlead,
             lead: {},
@@ -70,6 +73,46 @@ module Leads
           return str if email_data.match?(str)
         end
         false
+      end
+      
+      def should_use_openai_parser?
+        ENV.fetch('ENABLE_OPENAI_PARSER', 'false') == 'true'
+      end
+      
+      def store_and_process_async
+        # Store raw email
+        raw_email = CloudmailinRawEmail.create_from_params(@data, @property_code)
+        
+        # Queue for async processing
+        ProcessCloudmailinEmailJob.perform_later(raw_email)
+        
+        # Return a placeholder result for immediate response
+        @parser = 'OpenAI (Async)'
+        Leads::Creator::Result.new(
+          status: :ok,
+          lead: {
+            first_name: 'Processing',
+            last_name: 'Please Wait',
+            email: extract_basic_email(@data),
+            message: 'This lead is being processed by AI. It will be updated shortly.',
+            raw_data: @data
+          },
+          errors: ActiveModel::Errors.new(Lead.new),
+          property_code: @property_code,
+          parser: @parser
+        )
+      end
+      
+      def extract_basic_email(data)
+        from_header = data.dig(:headers, 'From') || data.dig(:envelope, :from) || ''
+        
+        if match = from_header.match(/<(.+@.+)>/)
+          match[1]
+        elsif from_header.include?('@')
+          from_header.strip
+        else
+          nil
+        end
       end
     end
   end
