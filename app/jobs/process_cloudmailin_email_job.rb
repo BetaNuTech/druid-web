@@ -142,7 +142,7 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     
     # Lead preference attributes
     preference_attrs = {}
-    preference_attrs[:notes] = lead_info['message'] if lead_info['message'].present?
+    preference_attrs[:notes] = lead_info['notes'] if lead_info['notes'].present?
     preference_attrs[:move_in] = lead_info['preferred_move_in_date'] if lead_info['preferred_move_in_date'].present?
     preference_attrs[:unit_type] = lead_info['unit_type'] if lead_info['unit_type'].present?
     preference_attrs[:raw_data] = raw_email.raw_data.to_json

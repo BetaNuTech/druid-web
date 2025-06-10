@@ -94,8 +94,9 @@ module Leads
             first_name: 'Processing',
             last_name: 'Please Wait',
             email: extract_basic_email(@data),
-            message: 'This lead is being processed by AI. It will be updated shortly.',
-            raw_data: @data
+            preference_attributes: {
+              notes: 'This lead is being processed by AI. It will be updated shortly.'
+            }
           },
           errors: ActiveModel::Errors.new(Lead.new),
           property_code: @property_code,

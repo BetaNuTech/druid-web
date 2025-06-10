@@ -16,8 +16,10 @@ module Leads
             last_name: 'Via AI',
             email: extract_basic_email(data),
             phone1: nil,
-            message: 'Lead is being processed by AI. Details will be updated shortly.',
-            raw_data: data
+            preference_attributes: {
+              notes: 'Lead is being processed by AI. Details will be updated shortly.',
+              raw_data: data.to_json
+            }
           }
         end
         

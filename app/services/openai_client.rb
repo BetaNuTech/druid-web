@@ -142,7 +142,7 @@ class OpenaiClient
           "email": "string or null",
           "phone1": "string or null",
           "phone2": "string or null",
-          "message": "string or null",
+          "notes": "string or null",
           "preferred_move_in_date": "YYYY-MM-DD or null",
           "unit_type": "string or null",
           "company": "string or null"

@@ -49,8 +49,8 @@ RSpec.describe Leads::Adapters::CloudMailin::OpenaiParser do
       expect(result[:last_name]).to eq('Via AI')
       expect(result[:email]).to eq('john.doe@example.com')
       expect(result[:phone1]).to be_nil
-      expect(result[:message]).to include('being processed by AI')
-      expect(result[:raw_data]).to eq(email_data)
+      expect(result[:preference_attributes][:notes]).to include('being processed by AI')
+      expect(result[:preference_attributes][:raw_data]).to eq(email_data.to_json)
     end
     
     it "extracts email from angled bracket format" do
@@ -72,7 +72,7 @@ RSpec.describe Leads::Adapters::CloudMailin::OpenaiParser do
     it "preserves raw data for async processing" do
       result = described_class.parse(email_data)
       
-      expect(result[:raw_data]).to include(:headers, :envelope, :plain, :html)
+      expect(result[:preference_attributes][:raw_data]).to include('headers', 'envelope', 'plain', 'html')
     end
   end
 end
