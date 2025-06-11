@@ -34,7 +34,7 @@ class OpenaiClient
       messages: [
         {
           role: "system",
-          content: system_prompt
+          content: system_prompt(property)
         },
         {
           role: "user",
@@ -125,9 +125,9 @@ class OpenaiClient
     nil
   end
   
-  def system_prompt
+  def system_prompt(property)
     <<~PROMPT
-      You are a lead classification system for a property management company. Analyze incoming emails and:
+      You are a lead classification system for #{property.name}. You are analyzing emails received by the leasing agents at #{property.name}. Analyze incoming emails and:
       
       1. Determine if this is a legitimate rental inquiry (lead) vs resident communication, vendor email, spam, or other
       2. Extract contact information and inquiry details
@@ -159,8 +159,8 @@ class OpenaiClient
       - If no clear first/last name, use descriptive placeholders like "Vendor" or "Unknown Sender"
       - Be conservative - only mark as spam if clearly spam
       - For source_match: FIRST try to match against the Marketing Sources list provided for the property
-      - If no Marketing Source matches, then identify the actual source from email patterns, domains, or content
       - Marketing Sources are the property's configured lead attribution sources (e.g., "Zillow.com", "Apartments.com")
+      - If no Marketing Source matches, then identify the actual source from email patterns, domains, or content
       - Examples: if email mentions "Zillow" and Marketing Sources includes "Zillow.com", return "Zillow.com"
       - Notes should add additional context from the lead data that would be helpful for the leasing agent to know.
     PROMPT
