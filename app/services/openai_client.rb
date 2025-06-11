@@ -126,8 +126,9 @@ class OpenaiClient
   end
   
   def system_prompt(property)
+    company_domain = ENV.fetch('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com')
     <<~PROMPT
-      You are a lead classification system for #{property.name}. You are analyzing emails received by the leasing agents at #{property.name}. Analyze incoming emails and:
+      You are a lead classification system for #{property.name}. You are analyzing emails received by the leasing agents at #{property.name}. Anyone who has an email with domain #{company_domain} works for the property and is not a lead. Analyze incoming emails and:
       
       1. Determine if this is a legitimate rental inquiry (lead) vs resident communication, vendor email, spam, or other
       2. Extract contact information and inquiry details
