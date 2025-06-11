@@ -28,7 +28,11 @@ module Api
         token = params[:token]
         lead_creator = Leads::Creator.new(data: lead_data, agent: nil, token: token)
         @lead = lead_creator.call
-        if @lead.valid? && @lead.id.present?
+        
+        # Check if lead is being processed asynchronously (e.g., OpenAI parser)
+        if lead_creator.status == :async_processing
+          render json: {message: "Lead is being processed asynchronously", status: "processing"}, status: :accepted
+        elsif @lead.valid? && @lead.id.present?
           render :create, status: :created, format: :json
         else
           render json: {errors: @lead.errors}, status: :unprocessable_entity, format: :json

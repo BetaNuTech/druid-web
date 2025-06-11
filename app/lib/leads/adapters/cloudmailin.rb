@@ -86,18 +86,12 @@ module Leads
         # Queue for async processing
         ProcessCloudmailinEmailJob.perform_later(raw_email)
         
-        # Return a placeholder result for immediate response
+        # Return a special status that prevents lead creation
+        # The lead will be created later by the background job
         @parser = 'OpenAI (Async)'
         Leads::Creator::Result.new(
-          status: :ok,
-          lead: {
-            first_name: 'Processing',
-            last_name: 'Please Wait',
-            email: extract_basic_email(@data),
-            preference_attributes: {
-              notes: 'This lead is being processed by AI. It will be updated shortly.'
-            }
-          },
+          status: :async_processing,  # New status to indicate async processing
+          lead: {},  # Empty lead data - no placeholder lead will be created
           errors: ActiveModel::Errors.new(Lead.new),
           property_code: @property_code,
           parser: @parser

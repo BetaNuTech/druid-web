@@ -159,6 +159,13 @@ module Leads
             @lead.infer_referral_record
             @lead.update_showing_task_unit(@lead.show_unit) if @lead.state == 'showing'
           end
+        when :async_processing
+          # For async processing (e.g., OpenAI parser), no lead is created here
+          # The lead will be created by the background job
+          # Return an empty lead object that won't be saved
+          @lead = Lead.new
+          @lead.errors.add(:base, "Lead is being processed asynchronously")
+          return @lead
         when :invalid
           @lead.validate
           parse_result.errors.each do |err|
