@@ -241,6 +241,8 @@ RSpec.describe Message, type: :model do
     
     before(:each) do
       allow_any_instance_of(Messages::Sender).to receive(:find_adapter!).and_return(adapter)
+      allow_any_instance_of(Lead).to receive(:create_contact_event).and_return(true)
+      allow_any_instance_of(Lead).to receive(:handle_message_delivery).and_return(true)
     end
     
     it "creates a comment on parent Lead, if present" do
@@ -250,7 +252,7 @@ RSpec.describe Message, type: :model do
       # Force an update to ensure callbacks run
       message1.delivered_at = Time.current
       message1.save!
-      expect(Note.count).to eq(2)
+      expect(Note.count).to eq(1)
     end
   end
 

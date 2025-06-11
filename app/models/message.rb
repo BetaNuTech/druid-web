@@ -447,10 +447,6 @@ class Message < ApplicationRecord
       note_action = 'Incoming Message'
     end
 
-    if state == 'sent' && outgoing? && (saved_change_to_state?(to: 'sent') || saved_change_to_delivered_at?)
-      note_body = "SENT: #{subject}"
-      note_action = 'Outgoing Message'
-    end
 
     if note_body.present?
       lead_action = LeadAction.find_or_create_by(name: note_action)
@@ -510,7 +506,7 @@ class Message < ApplicationRecord
 
   def create_sent_message_note_if_needed
     return true unless messageable.is_a?(Lead) && messageable.persisted?
-    return true unless state == 'sent' && outgoing?
+    return true unless outgoing?
 
     note_action = 'Outgoing Message'
     lead_action = LeadAction.find_or_create_by(name: note_action)
