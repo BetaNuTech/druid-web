@@ -295,7 +295,23 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         expect(raw_email.error_message).to include('Cloudmailin lead source not found')
       end
       
-      it "marks email as failed when property has no active Cloudmailin listing" do
+      it "auto-activates inactive Cloudmailin listing and creates lead" do
+        property_listing.update!(active: false)
+        allow(openai_client).to receive(:analyze_email).and_return(openai_lead_response)
+        
+        expect {
+          described_class.perform_now(raw_email)
+        }.to change { Lead.count }.by(1)
+        
+        property_listing.reload
+        expect(property_listing.active?).to be_truthy
+        
+        raw_email.reload
+        expect(raw_email.status).to eq('completed')
+        expect(raw_email.lead).to be_present
+      end
+      
+      it "marks email as failed when property has no Cloudmailin listing configured" do
         property_listing.destroy
         allow(openai_client).to receive(:analyze_email).and_return(openai_lead_response)
         
@@ -305,7 +321,7 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         
         raw_email.reload
         expect(raw_email.status).to eq('failed')
-        expect(raw_email.error_message).to include('does not have active Cloudmailin listing')
+        expect(raw_email.error_message).to include('does not have Cloudmailin listing configured')
       end
     end
 
