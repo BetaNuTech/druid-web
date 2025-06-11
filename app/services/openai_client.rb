@@ -26,7 +26,7 @@ class OpenaiClient
     # Get marketing sources for this property to help with matching
     marketing_sources = MarketingSource.where(property: property).active.pluck(:name)
     
-    prompt = build_analysis_prompt(email_content, property, active_sources, marketing_sources)
+    prompt = build_analysis_prompt(email_content, property, marketing_sources)
     
     request_body = {
       model: @model,
@@ -132,7 +132,7 @@ class OpenaiClient
       
       1. Determine if this is a legitimate rental inquiry (lead) vs resident communication, vendor email, spam, or other
       2. Extract contact information and inquiry details
-      3. Match to the most appropriate lead source if possible
+      3. Match to the most appropriate marketing source if possible
       
       Return ONLY valid JSON with this exact structure:
       {
@@ -159,16 +159,17 @@ class OpenaiClient
       - Phone numbers should be in format XXX-XXX-XXXX
       - If no clear first/last name, use descriptive placeholders like "Vendor" or "Unknown Sender"
       - Be conservative - only mark as spam if clearly spam
-      - For source_match: FIRST try to match against the Marketing Sources list provided for the property
-      - Marketing Sources are the property's configured lead attribution sources (e.g., "Zillow.com", "Apartments.com")
-      - If no Marketing Source matches, then identify the actual source from email patterns, domains, or content
-      - Examples: if email mentions "Zillow" and Marketing Sources includes "Zillow.com", return "Zillow.com"
+      - For source_match: FIRST try to flexibly match against the Marketing Sources list provided for the property
+      - Marketing Sources are the property's configured attribution sources (e.g., "Zillow", "Apartments.com", "Property Website")
+      - Use flexible matching: "Zillow" matches "Zillow.com" or "Zillow Group", "Property Website" matches emails that appear to come from the property's website contact form, "Apartments.com" matches "Apartments.com" or "apartments.com", "Apartment List" matches "ApartmentList.com" or "apartmentlist.com"
+      - If a Marketing Source can be reasonably matched based on email content, domain, or patterns, return that Marketing Source name exactly as configured
+      - If no Marketing Source matches, return your best guess of the actual source based on email patterns, domains, from address, subject line, or content
+      - Always return a source_match value - either a matched Marketing Source or your best guess of the source
       - Notes should add additional context from the lead data that would be helpful for the leasing agent to know.
     PROMPT
   end
   
-  def build_analysis_prompt(email_content, property, active_sources, marketing_sources = [])
-    sources_list = active_sources.map(&:name).join(', ')
+  def build_analysis_prompt(email_content, property, marketing_sources = [])
     marketing_sources_list = marketing_sources.join(', ')
     
     # Handle both string and symbol keys
@@ -177,7 +178,6 @@ class OpenaiClient
     <<~PROMPT
       Property: #{property.name}
       Property Address: #{property.address}
-      Active Lead Sources: #{sources_list}
       Marketing Sources for this Property: #{marketing_sources_list.present? ? marketing_sources_list : 'None configured'}
       
       Email to analyze:

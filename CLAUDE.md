@@ -136,3 +136,7 @@ Development configuration uses `.env` file (copy from `env.example`). Key enviro
 - When running rails console on production, use heroku and rails runner and pass in commands
   - Production app: druid-prod
   - Staging app: druid-staging
+
+## Claude Code Guidelines
+
+- Git commit messages should not include Claude Code.

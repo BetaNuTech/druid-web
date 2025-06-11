@@ -86,7 +86,7 @@ class ProcessCloudmailinEmailJob < ApplicationJob
   end
   
   def create_lead_from_analysis(raw_email, analysis, property)
-    # Check if Cloudmailin source exists and is active for this property
+    # Check if Cloudmailin source exists
     cloudmailin_source = LeadSource.find_by(slug: 'Cloudmailin')
     unless cloudmailin_source
       error_message = "Cloudmailin lead source not found in system"
@@ -94,16 +94,22 @@ class ProcessCloudmailinEmailJob < ApplicationJob
       return
     end
     
-    # Check if property has active Cloudmailin listing
-    cloudmailin_listing = property.listings.active
+    # Find Cloudmailin listing for this property and ensure it's active
+    cloudmailin_listing = property.listings
       .joins(:source)
       .where(lead_sources: { slug: 'Cloudmailin' })
       .first
     
     unless cloudmailin_listing
-      error_message = "Property #{property.id} does not have active Cloudmailin listing"
+      error_message = "Property #{property.id} does not have Cloudmailin listing configured"
       raw_email.mark_failed!(error_message)
       return
+    end
+    
+    # If listing exists but is inactive, activate it to continue processing
+    unless cloudmailin_listing.active?
+      cloudmailin_listing.update!(active: true)
+      Rails.logger.info "Activated Cloudmailin listing for property #{property.id} due to incoming email"
     end
     
     lead_data = build_lead_data(analysis, raw_email, property)
