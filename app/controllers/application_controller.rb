@@ -37,6 +37,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Override Devise's sign_out to prevent auditing infinite loop
+  def sign_out(resource_or_scope = nil)
+    Audited.auditing_enabled = false
+    super
+  ensure
+    Audited.auditing_enabled = true
+  end
+
   private
 
   def user_timezone(&block)
