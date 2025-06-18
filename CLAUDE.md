@@ -23,9 +23,10 @@ BlueSky is a Rails 6.1 application for lead management and property leasing oper
 - `NO_TEST_COVERAGE=true rspec <spec_file>` - Run specific test without coverage
 
 ### Code Quality
-- `bundle exec rubocop` - Linting
+- `bundle exec rubocop` - Linter/Formatter 
 - `bundle exec annotate` - Update model annotations with schema information
 - `bundle exec bundle audit check --update` - Security vulnerability check
+- Use RuboCop to keep code clean
 
 ### Database & Data
 - `bundle exec rails db:migrate`

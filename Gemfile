@@ -86,7 +86,7 @@ group :test do
 end
 
 group :development do
-  gem 'rubocop', "~> 0.93", require: false
+  gem 'rubocop', require: false
   gem 'rubocop-faker', "~> 1.1", require: false
   gem 'web-console', "~> 4.1"
   gem 'listen', "~> 3.5"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_06_10_194747) do
+ActiveRecord::Schema.define(version: 2025_06_18_181927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -551,7 +551,10 @@ ActiveRecord::Schema.define(version: 2025_06_10_194747) do
     t.string "id_state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_resident_details_on_email"
     t.index ["phone1", "phone2", "email"], name: "resident_details_contact"
+    t.index ["phone1"], name: "index_resident_details_on_phone1"
+    t.index ["phone2"], name: "index_resident_details_on_phone2"
     t.index ["resident_id"], name: "index_resident_details_on_resident_id"
   end
 
@@ -576,6 +579,7 @@ ActiveRecord::Schema.define(version: 2025_06_10_194747) do
     t.datetime "updated_at", null: false
     t.index ["first_name", "last_name"], name: "residents_name"
     t.index ["property_id", "status", "unit_id"], name: "index_residents_on_property_id_and_status_and_unit_id"
+    t.index ["property_id", "status"], name: "index_residents_on_property_id_and_status"
     t.index ["residentid"], name: "index_residents_on_residentid", unique: true
   end
 
