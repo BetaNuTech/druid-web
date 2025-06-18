@@ -538,6 +538,25 @@ The Heroku Scheduler should be configured to run the following tasks
 |-----------+-----------------------------------------+-------------------------------------------------------------|
 ```
 
+### Ad-hoc Tasks
+
+#### List Recent Leads
+
+To display the most recent Cloudmailin (email) and BlueConnect (phone call) leads:
+
+```bash
+# Run on production
+heroku run rails runner lib/tasks/list_recent_leads.rb -a druid-prod
+
+# Run on staging
+heroku run rails runner lib/tasks/list_recent_leads.rb -a druid-staging
+```
+
+This script displays:
+- Last 25 leads from each source
+- Lead URL, creation time, name, phone, email, state, source, referral, and property
+- Summary statistics showing total leads and today's count for each source
+
 
 # Managing Marketing Source Tracking Numbers
 
