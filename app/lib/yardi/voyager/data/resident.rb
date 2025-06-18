@@ -101,7 +101,7 @@ module Yardi
           resident.phone1_type =phone1_type
           resident.phone2 = phone2
           resident.phone2_type = phone2_type
-          resident.email = record.dig('Address','email')
+          resident.email = record.dig('Address','Email')
 
           resident
         end
