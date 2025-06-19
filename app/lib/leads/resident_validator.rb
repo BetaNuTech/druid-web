@@ -46,16 +46,6 @@ module Leads
         conditions << "resident_details.email = #{ActiveRecord::Base.connection.quote(lead_data[:email])}"
       end
 
-      # Name matching condition
-      first_name = lead_data[:first_name]
-      last_name = lead_data[:last_name]
-
-      if first_name.present? && last_name.present? &&
-         !invalid_values.include?(first_name) && !invalid_values.include?(last_name)
-        conditions << "(residents.first_name = #{ActiveRecord::Base.connection.quote(first_name)} AND
-                        residents.last_name = #{ActiveRecord::Base.connection.quote(last_name)})"
-      end
-
       conditions
     end
 

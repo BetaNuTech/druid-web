@@ -137,8 +137,6 @@ module Leads
             error_details << "phone: #{@lead.phone2}"
           elsif matching_resident['email'] == @lead.email && @lead.email.present?
             error_details << "email: #{@lead.email}"
-          elsif matching_resident['first_name'] == @lead.first_name && matching_resident['last_name'] == @lead.last_name
-            error_details << "name: #{@lead.first_name} #{@lead.last_name}"
           end
 
           full_error = "#{error_message} [#{error_details.join(', ')}]"

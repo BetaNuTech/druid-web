@@ -58,14 +58,15 @@ RSpec.describe Leads::ResidentValidator do
       end
     end
 
-    context 'when matching by first and last name' do
+    context 'when matching by first and last name only' do
       before do
         resident.update!(first_name: 'John', last_name: 'Doe')
-        resident_detail # ensure resident_detail exists
+        resident_detail # ensure resident_detail exists but with different contact info
+        resident_detail.update!(phone1: '9999999999', phone2: '8888888888', email: 'different@example.com')
       end
 
-      it 'returns true' do
-        expect(subject.resident_match?).to be true
+      it 'returns false (name-only matches are not considered)' do
+        expect(subject.resident_match?).to be false
       end
     end
 

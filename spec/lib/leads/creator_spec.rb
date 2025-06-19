@@ -147,20 +147,21 @@ RSpec.describe Leads::Creator do
         end
       end
 
-      context 'when lead matches resident by name' do
+
+      context 'when lead has same name as resident but different contact info' do
         before do
           resident.update!(first_name: 'John', last_name: 'Doe')
-          resident_detail # ensure resident_detail exists
+          resident_detail.update!(phone1: '5559999999', email: 'different@example.com')
         end
 
-        it 'prevents lead creation' do
+        it 'allows lead creation' do
           creator = described_class.new(data: valid_lead_data, token: lead_source.api_token)
 
           expect do
             result_lead = creator.call
-            expect(result_lead).not_to be_persisted
-            expect(result_lead.errors.full_messages).to include(/This lead matches an existing resident.*name: John Doe/)
-          end.not_to(change { Lead.count })
+            expect(result_lead).to be_persisted
+            expect(result_lead.errors).to be_empty
+          end.to change { Lead.count }.by(1)
         end
       end
 
