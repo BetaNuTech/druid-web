@@ -228,10 +228,10 @@
       <% end %>
     </div>
     <div class="sidebar--item <%= nav_item_class(:articles) %>">
-      <%= link_to("https://bluestone-prop.freshdesk.com/a/tickets/new", target: '_blank') do %>
+      <a href="#" onclick="alert('Please use Slack\'s Request form in the #bluesky-support channel to submit support requests.'); return false;">
         <%= image_tag('/icons/help.svg') %>
         <span class="sidebar--item-content">Support Ticket</span>
-      <% end %>
+      </a>
     </div>
     <div class="sidebar--item">
       <%= link_to(destroy_user_session_path, method: :delete) do %>

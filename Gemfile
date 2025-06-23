@@ -34,6 +34,7 @@ gem 'schedulable', "~> 0.0"
 gem 'simple_calendar', "~> 2.4"
 gem 'httparty', "~> 0.18"
 gem 'nokogiri'
+gem 'rexml'
 gem 'liquid', "~> 5.0"
 gem 'twilio-ruby', "~> 5.56"
 gem 'kaminari', "~> 1.2"
