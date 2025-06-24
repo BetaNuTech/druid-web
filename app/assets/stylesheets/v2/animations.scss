@@ -125,25 +125,16 @@ textarea {
   }
 }
 
-// Link hover animations
+// Link hover animations - removed to prevent double underline
+// The default text-decoration: underline on hover is sufficient
 a {
-  position: relative;
   transition: color 0.2s ease;
   
   &:not(.btn):not(.sidebar--item a):not(.navbar-brand) {
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: currentColor;
-      transition: width 0.3s ease;
-    }
+    text-decoration: none;
     
-    &:hover::after {
-      width: 100%;
+    &:hover {
+      text-decoration: underline;
     }
   }
 }

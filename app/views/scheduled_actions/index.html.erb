@@ -1,16 +1,41 @@
 <div class="row">
   <div class="col-md-12">
-    <h1>
-      <%= @show_all ? 'Team' : 'My' %>
-      Task Calendar
-    </h1>
-    <div>
-      <% if policy(ScheduledAction).new? %>
-        <small><%= link_to "Schedule New Task", new_scheduled_action_path, class: "btn btn-success"%></small>
-      <% end %>
-      <%= link_to("Tours", scheduled_actions_path(team: true), class: "btn btn-sm btn-#{@all_tasks ? 'primary' : 'default'}") %>
-      <%= link_to("My Tasks", scheduled_actions_path(all: true), class: "btn btn-sm btn-#{@all_tasks && !@team_tasks ? 'default' : 'primary'}") %>
-      <%= link_to("Team Tasks", scheduled_actions_path(all: true, team: true), class: "btn btn-sm btn-#{@all_tasks && @team_tasks ? 'default' : 'primary'}") %>
+    <div class="calendar-header">
+      <h1>My Task Calendar</h1>
+      <div class="calendar-controls">
+        <% if policy(ScheduledAction).new? %>
+          <%= link_to new_scheduled_action_path, class: "btn btn-success schedule-new-task" do %>
+            <span class="glyphicon glyphicon-plus"></span>
+            Schedule New Task
+          <% end %>
+        <% end %>
+        
+        <div class="task-type-selector">
+          <%= link_to scheduled_actions_path(team: true), 
+              class: "task-type-btn #{!@all_tasks ? 'active' : ''}", 
+              data: { toggle: "tooltip", placement: "bottom" }, 
+              title: "View scheduled tours" do %>
+            <span class="glyphicon glyphicon-home"></span>
+            Tours
+          <% end %>
+          
+          <%= link_to scheduled_actions_path(all: true), 
+              class: "task-type-btn #{@all_tasks && !@team_tasks ? 'active' : ''}", 
+              data: { toggle: "tooltip", placement: "bottom" }, 
+              title: "View your personal tasks" do %>
+            <span class="glyphicon glyphicon-user"></span>
+            My Tasks
+          <% end %>
+          
+          <%= link_to scheduled_actions_path(all: true, team: true), 
+              class: "task-type-btn #{@all_tasks && @team_tasks ? 'active' : ''}", 
+              data: { toggle: "tooltip", placement: "bottom" }, 
+              title: "View all team tasks" do %>
+            <span class="glyphicon glyphicon-users"></span>
+            Team Tasks
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
 </div>

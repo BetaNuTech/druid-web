@@ -1,0 +1,274 @@
+// Calendar view styles for v2 design system
+@import 'variables';
+
+.calendar-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  
+  h1 {
+    margin: 0 0 20px 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: $gray-900;
+  }
+}
+
+.calendar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.schedule-new-task {
+  background: $success;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: darken($success, 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($success, 0.3);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .glyphicon {
+    margin-right: 8px;
+  }
+}
+
+.task-type-selector {
+  background: $gray-100;
+  border-radius: 12px;
+  padding: 4px;
+  display: inline-flex;
+  gap: 4px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.task-type-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: transparent;
+  color: $gray-700;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  
+  .glyphicon {
+    font-size: 16px;
+    color: $gray-600;
+    transition: color 0.3s ease;
+  }
+  
+  &:hover {
+    background: white;
+    color: $primary;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    
+    .glyphicon {
+      color: $primary;
+    }
+  }
+  
+  &.active {
+    background: white;
+    color: $primary;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-color: rgba($primary, 0.2);
+    
+    .glyphicon {
+      color: $primary;
+    }
+  }
+}
+
+// Improve calendar table styling
+.simple-calendar {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 32px;
+  
+  table {
+    margin-bottom: 0;
+    
+    th {
+      background: $gray-50;
+      border-bottom: 2px solid $gray-200;
+      padding: 16px;
+      font-weight: 600;
+      color: $gray-700;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    
+    td {
+      border: 1px solid $gray-200;
+      vertical-align: top;
+      height: 120px;
+      position: relative;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: $gray-50;
+        
+        .scheduled_action_calendar_day {
+          transform: scale(1.02);
+        }
+      }
+      
+      &.today {
+        background: rgba($primary, 0.05);
+        border-color: rgba($primary, 0.3);
+        
+        .scheduled_action_calendar_day {
+          font-weight: 600;
+          color: $primary;
+        }
+      }
+      
+      &.prev-month,
+      &.next-month {
+        background: $gray-50;
+        opacity: 0.6;
+      }
+    }
+  }
+}
+
+.scheduled_action_calendar_day {
+  padding: 8px;
+  min-height: 100px;
+  transition: transform 0.2s ease;
+  
+  > a:first-child,
+  > span:first-child {
+    font-weight: 600;
+    font-size: 16px;
+    color: $gray-700;
+    display: block;
+    margin-bottom: 8px;
+  }
+}
+
+.scheduled_action_calendar_entry {
+  background: rgba($primary, 0.1);
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: 2px 0;
+  font-size: 12px;
+  display: block;
+  transition: all 0.2s ease;
+  
+  a {
+    color: $primary;
+    text-decoration: none;
+    display: block;
+    
+    &:hover {
+      color: darken($primary, 10%);
+    }
+  }
+  
+  &:hover {
+    background: rgba($primary, 0.2);
+    transform: translateX(2px);
+  }
+}
+
+.scheduled_action_calendar_entry_completed {
+  background: rgba($gray-500, 0.1);
+  
+  a {
+    color: $gray-600;
+    text-decoration: line-through;
+  }
+  
+  &:hover {
+    background: rgba($gray-500, 0.2);
+  }
+}
+
+// Due and Upcoming section styling
+.row > .col-md-12 > .row {
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: $gray-900;
+    margin: 32px 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid $gray-100;
+  }
+}
+
+// View All button styling
+.btn-info {
+  background: $info;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: darken($info, 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba($info, 0.3);
+  }
+}
+
+// Responsive improvements
+@media (max-width: 768px) {
+  .calendar-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .task-type-selector {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .task-type-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px;
+    
+    span:not(.glyphicon) {
+      display: none;
+    }
+  }
+  
+  .simple-calendar {
+    table {
+      font-size: 12px;
+      
+      td {
+        height: 80px;
+        padding: 4px;
+      }
+    }
+  }
+  
+  .scheduled_action_calendar_entry {
+    font-size: 11px;
+    padding: 2px 4px;
+  }
+}

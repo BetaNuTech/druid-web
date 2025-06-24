@@ -13,14 +13,8 @@ class ApplicationController < ActionController::Base
   before_action :prepare_exception_notifier
 
   def versioned_layout
-    # v2 is now the default design
-    if Flipflop.enabled?(:design_v2)
-      'application_v2'
-    elsif Flipflop.enabled?(:design_v1)
-      'application_v1'
-    else
-      'application_v2'  # Default to v2 when no preference is set
-    end
+    # Force v2 for all users - no looking back!
+    'application_v2'
   end
 
   def create_user_impression

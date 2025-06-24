@@ -4,7 +4,7 @@
 #propertyselection--container {
   margin-bottom: $spacing-lg;
   position: relative;
-  z-index: 1020; // Below header (1030) but above content
+  z-index: 990; // Below sidebar (999) and header (1030)
   
   @media (max-width: 767px) {
     position: relative;
@@ -12,6 +12,7 @@
     right: auto;
     margin-top: 0;
     margin-bottom: $spacing-md;
+    z-index: 990; // Ensure it stays below sidebar on mobile too
     
     .form-group {
       justify-content: stretch;
