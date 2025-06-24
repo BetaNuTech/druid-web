@@ -1,8 +1,12 @@
-<blockquote style="font-size: 0.8em; margin-left: 2em;">
-  <%= glyph(:email) %> <%= lead.email %><br/>
-  <%= glyph(:phone) %> <%= lead.phone1 %>
+<blockquote>
+  <% if lead.email.present? %>
+    <%= glyph(:envelope) %> <%= lead.email %><br/>
+  <% end %>
+  <% if lead.phone1.present? %>
+    <%= glyph(:earphone) %> <%= lead.phone1 %>
+  <% end %>
   <% if lead.phone2.present? %>
     <br/>
-    <%= glyph(:phone) %> <%= lead.phone2 %> <br/>
+    <%= glyph(:earphone) %> <%= lead.phone2 %>
   <% end %>
 </blockquote>

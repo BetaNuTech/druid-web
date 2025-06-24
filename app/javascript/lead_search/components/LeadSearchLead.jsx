@@ -20,32 +20,27 @@ class LeadSearchLead extends React.Component {
 
   render() {
     return(
-      <div className={Style.LeadSearchLead} key={this.props.data.id}>
+      <div className={Style.LeadSearchLead} key={this.props.data.id} data-priority={this.props.data.priority}>
         <div className={Style.priority}>
           <ul>
             <li>
               <strong>Priority:</strong>
-              &nbsp;
-              <span>{this.props.data.priority}</span>
+              <span className={`priority-${this.props.data.priority}`}>{this.props.data.priority}</span>
             </li>
             <li>
               <strong>State:</strong>
-              &nbsp;
-              <span>{this.props.data.state}</span>
+              <span className={`state-${this.props.data.state}`}>{this.props.data.state}</span>
             </li>
             <li>
               <strong>Agent:</strong>
-              &nbsp;
-              <span>{this.props.data.user ? this.props.data.user.name : 'None'} </span>
+              <span>{this.props.data.user ? this.props.data.user.name : 'None'}</span>
             </li>
             <li>
-              <strong>First Contact</strong>
-              &nbsp;
+              <strong>First Contact:</strong>
               <span>{this.props.data.first_comm != undefined ? this.formatDateTime(this.props.data.first_comm) : '-'}</span>
             </li>
             <li>
               <strong>Last Contact:</strong>
-              &nbsp;
               <span>{this.props.data.last_comm != undefined ? this.formatDateTime(this.props.data.last_comm) : '-'}</span>
             </li>
           </ul>
@@ -126,11 +121,9 @@ class LeadSearchLead extends React.Component {
           </span><br/>
         </div>
         <div className={Style.notes}>
-          <p className={Style.notes.lead_notes}>
-            <strong>Lead Notes: </strong><br/>
-            <span>
-              {this.props.data.preference.notes}
-            </span>
+          <p className={Style.lead_notes}>
+            <strong>Lead Notes: </strong>
+            {this.props.data.preference.notes}
           </p>
         </div>
         <LeadComments lead_id={this.props.data.id} comments={this.props.data.comments} />

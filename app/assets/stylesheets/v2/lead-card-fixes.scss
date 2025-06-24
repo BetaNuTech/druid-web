@@ -1,0 +1,207 @@
+@import 'variables';
+
+// Lead card styling fixes
+.lead_card {
+  line-height: 1.6;
+  // Fix icon alignment
+  .glyphicon {
+    vertical-align: middle;
+    font-size: 13px;
+    line-height: 1;
+    
+    &.glyphicon-question-sign {
+      // Change to time/clock icon
+      &::before {
+        content: "\e023"; // glyphicon-time
+      }
+      color: $gray-500;
+      font-size: 12px;
+      margin-right: 2px;
+    }
+    
+    &.glyphicon-comment {
+      color: $brand-medium-blue;
+      font-size: 12px;
+      margin-right: 2px;
+    }
+  }
+  
+  // Consistent date/time text size
+  .dashboard_lead_created,
+  .dashboard_lead_created span,
+  .text-nowrap {
+    font-size: 13px !important;
+    color: $gray-600;
+    line-height: 1.4;
+  }
+  
+  // Align communication line with date line  
+  .lead-dates {
+    .dashboard_lead_created {
+      > span {
+        display: inline-flex;
+        align-items: center;
+      }
+    }
+  }
+  
+  .lead-communication {
+    .text-nowrap {
+      margin-left: 10px; // Align with the clock icon position
+    }
+  }
+  
+  // Fix spacing between state label and priority icons
+  .label {
+    margin-right: $spacing-md !important;
+    vertical-align: middle;
+  }
+  
+  // Priority icons (fire emojis)
+  .lead-priority {
+    display: inline-block;
+    margin-left: $spacing-sm;
+    font-size: 16px;
+  }
+  
+  // Redesign contact mini card
+  blockquote {
+    background: rgba($brand-light-blue, 0.08);
+    border: 1px solid rgba($brand-light-blue, 0.2);
+    border-left: 3px solid $brand-medium-blue;
+    border-radius: $border-radius-sm;
+    padding: 10px 14px !important;
+    margin: 12px 0 12px 24px !important;
+    font-size: 13px !important;
+    color: $gray-700;
+    line-height: 1.6;
+    
+    // Contact icons
+    .glyphicon {
+      font-size: 11px;
+      margin-right: 8px;
+      vertical-align: text-bottom;
+      display: inline-block;
+      line-height: 1.2;
+      
+      &.glyphicon-envelope {
+        color: $brand-medium-blue;
+      }
+      
+      &.glyphicon-phone,
+      &.glyphicon-earphone {
+        color: $brand-teal;
+      }
+    }
+    
+    // Better spacing between lines
+    br {
+      line-height: 0.4;
+    }
+  }
+  
+  // Lead notes styling
+  .dashboard_lead_notes {
+    background: rgba($warning, 0.06);
+    border: 1px solid rgba($warning, 0.2);
+    border-left: 3px solid $warning;
+    border-radius: $border-radius-sm;
+    padding: 10px 14px 10px 10px;
+    margin: 12px 0 12px 0;
+    font-size: 13px;
+    color: darken($warning, 25%);
+    line-height: 1.5;
+    position: relative;
+    padding-left: 30px;
+    
+    .glyphicon-question-sign {
+      // Change to info-sign icon for notes
+      &::before {
+        content: "\e086"; // glyphicon-info-sign
+      }
+      color: $warning;
+      font-size: 12px;
+      position: absolute;
+      left: 10px;
+      top: 11px;
+    }
+    
+    span {
+      display: inline-block;
+    }
+  }
+  
+  // Add spacing between elements
+  br {
+    line-height: 0.8;
+  }
+  
+  // Referral text styling
+  span:has(+ br) {
+    display: block;
+    margin-bottom: 2px;
+  }
+  
+  // Via referral text
+  > span {
+    &:contains("via") {
+      font-size: 12px;
+      color: $gray-500;
+      font-style: italic;
+    }
+  }
+  
+  // Lead name and property spacing
+  .lead {
+    font-size: 16px;
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-xs;
+    
+    a {
+      color: $brand-deep-blue;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        color: darken($brand-deep-blue, 10%);
+        border-bottom-color: darken($brand-deep-blue, 10%);
+        text-decoration: none !important;
+      }
+    }
+  }
+  
+  .lead_property_name {
+    font-size: 14px;
+    color: $gray-600;
+    
+    a {
+      color: $gray-600;
+      
+      &:hover {
+        color: $brand-medium-blue;
+      }
+    }
+  }
+}
+
+// VIP indicator
+.vip-indicator {
+  display: inline-block;
+  color: $danger;
+  font-size: 14px;
+  margin-right: $spacing-xs;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

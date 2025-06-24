@@ -480,11 +480,13 @@ class LeadSearch
 
   def agent_options
     if @user
-      property_ids = PropertyPolicy::Scope.new(@user, Property).resolve.pluck(:id)
+      property_ids = PropertyPolicy::Scope.new(@user, Property).resolve.active.pluck(:id)
       agents = User.includes([:assignments, :profile]).
         where(property_users: {property_id: property_ids})
     else
-      agents = PropertyUser.select("distinct user_id").map(&:user)
+      active_property_ids = Property.active.pluck(:id)
+      agents = User.includes([:assignments, :profile]).
+        where(property_users: {property_id: active_property_ids})
     end
     return agents.
       map{ |u| {label: u.name, value: u.id} }.

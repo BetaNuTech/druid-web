@@ -113,10 +113,10 @@ class SearchSort extends React.Component {
   render(){
     return(
       <div className={Style.SearchSort}>
-        <span className={Style.SearchSort.selector}>
+        <span className={Style.selector}>
           <label>Sort By</label>{this.renderKeySelect()}
         </span>
-        <span className={Style.SearchSort.selector}>
+        <span className={Style.selector}>
           {this.renderDirectionSelect()}
         </span>
       </div>

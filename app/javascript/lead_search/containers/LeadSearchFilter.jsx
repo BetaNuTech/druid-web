@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateSearchString, submitSearch, updateFilter, resetFilters, gotoPage, updateSortKey, updateSortDirection } from '../actions'
 import Style from './LeadSearchFilter.scss'
+import '../components/LeadSearchFilter.scss'
 import FilterDropdown from '../components/FilterDropdown.jsx'
 import SearchInput from '../components/SearchInput.jsx'
 import SearchSelect from '../components/SearchSelect.jsx'
@@ -53,29 +54,49 @@ class LeadSearchFilter extends React.Component {
 
   renderSelects = () => {
     if (this.showAdvanced() && this.hasFilters()) {
-      return this.props.search.Filters._index.map((filtername) => {
+      const dateFilters = []
+      const selectFilters = []
+      
+      this.props.search.Filters._index.forEach((filtername) => {
         const filter = this.props.search.Filters[filtername]
         if (this.hasFilters()) {
           switch(filter.type){
             case "select":
-              return <SearchSelect key={filtername}
-                search={this.props.search} filter={filtername}
-                onModifyFilter={this.onModifyFilter}
-                onUpdateFilter={this.props.onUpdateFilter(this.props.search)}
-                onSubmitSearch={this.props.onSubmitSearch(this.props.search)} />
-               break;
+              selectFilters.push(
+                <SearchSelect key={filtername}
+                  search={this.props.search} filter={filtername}
+                  onModifyFilter={this.onModifyFilter}
+                  onUpdateFilter={this.props.onUpdateFilter(this.props.search)}
+                  onSubmitSearch={this.props.onSubmitSearch(this.props.search)} />
+              )
+              break;
             case "date":
-              return <SearchDateSelect key={filtername}
-                search={this.props.search} filter={filtername}
-                onModifyFilter={this.onModifyFilter}
-                onUpdateFilter={this.props.onUpdateFilter(this.props.search)}
-                onSubmitSearch={this.props.onSubmitSearch(this.props.search)} />
+              dateFilters.push(
+                <SearchDateSelect key={filtername}
+                  search={this.props.search} filter={filtername}
+                  onModifyFilter={this.onModifyFilter}
+                  onUpdateFilter={this.props.onUpdateFilter(this.props.search)}
+                  onSubmitSearch={this.props.onSubmitSearch(this.props.search)} />
+              )
+              break;
             default:
-              return ""
               break;
           }
-         }
+        }
       })
+      
+      return (
+        <div className={Style.filtersContainer}>
+          {dateFilters.length > 0 && (
+            <div className={Style.dateFilters}>
+              {dateFilters}
+            </div>
+          )}
+          <div className={Style.filterGrid}>
+            {selectFilters}
+          </div>
+        </div>
+      )
     }
   }
 
@@ -91,29 +112,72 @@ class LeadSearchFilter extends React.Component {
   }
 
   render() {
-    const advancedOptionsClassName = (this.state.advanced ? "btn-default" : "btn-info") + " btn btn-sm"
+    const advancedOptionsClassName = (this.state.advanced ? "btn-primary" : "btn-secondary") + " btn"
     return(
       <div className={Style.LeadSearchFilter}>
-        <SearchInput
-          onModifyFilter={this.onModifyFilter}
-          onUpdateSearchInput={this.props.onUpdateSearchString(this.props.search)}
-          onSubmitSearch={this.onSubmitSearch}
-          value={this.searchStringValue()} />
-        <SearchSort
-          search={this.props.search}
-          onModifyFilter={this.onModifyFilter}
-          onUpdateSortDirection={this.props.onUpdateSortDirection(this.props.search)}
-          onUpdateSortKey={this.props.onUpdateSortKey(this.props.search)} />
-        <div className={Style.LeadSearchAdvancedFilters}>
-          <button type="button" className={advancedOptionsClassName}
-            onClick={this.onToggleAdvanced} >Filters</button>
-          <button type="button" className="btn btn-sm btn-warning" onClick={this.onResetFilters}>Reset</button>
-          { this.isPending() &&
-            <button type="button" className="btn btn-sm btn-success" onClick={this.onSubmitSearch}>Submit</button>
-          }
-          {this.renderSelects()}
+        <div className={Style.filterHeader}>
+          <div className={Style.filterTitleSection}>
+            <div className={Style.filterIconWrapper}>
+              <span className="glyphicon glyphicon-filter" aria-hidden="true"></span>
+            </div>
+            <h3>Lead Search Filters</h3>
+          </div>
+          <div className={Style.filterActions}>
+            <button 
+              type="button" 
+              className={advancedOptionsClassName}
+              onClick={this.onToggleAdvanced}
+            >
+              <span className={`glyphicon ${this.state.advanced ? 'glyphicon-eye-close' : 'glyphicon-eye-open'}`} />
+              {this.state.advanced ? ' Hide Filters' : ' Show Filters'}
+            </button>
+            {this.state.advanced && (
+              <>
+                <button 
+                  type="button" 
+                  className="btn btn-reset" 
+                  onClick={this.onResetFilters}
+                >
+                  <span className="glyphicon glyphicon-refresh" />
+                  Reset
+                </button>
+                {this.isPending() && (
+                  <button 
+                    type="button" 
+                    className="btn btn-primary" 
+                    onClick={this.onSubmitSearch}
+                  >
+                    <span className="glyphicon glyphicon-search" />
+                    Apply Filters
+                  </button>
+                )}
+              </>
+            )}
+          </div>
         </div>
-        <LeadSearchSidebar options={this.props.search}/>
+        
+        <div className={Style.searchControls}>
+          <SearchInput
+            onModifyFilter={this.onModifyFilter}
+            onUpdateSearchInput={this.props.onUpdateSearchString(this.props.search)}
+            onSubmitSearch={this.onSubmitSearch}
+            value={this.searchStringValue()} />
+          <SearchSort
+            search={this.props.search}
+            onModifyFilter={this.onModifyFilter}
+            onUpdateSortDirection={this.props.onUpdateSortDirection(this.props.search)}
+            onUpdateSortKey={this.props.onUpdateSortKey(this.props.search)} />
+        </div>
+        
+        {this.state.advanced && (
+          <div className={Style.filterBody}>
+            {this.renderSelects()}
+          </div>
+        )}
+        
+        <div className={Style.filterSummary}>
+          <LeadSearchSidebar options={this.props.search}/>
+        </div>
       </div>
     )
   }

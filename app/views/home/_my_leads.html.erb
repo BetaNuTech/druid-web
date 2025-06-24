@@ -8,56 +8,72 @@
         </h3>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="leads-header">
-          <span class="lead">
-            <% active_lead_count = current_user.leads.early_pipeline.count %>
-            <% lead_text = active_lead_count == 1 ? "Active Lead" : "Active Leads" %>
-            <%= active_lead_count.zero? ? 'No' : active_lead_count %> <%= lead_text %>
-          </span>
-          <%= link_to("More...", search_leads_path({lead_search: {user_ids: [current_user.id], states: %w{open prospect showing application} }}), class: "btn btn-xs btn-primary") %>
-          <% unless Flipflop.enabled?(:design_v1) %>
-            <%= link_to('New Walk-In', custom_new_leads_path(entry: 'walkin'), {class: 'btn btn-xs btn-info'}) %>
-          <% end %>
+    <% active_lead_count = current_user.leads.early_pipeline.count %>
+    
+    <% if active_lead_count > 0 %>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="leads-header">
+            <span class="lead">
+              <% lead_text = active_lead_count == 1 ? "Active Lead" : "Active Leads" %>
+              <%= active_lead_count %> <%= lead_text %>
+            </span>
+            <%= link_to("More...", search_leads_path({lead_search: {user_ids: [current_user.id], states: %w{open prospect showing application} }}), class: "btn btn-xs btn-primary") %>
+            <% unless Flipflop.enabled?(:design_v1) %>
+              <%= link_to('New Walk-In', custom_new_leads_path(entry: 'walkin'), {class: 'btn btn-xs btn-info'}) %>
+            <% end %>
+          </div>
         </div>
       </div>
-    </div>
-    <table class="table lead_listing">
-      <thead></thead>
-      <tbody>
-        <% @my_leads.limit(20).each do |lead| %>
-          <tr>
-            <td width="70%">
-              <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
-              <% if lead.property.present? %>
-                for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
-              <% end %>
-              <% if lead.preference.notes.present? %>
-                <p class="dashboard_lead_notes">
-                  <%= glyph(:question_sign) %>
-                  <span><%= lead.preference.notes %></span>
-                </p>
-              <% end %>
-              <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
-            </td>
-            <td>
-              <%= lead_state_label(lead) %>
-              <%= lead_priority_icon(lead) %>
-              <br>
-              <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
-              <br>
-              <%= tooltip_block('leads-show-last_comm') do %>
-                <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
-              <% end %>
-              <br>
-              <%= tooltip_block('leads-show-pending_tasks', lead.scheduled_actions.incomplete.count > 0) do %>
-                <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %>
-              <% end %>
-            </td>
-          </tr>
+      <table class="table lead_listing">
+        <thead></thead>
+        <tbody>
+          <% @my_leads.limit(20).each do |lead| %>
+            <tr>
+              <td width="70%">
+                <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
+                <% if lead.property.present? %>
+                  for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
+                <% end %>
+                <% if lead.preference.notes.present? %>
+                  <p class="dashboard_lead_notes">
+                    <%= glyph(:question_sign) %>
+                    <span><%= lead.preference.notes %></span>
+                  </p>
+                <% end %>
+                <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+              </td>
+              <td>
+                <%= lead_state_label(lead) %>
+                <%= lead_priority_icon(lead) %>
+                <br>
+                <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
+                <br>
+                <%= tooltip_block('leads-show-last_comm') do %>
+                  <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+                <% end %>
+                <br>
+                <%= tooltip_block('leads-show-pending_tasks', lead.scheduled_actions.incomplete.count > 0) do %>
+                  <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="leads-empty-state">
+        <div class="empty-icon">
+          <%= glyph(:user) %>
+        </div>
+        <div class="empty-title">No Active Leads</div>
+        <div class="empty-description">You don't have any leads assigned to you</div>
+        <% unless Flipflop.enabled?(:design_v1) %>
+          <div class="empty-action">
+            <%= link_to('Create New Walk-In', custom_new_leads_path(entry: 'walkin'), {class: 'btn btn-sm btn-primary'}) %>
+          </div>
         <% end %>
-      </tbody>
-    </table>
+      </div>
+    <% end %>
   </div>
 </div>

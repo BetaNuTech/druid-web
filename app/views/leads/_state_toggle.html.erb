@@ -1,18 +1,19 @@
 <div class="state_toggle">
   <div class="row" >
     <div class="col-md-12" class="dropdown">
-      <ul id="crumbs">
+      <ul id="crumbs" class="dropdown">
         <% state_options = %w{open prospect showing application resident} %>
         <% is_other_state = (! state_options.include?(lead.state)) %>
         <% if is_other_state %>
-          <li class="crumb">
-            <a role="button" class="crumb-link crumb-active crumb-isolated dropdown-toggle" data-toggle="dropdown" href="#"><%= lead.state.capitalize %></a>
+          <li class="crumb dropdown">
+            <a role="button" class="crumb-link crumb-active crumb-isolated dropdown-toggle" data-toggle="dropdown" data-state="<%= lead.state %>" href="#" aria-haspopup="true" aria-expanded="false"><%= lead.state.capitalize %></a>
             <% if policy(lead).permitted_state_events.any? %>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" role="menu">
               <% policy(lead).permitted_state_events.each do |event_name| %>
-                <li>
-                  <%= link_to(progress_state_lead_path(id: lead.id, eventid: event_name)) do %>
-                    <%= event_name.to_s.humanize.titlecase %> &mdash; <small><%= lead_transition_help_text(event_name) %></small>
+                <li role="presentation">
+                  <%= link_to(progress_state_lead_path(id: lead.id, eventid: event_name), role: "menuitem") do %>
+                    <strong><%= event_name.to_s.humanize.titlecase %></strong>
+                    <small><%= lead_transition_help_text(event_name) %></small>
                   <% end %>
                 </li>
               <% end %>
@@ -22,14 +23,15 @@
         <% end %>
         <% state_options.each do |state_option| %>
           <% if state_option == lead.state %>
-            <li class="crumb">
-              <a role="button" class="crumb-link crumb-active <%= %> dropdown-toggle" data-toggle="dropdown" href="#"><%= lead.state.capitalize %></a>
+            <li class="crumb dropdown">
+              <a role="button" class="crumb-link crumb-active <%= %> dropdown-toggle" data-toggle="dropdown" data-state="<%= state_option %>" href="#" aria-haspopup="true" aria-expanded="false"><%= lead.state.capitalize %></a>
               <% if policy(lead).permitted_state_events.any? %>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu" role="menu">
                 <% policy(lead).permitted_state_events.each do |event_name| %>
-                  <li>
-                    <%= link_to(progress_state_lead_path(id: lead.id, eventid: event_name)) do %>
-                      <%= event_name.to_s.humanize.titlecase %> &mdash; <small><%= lead_transition_help_text(event_name) %></small>
+                  <li role="presentation">
+                    <%= link_to(progress_state_lead_path(id: lead.id, eventid: event_name), role: "menuitem") do %>
+                      <strong><%= event_name.to_s.humanize.titlecase %></strong>
+                      <small><%= lead_transition_help_text(event_name) %></small>
                     <% end %>
                   </li>
                 <% end %>
@@ -38,7 +40,7 @@
             </li>
           <% else %>
             <li class="crumb">
-              <a class="crumb-link crumb-inactive" href="#" onClick="return false;"><%= state_option.capitalize %></a>
+              <a class="crumb-link crumb-inactive" data-state="<%= state_option %>" href="#" onClick="return false;"><%= state_option.capitalize %></a>
             </li>
           <% end %>
 

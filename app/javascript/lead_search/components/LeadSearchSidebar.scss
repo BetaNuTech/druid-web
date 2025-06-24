@@ -1,36 +1,59 @@
 .LeadSearchSidebar {
-  //margin: 1em;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+  border: 1px solid #e9ecef;
 }
 
 .FilterListContainer {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  margin: 0 1em 1em 1em;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  align-items: start;
 }
 
 .FilterList {
-  padding: 0.5em;
-
+  min-height: 0;
+  
   ul {
-    list-style-position: inside;
+    list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #6c757d;
 
     li {
-      margin-left: 0em;
-      padding-left: 0.25em;
+      margin: 0;
+      padding: 2px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-
   }
 
   .startToEndLabel {
-    padding-left: 2em;
+    display: inline-block;
+    padding: 0 4px;
+    color: #868e96;
+    font-style: italic;
   }
 }
 
 .FilterListItem {
-  font-weight: bold;
-  font-size: 1.2em;
+  font-weight: 600;
+  font-size: 12px;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .FilterListContainer {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+  }
 }

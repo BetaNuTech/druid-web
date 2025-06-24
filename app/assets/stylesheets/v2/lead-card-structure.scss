@@ -1,0 +1,121 @@
+@import 'variables';
+
+// Lead card comprehensive structure fixes
+.lead_card {
+  // Overall card structure
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  // Add subtle separators between sections
+  > br {
+    display: none;
+  }
+  
+  // First row: Name and property
+  > .lead {
+    display: inline;
+    
+    // Override any global link styles
+    a {
+      text-decoration: none !important;
+      
+      &:hover,
+      &:focus,
+      &:active {
+        text-decoration: none !important;
+      }
+    }
+  }
+  
+  // Property name that follows lead name
+  .lead_property_name {
+    font-size: 14px;
+    color: $gray-600;
+    margin-left: 4px;
+  }
+  
+  // Status row container
+  .lead-status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 4px 0;
+    
+    .label {
+      margin: 0 !important;
+    }
+    
+    .lead-priority {
+      display: inline-block;
+      line-height: 1;
+      font-size: 16px;
+    }
+  }
+  
+  // Date section container
+  .lead-dates {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13px;
+    color: $gray-600;
+    
+    .dashboard_lead_created {
+      display: inline-flex;
+      align-items: center;
+      
+      > span {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        
+        .glyphicon {
+          font-size: 12px;
+          color: $gray-500;
+        }
+      }
+    }
+  }
+  
+  // Communication section
+  .lead-communication {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    
+    .text-nowrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: $gray-600;
+      
+      .glyphicon-comment {
+        font-size: 12px;
+        color: $brand-medium-blue;
+      }
+    }
+  }
+  
+  // Via/referral text - target the tooltip span in lead-dates
+  .lead-dates span[data-toggle="tooltip"] {
+    display: inline;
+    font-size: 12px;
+    color: $gray-500;
+    font-style: italic;
+    margin: 0;
+  }
+  
+  // Contact blockquote specific overrides
+  blockquote {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  // Notes paragraph
+  .dashboard_lead_notes {
+    margin-top: 8px !important;
+    margin-bottom: 4px !important;
+  }
+}

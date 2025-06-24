@@ -3,7 +3,7 @@
 
     <!-- Heading -->
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <h3>
           <%= glyph(:task) %>
           Upcoming
@@ -13,17 +13,27 @@
     <!-- End Heading -->
 
     <!-- Listing -->
-    <div class="row">
+    <div class="row <%= 'tasks-section tasks-upcoming' if scheduled_actions.any? %>">
       <div class="col-md-12">
-        <span class="text-nowrap lead">
-          <%= scheduled_actions.any? ? scheduled_actions.count : 'No' %> Future Tasks
-        </span>
-        <table class="table lead_listing">
-          <thead></thead>
-          <tbody>
-            <%= render collection: scheduled_actions.limit(20), partial: 'scheduled_action' %>
-          </tbody>
-        </table>
+        <% if scheduled_actions.count > 20 %>
+          <div class="tasks-header">
+            <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn-sm btn-primary float-right" %>
+          </div>
+        <% end %>
+        
+        <% if scheduled_actions.any? %>
+          <div class="task-cards">
+            <%= render collection: scheduled_actions.limit(20), partial: 'scheduled_action_card', locals: { task_type: 'upcoming' } %>
+          </div>
+        <% else %>
+          <div class="tasks-empty-state">
+            <div class="empty-icon">
+              <%= glyph(:calendar) %>
+            </div>
+            <div class="empty-title">No upcoming tasks</div>
+            <div class="empty-description">You're all clear for the future</div>
+          </div>
+        <% end %>
       </div>
     </div>
     <!-- End Listing -->

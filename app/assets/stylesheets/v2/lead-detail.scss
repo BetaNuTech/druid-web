@@ -1,0 +1,203 @@
+@import 'variables';
+
+// Lead detail page header styling
+.Lead {
+  .priority {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-lg;
+    padding: 0;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      
+      li {
+        position: relative;
+        padding: $spacing-md $spacing-lg;
+        display: flex;
+        align-items: center;
+        border-right: 1px solid $gray-200;
+        flex: 1;
+        min-width: 200px;
+        
+        &:last-child {
+          border-right: none;
+        }
+        
+        // Add icon styling
+        &::before {
+          content: '';
+          display: inline-block;
+          width: 32px;
+          height: 32px;
+          margin-right: $spacing-md;
+          background: $gray-100;
+          border-radius: 50%;
+          font-family: 'Glyphicons Halflings';
+          font-size: 16px;
+          line-height: 32px;
+          text-align: center;
+          color: $gray-600;
+          flex-shrink: 0;
+        }
+        
+        // Priority icon
+        &:nth-child(1)::before {
+          content: '\e125'; // glyphicon-warning-sign
+          background: rgba($danger, 0.1);
+          color: $danger;
+        }
+        
+        // State icon
+        &:nth-child(2)::before {
+          content: '\e165'; // glyphicon-stats
+          background: rgba($brand-medium-blue, 0.1);
+          color: $brand-medium-blue;
+        }
+        
+        // Agent icon
+        &:nth-child(3)::before {
+          content: '\e008'; // glyphicon-user
+          background: rgba($brand-teal, 0.1);
+          color: $brand-teal;
+        }
+        
+        // First contact icon
+        &:nth-child(4)::before {
+          content: '\e109'; // glyphicon-time
+          background: rgba($success, 0.1);
+          color: $success;
+        }
+        
+        // Last contact icon
+        &:nth-child(5)::before {
+          content: '\e109'; // glyphicon-time
+          background: rgba($warning, 0.1);
+          color: $warning;
+        }
+        
+        strong {
+          display: block;
+          font-size: 12px;
+          text-transform: uppercase;
+          color: $gray-500;
+          font-weight: $font-weight-medium;
+          letter-spacing: 0.5px;
+          margin-bottom: 4px;
+          line-height: 1;
+        }
+        
+        span {
+          display: block;
+          font-size: 16px;
+          color: $gray-800;
+          font-weight: $font-weight-medium;
+          line-height: 1.2;
+        }
+        
+        // Stack label and value
+        > div {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+  }
+  
+  // Make it responsive
+  @media (max-width: 991px) {
+    .priority ul li {
+      flex: 1 1 50%;
+      border-bottom: 1px solid $gray-200;
+      
+      &:nth-child(even) {
+        border-right: none;
+      }
+      
+      &:nth-last-child(1),
+      &:nth-last-child(2) {
+        border-bottom: none;
+      }
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .priority ul {
+      flex-direction: column;
+      
+      li {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid $gray-200;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+// Style the state value based on state
+.Lead .priority {
+  li:nth-child(2) span {
+    // Open state
+    &:contains("open") {
+      color: $brand-medium-blue;
+    }
+    
+    // Add data attribute for better targeting
+    &[data-state="open"] {
+      color: $brand-medium-blue;
+    }
+    
+    &[data-state="prospect"] {
+      color: $info;
+    }
+    
+    &[data-state="showing"] {
+      color: $brand-teal;
+    }
+    
+    &[data-state="application"] {
+      color: $warning;
+    }
+    
+    &[data-state="resident"] {
+      color: $success;
+    }
+  }
+}
+
+// Priority styling
+.Lead .priority {
+  li:nth-child(1) span {
+    &[data-priority="urgent"],
+    &:contains("urgent") {
+      color: $danger;
+      font-weight: $font-weight-bold;
+    }
+    
+    &[data-priority="high"],
+    &:contains("high") {
+      color: darken($warning, 10%);
+    }
+    
+    &[data-priority="normal"],
+    &:contains("normal") {
+      color: $gray-600;
+    }
+    
+    &[data-priority="low"],
+    &:contains("low") {
+      color: $gray-500;
+    }
+  }
+}

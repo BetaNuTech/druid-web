@@ -3,14 +3,11 @@
 
     <!-- Header -->
     <div class="row">
-      <div class="col-xs-6 col-md-6">
+      <div class="col-md-12">
         <h3>
           <%= glyph(:task) %>
           Today
         </h3>
-      </div>
-      <div class="col-xs-6 col-md-6">
-        <!-- Calendar and Task buttons removed - available in sidebar -->
       </div>
     </div>
     <!-- End Header -->
@@ -51,17 +48,34 @@
       </div>
     </div>
 
-    <div class="row tasks-section">
+    <div class="row tasks-section tasks-today">
       <div class="col-md-12">
-        <span class="text-nowrap lead">
-          <%= @today_actions.any? ? @today_actions.count : 'No' %> Tasks Due Today
-        </span>
-        <table class="table">
-          <thead></thead>
-          <tbody>
-            <%= render collection: @today_actions.limit(20), partial: 'scheduled_action' %>
-          </tbody>
-        </table>
+        <div class="tasks-header">
+          <h4 class="tasks-title">
+            <span class="glyphicon glyphicon-time"></span>
+            Tasks Due Today
+            <% if @today_actions.any? %>
+              <span class="tasks-count"><%= @today_actions.count %></span>
+            <% end %>
+          </h4>
+          <% if @today_actions.count > 20 %>
+            <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn-sm btn-primary" %>
+          <% end %>
+        </div>
+        
+        <% if @today_actions.any? %>
+          <div class="task-cards">
+            <%= render collection: @today_actions.limit(20), partial: 'scheduled_action_card', locals: { task_type: 'today' } %>
+          </div>
+        <% else %>
+          <div class="tasks-empty-state">
+            <div class="empty-icon">
+              <%= glyph(:ok) %>
+            </div>
+            <div class="empty-title">All caught up!</div>
+            <div class="empty-description">No tasks are due today</div>
+          </div>
+        <% end %>
       </div>
     </div>
 

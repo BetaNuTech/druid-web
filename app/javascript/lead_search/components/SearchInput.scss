@@ -1,8 +1,23 @@
 .SearchInput {
   grid-area: LeadSearchInput;
-  padding: 0.5em;
-
+  flex: 1;
+  
   input {
-    height: 2.2em;
+    width: 100%;
+    padding: 8px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+      outline: none;
+    }
+    
+    &::placeholder {
+      color: #6c757d;
+    }
   }
 }

@@ -8,58 +8,67 @@
         </h3>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="leads-header">
-          <% if current_user.property.present? %>
-            <span class="lead">
-              <% waitlist_lead_count = current_user.leads.waitlist.count %>
-              <% lead_text = waitlist_lead_count == 1 ? "Waitlisted Lead" : "Waitlisted Leads" %>
-              <%= waitlist_lead_count.zero? ? 'No' : waitlist_lead_count %> <%= lead_text %>
-            </span>
-            <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{waitlist} }}), class: "btn btn-xs btn-primary") %>
-          <% else %>
-            <span class="lead">No Waitlisted Leads</span>
-          <% end %>
+    <% if current_user.property.present? %>
+      <% waitlist_lead_count = current_user.leads.waitlist.count %>
+      
+      <% if waitlist_lead_count > 0 %>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="leads-header">
+              <span class="lead">
+                <% lead_text = waitlist_lead_count == 1 ? "Waitlisted Lead" : "Waitlisted Leads" %>
+                <%= waitlist_lead_count %> <%= lead_text %>
+              </span>
+              <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{waitlist} }}), class: "btn btn-xs btn-primary") %>
+            </div>
+          </div>
         </div>
+        <table class="table lead_listing">
+          <thead></thead>
+          <tbody>
+            <% current_user.leads.waitlist.each do |lead| %>
+              <tr>
+                <td width="70%">
+                  <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
+                  <% if lead.property.present? %>
+                    for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
+                  <% end %>
+                  <p>
+                    <i>Waiting for vacancy in <%= lead.preference&.unit_type&.name || 'None' %> </i>
+                  </p>
+                  <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+                </td>
+                <td>
+                  <%= lead_state_label(lead) %>
+                  <%= lead_priority_icon(lead) %>
+                  <br>
+                  <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
+                  <br>
+                  <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+                  <br>
+                  <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="leads-empty-state">
+          <div class="empty-icon">
+            <%= glyph(:hourglass) %>
+          </div>
+          <div class="empty-title">No Waitlisted Leads</div>
+          <div class="empty-description">No leads are currently on the waitlist</div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="leads-empty-state">
+        <div class="empty-icon">
+          <%= glyph(:hourglass) %>
+        </div>
+        <div class="empty-title">No Property Assigned</div>
+        <div class="empty-description">You need to be assigned to a property to see waitlisted leads</div>
       </div>
-    </div>
-    <table class="table lead_listing">
-      <thead></thead>
-      <tbody>
-        <% if current_user.property.present? %>
-          <% current_user.leads.waitlist.each do |lead| %>
-            <tr>
-              <td width="70%">
-                <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
-                <% if lead.property.present? %>
-                  for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
-                <% end %>
-                <p>
-                  <i>Waiting for vacancy in <%= lead.preference&.unit_type&.name || 'None' %> </i>
-                </p>
-                <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
-              </td>
-              <td>
-                <%= lead_state_label(lead) %>
-                <%= lead_priority_icon(lead) %>
-                <br>
-                <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
-                <br>
-                <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
-                <br>
-                <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
-              </td>
-            </tr>
-          <% end %>
-        <% else %>
-          <tr>
-            <td>
-              <p class="lead">None</p>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <% end %>
   </div>
 </div>

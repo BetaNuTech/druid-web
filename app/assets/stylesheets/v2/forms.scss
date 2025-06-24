@@ -239,19 +239,27 @@ fieldset {
   }
 }
 
-.form-check-input {
+// Style checkboxes that use Rails default structure (opt-in with .styled-checkbox)
+input[type="checkbox"].styled-checkbox {
+  // Hide the default checkbox for custom styling
   position: absolute;
   opacity: 0;
   cursor: pointer;
+  margin-left: -1.5rem;
   
-  & + .form-check-label {
+  // Style the label that follows the checkbox
+  & + label {
     position: relative;
-    padding-left: 0;
+    padding-left: 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+    font-weight: $font-weight-regular;
     
     &::before {
       content: '';
       position: absolute;
-      left: -1.5rem;
+      left: 0;
       top: 0.2rem;
       width: 18px;
       height: 18px;
@@ -264,7 +272,7 @@ fieldset {
     &::after {
       content: '';
       position: absolute;
-      left: -1.5rem;
+      left: 0;
       top: 0.2rem;
       width: 18px;
       height: 18px;
@@ -278,7 +286,7 @@ fieldset {
     }
   }
   
-  &:checked + .form-check-label {
+  &:checked + label {
     &::before {
       background-color: $brand-medium-blue;
       border-color: $brand-medium-blue;
@@ -290,12 +298,16 @@ fieldset {
     }
   }
   
-  &:focus + .form-check-label::before {
+  &:hover:not(:disabled) + label::before {
+    border-color: $brand-medium-blue;
+  }
+  
+  &:focus + label::before {
     box-shadow: 0 0 0 3px rgba($brand-medium-blue, 0.25);
   }
   
   &:disabled {
-    & + .form-check-label {
+    & + label {
       opacity: 0.6;
       cursor: not-allowed;
       
@@ -306,6 +318,8 @@ fieldset {
     }
   }
 }
+
+// Remove this section as it's now handled by the global checkbox styles
 
 // Radio buttons
 .form-check-input[type="radio"] {
@@ -329,6 +343,31 @@ fieldset {
   }
 }
 
+// Radio buttons with Rails default structure (opt-in with .styled-radio)
+input[type="radio"].styled-radio {
+  position: absolute;
+  opacity: 0;
+  
+  & + label::before {
+    border-radius: 50%;
+  }
+  
+  & + label::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    left: 0.3125rem;
+    top: 0.45rem;
+    background-color: $white;
+    background-image: none;
+    border-radius: 50%;
+  }
+  
+  &:checked + label::after {
+    background-color: $white;
+  }
+}
+
 .form-check-label {
   margin-bottom: 0;
   font-weight: $font-weight-regular;
@@ -348,4 +387,87 @@ fieldset {
 .required:after {
   content: " *";
   color: $danger;
+}
+
+// Global checkbox styles - ensure they're always visible
+input[type="checkbox"] {
+  // Force default browser checkbox appearance
+  -webkit-appearance: checkbox !important;
+  -moz-appearance: checkbox !important;
+  appearance: checkbox !important;
+  opacity: 1 !important;
+  position: static !important;
+  width: 18px;
+  height: 18px;
+  margin: 0 0.5rem 0 0;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+// Fix for checkboxes with form-check-input class
+.form-check-input[type="checkbox"] {
+  -webkit-appearance: checkbox !important;
+  -moz-appearance: checkbox !important;
+  appearance: checkbox !important;
+  opacity: 1 !important;
+  position: static !important;
+}
+
+// Fix for checkboxes with checkbox-inline class  
+.checkbox-inline[type="checkbox"] {
+  -webkit-appearance: checkbox !important;
+  -moz-appearance: checkbox !important;
+  appearance: checkbox !important;
+  opacity: 1 !important;
+  position: static !important;
+}
+
+// Global radio button styles - ensure they're always visible
+input[type="radio"] {
+  -webkit-appearance: radio !important;
+  -moz-appearance: radio !important;
+  appearance: radio !important;
+  opacity: 1 !important;
+  position: static !important;
+  width: 18px;
+  height: 18px;
+  margin: 0 0.5rem 0 0;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+// Support for Bootstrap 3 checkbox structure
+.checkbox {
+  position: relative;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  
+  label {
+    min-height: 20px;
+    padding-left: 20px;
+    margin-bottom: 0;
+    font-weight: $font-weight-regular;
+    cursor: pointer;
+  }
+  
+  input[type="checkbox"] {
+    position: absolute;
+    margin-left: -20px;
+    margin-top: 4px;
+  }
+}
+
+.checkbox-inline {
+  position: relative;
+  display: inline-block;
+  padding-left: 20px;
+  margin-bottom: 0;
+  font-weight: $font-weight-regular;
+  cursor: pointer;
+  
+  & + .checkbox-inline {
+    margin-top: 0;
+    margin-left: 10px;
+  }
 }

@@ -13,23 +13,26 @@
       <%= link_to(lead.property.name, property_path(lead.property)) %>
     </span>
   <% end %>
-  <br/>
-  <%= lead_state_label(lead) %>
-  <%= lead_priority_icon(lead) %>
-  <br/>
-  <span class="dashboard_lead_created">
-    <%= tooltip_block('leads-show-created_at') do %>
-      <%= glyph(:question_sign) %>
-      <%= short_datetime(lead.created_at) %>
+  <div class="lead-status-row">
+    <%= lead_state_label(lead) %>
+    <%= lead_priority_icon(lead) %>
+  </div>
+  <div class="lead-dates">
+    <span class="dashboard_lead_created">
+      <%= tooltip_block('leads-show-created_at') do %>
+        <%= glyph(:question_sign) %>
+        <%= short_datetime(lead.created_at) %>
+      <% end %>
+    </span>
+    <%= tooltip_block('leads-show-referral') do %>
+      <%= "via " + lead.referral if lead.referral.present? %>
     <% end %>
-  </span>
-  <%= tooltip_block('leads-show-referral') do %>
-    <%= "via " + lead.referral if lead.referral.present? %>
-  <% end %>
-  <br/>
-  <span class="text-nowrap">
-    <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
-  </span>
+  </div>
+  <div class="lead-communication">
+    <span class="text-nowrap">
+      <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+    </span>
+  </div>
   <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
   <% if lead.preference.notes.present? %>
     <p class="dashboard_lead_notes">

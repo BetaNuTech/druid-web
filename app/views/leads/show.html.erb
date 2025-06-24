@@ -3,29 +3,34 @@
     <div class="priority">
       <ul>
         <li>
-          <strong>Priority:</strong>
-          &nbsp;
-          <span><%= @lead.priority %></span>
+          <div>
+            <strong>Priority</strong>
+            <span data-priority="<%= @lead.priority %>"><%= @lead.priority %></span>
+          </div>
         </li>
         <li>
-          <strong>State:</strong>
-          &nbsp;
-          <span><%= @lead.state %></span>
+          <div>
+            <strong>State</strong>
+            <span data-state="<%= @lead.state %>"><%= @lead.state %></span>
+          </div>
         </li>
         <li>
-          <strong>Agent:</strong>
-          &nbsp;
-          <span><%= @lead.user ? @lead.user.name : "None" %></span>
+          <div>
+            <strong>Agent</strong>
+            <span><%= @lead.user ? @lead.user.name : "None" %></span>
+          </div>
         </li>
         <li>
-          <strong>First Contact:</strong>
-          &nbsp;
-          <span><%= short_datetime(@lead.first_comm) %></span>
+          <div>
+            <strong>First Contact</strong>
+            <span><%= short_datetime(@lead.first_comm) %></span>
+          </div>
         </li>
         <li>
-          <strong>Last Contact:</strong>
-          &nbsp;
-          <span><%= short_datetime(@lead.last_comm) %></span>
+          <div>
+            <strong>Last Contact</strong>
+            <span><%= short_datetime(@lead.last_comm) %></span>
+          </div>
         </li>
       </ul>
     </div>
