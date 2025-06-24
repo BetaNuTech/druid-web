@@ -1,0 +1,112 @@
+// Place all the styles related to the Properties controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+$active-row: #fff;
+$inactive-row: #ccc;
+
+tr.property-table-row-active {
+  background: $active-row;
+}
+
+tr.property-table-row-inactive td {
+  font-style: italic;
+  color: $inactive-row;
+}
+
+.property-listing-form-source-name {
+  font-size: 1.2em;
+  text-align: right;
+}
+
+#property-header {
+  padding: 1em 1em 0.3em 1em;
+  position: relative;
+  top: -10px;
+
+  h2 { margin: 0; }
+  h4 { margin: 0; display: inline;}
+
+  .btn-xs {
+    position: relative;
+    top: -2px;
+  }
+}
+
+.property_phone_number_entry {
+  padding: 0.5em;
+}
+
+
+table.lead_duplicates {
+  span.group_toggler {
+    cursor: pointer;
+  }
+  span.highlight {
+    background-color: #FFFFC7;
+  }
+
+  td.group_toggle {
+    white-space: nowrap;
+  }
+
+  tr.group_primary {
+    td {
+      padding-top: 1em;
+      padding-bottom: 0.2em;
+    }
+
+  }
+
+  tr.group_secondary {
+    display: none;
+    td {
+      padding-top: 0.2em;
+      padding-bottom: 0.2em;
+    }
+    td.group_toggle {
+      border: none;
+    }
+  }
+}
+
+.property_quicklinks {
+  padding: 0.5em 1.5em;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  h2 { margin: 0; }
+
+  h4 {
+    display: inline;
+  }
+
+  h5 {
+    line-height: 1.5em;
+    display: inline;
+  }
+
+  .btn-xs {
+    position: relative;
+    top: -2px;
+  }
+
+  .property_quicklinks-property {
+    padding: 0.25em;
+  }
+
+}
+
+.office_hours_block {
+  padding-top: 0.5em;
+}
+
+.office_hours_day span {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.office_hours_day {
+  padding-top: 2em;
+}

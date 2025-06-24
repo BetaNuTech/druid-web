@@ -1,0 +1,732 @@
+@import 'variables';
+
+// Dashboard sections
+#dashboard_today,
+#dashboard_upcoming,
+#dashboard_my_leads,
+#dashboard_waitlist,
+.dashboard-section {
+  background: linear-gradient(135deg, $white 0%, rgba($gray-50, 0.3) 100%);
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible; // Allow content to show properly
+  border: 1px solid rgba($gray-200, 0.5);
+  max-width: 100%;
+  
+  // First section already has margin from site.scss
+  &:first-of-type {
+    margin-top: 0;
+  }
+  
+  // Subtle background pattern
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba($brand-light-blue, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+  }
+  
+  @media (max-width: 768px) {
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba($brand-light-blue, 0.3);
+    
+    &::before {
+      transform: translate(40%, -40%) scale(1.2);
+    }
+  }
+  
+  h3 {
+    color: $brand-deep-blue;
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-xl;
+    margin-top: 0;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    transition: all 0.3s ease;
+    padding-bottom: $spacing-lg;
+    border-bottom: 2px solid transparent;
+    letter-spacing: -0.5px;
+    position: relative;
+    
+    // Gradient underline effect
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, $brand-teal 0%, $brand-medium-blue 50%, $brand-light-blue 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+      border-radius: 1px;
+    }
+    
+    .glyphicon {
+      color: $white;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 10%) 100%);
+      padding: 10px;
+      border-radius: $border-radius-lg;
+      box-shadow: 0 2px 6px rgba($brand-teal, 0.3);
+      position: relative;
+      overflow: hidden;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+        transform: rotate(45deg) translateY(-100%);
+        transition: transform 0.6s;
+      }
+    }
+    
+    &:hover .glyphicon {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 4px 12px rgba($brand-teal, 0.4);
+      
+      &::before {
+        transform: rotate(45deg) translateY(100%);
+      }
+    }
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+  
+  // Section headers with action buttons
+  .row:first-child {
+    margin-bottom: $spacing-lg;
+    
+    .btn-xs {
+      margin-left: $spacing-xs;
+    }
+  }
+}
+
+// Dashboard item dates
+.dashboard_item_date {
+  font-size: $font-size-sm;
+  color: $gray-600;
+}
+
+// Dashboard lead notes
+.dashboard_lead_notes {
+  font-size: $font-size-sm;
+  font-style: italic;
+  color: $gray-600;
+  margin-top: $spacing-xs;
+  background-color: rgba($brand-light-blue, 0.05);
+  padding: $spacing-sm;
+  border-radius: $border-radius-sm;
+  border-left: 3px solid $brand-light-blue;
+  
+  .glyphicon-question-sign {
+    color: $brand-medium-blue;
+    margin-right: 4px;
+  }
+}
+
+// VIP indicator styling
+.vip-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF1744 0%, #D50000 100%);
+  color: $white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: $spacing-sm;
+  box-shadow: 0 2px 4px rgba(213, 0, 0, 0.3);
+  animation: pulse-vip 2s ease-in-out infinite;
+  
+  .glyphicon-heart {
+    font-size: 12px;
+  }
+}
+
+@keyframes pulse-vip {
+  0% {
+    box-shadow: 0 2px 4px rgba(213, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(213, 0, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 2px 4px rgba(213, 0, 0, 0.3);
+  }
+}
+
+// Lead listings in dashboard
+.lead_listing {
+  margin-top: $spacing-lg;
+  border-collapse: separate;
+  border-spacing: 0 $spacing-sm; // Reduced vertical spacing between rows
+  
+  // Remove all borders and backgrounds
+  td {
+    padding: 0;
+    vertical-align: top;
+    border: none !important;
+    background: transparent !important;
+    
+    &:first-child {
+      width: 60px;
+      padding-right: $spacing-md;
+      text-align: center;
+      vertical-align: middle;
+      
+      // Style the person icon
+      .glyphicon-user {
+        font-size: 28px;
+        color: $gray-400;
+        display: inline-block;
+        transition: all 0.2s ease;
+      }
+    }
+    
+    &.dashboard_item_date {
+      width: 150px;
+      padding-right: $spacing-lg;
+      vertical-align: middle;
+      
+      .btn {
+        margin: 0;
+        min-width: 90px;
+      }
+    }
+    
+    // Lead card cell
+    &:nth-child(3) {
+      width: auto;
+      padding: $spacing-xs 0; // Add small vertical padding to prevent overlap
+    }
+  }
+  
+  tr {
+    background: transparent !important;
+    position: relative;
+    
+    // Isolate each row to prevent hover bleeding
+    &:hover {
+      z-index: 10;
+    }
+  }
+  
+  // Override Bootstrap table styling
+  &.table {
+    background-color: transparent;
+    
+    > tbody > tr {
+      &:nth-of-type(odd) {
+        background-color: transparent;
+      }
+      
+      &:nth-of-type(even) {
+        background-color: transparent;
+      }
+      
+      > td {
+        border-top: none;
+      }
+    }
+  }
+}
+
+// Lead cards in dashboard
+.lead_card {
+  padding: $spacing-xl $spacing-lg;
+  background: linear-gradient(135deg, $white 0%, rgba($gray-50, 0.3) 100%);
+  border-radius: $border-radius-lg;
+  border-left: 5px solid $brand-teal;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-left-width 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+  transform: translateY(0);
+  min-height: 120px;
+  display: block;
+  width: 100%;
+  z-index: 1;
+  isolation: isolate; // Prevent transforms from affecting other elements
+  
+  @media (max-width: 576px) {
+    padding: $spacing-lg $spacing-md;
+    min-height: 100px;
+  }
+  
+  // Subtle background pattern
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba($brand-light-blue, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    transform: rotate(45deg);
+    z-index: 0;
+  }
+  
+  // Content above background pattern
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  &:hover {
+    background: linear-gradient(135deg, $white 0%, rgba($brand-light-blue, 0.08) 100%) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-3px) !important;
+    border-left-color: darken($brand-teal, 10%) !important;
+    border-left-width: 6px !important;
+    z-index: 2 !important;
+    
+    .lead a {
+      color: darken($brand-deep-blue, 5%);
+    }
+    
+    &::before {
+      opacity: 0.5;
+    }
+  }
+  
+  
+  .lead {
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin-bottom: $spacing-sm;
+    font-size: 18px;
+    line-height: 1.4;
+    display: block;
+    
+    a {
+      color: $brand-deep-blue;
+      font-weight: $font-weight-medium;
+      text-decoration: none;
+      display: inline-block;
+      padding: 2px 0;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: darken($brand-deep-blue, 10%);
+        text-decoration: none; // Remove underline on individual link hover
+      }
+    }
+  }
+  
+  .lead_property_name {
+    color: $brand-medium-blue;
+    font-weight: $font-weight-medium;
+    font-size: 14px;
+    margin-bottom: $spacing-xs;
+    
+    a {
+      color: $brand-medium-blue;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: darken($brand-medium-blue, 10%);
+        text-decoration: none;
+      }
+    }
+  }
+  
+  .dashboard_lead_created {
+    color: $gray-600;
+    font-size: 13px;
+    margin-top: $spacing-sm;
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+    background: rgba($gray-100, 0.5);
+    padding: 4px 10px;
+    border-radius: $border-radius-sm;
+    
+    .glyphicon-question-sign {
+      color: $brand-teal;
+      margin-right: 6px;
+      font-size: 14px;
+    }
+    
+    // Prevent hover glitches on tooltips
+    .tooltip_wrapper {
+      position: relative;
+      z-index: 3;
+    }
+  }
+  
+  // Lead state labels - enhanced styling
+  .label {
+    margin-right: $spacing-sm;
+    margin-bottom: $spacing-xs;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    
+    &.label-open {
+      background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 8%) 100%);
+    }
+    
+    &.label-contacted {
+      background: linear-gradient(135deg, $brand-medium-blue 0%, darken($brand-medium-blue, 8%) 100%);
+    }
+    
+    &.label-scheduled {
+      background: linear-gradient(135deg, $brand-light-blue 0%, darken($brand-light-blue, 8%) 100%);
+    }
+  }
+  
+  // Contact information with icons
+  .text-nowrap {
+    color: $gray-600;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: $spacing-xs;
+    
+    @media (max-width: 576px) {
+      white-space: normal !important; // Allow wrapping on mobile
+    }
+    
+    .glyphicon-comment {
+      color: $brand-medium-blue;
+      margin-right: 8px;
+      font-size: 15px;
+      vertical-align: middle;
+    }
+    
+    .glyphicon-phone,
+    .glyphicon-envelope {
+      color: $brand-teal;
+      margin-right: 8px;
+      font-size: 15px;
+      vertical-align: middle;
+    }
+  }
+}
+
+// Action buttons in dashboard
+.btn-group-dashboard {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+// Dashboard lead notes
+.dashboard_lead_notes {
+  font-size: $font-size-sm;
+  font-style: italic;
+  color: $gray-600;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-sm;
+  border-top: 1px solid $gray-200;
+  
+  .glyphicon {
+    color: $gray-500;
+    margin-right: $spacing-xs;
+  }
+}
+
+// Lead state color coding
+.lead_card {
+  &[data-state="open"],
+  &[data-state="new"] {
+    border-left-color: $brand-teal;
+  }
+  
+  &[data-state="contacted"],
+  &[data-state="scheduled"] {
+    border-left-color: $brand-medium-blue;
+  }
+  
+  &[data-state="qualified"] {
+    border-left-color: $brand-light-blue;
+  }
+  
+  &[data-state="urgent"] {
+    border-left-color: $danger;
+  }
+}
+
+// Contact mini card styling
+.contact-mini-card {
+  margin-top: $spacing-sm;
+  
+  a {
+    color: $gray-600;
+    font-size: $font-size-sm;
+    
+    &:hover {
+      color: $brand-medium-blue;
+    }
+  }
+}
+
+// Empty states
+.empty-state {
+  text-align: center;
+  padding: $spacing-xl;
+  color: $gray-600;
+  
+  .glyphicon {
+    font-size: 48px;
+    color: $gray-400;
+    margin-bottom: $spacing-md;
+  }
+  
+  p {
+    font-size: $font-size-lg;
+    margin: 0;
+  }
+}
+
+// Lead count styling
+.lead {
+  &.text-nowrap {
+    font-size: $font-size-lg;
+    color: $gray-700;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// Dashboard grid adjustments
+.dashboard-grid {
+  .row {
+    margin-left: -$spacing-sm;
+    margin-right: -$spacing-sm;
+    
+    > [class*="col-"] {
+      padding-left: $spacing-sm;
+      padding-right: $spacing-sm;
+    }
+  }
+}
+
+// Feature badges at bottom
+.site-features {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $gray-200;
+}
+
+// Separate tasks section from leads
+.tasks-section {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 2px solid $gray-200;
+}
+
+// Leads header with inline buttons
+.leads-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+  
+  .lead {
+    margin-bottom: 0;
+  }
+  
+  .btn {
+    margin-left: auto;
+    
+    &:first-of-type {
+      margin-left: 0;
+    }
+  }
+}
+
+// Improve icon styling in dashboard
+#dashboard_today,
+#dashboard_upcoming,
+#dashboard_my_leads,
+#dashboard_waitlist {
+  // Person icon
+  .glyphicon-user {
+    font-size: 18px;
+    color: $gray-500;
+    vertical-align: middle;
+  }
+  
+  // Edit icon  
+  .glyphicon-edit {
+    font-size: 16px;
+    color: $brand-medium-blue;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: darken($brand-medium-blue, 10%);
+      transform: scale(1.1);
+    }
+  }
+  
+  // Make icon links larger and easier to click
+  .nowrap {
+    white-space: nowrap;
+    
+    a {
+      padding: 4px 8px;
+      border-radius: $border-radius-sm;
+      display: inline-block;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: rgba($brand-light-blue, 0.1);
+      }
+      
+      @media (max-width: 576px) {
+        padding: 6px;
+      }
+    }
+  }
+}
+
+// Additional lead state labels
+.label-waitlist {
+  background: linear-gradient(135deg, $warning 0%, darken($warning, 8%) 100%);
+}
+
+.label-qualified {
+  background: linear-gradient(135deg, $success 0%, darken($success, 8%) 100%);
+}
+
+.label-disqualified {
+  background: linear-gradient(135deg, $gray-500 0%, darken($gray-500, 8%) 100%);
+}
+
+// Phone number formatting
+.phone-number {
+  font-family: 'Courier New', monospace;
+  font-size: $font-size-sm;
+  color: $gray-700;
+  letter-spacing: 0.5px;
+}
+
+// Tooltip styling fixes
+.tooltip {
+  z-index: 9999 !important;
+  
+  .tooltip-inner {
+    background-color: $gray-800;
+    color: $white;
+    font-size: $font-size-sm;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-sm;
+    max-width: 300px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .arrow::before {
+    border-top-color: $gray-800 !important;
+    border-bottom-color: $gray-800 !important;
+    border-left-color: $gray-800 !important;
+    border-right-color: $gray-800 !important;
+  }
+}
+
+// Ensure lead card tooltips don't get cut off
+.lead_card {
+  [data-toggle="tooltip"] {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+// My Leads and Wait List table styling
+#dashboard_my_leads,
+#dashboard_waitlist {
+  .table {
+    margin-top: $spacing-md;
+    
+    tbody tr {
+      background-color: transparent !important;
+      border-bottom: 1px solid $gray-100;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background-color: transparent !important;
+        
+        td {
+          background-color: transparent !important;
+        }
+      }
+      
+      td {
+        padding: $spacing-lg $spacing-md;
+        background-color: transparent !important;
+        border: none !important;
+        vertical-align: top;
+        
+        &:first-child {
+          padding-left: 0;
+        }
+        
+        &:last-child {
+          padding-right: $spacing-sm;
+          white-space: nowrap;
+          
+          @media (max-width: 576px) {
+            padding-right: $spacing-xs;
+          }
+        }
+      }
+    }
+  }
+  
+  // Style the lead names in tables
+  .lead {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    
+    a {
+      color: $brand-deep-blue;
+      text-decoration: none;
+      
+      &:hover {
+        color: darken($brand-deep-blue, 10%);
+        text-decoration: underline;
+      }
+    }
+  }
+}

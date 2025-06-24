@@ -1,0 +1,235 @@
+// Place all the styles related to the Leads controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+table#leads-table {
+  .lead-state {
+  }
+}
+
+.lead-table-row h3 {
+  margin: 0;
+}
+
+.Lead {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  margin: 1em;
+
+}
+
+.priority{
+  grid-area: LeadPriority;
+  width: 95%;
+
+  border-bottom: 1px solid black;
+  border-top: 2px solid black;
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin: 0;
+    padding: 0 1em 0 0;
+    display: inline;
+  }
+}
+
+
+.Lead .contact {
+  grid-area: LeadContact;
+  margin-bottom: 1em;
+}
+
+.Lead .lead_name {
+  font-size: 1.4em;
+}
+
+.Lead .contact_info {
+  grid-area: LeadContactInfo;
+  margin-bottom: 1em;
+}
+
+.Lead .property {
+  grid-area: LeadProperty;
+  margin-bottom: 1em;
+}
+
+.Lead .preferences {
+  grid-area: LeadPreferences;
+  margin-bottom: 1em;
+}
+
+.Lead .notes {
+  margin: 0.5em;
+  grid-area: LeadNotes;
+
+}
+
+.Lead .comments {
+  grid-area: LeadComments;
+  margin: 0 2em 0 0;
+
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.Lead .timeline {
+  grid-area: LeadTimeline;
+  margin: 0 2em 0 0;
+
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.Lead .controls {
+  grid-area: LeadControls;
+}
+
+.Lead .state_toggle-agent {
+  display: none;
+}
+
+.Lead .scheduled_actions {
+  grid-area: LeadScheduledActions;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
+.Lead .messages {
+  grid-area: LeadMessages;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
+.Lead .calls {
+  grid-area: LeadCalls;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
+.Lead .duplicates {
+  grid-area: LeadDuplicates;
+
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
+.Lead .lead_source_document {
+  grid-area: LeadSourceDocument; 
+}
+
+.Lead .lead_roommates {
+  grid-area: LeadRoommates;
+  h2 {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+  }
+  table {
+    width: 90%;
+  }
+}
+
+@media(min-width: 600px) {
+  .Lead {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 40% 30% 30%;
+    grid-template-areas:
+      "LeadPriority LeadPriority LeadPriority"
+      "LeadControls LeadControls LeadControls"
+      "LeadContact LeadProperty LeadPreferences"
+      "LeadNotes LeadNotes LeadNotes"
+      "LeadDuplicates LeadDuplicates LeadDuplicates"
+      "LeadRoommates LeadRoommates LeadRoommates"
+      "LeadScheduledActions LeadScheduledActions LeadScheduledActions"
+      "LeadComments LeadComments LeadComments"
+      "LeadMessages LeadMessages LeadMessages"
+      "LeadCalls LeadCalls LeadCalls"
+      "LeadTimeline LeadTimeline LeadTimeline"
+      "LeadSourceDocument LeadSourceDocument LeadSourceDocument"
+    ;
+  }
+}
+
+.lead_priority_icon_zero span.glyphicon {
+  opacity: 1.0 !important;
+  color: #d3d3d3;
+}
+
+.lead_priority_icon_low span.glyphicon {
+  opacity: 1.0 !important;
+  color: #000;
+}
+
+.lead_priority_icon_medium span.glyphicon {
+  opacity: 1.0 !important;
+  color: #ffd700;
+}
+
+.lead_priority_icon_high span.glyphicon {
+  opacity: 1.0 !important;
+  color: #ff4500;
+}
+
+.lead_priority_icon_urgent span.glyphicon {
+  opacity: 1.0 !important;
+  color: #ff0000;
+}
+
+table.lead_listing tr:nth-child(even) {
+  background: #edf2f7;
+}
+
+span.missing_lead_email {
+  font-weight: bold;
+  color: red;
+}
+
+h3#lead_state_name {
+  margin-top: -5px;
+  margin-bottom: 3px;
+}
+
+div.state_toggle {
+  //width: 620px;
+  margin: 0px auto;
+}
+
+.minor-label label {
+  font-weight: normal;
+}

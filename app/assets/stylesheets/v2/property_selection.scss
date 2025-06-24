@@ -1,0 +1,115 @@
+@import 'variables';
+
+// Property Selection Dropdown
+#propertyselection--container {
+  margin-bottom: $spacing-lg;
+  position: relative;
+  z-index: 1020; // Below header (1030) but above content
+  
+  @media (max-width: 767px) {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-top: 0;
+    margin-bottom: $spacing-md;
+    
+    .form-group {
+      justify-content: stretch;
+      
+      #propertyselection--selector {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+  
+  .row {
+    margin: 0;
+  }
+  
+  .col-md-6 {
+    width: auto !important;
+    float: none !important;
+  }
+  
+  .form-group {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+  
+  #propertyselection--selector {
+    min-width: 200px;
+    max-width: 300px;
+    height: 36px !important;
+    padding: 6px 32px 6px 12px !important;
+    color: $gray-700 !important;
+    background-color: $white !important;
+    border: 1px solid $gray-300 !important;
+    border-radius: $border-radius-sm !important;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-regular;
+    font-size: $font-size-base !important;
+    line-height: 1.42857143 !important;
+    cursor: pointer;
+    transition: $transition-base;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    box-shadow: $shadow-sm;
+    
+    &:hover {
+      border-color: $brand-medium-blue !important;
+      box-shadow: $shadow-md !important;
+    }
+    
+    &:focus {
+      border-color: $brand-medium-blue !important;
+      box-shadow: 0 0 0 3px rgba($brand-medium-blue, 0.25) !important;
+      outline: none !important;
+    }
+    
+    option {
+      color: $gray-700 !important;
+      background-color: $white !important;
+      font-family: $font-family-primary;
+    }
+  }
+  
+  // Fix positioning on smaller screens
+  @media (max-width: 991px) {
+    .col-md-6 {
+      float: none !important;
+      width: 100%;
+    }
+  }
+}
+
+// Property selector positioning handled in home-layout-fixes.scss
+
+// Force text color for all select elements in property selection
+#propertyselection--form {
+  select,
+  select.form-control,
+  #propertyselection--selector {
+    color: $gray-700 !important;
+    opacity: 1 !important;
+    
+    // Ensure selected option text is visible
+    option[selected],
+    option:checked {
+      color: $gray-700 !important;
+      background-color: $white !important;
+    }
+  }
+  
+  // Override any Bootstrap or other styles
+  .form-control:not(:focus) {
+    color: $gray-700 !important;
+  }
+}

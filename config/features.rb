@@ -11,7 +11,9 @@ Flipflop.configure do
 
   feature :user_tracking, default: true, description: 'Track page impressions'
 
-  feature :design_v1, default: true, description: 'UI v1 Navigation'
+  feature :design_v1, default: false, description: 'UI v1 Navigation (Legacy)'
+  
+  feature :design_v2, default: true, description: 'UI v2 with modern design system'
 
   lead_automatic_reply_enabled = ['t', 'true', '1'].include? ENV.fetch('LEAD_AUTOMATIC_REPLY','false').downcase
   feature :lead_automatic_reply, default: lead_automatic_reply_enabled, description: 'Automatically respond to incoming leads'

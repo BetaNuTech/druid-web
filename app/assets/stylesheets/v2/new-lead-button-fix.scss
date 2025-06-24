@@ -1,0 +1,16 @@
+@import 'variables';
+
+// Fix the person icon to match checkmark icon exactly
+#new-lead-button {
+  a {
+    // Override the person icon to match checkmark
+    .glyphicon-user {
+      font-size: 14px !important; // Smaller than base to compensate for glyph size
+      position: absolute !important;
+      left: 16px !important; // Slightly more to the right to center visually
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      z-index: 2 !important;
+    }
+  }
+}

@@ -9,42 +9,33 @@
           Today
         </h3>
       </div>
-      <div class="col-xs-6 col-md-6" style="margin-top: 22px;">
-        <span style="">
-          <%= link_to("View Calendar", scheduled_actions_path(team: true), {class: "btn btn-xs btn-primary"})  %>
-        </span>
-        <span style="">
-          <%= link_to("Schedule a Task", new_scheduled_action_path, {class: "btn btn-xs btn-primary"}) %>
-        </span>
+      <div class="col-xs-6 col-md-6">
+        <!-- Calendar and Task buttons removed - available in sidebar -->
       </div>
     </div>
     <!-- End Header -->
 
     <div class="row">
-      <div class="col-xs-6">
-        <span class="text-nowrap lead">
-          <% if @limit_leads != @open_leads.count %>
-            <%= @limit_leads %> of
-            <%= @open_leads.count %> Open Leads
-          <% else %>
-            <%= @open_leads.count %> Open Leads
-          <% end %>
-        </span>
-      </div>
-      <div class="col-xs-6">
-        <% if @limit_leads != @open_leads.count %>
-          <span style="padding-top: 5px;">
-            <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn-xs btn-primary") %>
+      <div class="col-md-12">
+        <div class="leads-header">
+          <span class="text-nowrap lead">
+            <% lead_text = @open_leads.count == 1 ? "Lead" : "Leads" %>
+            <% if @limit_leads != @open_leads.count %>
+              <%= @limit_leads %> of
+              <%= @open_leads.count %> Open <%= lead_text %>
+            <% else %>
+              <%= @open_leads.count %> Open <%= lead_text %>
+            <% end %>
           </span>
-        <% end %>
-        <% if policy(Lead).mass_assignment? %>
-          <%= tooltip_block('leads-mass-assign-link') do %>
-            <span style="padding-top: 5px;">
+          <% if @open_leads.count > 0 && policy(Lead).mass_assignment? %>
+            <%= tooltip_block('leads-mass-assign-link') do %>
               <%= link_to("Assign...", mass_assignment_leads_path, class: "btn btn-xs btn-primary") %>
-            </span>
+            <% end %>
           <% end %>
-        <% end %>
-        <p>&nbsp;</p>
+          <% if @limit_leads != @open_leads.count %>
+            <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn-xs btn-primary") %>
+          <% end %>
+        </div>
       </div>
     </div>
 
@@ -60,7 +51,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row tasks-section">
       <div class="col-md-12">
         <span class="text-nowrap lead">
           <%= @today_actions.any? ? @today_actions.count : 'No' %> Tasks Due Today

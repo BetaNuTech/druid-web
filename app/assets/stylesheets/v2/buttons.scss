@@ -1,0 +1,330 @@
+@import 'variables';
+
+// Base button styles
+.btn {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  text-transform: none;
+  border-radius: $border-radius-sm;
+  padding: 6px 12px;
+  transition: $transition-base;
+  border: 1px solid transparent;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  
+  &:hover {
+    text-decoration: none;
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($brand-medium-blue, 0.25);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Button sizes
+.btn-xs {
+  padding: 3px 8px;
+  font-size: $font-size-xs;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: $font-size-sm;
+}
+
+.btn-lg {
+  padding: 10px 20px;
+  font-size: $font-size-lg;
+}
+
+// Primary button
+.btn-primary {
+  background: linear-gradient(135deg, lighten($brand-medium-blue, 5%) 0%, $brand-medium-blue 50%, darken($brand-medium-blue, 5%) 100%);
+  border: 1px solid darken($brand-medium-blue, 10%);
+  color: $white;
+  box-shadow: 0 3px 8px rgba($brand-deep-blue, 0.2), 
+              0 1px 2px rgba($brand-deep-blue, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2),
+              inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  font-weight: $font-weight-medium;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  
+  // Subtle shine effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    transition: left 0.5s ease;
+  }
+  
+  &:hover, &:focus {
+    background: linear-gradient(135deg, lighten($brand-medium-blue, 8%) 0%, lighten($brand-medium-blue, 3%) 50%, $brand-medium-blue 100%);
+    border-color: darken($brand-medium-blue, 12%);
+    color: $white;
+    box-shadow: 0 4px 12px rgba($brand-deep-blue, 0.25), 
+                0 2px 4px rgba($brand-deep-blue, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    background: linear-gradient(135deg, darken($brand-medium-blue, 5%) 0%, darken($brand-medium-blue, 10%) 100%);
+    border-color: darken($brand-medium-blue, 15%);
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba($brand-deep-blue, 0.3), 
+                inset 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.1s ease;
+  }
+  
+  &.btn-xs {
+    padding: 4px 10px;
+    font-size: $font-size-xs;
+    border-radius: $border-radius-xs;
+    box-shadow: 0 2px 4px rgba($brand-deep-blue, 0.15);
+  }
+}
+
+// Secondary button
+.btn-secondary {
+  background-color: $secondary;
+  border-color: $secondary;
+  color: $white;
+  
+  &:hover, &:focus {
+    background-color: darken($secondary, 10%);
+    border-color: darken($secondary, 10%);
+    color: $white;
+  }
+  
+  &:active {
+    background-color: darken($secondary, 15%);
+    border-color: darken($secondary, 15%);
+  }
+}
+
+// Default button
+.btn-default {
+  background: linear-gradient(135deg, $white 0%, $gray-50 100%);
+  border: 1px solid $gray-300;
+  color: $gray-700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+  
+  &:hover, &:focus {
+    background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+    border-color: $gray-400;
+    color: $gray-800;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    background: linear-gradient(135deg, $gray-100 0%, $gray-200 100%);
+    border-color: $gray-500;
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 
+                inset 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+}
+
+// Success button
+.btn-success {
+  background: linear-gradient(135deg, lighten($success, 5%) 0%, $success 50%, darken($success, 5%) 100%);
+  border: 1px solid darken($success, 10%);
+  color: $white;
+  box-shadow: 0 3px 8px rgba($success, 0.3), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  
+  &:hover, &:focus {
+    background: linear-gradient(135deg, lighten($success, 8%) 0%, lighten($success, 3%) 50%, $success 100%);
+    border-color: darken($success, 12%);
+    color: $white;
+    box-shadow: 0 4px 12px rgba($success, 0.35);
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    background: linear-gradient(135deg, darken($success, 5%) 0%, darken($success, 10%) 100%);
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba($success, 0.3);
+  }
+}
+
+// Warning button
+.btn-warning {
+  background-color: $warning;
+  border-color: $warning;
+  color: $white;
+  
+  &:hover, &:focus {
+    background-color: darken($warning, 10%);
+    border-color: darken($warning, 10%);
+    color: $white;
+  }
+}
+
+// Danger button
+.btn-danger {
+  background: linear-gradient(135deg, lighten($danger, 5%) 0%, $danger 50%, darken($danger, 5%) 100%);
+  border: 1px solid darken($danger, 10%);
+  color: $white;
+  box-shadow: 0 3px 8px rgba($danger, 0.3), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  
+  &:hover, &:focus {
+    background: linear-gradient(135deg, lighten($danger, 8%) 0%, lighten($danger, 3%) 50%, $danger 100%);
+    border-color: darken($danger, 12%);
+    color: $white;
+    box-shadow: 0 4px 12px rgba($danger, 0.35);
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    background: linear-gradient(135deg, darken($danger, 5%) 0%, darken($danger, 10%) 100%);
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba($danger, 0.3);
+  }
+}
+
+// Info button
+.btn-info {
+  background-color: $info;
+  border-color: $info;
+  color: $white;
+  
+  &:hover, &:focus {
+    background-color: darken($info, 10%);
+    border-color: darken($info, 10%);
+    color: $white;
+  }
+}
+
+// Outline buttons
+.btn-outline-primary {
+  background-color: transparent;
+  border-color: $primary;
+  color: $primary;
+  
+  &:hover, &:focus {
+    background-color: $primary;
+    border-color: $primary;
+    color: $white;
+  }
+}
+
+.btn-outline-secondary {
+  background-color: transparent;
+  border-color: $secondary;
+  color: $secondary;
+  
+  &:hover, &:focus {
+    background-color: $secondary;
+    border-color: $secondary;
+    color: $white;
+  }
+}
+
+// Button groups
+.btn-group {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  
+  > .btn {
+    position: relative;
+    flex: 0 1 auto;
+    
+    &:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+// Link styling
+a.btn {
+  text-decoration: none;
+}
+
+// Label styling (for lead states)
+.label {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  color: $white;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: $border-radius-sm;
+  font-family: $font-family-primary;
+  
+  &.label-default {
+    background-color: $gray-600;
+  }
+  
+  &.label-primary {
+    background-color: $primary;
+  }
+  
+  &.label-success {
+    background-color: $success;
+  }
+  
+  &.label-info {
+    background-color: $info;
+  }
+  
+  &.label-warning {
+    background-color: $warning;
+  }
+  
+  &.label-danger {
+    background-color: $danger;
+  }
+  
+  // Custom label colors for lead states
+  &.label-open {
+    background-color: $brand-teal;
+  }
+  
+  &.label-contacted {
+    background-color: $brand-medium-blue;
+  }
+  
+  &.label-scheduled {
+    background-color: $brand-light-blue;
+  }
+}

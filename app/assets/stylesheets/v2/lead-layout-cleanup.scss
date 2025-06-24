@@ -1,0 +1,119 @@
+@import 'variables';
+
+// Remove person icon column completely
+.lead_listing {
+  td:first-child {
+    display: none !important;
+  }
+  
+  // Adjust claim button column
+  td.dashboard_item_date {
+    width: auto !important;
+    min-width: 100px !important;
+    padding: $spacing-sm $spacing-md $spacing-sm 0 !important;
+    vertical-align: middle !important;
+    
+    // Fix claim button layout
+    p {
+      margin: 0 !important;
+    }
+    
+    form {
+      display: inline-block;
+      margin: 0;
+    }
+    
+    .btn {
+      min-width: 80px !important;
+      white-space: nowrap;
+      margin-bottom: $spacing-xs;
+    }
+    
+    // Duplicate link styling
+    a[href*="duplicate"] {
+      display: block;
+      margin-top: $spacing-xs;
+      font-size: 12px;
+    }
+  }
+  
+  // Fix lead card column to take remaining space
+  td:last-child {
+    width: 100% !important;
+    padding: 0 !important;
+    vertical-align: top !important;
+  }
+}
+
+// Fix lead card rendering
+.lead_card {
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  display: block;
+  
+  // Fix box shadow clipping
+  position: relative;
+  
+  // Add margin to prevent shadow clipping
+  margin-right: 4px;
+  margin-bottom: $spacing-sm;
+  
+  // Keep the original transitions for smooth animations
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-left-width 0.3s ease !important;
+}
+
+// Ensure table layout works properly
+.lead_listing {
+  width: 100% !important;
+  table-layout: auto !important; // Change back to auto for better flexibility
+  
+  tbody tr {
+    position: relative;
+    transition: none; // Prevent row transition conflicts
+  }
+}
+
+// Fix dashboard section to prevent overflow
+.dashboard-section {
+  overflow: visible !important;
+  
+  // Add padding to prevent content clipping
+  padding-right: calc(#{$spacing-xl} + 4px) !important;
+}
+
+// Mobile adjustments
+@media (max-width: 767px) {
+  .lead_listing {
+    td.dashboard_item_date {
+      width: 100% !important;
+      display: block !important;
+      padding: $spacing-sm 0 !important;
+      
+      .btn {
+        width: 100% !important;
+        max-width: none !important;
+        margin-bottom: $spacing-sm;
+      }
+    }
+    
+    td:last-child {
+      display: block !important;
+      width: 100% !important;
+      padding: 0 !important;
+    }
+  }
+  
+  .lead_card {
+    margin-right: 0 !important;
+  }
+}
+
+// Remove person icon ONLY in lead listing tables
+.lead_listing {
+  .glyphicon-person,
+  .glyphicon-user {
+    display: none !important;
+  }
+}

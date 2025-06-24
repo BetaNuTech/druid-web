@@ -1,0 +1,75 @@
+@import 'variables';
+
+// Fix layout issues without cutting off content
+html {
+  // Allow vertical scroll but prevent horizontal
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 320px; // Minimum supported width
+  overflow-x: hidden;
+  width: 100%;
+}
+
+// Main wrapper to contain all content
+#content {
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+}
+
+// Fix Bootstrap container extending beyond viewport
+.container-fluid {
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 100%;
+  max-width: 100%;
+}
+
+// Ensure rows don't cause overflow
+@media (max-width: 767px) {
+  .row {
+    margin-left: -8px;
+    margin-right: -8px;
+    
+    > [class*="col-"] {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+}
+
+// Fix viewcontent width calculation
+#viewcontent {
+  box-sizing: border-box;
+  width: 100%;
+  
+  @media (min-width: 768px) {
+    width: auto;
+    margin-right: 0;
+  }
+}
+
+// Ensure no element can cause horizontal overflow
+* {
+  max-width: 100%;
+}
+
+// Exception for elements that need to be wider
+.table-responsive,
+pre,
+code {
+  max-width: none;
+}
+
+// Fix absolute positioned elements
+#propertyselection--container {
+  @media (max-width: 991px) {
+    position: static !important;
+    width: 100%;
+    padding: 0 15px;
+    margin-bottom: $spacing-md;
+  }
+}

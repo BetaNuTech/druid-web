@@ -1,0 +1,90 @@
+// Brand Colors
+$brand-deep-blue: #005089;
+$brand-medium-blue: #0070B9;
+$brand-light-blue: #6EA9DB;
+$brand-teal: #00AFA8;
+$brand-dark-gray: #58585A;
+$brand-light-gray: #BCBEBE;
+
+// Semantic Colors
+$primary: $brand-medium-blue;
+$secondary: $brand-teal;
+$success: #28a745;
+$warning: #FFA500;
+$danger: #DC3545;
+$info: #17A2B8;
+
+// Neutral Colors
+$white: #FFFFFF;
+$gray-50: #FAFBFC;
+$gray-100: #F8F9FA;
+$gray-200: #E9ECEF;
+$gray-300: #DEE2E6;
+$gray-400: #CED4DA;
+$gray-500: #ADB5BD;
+$gray-600: #6C757D;
+$gray-700: #495057;
+$gray-800: #343A40;
+$gray-900: #212529;
+$black: #000000;
+
+// Typography
+$font-family-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+// Font Sizes
+$font-size-base: 14px;
+$font-size-xs: 12px;
+$font-size-sm: 13px;
+$font-size-lg: 16px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+
+// Line Heights
+$line-height-base: 1.5;
+$line-height-tight: 1.2;
+$line-height-loose: 1.8;
+
+// Spacing (8px base unit)
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
+$shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+// Borders
+$border-width: 1px;
+$border-radius-xs: 2px;
+$border-radius-sm: 3px;
+$border-radius-md: 5px;
+$border-radius-lg: 8px;
+$border-color: $gray-300;
+
+// Transitions
+$transition-base: all 0.2s ease;
+$transition-fast: all 0.15s ease;
+$transition-slow: all 0.3s ease;
+
+// Z-index
+$zindex-dropdown: 1000;
+$zindex-sticky: 1020;
+$zindex-fixed: 1030;
+$zindex-modal-backdrop: 1040;
+$zindex-modal: 1050;
+$zindex-popover: 1060;
+$zindex-tooltip: 1070;
+
+// Layout
+$sidebar-width: 250px;
+$header-height: 50px;
+$content-bg: $gray-100;

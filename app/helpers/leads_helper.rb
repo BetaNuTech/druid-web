@@ -204,7 +204,7 @@ module LeadsHelper
   def lead_form_header_for_entry_type(entry_type=nil)
     case ( entry_type || '' ).to_sym
     when :walkin
-      'New Walk-In'
+      'New Lead'
     when :default
       'New Lead'
     else

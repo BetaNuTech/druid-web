@@ -1,0 +1,186 @@
+@import 'variables';
+
+// Support Ticket Modal Styling
+.support-ticket-modal {
+  border: none;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  
+  .modal-header {
+    background: linear-gradient(135deg, lighten($brand-medium-blue, 10%) 0%, $brand-medium-blue 100%);
+    color: $white;
+    border-bottom: none;
+    border-radius: $border-radius-lg $border-radius-lg 0 0;
+    padding: $spacing-lg;
+    position: relative;
+    
+    .modal-title {
+      font-size: 22px;
+      font-weight: $font-weight-bold;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      letter-spacing: 0.3px;
+      
+      .glyphicon {
+        font-size: 20px;
+        opacity: 0.9;
+      }
+    }
+    
+    .close {
+      color: $white;
+      opacity: 0.8;
+      font-size: 28px;
+      font-weight: 300;
+      line-height: 1;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      position: absolute;
+      right: $spacing-lg;
+      top: 50%;
+      transform: translateY(-50%);
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  
+  .modal-body {
+    padding: $spacing-xl;
+    text-align: center;
+    
+    .support-ticket-icon {
+      margin-bottom: $spacing-lg;
+      
+      img {
+        width: 80px;
+        height: 80px;
+      }
+    }
+    
+    .support-ticket-message {
+      font-size: 16px;
+      color: $gray-700;
+      margin-bottom: $spacing-xl;
+      line-height: 1.6;
+      
+      strong {
+        color: $brand-deep-blue;
+        font-weight: $font-weight-medium;
+      }
+      
+      code {
+        background-color: rgba($brand-light-blue, 0.1);
+        color: $brand-deep-blue;
+        padding: 2px 8px;
+        border-radius: $border-radius-sm;
+        font-size: 14px;
+        font-weight: $font-weight-medium;
+      }
+    }
+    
+    .support-ticket-steps {
+      background-color: $gray-50;
+      border-radius: $border-radius-md;
+      padding: $spacing-lg;
+      text-align: left;
+      max-width: 400px;
+      margin: 0 auto;
+      
+      h5 {
+        color: $brand-deep-blue;
+        font-size: 16px;
+        font-weight: $font-weight-medium;
+        margin-bottom: $spacing-md;
+      }
+      
+      ol {
+        margin-bottom: 0;
+        padding-left: $spacing-lg;
+        
+        li {
+          color: $gray-700;
+          margin-bottom: $spacing-sm;
+          line-height: 1.6;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+          
+          code {
+            background-color: $white;
+            color: $brand-medium-blue;
+            padding: 1px 6px;
+            border-radius: $border-radius-xs;
+            font-size: 13px;
+            font-weight: $font-weight-medium;
+          }
+        }
+      }
+    }
+  }
+  
+  .modal-footer {
+    border-top: 1px solid $gray-200;
+    padding: $spacing-lg;
+    
+    .btn {
+      min-width: 100px;
+      
+      &.btn-primary {
+        background: linear-gradient(135deg, $brand-medium-blue 0%, darken($brand-medium-blue, 8%) 100%);
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: $spacing-xs;
+        
+        .glyphicon {
+          font-size: 14px;
+        }
+        
+        &:hover {
+          background: linear-gradient(135deg, lighten($brand-medium-blue, 5%) 0%, $brand-medium-blue 100%);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba($brand-medium-blue, 0.3);
+        }
+      }
+      
+      &.btn-secondary {
+        background: $gray-200;
+        border: none;
+        color: $gray-700;
+        
+        &:hover {
+          background: $gray-300;
+          color: $gray-800;
+        }
+      }
+    }
+  }
+}
+
+// Modal backdrop
+.modal-backdrop {
+  background-color: rgba($brand-deep-blue, 0.5);
+}
+
+// Center modal vertically
+.modal-dialog-centered {
+  min-height: calc(100% - 1rem);
+  
+  &::before {
+    height: calc(100vh - 1rem);
+  }
+}
+
+// Animate modal entrance
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease-out;
+  transform: scale(0.9);
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
+}

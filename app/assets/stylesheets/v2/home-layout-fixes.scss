@@ -1,0 +1,226 @@
+@import 'variables';
+
+// 1. Fix property selector positioning - in the header area
+#headerrow {
+  position: relative;
+  
+  #propertyselection--container {
+    position: absolute !important;
+    top: 50% !important;
+    right: $spacing-lg !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+    z-index: 10; // Within header context
+    
+    // Mobile adjustments
+    @media (max-width: 767px) {
+      right: $spacing-sm !important;
+      
+      #propertyselection--selector {
+        min-width: 120px !important;
+        max-width: 180px !important;
+        font-size: 13px !important;
+        height: 30px !important;
+        padding: 4px 24px 4px 6px !important;
+      }
+    }
+    
+    // Ensure it doesn't get pushed down
+    .row {
+      margin: 0;
+    }
+    
+    .col-md-6 {
+      width: auto !important;
+      padding: 0;
+    }
+    
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Remove property selector from viewcontent
+#viewcontent > #propertyselection--container {
+  display: none !important;
+}
+
+// 2. Center notification toggle buttons under profile
+.sidebar--account-controls {
+  text-align: center !important;
+  
+  .notification_setting_toggles {
+    text-align: center !important;
+    display: flex;
+    justify-content: center;
+    gap: $spacing-xs;
+    padding: 0 $spacing-md;
+    margin-bottom: $spacing-md;
+  }
+  
+  // Ensure the profile name is centered
+  .sidebar--account-controls--username {
+    text-align: center !important;
+    width: 100%;
+    margin-bottom: $spacing-sm;
+    display: block;
+  }
+  
+  // Center the entire profile section
+  > div {
+    text-align: center !important;
+  }
+  
+  // Center icons/buttons
+  a {
+    display: inline-flex !important;
+    justify-content: center !important;
+  }
+}
+
+// 3. Reduce lead card height and improve proportions
+.lead_card {
+  min-height: 90px !important; // Reduced from 120px
+  padding: $spacing-lg $spacing-md !important; // Reduced padding
+  max-width: 100% !important; // Prevent overflow
+  box-sizing: border-box !important;
+  
+  @media (max-width: 576px) {
+    min-height: 80px !important; // Even smaller on mobile
+    padding: $spacing-md $spacing-sm !important;
+  }
+  
+  // Adjust font sizes for better proportions
+  .lead {
+    font-size: 16px !important; // Reduced from 18px
+    margin-bottom: $spacing-xs !important;
+    
+    a {
+      font-size: 16px !important;
+    }
+  }
+  
+  .lead_property_name {
+    font-size: 13px !important;
+  }
+  
+  .lead_created_time {
+    font-size: 12px !important;
+  }
+}
+
+// Table layout moved to lead-layout-cleanup.scss for better organization
+
+// Hover animations moved to lead-hover-fix.scss for better organization
+
+// 5. Reduce right margin/padding of main content
+#viewcontent {
+  @media (min-width: 992px) {
+    padding-right: $spacing-xl !important; // Reduced from $spacing-2xl
+    max-width: 1400px; // Add max width for very wide screens
+    margin-right: auto;
+  }
+  
+  @media (min-width: 768px) and (max-width: 991px) {
+    padding-right: $spacing-lg !important;
+  }
+}
+
+// Person icon and claim button styles moved to lead-card-redesign.scss
+
+// 7. Fix card width on mobile devices
+@media (max-width: 767px) {
+  .lead_listing {
+    // Stack layout on mobile
+    td {
+      display: block !important;
+      width: 100% !important;
+      padding: 0 !important;
+      
+      &:first-child {
+        display: none !important; // Hide person icon on mobile
+      }
+      
+      &.dashboard_item_date {
+        margin-bottom: $spacing-sm;
+        text-align: left !important;
+        
+        .btn {
+          width: 100% !important;
+          max-width: none !important;
+        }
+      }
+    }
+  }
+  
+  .lead_card {
+    width: 100% !important;
+    margin-bottom: $spacing-md !important;
+  }
+}
+
+// Additional improvements for visual appeal
+.dashboard-section {
+  // Prevent section hover from affecting lead cards
+  &:hover {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  }
+}
+
+// Fix duplicate or 'Duplicate?' link styling
+.lead_card a[href*="duplicate"] {
+  color: $warning !important;
+  font-size: 12px !important;
+  font-weight: $font-weight-medium;
+  margin-left: $spacing-sm;
+  
+  &:hover {
+    color: darken($warning, 10%) !important;
+  }
+}
+
+// Ensure proper spacing for lead count and assign button
+.dashboard-section {
+  h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    
+    .lead-count {
+      font-size: 18px;
+      font-weight: $font-weight-regular;
+      color: $gray-600;
+      margin-left: auto;
+    }
+    
+    .btn-xs {
+      margin-left: 0 !important;
+    }
+  }
+}
+
+// Fix any remaining mobile layout issues
+@media (max-width: 576px) {
+  #viewcontent {
+    padding: $spacing-sm !important;
+  }
+  
+  .dashboard-section {
+    padding: $spacing-md !important;
+    margin-bottom: $spacing-md !important;
+    
+    h3 {
+      font-size: 20px !important;
+      padding-bottom: $spacing-md !important;
+      
+      .glyphicon {
+        font-size: 14px !important;
+        padding: 6px !important;
+      }
+    }
+  }
+}

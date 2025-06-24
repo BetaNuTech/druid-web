@@ -1,3 +1,6 @@
 $(document).on('turbolinks:load', function() {
-  $('[data-toggle="tooltip"]').tooltip({ boundary: 'window' });
+  $('[data-toggle="tooltip"]').tooltip({ 
+    boundary: 'window',
+    container: 'body'
+  });
 });

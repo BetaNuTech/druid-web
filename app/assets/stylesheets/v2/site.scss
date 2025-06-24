@@ -1,0 +1,254 @@
+@import 'variables';
+
+// DEBUG
+#bluesky_version::after {
+  content: "-ui2"
+}
+
+// Debug select text visibility
+select {
+  color: $gray-700 !important;
+  -webkit-text-fill-color: $gray-700 !important;
+}
+
+// Base Typography
+body {
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+  color: $gray-800; // Darker for better readability
+  background-color: $content-bg;
+}
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  color: $brand-deep-blue;
+  margin-top: 0;
+  margin-bottom: $spacing-md;
+}
+
+h1 {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+}
+
+h2 {
+  font-size: $font-size-xl;
+}
+
+h3 {
+  font-size: $font-size-lg;
+}
+
+h4 {
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+}
+
+// Links
+a {
+  color: $primary;
+  text-decoration: none;
+  transition: $transition-base;
+  
+  &:hover {
+    color: darken($primary, 10%);
+    text-decoration: underline;
+  }
+}
+
+// Error Styling
+#error_explanation h2 {
+  color: $danger;
+}
+
+// Table Styles
+table.table {
+  margin-bottom: 0;
+  background-color: transparent;
+  border-collapse: separate;
+  border-spacing: 0;
+  
+  thead {
+    th {
+      background: $white;
+      border-bottom: 2px solid $gray-200;
+      color: $gray-700;
+      font-weight: $font-weight-medium;
+      padding: $spacing-md $spacing-lg;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.6px;
+      position: relative;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      
+      // Clean underline on hover
+      &:hover {
+        color: $brand-medium-blue;
+        border-bottom-color: $brand-light-blue;
+      }
+      
+      &:first-child {
+        border-top-left-radius: $border-radius-md;
+      }
+      
+      &:last-child {
+        border-top-right-radius: $border-radius-md;
+      }
+    }
+  }
+  
+  tbody {
+    tr {
+      background-color: transparent !important;
+      
+      &:hover {
+        background-color: transparent !important;
+      }
+    }
+    
+    td {
+      padding: $spacing-md $spacing-lg;
+      vertical-align: middle;
+      border-top: 1px solid rgba($gray-200, 0.5);
+      background-color: transparent !important;
+      transition: all 0.2s ease;
+      
+      &:first-child {
+        border-left: 3px solid transparent;
+      }
+    }
+  }
+}
+
+// Remove Bootstrap table striping globally for v2
+.table-striped > tbody > tr {
+  &:nth-of-type(odd),
+  &:nth-of-type(even) {
+    background-color: transparent !important;
+  }
+}
+
+// Remove hover effect from table rows
+.table-hover > tbody > tr:hover {
+  background-color: transparent !important;
+}
+
+td.first-column {
+  font-size: 1.2em;
+  font-weight: $font-weight-medium;
+}
+
+// Utility Classes
+.nowrap {
+  white-space: nowrap;
+}
+
+// Definition Lists
+dt {
+  font-size: 1.1em;
+  font-weight: $font-weight-medium;
+  color: $brand-deep-blue;
+  margin-bottom: $spacing-xs;
+}
+
+dd {
+  padding-left: $spacing-lg;
+  margin-bottom: $spacing-md;
+}
+
+// Pagination
+.pagination_container {
+  padding: $spacing-md;
+  margin: $spacing-lg auto;
+}
+
+// Main Content Area
+#viewcontent {
+  padding: $spacing-xl;
+  transition: $transition-base;
+  background-color: $content-bg;
+  min-height: calc(100vh - #{$header-height});
+  position: relative;
+  box-sizing: border-box;
+  
+  // Add space at top for absolute positioned elements
+  @media (min-width: 768px) {
+    padding-top: calc(#{$spacing-xl} + 50px); // Extra space for property selector
+  }
+}
+
+@media (max-width: 991px) {
+  #viewcontent {
+    margin-left: 0;
+    padding: $spacing-lg;
+  }
+}
+
+@media (max-width: 767px) {
+  #viewcontent {
+    padding: $spacing-md;
+  }
+}
+
+@media (min-width: 992px) {
+  #viewcontent {
+    margin-left: $sidebar-width;
+    padding: $spacing-xl;
+  }
+}
+
+// Content sections
+.content-section {
+  background-color: $white;
+  border-radius: $border-radius-md;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-sm;
+}
+
+// Lead Text
+.lead {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+}
+
+// Small Text
+small, .small {
+  font-size: $font-size-sm;
+}
+
+// Strong/Bold
+strong, b {
+  font-weight: $font-weight-bold;
+}
+
+// Emphasis
+em, i {
+  font-style: italic;
+}
+
+// Smooth font rendering
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Ensure glyphicons work properly in v2
+.glyphicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
