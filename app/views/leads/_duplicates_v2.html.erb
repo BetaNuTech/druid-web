@@ -1,0 +1,118 @@
+<% property = nil unless defined?(property) %>
+<% duplicate_groups = duplicates.groups_annotated(property: property) %>
+
+<div class="duplicates-list">
+  <% duplicate_groups.each_with_index do |leads, group_index| %>
+    <% next unless leads.size > 0 %>
+    <div class="duplicate-group" data-group-id="group-<%= group_index %>">
+      <div class="group-header">
+        <button type="button" class="group-toggle-btn" data-toggle="collapse" data-target="#duplicate-group-<%= group_index %>">
+          <%= glyph(:chevron_right) %>
+          <span class="group-count"><%= leads.count %> leads</span>
+        </button>
+      </div>
+      
+      <div class="collapse" id="duplicate-group-<%= group_index %>">
+        <div class="group-content">
+          <% leads.each_with_index do |lead_record, index| %>
+            <% lead = lead_record[:record] %>
+            <div class="duplicate-card <%= index == 0 ? 'primary-lead' : 'secondary-lead' %> <%= lead == @lead ? 'current-lead' : '' %> <%= lead != @lead ? 'clickable' : '' %>" <%= lead != @lead ? "data-lead-url='#{lead_path(lead)}'" : '' %>>
+              <div class="duplicate-header">
+                <div class="lead-info">
+                  <div class="lead-avatar">
+                    <%= lead.name.split(' ').map(&:first).join.upcase[0..1] %>
+                  </div>
+                  <div class="lead-details">
+                    <h4 class="lead-name">
+                      <%= lead.name %>
+                      <% if lead == @lead %>
+                        <span class="current-badge">Current Lead</span>
+                      <% end %>
+                    </h4>
+                    <div class="lead-meta">
+                      <span class="lead-state state-<%= lead.state %>">
+                        <%= glyph(:record) %> <%= lead.state.humanize %>
+                      </span>
+                      <span class="lead-created">
+                        <%= glyph(:calendar) %> <%= short_date(lead.created_at) %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="duplicate-actions">
+                  <% if lead != @lead && policy(lead).disqualify? %>
+                    <%= link_to trigger_state_event_lead_path(id: lead.id, eventid: 'disqualify', format: :js),
+                        method: :post,
+                        remote: true,
+                        class: 'btn btn-sm btn-warning',
+                        data: { confirm: "Are you sure you want to disqualify this lead?" } do %>
+                      <%= glyph(:remove) %> Disqualify
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+              
+              <div class="duplicate-body">
+                <div class="duplicate-fields">
+                  <div class="field-item <%= lead_record[:flags][:email] ? 'match-highlight' : '' %>">
+                    <span class="field-icon"><%= glyph(:envelope) %></span>
+                    <div class="field-content">
+                      <span class="field-label">Email</span>
+                      <span class="field-value"><%= lead.email || 'Not provided' %></span>
+                    </div>
+                  </div>
+                  
+                  <div class="field-item <%= lead_record[:flags][:phone] ? 'match-highlight' : '' %>">
+                    <span class="field-icon"><%= glyph(:phone) %></span>
+                    <div class="field-content">
+                      <span class="field-label">Phone</span>
+                      <span class="field-value">
+                        <%= [lead.phone1, lead.phone2].compact.uniq.join(', ').presence || 'Not provided' %>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div class="field-item">
+                    <span class="field-icon"><%= glyph(:home) %></span>
+                    <div class="field-content">
+                      <span class="field-label">Property</span>
+                      <span class="field-value"><%= lead.property.try(:name) || 'None' %></span>
+                    </div>
+                  </div>
+                  
+                  <div class="field-item">
+                    <span class="field-icon"><%= glyph(:filter) %></span>
+                    <div class="field-content">
+                      <span class="field-label">Source</span>
+                      <span class="field-value"><%= lead.referral || 'Unknown' %></span>
+                    </div>
+                  </div>
+                  
+                  <div class="field-item <%= lead_record[:flags][:remoteid] ? 'match-highlight' : '' %>">
+                    <span class="field-icon"><%= glyph(:barcode) %></span>
+                    <div class="field-content">
+                      <span class="field-label">Remote ID</span>
+                      <span class="field-value"><%= lead.remoteid || 'None' %></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <% if lead_record[:flags].values.any? %>
+                  <div class="match-indicators">
+                    <span class="match-label">Matches on:</span>
+                    <% lead_record[:flags].each do |field, matches| %>
+                      <% if matches %>
+                        <span class="match-badge"><%= field.to_s.humanize %></span>
+                      <% end %>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

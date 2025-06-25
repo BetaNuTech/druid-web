@@ -1,25 +1,37 @@
-<div class="row scheduled_actions" id="scheduled_actions">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-2">
-        <h2>Tasks</h2>
-      </div>
-      <div class="col-md-3">
-        <p>
-          <%= link_to('Schedule a Task', new_scheduled_action_path(scheduled_action: {target_id: lead.id, target_type: 'Lead'}), {class: 'btn btn-xs btn-primary'}) %>
-          <%= link_to('Show All', '#', {id: 'lead_task_toggle_completed', class: 'btn btn-xs btn-default'}) %>
-        </p>
-      </div>
+<div class="tasks-section" id="scheduled_actions">
+  <div class="section-header">
+    <h2><%= glyph(:check) %> Tasks</h2>
+    <div class="header-actions">
+      <%= link_to new_scheduled_action_path(scheduled_action: {target_id: lead.id, target_type: 'Lead'}), class: 'btn btn-primary' do %>
+        <%= glyph(:plus) %> Schedule a Task
+      <% end %>
+      <%= link_to '#', id: 'lead_task_toggle_completed', class: 'btn btn-secondary' do %>
+        <span class="toggle-text">Show Completed</span>
+      <% end %>
     </div>
   </div>
-  <table class="table" id="lead_task_table">
-    <thead></thead>
-    <tbody>
-      <% if lead.scheduled_actions.incomplete.empty? %>
-        <tr><td><p class="lead">No Pending Tasks</p></td></tr>
+  <div class="tasks-container">
+    <% if lead.scheduled_actions.incomplete.empty? %>
+      <div class="empty-tasks">
+        <span class="empty-icon"><%= glyph(:ok) %></span>
+        <p>No pending tasks</p>
+        <p class="text-muted">All tasks have been completed</p>
+      </div>
+    <% else %>
+      <div class="tasks-list pending-tasks">
+        <%= render collection: lead.scheduled_actions.incomplete.sorted_by_due_asc, partial: 'scheduled_action' %>
+      </div>
+    <% end %>
+    
+    <div class="tasks-list completed-tasks" style="display: none;">
+      <% if lead.scheduled_actions.complete.any? %>
+        <%= render collection: lead.scheduled_actions.complete.sorted_by_due_asc, partial: 'scheduled_action' %>
+      <% else %>
+        <div class="empty-tasks">
+          <span class="empty-icon"><%= glyph(:inbox) %></span>
+          <p>No completed tasks</p>
+        </div>
       <% end %>
-      <%= render collection: lead.scheduled_actions.incomplete.sorted_by_due_asc, partial: 'scheduled_action' %>
-      <%= render collection: lead.scheduled_actions.complete.sorted_by_due_asc, partial: 'scheduled_action' %>
-    </tbody>
-  </table>
+    </div>
+  </div>
 </div>

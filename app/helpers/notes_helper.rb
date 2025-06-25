@@ -10,7 +10,7 @@ module NotesHelper
   def note_glyph(note)
     glyph_name = case note.classification
                  when 'comment'
-                   :pushpin
+                   :comment
                  when 'system'
                    :info_sign
                  when 'external'

@@ -9,13 +9,80 @@ $(document).on('turbolinks:load', function() {
   });
   $("#lead_show_more_comments_link").on('click', function(e){
     e.preventDefault();
-    $(e.target).hide();
-    $("#more_comments").show();
+    var button = $(this);
+    var moreComments = $("#more_comments");
+    
+    if (moreComments.is(":visible")) {
+      moreComments.slideUp();
+      button.removeClass('showing-more');
+      button.html('<span class="glyphicon glyphicon-chevron-down"></span> Show ' + moreComments.find('.comment-card').length + ' More Comments');
+    } else {
+      moreComments.slideDown();
+      button.addClass('showing-more');
+      button.html('<span class="glyphicon glyphicon-chevron-up"></span> Hide Comments');
+    }
   });
   $("#lead_task_toggle_completed").on('click', function(e){
     e.preventDefault();
-    $(e.target).hide();
-    $("tr.lead_task_completed").show();
+    var button = $(this);
+    var completedTasks = $(".completed-tasks");
+    var toggleText = button.find('.toggle-text');
+    
+    if (completedTasks.is(":visible")) {
+      completedTasks.slideUp();
+      toggleText.text("Show Completed");
+      button.removeClass('showing-completed');
+    } else {
+      completedTasks.slideDown();
+      toggleText.text("Hide Completed");
+      button.addClass('showing-completed');
+    }
+  });
+
+  // Timeline toggle enhancement
+  $("#timeline_toggle_button").on('shown.bs.collapse', function(e){
+    var button = $(this);
+    button.find('.toggle-text').text("Hide");
+  });
+  
+  $("#timeline_toggle_button").on('hidden.bs.collapse', function(e){
+    var button = $(this);
+    button.find('.toggle-text').text("Show");
+  });
+
+  // Duplicate group toggle enhancement
+  $('.duplicate-group .group-toggle-btn').on('shown.bs.collapse', function(e){
+    $(this).attr('aria-expanded', 'true');
+  });
+  
+  $('.duplicate-group .group-toggle-btn').on('hidden.bs.collapse', function(e){
+    $(this).attr('aria-expanded', 'false');
+  });
+
+  // Clickable duplicate cards
+  $(document).on('click', '.duplicate-card.clickable', function(e){
+    // Don't open if clicking on a button or link
+    if ($(e.target).closest('.btn, a').length) {
+      return;
+    }
+    
+    var url = $(this).data('lead-url');
+    if (url) {
+      window.open(url, '_blank');
+    }
+  });
+
+  // Clickable task cards
+  $(document).on('click', '.task-card.clickable', function(e){
+    // Don't open if clicking on a button or link
+    if ($(e.target).closest('.btn, a, .btn-task-action').length) {
+      return;
+    }
+    
+    var url = $(this).data('task-url');
+    if (url) {
+      window.location.href = url;
+    }
   });
 
   $('#lead_toggle_change_state').on('click', function(e){

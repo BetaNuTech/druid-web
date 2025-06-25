@@ -1,0 +1,81 @@
+<div class="comment-card <%= comment.lead_action.present? ? 'has-action' : '' %>" id="note_<%= comment.id %>">
+  <div class="comment-header">
+    <div class="comment-meta">
+      <div class="comment-author">
+        <div class="author-avatar">
+          <% if comment.user.present? %>
+            <%= comment.user.name.split(' ').map(&:first).join.upcase[0..1] %>
+          <% else %>
+            <span class="glyphicon glyphicon-cog"></span>
+          <% end %>
+        </div>
+        <div class="author-details">
+          <strong class="author-name"><%= comment.user&.name || 'System' %></strong>
+          <div class="comment-timestamp">
+            <%= short_datetime(comment.created_at) %>
+            <% if comment.updated_at > comment.created_at + 1.minute %>
+              <span class="edited-tag" title="Edited <%= short_datetime(comment.updated_at) %>">
+                (edited)
+              </span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="comment-actions">
+      <% if policy(comment).edit? %>
+        <%= link_to edit_note_path(comment), 
+            class: 'btn-action btn-edit', 
+            title: 'Edit Comment',
+            data: { toggle: 'tooltip', placement: 'left' } do %>
+          <%= glyph(:edit) %>
+        <% end %>
+      <% end %>
+      
+      <% if policy(comment).destroy? %>
+        <%= link_to note_path(comment), 
+            method: :delete,
+            data: { 
+              confirm: 'Are you sure you want to delete this comment?',
+              toggle: 'tooltip',
+              placement: 'left'
+            },
+            class: 'btn-action btn-delete',
+            title: 'Delete Comment' do %>
+          <%= glyph(:trash) %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="comment-content">
+    <% if comment.lead_action.present? %>
+      <div class="comment-action-tag">
+        <span class="action-icon"><%= note_glyph(comment) %></span>
+        <span class="action-text"><%= action_and_reason(comment) %></span>
+      </div>
+    <% end %>
+    
+    <div class="comment-text">
+      <%= simple_format(note_content(comment)) %>
+    </div>
+    
+    <% if comment.respond_to?(:messageable) && comment.messageable.present? %>
+      <div class="comment-message-info">
+        <span class="message-type-icon">
+          <% if comment.messageable_type == 'Message' %>
+            <% if comment.messageable.category == 'sms' %>
+              <%= glyph(:phone) %>
+            <% else %>
+              <%= glyph(:envelope) %>
+            <% end %>
+          <% end %>
+        </span>
+        <span class="message-label">
+          <%= comment.messageable_type == 'Message' ? "#{comment.messageable.category.upcase} sent" : comment.messageable_type %>
+        </span>
+      </div>
+    <% end %>
+  </div>
+</div>

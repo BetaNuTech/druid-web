@@ -760,3 +760,108 @@
     }
   }
 }
+
+// Tasks section within dashboard sections
+#dashboard_today {
+  .tasks-section {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid $gray-200;
+    margin-top: $spacing-xl;
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba($warning, 0.05) 0%, rgba($warning, 0.02) 100%);
+      border-bottom: 2px solid rgba($warning, 0.2);
+      margin: -1px -1px 0 -1px;
+      border-radius: 12px 12px 0 0;
+      
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: $gray-900;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        .glyphicon {
+          color: $warning;
+          background: linear-gradient(135deg, darken($warning, 10%) 0%, $warning 100%);
+          padding: 8px;
+          border-radius: 8px;
+          font-size: 16px;
+          color: white;
+          box-shadow: 0 2px 6px rgba($warning, 0.3);
+        }
+        
+        .tasks-count {
+          background: $warning;
+          color: white;
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 600;
+          margin-left: 8px;
+        }
+      }
+      
+      .header-actions {
+        .btn {
+          padding: 8px 16px;
+          font-weight: 500;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+        }
+      }
+    }
+    
+    .tasks-container {
+      padding: 24px;
+      
+      .empty-tasks {
+        text-align: center;
+        padding: 60px 20px;
+        
+        .empty-icon {
+          display: inline-block;
+          width: 64px;
+          height: 64px;
+          background: rgba($success, 0.1);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 32px;
+          color: $success;
+          margin: 0 auto 16px;
+        }
+        
+        p {
+          margin: 0;
+          font-size: 18px;
+          color: $gray-700;
+          font-weight: 600;
+          
+          &.text-muted {
+            font-size: 14px;
+            color: $gray-500;
+            margin-top: 8px;
+            font-weight: normal;
+          }
+        }
+      }
+      
+      .tasks-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+  }
+}

@@ -48,32 +48,38 @@
       </div>
     </div>
 
-    <div class="row tasks-section tasks-today">
+    <div class="row">
       <div class="col-md-12">
-        <div class="tasks-header">
-          <h4 class="tasks-title">
-            <span class="glyphicon glyphicon-time"></span>
-            Tasks Due Today
-            <% if @today_actions.any? %>
-              <span class="tasks-count"><%= @today_actions.count %></span>
-            <% end %>
-          </h4>
-          <% if @today_actions.count > 20 %>
-            <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn-sm btn-primary" %>
-          <% end %>
-        </div>
-        
-        <% if @today_actions.any? %>
-          <div class="task-cards">
-            <%= render collection: @today_actions.limit(20), partial: 'scheduled_action_card', locals: { task_type: 'today' } %>
-          </div>
-        <% else %>
-          <div class="tasks-empty-state">
-            <div class="empty-icon">
-              <%= glyph(:ok) %>
+        <% if @today_actions.any? || true %>
+          <div class="tasks-section">
+            <div class="section-header">
+              <h2>
+                <%= glyph(:time) %>
+                Tasks Due Today
+                <% if @today_actions.any? %>
+                  <span class="tasks-count"><%= @today_actions.count %></span>
+                <% end %>
+              </h2>
+              <% if @today_actions.count > 20 %>
+                <div class="header-actions">
+                  <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn-primary" %>
+                </div>
+              <% end %>
             </div>
-            <div class="empty-title">All caught up!</div>
-            <div class="empty-description">No tasks are due today</div>
+            
+            <div class="tasks-container">
+              <% if @today_actions.any? %>
+                <div class="tasks-list">
+                  <%= render collection: @today_actions.limit(20), partial: 'scheduled_action_card', locals: { task_type: 'today' } %>
+                </div>
+              <% else %>
+                <div class="empty-tasks">
+                  <span class="empty-icon"><%= glyph(:ok) %></span>
+                  <p>All caught up!</p>
+                  <p class="text-muted">No tasks are due today</p>
+                </div>
+              <% end %>
+            </div>
           </div>
         <% end %>
       </div>

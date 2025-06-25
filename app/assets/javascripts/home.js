@@ -15,5 +15,16 @@ $(document).on("turbolinks:click", function(){
 
 $(document).on("turbolinks:load", function(){
   window.disableLoader();
+  
+  // Make task cards clickable
+  $('.task-card[data-task-url]').off('click.taskCard').on('click.taskCard', function(e) {
+    // Don't trigger if clicking on buttons or links
+    if ($(e.target).closest('.task-actions, a, button').length === 0) {
+      var url = $(this).data('task-url');
+      if (url) {
+        window.location.href = url;
+      }
+    }
+  });
 });
 

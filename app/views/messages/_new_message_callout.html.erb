@@ -1,14 +1,32 @@
-<div class="send_new_message_callout">
+<div class="new-message-callout">
   <% if policy(messageable).compose_message? %>
-    <%= form_tag new_message_path, method: :get %>
-    <%= hidden_field_tag('messageable_id', messageable.id) %>
-    <%= hidden_field_tag('messageable_type', messageable.class.name) %>
-    <%= submit_tag "Compose", class: "btn btn-sm btn-primary" %>
-    a new
-    <%= select_message_type_for(messageable) %>
-    Message to <%= messageable.name %>
-    </form>
+    <% available_types = messageable.message_types_available.compact.uniq %>
+    <% available_types.each do |message_type| %>
+      <%= form_tag new_message_path, method: :get, class: 'message-button-form' do %>
+        <%= hidden_field_tag('messageable_id', messageable.id) %>
+        <%= hidden_field_tag('messageable_type', messageable.class.name) %>
+        <%= hidden_field_tag('message_type_id', message_type.id) %>
+        <% if message_type.name.downcase.include?('sms') %>
+          <button type="submit" class="btn btn-message btn-sms">
+            <%= glyph(:phone) %>
+            <span>Send SMS</span>
+          </button>
+        <% elsif message_type.name.downcase.include?('email') %>
+          <button type="submit" class="btn btn-message btn-email">
+            <%= glyph(:envelope) %>
+            <span>Send Email</span>
+          </button>
+        <% else %>
+          <button type="submit" class="btn btn-message btn-default">
+            <%= glyph(:comment) %>
+            <span>Send <%= message_type.name %></span>
+          </button>
+        <% end %>
+      <% end %>
+    <% end %>
   <% else %>
-    <i>To send a message be sure that an email address or cell number is available.</i>
+    <div class="no-message-options">
+      <%= glyph(:info_sign) %> To send a message, ensure an email address or phone number is available.
+    </div>
   <% end %>
 </div>

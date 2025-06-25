@@ -1,0 +1,105 @@
+<div class="message-card <%= message.read? ? '' : 'message-unread' %> <%= message.draft? ? 'message-draft' : '' %> <%= message.incoming? ? 'incoming' : 'outgoing' %>" id="message-<%= message.id %>">
+  <div class="message-header">
+    <div class="message-participants">
+      <div class="message-avatar <%= message.incoming? ? 'incoming' : 'outgoing' %>">
+        <% if message.incoming? %>
+          <%= message.sender_name.split(' ').map(&:first).join.upcase[0..1] %>
+        <% else %>
+          <% if message.user.present? %>
+            <%= message.user.name.split(' ').map(&:first).join.upcase[0..1] %>
+          <% else %>
+            <span class="glyphicon glyphicon-cog"></span>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="message-meta">
+        <div class="participant-info">
+          <span class="participant-label"><%= message.incoming? ? 'From' : 'To' %>:</span>
+          <strong class="participant-name"><%= message.incoming? ? message.sender_name : message.recipient_name %></strong>
+          <% if !message.incoming? && message.user.present? %>
+            <span class="sent-by">sent by <%= message.user.name %></span>
+          <% end %>
+        </div>
+        <div class="message-timestamp">
+          <%= message_type_indicator(message) %>
+          <% if message.draft? %>
+            <span class="draft-label">Draft</span>
+          <% else %>
+            <%= short_datetime(message.delivered_at || message.updated_at) %>
+            <%= message_delivery_indicator_link(message) %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="message-actions">
+      <% if message.draft? %>
+        <% if policy(message).edit? %>
+          <%= link_to edit_message_path(message), 
+              class: 'btn-action btn-edit', 
+              title: 'Edit Draft',
+              data: { toggle: 'tooltip', placement: 'left' } do %>
+            <%= glyph(:edit) %>
+          <% end %>
+        <% end %>
+        <%= link_to deliver_message_path(message), 
+            method: :post,
+            class: 'btn btn-primary btn-sm' do %>
+          <%= glyph(:send) %> Send Now
+        <% end %>
+      <% end %>
+      
+      <% if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
+        <%= link_to lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), 
+            class: 'btn btn-sm btn-primary mark-as-read-btn',
+            id: "message-read-button-#{message.id}",
+            remote: true, 
+            method: :post do %>
+          <%= glyph(:envelope_open) %> Mark as Read
+        <% end %>
+      <% end %>
+      
+      <% if policy(message).destroy? %>
+        <%= link_to message_path(message), 
+            method: :delete,
+            data: { 
+              confirm: message.draft? ? 'Discard this draft?' : 'Delete this message?',
+              toggle: 'tooltip',
+              placement: 'left'
+            },
+            class: 'btn-action btn-delete',
+            title: 'Delete Message' do %>
+          <%= glyph(:trash) %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="message-content">
+    <% if message.subject.present? %>
+      <div class="message-subject">
+        <%= link_to message.subject, message_path(message) %>
+      </div>
+    <% end %>
+    
+    <div class="message-body">
+      <% if message.draft? %>
+        <%= link_to edit_message_path(message) do %>
+          <%= message_body_preview(message) %>
+        <% end %>
+      <% else %>
+        <%= link_to message_path(message) do %>
+          <%= message_body_preview(message) %>
+        <% end %>
+      <% end %>
+    </div>
+    
+    <% if !message.draft? %>
+      <div class="message-footer">
+        <%= link_to message_path(message), class: 'view-full-message' do %>
+          View full message <%= glyph(:chevron_right) %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

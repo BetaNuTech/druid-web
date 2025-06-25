@@ -1,0 +1,35 @@
+<div class="timeline-card" id="timeline_<%= activity.id %>">
+  <div class="timeline-content">
+    <div class="timeline-header">
+      <div class="timeline-meta">
+        <% if activity.lead_action.present? %>
+          <span class="action-type">
+            <%= action_and_reason(activity) %>
+          </span>
+        <% end %>
+        <span class="timeline-timestamp">
+          <%= short_datetime(activity.created_at) %>
+        </span>
+        <% if activity.user.present? %>
+          <span class="timeline-user">
+            by <%= activity.user.name %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+    
+    <% if note_content(activity).present? %>
+      <div class="timeline-body">
+        <%= simple_format(note_content(activity)) %>
+      </div>
+    <% end %>
+    
+    <% if activity.respond_to?(:messageable) && activity.messageable.present? %>
+      <div class="timeline-related">
+        <span class="related-label">
+          <%= activity.messageable_type == 'Message' ? "#{activity.messageable.category.upcase} message" : activity.messageable_type %>
+        </span>
+      </div>
+    <% end %>
+  </div>
+</div>

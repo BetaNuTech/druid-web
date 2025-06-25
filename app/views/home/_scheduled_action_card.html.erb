@@ -1,4 +1,4 @@
-<div class="task-card task-<%= task_type %>">
+<div class="task-card task-<%= task_type %>" data-task-url="<%= completion_form_scheduled_action_path(scheduled_action_card) %>" style="cursor: pointer;">
   <div class="task-card-content">
     <div class="task-icon task-icon-<%= scheduled_action_card.lead_action.try(:glyph) || 'document' %>">
       <%= glyph(scheduled_action_card.lead_action.try(:glyph) || :list_alt) %>
@@ -28,7 +28,7 @@
       <% end %>
     </div>
     
-    <div class="task-actions">
+    <div class="task-actions" style="opacity: 1;">
       <% if policy(scheduled_action_card).complete? %>
         <%= link_to(complete_scheduled_action_path({ id: scheduled_action_card.id, event: 'complete', message: 'Quick complete task from dashboard', return: true }), 
                     method: :post, 

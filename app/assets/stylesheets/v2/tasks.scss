@@ -1,6 +1,6 @@
 @import 'variables';
 
-// Tasks Section Styling
+// Tasks Section Styling - Used on both Home and Lead pages
 .tasks-section {
   margin-top: $spacing-xl;
   
@@ -422,6 +422,232 @@
   }
 }
 
+// Lead Page Task Styling
+.scheduled_actions {
+  .task-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-md;
+    border-bottom: 2px solid $gray-100;
+    
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: $gray-900;
+      margin: 0;
+    }
+    
+    .task-actions {
+      display: flex;
+      gap: $spacing-sm;
+    }
+  }
+  
+  .tasks-container {
+    .no-tasks-message {
+      text-align: center;
+      padding: $spacing-xl * 2;
+      background: $gray-50;
+      border-radius: $border-radius-lg;
+      
+      .glyphicon {
+        font-size: 48px;
+        color: $success;
+        display: block;
+        margin-bottom: $spacing-md;
+      }
+      
+      p {
+        font-size: $font-size-lg;
+        color: $gray-600;
+        margin: 0;
+      }
+    }
+    
+    .task-cards {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-md;
+    }
+  }
+  
+  // Task card specific to lead page
+  .task-card {
+    &:hover {
+      .task-card-header .task-actions {
+        opacity: 1 !important;
+      }
+    }
+    .task-card-header {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      margin-bottom: $spacing-sm;
+      
+      .task-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba($primary, 0.1);
+        border-radius: $border-radius-lg;
+        color: $primary;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      
+      .task-type {
+        flex: 1;
+        font-weight: $font-weight-medium;
+        color: $gray-800;
+      }
+      
+      .task-actions {
+        display: flex;
+        gap: $spacing-xs;
+        opacity: 0 !important;
+        transition: opacity 0.2s ease;
+        
+        .btn-task-action {
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: $white;
+          border: 1px solid $gray-300;
+          border-radius: $border-radius-md;
+          color: $gray-600;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          }
+          
+          // Show/View button
+          &.btn-show {
+            &:hover {
+              background: rgba($info, 0.1);
+              border-color: $info;
+              color: $info;
+            }
+          }
+          
+          // Edit button
+          &.btn-edit {
+            &:hover {
+              background: rgba($primary, 0.1);
+              border-color: $primary;
+              color: $primary;
+            }
+          }
+          
+          // Complete button
+          &.btn-complete {
+            background: rgba($success, 0.1);
+            border-color: $success;
+            color: $success;
+            
+            &:hover {
+              background: $success;
+              color: $white;
+              transform: scale(1.05);
+              box-shadow: 0 2px 8px rgba($success, 0.3);
+            }
+          }
+          
+          .glyphicon {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+    
+    .task-card-body {
+      padding-left: 56px; // Align with content after icon
+      
+      .task-description {
+        margin-bottom: $spacing-sm;
+        color: $gray-700;
+      }
+      
+      .task-target {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xs;
+        color: $gray-600;
+        font-size: $font-size-sm;
+        
+        .glyphicon {
+          color: $gray-500;
+        }
+        
+        a {
+          color: $primary;
+          text-decoration: none;
+          
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+    
+    .task-card-footer {
+      padding-left: 56px;
+      margin-top: $spacing-sm;
+      
+      .task-date {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xs;
+        font-size: $font-size-sm;
+        color: $gray-600;
+        
+        .glyphicon {
+          color: $gray-500;
+        }
+        
+        &.task-overdue {
+          color: $danger;
+          font-weight: $font-weight-medium;
+          
+          .glyphicon {
+            color: $danger;
+          }
+        }
+      }
+    }
+    
+    // Completed task styling
+    &.task-completed {
+      opacity: 0.7;
+      
+      .task-card-header .task-icon {
+        background: rgba($gray-500, 0.1);
+        color: $gray-500;
+      }
+      
+      .task-type {
+        text-decoration: line-through;
+        color: $gray-600;
+      }
+    }
+  }
+}
+
+// Toggle completed tasks functionality
+.completed-tasks {
+  margin-top: $spacing-lg;
+  padding-top: $spacing-lg;
+  border-top: 2px solid $gray-100;
+}
+
 // Responsive
 @media (max-width: 767px) {
   .task-card-content {
@@ -438,6 +664,23 @@
       width: 100%;
       justify-content: flex-end;
       margin-top: $spacing-sm;
+    }
+  }
+  
+  // Lead page specific mobile styles
+  .scheduled_actions {
+    .task-actions {
+      opacity: 1 !important; // Always visible on mobile
+    }
+    
+    .task-card-header {
+      flex-wrap: wrap;
+      
+      .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: $spacing-sm;
+      }
     }
   }
   

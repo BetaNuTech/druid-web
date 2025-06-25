@@ -39,21 +39,26 @@ module MessagesHelper
   end
 
   def message_delivery_indicator(message)
-    if message.failed?
-      delivery_status_class = 'btn-danger'
-      title = 'Delivery Failure: ' + ( message.deliveries.last&.log || '' )
-    else
-      if message.draft?
-        delivery_status_class = 'btn-default'
-        title = 'Draft'
-      else
-        delivery_status_class = 'btn-success'
-        title = 'Sent'
+    if message.incoming?
+      content_tag(:span, class: "message-direction-indicator incoming-indicator", title: "Incoming Message") do
+        (content_tag(:span, "", class: "glyphicon glyphicon-arrow-down") + 
+         content_tag(:span, "Incoming", class: "direction-label")).html_safe
       end
-    end
-    container_class = 'btn btn-xs ' + delivery_status_class
-    content_tag(:span, class: container_class, title: title) do
-      message.incoming? ? glyph(:share_alt_left) : glyph(:send)
+    elsif message.draft?
+      content_tag(:span, class: "message-direction-indicator draft-indicator", title: "Draft Message") do
+        (content_tag(:span, "", class: "glyphicon glyphicon-edit") + 
+         content_tag(:span, "Draft", class: "direction-label")).html_safe
+      end
+    elsif message.failed?
+      content_tag(:span, class: "message-direction-indicator failed-indicator", title: "Failed to Send: #{message.deliveries.last&.log || ''}") do
+        (content_tag(:span, "", class: "glyphicon glyphicon-exclamation-sign") + 
+         content_tag(:span, "Failed", class: "direction-label")).html_safe
+      end
+    else
+      content_tag(:span, class: "message-direction-indicator outgoing-indicator", title: "Outgoing Message") do
+        (content_tag(:span, "", class: "glyphicon glyphicon-arrow-up") + 
+         content_tag(:span, "Outgoing", class: "direction-label")).html_safe
+      end
     end
   end
 
@@ -70,21 +75,20 @@ module MessagesHelper
   end
 
   def message_type_indicator(message)
-    container_class = "btn btn-xs btn-default"
-    content_tag(:span, class: container_class) do
-      case message
-        when -> (m) { m.sms? }
-          tooltip_block('message-type_indicator-phone') do
-            glyph(:phone)
-          end
-        when -> (m) { m.email? }
-          tooltip_block('message-type_indicator-email') do
-            glyph(:envelope)
-          end
-        else
-          tooltip_block('message-type_indicator-other') do
-            glyph(:envelope)
-          end
+    if message.sms?
+      content_tag(:span, class: "message-type-indicator sms-indicator", title: "SMS Message") do
+        (content_tag(:span, "", class: "glyphicon glyphicon-phone") + 
+         content_tag(:span, "SMS", class: "message-type-label")).html_safe
+      end
+    elsif message.email?
+      content_tag(:span, class: "message-type-indicator email-indicator", title: "Email Message") do
+        (content_tag(:span, "", class: "glyphicon glyphicon-envelope") + 
+         content_tag(:span, "Email", class: "message-type-label")).html_safe
+      end
+    else
+      content_tag(:span, class: "message-type-indicator other-indicator", title: "Message") do
+        (content_tag(:span, "", class: "glyphicon glyphicon-comment") + 
+         content_tag(:span, "Message", class: "message-type-label")).html_safe
       end
     end
   end

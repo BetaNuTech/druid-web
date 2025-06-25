@@ -1,59 +1,125 @@
-<div class="row lead_roommates">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-2">
-        <h2>Roommates</h2>
-      </div>
-      <div class="col-md-2">
-        <%= tooltip_block('roommate-add-link') do %>
-          <%= link_to('Add', new_lead_roommate_path(@lead), {class: 'btn btn-xs btn-primary'}) %>
+<div class="roommates-section">
+  <div class="section-header">
+    <h2><%= glyph(:home) %> Roommates</h2>
+    <% if policy(Roommate.new(lead: @lead)).create? %>
+      <%= link_to new_lead_roommate_path(@lead), class: 'btn btn-primary' do %>
+        <%= glyph(:plus) %> Add Roommate
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="roommates-container">
+    <% if @lead.roommates.any? %>
+      <div class="roommates-list">
+        <% @lead.roommates.each do |roommate| %>
+          <div class="roommate-card">
+            <div class="roommate-main">
+              <div class="roommate-identity">
+                <div class="roommate-avatar">
+                  <%= glyph(:user) %>
+                </div>
+                <div class="roommate-info">
+                  <h4 class="roommate-name">
+                    <%= link_to roommate.name, edit_lead_roommate_path(@lead, roommate) %>
+                  </h4>
+                  <div class="roommate-status">
+                    <% if roommate.occupancy.present? %>
+                      <span class="status-badge occupancy-<%= roommate.occupancy.downcase %>">
+                        <%= roommate.occupancy.capitalize %>
+                      </span>
+                    <% end %>
+                    <% if roommate.relationship.present? %>
+                      <span class="status-badge relationship">
+                        <%= roommate.relationship.capitalize %>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="roommate-actions">
+                <% if policy(roommate).edit? %>
+                  <%= link_to edit_lead_roommate_path(@lead, roommate), 
+                      class: 'btn-action btn-edit', 
+                      title: 'Edit Roommate',
+                      data: { toggle: 'tooltip', placement: 'left' } do %>
+                    <%= glyph(:edit) %>
+                  <% end %>
+                <% end %>
+                
+                <% if policy(roommate).destroy? %>
+                  <%= link_to lead_roommate_path(@lead, roommate), 
+                      method: :delete,
+                      data: { 
+                        confirm: 'Are you sure you want to remove this roommate?',
+                        toggle: 'tooltip',
+                        placement: 'left'
+                      },
+                      class: 'btn-action btn-delete',
+                      title: 'Remove Roommate' do %>
+                    <%= glyph(:trash) %>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            
+            <div class="roommate-details">
+              <div class="roommate-contact">
+                <% if roommate.phone.present? %>
+                  <div class="contact-item <%= 'contact-allowed' if roommate.sms_allowed %>">
+                    <span class="contact-icon"><%= glyph(:phone) %></span>
+                    <div class="contact-info">
+                      <span class="contact-value"><%= roommate.phone %></span>
+                      <% if roommate.sms_allowed %>
+                        <span class="contact-badge allowed">SMS OK</span>
+                      <% else %>
+                        <span class="contact-badge not-allowed">No SMS</span>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+                
+                <% if roommate.email.present? %>
+                  <div class="contact-item <%= 'contact-allowed' if roommate.email_allowed %>">
+                    <span class="contact-icon"><%= glyph(:envelope) %></span>
+                    <div class="contact-info">
+                      <span class="contact-value"><%= roommate.email %></span>
+                      <% if roommate.email_allowed %>
+                        <span class="contact-badge allowed">Email OK</span>
+                      <% else %>
+                        <span class="contact-badge not-allowed">No Email</span>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+                
+                <% if roommate.phone.blank? && roommate.email.blank? %>
+                  <div class="no-contact">
+                    <span class="text-muted">No contact information</span>
+                  </div>
+                <% end %>
+              </div>
+              
+              <% if roommate.notes.present? %>
+                <div class="roommate-notes">
+                  <div class="notes-label">
+                    <%= glyph(:comment) %> Notes
+                  </div>
+                  <div class="notes-content">
+                    <%= roommate.notes %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
         <% end %>
       </div>
-    </div>
-    <% if @lead.roommates.any? %>
-      <table class="table">
-        <thead>
-          <th>Name</th>
-          <th>Occupancy</th>
-          <th>Contact</th>
-          <th>Notes</th>
-          <th></th>
-        </thead>
-        <tbody>
-          <% @lead.roommates.each do |roommate| %>
-            <tr>
-              <td width="30%"><%= link_to(roommate.name, edit_lead_roommate_path(lead, roommate)) %></td>
-              <td width="10%">
-                <%= roommate.occupancy&.capitalize %><br/>
-                <%= roommate.relationship&.capitalize %><br/>
-              </td>
-              <td width="20%">
-                <% if roommate.phone.present? %>
-                  <span class="nowrap roommate_sms_<%= roommate.sms_allowed %>">
-                    <%= glyph(:phone) %>
-                    <%= roommate.phone || '-' %>
-                  </span><br/>
-                <% end %>
-                <% if roommate.email.present? %>
-                  <span class="nowrap roommate_email_<%= roommate.email_allowed %>">
-                    <%= glyph(:email) %>
-                    <%= roommate.email || '-' %>
-                  </span>
-                <% end %>
-              </td>
-              <td width="30%">
-                <%= roommate.notes %>
-              </td>
-              <td width="10%">
-                <%= model_link_with_tooltip([ lead, roommate ], :edit) %>
-                <%= model_link_with_tooltip([ lead, roommate ], :destroy) %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
     <% else %>
-      <em>None</em>
+      <div class="empty-roommates">
+        <span class="empty-icon"><%= glyph(:home) %></span>
+        <p>No roommates added</p>
+        <p class="text-muted">Add roommates to track additional occupants</p>
+      </div>
     <% end %>
   </div>
 </div>

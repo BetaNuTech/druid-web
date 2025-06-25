@@ -1,27 +1,25 @@
-<div class="timeline">
-  <div class="row">
-    <div class="col-md-2">
-      <h2>
-        Timeline
-        <small>
-          <a href="#lead_timeline" data-toggle="collapse" aria-expanded="false" aria-controls="lead_timeline" class="btn btn-xs btn-info">More...</a>
-        </small>
-      </h2>
-    </div>
+<div class="timeline-section">
+  <div class="section-header">
+    <h2><%= glyph(:time) %> Timeline</h2>
+    <button type="button" id="timeline_toggle_button" class="btn btn-primary" data-toggle="collapse" data-target="#lead_timeline" aria-expanded="false" aria-controls="lead_timeline">
+      <span class="toggle-text">Timeline</span>
+      <%= glyph(:chevron_down) %>
+    </button>
   </div>
-  <div class="row collapse" id="lead_timeline">
-    <div class="col-md-12">
-      <div>
-        <% if comments.empty? %>
-          <p class="lead" >
-            None
-          </p>
-        <% else %>
-          <div>
-            <%= render partial: "notes/note", collection: comments.order(created_at: 'desc').limit(100), locals: {icons: false}  %>
-          </div>
+  
+  <div class="timeline-container collapse" id="lead_timeline">
+    <% if comments.empty? %>
+      <div class="empty-timeline">
+        <span class="empty-icon"><%= glyph(:time) %></span>
+        <p>No timeline events yet</p>
+        <p class="text-muted">Activity will be tracked here</p>
+      </div>
+    <% else %>
+      <div class="timeline-list">
+        <% comments.order(created_at: 'desc').limit(100).each do |activity| %>
+          <%= render partial: "timeline_card", locals: { activity: activity } %>
         <% end %>
       </div>
-    </div>
+    <% end %>
   </div>
 </div>

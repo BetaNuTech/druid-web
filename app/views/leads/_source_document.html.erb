@@ -1,23 +1,54 @@
-<div class="row lead_source_document">
-  <div class="col-md-12">
-    <h4>
-      Source Email<br/>
-      <small>
-        <a href="#lead_source_document" data-toggle="collapse" aria-expanded="false" aria-controls="lead_source_document" class="btn btn-xs btn-info">More...</a>
-      </small>
-    </h4>
-
-    <div class="row collapse" id="lead_source_document">
-      <% if lead.source_document[:text].present? %>
-        <div class="col-md-6">
-        <iframe id="message_preview" srcdoc="<pre><%= lead.source_document[:text] %></pre>" style="height: 600px; width: 600px;"> </iframe>
+<div class="card-header">
+  <h3><%= glyph(:envelope) %> Source Email</h3>
+</div>
+<div class="card-body">
+  <div class="source-email-actions">
+    <a href="#lead_source_document" 
+       data-toggle="collapse" 
+       aria-expanded="false" 
+       aria-controls="lead_source_document" 
+       class="btn btn-primary btn-sm">
+      <span class="collapsed-text">
+        <%= glyph(:plus) %> Show Email
+      </span>
+      <span class="expanded-text" style="display: none;">
+        <%= glyph(:minus) %> Hide Email
+      </span>
+    </a>
+  </div>
+  
+  <div class="collapse source-email-content" id="lead_source_document">
+    <div class="email-preview-container">
+      <% if lead.source_document[:html].present? %>
+        <div class="email-preview-wrapper">
+          <h5>HTML Version</h5>
+          <iframe class="email-preview-frame" 
+                  srcdoc="<%= lead.source_document[:html] %>">
+          </iframe>
         </div>
       <% end %>
-      <% if lead.source_document[:html].present? %>
-        <div class="col-md-6">
-          <iframe id="message_preview" srcdoc="<%= lead.source_document[:html] %>" style="height: 600px; width: 600px;"> </iframe>
+      
+      <% if lead.source_document[:text].present? %>
+        <div class="email-preview-wrapper">
+          <h5>Text Version</h5>
+          <iframe class="email-preview-frame" 
+                  srcdoc="<pre><%= h(lead.source_document[:text]) %></pre>">
+          </iframe>
         </div>
       <% end %>
     </div>
   </div>
 </div>
+
+<script>
+  // Toggle button text on collapse
+  $('#lead_source_document').on('shown.bs.collapse', function () {
+    $('[href="#lead_source_document"] .collapsed-text').hide();
+    $('[href="#lead_source_document"] .expanded-text').show();
+  });
+  
+  $('#lead_source_document').on('hidden.bs.collapse', function () {
+    $('[href="#lead_source_document"] .collapsed-text').show();
+    $('[href="#lead_source_document"] .expanded-text').hide();
+  });
+</script>

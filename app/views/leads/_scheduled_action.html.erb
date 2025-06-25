@@ -1,32 +1,57 @@
-<tr id="scheduled_action_row_<%= scheduled_action.id %>" class="<%= "lead_task_#{scheduled_action.is_completed? ? 'completed' : 'pending'}" %>">
-  <td><%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %></td>
-  <td class="dashboard_item_date">
-    <% unless scheduled_action.schedule.duration.present? %>
-      <%= scheduled_action.completed? ? 'Completed' : 'Due' %>
+<div class="task-card <%= scheduled_action.is_completed? ? 'task-completed' : 'task-pending' %> clickable" 
+     id="scheduled_action_<%= scheduled_action.id %>"
+     data-task-url="<%= policy(scheduled_action).show? ? completion_form_scheduled_action_path(scheduled_action) : '' %>">
+  <div class="task-card-header">
+    <div class="task-icon">
+      <%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %>
+    </div>
+    <div class="task-type">
+      <%= action_and_reason(scheduled_action) %>
+    </div>
+    <div class="task-actions">
+      <% if policy(scheduled_action).edit? %>
+        <%= link_to(edit_scheduled_action_path(scheduled_action), 
+                    class: 'btn-task-action btn-edit',
+                    title: 'Edit Task',
+                    data: { toggle: 'tooltip', placement: 'left' }) do %>
+          <%= glyph(:edit) %>
+        <% end %>
+      <% end %>
+      
+      <% if policy(scheduled_action).complete? && !scheduled_action.completed? %>
+        <%= link_to('#', 
+                    class: 'btn-task-action btn-complete scheduled_action-complete-button',
+                    title: 'Complete Task',
+                    data: { scheduled_action_id: scheduled_action.id, toggle: 'tooltip', placement: 'left' }) do %>
+          <%= glyph(:ok) %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="task-card-body">
+    <% if scheduled_action.description.present? %>
+      <p class="task-description"><%= scheduled_action.description %></p>
     <% end %>
-    <%= short_datetime(scheduled_action.schedule.to_datetime) %>
+    
+    <% unless scheduled_action.target == current_user %>
+      <div class="task-target">
+        <span class="glyphicon glyphicon-user"></span>
+        <%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="task-card-footer">
+    <div class="task-date <%= 'task-overdue' if !scheduled_action.completed? && scheduled_action.schedule.to_datetime < Time.current %>">
+      <span class="glyphicon glyphicon-calendar"></span>
+      <% unless scheduled_action.schedule.duration.present? %>
+        <%= scheduled_action.completed? ? 'Completed' : 'Due' %>
+      <% end %>
+      <%= short_datetime(scheduled_action.schedule.to_datetime) %>
       <% if scheduled_action.schedule.duration.present? %>
         to <%= short_time scheduled_action.schedule.end_time_to_datetime %>
       <% end %>
-  </td>
-  <td>
-    <%= action_and_reason(scheduled_action) %><br/>
-    <%= scheduled_action.description %>
-    <% unless scheduled_action.target == current_user %>
-      : <span class="nowrap"><%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %></span>
-    <% end %>
-  </td>
-  <td class="text-nowrap">
-    <% if policy(scheduled_action).show? %>
-      <%= tooltip_block('scheduled_action-completion_form-link') do %>
-        <%= link_to(glyph(:show), completion_form_scheduled_action_path(scheduled_action)) %>&nbsp;
-      <% end %>
-    <% end %>
-    <%= model_link_with_tooltip(scheduled_action, :edit) %>
-    <% if policy(scheduled_action).complete? %>
-      <%= tooltip_block('scheduled_action-complete-link') do %>
-        <%= link_to(glyph(:ok),'#', class: 'scheduled_action-complete-button', data: {scheduled_action_id: scheduled_action.id}) %>
-      <% end %>
-    <% end unless scheduled_action.completed? %>
-  </td>
-</tr>
+    </div>
+  </div>
+</div>

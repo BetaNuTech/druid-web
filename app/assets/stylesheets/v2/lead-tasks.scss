@@ -1,0 +1,446 @@
+@import 'variables';
+
+// Lead Page Tasks Section
+.tasks-section,
+#scheduled_actions.tasks-section {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid $gray-200;
+  width: 100%;
+  box-sizing: border-box;
+  
+  // Ensure proper box model
+  * {
+    box-sizing: border-box;
+  }
+  
+  // When used at container level (after state controls)
+  .container-fluid > .section-wrapper > & {
+    margin-bottom: 24px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+    border-bottom: 2px solid $gray-200;
+    margin: -1px -1px 0 -1px; // Compensate for parent border
+    position: relative;
+    border-radius: 11px 11px 0 0; // Slightly smaller to fit inside parent
+    box-sizing: border-box;
+    
+    // Add subtle shadow for depth
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: $gray-900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      .glyphicon {
+        color: $success;
+      }
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      
+      .btn {
+        padding: 8px 16px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        
+        &.btn-primary {
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba($primary, 0.3);
+          }
+        }
+        
+        &.btn-secondary {
+          background: white;
+          border: 1px solid $gray-300;
+          color: $gray-700;
+          
+          &:hover {
+            background: $gray-50;
+            border-color: $gray-400;
+            color: $gray-900;
+          }
+          
+          &.showing-completed {
+            background: $gray-100;
+            border-color: $gray-400;
+            color: $gray-900;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Tasks Container
+.tasks-container {
+  padding: 24px;
+  
+  .empty-tasks {
+    text-align: center;
+    padding: 60px 20px;
+    
+    .empty-icon {
+      display: inline-block;
+      width: 64px;
+      height: 64px;
+      background: $gray-100;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: $gray-400;
+      margin: 0 auto 16px;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 16px;
+      color: $gray-700;
+      
+      &.text-muted {
+        font-size: 14px;
+        color: $gray-500;
+        margin-top: 8px;
+      }
+    }
+  }
+}
+
+// Tasks List
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  
+  &.completed-tasks {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid $gray-100;
+  }
+}
+
+// Individual Task Card
+.task-card {
+  background: $gray-50;
+  border: 1px solid $gray-200;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &.clickable {
+    cursor: pointer;
+  }
+  
+  // Status indicator bar
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: $primary;
+    transition: width 0.3s ease;
+  }
+  
+  &:hover {
+    background: white;
+    border-color: $primary;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    
+    &::before {
+      width: 6px;
+    }
+  }
+  
+  // Pending task (default)
+  &.task-pending {
+    &::before {
+      background: $primary;
+    }
+  }
+  
+  // Completed task
+  &.task-completed {
+    opacity: 0.7;
+    
+    &::before {
+      background: $success;
+    }
+    
+    .task-icon {
+      background: rgba($success, 0.1) !important;
+      color: $success !important;
+    }
+    
+    .task-type {
+      text-decoration: line-through;
+      color: $gray-600;
+    }
+  }
+  
+  // Overdue task
+  &.task-overdue {
+    &::before {
+      background: $danger;
+    }
+    
+    .task-date {
+      color: $danger !important;
+      font-weight: 500;
+      
+      .glyphicon {
+        color: $danger !important;
+      }
+    }
+  }
+}
+
+// Task Card Header
+.task-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  
+  .task-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($primary, 0.1);
+    border-radius: 10px;
+    color: $primary;
+    font-size: 20px;
+    flex-shrink: 0;
+    
+    // Dynamic icon coloring based on type
+    &[class*="phone"],
+    &[class*="earphone"] {
+      background: rgba($success, 0.1);
+      color: $success;
+    }
+    
+    &[class*="envelope"],
+    &[class*="email"] {
+      background: rgba($info, 0.1);
+      color: $info;
+    }
+    
+    &[class*="calendar"],
+    &[class*="user"] {
+      background: rgba($warning, 0.1);
+      color: $warning;
+    }
+    
+    &[class*="home"] {
+      background: rgba($secondary, 0.1);
+      color: $secondary;
+    }
+  }
+  
+  .task-type {
+    flex: 1;
+    font-weight: 600;
+    font-size: 16px;
+    color: $gray-900;
+  }
+  
+  .task-actions {
+    display: flex;
+    gap: 8px;
+    transition: all 0.2s ease;
+    
+    .btn-task-action {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border: 1px solid $gray-300;
+      border-radius: 8px;
+      color: $gray-600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      // Show/View button
+      &.btn-show {
+        &:hover {
+          background: rgba($info, 0.1);
+          border-color: $info;
+          color: $info;
+        }
+      }
+      
+      // Edit button
+      &.btn-edit {
+        &:hover {
+          background: rgba($primary, 0.1);
+          border-color: $primary;
+          color: $primary;
+        }
+      }
+      
+      // Complete button
+      &.btn-complete {
+        background: rgba($success, 0.1);
+        border-color: $success;
+        color: $success;
+        
+        &:hover {
+          background: $success;
+          color: white;
+          transform: scale(1.05);
+          box-shadow: 0 2px 8px rgba($success, 0.3);
+        }
+      }
+      
+      .glyphicon {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Task Card Body
+.task-card-body {
+  padding-left: 60px; // Align with content after icon
+  
+  .task-description {
+    margin-bottom: 12px;
+    color: $gray-700;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .task-target {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: $gray-600;
+    font-size: 13px;
+    margin-bottom: 8px;
+    
+    .glyphicon {
+      color: $gray-500;
+      font-size: 12px;
+    }
+    
+    a {
+      color: $primary;
+      text-decoration: none;
+      font-weight: 500;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Task Card Footer
+.task-card-footer {
+  padding-left: 60px;
+  margin-top: 8px;
+  
+  .task-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: $gray-600;
+    
+    .glyphicon {
+      color: $gray-500;
+      font-size: 12px;
+    }
+    
+    &.task-overdue {
+      color: $danger;
+      font-weight: 500;
+      
+      .glyphicon {
+        color: $danger;
+      }
+    }
+  }
+}
+
+// Mobile Responsive
+@media (max-width: 767px) {
+  .tasks-section {
+    .section-header {
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+      
+      .header-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        
+        .btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  .task-card {
+    .task-card-header {
+      flex-wrap: wrap;
+      
+      .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+    }
+    
+    .task-card-body,
+    .task-card-footer {
+      padding-left: 0;
+    }
+  }
+}

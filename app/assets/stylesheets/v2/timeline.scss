@@ -1,0 +1,295 @@
+@import 'variables';
+
+// Timeline Section
+.timeline-section {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid $gray-200;
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+    border-bottom: 2px solid $gray-200;
+    margin: -1px -1px 0 -1px;
+    border-radius: 12px 12px 0 0;
+    
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: $gray-900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      .glyphicon {
+        color: $primary;
+      }
+    }
+    
+    .btn-primary {
+      padding: 8px 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 10%) 100%);
+      border-color: $brand-teal;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba($brand-teal, 0.3);
+        background: linear-gradient(135deg, darken($brand-teal, 5%) 0%, darken($brand-teal, 15%) 100%);
+      }
+      
+      .glyphicon {
+        transition: transform 0.3s ease;
+        font-size: 12px;
+      }
+      
+      &[aria-expanded="false"] {
+        .toggle-text {
+          &::before {
+            content: "Show ";
+          }
+        }
+        
+        .glyphicon {
+          transform: rotate(180deg);
+        }
+      }
+      
+      &[aria-expanded="true"] {
+        .toggle-text {
+          &::before {
+            content: "Hide ";
+          }
+        }
+      }
+    }
+  }
+}
+
+// Timeline Container
+.timeline-container {
+  padding: 24px;
+  
+  &.in {
+    max-height: 600px;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $gray-100;
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $gray-400;
+      border-radius: 3px;
+      
+      &:hover {
+        background: $gray-500;
+      }
+    }
+  }
+  
+  .empty-timeline {
+    text-align: center;
+    padding: 60px 20px;
+    
+    .empty-icon {
+      display: inline-block;
+      width: 64px;
+      height: 64px;
+      background: $gray-100;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: $gray-400;
+      margin: 0 auto 16px;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 16px;
+      color: $gray-700;
+      
+      &.text-muted {
+        font-size: 14px;
+        color: $gray-500;
+        margin-top: 8px;
+      }
+    }
+  }
+}
+
+// Timeline List
+.timeline-list {
+  position: relative;
+  padding-left: 0;
+}
+
+// Timeline Card
+.timeline-card {
+  position: relative;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &:hover {
+    .timeline-content {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  .timeline-content {
+    background: linear-gradient(135deg, $white 0%, rgba($gray-50, 0.3) 100%);
+    border: 1px solid $gray-200;
+    border-radius: 16px;
+    padding: 20px 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    
+    .timeline-header {
+      margin-bottom: 12px;
+      
+      .timeline-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 13px;
+        
+        .action-type {
+          background: linear-gradient(135deg, rgba($brand-teal, 0.1) 0%, rgba($brand-teal, 0.05) 100%);
+          border: 1px solid rgba($brand-teal, 0.3);
+          color: darken($brand-teal, 15%);
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-weight: 600;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 2px 4px rgba($brand-teal, 0.1);
+          
+          .glyphicon {
+            color: $brand-teal;
+            font-size: 12px;
+          }
+        }
+        
+        .timeline-timestamp {
+          color: $gray-600;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          
+          &::before {
+            content: '•';
+            color: $gray-400;
+          }
+        }
+        
+        .timeline-user {
+          color: $gray-700;
+          font-weight: 500;
+        }
+      }
+    }
+    
+    .timeline-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: $gray-700;
+      
+      p {
+        margin: 0 0 8px 0;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    
+    .timeline-related {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid $gray-100;
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+      color: $gray-600;
+      
+      .related-label {
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        background: rgba($gray-500, 0.1);
+        padding: 4px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba($gray-500, 0.2);
+      }
+    }
+  }
+}
+
+// Mobile Responsive
+@media (max-width: 767px) {
+  .timeline-section {
+    .section-header {
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+      
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+  
+  .timeline-list {
+    padding-left: 0;
+  }
+  
+  .timeline-card {
+    .timeline-content {
+      padding: 12px 16px;
+      
+      .timeline-header {
+        .timeline-meta {
+          font-size: 12px;
+          
+          .action-type {
+            padding: 3px 10px;
+            font-size: 11px;
+          }
+        }
+      }
+      
+      .timeline-body {
+        font-size: 13px;
+      }
+    }
+  }
+}
