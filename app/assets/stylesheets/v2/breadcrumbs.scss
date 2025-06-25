@@ -13,7 +13,7 @@ ul#crumbs {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   border: 1px solid $gray-200;
   position: relative;
-  z-index: 1;
+  z-index: 10;
 
   // Override Bootstrap dropdown positioning inside crumbs
   li.crumb.dropdown {
@@ -32,7 +32,7 @@ ul#crumbs {
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       border-radius: 12px;
       background: $white;
-      z-index: 1050;
+      z-index: 9999;
       overflow: hidden;
     
       // Add header to dropdown
@@ -350,6 +350,18 @@ ul#crumbs {
   }
 }
 
+// State controls section container
+.state-controls-section {
+  background: $gray-50;
+  padding: 20px 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  
+  @media (max-width: 767px) {
+    padding: 15px 0;
+  }
+}
+
 // Mobile responsive design
 @media (max-width: 767px) {
   ul#crumbs {
@@ -360,27 +372,13 @@ ul#crumbs {
     scroll-behavior: smooth;
     padding: 8px;
     max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
     
-    // Add scroll indicators
+    // Remove scroll indicators on mobile
     &::before,
     &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 20px;
-      pointer-events: none;
-      z-index: 10;
-    }
-    
-    &::before {
-      left: 0;
-      background: linear-gradient(to right, $gray-50 0%, transparent 100%);
-    }
-    
-    &::after {
-      right: 0;
-      background: linear-gradient(to left, $gray-50 0%, transparent 100%);
+      display: none;
     }
     
     li.crumb {
@@ -413,25 +411,14 @@ ul#crumbs {
           left: 10px !important;
           right: 10px !important;
           top: auto !important;
-          bottom: 10px !important;
+          bottom: auto !important;
+          transform: none !important;
           max-height: 70vh;
           overflow-y: auto;
           width: auto !important;
           max-width: none !important;
           min-width: 0 !important;
-          
-          // Add close button for mobile
-          &::before {
-            content: 'Select Next State';
-            display: block;
-            padding: 16px 20px;
-            font-weight: 600;
-            border-bottom: 2px solid $gray-200;
-            background: $gray-50;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-          }
+          margin-top: 10px !important;
           
           li {
             a {
@@ -439,7 +426,7 @@ ul#crumbs {
               font-size: 15px;
               
               &:hover {
-                padding-left: 20px; // Don't indent on mobile
+                padding-left: 20px;
               }
               
               strong {
@@ -462,11 +449,14 @@ ul#crumbs {
 // Very small screens - compact state display
 @media (max-width: 575px) {
   .state-controls-section {
-    padding: 0 15px;
+    padding: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   ul#crumbs {
     padding: 4px;
+    min-width: 320px; // Ensure minimum width for states
     
     li.crumb {
       margin-right: 4px;
@@ -480,54 +470,36 @@ ul#crumbs {
       }
       
       a.crumb-link {
-        height: 40px;
+        height: 36px;
         padding: 0 12px;
         font-size: 12px;
+        border-radius: 18px;
         
         &::before {
           display: none; // Hide icons to save space
         }
+      }
+      
+      // Active state on mobile
+      a.crumb-active {
+        font-size: 12px;
         
-      }
-      
-      // Ensure all states remain visible but compact
-      &:first-child a.crumb-link {
-        border-radius: 6px 0 0 6px;
-      }
-      
-      &:last-child a.crumb-link {
-        border-radius: 0 6px 6px 0;
-        padding-right: 12px;
+        &.dropdown-toggle {
+          padding-right: 12px;
+          
+          &::after {
+            font-size: 8px;
+            margin-left: 4px;
+          }
+        }
       }
     }
   }
   
-  // Compact dropdown for very small screens
+  // Compact dropdown for very small screens - inherit mobile styles
   .state_toggle {
     li.crumb.dropdown {
-      .dropdown-menu {
-        left: 5px !important;
-        right: 5px !important;
-        bottom: 5px !important;
-        
-        &::before {
-          font-size: 14px;
-          padding: 12px 16px;
-        }
-        
-        li a {
-          padding: 12px 16px;
-          font-size: 14px;
-          
-          strong {
-            font-size: 14px;
-          }
-          
-          small {
-            font-size: 12px;
-          }
-        }
-      }
+      // Use same full-screen modal approach as mobile
     }
   }
 }

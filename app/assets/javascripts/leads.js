@@ -1,143 +1,106 @@
-// Place all the behaviors and hooks related to the matching controller here.
-// All this logic will automatically be available in application.js.
+// Leads page JavaScript functionality
 
 $(document).on('turbolinks:load', function() {
-  $("#lead_toggle_comments_form_link").on('click', function(e){
+  // Quick navigation smooth scrolling
+  $('.quick-nav-link').off('click.quickNav').on('click.quickNav', function(e) {
     e.preventDefault();
-    $(e.target).hide()
-    $("#lead_comments_form").slideDown();
-  });
-  $("#lead_show_more_comments_link").on('click', function(e){
-    e.preventDefault();
-    var button = $(this);
-    var moreComments = $("#more_comments");
+    var target = $(this.getAttribute('href'));
     
-    if (moreComments.is(":visible")) {
-      moreComments.slideUp();
-      button.removeClass('showing-more');
-      button.html('<span class="glyphicon glyphicon-chevron-down"></span> Show ' + moreComments.find('.comment-card').length + ' More Comments');
-    } else {
-      moreComments.slideDown();
-      button.addClass('showing-more');
-      button.html('<span class="glyphicon glyphicon-chevron-up"></span> Hide Comments');
+    if (target.length) {
+      $('html, body').animate({
+        scrollTop: target.offset().top - 80 // Offset for fixed headers
+      }, 300, 'easeInOutQuart');
+      
+      // Add a subtle highlight effect to the target section
+      target.addClass('section-highlight');
+      setTimeout(function() {
+        target.removeClass('section-highlight');
+      }, 2000);
     }
-  });
-  $("#lead_task_toggle_completed").on('click', function(e){
-    e.preventDefault();
-    var button = $(this);
-    var completedTasks = $(".completed-tasks");
-    var toggleText = button.find('.toggle-text');
-    
-    if (completedTasks.is(":visible")) {
-      completedTasks.slideUp();
-      toggleText.text("Show Completed");
-      button.removeClass('showing-completed');
-    } else {
-      completedTasks.slideDown();
-      toggleText.text("Hide Completed");
-      button.addClass('showing-completed');
-    }
-  });
-
-  // Timeline toggle enhancement
-  $("#timeline_toggle_button").on('shown.bs.collapse', function(e){
-    var button = $(this);
-    button.find('.toggle-text').text("Hide");
   });
   
-  $("#timeline_toggle_button").on('hidden.bs.collapse', function(e){
-    var button = $(this);
-    button.find('.toggle-text').text("Show");
-  });
-
-  // Duplicate group toggle enhancement
-  $('.duplicate-group .group-toggle-btn').on('shown.bs.collapse', function(e){
-    $(this).attr('aria-expanded', 'true');
+  // Make duplicate cards clickable
+  $('.duplicate-card[data-lead-url]').off('click.duplicateCard').on('click.duplicateCard', function(e) {
+    // Don't trigger if clicking on buttons or links
+    if ($(e.target).closest('a, button').length === 0) {
+      var url = $(this).data('lead-url');
+      if (url) {
+        window.location.href = url;
+      }
+    }
   });
   
-  $('.duplicate-group .group-toggle-btn').on('hidden.bs.collapse', function(e){
-    $(this).attr('aria-expanded', 'false');
-  });
-
-  // Clickable duplicate cards
-  $(document).on('click', '.duplicate-card.clickable', function(e){
-    // Don't open if clicking on a button or link
-    if ($(e.target).closest('.btn, a').length) {
-      return;
+  // Make task cards clickable  
+  $('.task-card[data-task-url]').off('click.taskCard').on('click.taskCard', function(e) {
+    // Don't trigger if clicking on buttons or links
+    if ($(e.target).closest('.task-actions, a, button').length === 0) {
+      var url = $(this).data('task-url');
+      if (url) {
+        window.location.href = url;
+      }
     }
+  });
+  
+  // Toggle animations for collapsible sections
+  $('.toggle-button').off('click.toggle').on('click.toggle', function() {
+    var $button = $(this);
+    var target = $button.data('target');
+    var $target = $(target);
     
-    var url = $(this).data('lead-url');
-    if (url) {
-      window.open(url, '_blank');
+    // Animate the chevron icon
+    var $icon = $button.find('.glyphicon');
+    if ($target.hasClass('in')) {
+      $icon.removeClass('rotate-180');
+    } else {
+      $icon.addClass('rotate-180');
     }
   });
-
-  // Clickable task cards
-  $(document).on('click', '.task-card.clickable', function(e){
-    // Don't open if clicking on a button or link
-    if ($(e.target).closest('.btn, a, .btn-task-action').length) {
-      return;
-    }
-    
-    var url = $(this).data('task-url');
-    if (url) {
-      window.location.href = url;
-    }
-  });
-
-  $('#lead_toggle_change_state').on('click', function(e){
-    e.preventDefault();
-    if (confirm('Only change the Lead state manually if absolutely necessary. Are you sure?')) {
-      $(e.target).hide();
-      $('#lead_state_name').hide();
-      $('#lead_force_state').show();
-    }
-  });
-
-  var lead_referrable_selector = $("select[name='lead[referral]']");
-  lead_referrable_selector.on('change', function(e){
-    var lead_id = $('#lead_id').val();
-    var referral = $('#lead_referral').val();
-    var url = '/leads/' + lead_id + '/update_referrable_options.js?referral=' + referral;
-    $.ajax({
-      url: url,
-      dataType: 'script',
-      success: ''
-    })
-  })
-
-  $('.lead_assignment-agent-selector').on('change', function(){
-    $('.lead_assigner-pagination').hide();
-  })
-
-  $('#lead-claim-button').on('click', function(e){
-    var lead_id = $(e.target).data('lead_id');
-    var url = "/leads/" + lead_id + "/trigger_state_event?eventid=claim"
-    window.Loader.start();
-    return(true);
-  });
-
-  $('.scheduled_action-complete-button').on('click', function(e){
-    if ( confirm('Are you sure you want to mark this task as completed') ) {
-      window.Loader.start();
-      var el = $(e.target).parent();
-      var id = el.data('scheduledActionId');
-      var token = $('meta[name="csrf-token"]').attr('content');
-      var url = '/scheduled_actions/' + id + '/complete.js' +
-        '?scheduled_action[completion_action]=complete'
-      $.ajax({
-        url: url,
-        dataType: 'script',
-        method: 'post',
-        success: '',
-        headers: {
-          'X-CSRF-Token': token
+  
+  // Mobile dropdown positioning fix
+  $(document).on('shown.bs.dropdown', '#crumbs .dropdown', function() {
+    if ($(window).width() <= 767) {
+      var $dropdown = $(this).find('.dropdown-menu');
+      var $toggle = $(this).find('.dropdown-toggle');
+      var toggleOffset = $toggle.offset();
+      var windowHeight = $(window).height();
+      var dropdownHeight = $dropdown.outerHeight();
+      
+      // Calculate best position
+      var topPosition = toggleOffset.top + $toggle.outerHeight() + 10;
+      
+      // Check if dropdown would go below viewport
+      if (topPosition + dropdownHeight > windowHeight) {
+        // Position above the toggle if there's more room
+        var bottomPosition = windowHeight - toggleOffset.top + 10;
+        if (toggleOffset.top > windowHeight / 2) {
+          $dropdown.css({
+            'position': 'fixed',
+            'top': 'auto',
+            'bottom': bottomPosition + 'px',
+            'left': '10px',
+            'right': '10px'
+          });
+        } else {
+          // Still position below but ensure it fits
+          $dropdown.css({
+            'position': 'fixed',
+            'top': topPosition + 'px',
+            'bottom': 'auto',
+            'left': '10px',
+            'right': '10px',
+            'max-height': (windowHeight - topPosition - 10) + 'px'
+          });
         }
-      })
+      } else {
+        // Normal positioning below
+        $dropdown.css({
+          'position': 'fixed',
+          'top': topPosition + 'px',
+          'bottom': 'auto',
+          'left': '10px',
+          'right': '10px'
+        });
+      }
     }
-    return(false);
-  })
-
-
-
+  });
 });

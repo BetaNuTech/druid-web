@@ -1,6 +1,6 @@
 <div class="roommates-section">
   <div class="section-header">
-    <h2><%= glyph(:home) %> Roommates</h2>
+    <h2><%= glyph(:user) %> Roommates</h2>
     <% if policy(Roommate.new(lead: @lead)).create? %>
       <%= link_to new_lead_roommate_path(@lead), class: 'btn btn-primary' do %>
         <%= glyph(:plus) %> Add Roommate

@@ -1,5 +1,330 @@
 @import 'variables';
 
+// Quick Navigation Section
+.quick-nav-section {
+  background: linear-gradient(135deg, rgba($brand-light-blue, 0.05) 0%, rgba($brand-teal, 0.03) 100%);
+  border-bottom: 1px solid $gray-200;
+  padding: 20px 0;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 20px;
+    
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: $brand-deep-blue;
+      margin: 0;
+      
+      .glyphicon {
+        color: $brand-teal !important;
+        margin-right: 8px;
+        font-size: 20px;
+        vertical-align: middle;
+      }
+    }
+  }
+  
+  .quick-nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .quick-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    color: $brand-deep-blue;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba($brand-teal, 0.1) 0%, rgba($brand-light-blue, 0.1) 100%);
+      transition: left 0.3s ease;
+      z-index: 0;
+    }
+    
+    .glyphicon {
+      font-size: 16px;
+      color: $brand-teal;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+    
+    span {
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba($brand-teal, 0.15);
+      border-color: $brand-teal;
+      color: $brand-deep-blue;
+      text-decoration: none;
+      
+      &::before {
+        left: 0;
+      }
+      
+      .glyphicon {
+        color: $brand-teal;
+        transform: scale(1.1);
+      }
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 12px rgba($brand-teal, 0.2);
+    }
+  }
+  
+  // Mobile responsive
+  @media (max-width: 768px) {
+    padding: 15px 0;
+    margin-bottom: 20px;
+    
+    .quick-nav-links {
+      gap: 12px;
+      padding: 0 15px;
+    }
+    
+    .quick-nav-link {
+      padding: 10px 16px;
+      font-size: 13px;
+      border-radius: 20px;
+      
+      .glyphicon {
+        font-size: 14px;
+      }
+    }
+  }
+  
+  // Very small screens - stack vertically
+  @media (max-width: 480px) {
+    .quick-nav-links {
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .quick-nav-link {
+      width: 100%;
+      max-width: 300px;
+      justify-content: center;
+    }
+  }
+}
+
+// Section highlight animation
+.section-highlight {
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  25% {
+    background-color: rgba($brand-light-blue, 0.08);
+    box-shadow: 0 0 0 4px rgba($brand-light-blue, 0.15);
+  }
+  50% {
+    background-color: rgba($brand-light-blue, 0.05);
+    box-shadow: 0 0 0 2px rgba($brand-light-blue, 0.1);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+// Rotation utility for chevron icons
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+// Source Email Section - matching Timeline design
+.source-email-section {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid $gray-200;
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+    border-bottom: 2px solid $gray-200;
+    margin: -1px -1px 0 -1px;
+    border-radius: 12px 12px 0 0;
+    
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: $gray-900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      .glyphicon {
+        color: $brand-teal;
+      }
+    }
+    
+    .btn-primary {
+      padding: 8px 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 10%) 100%);
+      border-color: $brand-teal;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba($brand-teal, 0.3);
+        background: linear-gradient(135deg, darken($brand-teal, 5%) 0%, darken($brand-teal, 15%) 100%);
+      }
+      
+      .glyphicon {
+        transition: transform 0.3s ease;
+        font-size: 12px;
+      }
+      
+      &[aria-expanded="false"] {
+        .toggle-text::after {
+          content: " Email";
+        }
+        
+        .glyphicon {
+          transform: rotate(180deg);
+        }
+      }
+      
+      &[aria-expanded="true"] {
+        .toggle-text::after {
+          content: " Email";
+        }
+      }
+    }
+  }
+  
+  .source-email-container {
+    padding: 24px;
+    
+    .source-email-content {
+      &.in {
+        max-height: 600px;
+        overflow-y: auto;
+        
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          background: $gray-100;
+          border-radius: 3px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          background: $gray-400;
+          border-radius: 3px;
+          
+          &:hover {
+            background: $gray-500;
+          }
+        }
+      }
+    }
+    
+    .email-preview-container {
+      background: $gray-50;
+      border-radius: 8px;
+      padding: 20px;
+      
+      .email-preview-wrapper {
+        margin-bottom: 20px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        h5 {
+          margin-bottom: 12px;
+          color: $gray-700;
+          font-weight: 600;
+        }
+        
+        .email-preview-frame {
+          width: 100%;
+          min-height: 300px;
+          border: 1px solid $gray-200;
+          border-radius: 4px;
+          background: white;
+        }
+      }
+    }
+  }
+}
+
+// Section header icon styling - match quick nav teal color
+.section-header h2 .glyphicon,
+.section-header h3 .glyphicon,
+.card-header h3 .glyphicon,
+.info-card .card-header h3 .glyphicon,
+.contact-card .card-header h3 .glyphicon,
+.property-card .card-header h3 .glyphicon,
+.preferences-card .card-header h3 .glyphicon,
+.notes-card .card-header h3 .glyphicon {
+  color: $brand-teal !important;
+}
+
+// Also apply to any icon that's part of a section title
+.section-wrapper h2 .glyphicon,
+.section-wrapper h3 .glyphicon {
+  color: $brand-teal !important;
+}
+
+// Contact, Property, and Preferences cards - icon colors
+.contact-item .contact-icon,
+.contact-item .contact-icon .glyphicon,
+.property-item .property-icon,
+.property-item .property-icon .glyphicon,
+.preference-item .pref-icon,
+.preference-item .pref-icon .glyphicon {
+  color: $brand-teal !important;
+}
+
 // Lead detail page header styling
 .Lead {
   .priority {
@@ -619,12 +944,12 @@
     .contact-icon {
       width: 36px;
       height: 36px;
-      background: rgba($primary, 0.1);
+      background: rgba($brand-teal, 0.1);
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: $primary;
+      color: $brand-teal;
       flex-shrink: 0;
     }
     
@@ -692,12 +1017,12 @@
     .property-icon {
       width: 36px;
       height: 36px;
-      background: rgba($secondary, 0.1);
+      background: rgba($brand-teal, 0.1);
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: $secondary;
+      color: $brand-teal;
       flex-shrink: 0;
     }
     
@@ -756,12 +1081,12 @@
     .pref-icon {
       width: 36px;
       height: 36px;
-      background: rgba($info, 0.1);
+      background: rgba($brand-teal, 0.1);
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: $info;
+      color: $brand-teal;
       flex-shrink: 0;
     }
     

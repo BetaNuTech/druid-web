@@ -92,6 +92,33 @@
     </div>
   <% end %>
 
+  <!-- Quick Navigation Links -->
+  <div class="quick-nav-section">
+    <div class="container-fluid">
+      <div class="section-header">
+        <h3><%= glyph(:flash) %> Quick Navigation</h3>
+      </div>
+      <div class="quick-nav-links">
+        <a href="#notes-section" class="quick-nav-link">
+          <%= glyph(:file) %>
+          <span>Notes</span>
+        </a>
+        <a href="#roommates-section" class="quick-nav-link">
+          <%= glyph(:user) %>
+          <span>Roommates</span>
+        </a>
+        <a href="#comments-section" class="quick-nav-link">
+          <%= glyph(:comment) %>
+          <span>Comments</span>
+        </a>
+        <a href="#messages-section" class="quick-nav-link">
+          <%= glyph(:envelope) %>
+          <span>Messages</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Tasks Section (Priority - tied to state changes) -->
   <div class="container-fluid">
     <div class="section-wrapper">
@@ -294,11 +321,11 @@
     </div>
     
     <!-- Notes Full Width Row -->
-    <div class="row">
+    <div class="row" id="notes-section">
       <div class="col-md-12">
         <div class="info-card notes-card">
           <div class="card-header">
-            <h3><%= glyph(:comment) %> Notes</h3>
+            <h3><%= glyph(:file) %> Notes</h3>
           </div>
           <div class="card-body">
             <% if @lead.follow_up_at.present? %>
@@ -362,17 +389,17 @@
         </div>
         
         <!-- Roommates Section -->
-        <div class="section-wrapper">
+        <div class="section-wrapper" id="roommates-section">
           <%= render partial: 'roommates', locals: {lead: @lead} %>
         </div>
         
         <!-- Comments Section -->
-        <div class="section-wrapper">
+        <div class="section-wrapper" id="comments-section">
           <%= render partial: 'comments', locals: {lead: @lead, comments: @lead_comments} %>
         </div>
         
         <!-- Messages Section -->
-        <div class="section-wrapper">
+        <div class="section-wrapper" id="messages-section">
           <%= render partial: 'messages', locals: {lead: @lead} %>
         </div>
         
