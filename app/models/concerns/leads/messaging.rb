@@ -269,13 +269,25 @@ module Leads
         note_lead_action = LeadAction.where(name: note_lead_action_name).first
         note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
         message_type_name = message_type&.name&.downcase
-        message_template_name = "Leads::Messaging::%s_%s%s_MESSAGE_TEMPLATE_NAME" % [
-          message_type_name&.upcase,
-          ( assent ? 'OPT_IN' : 'OPT_OUT' ),
-          ( disposition == :confirmation ? '_CONFIRMATION'  : '' )
-        ]
-        message_template_name = Object.const_get(message_template_name) rescue nil
-        message_template = MessageTemplate.where(name: message_template_name).first
+        
+        # Determine the correct template name based on message type and disposition
+        if message_type == MessageType.sms
+          if assent
+            if disposition == :confirmation
+              message_template_name = SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME
+            else
+              message_template_name = SMS_OPT_IN_MESSAGE_TEMPLATE_NAME
+            end
+          else
+            message_template_name = SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME
+          end
+        else
+          # For email, we don't have specific opt-in/opt-out templates defined
+          # So we'll use nil and handle it appropriately
+          message_template_name = nil
+        end
+        
+        message_template = MessageTemplate.where(name: message_template_name).first if message_template_name.present?
         destination_present = ( self.send("message_" + message_type_name + "_destination").present? rescue false )
 
         if destination_present && message_template.present?
@@ -290,13 +302,20 @@ module Leads
           message.save!
           message.deliver!
           message.reload
-          comment_content = "SENT: #{message_template_name}"
+          comment_content = "SENT: #{message_template_name || "#{message_type_name} compliance message"}"
         else
           # Cannot send Message: send Error Notification
           message = Message.new()
-          error_message = "Could not send SMS opt-in request"
+          if !destination_present
+            error_message = "No #{message_type_name} destination available"
+          elsif !message_template.present?
+            error_message = "Message template '#{message_template_name}' not found" if message_template_name.present?
+            error_message ||= "No #{message_type_name} template configured for this action"
+          else
+            error_message = "Could not send #{message_type_name} message"
+          end
           error = StandardError.new(error_message)
-          comment_content = "NOT SENT: #{message_template_name} -- #{( ( errors[:errors] || [] ) + [ error_message ] ).join('; ')}"
+          comment_content = "NOT SENT: #{error_message}"
         end
 
         # Add activity entry to Lead timeline
