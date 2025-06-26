@@ -41,6 +41,42 @@ $(document).on('turbolinks:load', function() {
     }
   });
   
+  // Make message cards clickable
+  $(document).on('click', '.message-card', function(e) {
+    // Don't navigate if clicking on buttons or links
+    if ($(e.target).closest('.btn, .lead-link, a').length === 0) {
+      var url = $(this).data('url');
+      if (url) {
+        window.location.href = url;
+      }
+    }
+  });
+  
+  // Prevent action buttons from bubbling up
+  $(document).on('click', '.message-card .btn', function(e) {
+    e.stopPropagation();
+  });
+  
+  // Prevent lead links from bubbling up
+  $(document).on('click', '.message-card .lead-link', function(e) {
+    e.stopPropagation();
+  });
+  
+  // Mark as read AJAX handling
+  $(document).on('ajax:success', '[id^="message-read-button-"]', function(e) {
+    var messageId = $(this).attr('id').replace('message-read-button-', '');
+    var card = $('#message-' + messageId);
+    
+    // Remove unread class and update styling
+    card.removeClass('unread');
+    card.find('.status-unread').fadeOut(300, function() {
+      $(this).remove();
+    });
+    
+    // Hide the button with animation
+    $(this).fadeOut(300);
+  });
+  
   // Toggle animations for collapsible sections
   $('.toggle-button').off('click.toggle').on('click.toggle', function() {
     var $button = $(this);

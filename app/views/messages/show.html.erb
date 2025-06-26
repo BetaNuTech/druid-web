@@ -45,10 +45,12 @@
 
     <div class="row">
       <div class="col-md-12">
-        <p>
-          <b>Subject:</b>
-          <%= @message.subject %>
-        </p>
+        <% if @message.message_type&.name != 'SMS' %>
+          <p>
+            <b>Subject:</b>
+            <%= @message.subject %>
+          </p>
+        <% end %>
         <iframe id="message_preview" srcdoc="<%= @message.body_with_layout %>" style="height: 500px;"> </iframe>
       </div>
     </div>

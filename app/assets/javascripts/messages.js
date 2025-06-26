@@ -1,26 +1,46 @@
+// Messages page JavaScript functionality
+
 $(document).on('turbolinks:load', function() {
-
-  $('#message_template_load_button').hide();
-
-  $('#message_template_select').on('change', function(e){
-    $('#message_template_load_button').show();
-    $('#message_template_view_button').hide();
+  // Auto-submit filters when toggled
+  $('.filter-toggle input[type="checkbox"]').on('change', function() {
+    // Optional: Auto-submit the form when a filter is toggled
+    // Uncomment the line below if you want instant filtering
+    // $('#messages-filter-form').submit();
   });
-
-  $('#message_template_load_button').on('click', function(){
-    var selected_template_id = $('#message_template_select')[0].value;
-    if (selected_template_id != "") {
-      var baseurl = $('#message_template_load_button').data('baseurl');
-      var template_param = "&message_template_id=" + selected_template_id;
-      var url = baseurl + template_param;
-      window.location = url;
+  
+  // Make message cards clickable
+  $(document).on('click', '.message-list-card', function(e) {
+    // Don't navigate if clicking on buttons or links
+    if ($(e.target).closest('.btn, .lead-link, a').length === 0) {
+      var url = $(this).data('url');
+      if (url) {
+        window.location.href = url;
+      }
     }
   });
-
-  $("#send_now_button").on('click', function(){
-    $("#send_now").val("true").
-      form.submit()
-  })
-
+  
+  // Prevent action buttons from bubbling up
+  $(document).on('click', '.message-list-card .btn', function(e) {
+    e.stopPropagation();
+  });
+  
+  // Prevent lead links from bubbling up
+  $(document).on('click', '.message-list-card .lead-link', function(e) {
+    e.stopPropagation();
+  });
+  
+  // Mark as read AJAX handling
+  $(document).on('ajax:success', '[id^="message-read-button-"]', function(e) {
+    var messageId = $(this).attr('id').replace('message-read-button-', '');
+    var card = $('#message-preview-' + messageId);
+    
+    // Remove unread class and badge
+    card.removeClass('unread');
+    card.find('.status-unread').fadeOut(300, function() {
+      $(this).remove();
+    });
+    
+    // Hide the button
+    $(this).fadeOut(300);
+  });
 });
-

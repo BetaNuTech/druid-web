@@ -112,20 +112,116 @@
 // Individual Message Card
 .message-card {
   background: white;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid $gray-200;
-  border-radius: 16px;
-  overflow: hidden;
+  padding: 20px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 20px;
   transition: all 0.3s ease;
+  min-height: 120px;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  cursor: pointer;
   
-  &.message-unread {
-    border-left: 4px solid $primary;
-    background: rgba($primary, 0.02);
-    box-shadow: 0 2px 8px rgba($primary, 0.15);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    background: transparent;
+    transition: all 0.3s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-color: $brand-light-blue;
     
-    .message-header {
-      background: rgba($primary, 0.04);
+    &::before {
+      background: $brand-teal;
+    }
+  }
+  
+  // Incoming messages get a subtle green tint
+  &.incoming-message {
+    background: linear-gradient(135deg, rgba($success, 0.04) 0%, rgba($success, 0.08) 100%);
+    border-left-color: rgba($success, 0.4);
+    
+    &::before {
+      background: rgba($success, 0.5);
+    }
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba($success, 0.05) 0%, rgba($success, 0.1) 100%);
+      border-left-color: rgba($success, 0.6);
+      border-color: $success;
+      
+      &::before {
+        background: $success;
+      }
+    }
+    
+    // Mark as Read button should be green for all incoming messages
+    .mark-as-read-btn {
+      background: linear-gradient(135deg, $success 0%, darken($success, 10%) 100%) !important;
+      border-color: $success !important;
+      box-shadow: 0 2px 8px rgba($success, 0.3);
+      
+      &:hover {
+        background: linear-gradient(135deg, darken($success, 5%) 0%, darken($success, 15%) 100%) !important;
+        border-color: darken($success, 10%) !important;
+        box-shadow: 0 4px 12px rgba($success, 0.4);
+        color: white;
+      }
+      
+      &:active {
+        box-shadow: 0 2px 6px rgba($success, 0.3);
+      }
+    }
+  }
+  
+  // Outgoing messages get a subtle blue tint
+  &.outgoing-message {
+    background: linear-gradient(135deg, rgba($primary, 0.02) 0%, rgba($primary, 0.04) 100%);
+    
+    &::before {
+      background: rgba($primary, 0.3);
+    }
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba($primary, 0.03) 0%, rgba($primary, 0.06) 100%);
+      border-color: $primary;
+      
+      &::before {
+        background: $primary;
+      }
+    }
+    
+    &.unread {
+      background: linear-gradient(135deg, rgba($primary, 0.04) 0%, rgba($primary, 0.08) 100%);
+      
+      &::before {
+        background: $primary;
+      }
+    }
+  }
+  
+  &.unread {
+    &::before {
+      background: $brand-teal;
+    }
+    
+    .message-subject strong,
+    .participant-name {
+      font-weight: 700;
+    }
+    
+    .message-body-preview {
+      font-weight: 500;
     }
     
     // Subtle pulse animation for mark as read button
@@ -134,338 +230,358 @@
     }
   }
   
-  &.message-draft {
-    border-left: 4px solid $warning;
-    background: rgba($warning, 0.02);
+  // Combine incoming and unread for STRONGER green effect
+  &.incoming-message.unread {
+    background: linear-gradient(135deg, rgba($success, 0.08) 0%, rgba($success, 0.16) 100%);
+    border-left: 4px solid $success;
+    box-shadow: 0 4px 12px rgba($success, 0.2);
+    
+    &::before {
+      background: $success;
+      width: 6px;
+    }
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba($success, 0.1) 0%, rgba($success, 0.18) 100%);
+      box-shadow: 0 6px 20px rgba($success, 0.3);
+    }
+    
+    // Make the mark as read button even more prominent
+    .mark-as-read-btn {
+      background: linear-gradient(135deg, $success 0%, darken($success, 10%) 100%);
+      box-shadow: 0 4px 12px rgba($success, 0.4);
+      transform: scale(1.05);
+      animation: pulse-attention-strong 1.5s ease-in-out infinite;
+      
+      &:hover {
+        background: linear-gradient(135deg, darken($success, 5%) 0%, darken($success, 15%) 100%);
+        transform: scale(1.08) translateY(-1px);
+        box-shadow: 0 6px 16px rgba($success, 0.5);
+      }
+    }
+  }
+  
+  &.draft {
+    background: linear-gradient(135deg, white 0%, rgba($brand-light-blue, 0.03) 100%);
+    
+    &::before {
+      background: $brand-light-blue;
+    }
+  }
+  
+  &.failed {
+    background: linear-gradient(135deg, white 0%, rgba($danger, 0.02) 100%);
+    
+    &::before {
+      background: $danger;
+    }
+  }
+  
+  // Left column - avatar and indicators
+  .message-indicators {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-width: 100px;
+    
+    .message-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      
+      &.incoming {
+        background: linear-gradient(135deg, $success 0%, darken($success, 10%) 100%);
+      }
+      
+      &.outgoing {
+        background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+      }
+      
+      .glyphicon {
+        font-size: 20px;
+      }
+    }
+    
+    .message-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      
+      .message-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        background: $gray-100;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: $gray-700;
+        text-transform: uppercase;
+        
+        .glyphicon {
+          font-size: 10px;
+        }
+      }
+      
+      .message-direction-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border-radius: 10px;
+        
+        &.incoming {
+          color: $success;
+          background: rgba($success, 0.1);
+        }
+        
+        &.outgoing {
+          color: $primary;
+          background: rgba($primary, 0.1);
+        }
+      }
+    }
+  }
+  
+  // Middle column - participants
+  .message-participants {
+    min-width: 220px;
+    flex-shrink: 0;
+    
+    .participant-info {
+      background: $gray-50;
+      padding: 12px 16px;
+      border-radius: 10px;
+      height: 100%;
+      
+      .participant-row {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        
+        &.from-row {
+          .participant-name {
+            font-weight: 600;
+          }
+        }
+        
+        .participant-label {
+          font-weight: 600;
+          color: $gray-600;
+          min-width: 35px;
+          font-size: 12px;
+          text-transform: uppercase;
+        }
+        
+        .participant-name {
+          color: $gray-800;
+          font-size: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 150px;
+          
+          a.lead-link {
+            color: $brand-teal;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+      
+      .message-timestamp {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid $gray-200;
+        font-size: 12px;
+        color: $gray-600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        
+        .glyphicon {
+          font-size: 11px;
+          color: $gray-500;
+        }
+      }
+    }
+  }
+    
+  // Right column - content
+  .message-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
     
     .message-header {
-      background: rgba($warning, 0.04);
-    }
-  }
-  
-  &.incoming {
-    .message-avatar {
-      background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 15%) 100%);
-    }
-  }
-  
-  &.outgoing {
-    .message-avatar {
-      background: linear-gradient(135deg, $primary 0%, darken($primary, 15%) 100%);
-    }
-  }
-  
-  &:hover {
-    border-color: $primary;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
-  }
-  
-  .message-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px 24px;
-    background: $gray-50;
-    border-bottom: 1px solid $gray-100;
-    
-    .message-participants {
       display: flex;
       align-items: center;
-      gap: 16px;
-      flex: 1;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      min-height: 24px;
       
-      .message-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
+      .message-subject {
         font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        flex-shrink: 0;
-        
-        .glyphicon {
-          font-size: 20px;
-        }
-      }
-      
-      .message-meta {
         flex: 1;
         
-        .participant-info {
-          display: flex;
-          align-items: baseline;
-          gap: 8px;
-          margin-bottom: 4px;
-          
-          .participant-label {
-            font-size: 13px;
-            color: $gray-600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          .participant-name {
-            font-size: 15px;
-            color: $gray-900;
-            font-weight: 600;
-          }
-          
-          .sent-by {
-            font-size: 13px;
-            color: $gray-600;
-            font-style: italic;
-          }
+        strong {
+          font-weight: 600;
+          color: $gray-800;
         }
+      }
+      
+      .message-status-badge {
+        flex-shrink: 0;
+        margin-left: 12px;
+      }
+      
+      // When there's no subject (SMS messages)
+      &.no-subject {
+        margin-bottom: 8px;
+        min-height: auto;
         
-        .message-timestamp {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 13px;
-          color: $gray-600;
-          
-          .message-type-indicator,
-          .message-direction-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            
-            .glyphicon {
-              font-size: 12px;
-            }
-            
-            .message-type-label,
-            .direction-label {
-              font-size: 11px;
-            }
-          }
-          
-          .message-type-indicator {
-            &.sms-indicator {
-              background: rgba($success, 0.1);
-              color: $success;
-              border: 1px solid rgba($success, 0.2);
-            }
-            
-            &.email-indicator {
-              background: rgba($info, 0.1);
-              color: $info;
-              border: 1px solid rgba($info, 0.2);
-            }
-            
-            &.other-indicator {
-              background: rgba($gray-500, 0.1);
-              color: $gray-500;
-              border: 1px solid rgba($gray-500, 0.2);
-            }
-          }
-          
-          .message-direction-indicator {
-            &.incoming-indicator {
-              background: rgba($brand-teal, 0.1);
-              color: $brand-teal;
-              border: 1px solid rgba($brand-teal, 0.2);
-            }
-            
-            &.outgoing-indicator {
-              background: rgba($primary, 0.1);
-              color: $primary;
-              border: 1px solid rgba($primary, 0.2);
-            }
-            
-            &.draft-indicator {
-              background: rgba($warning, 0.1);
-              color: $warning;
-              border: 1px solid rgba($warning, 0.2);
-            }
-            
-            &.failed-indicator {
-              background: rgba($danger, 0.1);
-              color: $danger;
-              border: 1px solid rgba($danger, 0.2);
-            }
-          }
-          
-          .draft-label {
-            background: $warning;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-          }
-          
-          .message-delivery-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            
-            .glyphicon {
-              font-size: 12px;
-            }
-          }
+        .message-status-badge {
+          margin-left: 0;
         }
       }
     }
     
-    .message-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      transition: all 0.2s ease;
-      
-      .btn-action {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: white;
-        border: 1px solid $gray-300;
-        border-radius: 6px;
-        color: $gray-600;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        
-        &:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        &.btn-edit:hover {
-          background: rgba($primary, 0.1);
-          border-color: $primary;
-          color: $primary;
-        }
-        
-        &.btn-delete:hover {
-          background: rgba($danger, 0.1);
-          border-color: $danger;
-          color: $danger;
-        }
-        
-        .glyphicon {
-          font-size: 14px;
-        }
-      }
-      
-      .btn {
-        white-space: nowrap;
-      }
-      
-      // Make "Mark as Read" button stand out
-      .mark-as-read-btn {
-        background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
-        border: none;
-        color: white;
-        font-weight: 600;
-        padding: 6px 16px;
-        box-shadow: 0 2px 8px rgba($primary, 0.3);
-        
-        &:hover {
-          background: linear-gradient(135deg, darken($primary, 5%) 0%, darken($primary, 15%) 100%);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba($primary, 0.4);
-        }
-        
-        &:active {
-          transform: translateY(0);
-          box-shadow: 0 2px 6px rgba($primary, 0.3);
-        }
-        
-        .glyphicon {
-          margin-right: 6px;
-        }
-      }
-    }
-  }
-  
-  .message-content {
-    padding: 20px 24px;
-    
-    .message-subject {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      
-      a {
-        color: $gray-900;
-        text-decoration: none;
-        
-        &:hover {
-          color: $primary;
-        }
-      }
-    }
-    
-    .message-body {
-      font-size: 15px;
-      line-height: 1.6;
+    .message-body-preview {
+      font-size: 14px;
       color: $gray-700;
-      margin-bottom: 16px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      max-height: 4.8em;
+      overflow: hidden;
+      font-weight: normal;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
       
-      a {
-        color: inherit;
-        text-decoration: none;
-        
-        &:hover {
-          color: $primary;
-        }
+      // For SMS messages, make the preview more prominent
+      .message-header.no-subject + &,
+      &.no-header {
+        font-size: 15px;
+        line-height: 1.7;
+        max-height: 5.1em;
+        margin-top: 0;
+        margin-bottom: 20px;
+        -webkit-line-clamp: 3;
       }
       
-      // Style for message preview
-      .message-preview {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
+      pre, code {
+        display: inline;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        font-family: inherit;
+        font-size: inherit;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        color: inherit;
       }
     }
     
     .message-footer {
-      border-top: 1px solid $gray-100;
-      padding-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
       
-      .view-full-message {
-        color: $primary;
-        font-size: 14px;
-        font-weight: 500;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        transition: all 0.2s ease;
+      .message-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
         
-        &:hover {
-          transform: translateX(4px);
+        .btn {
+          font-size: 13px;
+          font-weight: 600;
+          padding: 6px 16px;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
           
           .glyphicon {
-            transform: translateX(2px);
+            font-size: 14px;
           }
-        }
-        
-        .glyphicon {
-          font-size: 12px;
-          transition: transform 0.2s ease;
+          
+          &.btn-primary {
+            background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+            border-color: $primary;
+            color: white;
+            box-shadow: 0 2px 4px rgba($primary, 0.2);
+            
+            &:hover {
+              background: linear-gradient(135deg, darken($primary, 5%) 0%, darken($primary, 15%) 100%);
+              border-color: darken($primary, 10%);
+              transform: translateY(-1px);
+              box-shadow: 0 4px 8px rgba($primary, 0.3);
+            }
+          }
+          
+          &.btn-default {
+            background: white;
+            border: 1px solid $gray-300;
+            color: $gray-700;
+            
+            &:hover {
+              background: $gray-50;
+              border-color: $brand-teal;
+              color: $brand-teal;
+            }
+          }
+          
+          // Special styling for Mark as Read button - default
+          &.mark-as-read-btn {
+            background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 6px 16px;
+            box-shadow: 0 2px 8px rgba($primary, 0.3);
+            
+            &:hover {
+              background: linear-gradient(135deg, darken($primary, 5%) 0%, darken($primary, 15%) 100%);
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba($primary, 0.4);
+              color: white;
+            }
+            
+            &:active {
+              transform: translateY(0);
+              box-shadow: 0 2px 6px rgba($primary, 0.3);
+            }
+            
+            .glyphicon {
+              margin-right: 6px;
+            }
+          }
         }
       }
     }
   }
+  
 }
 
 // Roommate Messages Section
@@ -501,10 +617,19 @@
 // Mobile Responsive
 @media (max-width: 767px) {
   .messages-section {
+    margin: 16px 0;
+    box-shadow: none;
+    border-radius: 8px;
+    
     .section-header {
       flex-direction: column;
       gap: 12px;
       align-items: stretch;
+      padding: 16px;
+      
+      h2 {
+        font-size: 18px;
+      }
       
       .header-actions {
         width: 100%;
@@ -512,6 +637,7 @@
         .new-message-callout {
           flex-direction: column;
           width: 100%;
+          gap: 8px;
           
           .btn {
             width: 100%;
@@ -521,37 +647,134 @@
     }
   }
   
+  .messages-container {
+    padding: 16px;
+  }
+  
   .message-card {
-    .message-header {
-      padding: 16px;
+    padding: 16px;
+    padding-bottom: 16px;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 200px;
+    margin-bottom: 16px;
+    overflow: visible;
+    display: flex;
+    
+    .message-indicators {
+      flex-direction: row;
+      width: 100%;
+      justify-content: flex-start;
+      min-width: auto;
+      gap: 12px;
+      align-items: center;
       
-      .message-participants {
-        .message-avatar {
-          width: 40px;
-          height: 40px;
-          font-size: 14px;
-        }
+      .message-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        flex-shrink: 0;
       }
       
-      .message-actions {
-        flex-direction: column;
+      .message-meta {
+        flex-direction: row;
+        gap: 8px;
+        flex-wrap: wrap;
         
-        .btn {
-          font-size: 12px;
-          padding: 4px 8px;
+        .message-type-badge,
+        .message-direction-label {
+          font-size: 10px;
+          padding: 2px 6px;
+        }
+      }
+    }
+    
+    .message-participants {
+      min-width: auto;
+      width: 100%;
+      
+      .participant-info {
+        background: transparent;
+        padding: 0;
+        
+        .participant-row {
+          margin-bottom: 4px;
+          
+          .participant-name {
+            max-width: none;
+          }
+        }
+        
+        .message-timestamp {
+          margin-top: 4px;
+          padding-top: 4px;
         }
       }
     }
     
     .message-content {
-      padding: 16px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 150px;
       
-      .message-subject {
-        font-size: 15px;
+      .message-header {
+        flex-wrap: wrap;
+        gap: 8px;
+        
+        .message-status-badge {
+          margin-left: 0;
+        }
+        
+        &.no-subject {
+          margin-bottom: 4px;
+        }
       }
       
-      .message-body {
-        font-size: 14px;
+      .message-body-preview {
+        margin-bottom: 28px;
+        min-height: 45px;
+        max-height: 6.4em;
+        overflow: hidden;
+        flex: 1 0 auto;
+        -webkit-line-clamp: 4;
+      }
+      
+      .message-footer {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 8px;
+        margin-top: auto;
+        padding-top: 12px;
+        
+        .message-actions {
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          gap: 8px;
+          justify-content: center;
+          padding: 0 20px;
+          
+          .btn {
+            flex: 0 1 auto;
+            min-width: 120px;
+            max-width: 180px;
+            font-size: 12px;
+            padding: 10px 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            
+            .glyphicon {
+              font-size: 13px;
+            }
+            
+            // When there's only one button, don't let it get too wide
+            &:only-child {
+              max-width: 160px;
+            }
+          }
+        }
       }
     }
   }
@@ -578,6 +801,22 @@
   }
   100% {
     box-shadow: 0 2px 8px rgba($primary, 0.3);
+  }
+}
+
+// Stronger pulse animation for unread incoming messages
+@keyframes pulse-attention-strong {
+  0% {
+    box-shadow: 0 4px 12px rgba($success, 0.4);
+    transform: scale(1.05);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba($success, 0.6);
+    transform: scale(1.08);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba($success, 0.4);
+    transform: scale(1.05);
   }
 }
 
@@ -623,22 +862,22 @@
     }
     
     &.btn-sms {
-      background: linear-gradient(135deg, $success 0%, darken($success, 10%) 100%);
+      background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
       color: white;
       
       &:hover {
-        background: linear-gradient(135deg, darken($success, 5%) 0%, darken($success, 15%) 100%);
-        box-shadow: 0 4px 12px rgba($success, 0.3);
+        background: linear-gradient(135deg, darken($primary, 5%) 0%, darken($primary, 15%) 100%);
+        box-shadow: 0 4px 12px rgba($primary, 0.3);
       }
     }
     
     &.btn-email {
-      background: linear-gradient(135deg, $info 0%, darken($info, 10%) 100%);
+      background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
       color: white;
       
       &:hover {
-        background: linear-gradient(135deg, darken($info, 5%) 0%, darken($info, 15%) 100%);
-        box-shadow: 0 4px 12px rgba($info, 0.3);
+        background: linear-gradient(135deg, darken($primary, 5%) 0%, darken($primary, 15%) 100%);
+        box-shadow: 0 4px 12px rgba($primary, 0.3);
       }
     }
     
@@ -680,6 +919,49 @@
     .btn-message {
       width: 100%;
       justify-content: center;
+    }
+  }
+}
+
+// Extra small screens (iPhone SE, etc.)
+@media (max-width: 375px) {
+  .message-card {
+    padding: 12px;
+    padding-bottom: 12px;
+    min-height: 180px;
+    
+    .message-content {
+      min-height: 140px;
+      
+      .message-body-preview {
+        margin-bottom: 16px;
+        min-height: 30px;
+        -webkit-line-clamp: 3;
+        max-height: 4.8em;
+      }
+      
+      .message-footer {
+        .message-actions {
+          justify-content: center;
+          padding: 0 12px;
+          
+          .btn {
+            min-width: 100px;
+            max-width: 140px;
+            font-size: 11px;
+            padding: 8px 12px;
+            gap: 6px;
+            
+            .glyphicon {
+              font-size: 12px;
+            }
+            
+            &:only-child {
+              max-width: 130px;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -1,6 +1,11 @@
 @import 'variables';
 
 // Duplicates Section
+// Ensure duplicate glyph is always warning color
+span.glyphicon.glyphicon-duplicate {
+  color: $warning !important;
+}
+
 .duplicates-section {
   background: white;
   border-radius: 12px;
@@ -27,8 +32,14 @@
       align-items: center;
       gap: 8px;
       
+      // Default glyphicon color
       .glyphicon {
         color: $brand-teal;
+        
+        // Specific override for duplicate icon
+        &.glyphicon-duplicate {
+          color: $warning !important;
+        }
       }
     }
     

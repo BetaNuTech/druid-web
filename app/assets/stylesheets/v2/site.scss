@@ -252,3 +252,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+// Global glyph color overrides
+.glyphicon-duplicate,
+span.glyphicon.glyphicon-duplicate {
+  color: $warning !important;
+}

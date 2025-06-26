@@ -1,155 +1,259 @@
-<div class="row">
-  <div class="col-md-12">
-    <h1>
-      Messages
-      <% if @messageable.present? %>
-        for <%= @messageable.name %>
-      <% end %>
-    </h1>
-  </div>
-</div>
-
-<% if @messageable.present? %>
-  <div class="row">
-    <div class="col-md-6">
-      <%= render partial: "new_message_callout", locals: {messageable: @messageable} %>
-    </div>
-  </div>
-<% end %>
-
-<div class="bg-info" style="padding: 1em;">
-  <%= form_for(@search, url: messages_path, method: :get, class: 'form') do |form| %>
+<!-- Hero Header Section -->
+<div class="messages-hero">
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-md-10">
-        <%= form.check_box :unread %>
-        <%= form.label :unread, 'Unread' %>
-        &nbsp; &nbsp;
-        <%= form.check_box :incoming %>
-        <%= form.label :incoming, 'Incoming' %>
-        &nbsp; &nbsp;
-        <%= form.check_box :outgoing %>
-        <%= form.label :outgoing, 'Outgoing' %>
-        <br/>
-        <%= form.check_box :draft %>
-        <%= form.label :draft, 'Draft' %>
-        &nbsp; &nbsp;
-        <%= form.check_box :failed %>
-        <%= form.label :failed, 'Failed' %>
-      </div>
-      <div class="col-md-2">
-        <%= form.submit 'Refresh', class: 'btn btn-sm btn-primary' %>
-        <%= link_to('Clear', messages_path, class: '') %>
+      <div class="col-md-12">
+        <h1>
+          <%= glyph(:envelope) %>
+          Messages
+          <% if @messageable.present? %>
+            <span class="text-muted">for <%= @messageable.name %></span>
+          <% end %>
+        </h1>
+        
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-value"><%= @messages.total_count %></span>
+            <span class="stat-label">Total Messages</span>
+          </div>
+        </div>
+        
       </div>
     </div>
-  <% end %>
+  </div>
 </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <table class="table message_list">
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @messages.each do |message| %>
-          <% next unless policy(message).show? %>
-          <tr id="message-preview-<%= message.id%>" class="<%= ( message.outgoing? || message.read? ) ? '' : 'message_unread' %> <%= message.draft? ? 'message_draft' : '' %>">
-            <td>
-              <span class="text-nowrap">
-                <% if message.draft? %>
-                  <%= link_to(glyph(:edit), edit_message_path(message), class: 'btn btn-xs btn-primary') if policy(message).edit? %>
-                  <%= message_type_indicator(message) %>
-                  <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn-sm btn-primary" }) %>
+<!-- Filter Section -->
+<div class="container-fluid">
+  <div class="messages-filter">
+    <%= form_for(@search, url: messages_path, method: :get, class: 'form', id: 'messages-filter-form') do |form| %>
+      <div class="filter-header">
+        <h3><%= glyph(:filter) %> Filter Messages</h3>
+      </div>
+      
+      <div class="filter-groups">
+        <div class="filter-group">
+          <div class="group-label">Status</div>
+          <div class="filter-options">
+            <label class="filter-toggle">
+              <%= form.check_box :unread %>
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <%= glyph(:envelope) %> Unread
+              </span>
+            </label>
+            
+            <label class="filter-toggle">
+              <%= form.check_box :draft %>
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <%= glyph(:file) %> Drafts
+              </span>
+            </label>
+            
+            <label class="filter-toggle">
+              <%= form.check_box :failed %>
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <%= glyph(:warning_sign) %> Failed
+              </span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <div class="group-label">Direction</div>
+          <div class="filter-options">
+            <label class="filter-toggle">
+              <%= form.check_box :incoming %>
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <%= glyph(:arrow_left) %> Incoming
+              </span>
+            </label>
+            
+            <label class="filter-toggle">
+              <%= form.check_box :outgoing %>
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <%= glyph(:arrow_right) %> Outgoing
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-actions">
+        <%= form.submit 'Apply Filters', class: 'btn btn-primary' %>
+        <%= link_to 'Clear All', messages_path, class: 'btn btn-default' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Messages List -->
+<div class="container-fluid messages-list">
+  <div class="messages-container">
+    <% if @messages.any? %>
+      <% @messages.each do |message| %>
+        <% next unless policy(message).show? %>
+        <div class="message-list-card <%= (message.outgoing? || message.read?) ? '' : 'unread' %> <%= message.draft? ? 'draft' : ''%> <%= message.incoming? ? 'incoming-message' : 'outgoing-message' %>" id="message-preview-<%= message.id %>" data-url="<%= message_path(message) %>">
+          <!-- Left Column - Avatar & Indicators -->
+          <div class="message-indicators">
+            <div class="message-avatar <%= message.incoming? ? 'incoming' : 'outgoing' %>">
+              <% if message.incoming? %>
+                <%= glyph(:user) %>
+              <% else %>
+                <%= glyph(:send) %>
+              <% end %>
+            </div>
+            <div class="message-meta">
+              <div class="message-type-badge">
+                <% if message.message_type&.name == 'SMS' %>
+                  <%= glyph(:phone) %> SMS
                 <% else %>
-                  <span class="dashboard_item_date">
-                    <%= message_delivery_indicator_link(message) %>
-                    <%= message_type_indicator(message) %>
-                    <%= short_datetime(message.delivered_at || message.updated_at) %>
+                  <%= glyph(:envelope) %> Email
+                <% end %>
+              </div>
+              <div class="message-direction-label <%= message.incoming? ? 'incoming' : 'outgoing' %>">
+                <%= message.incoming? ? 'Incoming' : 'Outgoing' %>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Middle Column - Participants & Time -->
+          <div class="message-participants">
+            <div class="participant-info">
+              <div class="participant-row from-row">
+                <span class="participant-label">From:</span>
+                <span class="participant-name">
+                  <% if message.incoming? && message.messageable&.is_a?(Lead) %>
+                    <%= link_to message.sender_name, lead_path(message.messageable), title: message.sender_name, class: 'lead-link' %>
+                  <% else %>
+                    <span title="<%= message.sender_name %>"><%= message.sender_name %></span>
+                  <% end %>
+                </span>
+              </div>
+              <div class="participant-row to-row">
+                <span class="participant-label">To:</span>
+                <span class="participant-name">
+                  <% if message.outgoing? && message.messageable&.is_a?(Lead) %>
+                    <%= link_to message.recipient_name, lead_path(message.messageable), title: message.recipient_name, class: 'lead-link' %>
+                  <% else %>
+                    <span title="<%= message.recipient_name %>"><%= message.recipient_name %></span>
+                  <% end %>
+                </span>
+              </div>
+              <div class="message-timestamp">
+                <%= glyph(:time) %> <%= short_datetime(message.delivered_at || message.updated_at) %>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Column - Content & Actions -->
+          <div class="message-content <%= message.message_type&.name == 'SMS' ? 'sms-content' : '' %>">
+            <% has_subject = message.message_type&.name != 'SMS' %>
+            <% has_status = message.failed? || message.draft? %>
+            <% if has_subject || has_status %>
+              <div class="message-header <%= !has_subject ? 'no-subject' : '' %>">
+                <% if has_subject %>
+                  <div class="message-subject">
+                    <strong><%= message.subject.presence || "(No Subject)" %></strong>
+                  </div>
+                <% end %>
+                <% if message.failed? %>
+                  <span class="message-status-badge status-failed">
+                    <%= glyph(:warning_sign) %> Failed
+                  </span>
+                <% elsif message.draft? %>
+                  <span class="message-status-badge status-draft">
+                    <%= glyph(:file) %> Draft
                   </span>
                 <% end %>
-              </span>
-              <br/><br/>
-              <span class="text-nowrap">
-                <span class="btn btn-xs btn-default">
-                  <b>From:</b>
-                  <% if message.incoming? && message.messageable&.is_a?(Lead) %>
-                     <%= link_to(truncate(message.sender_name, length: 20), lead_path(message.messageable)) %>
-                  <% else %>
-                    <%= truncate(message.sender_name, length: 20) %>
+              </div>
+            <% end %>
+            <div class="message-body-preview <%= (!has_subject && !has_status) ? 'no-header' : '' %>">
+              <%= message_body_preview_content(message).presence || (message.draft? ? "Click to edit draft..." : "(No content)") %>
+            </div>
+            <div class="message-footer">
+              <div class="message-actions">
+                <% if message.draft? %>
+                  <% if policy(message).edit? %>
+                    <%= link_to edit_message_path(message), class: 'btn btn-sm btn-default', title: 'Edit Draft', data: { 'no-turbolink': true } do %>
+                      <%= glyph(:edit) %> Edit
+                    <% end %>
                   <% end %>
-                </span>
-              </span>
-              <br/>
-              <span class="text-nowrap">
-                <span class="btn btn-xs btn-default">
-                  <b>To:</b>
-                  <% if message.outgoing? && message.messageable&.is_a?(Lead) %>
-                     <%= link_to(truncate(message.recipient_name, length: 20), lead_path(message.messageable)) %>
-                  <% else %>
-                    <%= truncate(message.recipient_name, length: 20) %>
+                  <%= link_to deliver_message_path(message), method: :post, class: "btn btn-sm btn-primary", data: { 'no-turbolink': true } do %>
+                    <%= glyph(:send) %> Send Now
                   <% end %>
-                </span>
-              </span>
-              <br/>
-            </td>
-            <td class="message_body_preview">
-              <span class="message_subject">
-                <%= link_to(new_message_path(reply_to: message.id)) do %>
-                  <%= message.subject %>
+                <% else %>
+                  <% if message.allows_reply? %>
+                    <%= link_to new_message_path(reply_to: message.id), class: 'btn btn-sm btn-primary', data: { 'no-turbolink': true } do %>
+                      <%= glyph('send') %> Reply
+                    <% end %>
+                  <% end %>
+                  <% if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
+                    <%= link_to lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), 
+                        class: 'btn btn-sm mark-as-read-btn', 
+                        id: "message-read-button-#{message.id}",
+                        remote: true, 
+                        method: :post,
+                        title: 'Mark as Read',
+                        data: { 'no-turbolink': true } do %>
+                      <%= glyph(:envelope_open) %> Mark as Read
+                    <% end %>
+                  <% end %>
                 <% end %>
-              </span>
-              <% if message.draft? && policy(message).edit? %>
-                <%= link_to(edit_message_path(message)) do %>
-                  <%= message_body_preview(message) %>
-                <% end %>
-              <% else %>
-                <%= link_to(message_path(message)) do %>
-                  <%= message_body_preview(message) %>
-                <% end %>
-                <%= link_to('Reply', new_message_path(reply_to: message.id), class: 'btn btn-primary') if message.allows_reply? %>
-                <%= link_to('Mark As Read', lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), {class: 'btn btn-primary', id: "message-read-button-#{message.id}",remote: true, method: :post}) if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="messages-empty">
+        <div class="empty-icon">
+          <%= glyph(:envelope) %>
+        </div>
+        <h3>No messages found</h3>
+        <p>Try adjusting your filters or compose a new message to get started.</p>
+      </div>
+    <% end %>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-12">
+<!-- Pagination -->
+<div class="container-fluid">
+  <div class="messages-pagination">
     <%= paginate @messages, params: @search.pagination_params %>
   </div>
 </div>
 
 <% if current_user.setting_enabled?(:view_all_messages) %>
-  <div class="row">
-    <div class="col-sm-6 alert alert-info">
-      <small>
-        <i>
-          <b>Too many messages?</b><br/>
-          To view only messages to and from YOUR leads:
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="alert alert-info" style="margin-top: 30px;">
+          <h4><%= glyph(:info_sign) %> Too many messages?</h4>
+          <p>To view only messages to and from YOUR leads:</p>
           <ol>
-            <li> Go to your <%= link_to('Profile', edit_user_path(current_user)) %> page </li>
+            <li>Go to your <%= link_to('Profile', edit_user_path(current_user)) %> page</li>
             <li>Find the "Blue Sky Application Settings" section</li>
             <li>Uncheck "View all messages" option</li>
             <li>Click "Save"</li>
           </ol>
-        </i>
-      </small>
+        </div>
+      </div>
     </div>
   </div>
 <% end %>
 
-<div class="row">
-  <div class="col-md-6">
-    <% if @messageable.present? %>
-      <%= link_to("Back", url_for(@messageable), class: "btn btn-xs btn-info") %>
-    <% end %>
+<% if @messageable.present? %>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12" style="margin-top: 20px;">
+        <%= link_to url_for(@messageable), class: "btn btn-default" do %>
+          <%= glyph(:arrow_left) %> Back to <%= @messageable.class.name.humanize %>
+        <% end %>
+      </div>
+    </div>
   </div>
-</div>
+<% end %>

@@ -71,6 +71,11 @@
       transition: all 0.3s ease;
       position: relative;
       z-index: 1;
+      
+      // Warning color for duplicate icon
+      &.glyphicon-duplicate {
+        color: $warning;
+      }
     }
     
     span {
@@ -93,12 +98,32 @@
       .glyphicon {
         color: $brand-teal;
         transform: scale(1.1);
+        
+        // Keep warning color on hover for duplicate icon
+        &.glyphicon-duplicate {
+          color: $warning;
+        }
+      }
+    }
+    
+    // Special hover state for duplicates button
+    &.quick-nav-duplicates:hover {
+      box-shadow: 0 6px 20px rgba($warning, 0.15);
+      border-color: $warning;
+      
+      &::before {
+        background: linear-gradient(135deg, rgba($warning, 0.1) 0%, rgba($warning, 0.05) 100%);
       }
     }
     
     &:active {
       transform: translateY(0);
       box-shadow: 0 3px 12px rgba($brand-teal, 0.2);
+    }
+    
+    // Special active state for duplicates button
+    &.quick-nav-duplicates:active {
+      box-shadow: 0 3px 12px rgba($warning, 0.2);
     }
   }
   

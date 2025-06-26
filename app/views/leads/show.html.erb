@@ -103,6 +103,12 @@
           <%= glyph(:file) %>
           <span>Notes</span>
         </a>
+        <% if @lead.duplicates.present? %>
+          <a href="#duplicates-section" class="quick-nav-link quick-nav-duplicates">
+            <%= glyph(:duplicate) %>
+            <span>Duplicates</span>
+          </a>
+        <% end %>
         <a href="#roommates-section" class="quick-nav-link">
           <%= glyph(:user) %>
           <span>Roommates</span>
@@ -384,7 +390,7 @@
     <div class="row">
       <div class="col-md-12">
         <!-- Duplicates Section -->
-        <div class="section-wrapper">
+        <div class="section-wrapper" id="duplicates-section">
           <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
         </div>
         
