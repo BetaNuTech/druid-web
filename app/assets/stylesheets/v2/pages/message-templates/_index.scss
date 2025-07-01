@@ -1,0 +1,30 @@
+// Message Templates Page Styles - BEM Structure
+// Minimal styles for message templates
+
+@import '../../variables';
+
+// Autofill help section
+.autofill-help {
+  &__list {
+    dt {
+      font-weight: $font-weight-bold;
+    }
+  }
+}
+
+// Message template preview
+.template-preview {
+  &__iframe {
+    width: 100%;
+    border: 0;
+  }
+}
+
+// Legacy support
+dl.autofill-help {
+  @extend .autofill-help__list;
+}
+
+iframe#message-template-preview {
+  @extend .template-preview__iframe;
+}

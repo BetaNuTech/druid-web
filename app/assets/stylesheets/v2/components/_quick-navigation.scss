@@ -1,0 +1,131 @@
+// Quick Navigation Component
+// Centered navigation with teal buttons for lead detail page
+
+@import '../variables';
+
+.quick-navigation {
+  background: $white;
+  padding: $spacing-xl 0;
+  border-bottom: 1px solid $gray-200;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 $spacing-lg;
+    text-align: center;
+  }
+  
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semi-bold;
+    color: $gray-800;
+    margin: 0 0 $spacing-lg 0;
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    .glyphicon {
+      color: $brand-teal;
+      font-size: 24px;
+    }
+  }
+  
+  &__links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+  
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-lg;
+    background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 5%) 100%);
+    color: $white;
+    border: none;
+    border-radius: $border-radius-md;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-base;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba($brand-teal, 0.25);
+    
+    &:hover {
+      background: linear-gradient(135deg, lighten($brand-teal, 5%) 0%, $brand-teal 100%);
+      color: $white;
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba($brand-teal, 0.35);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba($brand-teal, 0.25);
+    }
+    
+    .glyphicon {
+      font-size: 16px;
+      color: $white;
+    }
+    
+    // Duplicates variant with warning color
+    &--duplicates {
+      background: linear-gradient(135deg, $warning 0%, darken($warning, 5%) 100%);
+      box-shadow: 0 2px 4px rgba($warning, 0.25);
+      
+      &:hover {
+        background: linear-gradient(135deg, lighten($warning, 5%) 0%, $warning 100%);
+        box-shadow: 0 4px 8px rgba($warning, 0.35);
+      }
+      
+      &:active {
+        box-shadow: 0 1px 2px rgba($warning, 0.25);
+      }
+    }
+  }
+  
+  // Mobile responsiveness
+  @media (max-width: $screen-sm-max) {
+    padding: $spacing-lg 0;
+    
+    &__container {
+      padding: 0 $spacing-md;
+    }
+    
+    &__title {
+      font-size: $font-size-xl;
+      margin-bottom: $spacing-md;
+      
+      .glyphicon {
+        font-size: 20px;
+      }
+    }
+    
+    &__links {
+      gap: $spacing-sm;
+    }
+    
+    &__link {
+      padding: $spacing-sm $spacing-md;
+      font-size: $font-size-sm;
+      
+      .glyphicon {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Remove old styles that might conflict
+.lead-detail__quick-nav,
+.lead-detail__quick-nav-links,
+.lead-detail__quick-nav-link {
+  // These are deprecated in favor of the new quick-navigation component
+}

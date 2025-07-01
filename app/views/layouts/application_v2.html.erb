@@ -15,17 +15,17 @@
 
   <body<%- if @webpack %> data-no-turbolink data-no-transition-cache<% end %>>
     <div id="app_layout" class="">
-      <div id="headerrow">
-        <div class="appname">
-          <span id="nav-hamburger" class="hamburger visible-xs visible-sm">
+      <div id="headerrow" class="header">
+        <div class="header__appname">
+          <span id="nav-hamburger" class="header__hamburger header__hamburger--mobile">
               <svg viewBox="0 0 100 80" width="20" height="20">
                 <rect width="100" height="15" style="fill:rgb(201,208,216)"></rect>
                 <rect y="30" width="100" height="15" style="fill:rgb(201,208,216)"></rect>
                 <rect y="60" width="100" height="15" style="fill:rgb(201,208,216)"></rect>
               </svg>
           </span>
-          <span class="part-1">BLUESKY</span>
-          <span class="part-2">LEAD MANAGEMENT</span>
+          <span class="header__brand-primary">BLUESKY</span>
+          <span class="header__brand-secondary">LEAD MANAGEMENT</span>
         </div>
       </div>
       <div id="content" class="content">

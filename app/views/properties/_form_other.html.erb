@@ -1,23 +1,23 @@
-<fieldset>
-  <legend>
+<fieldset class="fieldset">
+  <legend class="fieldset__legend">
     Other Information
-    <a href="#property_other_information" data-toggle="collapse" aria-expanded="false" aria-controls="property_other_information" class="btn btn-xs btn-info">
+    <a href="#property_other_information" data-toggle="collapse" aria-expanded="false" aria-controls="property_other_information" class="btn btn--extra-small btn--info">
       More...
     </a>
   </legend>
 
   <div class="collapse" id="property_other_information">
     <div class="row">
-      <div class="col-md-8 form-group">
-        <%= form.label :school_district %>
-        <%= form.text_field :school_district, id: :property_school_district, class: "form-control" %>
+      <div class="col-md-8 form__group">
+        <%= form.label :school_district, class: 'form__label' %>
+        <%= form.text_field :school_district, id: :property_school_district, class: "form__control" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-8 form-group">
-        <%= form.label :amenities %>
-        <%= form.text_area :amenities, id: :property_amenities, class: "form-control" %>
+      <div class="col-md-8 form__group">
+        <%= form.label :amenities, class: 'form__label' %>
+        <%= form.text_area :amenities, id: :property_amenities, class: "form__control" %>
       </div>
     </div>
   </div>

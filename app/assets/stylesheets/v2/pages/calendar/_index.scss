@@ -1,0 +1,323 @@
+// Calendar Page Styles - BEM Structure
+// Scheduled actions calendar view
+
+@import '../../variables';
+@import '../../functions';
+
+// Calendar container
+.calendar {
+  background: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+  
+  // Calendar header
+  &__header {
+    background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+    color: $white;
+    padding: $spacing-lg;
+    
+    @media (max-width: $screen-xs-max) {
+      padding: $spacing-md;
+    }
+  }
+  
+  // Header controls
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-md;
+    
+    @media (max-width: $screen-xs-max) {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+  
+  // Navigation buttons
+  &__nav {
+    display: flex;
+    gap: $spacing-sm;
+    
+    .btn {
+      background: rgba($white, 0.1);
+      border: 1px solid rgba($white, 0.2);
+      color: $white;
+      
+      &:hover {
+        background: rgba($white, 0.2);
+      }
+    }
+  }
+  
+  // Month display
+  &__month {
+    font-size: $font-size-h3;
+    font-weight: $font-weight-bold;
+    text-align: center;
+    flex: 1;
+    
+    @media (max-width: $screen-xs-max) {
+      font-size: $font-size-xl;
+      margin: $spacing-sm 0;
+    }
+  }
+  
+  // Task type selector
+  &__task-selector {
+    select {
+      background: rgba($white, 0.1);
+      border: 1px solid rgba($white, 0.2);
+      color: $white;
+      padding: $spacing-xs $spacing-sm;
+      border-radius: $border-radius-sm;
+      
+      option {
+        background: $primary;
+      }
+    }
+  }
+  
+  // Calendar table
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    
+    th {
+      background: $gray-50;
+      color: $gray-700;
+      font-weight: $font-weight-medium;
+      padding: $spacing-sm;
+      text-align: center;
+      border-bottom: 2px solid $gray-200;
+    }
+    
+    td {
+      border: 1px solid $gray-200;
+      padding: $spacing-xs;
+      height: 100px;
+      vertical-align: top;
+      position: relative;
+      
+      @media (max-width: $screen-sm-max) {
+        height: 80px;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+  
+  // Day number
+  &__day {
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-xs;
+    
+    &--today {
+      background: $primary;
+      color: $white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    &--other-month {
+      color: $gray-400;
+    }
+  }
+  
+  // Calendar entry
+  &__entry {
+    display: block;
+    padding: 2px 4px;
+    margin-bottom: 2px;
+    border-radius: $border-radius-xs;
+    font-size: $font-size-xs;
+    line-height: 1.3;
+    text-decoration: none;
+    color: $white;
+    background: $primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    &:hover {
+      background: darken($primary, 10%);
+      text-decoration: none;
+    }
+    
+    &--overdue {
+      background: $danger;
+      
+      &:hover {
+        background: darken($danger, 10%);
+      }
+    }
+    
+    &--completed {
+      background: $gray-400;
+      text-decoration: line-through;
+    }
+    
+    @media (max-width: $screen-sm-max) {
+      font-size: 10px;
+      padding: 1px 2px;
+    }
+  }
+  
+  // Tasks sections
+  &__tasks {
+    padding: $spacing-lg;
+    background: $gray-50;
+    
+    @media (max-width: $screen-xs-max) {
+      padding: $spacing-md;
+    }
+  }
+  
+  &__tasks-header {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semi-bold;
+    margin-bottom: $spacing-md;
+    color: $gray-800;
+  }
+  
+  &__tasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  &__task {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-sm;
+    padding: $spacing-sm;
+    margin-bottom: $spacing-sm;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translateX(4px);
+      box-shadow: $shadow-sm;
+    }
+    
+    &--overdue {
+      border-left: 3px solid $danger;
+      
+      .calendar__task-time {
+        color: $danger;
+      }
+    }
+  }
+  
+  &__task-time {
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    min-width: 60px;
+  }
+  
+  &__task-content {
+    flex: 1;
+    
+    a {
+      color: $gray-800;
+      text-decoration: none;
+      
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+  
+  &__task-lead {
+    font-size: $font-size-sm;
+    color: $gray-600;
+  }
+}
+
+// Legacy support for existing markup
+#calendar-header {
+  @extend .calendar__header;
+}
+
+#calendar-controls {
+  @extend .calendar__controls;
+}
+
+.calendar-nav {
+  @extend .calendar__nav;
+}
+
+.calendar-month {
+  @extend .calendar__month;
+}
+
+.task-type-selector {
+  @extend .calendar__task-selector;
+}
+
+.calendar-table {
+  @extend .calendar__table;
+  
+  .day-number {
+    @extend .calendar__day;
+    
+    &.today {
+      @extend .calendar__day--today;
+    }
+    
+    &.other-month {
+      @extend .calendar__day--other-month;
+    }
+  }
+  
+  .calendar-entry {
+    @extend .calendar__entry;
+    
+    &.overdue {
+      @extend .calendar__entry--overdue;
+    }
+    
+    &.completed {
+      @extend .calendar__entry--completed;
+    }
+  }
+}
+
+.due-tasks-section,
+.upcoming-tasks-section {
+  @extend .calendar__tasks;
+  
+  h3 {
+    @extend .calendar__tasks-header;
+  }
+  
+  ul {
+    @extend .calendar__tasks-list;
+  }
+  
+  li {
+    @extend .calendar__task;
+    
+    &.overdue {
+      @extend .calendar__task--overdue;
+    }
+    
+    .task-time {
+      @extend .calendar__task-time;
+    }
+    
+    .task-content {
+      @extend .calendar__task-content;
+    }
+    
+    .task-lead {
+      @extend .calendar__task-lead;
+    }
+  }
+}

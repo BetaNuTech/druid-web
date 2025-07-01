@@ -1,5 +1,6 @@
-<div class="row" >
+<div class="property-details">
   <h2><%= @property.name %></h2>
+  
   <% if @property.logo.attached? %>
     <div class="row">
       <div class="col-md-12">
@@ -10,16 +11,20 @@
     </div>
   <% end %>
 
+  <!-- Basic Information -->
   <div class="row">
+    <div class="col-md-4">
+      <p>
+        <strong>Name:</strong>
+        <%= @property.name %>
+      </p>
+    </div>
     <div class="col-md-4">
       <p>
         <strong>Active:</strong>
         <%= @property.active %>
       </p>
     </div>
-  </div>
-
-  <div class="row">
     <div class="col-md-4">
       <p>
         <strong>Team:</strong>
@@ -28,15 +33,7 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-4">
-      <p>
-        <strong>Name:</strong>
-        <%= @property.name %>
-      </p>
-    </div>
-  </div>
-
+  <!-- Contact Information -->
   <div class="row">
     <div class="col-md-6">
       <p>
@@ -44,9 +41,6 @@
         <%= @property.contact_name %>
       </p>
     </div>
-  </div>
-
-  <div class="row">
     <div class="col-md-6">
       <p>
         <strong>Organization:</strong>
@@ -55,106 +49,52 @@
     </div>
   </div>
 
+  <!-- Address Information -->
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <p>
-        <strong>Address1:</strong>
-        <%= @property.address1 %>
+        <strong>Address:</strong><br/>
+        <%= @property.address1 %><br/>
+        <% if @property.address2.present? %>
+          <%= @property.address2 %><br/>
+        <% end %>
+        <% if @property.address3.present? %>
+          <%= @property.address3 %><br/>
+        <% end %>
+        <%= @property.city %>, <%= @property.state %> <%= @property.zip %> <%= @property.country %>
       </p>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
-      <p>
-        <strong>Address2:</strong>
-        <%= @property.address2 %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <p>
-        <strong>Address3:</strong>
-        <%= @property.address3 %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-4">
-      <p>
-        <strong>City:</strong>
-        <%= @property.city %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>State:</strong>
-        <%= @property.state %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>Zip:</strong>
-        <%= @property.zip %>
-      </p>
-    </div>
-    <div class="col-md-2">
-      <p>
-        <strong>Country:</strong>
-        <%= @property.country %>
-      </p>
-    </div>
-  </div>
-
-
+  <!-- Phone Numbers -->
   <div class="row">
     <div class="col-md-3">
       <p>
-        <strong>Phone:</strong>
+        <strong>Phone:</strong><br/>
         <%= number_to_phone(@property.phone) if @property.phone.present? %>
       </p>
     </div>
     <div class="col-md-3">
       <p>
-        <strong>Fax:</strong>
+        <strong>Fax:</strong><br/>
         <%= number_to_phone(@property.fax) if @property.fax.present? %>
       </p>
     </div>
     <div class="col-md-3">
       <p>
-        <strong>Maintenance Phone:</strong>
+        <strong>Maintenance Phone:</strong><br/>
         <%= number_to_phone(@property.maintenance_phone) if @property.maintenance_phone.present? %>
       </p>
     </div>
     <div class="col-md-3">
       <p>
-        <strong>Leasing Phone:</strong>
+        <strong>Leasing Phone:</strong><br/>
         <%= number_to_phone(@property.leasing_phone) if @property.leasing_phone.present? %>
       </p>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-8">
-      <p>
-        <strong>Website:</strong>
-        <%= @property.website %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <strong>Rental Application URL:</strong>
-        <%= @property.application_url %>
-      </p>
-    </div>
-  </div>
-
+  <!-- Online Presence -->
   <div class="row">
     <div class="col-md-6">
       <p>
@@ -162,49 +102,68 @@
         <%= @property.email %>
       </p>
     </div>
+    <div class="col-md-6">
+      <p>
+        <strong>Website:</strong>
+        <%= link_to @property.website, @property.website, target: "_blank" if @property.website.present? %>
+      </p>
+    </div>
   </div>
 
+  <% if @property.application_url.present? %>
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Rental Application URL:</strong>
+          <%= link_to @property.application_url, @property.application_url, target: "_blank" %>
+        </p>
+      </div>
+    </div>
+  <% end %>
 
+  <!-- Property Details -->
   <div class="row">
-    <div class="col-md-6">
-
+    <div class="col-md-4">
       <p>
         <strong>Units:</strong>
         <%= @property.units %>
       </p>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-
+    <div class="col-md-8">
       <p>
-        <strong>Notes:</strong>
-        <%= @property.notes %>
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
         <strong>School District:</strong>
         <%= @property.school_district %>
       </p>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
-        <strong>Amenities</strong>
-        <%= @property.amenities %>
-      </p>
+  <% if @property.amenities.present? %>
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Amenities:</strong><br/>
+          <%= simple_format(@property.amenities) %>
+        </p>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <%= link_to 'Edit', edit_property_path(@property), class: 'btn btn-sm btn-primary' %>
-      <%= link_to 'Back', :back, class: 'btn btn-xs btn-info' %>
-    </div>
-  </div>
+  <% end %>
 
+  <% if @property.notes.present? %>
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Notes:</strong><br/>
+          <%= simple_format(@property.notes) %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Actions -->
+  <div class="row">
+    <div class="col-md-12">
+      <%= link_to 'Edit', edit_property_path(@property), class: "btn btn--small btn--primary" %>
+      <%= link_to 'Back', :back, class: "btn btn--xs btn--info" %>
+    </div>
+  </div>
 </div>

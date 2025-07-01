@@ -1,0 +1,226 @@
+// Selectize Component Styles
+// Customizes the Selectize.js dropdown to match BlueSky Design System V2
+
+@import '../variables';
+
+// Selectize control (the visible input/dropdown)
+.selectize-control,
+#lead_referrable .selectize-control,
+#lead_referral + .selectize-control,
+.selectize-wrapper .selectize-control {
+  position: relative;
+  z-index: auto; // Let dropdown control z-index
+  
+  // Single select
+  &.single {
+    .selectize-input {
+      position: relative;
+      background-color: $gray-50 !important;
+      border: 1px solid $gray-300 !important;
+      border-radius: $border-radius-md !important;
+      padding: $spacing-sm $spacing-md !important;
+      padding-right: 40px !important;
+      min-height: 42px !important;
+      cursor: pointer !important;
+      transition: all 0.3s ease;
+      
+      // Remove default background
+      background-image: none !important;
+      
+      &:hover {
+        background-color: $white !important;
+        border-color: $gray-400 !important;
+      }
+      
+      &.focus {
+        background-color: $white !important;
+        border-color: $primary !important;
+        outline: 0;
+        box-shadow: 0 0 0 4px rgba($primary, 0.15),
+                    0 2px 8px rgba($primary, 0.1) !important;
+        z-index: 1051; // Higher than dropdown when focused
+      }
+      
+      &.disabled {
+        background-color: $gray-100;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+      
+      // Selected item
+      > .item {
+        color: $gray-700;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        font-size: $font-size-base;
+        line-height: 1.5;
+      }
+      
+      // Placeholder
+      > input {
+        color: $gray-400;
+        font-size: $font-size-base;
+        
+        &::placeholder {
+          color: $gray-400;
+        }
+      }
+    }
+  }
+  
+  // Multi-select
+  &.multi {
+    .selectize-input {
+      background-color: $white;
+      min-height: 42px;
+      
+      > .item {
+        background-color: $gray-100;
+        border: 1px solid $gray-300;
+        border-radius: $border-radius-sm;
+        padding: 2px 8px;
+        margin: 2px;
+        color: $gray-700;
+        
+        &.active {
+          background-color: $primary;
+          border-color: $primary;
+          color: $white;
+        }
+      }
+    }
+  }
+  
+  // Style the dropdown arrow that Selectize adds
+  .selectize-dropdown-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    cursor: pointer;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid $gray-600;
+      transform: translateY(-50%);
+    }
+    
+    &:hover::after {
+      border-top-color: $primary;
+    }
+  }
+}
+
+
+// Dropdown menu
+.selectize-dropdown {
+  position: absolute !important;
+  z-index: 1050 !important; // Higher than most page content
+  background-color: $white !important;
+  border: 1px solid $gray-300 !important;
+  border-radius: $border-radius-md !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  margin-top: 2px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  // Dropdown items
+  .option {
+    padding: $spacing-sm $spacing-md;
+    color: $gray-700;
+    font-size: $font-size-base;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    
+    &:hover {
+      background-color: rgba($primary, 0.1) !important;
+      color: $primary !important;
+    }
+    
+    &.active {
+      background-color: rgba($primary, 0.05) !important;
+      color: $gray-800;
+    }
+    
+    &.selected {
+      background-color: rgba($primary, 0.15) !important;
+      color: $primary !important;
+      font-weight: $font-weight-medium;
+    }
+    
+    &.create {
+      color: $primary;
+      font-style: italic;
+    }
+  }
+  
+  // Option groups
+  .optgroup {
+    &-header {
+      padding: $spacing-xs $spacing-md;
+      color: $gray-600;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid $gray-200;
+    }
+  }
+  
+  // No results message
+  .no-results {
+    padding: $spacing-md;
+    color: $gray-500;
+    text-align: center;
+    font-style: italic;
+  }
+}
+
+// Remove default selectize styles that conflict
+.selectize-input {
+  box-shadow: none !important;
+  
+  &, 
+  &.focus {
+    -webkit-box-shadow: none !important;
+  }
+}
+
+// Fix for inline forms
+.form-inline {
+  .selectize-control {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+// Size variants
+.selectize-control {
+  &.form-control--sm {
+    .selectize-input {
+      min-height: 32px;
+      padding: $spacing-xs $spacing-sm;
+      font-size: $font-size-sm;
+    }
+  }
+  
+  &.form-control--lg {
+    .selectize-input {
+      min-height: 48px;
+      padding: $spacing-md $spacing-lg;
+      font-size: $font-size-lg;
+    }
+  }
+}

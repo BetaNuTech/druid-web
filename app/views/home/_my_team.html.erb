@@ -1,43 +1,53 @@
-<div class="row" id="dashboard_my_team">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-6">
-        <h3>
-          <%= glyph(:person) %>
-          <%= current_user.team&.name %>
-        </h3>
+<div class="section section--team" id="dashboard_my_team">
+  <div class="section-header">
+    <div class="section-header__content">
+      <div class="section-header__icon">
+        <%= glyph(:person) %>
       </div>
+      <h3 class="section-header__title">
+        <%= current_user.team&.name %>
+      </h3>
     </div>
-    <div class="row">
+  </div>
+  
+  <div class="section__content">
+    <div class="quicklinks__grid">
       <% ( (current_user.properties.to_a) + ( current_user.team&.properties || [] ) ).flatten.uniq.each do |property| %>
         <% leads_accessible = policy(property).leads_accessible? %>
         <% if policy(property).show? %>
-          <div class="property_quicklinks">
-            <div class="property_quicklinks-property">
+          <div class="quicklinks__card">
+            <div class="quicklinks__card-header">
               <% if property.logo.attached? %>
-                <%= link_to image_tag(property.logo.variant(resize: 'x30')), property_path(property) %><br/>
+                <%= link_to image_tag(property.logo.variant(resize: 'x30'), class: "quicklinks__logo"), property_path(property) %>
               <% else %>
-                <h4><%= link_to(property.name, property_path(property)) %></h4><br/>
-              <% end %>
-              <% if leads_accessible %>
-                <%= link_to('Leads', search_leads_path({lead_search: {property_ids: [property.id]}})) %>
-                <% if policy(property).create_lead? %>
-                  <%= link_to('Create', new_lead_path(property_id: property.id), {class: "btn btn-xs btn-primary" }) %> &bullet;
-                <% end %>
-                <span class="text-nowrap">
-                  Mine: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], user_ids: [current_user.id]}})) do %><%= property.leads.for_agent(current_user).count %><% end %>
-                </span> &bullet;
-                <span class="text-nowrap">
-                  Open: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open']}})) do %><%= property.leads.open.count %><% end %>
-                </span> &bullet;
-                <span class="text-nowrap">
-                  Active: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'claimed']}})) do %><%= property.leads.active.count %><% end %>
-                </span>
-                <span class="text-nowrap">
-                  Other: <%= link_to("Duplicates", duplicate_leads_property_path(id: property.id)) %>
-                </span>
+                <h4 class="quicklinks__title"><%= link_to(property.name, property_path(property)) %></h4>
               <% end %>
             </div>
+            
+            <% if leads_accessible %>
+              <div class="quicklinks__stats">
+                <div class="quicklinks__stat-item">
+                  <span class="quicklinks__stat-label">Mine:</span>
+                  <%= link_to(property.leads.for_agent(current_user).count, search_leads_path({lead_search: {property_ids: [property.id], user_ids: [current_user.id]}}), class: "quicklinks__stat-value") %>
+                </div>
+                <div class="quicklinks__stat-item">
+                  <span class="quicklinks__stat-label">Open:</span>
+                  <%= link_to(property.leads.open.count, search_leads_path({lead_search: {property_ids: [property.id], states: ['open']}}), class: "quicklinks__stat-value") %>
+                </div>
+                <div class="quicklinks__stat-item">
+                  <span class="quicklinks__stat-label">Active:</span>
+                  <%= link_to(property.leads.active.count, search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'claimed']}}), class: "quicklinks__stat-value") %>
+                </div>
+              </div>
+              
+              <div class="quicklinks__actions">
+                <%= link_to('View Leads', search_leads_path({lead_search: {property_ids: [property.id]}}), class: "btn btn--xs btn--secondary") %>
+                <% if policy(property).create_lead? %>
+                  <%= link_to('Create', new_lead_path(property_id: property.id), class: "btn btn--xs btn--primary") %>
+                <% end %>
+                <%= link_to("Duplicates", duplicate_leads_property_path(id: property.id), class: "quicklinks__link") %>
+              </div>
+            <% end %>
           </div>
         <% end %>
       <% end %>

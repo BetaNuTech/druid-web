@@ -1,0 +1,163 @@
+// Text Utilities
+// BEM-style utility classes for text styling
+
+@import '../variables';
+
+// Text wrapping utilities
+.u-text {
+  &--nowrap {
+    white-space: nowrap !important;
+  }
+  
+  &--truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap !important;
+  }
+  
+  &--break {
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+// Text color utilities
+.u-text {
+  &--muted {
+    color: $gray-500 !important;
+  }
+  
+  &--primary {
+    color: $primary !important;
+  }
+  
+  &--secondary {
+    color: $secondary !important;
+  }
+  
+  &--success {
+    color: $success !important;
+  }
+  
+  &--danger {
+    color: $danger !important;
+  }
+  
+  &--warning {
+    color: $warning !important;
+  }
+  
+  &--info {
+    color: $info !important;
+  }
+  
+  &--dark {
+    color: $gray-800 !important;
+  }
+  
+  &--light {
+    color: $gray-400 !important;
+  }
+}
+
+// Text alignment utilities
+.u-text {
+  &--left {
+    text-align: left !important;
+  }
+  
+  &--center {
+    text-align: center !important;
+  }
+  
+  &--right {
+    text-align: right !important;
+  }
+}
+
+// Text weight utilities
+.u-text {
+  &--light {
+    font-weight: $font-weight-light !important;
+  }
+  
+  &--regular {
+    font-weight: $font-weight-regular !important;
+  }
+  
+  &--medium {
+    font-weight: $font-weight-medium !important;
+  }
+  
+  &--semibold {
+    font-weight: $font-weight-semi-bold !important;
+  }
+  
+  &--bold {
+    font-weight: $font-weight-bold !important;
+  }
+}
+
+// Text size utilities
+.u-text {
+  &--xs {
+    font-size: $font-size-xs !important;
+  }
+  
+  &--sm {
+    font-size: $font-size-sm !important;
+  }
+  
+  &--base {
+    font-size: $font-size-base !important;
+  }
+  
+  &--lg {
+    font-size: $font-size-lg !important;
+  }
+  
+  &--xl {
+    font-size: $font-size-xl !important;
+  }
+}
+
+// Backward compatibility
+.text-nowrap {
+  @extend .u-text--nowrap;
+}
+
+.text-muted {
+  @extend .u-text--muted;
+}
+
+.text-primary {
+  @extend .u-text--primary;
+}
+
+.text-danger {
+  @extend .u-text--danger;
+}
+
+.text-success {
+  @extend .u-text--success;
+}
+
+.text-warning {
+  @extend .u-text--warning;
+}
+
+.text-info {
+  @extend .u-text--info;
+}
+
+.text-center {
+  @extend .u-text--center;
+}
+
+.text-left {
+  @extend .u-text--left;
+}
+
+.text-right {
+  @extend .u-text--right;
+}

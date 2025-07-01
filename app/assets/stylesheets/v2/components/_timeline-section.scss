@@ -1,0 +1,314 @@
+// Timeline Section Component
+// Used within lead detail pages to show activity history
+
+@import '../variables';
+
+// Timeline container
+.timeline-container {
+  padding: $spacing-lg;
+  
+  @media (max-width: $screen-sm-max) {
+    padding: $spacing-md;
+  }
+}
+
+// Timeline list with vertical line
+.timeline-list {
+  position: relative;
+  padding-left: 40px;
+  
+  // Vertical timeline line
+  &::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: $gray-200;
+  }
+}
+
+// Timeline item wrapper
+.timeline-item {
+  position: relative;
+  margin-bottom: $spacing-lg;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  // Timeline dot
+  &::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 18px;
+    width: 12px;
+    height: 12px;
+    background: $white;
+    border: 2px solid $gray-400;
+    border-radius: 50%;
+    z-index: 2;
+  }
+  
+  // Colored dots for different event types
+  &--state-change::before {
+    border-color: $success;
+    background: $success;
+  }
+  
+  &--message-sent::before,
+  &--email-sent::before,
+  &--sms-sent::before {
+    border-color: $brand-teal;
+  }
+  
+  &--lead-email-sms-opt-in::before {
+    border-color: $info;
+  }
+  
+  &--lead-task::before,
+  &--task-completed::before {
+    border-color: $primary;
+  }
+  
+  &--note::before,
+  &--comment::before {
+    border-color: $gray-500;
+  }
+}
+
+// Timeline card
+.timeline-card {
+  background: $white;
+  border: 1px solid $gray-200;
+  border-radius: $border-radius-md;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: flex;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    border-color: $gray-300;
+  }
+  
+  // Icon section
+  &__icon {
+    width: 40px;
+    height: 40px;
+    background: $gray-100;
+    border-radius: $border-radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: $gray-600;
+    font-size: 18px;
+    
+    // Icon color variants based on timeline item type
+    .timeline-item--state-change & {
+      background: rgba($success, 0.1);
+      color: $success;
+    }
+    
+    .timeline-item--message-sent &,
+    .timeline-item--email-sent &,
+    .timeline-item--sms-sent & {
+      background: rgba($brand-teal, 0.1);
+      color: $brand-teal;
+    }
+    
+    .timeline-item--lead-email-sms-opt-in & {
+      background: rgba($info, 0.1);
+      color: $info;
+    }
+    
+    .timeline-item--lead-task &,
+    .timeline-item--task-completed & {
+      background: rgba($primary, 0.1);
+      color: $primary;
+    }
+  }
+  
+  // Content section
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  // Header row
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xs;
+  }
+  
+  // Title
+  &__title {
+    margin: 0;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    line-height: 1.4;
+  }
+  
+  // Timestamp
+  &__timestamp {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  // Meta information
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    
+    .glyphicon {
+      font-size: 12px;
+      margin-right: $spacing-xs;
+      color: $gray-500;
+    }
+  }
+  
+  // User info
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+  
+  // Body content
+  &__body {
+    font-size: $font-size-sm;
+    color: $gray-700;
+    line-height: 1.6;
+    
+    p {
+      margin: 0 0 $spacing-sm;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  // State change display
+  &__state-change {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-top: $spacing-sm;
+    padding-top: $spacing-sm;
+    border-top: 1px solid $gray-100;
+  }
+  
+  // State badge
+  &__state-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: $gray-100;
+    color: $gray-700;
+    
+    // State colors
+    &--new,
+    &--open {
+      background: rgba($success, 0.1);
+      color: $success;
+    }
+    
+    &--contacted,
+    &--in-progress {
+      background: rgba($info, 0.1);
+      color: $info;
+    }
+    
+    &--qualified,
+    &--complete,
+    &--completed {
+      background: rgba($primary, 0.1);
+      color: $primary;
+    }
+    
+    &--disqualified,
+    &--cancelled,
+    &--rejected {
+      background: rgba($danger, 0.1);
+      color: $danger;
+    }
+    
+    &--scheduled,
+    &--pending {
+      background: rgba($warning, 0.1);
+      color: darken($warning, 10%);
+    }
+  }
+  
+  // State arrow
+  &__state-arrow {
+    color: $gray-400;
+    font-size: $font-size-sm;
+  }
+}
+
+// Empty state - uses global empty state styles
+.empty-timeline {
+  // Extends global empty state styles
+}
+
+// Responsive adjustments
+@media (max-width: $screen-sm-max) {
+  .timeline-list {
+    padding-left: 32px;
+    
+    &::before {
+      left: 11px;
+    }
+  }
+  
+  .timeline-item::before {
+    left: -24px;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .timeline-card {
+    padding: $spacing-sm;
+    
+    &__icon {
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+    }
+    
+    &__header {
+      flex-wrap: wrap;
+      gap: $spacing-xs;
+    }
+    
+    &__title {
+      font-size: $font-size-sm;
+    }
+    
+    &__timestamp {
+      font-size: $font-size-xs;
+    }
+  }
+}

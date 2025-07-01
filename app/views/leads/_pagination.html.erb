@@ -1,10 +1,10 @@
 <div class="row">
   <div class="col-md-12">
     <% if search.total_pages > 1 %>
-      <%= link_to("Next", request.parameters.merge({lead_search: search.next_page_options}), class: "btn btn-default") %>
+      <%= link_to("Next", request.parameters.merge({lead_search: search.next_page_options}), class: "btn btn--secondary") %>
     <% end %>
     <% ( search.total_pages).times do |page_index| %>
-      <% link_class = ( ( page_index + 1) == ( search.current_page ) ? "btn-info" : "btn-default" ) %>
+      <% link_class = ( ( page_index + 1) == ( search.current_page ) ? "btn--info" : "btn--secondary" ) %>
       <%= link_to(page_index + 1, request.parameters.merge({lead_search: search.page_options(page_index + 1)}), class: "btn #{link_class}") %>
     <% end %>
   </div>

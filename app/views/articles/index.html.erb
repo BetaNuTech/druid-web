@@ -4,7 +4,7 @@
   </div>
   <% if policy(Article).new? %>
     <div class="col-md-6 text-right">
-      <%= link_to 'Create New Article', new_article_path(article: {contextid: @search.contextid, articletype: @search.articletype}), class: "btn btn-xs btn-primary" %>
+      <%= link_to 'Create New Article', new_article_path(article: {contextid: @search.contextid, articletype: @search.articletype}), class: "btn btn--xs btn--primary" %>
     </div>
   <% end %>
 </div>

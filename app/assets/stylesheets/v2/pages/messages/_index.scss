@@ -1,0 +1,310 @@
+// Messages Index Page Styles
+// Using BlueSky Design System V2 BEM Components
+
+@import '../../variables';
+@import 'message-compose';
+@import 'messages-section';
+
+// Messages page wrapper
+.messages-page {
+  background: $gray-50;
+  min-height: 100vh;
+  padding-bottom: $spacing-2xl;
+  
+  // Override global container background
+  .container {
+    background-color: transparent;
+  }
+}
+
+// Container - standard max-width container for messages page
+.messages-hero .container,
+.messages-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-xl;
+  background: transparent; // Ensure no white background
+  box-shadow: none;
+  border: none;
+  
+  @media (max-width: $screen-md-max) {
+    padding: 0 $spacing-lg;
+  }
+  
+  @media (max-width: $screen-sm-max) {
+    padding: 0 $spacing-md;
+  }
+}
+
+// Messages hero section
+.messages-hero {
+  background: linear-gradient(135deg, $primary 0%, darken($primary, 15%) 100%);
+  color: $white;
+  padding: $spacing-xl 0 $spacing-2xl 0;
+  margin-bottom: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  // Override any container styles within hero
+  .container {
+    position: relative;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    
+    // Pseudo elements should not add background
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+  
+  &__title {
+    font-size: 36px;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $spacing-md 0;
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    
+    .glyphicon {
+      font-size: 32px;
+      opacity: 0.9;
+    }
+  }
+  
+  &__subtitle {
+    font-weight: $font-weight-regular;
+    opacity: 0.85;
+    font-size: 20px;
+    margin-left: $spacing-xs;
+  }
+  
+  &__stats {
+    display: flex;
+    gap: $spacing-xl;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-lg;
+    border-top: 1px solid rgba($white, 0.2);
+  }
+  
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+  
+  &__stat-value {
+    font-size: 42px;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+  }
+  
+  &__stat-label {
+    font-size: $font-size-sm;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+// Messages filter component
+.messages-filter {
+  background: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid $gray-200;
+  overflow: hidden;
+  
+  .section-header {
+    margin-bottom: 0;
+    background: $gray-50;
+    padding: $spacing-md $spacing-lg;
+    border-bottom: 1px solid $gray-200;
+  }
+  
+  &__content {
+    background: $white;
+    padding: $spacing-lg;
+    display: flex;
+    gap: $spacing-2xl;
+    flex-wrap: wrap;
+  }
+  
+  &__group {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  &__group-title {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semi-bold;
+    color: $gray-600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 $spacing-md 0;
+  }
+  
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+  
+  &__option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: $spacing-sm 0;
+    position: relative;
+    
+    &:hover {
+      .messages-filter__label {
+        color: $primary;
+      }
+    }
+  }
+  
+  &__checkbox {
+    position: absolute;
+    opacity: 0;
+    
+    &:checked + .messages-filter__switch {
+      background: $primary;
+      
+      &::after {
+        transform: translateX(20px);
+      }
+    }
+  }
+  
+  &__switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    background: $gray-400;
+    border-radius: 12px;
+    margin-right: $spacing-md;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: $white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    transition: color 0.2s ease;
+    user-select: none;
+    
+    .glyphicon {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+  }
+  
+  &__actions {
+    padding: $spacing-lg;
+    background: $white;
+    border-top: 1px solid $gray-200;
+    display: flex;
+    gap: $spacing-md;
+    justify-content: flex-end;
+  }
+}
+
+// Messages list - uses standard card spacing
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg; // Standard card spacing (24px)
+  
+  // Message cards already have their own styling from _message-card.scss
+  .message-card {
+    // Card styles are handled by the message-card component
+  }
+}
+
+// Pagination wrapper
+.pagination-wrapper {
+  margin: $spacing-xl (-$spacing-xl) (-$spacing-xl) (-$spacing-xl);
+  padding: $spacing-lg;
+  background: $white;
+  // border-top: 1px solid $gray-200;
+  display: flex;
+  justify-content: center;
+}
+
+// Messages page specific section overrides
+.messages-page {
+  // Transparent sections should not have container backgrounds
+  .section--transparent .container {
+    background: transparent;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: $screen-sm-max) {
+  .messages-hero {
+    padding: $spacing-xl 0;
+    
+    &__title {
+      font-size: 24px;
+      
+      .glyphicon {
+        font-size: 20px;
+      }
+    }
+    
+    &__subtitle {
+      font-size: 18px;
+    }
+    
+    &__stat-value {
+      font-size: 28px;
+    }
+  }
+  
+  .messages-filter {
+    &__content {
+      padding: $spacing-md;
+      gap: $spacing-lg;
+    }
+    
+    &__group {
+      min-width: 100%;
+    }
+    
+    &__actions {
+      padding: $spacing-md;
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Clean up: Remove old nested container styles
+// The following classes are deprecated:
+// - messages-page__section (use .section instead)
+// - messages-page__container (use .container instead)
+// - messages-container (redundant, use .messages-list)
+// - messages-list__pagination (use .pagination-wrapper)

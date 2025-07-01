@@ -1,0 +1,241 @@
+// State Toggle Component
+// Lead state progression breadcrumb-style navigation
+
+@import '../variables';
+
+// State Toggle Block
+.state-toggle {
+  background: $gray-50;
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $gray-200;
+  position: relative;
+  z-index: 100;
+  
+  // Breadcrumb list
+  &__crumbs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+  }
+  
+  // Individual crumb
+  &__crumb {
+    position: relative;
+    
+    // Dropdown variant
+    &--dropdown {
+      position: static !important; // Allow dropdown to escape parent constraints
+      
+      .dropdown-menu {
+        margin-top: $spacing-xs;
+        min-width: 200px;
+        z-index: 9999 !important; // Ensure dropdown appears above everything
+        position: absolute !important;
+        
+        li {
+          padding: $spacing-xs $spacing-md;
+          
+          a {
+            display: block;
+            color: $gray-800;
+            text-decoration: none;
+            
+            &:hover {
+              background: $gray-50;
+            }
+            
+            strong {
+              display: block;
+              font-weight: $font-weight-medium;
+              margin-bottom: 2px;
+            }
+            
+            small {
+              display: block;
+              color: $gray-600;
+              font-size: $font-size-sm;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Crumb link
+  &__link {
+    display: inline-block;
+    padding: $spacing-sm $spacing-md;
+    background: $white;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius-sm;
+    color: $gray-600;
+    text-decoration: none;
+    font-weight: $font-weight-regular;
+    position: relative;
+    transition: all 0.2s ease;
+    
+    // Active state
+    &--active {
+      background: $primary;
+      border-color: $primary;
+      color: $white;
+      font-weight: $font-weight-medium;
+      
+      &:hover {
+        background: darken($primary, 5%);
+        border-color: darken($primary, 5%);
+        color: $white;
+      }
+      
+      &.dropdown-toggle::after {
+        color: $white;
+      }
+    }
+    
+    // Inactive state
+    &--inactive {
+      background: $gray-100;
+      border-color: $gray-200;
+      color: $gray-500;
+      cursor: not-allowed;
+      
+      &:hover {
+        background: $gray-100;
+        border-color: $gray-200;
+        color: $gray-500;
+      }
+    }
+    
+    // Isolated state (for non-standard states)
+    &--isolated {
+      background: $warning;
+      border-color: $warning;
+      color: $white;
+      
+      &:hover {
+        background: darken($warning, 5%);
+        border-color: darken($warning, 5%);
+        color: $white;
+      }
+    }
+    
+    // Arrow between crumbs
+    &:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -$spacing-md;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $gray-400;
+      font-size: $font-size-sm;
+    }
+  }
+  
+  // Agent info section
+  &__agent {
+    margin-top: $spacing-md;
+    padding-top: $spacing-md;
+    border-top: 1px solid $gray-200;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    
+    strong {
+      font-weight: $font-weight-medium;
+      margin-right: $spacing-xs;
+    }
+  }
+}
+
+// Backward compatibility
+.state_toggle {
+  @extend .state-toggle;
+}
+
+#crumbs {
+  @extend .state-toggle__crumbs;
+  
+  // Fix dropdown z-index issues
+  .dropdown {
+    position: static !important;
+    
+    &.open {
+      .dropdown-menu {
+        z-index: 9999 !important;
+        position: absolute !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+    }
+  }
+}
+
+.crumb {
+  @extend .state-toggle__crumb;
+  
+  &.dropdown {
+    @extend .state-toggle__crumb--dropdown;
+    position: static !important;
+    
+    .dropdown-menu {
+      z-index: 9999 !important;
+      position: absolute !important;
+      margin-top: 4px;
+      min-width: 200px;
+      background: $white;
+      border: 1px solid $gray-300;
+      border-radius: $border-radius-md;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      
+      li {
+        padding: $spacing-xs $spacing-md;
+        
+        a {
+          display: block;
+          color: $gray-800;
+          text-decoration: none;
+          
+          &:hover {
+            background: $gray-50;
+          }
+          
+          strong {
+            display: block;
+            font-weight: $font-weight-medium;
+            margin-bottom: 2px;
+          }
+          
+          small {
+            display: block;
+            color: $gray-600;
+            font-size: $font-size-sm;
+          }
+        }
+      }
+    }
+  }
+}
+
+.crumb-link {
+  @extend .state-toggle__link;
+}
+
+.crumb-active {
+  @extend .state-toggle__link--active;
+}
+
+.crumb-inactive {
+  @extend .state-toggle__link--inactive;
+}
+
+.crumb-isolated {
+  @extend .state-toggle__link--isolated;
+}
+
+.state_toggle-agent {
+  @extend .state-toggle__agent;
+}

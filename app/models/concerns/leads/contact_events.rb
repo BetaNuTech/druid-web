@@ -53,6 +53,15 @@ module Leads
         if scheduled_action.lead_action&.is_contact?
           description = 'Completed a Contact action'
           timestamp = scheduled_action.completed_at || DateTime.current
+          
+          # Check if we can get a valid user_id before trying to create contact event
+          potential_user_id = user_id || property&.primary_agent&.id || scheduled_action.user_id
+          
+          if potential_user_id.nil?
+            Rails.logger.warn "Cannot create contact event for scheduled action #{scheduled_action.id} - no valid user_id available"
+            return nil
+          end
+          
           create_contact_event({ timestamp: timestamp, description: description, article: scheduled_action })
         end
       end
@@ -72,11 +81,23 @@ module Leads
         lead_time = options.fetch(:lead_time, nil)
         article = options.fetch(:article, nil)
         event_user_id = ( user_id || property&.primary_agent&.id )
+        
+        # If we still don't have a user_id and article is a scheduled action, use its user_id
+        if event_user_id.nil? && article.is_a?(ScheduledAction) && article.user_id.present?
+          event_user_id = article.user_id
+        end
+        
+        # If we still don't have a user_id, we cannot create a contact event
+        if event_user_id.nil?
+          Rails.logger.error "Cannot create contact event for lead #{id} - no valid user_id found"
+          return nil
+        end
+        
         is_first_contact = contact_events.where(first_contact: true).empty? && ( last_comm.nil? || timestamp < last_comm )
 
         self.first_comm ||= timestamp
 
-        event = contact_events.create(
+        event = contact_events.build(
           user_id: event_user_id,
           timestamp: timestamp,
           description: description,
@@ -84,6 +105,13 @@ module Leads
           lead_time: [lead_time || contact_lead_time(is_first_contact, timestamp), 1].max,
           article: article
         )
+        
+        unless event.valid?
+          Rails.logger.error "Contact event validation failed for lead #{id}: #{event.errors.full_messages.join(', ')}"
+          return nil
+        end
+        
+        event.save!
 
         self.last_comm = timestamp if ( last_comm.nil? || timestamp > last_comm )
         save!

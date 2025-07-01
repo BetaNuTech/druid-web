@@ -1,74 +1,54 @@
-<div class="row" id="dashboard_waitlist">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-12">
-        <h3>
-          <%= glyph(:person) %>
+<div class="section section--waitlist" id="dashboard_waitlist">
+  <% if current_user.property.present? %>
+    <% waitlist_lead_count = current_user.leads.waitlist.count %>
+    
+    <div class="section-header">
+      <div class="section-header__content">
+        <div class="section-header__icon">
+          <%= glyph(:hourglass) %>
+        </div>
+        <h3 class="section-header__title">
           Lead Wait List
+          <% if waitlist_lead_count > 0 %>
+            <span class="section-header__count"><%= waitlist_lead_count %></span>
+          <% end %>
         </h3>
       </div>
     </div>
-    <% if current_user.property.present? %>
-      <% waitlist_lead_count = current_user.leads.waitlist.count %>
+    
+    <div class="section__content">
       
       <% if waitlist_lead_count > 0 %>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="leads-header">
-              <span class="lead">
-                <% lead_text = waitlist_lead_count == 1 ? "Waitlisted Lead" : "Waitlisted Leads" %>
-                <%= waitlist_lead_count %> <%= lead_text %>
-              </span>
-              <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{waitlist} }}), class: "btn btn-xs btn-primary") %>
-            </div>
-          </div>
+        <div class="lead-list">
+          <% current_user.leads.waitlist.each do |lead| %>
+            <%= render partial: "leads/lead_card", locals: {lead: lead, waitlist_note: "Waiting for #{lead.preference&.unit_type&.name || 'vacancy'}" } %>
+          <% end %>
         </div>
-        <table class="table lead_listing">
-          <thead></thead>
-          <tbody>
-            <% current_user.leads.waitlist.each do |lead| %>
-              <tr>
-                <td width="70%">
-                  <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
-                  <% if lead.property.present? %>
-                    for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
-                  <% end %>
-                  <p>
-                    <i>Waiting for vacancy in <%= lead.preference&.unit_type&.name || 'None' %> </i>
-                  </p>
-                  <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
-                </td>
-                <td>
-                  <%= lead_state_label(lead) %>
-                  <%= lead_priority_icon(lead) %>
-                  <br>
-                  <%= glyph(:question_sign) %> <%= short_datetime(lead.first_comm) %>
-                  <br>
-                  <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
-                  <br>
-                  <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
       <% else %>
-        <div class="leads-empty-state">
-          <div class="empty-icon">
+        <div class="section__content section__content--empty">
+          <div class="empty-state__icon">
             <%= glyph(:hourglass) %>
           </div>
-          <div class="empty-title">No Waitlisted Leads</div>
-          <div class="empty-description">No leads are currently on the waitlist</div>
+          <p>No leads are currently on the waitlist</p>
         </div>
       <% end %>
-    <% else %>
-      <div class="leads-empty-state">
-        <div class="empty-icon">
+  <% else %>
+    <div class="section-header">
+      <div class="section-header__content">
+        <div class="section-header__icon">
           <%= glyph(:hourglass) %>
         </div>
-        <div class="empty-title">No Property Assigned</div>
-        <div class="empty-description">You need to be assigned to a property to see waitlisted leads</div>
+        <h3 class="section-header__title">Lead Wait List</h3>
       </div>
-    <% end %>
-  </div>
+    </div>
+    
+    <div class="section__content">
+      <div class="section__content section__content--empty">
+        <div class="empty-state__icon">
+          <%= glyph(:home) %>
+        </div>
+        <p>No property assigned</p>
+      </div>
+    </div>
+  <% end %>
 </div>

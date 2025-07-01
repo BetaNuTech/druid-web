@@ -3,29 +3,31 @@
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-4 form-group">
-            <%= form.label :completion_action, "Mark Task as Completed" %>
+            <%= form.label :completion_action, "Mark Task as Completed", class: 'form-label' %>
             <%= form.select(:completion_action, select_scheduled_action_action(@scheduled_action), {prompt: '-Please Select-'}, class: "form-control") %>
           </div>
           <div class="col-md-2 form-group retry_delay_selector" id="retry_delay_selector_value">
-            <%= form.label :completion_retry_delay_value, "Next Due After" %>
+            <%= form.label :completion_retry_delay_value, "Next Due After", class: 'form-label' %>
             <%= form.select(:completion_retry_delay_value, scheduled_action_completion_retry_delay_select_value(@scheduled_action), {}, class: 'form-control') %>
           </div>
           <div class="col-md-2 form-group retry_delay_selector" id="retry_delay_selector_unit">
-            <label for="scheduled_action_completion_retry_delay_unit">&nbsp;</label>
+            <label for="scheduled_action_completion_retry_delay_unit" class="form-label">&nbsp;</label>
             <%= form.select(:completion_retry_delay_unit, scheduled_action_completion_retry_delay_select_unit(@scheduled_action), {}, class: 'form-control') %>
           </div>
         </div>
         <% if @scheduled_action.user.present? && ScheduledActionPolicy.new(current_user, @scheduled_action).impersonate?  %>
           <div class="row">
             <div class="col-md-12 form-group">
-              <%= form.check_box :impersonate, class: "form-check-input"%>
-              <%= form.label "Complete Task as #{@scheduled_action.user.name}", class: "form-check-label" %>
+              <div class="form-check">
+                <%= form.check_box :impersonate, class: "form-check__input"%>
+                <%= form.label :impersonate, "Complete Task as #{@scheduled_action.user.name}", class: "form-check__label" %>
+              </div>
             </div>
           </div>
         <% end %>
         <div class="row">
           <div class="col-md-12 form-group">
-            <%= form.label :completion_message, "Memo" %>
+            <%= form.label :completion_message, "Memo", class: 'form-label' %>
             <%= form.text_area :completion_message, class: "form-control", rows: 5 %>
           </div>
         </div>
@@ -33,7 +35,7 @@
     </div>
 
     <div class="form-group">
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn--primary">Save</button>
     </div>
 
 <% end %>

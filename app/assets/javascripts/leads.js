@@ -1,6 +1,41 @@
 // Leads page JavaScript functionality
 
 $(document).on('turbolinks:load', function() {
+  // Toggle comment form
+  $('#lead_toggle_comments_form_link').off('click.commentForm').on('click.commentForm', function(e) {
+    e.preventDefault();
+    var $form = $('#lead_comments_form');
+    var $button = $(this);
+    
+    if ($form.is(':visible')) {
+      // Hide form
+      $form.slideUp(300);
+      $button.html('<i class="glyphicon glyphicon-plus"></i> Add Comment');
+    } else {
+      // Show form
+      $form.slideDown(300, function() {
+        // Focus on the textarea
+        $form.find('textarea').focus();
+      });
+      $button.html('<i class="glyphicon glyphicon-remove"></i> Cancel');
+    }
+  });
+  
+  // Show more comments functionality
+  $('#lead_show_more_comments_link').off('click.showMore').on('click.showMore', function(e) {
+    e.preventDefault();
+    var $button = $(this);
+    var $moreComments = $('#more_comments');
+    
+    if ($moreComments.is(':visible')) {
+      $moreComments.slideUp(300);
+      $button.html('<i class="glyphicon glyphicon-chevron-down"></i> Show ' + $button.data('count') + ' More Comments');
+    } else {
+      $moreComments.slideDown(300);
+      $button.html('<i class="glyphicon glyphicon-chevron-up"></i> Show Less');
+    }
+  });
+  
   // Quick navigation smooth scrolling
   $('.quick-nav-link').off('click.quickNav').on('click.quickNav', function(e) {
     e.preventDefault();
@@ -33,7 +68,7 @@ $(document).on('turbolinks:load', function() {
   // Make task cards clickable  
   $('.task-card[data-task-url]').off('click.taskCard').on('click.taskCard', function(e) {
     // Don't trigger if clicking on buttons or links
-    if ($(e.target).closest('.task-actions, a, button').length === 0) {
+    if ($(e.target).closest('.task-actions, .btn-task-action, a, button').length === 0) {
       var url = $(this).data('task-url');
       if (url) {
         window.location.href = url;

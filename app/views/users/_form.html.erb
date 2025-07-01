@@ -13,45 +13,45 @@
 
   <div class="row">
     <div class="col-md-12">
-      <fieldset>
-        <legend>Login Information</legend>
+      <fieldset class="fieldset">
+        <legend class="fieldset__legend">Login Information</legend>
 
         <% if user.deactivated? %>
           <div class="row">
             <div class="col-md-12">
               <p class="lead bg-danger"> Deactivated </p>
-            </div>
+              </div>
           </div>
         <% end %>
 
         <div class="row">
-          <div class="col-md-8 form-group">
-            <%= form.label :email %>
-            <%= form.text_field :email, class: "form-control" %>
+          <div class="col-md-8 form__group">
+            <%= form.label :email, class: 'form__label' %>
+            <%= form.text_field :email, class: "form__control" %>
             <% unless user.new_record? %>
-              <small class="bg-info">
+              <small class="form__text bg-info">
                 ( Note that changes here are only applied after email confirmation )
               </small>
             <% end %>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6 form-group">
-            <%= form.label :timezone %>
-            <%= form.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Pacific Time (US & Canada)" }, {class: "form-control"} %>
+          <div class="col-md-6 form__group">
+            <%= form.label :timezone, class: 'form__label' %>
+            <%= form.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Pacific Time (US & Canada)" }, {class: "form__control"} %>
           </div>
         </div>
         <% unless user.new_record? %>
           <div class="row">
-            <div class="col-md-6 form-group">
-              <%= form.label :password %>
-              <%= form.password_field :password, class: "form-control" %>
+            <div class="col-md-6 form__group">
+              <%= form.label :password, class: 'form__label' %>
+              <%= form.password_field :password, class: "form__control" %>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 form-group">
-              <%= form.label :password_confirmation %>
-              <%= form.password_field :password_confirmation, class: "form-control" %>
+            <div class="col-md-6 form__group">
+              <%= form.label :password_confirmation, class: 'form__label' %>
+              <%= form.password_field :password_confirmation, class: "form__control" %>
             </div>
           </div>
         <% end %>
@@ -62,58 +62,60 @@
   <%= form.fields_for :profile do |profile_form| %>
   <div class="row">
     <div class="col-md-12">
-      <fieldset>
-        <legend>Profile</legend>
+      <fieldset class="fieldset">
+        <legend class="fieldset__legend">Profile</legend>
           <div class="row">
-            <div class="col-sm-3 form-group">
-              <%= profile_form.label "Prefix" %>
-              <%= profile_form.text_field :name_prefix, {class: "form-control"} %>
+            <div class="col-sm-3 form__group">
+              <%= profile_form.label "Prefix", class: 'form__label' %>
+              <%= profile_form.text_field :name_prefix, {class: "form__control"} %>
             </div>
-            <div class="col-sm-4 form-group">
-              <%= profile_form.label "First Name" %>
-              <%= profile_form.text_field :first_name, {class: "form-control"} %>
+            <div class="col-sm-4 form__group">
+              <%= profile_form.label "First Name", class: 'form__label' %>
+              <%= profile_form.text_field :first_name, {class: "form__control"} %>
             </div>
-            <div class="col-sm-4 form-group">
-              <%= profile_form.label "Last Name" %>
-              <%= profile_form.text_field :last_name, {class: "form-control"} %>
+            <div class="col-sm-4 form__group">
+              <%= profile_form.label "Last Name", class: 'form__label' %>
+              <%= profile_form.text_field :last_name, {class: "form__control"} %>
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-3 form-group">
-              <%= profile_form.label :office_phone %>
-              <%= profile_form.text_field :office_phone, {type: "tel", class: "form-control" } %>
+            <div class="col-sm-3 form__group">
+              <%= profile_form.label :office_phone, class: 'form__label' %>
+              <%= profile_form.text_field :office_phone, {type: "tel", class: "form__control" } %>
             </div>
-            <div class="col-sm-3 form-group">
-              <%= profile_form.label :cell_phone %>
-              <%= profile_form.text_field :cell_phone, {type: "tel", class: "form-control" } %>
+            <div class="col-sm-3 form__group">
+              <%= profile_form.label :cell_phone, class: 'form__label' %>
+              <%= profile_form.text_field :cell_phone, {type: "tel", class: "form__control" } %>
             </div>
-            <div class="col-sm-3 form-group">
-              <%= profile_form.label :fax %>
-              <%= profile_form.text_field :fax, {type: "tel", class: "form-control" } %>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 form-group">
-              <%= profile_form.label :notes %>
-              <%= profile_form.text_area :notes, {class: "form-control"} %>
+            <div class="col-sm-3 form__group">
+              <%= profile_form.label :fax, class: 'form__label' %>
+              <%= profile_form.text_field :fax, {type: "tel", class: "form__control" } %>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-8 form-group">
-              <%= profile_form.label :signature %>
-              <%= profile_form.text_area :signature, { id: 'html_editor_v2', class: 'form-control user_signature', rows: 6 } %>
+            <div class="col-md-12 form__group">
+              <%= profile_form.label :notes, class: 'form__label' %>
+              <%= profile_form.text_area :notes, {class: "form__control"} %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 form__group">
+              <%= profile_form.label :signature, class: 'form__label' %>
+              <%= profile_form.text_area :signature, { id: 'html_editor_v2', class: 'form__control user_signature', rows: 6 } %>
             </div>
           </div>
           <% if Flipflop.enabled?(:profile_images_v1) %>
             <div class="row">
-                <div class="col-md-8 form-group">
-                  <%= profile_form.label :photo %><br/>
+                <div class="col-md-8 form__group">
+                  <%= profile_form.label :photo, class: 'form__label' %>
                   <% if user.profile.photo.attached? %>
                       <%= image_tag(user.profile.photo.variant(resize: "200x200"), alt: "#{@user.name || 'User'} photo" )%>
-                      <%= profile_form.label :remove_photo, 'Remove', class: 'form-check-label' %>
-                      <%= profile_form.check_box :remove_photo, class: 'checkbox-inline' %>
+                      <div class="form__check form__check--inline">
+                        <%= profile_form.check_box :remove_photo, class: 'form__check-input' %>
+                        <%= profile_form.label :remove_photo, 'Remove', class: 'form__check-label' %>
+                      </div>
                   <% else %>
-                    <%= profile_form.file_field :photo, class: 'form-control' %>
+                    <%= profile_form.file_field :photo, class: 'form__control' %>
                   <% end %>
                 </div>
             </div>
@@ -126,18 +128,20 @@
   <% if @creator.assign_to_role? %>
     <div class="row">
       <div class="col-md-12">
-        <fieldset>
-          <legend>Role and Access</legend>
+        <fieldset class="fieldset">
+          <legend class="fieldset__legend">Role and Access</legend>
           <div class="row">
             <div class="col-md-4">
-              <%= form.check_box :deactivated, class: 'form-check-input' %>
-              <%= form.label(:deactivated, 'Deactivated?') %>
+              <div class="form__check">
+                <%= form.check_box :deactivated, class: 'form__check-input' %>
+                <%= form.label(:deactivated, 'Deactivated?', class: 'form__check-label') %>
+              </div>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-4 form-group">
-              <%= form.label :role_id, "System Role" %>
-              <%= form.select :role_id, options_for_select(@creator.roles_for_select, selected: @user.role_id),{include_blank: true}, {class: "form-control" } %>
+            <div class="col-md-4 form__group">
+              <%= form.label :role_id, "System Role", class: 'form__label' %>
+              <%= form.select :role_id, options_for_select(@creator.roles_for_select, selected: @user.role_id),{include_blank: true}, {class: "form__control" } %>
             </div>
           </div>
         </fieldset>
@@ -148,23 +152,23 @@
   <% if @user.new_record? %>
   <div class="row">
     <div class="col-md-12">
-      <fieldset>
-        <legend>Property Assignment</legend>
+      <fieldset class="fieldset">
+        <legend class="fieldset__legend">Property Assignment</legend>
         <div class="row">
-          <div class="col-md-6 form-group">
+          <div class="col-md-6 form__group">
             <%= user_creator_form_group(:property_id) do %>
-              <%= label_tag(:property_id, 'Property') %>
+              <%= label_tag(:property_id, 'Property', class: 'form__label') %>
             <% end %>
             <%= user_creator_form_group(:property_id) do %>
-              <%= select_tag(:property_id, options_for_select(@creator.properties_for_select, selected: @creator.property&.id || @creator.property&.id), { include_blank: true, class: "form-control" }) %>
+              <%= select_tag(:property_id, options_for_select(@creator.properties_for_select, selected: @creator.property&.id || @creator.property&.id), { include_blank: true, class: "form__control" }) %>
             <% end %>
           </div>
-          <div class="col-md-6 form-group">
+          <div class="col-md-6 form__group">
             <%= user_creator_form_group(:property_role) do %>
-              <%= label_tag(:property_role, 'Property Role') %>
+              <%= label_tag(:property_role, 'Property Role', class: 'form__label') %>
             <% end %>
             <%= user_creator_form_group(:property_role) do %>
-              <%= select_tag(:property_role, options_for_select(@creator.property_roles_for_select, selected: @creator.property_role), {include_blank: true, class: "form-control" }) %>
+              <%= select_tag(:property_role, options_for_select(@creator.property_roles_for_select, selected: @creator.property_role), {include_blank: true, class: "form__control" }) %>
             <% end %>
           </div>
         </div>
@@ -174,8 +178,8 @@
   <% else %>
   <div class="row">
     <div class="col-md-12">
-      <fieldset>
-        <legend>Property Assignments</legend>
+      <fieldset class="fieldset">
+        <legend class="fieldset__legend">Property Assignments</legend>
         <%= render partial: "property_assignments", locals: {user: @user} %>
       </fieldset>
     </div>
@@ -185,23 +189,23 @@
   <% if @user.new_record? %>
     <div class="row">
       <div class="col-md-12">
-        <fieldset>
-          <legend>Team Assignment</legend>
+        <fieldset class="fieldset">
+          <legend class="fieldset__legend">Team Assignment</legend>
           <div class="row">
-            <div class="col-md-6 form-group">
+            <div class="col-md-6 form__group">
               <%= user_creator_form_group(:team_id) do %>
-                <%= label_tag(:team_id, "Team") %>
+                <%= label_tag(:team_id, "Team", class: 'form__label') %>
               <% end %>
               <%= user_creator_form_group(:team_id) do %>
-                <%= select_tag(:team_id, options_for_select(@creator.teams_for_select, selected: @creator.team&.id), {include_blank: true, class: "form-control" }) %>
+                <%= select_tag(:team_id, options_for_select(@creator.teams_for_select, selected: @creator.team&.id), {include_blank: true, class: "form__control" }) %>
               <% end %>
             </div>
-            <div class="col-md-6 form-group">
+            <div class="col-md-6 form__group">
               <%= user_creator_form_group(:teamrole_id) do %>
-                <%= label_tag(:teamrole_id, "Team Role") %>
+                <%= label_tag(:teamrole_id, "Team Role", class: 'form__label') %>
               <% end %>
               <%= user_creator_form_group(:teamrole_id) do %>
-                <%= select_tag(:teamrole_id, options_for_select(@creator.teamroles_for_select, selected: @creator.teamrole&.id), {include_blank: true, class: "form-control" }) %>
+                <%= select_tag(:teamrole_id, options_for_select(@creator.teamroles_for_select, selected: @creator.teamrole&.id), {include_blank: true, class: "form__control" }) %>
               <% end %>
             </div>
           </div>
@@ -214,13 +218,15 @@
   <%= fields_for 'user[profile_attributes][appsettings]', OpenStruct.new(@user.profile&.appsettings) do |appsettings| %>
     <div class="row">
       <div class="col-md-12">
-        <fieldset id="bluesky_appsettings">
-          <legend>Bluesky Application Settings</legend>
+        <fieldset class="fieldset" id="bluesky_appsettings">
+          <legend class="fieldset__legend">Bluesky Application Settings</legend>
           <div class="form-row">
             <% UserProfile.managed_settings.each do |setting| %>
-              <div class="col-xs-6 col-md-4 form-group form-check">
-                <%= appsettings.check_box setting, class: 'form-check-input' %>
-                <%= appsettings.label setting, class: 'form-check-label' %>
+              <div class="col-xs-6 col-md-4 form__group">
+                <div class="form__check">
+                  <%= appsettings.check_box setting, class: 'form__check-input' %>
+                  <%= appsettings.label setting, class: 'form__check-label' %>
+                </div>
               </div>
             <% end %>
           </div>
@@ -233,13 +239,15 @@
     <%= fields_for 'user[profile_attributes][enabled_features]', OpenStruct.new(@user.profile&.enabled_features) do |enabled_features| %>
       <div class="row">
         <div class="col-md-12">
-          <fieldset>
-            <legend>Bluesky Application Features</legend>
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Bluesky Application Features</legend>
             <div class="form-row">
               <% UserProfile.managed_features.each do |feature| %>
-                <div class="col-xs-6 col-md-3 form-group form-check">
-                  <%= enabled_features.check_box feature, class: 'form-check-input' %>
-                  <%= enabled_features.label feature, class: 'form-check-label' %>
+                <div class="col-xs-6 col-md-3 form__group">
+                  <div class="form__check">
+                    <%= enabled_features.check_box feature, class: 'form__check-input' %>
+                    <%= enabled_features.label feature, class: 'form__check-label' %>
+                  </div>
                 </div>
               <% end %>
             </div>
@@ -249,9 +257,9 @@
     <% end %>
   <% end %>
 
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Save</button>
-    <%= link_to 'Back', ( policy(User).index? ? users_path : :back ), class: "btn btn-xs btn-info" %>
+  <div class="form__group">
+    <button type="submit" class="btn btn--primary">Save</button>
+    <%= link_to 'Back', ( policy(User).index? ? users_path : :back ), class: "btn btn--xs btn--info" %>
   </div>
 <% end %>
 

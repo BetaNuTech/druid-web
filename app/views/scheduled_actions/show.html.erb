@@ -26,7 +26,7 @@
           <strong>Action:</strong>
           <%= @scheduled_action.lead_action.try(:name) || 'None' %>
         </p>
-      </div>
+       </div>
     </div>
 
     <div class="row">
@@ -35,7 +35,7 @@
           <strong>Reason:</strong>
           <%= @scheduled_action.reason.try(:name) || 'None' %>
         </p>
-      </div>
+       </div>
     </div>
 
     <div class="row">
@@ -44,7 +44,7 @@
           <strong>Due:</strong>
           <%= long_datetime( @scheduled_action.schedule.to_datetime ) || 'None' %>
         </p>
-      </div>
+       </div>
     </div>
 
     <div class="row">
@@ -53,7 +53,7 @@
           <strong>Description:</strong>
           <%= @scheduled_action.description || 'None' %>
         </p>
-      </div>
+       </div>
     </div>
     <div class="row">
       <div class="col-md-4">

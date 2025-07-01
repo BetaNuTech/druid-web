@@ -1,0 +1,241 @@
+// Bootstrap 3 to V2 Button Compatibility Layer
+// Maps old Bootstrap button classes to new V2 styles
+
+@import '../variables';
+
+// Direct class mappings for mixed usage (e.g., class="btn-primary" without .btn)
+.btn-primary { @extend .btn; @extend .btn--primary; }
+.btn-success { @extend .btn; @extend .btn--success; }
+.btn-danger { @extend .btn; @extend .btn--danger; }
+.btn-warning { @extend .btn; @extend .btn--warning; }
+.btn-info { @extend .btn; @extend .btn--info; }
+.btn-default { @extend .btn; @extend .btn--secondary; }
+.btn-secondary { @extend .btn; @extend .btn--secondary; }
+.btn-link { @extend .btn; @extend .btn--text; }
+
+// Map Bootstrap button classes to V2 styles
+// Note: Base .btn styles are already defined in _buttons.scss
+.btn {
+  // Remove focus outline for all Bootstrap buttons
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  &:active {
+    outline: none !important;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $primary !important;
+    outline-offset: 2px;
+  }
+  
+  // Primary button mapping
+  &.btn-primary {
+    background: linear-gradient(135deg, $primary 0%, darken($primary, 5%) 100%);
+    color: $white;
+    border: none;
+    box-shadow: 0 2px 4px rgba($primary, 0.2);
+    
+    &:hover {
+      background: linear-gradient(135deg, lighten($primary, 5%) 0%, $primary 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba($primary, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba($primary, 0.2);
+    }
+  }
+  
+  // Success button mapping
+  &.btn-success {
+    background: linear-gradient(135deg, $success 0%, darken($success, 5%) 100%);
+    color: $white;
+    border: none;
+    box-shadow: 0 2px 4px rgba($success, 0.2);
+    
+    &:hover {
+      background: linear-gradient(135deg, lighten($success, 5%) 0%, $success 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba($success, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba($success, 0.2);
+    }
+  }
+  
+  // Info button mapping
+  &.btn-info {
+    background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 5%) 100%);
+    color: $white;
+    border: none;
+    box-shadow: 0 2px 4px rgba($brand-teal, 0.2);
+    
+    &:hover {
+      background: linear-gradient(135deg, lighten($brand-teal, 5%) 0%, $brand-teal 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba($brand-teal, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba($brand-teal, 0.2);
+    }
+  }
+  
+  // Warning button mapping
+  &.btn-warning {
+    background: linear-gradient(135deg, $warning 0%, darken($warning, 5%) 100%);
+    color: $white;
+    border: none;
+    box-shadow: 0 2px 4px rgba($warning, 0.2);
+    
+    &:hover {
+      background: linear-gradient(135deg, lighten($warning, 5%) 0%, $warning 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba($warning, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba($warning, 0.2);
+    }
+  }
+  
+  // Danger button mapping
+  &.btn-danger {
+    background: linear-gradient(135deg, $danger 0%, darken($danger, 5%) 100%);
+    color: $white;
+    border: none;
+    box-shadow: 0 2px 4px rgba($danger, 0.2);
+    
+    &:hover {
+      background: linear-gradient(135deg, lighten($danger, 5%) 0%, $danger 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba($danger, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba($danger, 0.2);
+    }
+  }
+  
+  // Default button mapping (secondary style)
+  &.btn-default {
+    background: $white;
+    border: 2px solid $gray-300;
+    color: $gray-700;
+    
+    &:hover {
+      background: $gray-50;
+      border-color: $primary;
+      color: $primary;
+    }
+  }
+  
+  // Link button mapping
+  &.btn-link {
+    background: transparent;
+    border: none;
+    color: $primary;
+    padding: 4px 8px;
+    box-shadow: none;
+    
+    &:hover {
+      background: rgba($primary, 0.1);
+      color: darken($primary, 10%);
+      transform: none;
+      box-shadow: none;
+      text-decoration: underline;
+    }
+  }
+  
+  // Size mappings
+  &.btn-xs {
+    padding: 4px 12px;
+    font-size: $font-size-xs;
+    
+    .glyphicon {
+      font-size: 11px;
+    }
+  }
+  
+  &.btn-sm {
+    padding: 6px 16px;
+    font-size: $font-size-sm;
+    
+    .glyphicon {
+      font-size: 12px;
+    }
+  }
+  
+  &.btn-lg {
+    padding: 14px 28px;
+    font-size: $font-size-lg;
+    
+    .glyphicon {
+      font-size: 18px;
+    }
+  }
+  
+  // Block button
+  &.btn-block {
+    width: 100%;
+    display: flex;
+  }
+  
+  // Disabled state
+  &[disabled],
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// Button groups
+.btn-group {
+  display: inline-flex;
+  gap: 2px;
+  
+  > .btn {
+    margin: 0;
+    
+    &:not(:first-child):not(:last-child) {
+      border-radius: 0;
+    }
+    
+    &:first-child:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    
+    &:last-child:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+  
+  &.btn-group-vertical {
+    flex-direction: column;
+    
+    > .btn {
+      &:first-child:not(:last-child) {
+        border-radius: $border-radius-md $border-radius-md 0 0;
+      }
+      
+      &:last-child:not(:first-child) {
+        border-radius: 0 0 $border-radius-md $border-radius-md;
+      }
+    }
+  }
+}

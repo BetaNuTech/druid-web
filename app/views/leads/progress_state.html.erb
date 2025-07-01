@@ -7,35 +7,35 @@
 <%= form_tag update_state_lead_path(@lead), method: :post, class: "form" do %>
 
   <div class="row">
-    <div class="col-md-4 form-group">
-      <%= label_tag "Action" %>
+    <div class="col-md-4 form__group">
+      <%= label_tag "Action", nil, class: 'form__label' %>
       <% options = @eventid.present? ? [ [ humanize_lead_state(@eventid), @eventid ]] : policy(@lead).permitted_state_events.map{|se| [humanize_lead_state(se), se]} %>
-      <%= select_tag :eventid, options_for_select(options, @eventid), class: "form-control" %>
+      <%= select_tag :eventid, options_for_select(options, @eventid), class: "form__control" %>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-4 form-group">
-      <%= label_tag "Classify As A"%>
+    <div class="col-md-4 form__group">
+      <%= label_tag "Classify As A", nil, class: 'form__label' %>
       <% classifications, _ = lead_event_classifications(lead: @lead, event: @eventid) %>
-      <%= select_tag :classification, lead_classifications_for_progressing_state(lead: @lead, event: @eventid), {include_blank: '-- Choose One --', required: true, class: 'form-control' }%>
+      <%= select_tag :classification, lead_classifications_for_progressing_state(lead: @lead, event: @eventid), {include_blank: '-- Choose One --', required: true, class: 'form__control' }%>
     </div>
   </div>
 
   <% if @eventid == 'postpone' %>
     <div class="row">
-      <div class="col-md-6 form-group">
-        <%= label_tag "Follow Up On" %>
-        <%= date_select :follow_up_at, nil, {class: 'form-control form-control-date-select'}  %>
+      <div class="col-md-6 form__group">
+        <%= label_tag "Follow Up On", nil, class: 'form__label' %>
+        <%= date_select :follow_up_at, nil, {class: 'form__control form__control--date-select'}  %>
       </div>
     </div>
   <% end %>
 
   <%= render partial: 'progress_state_memo', locals: { lead: @lead, eventid: @eventid } %>
 
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Save</button>
-      <%= link_to('Cancel', :back, {class: "btn btn-xs btn-info"}) %>
+  <div class="form__group">
+    <button type="submit" class="btn btn--primary">Save</button>
+      <%= link_to('Cancel', :back, {class: "btn btn--xs btn--info"}) %>
   </div>
 <% end %>
 

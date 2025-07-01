@@ -1,30 +1,34 @@
-<fieldset>
-  <legend>
+<fieldset class="fieldset">
+  <legend class="fieldset__legend">
     Preferences
-    <a href="#property_preferences" data-toggle="collapse" aria-expanded="false" aria-controls="property_preferences" class="btn btn-xs btn-info">
+    <a href="#property_preferences" data-toggle="collapse" aria-expanded="false" aria-controls="property_preferences" class="btn btn--extra-small btn--info">
       More...
     </a>
   </legend>
   <div class="collapse" id="property_preferences">
     <div class="row">
-      <div class="col-md-12 form-group">
-        <%= form.check_box :call_lead_generation, class: "form-check-input" %>
-        <%= form.label :call_lead_generation, "Generate Leads from Incoming Calls" %> 
+      <div class="col-md-12 form__group">
+        <div class="form__check">
+          <%= form.check_box :call_lead_generation, class: "form__check-input" %>
+          <%= form.label :call_lead_generation, "Generate Leads from Incoming Calls", class: "form__check-label" %> 
+        </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12 form-group">
-        <%= form.check_box :voice_menu_enabled, class: "form-check-input" %>
-        <%= form.label :voice_menu_enabled, "Blueconnect Voice Menu Enabled" %> 
+      <div class="col-md-12 form__group">
+        <div class="form__check">
+          <%= form.check_box :voice_menu_enabled, class: "form__check-input" %>
+          <%= form.label :voice_menu_enabled, "Blueconnect Voice Menu Enabled", class: "form__check-label" %> 
+        </div>
       </div>
     </div>
   </div>
 </fieldset>
 
-<fieldset></fieldset> 
-  <legend>
+<fieldset class="fieldset">
+  <legend class="fieldset__legend">
     Bluesky Application Settings
-    <a href="#property_appsettings" data-toggle="collapse" aria-expanded="false" aria-controls="property_appsettings" class="btn btn-xs btn-info">
+    <a href="#property_appsettings" data-toggle="collapse" aria-expanded="false" aria-controls="property_appsettings" class="btn btn--extra-small btn--info">
       More...
     </a>
   </legend>
@@ -34,9 +38,11 @@
       <div class="col-md-12">
         <div class="form-row">
           <% Property.managed_settings.each do |setting| %>
-            <div class="col-xs-6 col-md-4 form-group form-check">
-              <%= appsettings.check_box setting, class: 'form-check-input' %>
-              <%= appsettings.label setting, class: 'form-check-label' %>
+            <div class="col-xs-6 col-md-4 form__group">
+              <div class="form__check">
+                <%= appsettings.check_box setting, class: 'form__check-input' %>
+                <%= appsettings.label setting, class: 'form__check-label' %>
+              </div>
             </div>
           <% end %>
         </div>

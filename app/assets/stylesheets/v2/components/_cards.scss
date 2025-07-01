@@ -1,0 +1,768 @@
+// Card Component Styles
+// Based on BlueSky Design System V2
+// Three card designs for different use cases
+
+@import '../variables';
+
+// When cards are links, ensure they maintain card styling
+a.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+// Base card styles shared by all card types
+.card {
+  background: $white;
+  border-radius: $border-radius-md;
+  border: 1px solid $gray-200;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  margin-bottom: $spacing-md;
+  overflow: hidden; // Ensure pseudo-elements stay within bounds
+  
+  // Prevent nested cards from getting card styles
+  .card {
+    all: initial;
+  }
+  
+  // Card Design 1: Non-actionable/Read-only
+  // Used for: Timeline cards, read-only notes, information displays
+  &--info {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+  }
+  
+  // Card Design 2: Editable/Clickable
+  // Used for: Cards that open detail views or can be edited
+  &--editable {
+    border: 2px solid transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    cursor: pointer;
+    
+    &:hover {
+      border-color: $primary;
+      box-shadow: 0 4px 12px rgba($primary, 0.15);
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  // Card Design 3: Actionable with Status
+  // Used for: Lead cards, task cards, message cards
+  &--status {
+    border: 1px solid $gray-200;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: $spacing-lg;
+    padding-left: $spacing-lg + 4px; // Extra padding for accent bar
+    cursor: pointer;
+    overflow: hidden;
+    
+    // Task cards get special treatment
+    &.card--status-primary {
+      background: linear-gradient(to right, rgba($primary, 0.02) 0%, $white 100%);
+      
+      &:hover {
+        background: linear-gradient(to right, rgba($primary, 0.04) 0%, rgba($primary, 0.01) 100%);
+      }
+    }
+    
+    &.card--status-success {
+      background: linear-gradient(to right, rgba($success, 0.02) 0%, $white 100%);
+      opacity: 0.9;
+      
+      .card__title {
+        text-decoration: line-through;
+        color: $gray-600;
+      }
+    }
+    
+    // Colored accent bar (modified by status modifiers)
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: $brand-teal; // Default color
+      transition: background 0.3s ease;
+    }
+    
+    &:hover {
+      border-color: currentColor;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      
+      .card__actions {
+        opacity: 1;
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  // Status modifiers for Card Design 3
+  &--status.card--status-primary::before,
+  &--status.card--status-blue::before {
+    background: $primary;
+  }
+  
+  &--status.card--status-success::before,
+  &--status.card--status-green::before {
+    background: $success;
+  }
+  
+  &--status.card--status-warning::before,
+  &--status.card--status-orange::before {
+    background: $warning;
+  }
+  
+  &--status.card--status-danger::before,
+  &--status.card--status-red::before {
+    background: $danger;
+  }
+  
+  &--status.card--status-info::before,
+  &--status.card--status-teal::before {
+    background: $brand-teal;
+  }
+  
+  &--status.card--status-gray::before,
+  &--status.card--status-import::before {
+    background: $gray-500;
+  }
+}
+
+// Card hover state for all status cards
+.card--status {
+  &:hover {
+    border-color: $brand-teal !important;
+    box-shadow: 0 4px 16px rgba($brand-teal, 0.15) !important;
+    transform: translateY(-2px);
+    z-index: 10;
+  }
+  
+  // Primary status cards should hover with primary color
+  &.card--status-primary:hover {
+    border-color: $primary !important;
+    box-shadow: 0 4px 16px rgba($primary, 0.15) !important;
+  }
+}
+
+// Card sub-components
+.card__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+  
+  &--bordered {
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $gray-100;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.card__title {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $gray-900;
+  margin: 0 0 $spacing-xs 0;
+  display: block;
+  
+  // Larger title for standalone cards
+  .card--info &,
+  .card--editable & {
+    font-size: $font-size-lg;
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+  
+  // For lead cards in table view
+  .lead-row__content & {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.card__subtitle {
+  font-size: $font-size-sm;
+  color: $gray-600;
+  font-weight: normal;
+}
+
+.card__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-md;
+  font-size: 20px;
+  flex-shrink: 0;
+  position: relative;
+  
+  // Default icon style with gradient
+  background: linear-gradient(135deg, rgba($primary, 0.1) 0%, rgba($primary, 0.15) 100%);
+  color: $primary;
+  box-shadow: 0 2px 4px rgba($primary, 0.1);
+  
+  // Text/initials styling
+  font-weight: $font-weight-semi-bold;
+  line-height: 1;
+  text-transform: uppercase;
+  
+  // Add subtle inner glow
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: $border-radius-md - 2px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  
+  // Icon color variants
+  &--primary {
+    background: rgba($primary, 0.1);
+    color: $primary;
+  }
+  
+  &--success {
+    background: rgba($success, 0.1);
+    color: $success;
+  }
+  
+  &--warning {
+    background: rgba($warning, 0.1);
+    color: $warning;
+  }
+  
+  &--danger {
+    background: rgba($danger, 0.1);
+    color: $danger;
+  }
+  
+  &--muted {
+    background: $gray-100;
+    color: $gray-600;
+  }
+}
+
+// Panel/Well variant
+// Used as a replacement for Bootstrap's well component
+.card--panel {
+  background: $gray-50;
+  border: 1px solid $gray-200;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  padding: $spacing-lg;
+  
+  &:hover {
+    // No hover effect for panels
+    transform: none;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Legacy Bootstrap Well Compatibility
+.well {
+  @extend .card;
+  @extend .card--panel;
+  
+  &.well-sm {
+    padding: $spacing-sm;
+  }
+  
+  &.well-lg {
+    padding: $spacing-xl;
+  }
+}
+
+.card__body {
+  padding: 0; // Remove default padding since card already has it
+  color: $gray-700;
+  line-height: 1.6;
+  
+  // Remove default margins from paragraphs
+  p:first-child {
+    margin-top: 0;
+  }
+  
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.card__footer {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid $gray-100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card__actions {
+  display: flex;
+  gap: $spacing-xs;
+  margin-left: auto;
+  flex-shrink: 0;
+  
+  // Inline forms in actions
+  form {
+    display: inline-flex;
+    margin: 0;
+  }
+  
+  // Action buttons styling
+  .btn--icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $border-radius-sm;
+    transition: all 0.2s ease;
+    
+    .glyphicon {
+      font-size: 14px;
+    }
+    
+    &.btn--success {
+      background: $white;
+      border: 1px solid $gray-300;
+      color: $success;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      
+      &:hover {
+        background: $success;
+        border-color: $success;
+        color: $white !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba($success, 0.15);
+        
+        .glyphicon {
+          color: $white !important;
+        }
+      }
+    }
+    
+    &.btn--secondary {
+      background: $white;
+      border: 1px solid $gray-300;
+      color: $primary;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      
+      &:hover {
+        background: $primary;
+        border-color: $primary;
+        color: $white !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba($primary, 0.15);
+        
+        .glyphicon {
+          color: $white !important;
+        }
+      }
+    }
+    
+    &.btn--danger {
+      background: $white;
+      border: 1px solid $gray-300;
+      color: $danger;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      
+      &:hover {
+        background: $danger;
+        border-color: $danger;
+        color: $white !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba($danger, 0.15);
+        
+        .glyphicon {
+          color: $white !important;
+        }
+      }
+    }
+  }
+}
+
+.card__meta {
+  font-size: $font-size-sm;
+  color: $gray-600;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin: $spacing-sm 0;
+  
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    
+    .glyphicon {
+      font-size: 12px;
+      color: $gray-500;
+      
+      &.glyphicon-log-in {
+        color: $brand-teal;
+      }
+      
+      &.glyphicon-comment {
+        color: $brand-medium-blue;
+      }
+    }
+  }
+}
+
+// Special card variations
+.card--clickable {
+  cursor: pointer;
+  text-decoration: none !important;
+  color: inherit;
+  display: block; // Ensure block display when card is a link
+  
+  &:hover {
+    text-decoration: none; // Prevent underline
+    
+    .card__title {
+      color: $brand-teal;
+    }
+  }
+  
+  &:focus {
+    outline: none; // Remove focus outline
+    text-decoration: none;
+  }
+  
+  &:active {
+    outline: none; // Remove active outline
+  }
+}
+
+// Lead card specific styles
+.card__status-row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+  
+  // Priority icons (flames)
+  .lead-priority {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 18px;
+    line-height: 1;
+    
+    .glyphicon-fire {
+      color: $danger !important; // Override any global styles
+      text-shadow: 0 0 3px rgba($danger, 0.5);
+      animation: flicker 2s ease-in-out infinite;
+      
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+    }
+  }
+}
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.card__vip-indicator {
+  color: $danger;
+  font-size: $font-size-sm;
+  margin-right: $spacing-xs;
+}
+
+.card__contact {
+  margin: $spacing-sm 0;
+  
+  // Style the contact mini card content
+  blockquote {
+    background: rgba($brand-light-blue, 0.08);
+    border: 1px solid rgba($brand-light-blue, 0.2);
+    border-radius: $border-radius-sm;
+    padding: $spacing-sm;
+    margin: 0;
+    font-size: $font-size-sm;
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background-color: $brand-medium-blue;
+    }
+    
+    .glyphicon-phone,
+    .glyphicon-earphone {
+      color: $primary;
+      margin-right: $spacing-xs;
+    }
+    
+    .glyphicon-envelope {
+      color: $brand-medium-blue;
+      margin-right: $spacing-xs;
+    }
+  }
+}
+
+.card__notes {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-xs;
+  font-size: $font-size-sm;
+  color: $gray-600;
+  margin-top: $spacing-sm;
+  
+  .glyphicon {
+    color: $gray-500;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
+.card__waitlist-note {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $font-size-sm;
+  color: $gray-500;
+  font-style: italic;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-sm;
+  border-top: 1px solid $gray-100;
+  
+  .glyphicon {
+    color: $gray-400;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+}
+
+.card--message {
+  &.card--status {
+    // Incoming messages (teal theme)
+    &.is-incoming {
+      background: linear-gradient(135deg, rgba($brand-teal, 0.04) 0%, rgba($brand-teal, 0.08) 100%);
+      
+      &::before {
+        background: rgba($brand-teal, 0.4);
+      }
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba($brand-teal, 0.06) 0%, rgba($brand-teal, 0.1) 100%);
+        border-color: $brand-teal;
+      }
+    }
+    
+    // Outgoing messages (blue theme)
+    &.is-outgoing {
+      background: linear-gradient(135deg, rgba($primary, 0.02) 0%, rgba($primary, 0.04) 100%);
+      
+      &::before {
+        background: rgba($primary, 0.3);
+      }
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba($primary, 0.03) 0%, rgba($primary, 0.06) 100%);
+        border-color: $primary;
+      }
+    }
+  }
+}
+
+// Card loading state
+.card--loading {
+  .card__body {
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+      animation: shimmer 1.5s infinite;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Card size modifiers
+.card--sm {
+  padding: $spacing-sm $spacing-md;
+  
+  .card__title {
+    font-size: $font-size-base;
+  }
+  
+  .card__icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
+
+.card--lg {
+  padding: $spacing-xl;
+  
+  .card__title {
+    font-size: $font-size-xl;
+  }
+  
+  .card__icon {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 767px) {
+  .card {
+    &--info,
+    &--editable,
+    &--status {
+      padding: $spacing-md;
+    }
+    
+    &--status {
+      padding-left: 20px; // Adjust for smaller screens
+    }
+  }
+  
+  .card__header {
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+  
+  .card__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+// Card content variations
+.card__content {
+  &--with-icon {
+    display: flex;
+    gap: $spacing-md;
+    align-items: flex-start;
+  }
+  
+  &--no-padding {
+    padding: 0;
+  }
+}
+
+.card__details {
+  flex: 1;
+  min-width: 0;
+}
+
+// Task card specific layout
+.card__task-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  
+  .card__icon {
+    margin-top: 2px; // Slight offset to align with text
+  }
+  
+  .card__details {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .card__actions {
+    align-self: center;
+  }
+}
+
+.card__description {
+  font-size: $font-size-sm;
+  color: $gray-600;
+  margin: $spacing-xs 0 0;
+}
+
+// Icon color modifiers for task icons - all use primary for consistency
+.card__icon {
+  &--phone,
+  &--earphone,
+  &--email,
+  &--envelope,
+  &--meeting,
+  &--user,
+  &--calendar,
+  &--document,
+  &--list-alt,
+  &--file,
+  &--home,
+  &--check,
+  &--ok,
+  &--pin,
+  &--pushpin {
+    background: rgba($primary, 0.1);
+    color: $primary;
+  }
+  
+  &--comment {
+    background: rgba($gray-500, 0.1);
+    color: $gray-600;
+  }
+  
+  &--info {
+    background: rgba($brand-teal, 0.1);
+    color: $brand-teal;
+  }
+}

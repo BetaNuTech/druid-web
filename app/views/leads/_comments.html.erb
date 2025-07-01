@@ -1,44 +1,49 @@
-<div class="comments-section">
-  <div class="section-header">
-    <h2><%= glyph(:comment) %> Comments</h2>
-    <button type="button" id="lead_toggle_comments_form_link" class="btn btn-primary">
+<div class="section-header section-header--with-actions">
+  <div class="section-header__content">
+    <div class="section-header__icon">
+      <%= glyph(:comment) %>
+    </div>
+    <h3 class="section-header__title">Comments</h3>
+  </div>
+  <div class="section-header__actions">
+    <button type="button" id="lead_toggle_comments_form_link" class="btn btn--primary">
       <%= glyph(:plus) %> Add Comment
     </button>
   </div>
+</div>
 
-  <!-- Comment Form (Hidden by default) -->
-  <div class="comment-form-wrapper" id="lead_comments_form" style="display: none;">
-    <%= render partial: "notes/lead_form", locals: {note: lead.comments.build} %>
-  </div>
+<!-- Comment Form (Hidden by default) -->
+<div class="comment-form-wrapper" id="lead_comments_form" style="display: none;">
+  <%= render partial: "notes/lead_form", locals: {note: lead.comments.build} %>
+</div>
 
-  <!-- Comments List -->
-  <div class="comments-container">
-    <% if comments.empty? %>
-      <div class="empty-comments">
-        <span class="empty-icon"><%= glyph(:comment) %></span>
-        <p>No comments yet</p>
-        <p class="text-muted">Add a comment to start the conversation</p>
+<!-- Comments List -->
+<div class="comments-container">
+  <% if comments.empty? %>
+    <div class="empty-comments">
+      <span class="empty-icon"><%= glyph(:comment) %></span>
+      <p>No comments yet</p>
+      <p class="text-muted">Add a comment to start the conversation</p>
       </div>
-    <% else %>
-      <div class="comments-list" id="latest_comments">
-        <% comments.order(created_at: 'desc')[0..4].each do |comment| %>
+  <% else %>
+    <div class="comments-list" id="latest_comments">
+      <% comments.order(created_at: 'desc')[0..4].each do |comment| %>
+        <%= render partial: "leads/comment_card", locals: { comment: comment } %>
+      <% end %>
+    </div>
+    
+    <% if comments.count > 5 %>
+      <div class="show-more-wrapper">
+        <button type="button" id="lead_show_more_comments_link" class="btn btn--default btn--small">
+          <%= glyph(:chevron_down) %> Show <%= comments.count - 5 %> More Comments
+        </button>
+      </div>
+      
+      <div class="comments-list" id="more_comments" style="display: none;">
+        <% comments.order(created_at: 'desc')[5..].each do |comment| %>
           <%= render partial: "leads/comment_card", locals: { comment: comment } %>
         <% end %>
       </div>
-      
-      <% if comments.count > 5 %>
-        <div class="show-more-wrapper">
-          <button type="button" id="lead_show_more_comments_link" class="btn btn-default btn-sm">
-            <%= glyph(:chevron_down) %> Show <%= comments.count - 5 %> More Comments
-          </button>
-        </div>
-        
-        <div class="comments-list" id="more_comments" style="display: none;">
-          <% comments.order(created_at: 'desc')[5..].each do |comment| %>
-            <%= render partial: "leads/comment_card", locals: { comment: comment } %>
-          <% end %>
-        </div>
-      <% end %>
     <% end %>
-  </div>
+  <% end %>
 </div>

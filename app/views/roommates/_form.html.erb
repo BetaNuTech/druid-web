@@ -13,23 +13,23 @@
 
   <fieldset>
     <legend>Personal</legend>
-    <div class="row form-group">
-      <div class="col-md-6">
-        <%= form.label :first_name %>
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <%= form.label :first_name, class: 'form-label' %>
         <%= form.text_field :first_name, {class: 'form-control', id: 'first_name_field'} %>
       </div>
-      <div class="col-md-6">
-        <%= form.label :last_name %>
+      <div class="col-md-6 form-group">
+        <%= form.label :last_name, class: 'form-label' %>
         <%= form.text_field :last_name, {class: 'form-control'} %>
       </div>
     </div>
-    <div class="row form-group">
-      <div class="col-md-3">
-        <%= form.label :occupancy %>
+    <div class="row">
+      <div class="col-md-3 form-group">
+        <%= form.label :occupancy, class: 'form-label' %>
         <%= form.select :occupancy, roommate_occupancies_for_select(roommate.occupancy), {}, {class: 'form-control'} %>
       </div>
-      <div class="col-md-3">
-        <%= form.label :relationship, 'Relationship to Lead' %>
+      <div class="col-md-3 form-group">
+        <%= form.label :relationship, 'Relationship to Lead', class: 'form-label' %>
         <%= form.select :relationship, roommate_relationships_for_select(roommate.relationship), {}, {class: 'form-control'} %>
       </div>
     </div>
@@ -37,25 +37,29 @@
 
   <fieldset>
     <legend>Contact</legend>
-    <div class="row form-group">
-      <div class="col-md-6">
-        <%= form.label :phone %>
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <%= form.label :phone, class: 'form-label' %>
         <%= form.phone_field :phone, {class: 'form-control'} %>
-        <%= form.check_box :sms_allowed %>
-        <%= form.label :sms_allowed, 'SMS/Text permitted' %>
+        <div class="form-check">
+          <%= form.check_box :sms_allowed, class: 'form-check__input' %>
+          <%= form.label :sms_allowed, 'SMS/Text permitted', class: 'form-check__label' %>
+        </div>
       </div>
-      <div class="col-md-6">
-        <%= form.label :email %>
+      <div class="col-md-6 form-group">
+        <%= form.label :email, class: 'form-label' %>
         <%= form.phone_field :email, {class: 'form-control'} %>
-        <%= form.check_box :email_allowed %>
-        <%= form.label :email_allowed, 'Email permitted' %>
+        <div class="form-check">
+          <%= form.check_box :email_allowed, class: 'form-check__input' %>
+          <%= form.label :email_allowed, 'Email permitted', class: 'form-check__label' %>
+        </div>
       </div>
     </div>
   </fieldset>
 
-  <div class="row form-group">
-    <div class="col-md-12">
-      <%= form.label :notes %>
+  <div class="row">
+    <div class="col-md-12 form-group">
+      <%= form.label :notes, class: 'form-label' %>
       <%= form.text_area :notes, {rows: 4, class: 'form-control'} %>
     </div>
   </div>
@@ -63,8 +67,8 @@
   <div class="row">
     <div class="col-md-12 form-group">
       <br/>
-      <button type="submit" class="btn btn-primary">Save</button>
-      <%= link_to('Cancel', :back, class: 'btn btn-xs btn-info') %>
+      <button type="submit" class="btn btn--primary">Save</button>
+      <%= link_to('Cancel', :back, class: "btn btn--small btn--info") %>
     </div>
   </div>
 <% end %>

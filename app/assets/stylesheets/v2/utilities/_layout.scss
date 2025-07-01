@@ -1,0 +1,240 @@
+// Layout Utility Classes
+// Float, position, and other layout utilities
+// Based on BlueSky Design System V2
+
+@import '../variables';
+
+// Float utilities
+.float {
+  &--left {
+    float: left !important;
+  }
+  
+  &--right {
+    float: right !important;
+  }
+  
+  &--none {
+    float: none !important;
+  }
+}
+
+// Clear utilities
+.clear {
+  &--both {
+    clear: both !important;
+  }
+  
+  &--left {
+    clear: left !important;
+  }
+  
+  &--right {
+    clear: right !important;
+  }
+}
+
+// Clearfix utility
+.clearfix {
+  &::after {
+    display: block;
+    clear: both;
+    content: "";
+  }
+}
+
+// Position utilities
+.position {
+  &--static {
+    position: static !important;
+  }
+  
+  &--relative {
+    position: relative !important;
+  }
+  
+  &--absolute {
+    position: absolute !important;
+  }
+  
+  &--fixed {
+    position: fixed !important;
+  }
+  
+  &--sticky {
+    position: sticky !important;
+  }
+}
+
+// Z-index utilities
+.z {
+  &--0 {
+    z-index: 0 !important;
+  }
+  
+  &--10 {
+    z-index: 10 !important;
+  }
+  
+  &--20 {
+    z-index: 20 !important;
+  }
+  
+  &--30 {
+    z-index: 30 !important;
+  }
+  
+  &--40 {
+    z-index: 40 !important;
+  }
+  
+  &--50 {
+    z-index: 50 !important;
+  }
+  
+  &--100 {
+    z-index: 100 !important;
+  }
+  
+  &--200 {
+    z-index: 200 !important;
+  }
+  
+  &--1000 {
+    z-index: 1000 !important;
+  }
+  
+  &--9999 {
+    z-index: 9999 !important;
+  }
+}
+
+// Overflow utilities
+.overflow {
+  &--auto {
+    overflow: auto !important;
+  }
+  
+  &--hidden {
+    overflow: hidden !important;
+  }
+  
+  &--visible {
+    overflow: visible !important;
+  }
+  
+  &--scroll {
+    overflow: scroll !important;
+  }
+  
+  &-x {
+    &--auto {
+      overflow-x: auto !important;
+    }
+    
+    &--hidden {
+      overflow-x: hidden !important;
+    }
+    
+    &--visible {
+      overflow-x: visible !important;
+    }
+    
+    &--scroll {
+      overflow-x: scroll !important;
+    }
+  }
+  
+  &-y {
+    &--auto {
+      overflow-y: auto !important;
+    }
+    
+    &--hidden {
+      overflow-y: hidden !important;
+    }
+    
+    &--visible {
+      overflow-y: visible !important;
+    }
+    
+    &--scroll {
+      overflow-y: scroll !important;
+    }
+  }
+}
+
+// Legacy Bootstrap Compatibility
+// Temporary during migration
+.pull-left {
+  @extend .float--left;
+}
+
+.pull-right {
+  @extend .float--right;
+}
+
+// Responsive float utilities
+@media (min-width: 576px) {
+  .float-sm {
+    &--left {
+      float: left !important;
+    }
+    
+    &--right {
+      float: right !important;
+    }
+    
+    &--none {
+      float: none !important;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .float-md {
+    &--left {
+      float: left !important;
+    }
+    
+    &--right {
+      float: right !important;
+    }
+    
+    &--none {
+      float: none !important;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .float-lg {
+    &--left {
+      float: left !important;
+    }
+    
+    &--right {
+      float: right !important;
+    }
+    
+    &--none {
+      float: none !important;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .float-xl {
+    &--left {
+      float: left !important;
+    }
+    
+    &--right {
+      float: right !important;
+    }
+    
+    &--none {
+      float: none !important;
+    }
+  }
+}

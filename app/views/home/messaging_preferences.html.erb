@@ -10,27 +10,31 @@
       <%= form_tag(messaging_unsubscribe_path) %>
       <%= hidden_field_tag :lead_id, params[:id] %>
 
-      <div class="row form-group">
-        <div class="col-md-4">
-          <%= label_tag :lead_email, 'Email Address' %>
-          <%= text_field_tag :lead_email, @lead.email, class: "form-control" %>
+      <div class="row">
+        <div class="col-md-4 form__group">
+          <%= label_tag :lead_email, 'Email Address', class: 'form__label' %>
+          <%= text_field_tag :lead_email, @lead.email, class: "form__control" %>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-4">
-          <%= check_box_tag :lead_email_optout, "true", @lead.optout_email? %>
-          <%= label_tag :lead_email_optout, 'I do not want to be sent Email messages' %>
+        <div class="col-md-4 form__group">
+          <div class="form__check">
+            <%= check_box_tag :lead_email_optout, "true", @lead.optout_email?, class: 'form__check-input' %>
+            <%= label_tag :lead_email_optout, 'I do not want to be sent Email messages', class: 'form__check-label' %>
+          </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-4">
-          <%= check_box_tag :lead_sms_optout, "true", @lead.optout_sms? %>
-          <%= label_tag :lead_sms_optout, 'I do not want to be sent SMS messages' %>
+        <div class="col-md-4 form__group">
+          <div class="form__check">
+            <%= check_box_tag :lead_sms_optout, "true", @lead.optout_sms?, class: 'form__check-input' %>
+            <%= label_tag :lead_sms_optout, 'I do not want to be sent SMS messages', class: 'form__check-label' %>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary">Save</button>
+      <div class="form__group">
+        <button type="submit" class="btn btn--primary">Save</button>
       </div>
     </form>
   </div>

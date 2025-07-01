@@ -1,0 +1,65 @@
+// Messages Page Layout
+// Grid and container replacements for messages pages
+
+@import '../../variables';
+
+// Page wrapper
+.messages-page {
+  // Page content container
+  &__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 $spacing-lg;
+    
+    @media (max-width: $screen-sm-max) {
+      padding: 0 $spacing-md;
+    }
+  }
+  
+  // Section wrapper
+  &__section {
+    margin-bottom: $spacing-xl;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Content grid
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+  
+  // Alert section
+  &__alert {
+    max-width: 600px;
+    margin-top: $spacing-xl;
+  }
+  
+  // Actions row
+  &__actions {
+    margin-top: $spacing-lg;
+  }
+}
+
+// Backward compatibility
+.container-fluid {
+  @extend .messages-page__container;
+}
+
+.row {
+  // Remove negative margins
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.col-md-12,
+.col-md-10,
+.col-md-6,
+.col-sm-6 {
+  // Remove Bootstrap padding
+  padding-left: 0;
+  padding-right: 0;
+}

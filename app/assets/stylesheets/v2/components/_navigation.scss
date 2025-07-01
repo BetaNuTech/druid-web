@@ -1,0 +1,639 @@
+// Navigation Component - BEM Structure
+// Migrated from legacy navigation.scss
+
+@import '../variables';
+
+// Header Component
+.header,
+#headerrow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(135deg, $brand-deep-blue 0%, $primary 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1030;
+  display: flex;
+  align-items: center;
+  padding: 0 $spacing-md;
+
+  &__appname {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+  
+  &__brand-primary {
+    color: $white;
+    font-size: 18px;
+    font-weight: $font-weight-bold;
+    letter-spacing: 1px;
+  }
+  
+  &__brand-secondary {
+    color: rgba($white, 0.8);
+    font-size: 18px;
+    font-weight: $font-weight-regular;
+    letter-spacing: 1px;
+  }
+
+  &__hamburger {
+    display: none;
+    
+    &--mobile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: $spacing-md;
+      cursor: pointer;
+      padding: $spacing-xs;
+      
+      @media (min-width: $screen-md-min) {
+        display: none;
+      }
+      
+      svg {
+        display: block;
+      }
+    }
+  }
+
+  &__actions {
+    margin-left: auto;
+    display: flex;
+    gap: $spacing-sm;
+  }
+}
+
+// Sidebar Component
+.sidebar,
+#sidebar {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  width: 250px;
+  background: $white;
+  border-right: 1px solid $gray-200;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1020;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+
+  // Mobile: hidden by default
+  @media (max-width: $screen-sm-max) {
+    transform: translateX(-100%);
+    
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
+  &__top-actions,
+  #sidebar--top-actions {
+    padding: $spacing-sm $spacing-md $spacing-xs;
+    display: flex;
+    gap: $spacing-xs;
+    justify-content: stretch;
+    background: $white;
+    flex-shrink: 0;
+  }
+  
+  
+
+  &__action-button,
+  .sidebar--action-button {
+    flex: 1;
+    min-width: 0;
+    max-width: 135px;
+    
+    // Style the link inside the action button
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
+      height: 52px;
+      width: 100%;
+      border-radius: $border-radius-lg;
+      background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+      color: $white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba($brand-deep-blue, 0.15);
+      
+      // Icon container with gradient effect
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 46px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: $border-radius-lg 0 0 $border-radius-lg;
+        z-index: 1;
+      }
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba($brand-deep-blue, 0.25);
+        color: $white;
+        text-decoration: none;
+      }
+      
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba($brand-deep-blue, 0.2);
+      }
+      
+      .glyphicon {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        color: $white;
+        z-index: 2;
+      }
+      
+      .sidebar__action-button-label {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        font-size: 11px;
+        line-height: 1.2;
+        color: $white;
+        font-weight: $font-weight-semi-bold;
+        text-align: center;
+        padding-left: 46px;
+        padding-right: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+    
+    // New Lead button should be teal
+    &#new-lead-button a {
+      background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 8%) 100%);
+      box-shadow: 0 2px 4px rgba($brand-teal, 0.15);
+      
+      &:hover {
+        box-shadow: 0 4px 10px rgba($brand-teal, 0.25);
+      }
+    }
+  }
+
+  &__section,
+  .sidebar--item-group {
+    border-bottom: 1px solid $gray-100;
+    
+    &-count {
+      background: $gray-200;
+      color: $gray-600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: $font-weight-medium;
+    }
+  }
+  
+  // Support for standalone sidebar headers
+  .sidebar--header {
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 11px;
+    font-weight: $font-weight-bold;
+    margin-top: $spacing-lg;
+    margin-left: $spacing-xs;
+    margin-bottom: $spacing-sm;
+    padding: $spacing-sm $spacing-lg;
+    color: $gray-500;
+    position: relative;
+    display: block;
+    cursor: default;
+    user-select: none;
+    text-align: left;
+    
+    &:empty {
+      // Empty headers act as section dividers
+      display: block;
+      height: 0;
+      padding: 0;
+      margin: $spacing-md 0;
+      background: none;
+      
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        top: 0;
+        height: 1px;
+        background: $gray-200;
+      }
+    }
+    
+    &:first-child {
+      margin-top: $spacing-xs;
+      border-top: none;
+    }
+    
+    &--collapsible {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      &:hover {
+        background: $gray-50;
+      }
+      
+      .glyphicon-chevron-down {
+        transition: transform 0.3s ease;
+        font-size: 9px;
+        color: $gray-400;
+      }
+      
+      &.is-collapsed .glyphicon-chevron-down {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  &__item,
+  .sidebar--item {
+    position: relative;
+    
+    // Style the link inside the item
+    a {
+      display: flex;
+      align-items: center;
+      padding: $spacing-sm $spacing-lg;
+      color: $gray-700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba($primary, 0.05);
+        color: $primary;
+        padding-left: $spacing-lg + 4px;
+        text-decoration: none;
+      }
+      
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: $spacing-sm;
+        opacity: 0.7;
+        filter: grayscale(100%);
+        transition: all 0.2s ease;
+      }
+      
+      &:hover img {
+        opacity: 1;
+        filter: grayscale(0%);
+      }
+      
+      .glyphicon {
+        display: inline-block;
+        width: 20px;
+        margin-right: $spacing-sm;
+        text-align: center;
+        font-size: 16px;
+        opacity: 0.7;
+        color: inherit;
+      }
+      
+      .sidebar--item-content {
+        flex: 1;
+      }
+    }
+    
+    // Active state for sidebar items
+    &.sidebar--item--active,
+    &.active {
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: $brand-teal;
+        z-index: 1;
+      }
+      
+      > a {
+        background: rgba($brand-teal, 0.08);
+        color: $brand-teal;
+        font-weight: $font-weight-medium;
+        
+        img {
+          opacity: 1;
+          filter: grayscale(0%) brightness(0) saturate(100%) invert(48%) sepia(79%) saturate(490%) hue-rotate(130deg) brightness(95%) contrast(92%);
+        }
+        
+        .glyphicon {
+          opacity: 1;
+          color: $brand-teal;
+        }
+      }
+    }
+    
+    // Alert dot
+    .sidebar--item-alert {
+      position: absolute;
+      right: $spacing-lg;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      height: 8px;
+      background: $danger;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0;
+      overflow: hidden;
+      margin: auto 0;
+      
+      // Hide the bullet character
+      text-indent: -9999px;
+    }
+  }
+
+  &__profile,
+  #sidebar__account-controls {
+    margin-top: auto;
+    background: $white;
+    border-top: 1px solid $gray-200;
+    padding: $spacing-lg;
+    flex-shrink: 0;
+    
+    &-info {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-sm;
+    }
+    
+    &-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: $gray-200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $gray-600;
+    }
+    
+    &-name {
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+    }
+    
+    &-controls {
+      display: flex;
+      gap: $spacing-xs;
+      font-size: 12px;
+      
+      a {
+        color: $gray-600;
+        text-decoration: none;
+        padding: 2px 6px;
+        border-radius: $border-radius-sm;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: $gray-100;
+          color: $gray-800;
+        }
+      }
+    }
+  }
+  
+  // Support for old account controls structure
+  .sidebar__account-controls-profile {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $white;
+    margin: 0 auto $spacing-sm;
+    overflow: hidden;
+    font-size: 18px;
+    font-weight: $font-weight-medium;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  .sidebar__account-controls-username {
+    display: block;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin-bottom: $spacing-xs;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .sidebar__account-controls-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: $spacing-xs;
+    justify-content: center;
+    margin-bottom: $spacing-lg;
+    white-space: nowrap;
+    
+    .sidebar__account-controls-button {
+      width: 36px;
+      height: 36px;
+      background-color: transparent;
+      border-radius: $border-radius-md;
+      transition: $transition-base;
+      flex-shrink: 0;
+      
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        color: $gray-600;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: rgba($brand-light-blue, 0.15);
+          color: $brand-medium-blue;
+        }
+        
+        img {
+          width: 20px;
+          height: 20px;
+          opacity: 0.7;
+          filter: grayscale(100%);
+          transition: opacity 0.2s ease;
+        }
+        
+        &:hover img {
+          opacity: 0.8;
+          filter: grayscale(0%);
+        }
+      }
+    }
+  }
+  
+  // Logo at bottom - make it smaller and grayscale
+  &__logo {
+    display: block;
+    max-width: 120px;
+    height: auto;
+    margin: $spacing-md auto;
+    opacity: 0.5;
+    filter: grayscale(100%);
+    align-self: center;
+  }
+}
+
+// Notification toggle buttons
+.toggle-setting__button {
+  // Style overrides when used as sidebar account control button
+  &.sidebar__account-controls-button {
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      color: $gray-600;
+      
+      &:hover {
+        background-color: transparent; // Override default hover
+      }
+    }
+    
+    .glyphicon {
+      font-size: 16px;
+    }
+    
+    // On state
+    &.toggle-setting__button--on {
+      background-color: rgba($brand-teal, 0.15) !important;
+      
+      a {
+        color: $brand-teal !important;
+        
+        .glyphicon {
+          color: $brand-teal !important;
+        }
+      }
+      
+      &:hover {
+        background-color: rgba($brand-teal, 0.25) !important;
+      }
+    }
+    
+    // Off state
+    &.toggle-setting__button--off {
+      background-color: rgba($gray-300, 0.1) !important;
+      
+      a {
+        color: $gray-600 !important;
+        
+        .glyphicon {
+          color: $gray-500 !important;
+        }
+      }
+      
+      &:hover {
+        background-color: rgba($gray-300, 0.2) !important;
+        
+        a {
+          color: $gray-700 !important;
+          
+          .glyphicon {
+            color: $gray-600 !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Sidebar overlay for mobile
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1015;
+  
+  @media (max-width: $screen-sm-max) {
+    display: block;
+  }
+}
+
+// Content area adjustments
+.content {
+  padding-top: 50px; // Account for fixed header
+  
+  @media (min-width: $screen-md-min) {
+    margin-left: 250px; // Account for sidebar
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Responsive utilities (to replace Bootstrap)
+@media (max-width: $screen-xs-max) {
+  .visible-xs { display: block !important; }
+  .hidden-xs { display: none !important; }
+}
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+  .visible-sm { display: block !important; }
+  .hidden-sm { display: none !important; }
+}
+
+@media (min-width: $screen-md-min) {
+  .visible-md { display: block !important; }
+  .hidden-md { display: none !important; }
+}

@@ -1,0 +1,347 @@
+// Duplicates Page Styles - BEM Structure
+// Duplicate lead detection and management
+
+@import '../../variables';
+@import '../../functions';
+@import 'duplicates-list';
+
+// Duplicates section
+.duplicates {
+  margin-top: $spacing-xl;
+  
+  // Section container
+  &__section {
+    background: lighten($warning, 45%);
+    border: 1px solid $warning;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+  }
+  
+  // Section header
+  &__header {
+    background: lighten($warning, 35%);
+    border-bottom: 1px solid $warning;
+    padding: $spacing-md $spacing-lg;
+    
+    h3 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semi-bold;
+      color: darken($warning, 20%);
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        color: $warning;
+      }
+    }
+  }
+  
+  // Duplicates content
+  &__content {
+    padding: $spacing-lg;
+    
+    @media (max-width: $screen-xs-max) {
+      padding: $spacing-md;
+    }
+  }
+  
+  // Alert message
+  &__alert {
+    @include alert-variant($warning);
+    margin-bottom: $spacing-lg;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    .glyphicon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+  }
+  
+  // Duplicate group
+  &__group {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    margin-bottom: $spacing-lg;
+    overflow: hidden;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Group header
+  &__group-header {
+    background: $gray-50;
+    border-bottom: 1px solid $gray-200;
+    padding: $spacing-md;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+    
+    &:hover {
+      background: $gray-100;
+    }
+    
+    h4 {
+      margin: 0;
+      font-size: $font-size-base;
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  
+  // Match count badge
+  &__match-count {
+    background: $warning;
+    color: $white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+  }
+  
+  // Group content
+  &__group-content {
+    padding: 0;
+    
+    &--collapsed {
+      display: none;
+    }
+  }
+  
+  // Duplicate cards container
+  &__cards {
+    display: flex;
+    gap: $spacing-md;
+    padding: $spacing-lg;
+    
+    @media (max-width: $screen-md-max) {
+      flex-direction: column;
+    }
+  }
+  
+  // Individual duplicate card
+  &__card {
+    flex: 1;
+    background: $gray-50;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    padding: $spacing-md;
+    position: relative;
+    
+    &--primary {
+      border-color: $primary;
+      border-width: 2px;
+      
+      .duplicates__card-badge {
+        background: $primary;
+      }
+    }
+    
+    &--current {
+      border-color: $success;
+      border-width: 2px;
+      
+      .duplicates__card-badge {
+        background: $success;
+      }
+    }
+  }
+  
+  // Card badge (Primary/Current)
+  &__card-badge {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background: $gray-600;
+    color: $white;
+    padding: 4px 12px;
+    border-radius: 0 $border-radius-md 0 $border-radius-md;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+  }
+  
+  // Card header
+  &__card-header {
+    margin-bottom: $spacing-md;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $gray-200;
+    
+    h5 {
+      margin: 0 0 $spacing-xs 0;
+      font-size: $font-size-base;
+      font-weight: $font-weight-semi-bold;
+      
+      a {
+        color: $gray-800;
+        text-decoration: none;
+        
+        &:hover {
+          color: $primary;
+        }
+      }
+    }
+    
+    .lead-state {
+      font-size: $font-size-sm;
+      color: $gray-600;
+    }
+  }
+  
+  // Card fields
+  &__field {
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-sm;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    strong {
+      color: $gray-700;
+      font-weight: $font-weight-medium;
+      margin-right: $spacing-xs;
+    }
+    
+    // Matching field highlight
+    &--match {
+      background: lighten($warning, 40%);
+      padding: 2px 4px;
+      border-radius: $border-radius-xs;
+      margin-left: -4px;
+      margin-right: -4px;
+    }
+  }
+  
+  // Card actions
+  &__card-actions {
+    margin-top: $spacing-md;
+    padding-top: $spacing-md;
+    border-top: 1px solid $gray-200;
+    display: flex;
+    gap: $spacing-sm;
+    
+    .btn {
+      flex: 1;
+      font-size: $font-size-sm;
+      padding: $spacing-xs $spacing-sm;
+    }
+  }
+  
+  // Navigation to duplicates section
+  &__nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-xs $spacing-sm;
+    background: lighten($warning, 45%);
+    border: 1px solid $warning;
+    border-radius: $border-radius-sm;
+    color: darken($warning, 20%);
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: lighten($warning, 40%);
+      text-decoration: none;
+      transform: translateY(-1px);
+      box-shadow: $shadow-sm;
+    }
+    
+    .badge {
+      background: $warning;
+      color: $white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: $font-weight-bold;
+    }
+  }
+}
+
+// Legacy support for existing markup
+.duplicates-section {
+  @extend .duplicates__section;
+}
+
+.duplicates-header {
+  @extend .duplicates__header;
+}
+
+.duplicates-content {
+  @extend .duplicates__content;
+}
+
+.duplicates-alert {
+  @extend .duplicates__alert;
+}
+
+.duplicate-group {
+  @extend .duplicates__group;
+  
+  .duplicate-group-header {
+    @extend .duplicates__group-header;
+    
+    .match-count {
+      @extend .duplicates__match-count;
+    }
+  }
+  
+  .duplicate-group-content {
+    @extend .duplicates__group-content;
+    
+    &.collapse:not(.in) {
+      @extend .duplicates__group-content--collapsed;
+    }
+  }
+}
+
+.duplicate-cards {
+  @extend .duplicates__cards;
+}
+
+.duplicate-card {
+  @extend .duplicates__card;
+  
+  &.primary-lead {
+    @extend .duplicates__card--primary;
+  }
+  
+  &.current-lead {
+    @extend .duplicates__card--current;
+  }
+  
+  .duplicate-badge {
+    @extend .duplicates__card-badge;
+  }
+  
+  .duplicate-card-header {
+    @extend .duplicates__card-header;
+  }
+  
+  .duplicate-field {
+    @extend .duplicates__field;
+    
+    &.field-match {
+      @extend .duplicates__field--match;
+    }
+  }
+  
+  .duplicate-actions {
+    @extend .duplicates__card-actions;
+  }
+}
+
+a.duplicates-nav {
+  @extend .duplicates__nav-link;
+}

@@ -1,65 +1,68 @@
-<div class="messages-section" id="lead_messages">
-  <div class="section-header">
-    <h2><%= glyph(:envelope) %> Messages</h2>
-    <div class="header-actions">
-      <%= render partial: "messages/new_message_callout", locals: {messageable: lead} %>
+<div class="section-header section-header--with-actions">
+  <div class="section-header__content">
+    <div class="section-header__icon">
+      <%= glyph(:envelope) %>
     </div>
+    <h3 class="section-header__title">Messages</h3>
   </div>
+  <div class="section-header__actions">
+    <%= render partial: "messages/new_message_callout", locals: {messageable: lead} %>
+  </div>
+</div>
 
-  <!-- Opt-in/Opt-out Status Alerts -->
-  <% if @lead.optout_email? || !@lead.optin_sms? %>
-    <div class="message-alerts">
-      <% if @lead.optout_email? %>
-        <div class="alert alert-warning">
-          <%= glyph(:warning_sign) %> This lead has opted out of email notifications
-        </div>
-      <% end %>
-      <% if !@lead.optin_sms? %>
-        <div class="alert alert-info">
-          <%= glyph(:info_sign) %> This lead has not yet agreed to SMS messaging
-          <% if policy(lead).resend_sms_opt_in_message? %>
-            <%= link_to(resend_sms_opt_in_message_lead_path(id: lead.id), method: :post, class: 'btn btn-sm btn-primary pull-right') do %>
-              <%= glyph(:refresh) %> Resend Opt-in
-            <% end %>
+<!-- Opt-in/Opt-out Status Alerts -->
+<% if @lead.optout_email? || !@lead.optin_sms? %>
+  <div class="message-alerts">
+    <% if @lead.optout_email? %>
+      <div class="alert alert--warning">
+        <%= glyph(:warning_sign) %> This lead has opted out of email notifications
+      </div>
+    <% end %>
+    <% if !@lead.optin_sms? %>
+      <div class="alert alert--info">
+        <%= glyph(:info_sign) %> This lead has not yet agreed to SMS messaging
+        <% if policy(lead).resend_sms_opt_in_message? %>
+          <%= link_to(resend_sms_opt_in_message_lead_path(id: lead.id), method: :post, class: "btn btn--sm btn--primary pull-right") do %>
+            <%= glyph(:refresh) %> Resend Opt-in
           <% end %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-
-  <!-- Lead Messages -->
-  <div class="messages-container">
-    <% if lead.messages.any? %>
-      <div class="messages-list">
-        <% lead.messages.display_order.each do |message| %>
-          <% next unless policy(message).show? %>
-          <%= render partial: 'message_card', locals: { message: message, messageable: lead } %>
         <% end %>
       </div>
-    <% else %>
-      <div class="empty-messages">
-        <span class="empty-icon"><%= glyph(:envelope) %></span>
-        <p>No messages yet</p>
-        <p class="text-muted">Start a conversation with this lead</p>
-      </div>
     <% end %>
   </div>
+<% end %>
 
-  <!-- Roommate Messages -->
-  <% lead.roommates.each do |roommate| %>
-    <% if roommate.messages.any? %>
-      <div class="roommate-messages-section">
-        <div class="roommate-header">
-          <h3><%= glyph(:user) %> Messages with <%= roommate.name %></h3>
-          <%= render partial: "messages/new_message_callout", locals: {messageable: roommate} %>
-        </div>
-        <div class="messages-list">
-          <% roommate.messages.display_order.each do |message| %>
-            <% next unless policy(message).show? %>
-            <%= render partial: 'message_card', locals: { message: message, messageable: roommate } %>
-          <% end %>
-        </div>
+<!-- Lead Messages -->
+<div class="messages-container">
+  <% if lead.messages.any? %>
+    <div class="messages-list">
+      <% lead.messages.display_order.each do |message| %>
+        <% next unless policy(message).show? %>
+        <%= render partial: 'message_card', locals: { message: message, messageable: lead } %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-messages">
+      <span class="empty-icon"><%= glyph(:envelope) %></span>
+      <p>No messages yet</p>
+      <p class="text-muted">Start a conversation with this lead</p>
       </div>
-    <% end %>
   <% end %>
 </div>
+
+<!-- Roommate Messages -->
+<% lead.roommates.each do |roommate| %>
+  <% if roommate.messages.any? %>
+    <div class="roommate-messages-section">
+      <div class="roommate-header">
+        <h3><%= glyph(:user) %> Messages with <%= roommate.name %></h3>
+        <%= render partial: "messages/new_message_callout", locals: {messageable: roommate} %>
+      </div>
+      <div class="messages-list">
+        <% roommate.messages.display_order.each do |message| %>
+          <% next unless policy(message).show? %>
+          <%= render partial: 'message_card', locals: { message: message, messageable: roommate } %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

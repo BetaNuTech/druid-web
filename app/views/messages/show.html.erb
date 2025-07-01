@@ -1,70 +1,54 @@
-<div class="row">
-  <div class="col-md-10">
-    <div class="row">
-      <div class="col-md-6">
-      <p class="lead">
-        <% if @message.draft? %>
-          Draft
-        <% end %>
-        <%= @message_type.name %>
-        Message for
-        <%= @messageable.name %>
-        <%= link_to('Discard', @message, method: :delete, data: { confirm: 'Discard this message without sending?' }, class: 'btn btn-xs btn-primary' ) if @message.draft? %>
-      </p>
-      </div>
+<div class="message-detail">
+  <div class="message-detail__header">
+    <p class="message-detail__title">
+      <% if @message.draft? %>
+        <span class="message-detail__title-badge">Draft</span>
+      <% end %>
+      <%= @message_type.name %>
+      Message for
+      <%= @messageable.name %>
+      <%= link_to('Discard', @message, method: :delete, data: { confirm: 'Discard this message without sending?' }, class: "btn btn--xs btn--primary" ) if @message.draft? %>
+    </p>
+    <div class="message-detail__meta">
+      <%= message_delivery_indicator_link(@message) %>
+      <%= message_type_indicator(@message) %>
+      <%= short_datetime(@message.delivered_at) if @message.delivered_at.present? %>
     </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <p>
-          <%= message_delivery_indicator_link(@message) %>
-          <%= message_type_indicator(@message) %>
-          <%= short_datetime(@message.delivered_at) if @message.delivered_at.present? %>
-        </p>
-      </div>
+  </div>
+  
+  <div class="message-detail__info-group">
+    <div class="message-detail__contact">
+      <strong>From:</strong>
+      <%= @message.sender_name %>
+      (<%= @message.senderid %>)
     </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <p>
-          <span class="btn btn-default">
-            <b>From:</b>
-            <%= @message.sender_name %>
-            (<%= @message.senderid %>)
-          </span>
-        </p>
-        <p>
-          <span class="btn btn-default">
-            <b>To:</b>
-            <%= @message.recipient_name %>
-            (<%= @message.recipientid %>)
-          </span>
-        </p>
-      </div>
+    <div class="message-detail__contact">
+      <strong>To:</strong>
+      <%= @message.recipient_name %>
+      (<%= @message.recipientid %>)
     </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <% if @message.message_type&.name != 'SMS' %>
-          <p>
-            <b>Subject:</b>
-            <%= @message.subject %>
-          </p>
-        <% end %>
-        <iframe id="message_preview" srcdoc="<%= @message.body_with_layout %>" style="height: 500px;"> </iframe>
+  </div>
+  
+  <div class="message-detail__content">
+    <% if @message.message_type&.name != 'SMS' %>
+      <div class="message-detail__subject">
+        <strong>Subject:</strong> <%= @message.subject %>
       </div>
-    </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <%= link_to('Edit', edit_message_path(@message), class: "btn btn-primary" ) if policy(@message).edit? %>
-          <%= link_to('Send Now', deliver_message_path(@message), method: :post, class: "btn btn-primary") if policy(@message).deliver? %>
-          <%= link_to('Reply', new_message_path(reply_to: @message.id), class: 'btn btn-primary') if @message.sent? %>
-          <%= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn-xs btn-info" if @message.messageable.present? %>
-          <%= link_to "Back to Messages", messages_path, class: "btn btn-xs btn-info" %>
-        </div>
-      </div>
-    </div>
-
+    <% end %>
+    <iframe id="message_preview" class="message-detail__preview" srcdoc="<%= @message.body_with_layout %>"></iframe>
+  </div>
+  
+  <div class="message-detail__actions">
+    <%= link_to('Edit', edit_message_path(@message), class: "btn btn--primary" ) if policy(@message).edit? %>
+    <%= link_to('Send Now', deliver_message_path(@message), method: :post, class: "btn btn--primary") if policy(@message).deliver? %>
+    <%= link_to('Reply', new_message_path(reply_to: @message.id), class: "btn btn--primary") if @message.sent? %>
+    <% if @message.messageable.present? %>
+      <% if @message.messageable.is_a?(Roommate) %>
+        <%= link_to "Back to #{@message.messageable_type.humanize}", lead_roommate_path(@message.messageable.lead, @message.messageable), class: "btn btn--sm btn--secondary" %>
+      <% else %>
+        <%= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn--sm btn--secondary" %>
+      <% end %>
+    <% end %>
+    <%= link_to "Back to Messages", messages_path, class: "btn btn--sm btn--secondary" %>
   </div>
 </div>

@@ -1,0 +1,113 @@
+<%# Shared Message Card Component %>
+<%# Required variables: message, messageable %>
+<%# Optional variables: show_lead_link (default: true) %>
+<% show_lead_link = local_assigns.fetch(:show_lead_link, true) %>
+
+<div class="message-card message-card--<%= message.incoming? ? 'incoming' : 'outgoing' %> <%= (message.outgoing? || message.read?) ? '' : 'message-card--unread' %> <%= message.draft? ? 'message-card--draft' : '' %> <%= message.failed? ? 'message-card--failed' : '' %>" 
+     id="message-<%= message.id %>" 
+     data-url="<%= message_path(message) %>"
+     onclick="window.location.href='<%= message_path(message) %>'"
+     style="cursor: pointer;">
+  
+  <div class="message-card__content">
+    <%# Header with participants and status %>
+    <div class="message-card__header">
+      <div class="message-card__participants">
+        <span class="participant-icon">
+          <% if message.message_type&.name == 'SMS' %>
+            <%= glyph(:phone) %>
+          <% else %>
+            <%= glyph(:envelope) %>
+          <% end %>
+        </span>
+        <div class="participant-details">
+          <div class="participant-type">
+            <% if message.message_type&.name == 'SMS' %>
+              SMS
+            <% else %>
+              Email
+            <% end %>
+            <span class="participant-direction"><%= message.incoming? ? 'INCOMING' : 'OUTGOING' %></span>
+          </div>
+          <div class="participant-from">
+            From: 
+            <% if message.incoming? && show_lead_link && message.messageable&.is_a?(Lead) %>
+              <%= link_to message.sender_name, lead_path(message.messageable) %>
+            <% else %>
+              <strong><%= message.sender_name %></strong>
+            <% end %>
+          </div>
+          <div class="participant-to">
+            To: 
+            <% if message.outgoing? && show_lead_link && message.messageable&.is_a?(Lead) %>
+              <%= link_to message.recipient_name, lead_path(message.messageable) %>
+            <% else %>
+              <strong><%= message.recipient_name %></strong>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      
+      <%# Status badges %>
+      <% if message.failed? %>
+        <span class="message-card__status-badge message-card__status-badge--failed">
+          <%= glyph(:warning_sign) %> Failed
+        </span>
+      <% elsif message.draft? %>
+        <span class="message-card__status-badge message-card__status-badge--draft">
+          <%= glyph(:file) %> Draft
+        </span>
+      <% end %>
+    </div>
+
+    <%# Message preview %>
+    <div class="message-card__message-preview">
+      <% if message.message_type&.name != 'SMS' && message.subject.present? %>
+        <div class="message-subject">
+          <strong>Re:</strong> <%= message.subject %>
+        </div>
+      <% end %>
+      <div class="message-preview">
+        <%= message_body_preview_content(message).presence || (message.draft? ? "Click to edit draft..." : "(No content)") %>
+      </div>
+    </div>
+
+    <%# Footer with timestamp and actions %>
+    <div class="message-card__footer">
+      <div class="message-timestamp">
+        <%= glyph(:time) %>
+        <span><%= short_datetime(message.delivered_at || message.updated_at) %></span>
+      </div>
+      
+      <div class="message-actions">
+        <% if message.draft? %>
+          <% if policy(message).edit? %>
+            <%= link_to edit_message_path(message), class: "btn btn--small", title: 'Edit Draft', data: { 'no-turbolink': true } do %>
+              <%= glyph(:edit) %> Edit
+            <% end %>
+          <% end %>
+          <%= link_to deliver_message_path(message), method: :post, class: "btn btn--small", data: { 'no-turbolink': true } do %>
+            <%= glyph(:send) %> Send Now
+          <% end %>
+        <% else %>
+          <% if message.allows_reply? %>
+            <%= link_to new_message_path(reply_to: message.id), class: "btn btn--small", data: { 'no-turbolink': true } do %>
+              <%= glyph('send') %> Reply
+            <% end %>
+          <% end %>
+          <% if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
+            <%= link_to lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), 
+                class: "btn btn--small mark-as-read-btn", 
+                id: "message-read-button-#{message.id}",
+                remote: true, 
+                method: :post,
+                title: 'Mark as Read',
+                data: { 'no-turbolink': true } do %>
+              <%= glyph(:envelope_open) %> Mark as Read
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

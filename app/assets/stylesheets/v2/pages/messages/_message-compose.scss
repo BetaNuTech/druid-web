@@ -1,0 +1,132 @@
+// Message Compose Component
+// For creating new messages
+
+@import '../../variables';
+
+// Message Compose Block
+.message-compose {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  
+  // Header
+  &__header {
+    background: $white;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid $gray-200;
+  }
+  
+  // Title
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+  
+  // Form section
+  &__form-section {
+    background: $white;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid $gray-200;
+  }
+  
+  // Previous messages section
+  &__history {
+    background: $white;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid $gray-200;
+  }
+  
+  // History header
+  &__history-header {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin: 0 0 $spacing-md 0;
+  }
+  
+  // Message list table
+  &__message-list {
+    width: 100%;
+    border-collapse: collapse;
+    
+    thead {
+      background: $gray-50;
+      
+      th {
+        padding: $spacing-sm $spacing-md;
+        text-align: left;
+        font-weight: $font-weight-medium;
+        color: $gray-700;
+        border-bottom: 2px solid $gray-200;
+      }
+    }
+    
+    tbody {
+      tr {
+        border-bottom: 1px solid $gray-100;
+        
+        &:hover {
+          background: $gray-50;
+        }
+      }
+      
+      td {
+        padding: $spacing-sm $spacing-md;
+      }
+    }
+  }
+}
+
+// New Message Callout Component
+.new-message-callout {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: center;
+  flex-wrap: wrap;
+  
+  // Button form
+  &__form {
+    display: inline-flex;
+    margin: 0;
+  }
+  
+  // No options message
+  &__no-options {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    color: $gray-600;
+    font-size: $font-size-sm;
+    padding: $spacing-sm $spacing-md;
+    background: $gray-50;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-sm;
+  }
+}
+
+// Backward compatibility
+.message-list {
+  @extend .message-compose__message-list;
+}
+
+.message-button-form {
+  @extend .new-message-callout__form;
+}
+
+.no-message-options {
+  @extend .new-message-callout__no-options;
+}

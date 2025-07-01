@@ -8,15 +8,15 @@
         </div>
 
         <div class="row" >
-          <div class="col-md-6 form-group">
-            <%= f.label :email %><br />
-            <%= f.email_field :email, { class: "form-control", autofocus: true } %>
+          <div class="col-md-6 form__group">
+            <%= f.label :email, class: 'form__label' %>
+            <%= f.email_field :email, { class: "form__control", autofocus: true } %>
           </div>
         </div>
 
       <div class="row">
-        <div class="col-md-6 form-group">
-          <button type="submit" class="btn btn-primary">Send Password Reset Instructions</button>
+        <div class="col-md-6 form__group">
+          <button type="submit" class="btn btn--primary">Send Password Reset Instructions</button>
         </div>
       </div>
     <% end %>

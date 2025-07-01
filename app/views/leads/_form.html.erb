@@ -13,138 +13,140 @@
     </div>
   <% end %>
 
-    <fieldset>
-      <legend>Lead Information</legend>
+    <fieldset class="fieldset">
+      <legend class="fieldset__legend">Lead Information</legend>
 
       <div class="row">
         <% if policy(lead).manually_change_state? %>
-          <div class="col-md-4 form-group">
+          <div class="col-md-4 form__group">
             <h3 id="lead_state_name"><%= lead.state&.capitalize %></h3>
-            <%= link_to("Change", "#", {id: "lead_toggle_change_state", class: "btn btn-xs btn-default"}) %>
+            <%= link_to("Change", "#", {id: "lead_toggle_change_state", class: "btn btn--secondary btn--xs"}) %>
             <div id="lead_force_state" style="display: none;">
-              <%= form.label :state %>
-              <%= form.select :state, options_for_select(lead.aasm.states.map{|s| [s.human_name, s.name.to_s]}, lead.state), {}, {class: "form-control"} %>
+              <%= form.label :state, class: "form__label" %>
+              <%= form.select :state, options_for_select(lead.aasm.states.map{|s| [s.human_name, s.name.to_s]}, lead.state), {}, {class: "form__control"} %>
             </div>
           </div>
         <% end %>
         <% if policy(lead).change_classification? %>
-          <div class="col-md-4 form-group">
-            <%= form.label "Classified As" %>
-            <%= form.select :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, lead.classification), {}, { class: "form-control" } %>
+          <div class="col-md-4 form__group">
+            <%= form.label "Classified As", class: "form__label" %>
+            <%= form.select :classification, options_for_select(Lead.classifications.map{|k,v| [k.capitalize, k]}, lead.classification), {}, { class: "form__control" } %>
           </div>
         <% end %>
-        <div class="col-md-2 form-group">
-          <%= form.label :vip, style: 'font-size: 1.2em;' do %>
-           <span style="color: red;"><%= glyph(:heart) %></span>
-            VIP
-          <% end %>
-          <%= form.check_box :vip, id: :lead_vip, class: 'form-check-input' %>
+        <div class="col-md-2 form__group">
+          <div class="form__check">
+            <%= form.check_box :vip, id: :lead_vip, class: 'form__check-input' %>
+            <%= form.label :vip, class: 'form__check-label', style: 'font-size: 1.2em;' do %>
+             <span style="color: red;"><%= glyph(:heart) %></span>
+              VIP
+            <% end %>
+          </div>
         </div>
       </div>
 
 
       <div class="row">
-        <div class="col-md-2 form-group">
-          <%= form.label :title %><br/>
-          <%= form.select :title, titles_for_select(lead.title), { include_blank: true }, { id: :lead_title, class: 'form-control' } %>
+        <div class="col-md-2 form__group">
+          <%= form.label :title, class: "form__label" %>
+          <%= form.select :title, titles_for_select(lead.title), { include_blank: true }, { id: :lead_title, class: 'form__control' } %>
         </div>
-        <div class="col-md-3 form-group">
-          <%= form.label :first_name %>
-          <%= form.text_field :first_name, id: :lead_first_name, class: "form-control" %>
+        <div class="col-md-3 form__group">
+          <%= form.label :first_name, class: "form__label" %>
+          <%= form.text_field :first_name, id: :lead_first_name, class: "form__control" %>
         </div>
-        <div class="col-md-2 form-group">
-          <%= form.label :middle_name %>
-          <%= form.text_field :middle_name, id: :lead_middle_name, class: "form-control" %>
+        <div class="col-md-2 form__group">
+          <%= form.label :middle_name, class: "form__label" %>
+          <%= form.text_field :middle_name, id: :lead_middle_name, class: "form__control" %>
         </div>
-        <div class="col-md-4 form-group">
-          <%= form.label :last_name %>
-          <%= form.text_field :last_name, id: :lead_last_name, class: "form-control" %>
+        <div class="col-md-4 form__group">
+          <%= form.label :last_name, class: "form__label" %>
+          <%= form.text_field :last_name, id: :lead_last_name, class: "form__control" %>
         </div>
       </div>
 
     <% if lead.property.setting_enabled?(:lead_company_information) %>
       <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :company %>
-          <%= form.text_field :company, id: :lead_company, class: "form-control" %>
+        <div class="col-md-6 form__group">
+          <%= form.label :company, class: "form__label" %>
+          <%= form.text_field :company, id: :lead_company, class: "form__control" %>
         </div>
-        <div class="col-md-6 form-group">
-          <%= form.label :company_title, 'Title' %>
-          <%= form.text_field :company_title, id: :lead_company_title, class: "form-control" %>
+        <div class="col-md-6 form__group">
+          <%= form.label :company_title, 'Title', class: "form__label" %>
+          <%= form.text_field :company_title, id: :lead_company_title, class: "form__control" %>
         </div>
       </div>
     <% end if lead.property %>
 
       <div class="row">
-        <div class="col-md-12 form-group">
-          <%= form.label :email %>
-          <%= form.text_field :email, class: "form-control" %>
+        <div class="col-md-12 form__group">
+          <%= form.label :email, class: "form__label" %>
+          <%= form.text_field :email, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-3 form-group">
-          <%= form.label :phone1 %>
-          <%= form.text_field :phone1, class: "form-control" %>
+        <div class="col-md-3 form__group">
+          <%= form.label :phone1, class: "form__label" %>
+          <%= form.text_field :phone1, class: "form__control" %>
         </div>
-        <div class="col-md-3 form-group">
-          <%= form.label :phone1_type %>
-          <%= form.select :phone1_type, options_for_select(Lead::PHONE_TYPES, lead.phone1_type), {include_blank: true}, { class: "form-control" } %>
+        <div class="col-md-3 form__group">
+          <%= form.label :phone1_type, class: "form__label" %>
+          <%= form.select :phone1_type, options_for_select(Lead::PHONE_TYPES, lead.phone1_type), {include_blank: true}, { class: "form__control" } %>
         </div>
-        <div class="col-md-3 form-group">
-          <%= form.label :phone1_tod, "Best Time to Call" %>
-          <%= form.select :phone1_tod, options_for_select(Lead::PHONE_TOD, lead.phone1_tod), {include_blank: true}, { class: "form-control" } %>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-3 form-group">
-          <%= form.label :phone2 %>
-          <%= form.text_field :phone2, class: "form-control" %>
-        </div>
-        <div class="col-md-3 form-group">
-          <%= form.label :phone2_type %>
-          <%= form.select :phone2_type, options_for_select(Lead::PHONE_TYPES, lead.phone2_type), {include_blank: true}, { class: "form-control" } %>
-        </div>
-        <div class="col-md-3 form-group">
-          <%= form.label :phone2_tod, "Best Time to Call" %>
-          <%= form.select :phone2_tod, options_for_select(Lead::PHONE_TOD, lead.phone2_tod), {include_blank: true}, { class: "form-control" } %>
+        <div class="col-md-3 form__group">
+          <%= form.label :phone1_tod, "Best Time to Call", class: "form__label" %>
+          <%= form.select :phone1_tod, options_for_select(Lead::PHONE_TOD, lead.phone1_tod), {include_blank: true}, { class: "form__control" } %>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-3 form-group">
-          <%= form.label :fax %>
-          <%= form.text_field :fax, class: "form-control" %>
+        <div class="col-md-3 form__group">
+          <%= form.label :phone2, class: "form__label" %>
+          <%= form.text_field :phone2, class: "form__control" %>
+        </div>
+        <div class="col-md-3 form__group">
+          <%= form.label :phone2_type, class: "form__label" %>
+          <%= form.select :phone2_type, options_for_select(Lead::PHONE_TYPES, lead.phone2_type), {include_blank: true}, { class: "form__control" } %>
+        </div>
+        <div class="col-md-3 form__group">
+          <%= form.label :phone2_tod, "Best Time to Call", class: "form__label" %>
+          <%= form.select :phone2_tod, options_for_select(Lead::PHONE_TOD, lead.phone2_tod), {include_blank: true}, { class: "form__control" } %>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-12 form-group">
-          <%= form.label :notes, 'Import Notes' %>
-          <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 6, readonly: true %>
+        <div class="col-md-3 form__group">
+          <%= form.label :fax, class: "form__label" %>
+          <%= form.text_field :fax, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label 'First Communication'  %><br/>
-          <%= form.date_select :first_comm, {}, { id: :lead_first_comm, class: "form-control form-control-date-select", readonly: true } %>
+        <div class="col-md-12 form__group">
+          <%= form.label :notes, 'Import Notes', class: "form__label" %>
+          <%= form.text_area :notes, id: :lead_notes, class: "form__control", rows: 6, readonly: true %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 form__group">
+          <%= form.label 'First Communication', class: "form__label" %>
+          <%= form.date_select :first_comm, {}, { id: :lead_first_comm, class: "form__control form__control--date-select", readonly: true } %>
         </div>
 
-        <div class="col-md-6 form-group">
-          <%= form.label 'Last Communication'  %><br/>
-          <%= form.date_select :last_comm, {}, { id: :lead_last_comm, class: "form-control form-control-date-select", readonly: true } %>
+        <div class="col-md-6 form__group">
+          <%= form.label 'Last Communication', class: "form__label" %>
+          <%= form.date_select :last_comm, {}, { id: :lead_last_comm, class: "form__control form__control--date-select", readonly: true } %>
         </div>
       </div>
 
 
       <% if policy(lead).change_remoteid? %>
         <div class="row">
-          <div class="col-md-4 form-group">
-            <%= form.label :remoteid %>
+          <div class="col-md-4 form__group">
+            <%= form.label :remoteid, class: "form__label" %>
             <%= content_tag(:span, glyph(:warning_sign), style: "color: red;") if lead.duplicate_remoteid? %>
-            <%= form.text_field :remoteid, class: "form-control" %>
+            <%= form.text_field :remoteid, class: "form__control" %>
           </div>
         </div>
       <% end %>
@@ -152,31 +154,30 @@
 
   <%= render partial: 'preference_form', locals: { form: form } %>
 
-    <fieldset>
-      <legend>Assignment</legend>
+    <fieldset class="fieldset">
+      <legend class="fieldset__legend">Assignment</legend>
 
       <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label 'Property'%><br/>
-          <%= form.select :property_id, properties_for_select(lead.property_id), { include_blank: true }, { class: "form-control" } %>
+        <div class="col-md-6 form__group">
+          <%= form.label 'Property', class: "form__label" %>
+          <%= form.select :property_id, properties_for_select(lead.property_id), { include_blank: true }, { class: "form__control" } %>
         </div>
-        <div class="col-md-4 form-group">
-          <%= form.label "Agent" %>
+        <div class="col-md-4 form__group">
+          <%= form.label "Agent", class: "form__label" %>
           <%= form.select :user_id, users_for_select(lead),
                 { include_blank: true },
-                { class: "form-control", disabled: !policy(lead).change_user? } %>
+                { class: "form__control", disabled: !policy(lead).change_user? } %>
         </div>
         <%= form.hidden_field :lead_source_id, value: LeadSource.default.id %>
       </div>
 
       <div class="row">
-        <div class="col-md-6 form-group">
-          <%= form.label :referral, 'Lead Source/Referral Origin' %>
-          <br/>
-          <small>Select or enter a referral source</small>
-          <%= form.select :referral, select_lead_referral_source(lead.referral || 'Drive By'), {include_blank: true}, { id: :lead_referral, class: "form-control selectize" } %>
+        <div class="col-md-6 form__group">
+          <%= form.label :referral, 'Lead Source/Referral Origin', class: "form__label" %>
+          <small class="form__text">Select or enter a referral source</small>
+          <%= form.select :referral, select_lead_referral_source(lead.referral || 'Drive By'), {include_blank: true}, { id: :lead_referral, class: "form__control selectize" } %>
         </div>
-        <div class="col-md-6 form-group">
+        <div class="col-md-6 form__group">
           <div id="lead_referrable">
             <%= lead_referrable_select(lead: lead, referral: lead.referral) %>
           </div>
@@ -185,8 +186,8 @@
 
     </fieldset>
 
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Save</button>
-    <%= link_to('Cancel', :back, class: 'btn btn-xs btn-info') %>
+  <div class="form__group">
+    <button type="submit" class="btn btn--primary">Save</button>
+    <%= link_to('Cancel', :back, class: "btn btn--info btn--xs") %>
   </div>
 <% end %>

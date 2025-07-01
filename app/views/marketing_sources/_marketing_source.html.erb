@@ -1,4 +1,4 @@
-<div id="<%=marketing_source.id%>" class="well well-sm">
+<div id="<%=marketing_source.id%>" class="well card card--well card--small">
   <% unless marketing_source.active? %>
     <p class="bg-danger">
       INACTIVE
@@ -10,7 +10,7 @@
       <h3>
         <%= marketing_source.name %>
         <small> for <%= marketing_source.property&.name %> </small>
-        <%= link_to('Edit', edit_marketing_source_path(marketing_source), class: 'btn btn-xs btn-primary') %>
+        <%= link_to('Edit', edit_marketing_source_path(marketing_source), class: "btn btn--xs btn--primary") %>
       </h3>
     </div>
   </div>
@@ -34,7 +34,7 @@
         <b>Fees:</b>
         <%= number_to_currency(marketing_source.fee_rate || 0.0) %> / <%= marketing_source.fee_type %><br/>
       </p>
-    </div>
+     </div>
     <div class="col-md-6">
       <p>
         <% if marketing_source.tracking_email.present? %>
@@ -52,12 +52,12 @@
           <i>No call tracking</i><br/>
         <% end %>
       </p>
-    </div>
+     </div>
   </div>
 
   <div class="row">
     <div class="col-md-6 col-xs-6">
-      <table class="marketing_source--stats--table">
+      <table class="marketing-source__stats-table">
         <tbody>
           <tr>
             <td>Total Spend:</td>
@@ -79,7 +79,7 @@
       </table>
     </div>
     <div class="col-md-6 col-xs-6">
-      <table class="marketing_source--stats--table">
+      <table class="marketing-source__stats-table">
         <tbody>
           <tr>
             <td>Total Leads:</td>
@@ -106,14 +106,14 @@
     <div class="col-md-12">
       <h4>
         Expenses
-        <%= link_to('Add', new_marketing_source_marketing_expense_path(marketing_source_id: marketing_source.id), class: 'btn btn-xs btn-primary') %>
+        <%= link_to('Add', new_marketing_source_marketing_expense_path(marketing_source_id: marketing_source.id), class: "btn btn--xs btn--primary") %>
       </h4>
     </div>
   </div>
 
   <div class="row">
     <div class="col-md-12">
-      <table class="table table-striped">
+      <table class="table table--striped">
         <thead>
           <tr>
             <th>Dates</th>

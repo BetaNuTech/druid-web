@@ -8,13 +8,13 @@
   </td>
   <td width="50%">
     <% if marketing_expense.invoice.present? %>
-      <span class="label label-info"><%= marketing_expense.invoice %></span>
+      <span class="label badge badge--info"><%= marketing_expense.invoice %></span>
     <% end %>
     <span><%= marketing_expense.description %></span>
   </td>
   <td width=15%>
     <%= marketing_expense.quantity %>
-    <span class="label label-info"><%= marketing_expense.fee_type %></span>
+    <span class="label badge badge--info"><%= marketing_expense.fee_type %></span>
   </td>
   <td class="marketing_expense_fee_total_display" width=15%>
     <strong><%= number_to_currency(marketing_expense.fee_total) %></strong>

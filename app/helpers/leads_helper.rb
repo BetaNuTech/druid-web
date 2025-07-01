@@ -75,7 +75,28 @@ module LeadsHelper
   end
 
   def lead_state_label(lead)
-    tag.span(class: 'label label-success') do
+    badge_class = case lead.state
+    when 'open'
+      'badge badge-info'
+    when 'prospect', 'showing'
+      'badge badge-primary'
+    when 'application'
+      'badge badge-warning'
+    when 'approved'
+      'badge badge-success'
+    when 'denied', 'abandoned', 'disqualified'
+      'badge badge-danger'
+    when 'resident'
+      'badge badge-success'
+    when 'exresident'
+      'badge badge-secondary'
+    when 'future', 'waitlist'
+      'badge badge-light'
+    else
+      'badge'
+    end
+    
+    tag.span(class: badge_class) do
       lead.state.try(:titlecase)
     end
   end

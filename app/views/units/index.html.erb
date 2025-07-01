@@ -1,22 +1,22 @@
 <div class="row">
-  <div class="col-md-10">
-    <h1>
-      Units at <%= @property&.name || 'Unknown' %>
-    </h1>
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1>Units at <%= @property&.name || 'Unknown' %></h1>
+    </div>
   </div>
 </div>
 
 <div class="row">
-  <div class"col-md-12">
-  <% unless @units.present? %>
-    <p class="lead">
-      No Units found
-    </p>
-  <% end %>
-    <small>
-      <%= link_to('Show All', units_path(all: true), class: "btn btn-xs btn-primary") unless @show_all  %>
-    </small>
-    <table class="table">
+  <div class="col-md-12">
+    <% if @units.present? %>
+      <div class="table-controls">
+        <div class="table-filters">
+          <%= link_to('Show All', units_path(all: true), class: "btn btn--small btn--primary") unless @show_all %>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table table--hover units-table">
       <thead>
         <tr>
           <th>Unit</th>
@@ -30,27 +30,80 @@
         </tr>
       </thead>
 
-      <tbody>
-        <% @units.each do |unit| %>
-          <tr class="<%= unit_occupancy_class(unit) %>">
-            <td><%= unit.unit %> <b><%= "MODEL" if unit.model? %></b></td>
-            <td><%= unit.unit_type_name %></td>
-            <td>
-              <%= unit_occupancy_icon(unit) %>
-              <%= unit.occupancy.try(:humanize) %>:<%= unit.lease_status.try(:humanize) %>
-            </td>
-            <td><%= unit.available_on %></td>
-            <td><%= unit.sqft %> ft<sup>2</sup></td>
-            <td><%= unit.bedrooms %></td>
-            <td><%= unit.market_rent.present? ? number_to_currency(unit.market_rent) : '' %></td>
-            <td>
-              <%= link_to unit do %><%= glyph(:show) %><% end if policy(unit).show? %>&nbsp;
-              <%= link_to edit_unit_path(unit) do %><%= glyph(:edit) %><% end if policy(unit).edit? %>&nbsp;
-              <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit).destroy? %>
-            </td>
-          </tr>
+          <tbody>
+            <% @units.each do |unit| %>
+              <tr class="<%= unit_occupancy_class(unit) %> clickable" data-href="<%= unit_path(unit) if policy(unit).show? %>">
+                <td data-label="Unit">
+                  <strong><%= unit.unit %></strong>
+                  <% if unit.model? %>
+                    <span class="label badge badge--info">MODEL</span>
+                  <% end %>
+                </td>
+                <td data-label="Unit Type"><%= unit.unit_type_name %></td>
+                <td data-label="Occupancy">
+                  <%= unit_occupancy_icon(unit) %>
+                  <span class="occupancy-status">
+                    <%= unit.occupancy.try(:humanize) %><% if unit.lease_status.present? %>: <%= unit.lease_status.try(:humanize) %><% end %>
+                  </span>
+                </td>
+                <td data-label="Availability"><%= unit.available_on %></td>
+                <td data-label="Size" class="text-right"><%= unit.sqft %> ft<sup>2</sup></td>
+                <td data-label="Beds" class="text-center"><%= unit.bedrooms %></td>
+                <td data-label="Market Rent" class="text-right">
+                  <strong><%= unit.market_rent.present? ? number_to_currency(unit.market_rent) : '—' %></strong>
+                </td>
+                <td class="actions" data-label="Actions">
+                  <% if policy(unit).show? %>
+                    <%= link_to unit, class: "btn btn--xs btn--default", title: 'View' do %>
+                      <%= glyph(:eye_open) %>
+                    <% end %>
+                  <% end %>
+                  <% if policy(unit).edit? %>
+                    <%= link_to edit_unit_path(unit), class: "btn btn--xs btn--primary", title: 'Edit' do %>
+                      <%= glyph(:edit) %>
+                    <% end %>
+                  <% end %>
+                  <% if policy(unit).destroy? %>
+                    <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--xs btn--danger", title: 'Delete' do %>
+                      <%= glyph(:trash) %>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <span class="glyphicon glyphicon-home"></span>
+        </div>
+        <h3 class="empty-state__title">No units found</h3>
+        <p class="empty-state__text">
+          There are no units available to display at this time.
+        </p>
+        <% if @show_all %>
+          <div class="empty-state__actions">
+            <%= link_to 'Show Available Units', units_path, class: "btn btn--primary" %>
+          </div>
         <% end %>
-      </tbody>
-    </table>
+      </div>
+    <% end %>
   </div>
 </div>
+
+<script>
+  // Make rows clickable
+  document.addEventListener('DOMContentLoaded', function() {
+    const clickableRows = document.querySelectorAll('tr.clickable[data-href]');
+    clickableRows.forEach(row => {
+      row.addEventListener('click', function(e) {
+        // Don't navigate if clicking on action buttons
+        if (e.target.closest('.actions')) return;
+        const href = this.dataset.href;
+        if (href) window.location.href = href;
+      });
+    });
+  });
+</script>

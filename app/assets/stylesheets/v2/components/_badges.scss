@@ -1,0 +1,72 @@
+// Badge Component Styles
+// Based on BlueSky Design System V2
+
+@import '../variables';
+
+// Base badge styles
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  // Default gray badge
+  background: linear-gradient(135deg, $gray-500 0%, darken($gray-500, 8%) 100%);
+  color: $white;
+}
+
+// Badge variants
+.badge-primary {
+  background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+  color: $white;
+}
+
+.badge-secondary {
+  background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 8%) 100%);
+  color: $white;
+}
+
+.badge-success {
+  background: linear-gradient(135deg, $success 0%, darken($success, 8%) 100%);
+  color: $white;
+}
+
+.badge-warning {
+  background: linear-gradient(135deg, $warning 0%, darken($warning, 8%) 100%);
+  color: $white;
+}
+
+.badge-danger {
+  background: linear-gradient(135deg, $danger 0%, darken($danger, 8%) 100%);
+  color: $white;
+}
+
+.badge-info {
+  background: linear-gradient(135deg, $info 0%, darken($info, 8%) 100%);
+  color: $white;
+}
+
+// Light badges
+.badge-light {
+  background: $gray-100;
+  color: $gray-700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+// Size variants
+.badge-sm {
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.badge-lg {
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: none;
+}

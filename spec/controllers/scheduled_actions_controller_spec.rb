@@ -236,11 +236,105 @@ RSpec.describe ScheduledActionsController, type: :controller do
     end
   end
 
-  describe "GET #conflict_check" do
-    it "should return 'true' when no conflict exists for the calling user" do
+  describe "POST #create" do
+    let(:user) { team1_agent1 }
+    let(:lead_action) { LeadAction.first }
+    
+    context "with valid params" do
+      it "creates a new ScheduledAction" do
+        sign_in user
+        expect {
+          post :create, params: { scheduled_action: valid_attributes }
+        }.to change(ScheduledAction, :count).by(1)
+      end
+      
+      it "redirects to the target after creation" do
+        sign_in user
+        post :create, params: { scheduled_action: valid_attributes }
+        expect(response).to redirect_to(@lead)
+      end
+      
+      it "sets the correct attributes" do
+        sign_in user
+        post :create, params: { scheduled_action: valid_attributes }
+        scheduled_action = ScheduledAction.last
+        expect(scheduled_action.target).to eq(@lead)
+        expect(scheduled_action.user).to eq(user)
+        expect(scheduled_action.lead_action).to eq(lead_action)
+        expect(scheduled_action.description).to eq('Test action')
+      end
     end
+    
+    context "with invalid params" do
+      it "does not create a new ScheduledAction" do
+        sign_in user
+        invalid_attributes = valid_attributes.merge(lead_action_id: nil)
+        expect {
+          post :create, params: { scheduled_action: invalid_attributes }
+        }.not_to change(ScheduledAction, :count)
+      end
+      
+      it "renders the new template" do
+        sign_in user
+        invalid_attributes = valid_attributes.merge(lead_action_id: nil)
+        post :create, params: { scheduled_action: invalid_attributes }
+        expect(response).to render_template(:new)
+      end
+    end
+    
+    context "when creating a personal task" do
+      it "creates a scheduled action with current user as target" do
+        sign_in user
+        personal_attributes = valid_attributes.merge(target_id: nil, target_type: nil)
+        post :create, params: { scheduled_action: personal_attributes }
+        scheduled_action = ScheduledAction.last
+        expect(scheduled_action.target).to eq(user)
+      end
+    end
+  end
 
-    it "should return 'true' when a conflict exists for the calling user" do
+  describe "GET #conflict_check" do
+    let(:user) { team1_agent1 }
+    
+    before do
+      sign_in user
+    end
+    
+    it "returns false when no conflict exists" do
+      get :conflict_check, params: { 
+        scheduled_action: {
+          id: "",
+          schedule_attributes: schedule_attributes
+        }
+      }, format: :json
+      
+      expect(response).to be_successful
+      expect(JSON.parse(response.body)).to eq(false)
+    end
+    
+    it "handles missing schedule attributes gracefully" do
+      get :conflict_check, params: { 
+        scheduled_action: {
+          id: ""
+        }
+      }, format: :json
+      
+      expect(response).to be_successful
+      expect(JSON.parse(response.body)).to eq(false)
+    end
+    
+    it "handles errors gracefully" do
+      allow_any_instance_of(ScheduledActionsController).to receive(:authorize).and_raise(StandardError, "Test error")
+      
+      get :conflict_check, params: { 
+        scheduled_action: {
+          id: "",
+          schedule_attributes: schedule_attributes
+        }
+      }, format: :json
+      
+      expect(response).to be_successful
+      expect(JSON.parse(response.body)).to eq(false)
     end
   end
 

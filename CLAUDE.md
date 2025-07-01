@@ -141,3 +141,7 @@ Development configuration uses `.env` file (copy from `env.example`). Key enviro
 ## Claude Code Guidelines
 
 - Git commit messages should not include Claude Code.
+
+## Development Documentation
+
+- All documentation should be placed in the /doc folder

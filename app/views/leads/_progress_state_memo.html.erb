@@ -1,17 +1,25 @@
 <% if action_memo_visible?(eventid) %>
   <% if eventid == 'abandon' %>
     <div class="row">
-      <div class="col-md-6 form-group">
-        <b>Reason</b><br/>
-        <%= radio_button :memo, lead.transition_memo, 'Price Point', {id: 'transition_memo_price', name: 'memo'} %>
-        <%= label_tag "Price Point"%><br/>
-        <%= radio_button :memo, lead.transition_memo, 'Location', {id: 'transition_memo_location', name: 'memo'} %>
-        <%= label_tag "Location"%><br/>
-        <%= radio_button :memo, lead.transition_memo, 'Availability', {id: 'transition_memo_availability', name: 'memo'} %>
-        <%= label_tag "Availability"%> <br/>
-        <%= radio_button :memo, lead.transition_memo, 'Other', {id: 'transition_memo_other', name: 'memo'} %>
-        <%= label_tag "Other"%>
-        <%= text_area_tag :memo_text, lead.transition_memo, rows: 5, class: "form-control", id: 'transition_memo_text', disabled: 'disabled' %>
+      <div class="col-md-6 form__group">
+        <label class="form__label"><b>Reason</b></label>
+        <div class="form__check">
+          <%= radio_button :memo, lead.transition_memo, 'Price Point', {id: 'transition_memo_price', name: 'memo', class: 'form__check-input'} %>
+          <%= label_tag "transition_memo_price", "Price Point", class: 'form__check-label' %>
+        </div>
+        <div class="form__check">
+          <%= radio_button :memo, lead.transition_memo, 'Location', {id: 'transition_memo_location', name: 'memo', class: 'form__check-input'} %>
+          <%= label_tag "transition_memo_location", "Location", class: 'form__check-label' %>
+        </div>
+        <div class="form__check">
+          <%= radio_button :memo, lead.transition_memo, 'Availability', {id: 'transition_memo_availability', name: 'memo', class: 'form__check-input'} %>
+          <%= label_tag "transition_memo_availability", "Availability", class: 'form__check-label' %>
+        </div>
+        <div class="form__check">
+          <%= radio_button :memo, lead.transition_memo, 'Other', {id: 'transition_memo_other', name: 'memo', class: 'form__check-input'} %>
+          <%= label_tag "transition_memo_other", "Other", class: 'form__check-label' %>
+        </div>
+        <%= text_area_tag :memo_text, lead.transition_memo, rows: 5, class: "form__control", id: 'transition_memo_text', disabled: 'disabled' %>
       </div>
     </div>
 
@@ -32,9 +40,9 @@
 
   <% else %>
     <div class="row">
-      <div class="col-md-6 form-group">
-        <%= label_tag "Memo"%>
-        <%= text_area_tag :memo, lead.transition_memo, rows: 5, class: "form-control" %>
+      <div class="col-md-6 form__group">
+        <%= label_tag "Memo", nil, class: 'form__label' %>
+        <%= text_area_tag :memo, lead.transition_memo, rows: 5, class: "form__control" %>
       </div>
     </div>
   <% end %>

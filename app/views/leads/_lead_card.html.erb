@@ -1,45 +1,58 @@
-<div class="lead_card">
-  <span class="lead">
-    <% if lead.vip? %>
-      <span class="vip-indicator" title="VIP Lead">
-        <%= glyph(:heart) %>
-      </span>
-    <% end %>
-    <span class="nowrap"><%= link_to(lead.name, lead_path(lead)) rescue ''%></span>
-  </span>
-  <% if lead.property.present? %>
-    for
-    <span class="lead_property_name text-nowrap">
-      <%= link_to(lead.property.name, property_path(lead.property)) %>
-    </span>
-  <% end %>
-  <div class="lead-status-row">
-    <%= lead_state_label(lead) %>
-    <%= lead_priority_icon(lead) %>
-  </div>
-  <div class="lead-dates">
-    <span class="dashboard_lead_created">
-      <%= tooltip_block('leads-show-created_at') do %>
-        <%= glyph(:question_sign) %>
-        <%= short_datetime(lead.created_at) %>
+<%= link_to lead_path(lead), class: "card card--clickable card--status card--status-teal" do %>
+  <div class="card__header">
+    <span class="card__title">
+      <% if lead.vip? %>
+        <span class="card__vip-indicator" title="VIP Lead">
+          <%= glyph(:heart) %>
+        </span>
       <% end %>
+      <span class="u-text--nowrap"><%= lead.name rescue '' %></span>
     </span>
-    <%= tooltip_block('leads-show-referral') do %>
-      <%= "via " + lead.referral if lead.referral.present? %>
+    <% if lead.property.present? %>
+      <span class="card__subtitle u-text--nowrap">
+        for <%= lead.property.name %>
+      </span>
     <% end %>
   </div>
-  <div class="lead-communication">
-    <span class="text-nowrap">
-      <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
-    </span>
+  
+  <div class="card__body">
+    <div class="card__status-row">
+      <%= lead_state_label(lead) %>
+      <%= lead_priority_icon(lead) %>
+    </div>
+    
+    <div class="card__meta">
+      <div class="card__meta-item">
+        <%= tooltip_block('leads-show-created_at') do %>
+          <%= glyph(:log_in) %>
+          <%= short_datetime(lead.created_at) %>
+        <% end %>
+        <%= tooltip_block('leads-show-referral') do %>
+          <%= "via " + lead.referral if lead.referral.present? %>
+        <% end %>
+      </div>
+      
+      <div class="card__meta-item">
+        <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
+      </div>
+    </div>
+    
+    <div class="card__contact">
+      <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
+    </div>
+    
+    <% if lead.preference.notes.present? %>
+      <div class="card__notes <%= 'card__notes--import' if lead.preference.notes.include?('Processed by AI') %>">
+        <%= glyph(:info_sign) %>
+        <span><%= lead.preference.notes %></span>
+      </div>
+    <% end %>
+    
+    <% if defined?(waitlist_note) && waitlist_note.present? %>
+      <div class="card__waitlist-note">
+        <%= glyph(:time) %>
+        <span><%= waitlist_note %></span>
+      </div>
+    <% end %>
   </div>
-  <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
-  <% if lead.preference.notes.present? %>
-    <p class="dashboard_lead_notes">
-      <%= glyph(:question_sign) %>
-      <span>
-        <%= lead.preference.notes %>
-      </span>
-    </p>
-  <% end %>
-</div>
+<% end %>

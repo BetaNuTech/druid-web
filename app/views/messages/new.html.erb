@@ -1,29 +1,32 @@
-<div class="row">
-  <div class="col-md-12">
-    <p class="lead">
+<div class="message-compose">
+  <div class="message-compose__header">
+    <p class="message-compose__title">
       Compose
       <%= @message.message_type&.name %>
       Message for
       <%= @message.messageable&.name %>
     </p>
+  </div>
+  
+  <div class="message-compose__form-section">
     <%= render partial: 'form', locals: { message: @message, message_type: @message.message_type }  %>
   </div>
 
   <%= render partial: 'leads/source_document', locals: {lead: @messageable} if (@messageable.is_a? Lead) && @messageable.source_document.present? %>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Previous Messages</h4>
-        <table class="table message_list">
-          <thead>
-            <th></th>
-            <th></th>
-            <th></th>
-          </thead>
-          <tbody>
-            <%= render partial: 'leads/message', collection: @message.related_messages %>
-          </tbody>
-        </table>
-    </div>
+  <div class="message-compose__history">
+    <h4 class="message-compose__history-header">Previous Messages</h4>
+    <table class="message-compose__message-list">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Subject/Content</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: 'leads/message', collection: @message.related_messages %>
+      </tbody>
+    </table>
   </div>
 </div>

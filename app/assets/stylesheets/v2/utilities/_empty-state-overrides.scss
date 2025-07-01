@@ -1,0 +1,58 @@
+// Empty State Override Utilities
+// Force consistent empty state styling across all sections
+// This file must be imported LAST to ensure highest specificity
+
+@import '../variables';
+
+// Override ALL empty state icons with consistent styling
+.empty-comments,
+.empty-messages,
+.empty-notes,
+.empty-tasks,
+.empty-duplicates,
+.empty-timeline,
+.empty-roommates {
+  .empty-icon {
+    width: 64px !important;
+    height: 64px !important;
+    font-size: 24px !important;
+    color: $gray-400 !important;
+    background: $gray-100 !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto $spacing-md !important;
+    opacity: 1 !important;
+    
+    // Force glyphicon colors
+    &.glyphicon,
+    &:before {
+      color: $gray-400 !important;
+      font-size: 24px !important;
+    }
+  }
+}
+
+// Also override the generic empty-state class
+.empty-state {
+  .empty-state__icon {
+    width: 64px !important;
+    height: 64px !important;
+    font-size: 24px !important;
+    color: $gray-400 !important;
+    background: $gray-100 !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto $spacing-md !important;
+    opacity: 1 !important;
+    
+    &.glyphicon,
+    &:before {
+      color: $gray-400 !important;
+      font-size: 24px !important;
+    }
+  }
+}

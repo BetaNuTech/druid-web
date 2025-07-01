@@ -1,0 +1,179 @@
+// Label Component
+// Small status indicators and tags
+// Based on BlueSky Design System V2
+
+@import '../variables';
+
+// Base label styles
+.label {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: $border-radius-sm;
+  transition: all 0.15s ease;
+  
+  // Ensure labels in links inherit color
+  a & {
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+  }
+  
+  // Empty labels collapse
+  &:empty {
+    display: none;
+  }
+  
+  // Label variants
+  &--default {
+    background-color: $gray-300;
+    color: $gray-700;
+  }
+  
+  &--primary {
+    background-color: $primary;
+    color: $white;
+  }
+  
+  &--secondary {
+    background-color: $brand-teal;
+    color: $white;
+  }
+  
+  &--success {
+    background-color: $success;
+    color: $white;
+  }
+  
+  &--warning {
+    background-color: $warning;
+    color: $white;
+  }
+  
+  &--danger {
+    background-color: $danger;
+    color: $white;
+  }
+  
+  &--info {
+    background-color: $brand-teal;
+    color: $white;
+  }
+  
+  // Outlined variants
+  &--outline {
+    background-color: transparent;
+    border: 1px solid currentColor;
+    
+    &-default {
+      border-color: $gray-400;
+      color: $gray-700;
+    }
+    
+    &-primary {
+      border-color: $primary;
+      color: $primary;
+    }
+    
+    &-secondary {
+      border-color: $brand-teal;
+      color: $brand-teal;
+    }
+    
+    &-success {
+      border-color: $success;
+      color: $success;
+    }
+    
+    &-warning {
+      border-color: $warning;
+      color: $warning;
+    }
+    
+    &-danger {
+      border-color: $danger;
+      color: $danger;
+    }
+    
+    &-info {
+      border-color: $brand-teal;
+      color: $brand-teal;
+    }
+  }
+  
+  // Size variants
+  &--sm {
+    padding: 1px 6px;
+    font-size: 11px;
+  }
+  
+  &--lg {
+    padding: 4px 12px;
+    font-size: $font-size-sm;
+  }
+  
+  // Pill variant (rounded)
+  &--pill {
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 10px;
+  }
+  
+  // Label with icon
+  &__icon {
+    margin-right: 3px;
+    font-size: inherit;
+    line-height: inherit;
+    vertical-align: text-top;
+  }
+}
+
+// Label group for multiple labels
+.label-group {
+  display: inline-flex;
+  gap: $spacing-xs;
+  flex-wrap: wrap;
+  align-items: center;
+  
+  .label {
+    margin: 0;
+  }
+}
+
+// Legacy Bootstrap Label Compatibility
+// Temporary mappings during migration
+.label-default {
+  @extend .label;
+  @extend .label--default;
+}
+
+.label-primary {
+  @extend .label;
+  @extend .label--primary;
+}
+
+.label-success {
+  @extend .label;
+  @extend .label--success;
+}
+
+.label-warning {
+  @extend .label;
+  @extend .label--warning;
+}
+
+.label-danger {
+  @extend .label;
+  @extend .label--danger;
+}
+
+.label-info {
+  @extend .label;
+  @extend .label--info;
+}

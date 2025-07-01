@@ -14,7 +14,7 @@
       <strong>Slug:</strong><br/>
       <%= @lead_source.slug %>
     </p>
-  </div>
+   </div>
 </div>
 
 <div class="row">
@@ -23,13 +23,13 @@
       <strong>Active?</strong>
       <%= @lead_source.active %>
     </p>
-  </div>
+   </div>
   <div class="col-md-2">
     <p>
       <strong>Incoming?</strong>
       <%= @lead_source.incoming %>
     </p>
-  </div>
+   </div>
 </div>
 
 <div class="row">
@@ -37,9 +37,9 @@
     <p>
       <strong>API Token</strong>
       <%= @lead_source.api_token %>
-      <%= link_to('Reset', reset_token_lead_source_path(@lead_source), class: "btn btn-info btn-xs", method: :post, data: {confirm: 'Are you sure you want to reset this API token? This action cannot be undone and the old token cannot be recovered.'} )%>
+      <%= link_to('Reset', reset_token_lead_source_path(@lead_source), class: "btn btn--info btn--xs", method: :post, data: {confirm: 'Are you sure you want to reset this API token? This action cannot be undone and the old token cannot be recovered.'} )%>
     </p>
-  </div>
+   </div>
 </div>
 
 <div class="row">
@@ -48,7 +48,7 @@
       <strong>API Docs:</strong>
       <%= link_to(api_v1_docs_path(token: @lead_source.api_token), api_v1_docs_path(token: @lead_source.api_token), target: :blank) %>
     </p>
-  </div>
+   </div>
 </div>
 
 <div class="row">

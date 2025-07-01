@@ -9,7 +9,7 @@
       <strong>Email:</strong>
       <%= @user.email %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-4">
@@ -17,13 +17,13 @@
       <strong>Role:</strong>
       <%= @user.role.try(:name) || 'None' %>
     </p>
-  </div>
+   </div>
   <div class="col-md-4">
     <p>
       <strong>Team Role:</strong>
       <%= @user.teamrole.try(:name) || 'None' %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -31,7 +31,7 @@
       <strong>Time Zone:</strong>
       <%= @user.timezone || 'None' %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-2">
@@ -39,19 +39,19 @@
       <strong>Prefix</strong>
       <%= @user.name_prefix %>
     </p>
-  </div>
+   </div>
   <div class="col-md-4">
     <p>
       <strong>First Name</strong>
       <%= @user.first_name %>
     </p>
-  </div>
+   </div>
   <div class="col-md-4">
     <p>
       <strong>Last Name</strong>
       <%= @user.last_name %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-4">
@@ -59,19 +59,19 @@
       <strong>Office Phone</strong>
       <%= @user.office_phone %>
     </p>
-  </div>
+   </div>
   <div class="col-md-4">
     <p>
       <strong>Cell Phone</strong>
       <%= @user.cell_phone %>
     </p>
-  </div>
+   </div>
   <div class="col-md-4">
     <p>
       <strong>Fax Phone</strong>
       <%= @user.fax %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-8">
@@ -79,7 +79,7 @@
       <strong>Notes</strong>
       <%= @user.notes %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -87,7 +87,7 @@
       <strong>Created At:</strong>
       <%= @user.created_at %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -95,7 +95,7 @@
       <strong>Updated At:</strong>
       <%= @user.updated_at %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-4">
@@ -103,13 +103,13 @@
       <strong>Last Sign In:</strong>
       <%= @user.last_sign_in_at %>
     </p>
-  </div>
+   </div>
   <div class="col-md-4">
     <p>
       <strong>Last Sign In IP:</strong>
       <%= @user.last_sign_in_ip %>
     </p>
-  </div>
+   </div>
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -117,7 +117,7 @@
       <strong>Locked:</strong>
       <%= @user.locked_at ? @user.locked_at : 'No' %>
     </p>
-  </div>
+   </div>
 </div>
 
 <div class="row">
@@ -136,7 +136,7 @@
 
 <div class="row">
   <div class="col-md-12">
-    <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-md btn-primary" %>
-    <%= link_to 'Back', users_path, class: "btn btn-xs btn-info" %>
+    <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-md btn--primary" %>
+    <%= link_to 'Back', users_path, class: "btn btn--xs btn--info" %>
   </div>
 </div>

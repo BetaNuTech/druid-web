@@ -11,122 +11,122 @@
     </div>
   <% end %>
 
-  <div class="fieldset_content">
-    <fieldset>
-      <legend>Unit/Property Information</legend>
+  <div class="fieldset-content">
+    <fieldset class="fieldset">
+      <legend class="fieldset__legend">Unit/Property Information</legend>
       <div class="row">
-        <div class="form-group col-md-6">
-          <%= form.label :property_id %>
-          <%= form.select :property_id, select_property(@unit.property_id), {include_blank: true}, { id: :unit_property_id, class: "form-control" } %>
+        <div class="form__group col-md-6">
+          <%= form.label :property_id, class: 'form__label' %>
+          <%= form.select :property_id, select_property(@unit.property_id), {include_blank: true}, { id: :unit_property_id, class: "form__control" } %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-4">
-          <%= form.label :unit_type_id %>
-          <%= form.select :unit_type_id, select_unit_type(@unit.unit_type_id), {include_blank: true}, { id: :unit_unit_type_id, class: "form-control" } %>
+        <div class="form__group col-md-4">
+          <%= form.label :unit_type_id, class: 'form__label' %>
+          <%= form.select :unit_type_id, select_unit_type(@unit.unit_type_id), {include_blank: true}, { id: :unit_unit_type_id, class: "form__control" } %>
         </div>
-        <div class="form-group col-md-4">
-          <%= form.label :rental_type_id %>
-          <%= form.select :rental_type_id, select_rental_type(@unit.rental_type_id), {include_blank: false}, { id: :unit_rental_type_id, class: "form-control" } %>
+        <div class="form__group col-md-4">
+          <%= form.label :rental_type_id, class: 'form__label' %>
+          <%= form.select :rental_type_id, select_rental_type(@unit.rental_type_id), {include_blank: false}, { id: :unit_rental_type_id, class: "form__control" } %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-4">
-          <div class="form-check-label">
-            <%= form.label :model, 'Model Unit?' %>
-            <%= form.check_box :model, class: 'form-check-input' %>
+        <div class="form__group col-md-4">
+          <div class="form__check">
+            <%= form.check_box :model, class: 'form__check-input' %>
+            <%= form.label :model, 'Model Unit?', class: 'form__check-label' %>
           </div>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-4">
-          <%= form.label :unit, "Unit Number/Name" %>
-          <%= form.text_field :unit, id: :unit_unit, class: "form-control" %>
+        <div class="form__group col-md-4">
+          <%= form.label :unit, "Unit Number/Name", class: 'form__label' %>
+          <%= form.text_field :unit, id: :unit_unit, class: "form__control" %>
         </div>
-        <div class="form-group col-md-4">
-          <%= form.label :remoteid, "Remote ID" %><br/>
+        <div class="form__group col-md-4">
+          <%= form.label :remoteid, "Remote ID", class: 'form__label' %>
           <%= unit.remoteid || 'None' %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-2">
-          <%= form.label :floor %>
-          <%= form.number_field :floor, id: :unit_floor, class: "form-control" %>
+        <div class="form__group col-md-2">
+          <%= form.label :floor, class: "form__label" %>
+          <%= form.number_field :floor, id: :unit_floor, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :sqft %>
-          <%= form.number_field :sqft, id: :unit_sqft, class: "form-control" %>
+        <div class="form__group col-md-2">
+          <%= form.label :sqft, class: "form__label" %>
+          <%= form.number_field :sqft, id: :unit_sqft, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :bedrooms %>
-          <%= form.number_field :bedrooms, id: :unit_bedrooms, class: "form-control" %>
+        <div class="form__group col-md-2">
+          <%= form.label :bedrooms, class: "form__label" %>
+          <%= form.number_field :bedrooms, id: :unit_bedrooms, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :bathrooms %>
-          <%= form.number_field :bathrooms, id: :unit_bathrooms, class: "form-control" %>
+        <div class="form__group col-md-2">
+          <%= form.label :bathrooms, class: "form__label" %>
+          <%= form.number_field :bathrooms, id: :unit_bathrooms, class: "form__control" %>
         </div>
       </div>
 
     </fieldset>
 
-    <fieldset>
-      <legend>Availability</legend>
+    <fieldset class="fieldset">
+      <legend class="fieldset__legend">Availability</legend>
       <div class="row">
-        <div class="form-group col-md-2">
-          <%= form.label :occupancy %>
-          <%= form.select :occupancy, select_occupancy(unit.occupancy), {include_blank: false},{id: :unit_occupancy, class: "form-control"}   %>
+        <div class="form__group col-md-2">
+          <%= form.label :occupancy, class: "form__label" %>
+          <%= form.select :occupancy, select_occupancy(unit.occupancy), {include_blank: false},{id: :unit_occupancy, class: "form__control"}   %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :lease_status %>
-          <%= form.select :lease_status, select_lease_status(unit.lease_status), {include_blank: false},{id: :unit_lease_status, class: "form-control"}   %>
+        <div class="form__group col-md-2">
+          <%= form.label :lease_status, class: "form__label" %>
+          <%= form.select :lease_status, select_lease_status(unit.lease_status), {include_blank: false},{id: :unit_lease_status, class: "form__control"}   %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :available_on %>
-          <%= form.date_field :available_on, class: "form-control" %>
+        <div class="form__group col-md-2">
+          <%= form.label :available_on, class: "form__label" %>
+          <%= form.date_field :available_on, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :market_rent %>
-          <%= form.number_field :market_rent, class: "form-control" %>
+        <div class="form__group col-md-2">
+          <%= form.label :market_rent, class: "form__label" %>
+          <%= form.number_field :market_rent, class: "form__control" %>
         </div>
       </div>
     </fieldset>
 
-    <fieldset>
-      <legend>Address</legend>
+    <fieldset class="fieldset">
+      <legend class="fieldset__legend">Address</legend>
       <div class="row">
-        <div class="form-group col-md-6">
-          <%= form.label :address1 %>
-          <%= form.text_field :address1, id: :unit_address1, class: "form-control" %>
+        <div class="form__group col-md-6">
+          <%= form.label :address1, class: "form__label" %>
+          <%= form.text_field :address1, id: :unit_address1, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-6">
-          <%= form.label :address2 %>
-          <%= form.text_field :address2, id: :unit_address2, class: "form-control" %>
+        <div class="form__group col-md-6">
+          <%= form.label :address2, class: "form__label" %>
+          <%= form.text_field :address2, id: :unit_address2, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-4">
-          <%= form.label :city %>
-          <%= form.text_field :city, id: :unit_city, class: "form-control" %>
+        <div class="form__group col-md-4">
+          <%= form.label :city, class: "form__label" %>
+          <%= form.text_field :city, id: :unit_city, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :state %>
-          <%= form.select :state, select_state(unit.state), {include_blank: true}, { id: :unit_state, class: "form-control" } %>
+        <div class="form__group col-md-2">
+          <%= form.label :state, class: "form__label" %>
+          <%= form.select :state, select_state(unit.state), {include_blank: true}, { id: :unit_state, class: "form__control" } %>
         </div>
-        <div class="form-group col-md-2">
-          <%= form.label :zip %>
-          <%= form.text_field :zip, id: :unit_zip, class: "form-control" %>
+        <div class="form__group col-md-2">
+          <%= form.label :zip, class: "form__label" %>
+          <%= form.text_field :zip, id: :unit_zip, class: "form__control" %>
         </div>
-        <div class="form-group col-md-4">
-          <%= form.label :country %>
-          <%= form.text_field :country, id: :unit_country, class: "form-control" %>
+        <div class="form__group col-md-4">
+          <%= form.label :country, class: "form__label" %>
+          <%= form.text_field :country, id: :unit_country, class: "form__control" %>
         </div>
       </div>
     </div>
@@ -134,7 +134,7 @@
   </fieldset>
 
 
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Save</button>
+  <div class="form__group">
+    <button type="submit" class="btn btn--primary">Save</button>
   </div>
 <% end %>

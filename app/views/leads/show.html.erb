@@ -1,73 +1,73 @@
-<div id="lead_<%= @lead.id %>" class="lead-detail-page">
+<div id="lead_<%= @lead.id %>" class="lead-detail">
   <!-- Hero Header Section -->
-  <div class="lead-hero-v2">
+  <div class="lead-hero">
     <!-- Lead Name Section (Outside container for full width) -->
-    <div class="lead-name-banner">
-        <div class="lead-name-content">
-          <h1 class="lead-name">
+    <div class="lead-hero__banner">
+        <div class="lead-hero__content">
+          <h1 class="lead-hero__name">
             <% if @lead.vip? %>
-              <span class="vip-badge" title="VIP Lead">
+              <span class="lead-hero__vip-badge" title="VIP Lead">
                 <%= glyph(:star) %>
               </span>
             <% end %>
             <%= @lead.name %>
           </h1>
           <% unless @lead.is_lead? %>
-            <span class="lead-classification">Not a Lead: <%= @lead.classification&.capitalize %></span>
+            <span class="lead-hero__classification">Not a Lead: <%= @lead.classification&.capitalize %></span>
           <% end %>
           <% if @lead.company.present? || @lead.company_title.present? %>
-            <div class="lead-subtitle">
+            <div class="lead-hero__subtitle">
               <%= @lead.company %>
               <%= @lead.company_title.present? ? "• #{@lead.company_title}" : "" %>
             </div>
           <% end %>
         </div>
-        <div class="lead-actions">
-          <%= link_to edit_lead_path(@lead), class: "btn btn-light" do %>
+        <div class="lead-hero__actions">
+          <%= link_to edit_lead_path(@lead), class: "btn btn--light" do %>
             <%= glyph(:edit) %> Edit Lead
           <% end %>
         </div>
     </div>
     
     <!-- Stats Bar -->
-    <div class="lead-stats-bar">
-        <div class="stat-item stat-priority <%= @lead.priority&.downcase %>">
-          <span class="stat-icon"><%= glyph(:flag) %></span>
-          <div class="stat-content">
-            <span class="stat-label">Priority</span>
-            <span class="stat-value"><%= @lead.priority %></span>
+    <div class="lead-stats">
+        <div class="lead-stats__item lead-stats__item--priority lead-stats__item--<%= @lead.priority&.downcase %>">
+          <span class="lead-stats__icon"><%= glyph(:flag) %></span>
+          <div class="lead-stats__content">
+            <span class="lead-stats__label">Priority</span>
+            <span class="lead-stats__value"><%= @lead.priority %></span>
           </div>
         </div>
         
-        <div class="stat-item stat-state <%= @lead.state %>">
-          <span class="stat-icon"><%= glyph(:record) %></span>
-          <div class="stat-content">
-            <span class="stat-label">State</span>
-            <span class="stat-value"><%= @lead.state %></span>
+        <div class="lead-stats__item lead-stats__item--state lead-stats__item--<%= @lead.state %>">
+          <span class="lead-stats__icon"><%= glyph(:record) %></span>
+          <div class="lead-stats__content">
+            <span class="lead-stats__label">State</span>
+            <span class="lead-stats__value"><%= @lead.state %></span>
           </div>
         </div>
         
-        <div class="stat-item">
-          <span class="stat-icon"><%= glyph(:user) %></span>
-          <div class="stat-content">
-            <span class="stat-label">Agent</span>
-            <span class="stat-value"><%= @lead.user ? @lead.user.name : "None" %></span>
+        <div class="lead-stats__item">
+          <span class="lead-stats__icon"><%= glyph(:user) %></span>
+          <div class="lead-stats__content">
+            <span class="lead-stats__label">Agent</span>
+            <span class="lead-stats__value"><%= @lead.user ? @lead.user.name : "None" %></span>
           </div>
         </div>
         
-        <div class="stat-item">
-          <span class="stat-icon"><%= glyph(:calendar) %></span>
-          <div class="stat-content">
-            <span class="stat-label">First Contact</span>
-            <span class="stat-value"><%= short_datetime(@lead.first_comm) || "—" %></span>
+        <div class="lead-stats__item">
+          <span class="lead-stats__icon"><%= glyph(:calendar) %></span>
+          <div class="lead-stats__content">
+            <span class="lead-stats__label">First Contact</span>
+            <span class="lead-stats__value"><%= short_datetime(@lead.first_comm) || "—" %></span>
           </div>
         </div>
         
-        <div class="stat-item">
-          <span class="stat-icon"><%= glyph(:time) %></span>
-          <div class="stat-content">
-            <span class="stat-label">Last Contact</span>
-            <span class="stat-value"><%= short_datetime(@lead.last_comm) || "—" %></span>
+        <div class="lead-stats__item">
+          <span class="lead-stats__icon"><%= glyph(:time) %></span>
+          <div class="lead-stats__content">
+            <span class="lead-stats__label">Last Contact</span>
+            <span class="lead-stats__value"><%= short_datetime(@lead.last_comm) || "—" %></span>
           </div>
         </div>
     </div>
@@ -75,80 +75,75 @@
 
   <!-- State Controls -->
   <% if @lead.valid? %>
-    <div class="state-controls-section">
+    <div class="lead-detail__state-controls">
       <%= render partial: "state_toggle", locals: {lead: @lead} %>
     </div>
   <% else %>
     <div class="container-fluid">
-      <div class="alert alert-danger lead-errors">
+      <div class="alert alert--danger lead-detail__errors">
         <h4><%= glyph(:warning_sign) %> There are problems with this record:</h4>
         <ul>
           <% @lead.errors.to_a.each do |err| %>
             <li><%= err %></li>
           <% end %>
         </ul>
-        <%= link_to 'Edit Lead to Fix Errors', edit_lead_path(@lead), class: "btn btn-primary btn-sm" %>
+        <%= link_to 'Edit Lead to Fix Errors', edit_lead_path(@lead), class: "btn btn--primary btn--sm" %>
       </div>
     </div>
   <% end %>
 
-  <!-- Quick Navigation Links -->
-  <div class="quick-nav-section">
-    <div class="container-fluid">
-      <div class="section-header">
-        <h3><%= glyph(:flash) %> Quick Navigation</h3>
-      </div>
-      <div class="quick-nav-links">
-        <a href="#notes-section" class="quick-nav-link">
-          <%= glyph(:file) %>
-          <span>Notes</span>
+  <!-- Quick Navigation Section -->
+  <section class="quick-navigation">
+    <div class="quick-navigation__container">
+      <h3 class="quick-navigation__title">
+        <%= glyph(:flash) %> Quick Navigation
+      </h3>
+      <div class="quick-navigation__links">
+        <a href="#notes-section" class="quick-navigation__link">
+          <%= glyph(:file) %> Notes
         </a>
         <% if @lead.duplicates.present? %>
-          <a href="#duplicates-section" class="quick-nav-link quick-nav-duplicates">
-            <%= glyph(:duplicate) %>
-            <span>Duplicates</span>
+          <a href="#duplicates-section" class="quick-navigation__link quick-navigation__link--duplicates">
+            <%= glyph(:duplicate) %> Duplicates
           </a>
         <% end %>
-        <a href="#roommates-section" class="quick-nav-link">
-          <%= glyph(:user) %>
-          <span>Roommates</span>
+        <a href="#roommates-section" class="quick-navigation__link">
+          <%= glyph(:user) %> Roommates
         </a>
-        <a href="#comments-section" class="quick-nav-link">
-          <%= glyph(:comment) %>
-          <span>Comments</span>
+        <a href="#comments-section" class="quick-navigation__link">
+          <%= glyph(:comment) %> Comments
         </a>
-        <a href="#messages-section" class="quick-nav-link">
-          <%= glyph(:envelope) %>
-          <span>Messages</span>
+        <a href="#messages-section" class="quick-navigation__link">
+          <%= glyph(:envelope) %> Messages
         </a>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- Tasks Section (Priority - tied to state changes) -->
-  <div class="container-fluid">
-    <div class="section-wrapper">
+  <% if @lead.scheduled_actions.incomplete.any? %>
+    <section class="section">
       <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
-    </div>
-  </div>
+    </section>
+  <% end %>
 
   <!-- Main Content Grid -->
-  <div class="container-fluid lead-content">
+  <section class="section">
     <div class="row">
       <!-- Left Column -->
       <div class="col-md-4">
         <!-- Contact Information Card -->
-        <div class="info-card contact-card">
-          <div class="card-header">
+        <div class="info-card info-card--contact">
+          <div class="info-card__header">
             <h3><%= glyph(:phone_alt) %> Contact Information</h3>
           </div>
-          <div class="card-body">
+          <div class="info-card__body">
             <% if @lead.phone1.present? %>
-              <div class="contact-item">
-                <span class="contact-icon"><%= glyph(:earphone) %></span>
-                <div class="contact-content">
-                  <span class="contact-label">Primary Phone</span>
-                  <span class="contact-value">
+              <div class="info-card__item">
+                <span class="info-card__icon"><%= glyph(:earphone) %></span>
+                <div class="info-card__content">
+                  <span class="info-card__label">Primary Phone</span>
+                  <span class="info-card__value">
                     <%= new_lead_sms_message_link(@lead) do %>
                       <%= @lead.phone1 %>
                     <% end %>
@@ -158,11 +153,11 @@
             <% end %>
             
             <% if @lead.phone2.present? %>
-              <div class="contact-item">
-                <span class="contact-icon"><%= glyph(:phone) %></span>
-                <div class="contact-content">
-                  <span class="contact-label">Secondary Phone</span>
-                  <span class="contact-value">
+              <div class="info-card__item">
+                <span class="info-card__icon"><%= glyph(:phone) %></span>
+                <div class="info-card__content">
+                  <span class="info-card__label">Secondary Phone</span>
+                  <span class="info-card__value">
                     <%= new_lead_sms_message_link(@lead) do %>
                       <%= @lead.phone2 %>
                     <% end %>
@@ -171,28 +166,28 @@
               </div>
             <% end %>
             
-            <div class="contact-item <%= 'missing-email' unless @lead.email.present? %>">
-              <span class="contact-icon"><%= glyph(:envelope) %></span>
-              <div class="contact-content">
-                <span class="contact-label">Email</span>
+            <div class="info-card__item <%= 'info-card__item--missing-email' unless @lead.email.present? %>">
+              <span class="info-card__icon"><%= glyph(:envelope) %></span>
+              <div class="info-card__content">
+                <span class="info-card__label">Email</span>
                 <% if @lead.email.present? %>
-                  <span class="contact-value">
+                  <span class="info-card__value">
                     <%= new_lead_email_message_link(@lead) do %>
                       <%= @lead.email %>
                     <% end %>
                   </span>
                 <% else %>
-                  <span class="contact-value missing">Email Required</span>
+                  <span class="info-card__value info-card__value--missing">Email Required</span>
                 <% end %>
               </div>
             </div>
             
             <% if @lead.fax.present? %>
-              <div class="contact-item">
-                <span class="contact-icon"><%= glyph(:file) %></span>
-                <div class="contact-content">
-                  <span class="contact-label">Fax</span>
-                  <span class="contact-value"><%= @lead.fax %></span>
+              <div class="info-card__item">
+                <span class="info-card__icon"><%= glyph(:file) %></span>
+                <div class="info-card__content">
+                  <span class="info-card__label">Fax</span>
+                  <span class="info-card__value"><%= @lead.fax %></span>
                 </div>
               </div>
             <% end %>
@@ -203,72 +198,72 @@
       <!-- Middle Column -->
       <div class="col-md-4">
         <!-- Property Information Card -->
-        <div class="info-card property-card">
-          <div class="card-header">
+        <div class="info-card info-card--property">
+          <div class="info-card__header">
             <h3><%= glyph(:home) %> Property Details</h3>
           </div>
-          <div class="card-body">
+          <div class="info-card__body">
             <% if @lead.property.present? %>
-              <div class="property-item">
-                <span class="property-icon"><%= glyph(:home) %></span>
-                <div class="property-content">
-                  <span class="property-label">Property</span>
-                  <span class="property-value"><%= @lead.property.name %></span>
+              <div class="info-card__item">
+                <span class="info-card__icon"><%= glyph(:home) %></span>
+                <div class="info-card__content">
+                  <span class="info-card__label">Property</span>
+                  <span class="info-card__value"><%= @lead.property.name %></span>
                 </div>
               </div>
               
               <% if @lead.resident.present? %>
-                <div class="property-item">
-                  <span class="property-icon"><%= glyph(:user) %></span>
-                  <div class="property-content">
-                    <span class="property-label">Status</span>
-                    <%= link_to 'Resident', resident_path(@lead.resident), class: "property-value" %>
+                <div class="info-card__item">
+                  <span class="info-card__icon"><%= glyph(:user) %></span>
+                  <div class="info-card__content">
+                    <span class="info-card__label">Status</span>
+                    <%= link_to 'Resident', resident_path(@lead.resident), class: "info-card__value" %>
                   </div>
                 </div>
               <% end %>
               
-              <div class="property-item">
-                <span class="property-icon"><%= glyph(:filter) %></span>
-                <div class="property-content">
-                  <span class="property-label">Source</span>
-                  <span class="property-value"><%= @lead.referral %></span>
+              <div class="info-card__item">
+                <span class="info-card__icon"><%= glyph(:filter) %></span>
+                <div class="info-card__content">
+                  <span class="info-card__label">Source</span>
+                  <span class="info-card__value"><%= @lead.referral %></span>
                 </div>
               </div>
             <% else %>
               <div class="empty-state">
-                <span class="empty-icon"><%= glyph(:home) %></span>
-                <p>No property assigned</p>
-              </div>
+                <span class="empty-state__icon"><%= glyph(:home) %></span>
+                <p class="empty-state__text">No property assigned</p>
+                </div>
             <% end %>
             
             <% @lead.referrals.each do |referral| %>
               <% if (referrable = referral.referrable).present? %>
-                <div class="property-item">
-                  <span class="property-icon"><%= glyph(:user) %></span>
-                  <div class="property-content">
-                    <span class="property-label">Referral</span>
+                <div class="info-card__item">
+                  <span class="info-card__icon"><%= glyph(:user) %></span>
+                  <div class="info-card__content">
+                    <span class="info-card__label">Referral</span>
                     <%= link_to referrable.name, url_for(referrable) + "?override_scope=true", 
-                        class: "property-value", title: referral.note %>
+                        class: "info-card__value", title: referral.note %>
                   </div>
                 </div>
               <% end %>
             <% end %>
             
-            <div class="property-item">
-              <span class="property-icon"><%= glyph(:barcode) %></span>
-              <div class="property-content">
-                <span class="property-label">Yardi ID</span>
-                <span class="property-value">
+            <div class="info-card__item">
+              <span class="info-card__icon"><%= glyph(:barcode) %></span>
+              <div class="info-card__content">
+                <span class="info-card__label">Yardi ID</span>
+                <span class="info-card__value">
                   <%= @lead.remoteid || 'None' %>
                   <% if @lead.duplicate_remoteid? %>
                     <%= link_to search_leads_path(lead_search: {text: @lead.remoteid}), 
-                        class: "duplicate-warning", title: "Duplicate ID found" do %>
+                        class: "info-card__warning", title: "Duplicate ID found" do %>
                       <%= glyph(:warning_sign) %>
                     <% end %>
                   <% end %>
                   <% if policy(@lead).update_from_remote? %>
                     <%= link_to 'Update', update_from_remote_lead_path(@lead), 
-                        method: :post, class: 'btn btn-xs btn-default', 
+                        method: :post, class: "btn btn--secondary btn--xs", 
                         onclick: 'window.Loader.start()' %>
                   <% end %>
                 </span>
@@ -281,147 +276,144 @@
       <!-- Right Column -->
       <div class="col-md-4">
         <!-- Preferences Card -->
-        <div class="info-card preferences-card">
-          <div class="card-header">
+        <div class="info-card info-card--preferences">
+          <div class="info-card__header">
             <h3><%= glyph(:list) %> Preferences</h3>
           </div>
-          <div class="card-body">
-            <div class="preference-item">
-              <span class="pref-icon"><%= glyph(:calendar) %></span>
-              <div class="pref-content">
-                <span class="pref-label">Move-In Date</span>
-                <span class="pref-value"><%= long_date(@lead.preference.move_in) || "Not specified" %></span>
+          <div class="info-card__body">
+            <div class="info-card__item">
+              <span class="info-card__icon"><%= glyph(:calendar) %></span>
+              <div class="info-card__content">
+                <span class="info-card__label">Move-In Date</span>
+                <span class="info-card__value"><%= long_date(@lead.preference.move_in) || "Not specified" %></span>
               </div>
             </div>
             
-            <div class="preference-item">
-              <span class="pref-icon"><%= glyph(:usd) %></span>
-              <div class="pref-content">
-                <span class="pref-label">Price Range</span>
-                <span class="pref-value">
+            <div class="info-card__item">
+              <span class="info-card__icon"><%= glyph(:usd) %></span>
+              <div class="info-card__content">
+                <span class="info-card__label">Price Range</span>
+                <span class="info-card__value">
                   $<%= @lead.preference.min_price || "0" %> - $<%= @lead.preference.max_price || "Any" %>
                 </span>
               </div>
             </div>
             
-            <div class="preference-item">
-              <span class="pref-icon"><%= glyph(:resize_full) %></span>
-              <div class="pref-content">
-                <span class="pref-label">Unit Size</span>
-                <span class="pref-value">
+            <div class="info-card__item">
+              <span class="info-card__icon"><%= glyph(:resize_full) %></span>
+              <div class="info-card__content">
+                <span class="info-card__label">Unit Size</span>
+                <span class="info-card__value">
                   <%= @lead.preference.min_area || "Any" %> - <%= @lead.preference.max_area || "Any" %> sq ft
                 </span>
               </div>
             </div>
             
-            <div class="preference-item">
-              <span class="pref-icon"><%= glyph(:th) %></span>
-              <div class="pref-content">
-                <span class="pref-label">Unit Type</span>
-                <span class="pref-value"><%= @lead.preference.unit_type.try(:name) || "Any" %></span>
+            <div class="info-card__item">
+              <span class="info-card__icon"><%= glyph(:th) %></span>
+              <div class="info-card__content">
+                <span class="info-card__label">Unit Type</span>
+                <span class="info-card__value"><%= @lead.preference.unit_type.try(:name) || "Any" %></span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Notes Full Width Row -->
-    <div class="row" id="notes-section">
+  </section>
+
+  <!-- Notes Full Width Row -->
+  <section class="section" id="notes-section">
+    <div class="row">
       <div class="col-md-12">
-        <div class="info-card notes-card">
-          <div class="card-header">
+        <div class="info-card info-card--notes">
+          <div class="info-card__header">
             <h3><%= glyph(:file) %> Notes</h3>
           </div>
-          <div class="card-body">
+          <div class="info-card__body">
             <% if @lead.follow_up_at.present? %>
-              <div class="note-item follow-up-note">
-                <span class="note-icon"><%= glyph(:bell) %></span>
-                <div class="note-content">
-                  <span class="note-label">Follow Up</span>
-                  <span class="note-value"><%= long_date(@lead.follow_up_at) %></span>
+              <div class="info-card__item info-card__item--follow-up">
+                <span class="info-card__icon"><%= glyph(:bell) %></span>
+                <div class="info-card__content">
+                  <span class="info-card__label">Follow Up</span>
+                  <span class="info-card__value"><%= long_date(@lead.follow_up_at) %></span>
                 </div>
               </div>
             <% end %>
             
             <% if @lead.preference.notes.present? %>
-              <div class="note-item lead-notes-item">
-                <div class="note-header">
-                  <span class="note-icon"><%= glyph(:pencil) %></span>
-                  <span class="note-label">Lead Notes</span>
+              <div class="info-card__item info-card__item--lead-notes">
+                <div class="info-card__section-header">
+                  <span class="info-card__icon"><%= glyph(:pencil) %></span>
+                  <span class="info-card__label">Lead Notes</span>
                 </div>
-                <div class="note-text"><%= simple_format(@lead.preference.notes) %></div>
+                <div class="info-card__text"><%= simple_format(@lead.preference.notes) %></div>
               </div>
             <% end %>
             
             <% if policy(@lead).show_import_notes? && @lead.notes.present? %>
-              <div class="note-item import-notes-item">
-                <div class="note-header">
-                  <span class="note-icon"><%= glyph(:import) %></span>
-                  <span class="note-label">Import Notes</span>
+              <div class="info-card__item info-card__item--import-notes">
+                <div class="info-card__section-header">
+                  <span class="info-card__icon"><%= glyph(:import) %></span>
+                  <span class="info-card__label">Import Notes</span>
                 </div>
-                <div class="note-text"><%= simple_format(@lead.notes) %></div>
+                <div class="info-card__text"><%= simple_format(@lead.notes) %></div>
               </div>
             <% end %>
             
             <% if !@lead.preference.notes.present? && !@lead.notes.present? && !@lead.follow_up_at.present? %>
               <div class="empty-state">
-                <span class="empty-icon"><%= glyph(:comment) %></span>
-                <p>No notes available</p>
-              </div>
+                <span class="empty-state__icon"><%= glyph(:comment) %></span>
+                <p class="empty-state__text">No notes available</p>
+                </div>
             <% end %>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Source Email Full Width Row -->
-    <% if @lead.source_document.present? %>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="info-card source-doc-card">
-            <%= render partial: 'source_document', locals: {lead: @lead} %>
-          </div>
-        </div>
-      </div>
-    <% end %>
+  </section>
 
-    <!-- Full Width Sections -->
-    <div class="row">
-      <div class="col-md-12">
-        <!-- Duplicates Section -->
-        <div class="section-wrapper" id="duplicates-section">
-          <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
-        </div>
-        
-        <!-- Roommates Section -->
-        <div class="section-wrapper" id="roommates-section">
-          <%= render partial: 'roommates', locals: {lead: @lead} %>
-        </div>
-        
-        <!-- Comments Section -->
-        <div class="section-wrapper" id="comments-section">
-          <%= render partial: 'comments', locals: {lead: @lead, comments: @lead_comments} %>
-        </div>
-        
-        <!-- Messages Section -->
-        <div class="section-wrapper" id="messages-section">
-          <%= render partial: 'messages', locals: {lead: @lead} %>
-        </div>
-        
-        <!-- Timeline Section -->
-        <div class="section-wrapper">
-          <%= render partial: 'timeline', locals: {lead: @lead, comments: @lead_timeline} %>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Source Email Full Width Row -->
+  <% if @lead.source_document.present? %>
+    <section class="section">
+      <%= render partial: 'source_document', locals: {lead: @lead} %>
+    </section>
+  <% end %>
 
-</div>
-  <div class="row">
-    <div class="col-md-12">
-      <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn-sm btn-primary" %>
-      <%= link_to 'Back', :back, class: "btn btn-xs btn-info" %>
+  <!-- Full Width Sections -->
+  <!-- Duplicates Section -->
+  <% if @lead.duplicates.present? %>
+    <section class="section" id="duplicates-section">
+      <%= render partial: 'duplicate_listing', locals: {lead: @lead} %>
+    </section>
+  <% end %>
+  
+  <!-- Roommates Section -->
+  <section class="section" id="roommates-section">
+    <%= render partial: 'roommates', locals: {lead: @lead} %>
+  </section>
+  
+  <!-- Comments Section -->
+  <section class="section" id="comments-section">
+    <%= render partial: 'comments', locals: {lead: @lead, comments: @lead_comments} %>
+  </section>
+  
+  <!-- Messages Section -->
+  <section class="section" id="messages-section">
+    <%= render partial: 'messages', locals: {lead: @lead} %>
+  </section>
+  
+  <!-- Timeline Section -->
+  <section class="section" id="timeline-section">
+    <%= render partial: 'timeline', locals: {lead: @lead, comments: @lead_timeline} %>
+  </section>
+
+
+  <!-- Action Buttons -->
+  <section class="section section--minimal">
+    <div class="text-center">
+      <%= link_to 'Edit Lead', edit_lead_path(@lead), class: "btn btn--primary" %>
+      <%= link_to 'Back', :back, class: "btn btn--secondary" %>
     </div>
-  </div>
+  </section>
 </div>

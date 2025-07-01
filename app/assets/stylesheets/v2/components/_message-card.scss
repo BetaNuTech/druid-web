@@ -1,0 +1,429 @@
+// Message Card Component
+// Based on BlueSky Design System V2
+// BEM Structure: .message-card
+
+@import '../variables';
+
+// =============================================================================
+// Message Card Base
+// =============================================================================
+.message-card {
+  display: block;
+  background: $white;
+  border-radius: $border-radius-lg;
+  margin-bottom: 0;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-height: 90px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba($gray-200, 0.8);
+  padding-left: 5px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  // Prevent clipping on first card
+  &:first-child {
+    margin-top: 2px;
+  }
+  
+  // Left accent bar (Card Design 3 pattern)
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: $gray-400;
+    z-index: 1;
+    border-radius: $border-radius-lg 0 0 $border-radius-lg;
+  }
+  
+  // =============================================================================
+  // Direction Modifiers
+  // =============================================================================
+  &--incoming {
+    background: linear-gradient(135deg, rgba($brand-teal, 0.06) 0%, rgba($brand-teal, 0.03) 100%);
+    border-color: rgba($brand-teal, 0.2);
+    
+    &::before {
+      background: $brand-teal;
+    }
+    
+    &:hover {
+      border-color: rgba($brand-teal, 0.4);
+      background: linear-gradient(135deg, rgba($brand-teal, 0.09) 0%, rgba($brand-teal, 0.05) 100%);
+      box-shadow: 0 4px 12px rgba($brand-teal, 0.15);
+    }
+    
+    // Icon styling
+    .participant-icon {
+      background: linear-gradient(135deg, rgba($brand-teal, 0.2) 0%, rgba($brand-teal, 0.15) 100%);
+      color: $brand-teal;
+      border: 1px solid rgba($brand-teal, 0.2);
+    }
+    
+    // Direction badge
+    .participant-direction {
+      background: rgba($brand-teal, 0.15);
+      color: darken($brand-teal, 15%);
+      border: 1px solid rgba($brand-teal, 0.3);
+    }
+  }
+  
+  &--outgoing {
+    background: linear-gradient(135deg, rgba($primary, 0.05) 0%, rgba($primary, 0.02) 100%);
+    border-color: rgba($primary, 0.15);
+    
+    &::before {
+      background: $primary;
+    }
+    
+    &:hover {
+      border-color: rgba($primary, 0.3);
+      background: linear-gradient(135deg, rgba($primary, 0.08) 0%, rgba($primary, 0.04) 100%);
+      box-shadow: 0 4px 12px rgba($primary, 0.12);
+    }
+    
+    // Icon styling
+    .participant-icon {
+      background: linear-gradient(135deg, rgba($primary, 0.15) 0%, rgba($primary, 0.1) 100%);
+      color: $primary;
+      border: 1px solid rgba($primary, 0.15);
+    }
+    
+    // Direction badge
+    .participant-direction {
+      background: rgba($primary, 0.12);
+      color: darken($primary, 10%);
+      border: 1px solid rgba($primary, 0.25);
+    }
+  }
+  
+  // =============================================================================
+  // State Modifiers
+  // =============================================================================
+  &--unread {
+    border: 1px solid rgba($primary, 0.2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    
+    .participant-from,
+    .participant-to {
+      strong, a {
+        font-weight: $font-weight-semi-bold;
+      }
+    }
+    
+    .message-preview {
+      color: $gray-800;
+      font-weight: $font-weight-medium;
+    }
+  }
+  
+  &--draft {
+    background: rgba($warning, 0.05);
+    
+    &::before {
+      background: $warning;
+    }
+    
+    &:hover {
+      border-color: $warning;
+      background: rgba($warning, 0.08);
+    }
+    
+    .participant-icon {
+      background: rgba($warning, 0.15);
+      color: $warning;
+    }
+  }
+  
+  &--failed {
+    background: rgba($danger, 0.05);
+    
+    &::before {
+      background: $danger;
+    }
+    
+    &:hover {
+      border-color: $danger;
+      background: rgba($danger, 0.08);
+    }
+    
+    .participant-icon {
+      background: rgba($danger, 0.15);
+      color: $danger;
+    }
+  }
+  
+  // =============================================================================
+  // Card Content
+  // =============================================================================
+  &__content {
+    padding: $spacing-md $spacing-lg $spacing-sm;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    background: transparent;
+    border-radius: 0 $border-radius-lg $border-radius-lg 0;
+    position: relative;
+  }
+  
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: $spacing-sm;
+    gap: $spacing-md;
+  }
+  
+  &__participants {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    flex: 1;
+    
+    .participant-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: $gray-100;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      
+      .glyphicon {
+        font-size: 16px;
+      }
+    }
+    
+    .participant-details {
+      flex: 1;
+      
+      .participant-type {
+        font-size: 11px;
+        color: $gray-700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 4px;
+        font-weight: $font-weight-semi-bold;
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        
+        .participant-direction {
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 10px;
+          letter-spacing: 0.4px;
+          font-weight: $font-weight-bold;
+        }
+      }
+      
+      .participant-from,
+      .participant-to {
+        font-size: $font-size-sm;
+        color: $gray-600;
+        line-height: 1.4;
+        
+        strong, a {
+          color: $gray-800;
+          font-weight: $font-weight-medium;
+          text-decoration: none;
+        }
+        
+        a:hover {
+          color: $primary;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  &__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: $font-weight-semi-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
+    &--failed {
+      background: $danger;
+      color: $white;
+    }
+    
+    &--draft {
+      background: $warning;
+      color: $white;
+    }
+  }
+  
+  &__message-preview {
+    flex: 1;
+    margin-bottom: $spacing-xs;
+    padding: $spacing-xs 0;
+    
+    .message-subject {
+      font-weight: $font-weight-semi-bold;
+      color: $gray-800;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    
+    .message-preview {
+      font-size: 13px;
+      color: $gray-700;
+      line-height: 1.45;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
+    }
+  }
+  
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding-top: $spacing-xs;
+    border-top: 1px solid rgba($gray-200, 0.5);
+    
+    .message-timestamp {
+      font-size: 11px;
+      color: $gray-500;
+      font-weight: $font-weight-regular;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      
+      .glyphicon {
+        font-size: 10px;
+        opacity: 0.6;
+      }
+    }
+    
+    .message-actions {
+      display: flex;
+      gap: $spacing-sm;
+      
+      .btn {
+        padding: 5px 12px;
+        font-size: 12px;
+        border-radius: 6px;
+        font-weight: $font-weight-medium;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s ease;
+        border: none;
+        
+        // Default button styling (primary blue)
+        &:not(.btn-sm):not(.mark-as-read-btn) {
+          background: linear-gradient(135deg, $primary 0%, darken($primary, 5%) 100%);
+          color: $white;
+          box-shadow: 0 2px 4px rgba($primary, 0.2);
+          
+          &:hover {
+            background: linear-gradient(135deg, lighten($primary, 5%) 0%, $primary 100%);
+            color: $white;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba($primary, 0.3);
+          }
+          
+          &:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba($primary, 0.2);
+          }
+        }
+        
+        // Small/secondary button styling
+        &.btn-sm {
+          background: $gray-100;
+          color: $gray-700;
+          padding: 5px 10px;
+          font-size: 12px;
+          
+          &:hover {
+            background: $gray-200;
+            color: $gray-800;
+            text-decoration: none;
+          }
+        }
+        
+        // Mark as read button styling - Teal to match incoming messages
+        &.mark-as-read-btn {
+          background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 5%) 100%);
+          color: $white;
+          border: none;
+          box-shadow: 0 2px 4px rgba($brand-teal, 0.25);
+          font-weight: $font-weight-semi-bold;
+          
+          &:hover {
+            background: linear-gradient(135deg, lighten($brand-teal, 5%) 0%, $brand-teal 100%);
+            color: $white;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba($brand-teal, 0.35);
+          }
+          
+          &:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba($brand-teal, 0.25);
+          }
+          
+          .glyphicon {
+            color: $white;
+          }
+        }
+        
+        .glyphicon {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Responsive
+// =============================================================================
+@media (max-width: 767px) {
+  .message-card {
+    &__content {
+      padding: $spacing-md;
+    }
+    
+    &__participants {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-xs;
+    }
+    
+    &__footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-sm;
+    }
+  }
+}

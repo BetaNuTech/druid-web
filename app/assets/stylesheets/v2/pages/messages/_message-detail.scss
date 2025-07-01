@@ -1,0 +1,124 @@
+// Message Detail Component
+// For displaying individual message details
+
+@import '../../variables';
+
+// Message Detail Block
+.message-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  
+  // Header section
+  &__header {
+    background: $white;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid $gray-200;
+  }
+  
+  // Title
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin: 0 0 $spacing-md 0;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+    
+    // Draft badge
+    &-badge {
+      display: inline-block;
+      background: $warning;
+      color: $white;
+      padding: $spacing-xs $spacing-sm;
+      border-radius: $border-radius-sm;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+    }
+  }
+  
+  // Metadata
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+    flex-wrap: wrap;
+    font-size: $font-size-sm;
+    color: $gray-600;
+  }
+  
+  // Info boxes
+  &__info-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+  }
+  
+  // Contact info
+  &__contact {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-md;
+    background: $gray-100;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-base;
+    
+    strong {
+      font-weight: $font-weight-medium;
+      color: $gray-700;
+    }
+  }
+  
+  // Content section
+  &__content {
+    background: $white;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid $gray-200;
+  }
+  
+  // Subject
+  &__subject {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin-bottom: $spacing-md;
+  }
+  
+  // Preview frame
+  &__preview {
+    width: 100%;
+    min-height: 500px;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius-sm;
+    background: $white;
+  }
+  
+  // Actions
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+    margin-top: $spacing-lg;
+  }
+}
+
+// Backward compatibility
+.lead {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-regular;
+  line-height: 1.6;
+  color: $gray-700;
+  margin-bottom: $spacing-md;
+}

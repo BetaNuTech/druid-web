@@ -1,0 +1,112 @@
+// Footer Component - BEM Structure
+// Replaces legacy footer.scss
+
+@import '../variables';
+
+// Footer block
+.footer {
+  margin-top: $spacing-2xl;
+  padding: $spacing-lg 0;
+  background-color: $gray-50;
+  border-top: 1px solid $gray-200;
+  position: relative;
+  width: 100%;
+  
+  &__container {
+    text-align: center;
+    padding: 0 $spacing-lg;
+    
+    @media (min-width: $screen-md-min) {
+      margin-left: 250px; // Account for sidebar
+      padding-left: $spacing-xl;
+    }
+  }
+  
+  &__content {
+    color: $gray-600;
+    font-size: $font-size-sm;
+    margin: 0;
+    font-family: $font-family-primary;
+  }
+  
+  &__copyright {
+    display: inline-block;
+    margin-right: $spacing-md;
+  }
+  
+  &__version {
+    color: $gray-500;
+    font-size: $font-size-xs;
+    
+    &::after {
+      content: "-ui2";
+    }
+  }
+  
+  &__settings {
+    display: inline-block;
+    margin-left: $spacing-sm;
+  }
+  
+  &__toggle {
+    display: inline-block;
+    margin-left: $spacing-sm;
+    
+    &-link {
+      color: $gray-500;
+      transition: $transition-base;
+      text-decoration: none;
+      
+      &:hover {
+        color: $brand-medium-blue;
+        text-decoration: none;
+      }
+      
+      &--active {
+        color: $brand-teal;
+      }
+      
+      .glyphicon {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Support for old markup (temporary during migration)
+#footer {
+  @extend .footer;
+  
+  .container {
+    @extend .footer__container;
+  }
+  
+  .text-muted {
+    @extend .footer__content;
+    
+    #copyright_notice {
+      @extend .footer__copyright;
+    }
+    
+    #bluesky_version {
+      @extend .footer__version;
+    }
+  }
+  
+  .toggle_setting--button {
+    @extend .footer__toggle;
+    
+    a {
+      @extend .footer__toggle-link;
+    }
+    
+    &.setting-on a {
+      @extend .footer__toggle-link--active;
+    }
+  }
+}
+
+// Ensure proper layout spacing
+#viewcontent {
+  padding-bottom: $spacing-2xl;
+}

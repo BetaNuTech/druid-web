@@ -1,0 +1,97 @@
+// Dropdown Z-Index Fixes
+// Ensures dropdowns appear above all other page content
+// This file should be imported last to override any conflicting styles
+
+@import '../variables';
+
+// Global dropdown fixes for Bootstrap 3 compatibility
+.dropdown {
+  position: relative;
+  
+  &.open {
+    // Allow dropdown to escape parent overflow constraints
+    position: static !important;
+    
+    > .dropdown-menu {
+      z-index: 9999 !important;
+      position: absolute !important;
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+}
+
+// Ensure all dropdown menus have high z-index
+.dropdown-menu {
+  z-index: 9999 !important;
+  
+  // Bootstrap 3 specific fixes
+  &.pull-right {
+    right: 0;
+    left: auto;
+  }
+}
+
+// Fix for state toggle dropdowns specifically
+.state_toggle,
+.state-toggle {
+  .dropdown {
+    position: static !important;
+    
+    &.open {
+      .dropdown-menu {
+        z-index: 10000 !important; // Even higher for state toggles
+        position: absolute !important;
+        top: 100%;
+        left: 0;
+        margin-top: 2px;
+      }
+    }
+  }
+  
+  // Fix for crumb dropdowns
+  .crumb.dropdown {
+    position: static !important;
+    
+    .dropdown-menu {
+      z-index: 10000 !important;
+    }
+  }
+}
+
+// Fix for any dropdown inside a modal
+.modal {
+  .dropdown.open {
+    .dropdown-menu {
+      z-index: 10050 !important; // Higher than modal backdrop
+    }
+  }
+}
+
+// Selectize dropdown fixes
+.selectize-dropdown {
+  z-index: 9999 !important;
+  
+  // Inside modals
+  .modal & {
+    z-index: 10050 !important;
+  }
+}
+
+// Bootstrap select plugin
+.bootstrap-select {
+  .dropdown-menu {
+    z-index: 9999 !important;
+  }
+}
+
+// Ensure dropdowns in fixed headers work
+.navbar-fixed-top,
+.navbar-fixed-bottom {
+  .dropdown.open {
+    .dropdown-menu {
+      z-index: 10030 !important;
+    }
+  }
+}

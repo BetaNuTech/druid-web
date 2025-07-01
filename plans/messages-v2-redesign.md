@@ -119,17 +119,21 @@ The messages page redesign will maintain consistency with the v2 design system e
 ## 5. SCSS File Structure
 
 New/updated files:
-- `v2/messages-index.scss` - Index page styles (hero, filters, card list)
+- `v2/components/_message-card.scss` - Shared message card component (BEM structure)
+- `v2/messages-index.scss` - Index page styles (hero, filters, page-specific)
 - `v2/messages-show.scss` - Show page styles
 - `v2/messages-compose.scss` - Compose form styles
-- `v2/messages-common.scss` - Shared components
+- `v2/messages-common.scss` - Other shared message components
 - `v2/lead-messages.scss` - Messages section on leads show page
+- `v2/pages/leads/_show.scss` - Lead show page with integrated message cards
 
 ### Key Reusable Patterns
-- Message card structure shared between index and leads show
-- Consistent hover states and animations
-- Direction-based color theming
+- Message card component shared between all pages
+- Consistent BEM naming conventions
+- Direction-based color theming (incoming/outgoing)
+- State modifiers (unread, draft, failed)
 - Mobile-first responsive design
+- Shared partial at `/app/views/shared/_message_card.html.erb`
 
 ## 6. Interactive Enhancements
 
@@ -185,13 +189,34 @@ New/updated files:
    - Mobile responsive layouts
    - Quick navigation support
 
+4. **Phase 4**: BEM Standardization
+   - Created shared message card component (`/app/assets/stylesheets/v2/components/_message-card.scss`)
+   - Created shared message card partial (`/app/views/shared/_message_card.html.erb`)
+   - Updated leads show page to use shared components
+   - Updated messages index page to use shared components
+   - Removed duplicate styles from messages index and messages.scss
+   - Implemented proper BEM methodology throughout
+   - Fixed all layout issues on leads show page:
+     - Property header integration
+     - Lead hero section styling
+     - Dropdown z-index issues
+     - Quick navigation centering
+     - Classification badge positioning
+     - Button styling consistency
+   - Updated messages index page:
+     - Replaced custom message card markup with shared partial
+     - Updated button classes from `btn--primary` to `btn-primary`
+     - Fixed filter section button styling
+     - Added pagination styling
+     - Ensured consistent container styling
+
 ### 🚧 In Progress
-4. **Phase 4**: Detail Pages
+5. **Phase 5**: Detail Pages
    - Message show page redesign
    - Compose form updates
 
 ### 📋 Planned
-5. **Phase 5**: Polish & Advanced Features
+6. **Phase 6**: Polish & Advanced Features
    - Loading animations and skeleton screens
    - Keyboard shortcuts
    - Real-time updates

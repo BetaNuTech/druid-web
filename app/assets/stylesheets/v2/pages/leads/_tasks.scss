@@ -1,0 +1,148 @@
+// Lead Page Tasks Section Styles
+// Specific styles for tasks on the leads show page
+
+@import '../../variables';
+
+// Lead page specific task section styling
+.lead-detail-page {
+  .tasks-section,
+  #scheduled_actions.tasks-section {
+    background: white;
+    border-radius: $border-radius-md;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid $gray-200;
+    width: 100%;
+    box-sizing: border-box;
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+      border-bottom: 2px solid $gray-200;
+      margin: -1px -1px 0 -1px; // Compensate for parent border
+      position: relative;
+      border-radius: 11px 11px 0 0; // Slightly smaller to fit inside parent
+      box-sizing: border-box;
+      
+      // Add subtle shadow for depth
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, transparent 100%);
+        pointer-events: none;
+      }
+      
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: $gray-900;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        .glyphicon {
+          color: $success;
+        }
+      }
+      
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        
+        .btn {
+          padding: 8px 16px;
+          font-weight: 500;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          font-size: 14px;
+          
+          &.btn-primary {
+            &:hover {
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba($primary, 0.3);
+            }
+          }
+          
+          &.btn-secondary {
+            background: white;
+            border: 1px solid $gray-300;
+            color: $gray-700;
+            
+            &:hover {
+              background: $gray-50;
+              border-color: $gray-400;
+              color: $gray-900;
+            }
+            
+            &.showing-completed {
+              background: $gray-100;
+              border-color: $gray-400;
+              color: $gray-900;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Tasks Container
+  .tasks-container {
+    padding: 24px;
+    
+    .empty-tasks {
+      text-align: center;
+      padding: 60px 20px;
+      
+      .empty-icon {
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+        background: $gray-100;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: $gray-400;
+        margin: 0 auto 16px;
+      }
+      
+      p {
+        margin: 0;
+        font-size: 16px;
+        color: $gray-700;
+        
+        &.text-muted {
+          font-size: 14px;
+          color: $gray-500;
+          margin-top: 8px;
+        }
+      }
+    }
+  }
+
+  // Tasks List
+  .tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    
+    &.completed-tasks {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid $gray-100;
+    }
+  }
+}

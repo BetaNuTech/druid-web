@@ -4,13 +4,13 @@
     <div class="sidebar--action-button" id="new-lead-button">
       <%= link_to(custom_new_leads_path(entry: 'walkin')) do %>
         <span class="glyphicon glyphicon-user"></span>
-        <span class="sidebar--action-button--label">New<br>Lead</span>
+        <span class="sidebar__action-button-label">New<br>Lead</span>
       <% end %>
     </div>
     <div class="sidebar--action-button">
       <%= link_to(new_scheduled_action_path) do %>
         <span class="glyphicon glyphicon-ok"></span>
-        <span class="sidebar--action-button--label">New<br>Task</span>
+        <span class="sidebar__action-button-label">New<br>Task</span>
       <% end %>
     </div>
   </div>
@@ -90,14 +90,16 @@
     </div>
     <div class="sidebar--item <%= nav_item_class(:leads, :status_dashboard) %>">
       <%= link_to(status_dashboard_leads_path) do %>
-        <span class="glyphicon glyphicon-dashboard" style="font-size: 18px; margin-right: 16px; opacity: 0.7;"></span>
+        <span class="glyphicon glyphicon-dashboard" style="font-size: 18px; opacity: 0.7;"></span>
         <span class="sidebar--item-content">Status Dashboard</span>
       <% end %>
     </div>
   </div>
 
 
-  <div class="sidebar--header">Property</div>
+  <div class="sidebar--header">
+    Property
+  </div>
   <div class="sidebar--item-group">
     <% if ( policy(@property || @current_property).show? rescue false ) %>
       <div class="sidebar--item <%= nav_item_class(:properties, :show) %>">
@@ -149,7 +151,9 @@
     <% end %>
   </div>
 
-  <div class="sidebar--header">Manage</div>
+  <div class="sidebar--header">
+    Manage
+  </div>
   <div class="sidebar--item-group">
     <% if current_user.admin? || current_user.manager? %>
     <% if policy(User).index? %>
@@ -241,29 +245,27 @@
     </div>
   </div>
 
-  <div id="sidebar--account-controls">
-    <div class="sidebar--account-controls--profile">
+  <div id="sidebar__account-controls">
+    <div class="sidebar__account-controls-profile">
       <% if @current_user&.profile&.photo.present? %>
         <%= image_tag(@current_user.profile.photo.variant(resize: "60x"), alt: "#{@current_user.name || 'User'} photo" )%>
       <% else %>
         <%= @current_user.initials %>
       <% end %>
     </div>
-    <span class="sidebar--account-controls--username">
+    <span class="sidebar__account-controls-username">
       <%= @current_user.name || @current_user.email %>
     </span>
-    <div class="sidebar--account-controls--buttons">
-      <div class="sidebar--account-controls--button">
+    <div class="sidebar__account-controls-buttons">
+      <div class="sidebar__account-controls-button">
         <%= link_to(edit_user_path(current_user), method: :get, title: "Settings") do %>
           <%= image_tag('/icons/gear.svg') %>
         <% end %>
       </div>
-      <div class="sidebar--account-controls--button">
-        <%= render partial: 'shared/appsettings' %>
-      </div>
+      <%= render partial: 'shared/appsettings' %>
     </div>
-    <%= image_tag('bluecrest-logo.svg', alt: 'Bluecrest Residential') %>
   </div>
+  <%= image_tag('bluecrest-logo.svg', alt: 'Bluecrest Residential', class: 'sidebar__logo') %>
 </div>
 
 <!-- Support Ticket Modal -->
@@ -293,7 +295,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn--secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

@@ -9,6 +9,11 @@ class PropertiesController < ApplicationController
   def index
     authorize Property
     @properties = Property.includes(:team).order("name ASC")
+    
+    # For JSON requests, only return active properties that the user has access to
+    if request.format.json?
+      @properties = @properties.active.joins(:users).where(users: { id: current_user.id })
+    end
   end
 
   # GET /properties/1

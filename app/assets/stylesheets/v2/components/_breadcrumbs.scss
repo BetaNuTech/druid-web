@@ -1,0 +1,509 @@
+// Breadcrumbs Component - BEM Structure
+// State flow breadcrumb design for lead management
+
+@import '../variables';
+@import '../functions';
+
+// =============================================================================
+// Breadcrumbs Block
+// =============================================================================
+
+.breadcrumbs {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  margin: 0 auto;
+  background: $white;
+  border-radius: 50px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid $gray-200;
+  position: relative;
+  z-index: 10;
+  
+  // Mobile responsive
+  @media (max-width: $screen-xs-max) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    padding: 8px;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  // Very small screens
+  @media (max-width: 575px) {
+    padding: 4px;
+    min-width: 320px;
+  }
+  
+  // Individual breadcrumb item
+  &__item {
+    display: inline-block;
+    position: relative;
+    margin-right: 2px;
+    
+    // Arrow connector between states
+    &:not(:last-child) {
+      margin-right: 8px;
+      
+      &::after {
+        content: '\e080'; // Bootstrap glyphicon-chevron-right
+        font-family: 'Glyphicons Halflings';
+        position: absolute;
+        right: -10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $gray-300;
+        font-size: 12px;
+        z-index: 2;
+        opacity: 0.6;
+      }
+      
+      @media (max-width: $screen-xs-max) {
+        margin-right: 16px;
+        
+        &::after {
+          right: -12px;
+          font-size: 8px;
+        }
+      }
+      
+      @media (max-width: 575px) {
+        margin-right: 8px;
+        
+        &::after {
+          display: none; // Remove arrows on very small screens
+        }
+      }
+    }
+    
+    // First item - rounded left
+    &:first-child {
+      .breadcrumbs__link {
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+        overflow: hidden;
+      }
+    }
+    
+    // Last item - rounded right
+    &:last-child {
+      .breadcrumbs__link {
+        border-top-right-radius: 30px;
+        border-bottom-right-radius: 30px;
+        padding-right: 20px;
+      }
+    }
+    
+    // Dropdown functionality
+    &--dropdown {
+      position: relative !important;
+    }
+    
+    @media (max-width: $screen-xs-max) {
+      flex-shrink: 0;
+    }
+  }
+  
+  // Breadcrumb link
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 24px 0 20px;
+    position: relative;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    color: $gray-600;
+    background: transparent;
+    border: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 30px;
+    
+    // Icon before text
+    &::before {
+      display: inline-block;
+      font-family: 'Glyphicons Halflings';
+      font-style: normal;
+      font-weight: normal;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      margin-right: 8px;
+      font-size: 14px;
+      vertical-align: middle;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      content: '\e137'; // Default icon (glyphicon-record)
+    }
+    
+    &:hover {
+      background: rgba($gray-100, 0.8);
+      color: $gray-800;
+      transform: scale(1.05);
+      
+      &::before {
+        opacity: 1;
+      }
+    }
+    
+    // Active state
+    &--active {
+      background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+      color: $white !important;
+      box-shadow: 0 4px 12px rgba($primary, 0.3);
+      font-weight: 600;
+      
+      &::before {
+        opacity: 1;
+        filter: brightness(0) invert(1); // Make icon white
+      }
+      
+      &:hover {
+        background: linear-gradient(135deg, darken($primary, 5%) 0%, darken($primary, 15%) 100%);
+        color: $white !important;
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba($primary, 0.4);
+      }
+      
+      // Dropdown toggle arrow
+      &.dropdown-toggle {
+        padding-right: 16px;
+        
+        &::after {
+          content: '\e114'; // glyphicon-chevron-down
+          font-family: 'Glyphicons Halflings';
+          font-size: 10px;
+          margin-left: 6px;
+          opacity: 0.8;
+          display: inline-block;
+          vertical-align: middle;
+        }
+      }
+    }
+    
+    // Inactive state
+    &--inactive {
+      background: transparent;
+      color: $gray-400;
+      cursor: not-allowed;
+      opacity: 0.6;
+      
+      &::before {
+        opacity: 0.3;
+      }
+      
+      &:hover {
+        background: transparent;
+        color: $gray-400;
+        transform: none;
+      }
+    }
+    
+    // Isolated state (non-standard states)
+    &--isolated {
+      background: $warning;
+      color: $white;
+      
+      &::before {
+        display: none; // No icon for custom states
+      }
+      
+      &:hover {
+        background: darken($warning, 5%);
+      }
+      
+      &.dropdown-toggle {
+        &::after {
+          display: inline-block;
+          width: 0;
+          height: 0;
+          margin-left: 8px;
+          vertical-align: middle;
+          content: "";
+          border-top: 4px solid;
+          border-right: 4px solid transparent;
+          border-left: 4px solid transparent;
+        }
+      }
+    }
+    
+    // State-specific icons
+    &[data-state="open"]::before {
+      content: '\e118'; // glyphicon-folder-open
+    }
+    
+    &[data-state="prospect"]::before {
+      content: '\e008'; // glyphicon-user
+    }
+    
+    &[data-state="showing"]::before {
+      content: '\e021'; // glyphicon-home
+    }
+    
+    &[data-state="application"]::before {
+      content: '\e065'; // glyphicon-pencil
+    }
+    
+    &[data-state="resident"]::before {
+      content: '\e013'; // glyphicon-ok
+    }
+    
+    // Mobile adjustments
+    @media (max-width: $screen-xs-max) {
+      height: 44px; // Touch-friendly height
+      padding: 0 16px;
+      font-size: 13px;
+      
+      &::before {
+        font-size: 16px;
+        margin-right: 6px;
+      }
+    }
+    
+    @media (max-width: 575px) {
+      height: 36px;
+      padding: 0 12px;
+      font-size: 12px;
+      border-radius: 18px;
+      
+      &::before {
+        display: none; // Hide icons to save space
+      }
+      
+      &--active.dropdown-toggle {
+        padding-right: 12px;
+        
+        &::after {
+          font-size: 8px;
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+  
+  // Dropdown menu
+  &__dropdown {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: calc(100% + 8px) !important;
+    margin-top: 0 !important;
+    width: auto;
+    min-width: 350px;
+    max-width: 90vw;
+    border: 1px solid $gray-200;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-radius: $border-radius-md;
+    background: $white;
+    z-index: 9999;
+    overflow: hidden;
+    list-style: none;
+    padding: 0;
+    
+    // Header
+    &::before {
+      content: 'Select Next State';
+      display: block;
+      padding: 16px 20px;
+      font-weight: 600;
+      font-size: 16px;
+      color: $gray-800;
+      background: $gray-50;
+      border-bottom: 2px solid $gray-200;
+      margin-bottom: 0;
+    }
+    
+    // Check if dropdown would overflow right edge
+    &.pull-right {
+      left: auto !important;
+      right: 0 !important;
+      transform: none !important;
+    }
+    
+    // Mobile styling
+    @media (max-width: $screen-xs-max) {
+      position: fixed !important;
+      left: 10px !important;
+      right: 10px !important;
+      top: auto !important;
+      bottom: auto !important;
+      transform: none !important;
+      max-height: 70vh;
+      overflow-y: auto;
+      width: auto !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      margin-top: 10px !important;
+    }
+  }
+  
+  // Dropdown menu item
+  &__dropdown-item {
+    border-bottom: 1px solid $gray-100;
+    margin: 0;
+    padding: 0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  // Dropdown menu link
+  &__dropdown-link {
+    display: block;
+    padding: 16px 20px;
+    color: $gray-700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    margin: 0;
+    
+    &:hover {
+      background: rgba($primary, 0.08);
+      color: $primary;
+      padding-left: 24px;
+      text-decoration: none;
+      
+      .breadcrumbs__dropdown-title {
+        color: $primary;
+      }
+    }
+    
+    @media (max-width: $screen-xs-max) {
+      padding: 16px 20px;
+      font-size: 15px;
+      
+      &:hover {
+        padding-left: 20px;
+      }
+    }
+  }
+  
+  // Dropdown link title
+  &__dropdown-title {
+    display: block;
+    font-weight: 600;
+    color: $gray-800;
+    margin-bottom: 4px;
+    font-size: 15px;
+    
+    @media (max-width: $screen-xs-max) {
+      font-size: 16px;
+    }
+  }
+  
+  // Dropdown link description
+  &__dropdown-description {
+    display: block;
+    color: $gray-600;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+// =============================================================================
+// State Toggle Container
+// =============================================================================
+
+.state-toggle {
+  text-align: center;
+  padding: 8px 15px;
+  
+  &__agent {
+    margin-top: $spacing-md;
+    font-size: 14px;
+    color: $gray-600;
+    
+    .glyphicon {
+      margin-right: 4px;
+      opacity: 0.7;
+    }
+  }
+}
+
+// State controls section
+.state-controls-section {
+  background: $gray-50;
+  padding: 20px 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  
+  @media (max-width: $screen-xs-max) {
+    padding: 15px 0;
+  }
+  
+  @media (max-width: 575px) {
+    padding: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+// =============================================================================
+// Legacy Support (temporary during migration)
+// =============================================================================
+
+// Support old IDs and classes
+#crumbs {
+  @extend .breadcrumbs;
+  
+  li.crumb {
+    @extend .breadcrumbs__item;
+    
+    &.dropdown {
+      @extend .breadcrumbs__item--dropdown;
+    }
+    
+    a.crumb-link {
+      @extend .breadcrumbs__link;
+      
+      &.crumb-active {
+        @extend .breadcrumbs__link--active;
+      }
+      
+      &.crumb-inactive {
+        @extend .breadcrumbs__link--inactive;
+      }
+      
+      &.crumb-isolated {
+        @extend .breadcrumbs__link--isolated;
+      }
+    }
+    
+    .dropdown-menu {
+      @extend .breadcrumbs__dropdown;
+      
+      li {
+        @extend .breadcrumbs__dropdown-item;
+        
+        a {
+          @extend .breadcrumbs__dropdown-link;
+          
+          strong {
+            @extend .breadcrumbs__dropdown-title;
+          }
+          
+          small {
+            @extend .breadcrumbs__dropdown-description;
+          }
+        }
+      }
+    }
+  }
+}
+
+.state_toggle {
+  @extend .state-toggle;
+  
+  .state_toggle-agent {
+    @extend .state-toggle__agent;
+  }
+}

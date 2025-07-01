@@ -1,0 +1,347 @@
+// Comments Section Component
+// For displaying comments on lead detail page
+
+@import '../../variables';
+
+// Comments Section Block
+.comments-section {
+  margin-bottom: $spacing-xl;
+  
+  // Section header
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    
+    h2 {
+      margin: 0;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        font-size: 20px;
+        color: $primary;
+      }
+    }
+  }
+  
+  // Form wrapper
+  &__form-wrapper {
+    margin-bottom: $spacing-lg;
+    padding: $spacing-lg;
+    background: $gray-50;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    
+    // Animation for smooth appearance
+    &.sliding {
+      transition: all 0.3s ease;
+    }
+  }
+  
+  // Container
+  &__container {
+    // Container styles if needed
+  }
+  
+  // Comments list
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+  
+  // Show more wrapper
+  &__more-wrapper {
+    text-align: center;
+    margin-top: $spacing-md;
+  }
+  
+  // Empty state
+  &__empty {
+    text-align: center;
+    padding: $spacing-xl * 2;
+    color: $gray-500;
+  }
+  
+  // Empty icon
+  &__empty-icon {
+    font-size: 48px;
+    color: $gray-300;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+    display: block;
+  }
+}
+
+// Comment Card Block
+.comment-card {
+  background: $white;
+  border: 1px solid $gray-200;
+  border-radius: $border-radius-md;
+  padding: $spacing-lg;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  // Has action modifier
+  &--has-action {
+    border-left: 4px solid $info;
+  }
+  
+  // Header
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $spacing-md;
+    gap: $spacing-md;
+  }
+  
+  // Meta information
+  &__meta {
+    flex: 1;
+  }
+  
+  // Author section
+  &__author {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: flex-start;
+  }
+  
+  // Avatar
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba($primary, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary;
+    font-size: 14px;
+    font-weight: $font-weight-medium;
+    flex-shrink: 0;
+    
+    .glyphicon {
+      font-size: 16px;
+      color: $gray-600;
+    }
+  }
+  
+  // Author details
+  &__author-details {
+    flex: 1;
+  }
+  
+  // Author name
+  &__author-name {
+    display: block;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: 2px;
+  }
+  
+  // Timestamp
+  &__timestamp {
+    font-size: $font-size-sm;
+    color: $gray-600;
+  }
+  
+  // Edited tag
+  &__edited {
+    color: $gray-500;
+    font-style: italic;
+  }
+  
+  // Actions
+  &__actions {
+    display: flex;
+    gap: $spacing-xs;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  &:hover &__actions {
+    opacity: 1;
+  }
+  
+  // Content
+  &__content {
+    margin-left: 40px + $spacing-sm; // Align with avatar
+  }
+  
+  // Action tag
+  &__action-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    background: rgba($info, 0.1);
+    color: $info;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-sm;
+  }
+  
+  // Action icon
+  &__action-icon {
+    font-size: 14px;
+  }
+  
+  // Action text
+  &__action-text {
+    font-weight: $font-weight-medium;
+  }
+  
+  // Text content
+  &__text {
+    color: $gray-700;
+    line-height: 1.6;
+    
+    p {
+      margin: 0 0 $spacing-sm 0;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  // Message info
+  &__message-info {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    margin-top: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    background: $gray-50;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    color: $gray-600;
+  }
+  
+  // Message icon
+  &__message-icon {
+    font-size: 14px;
+    color: $gray-500;
+  }
+  
+  // Message label
+  &__message-label {
+    font-size: $font-size-sm;
+  }
+}
+
+// Backward compatibility
+.section-header {
+  @extend .comments-section__header;
+}
+
+.comment-form-wrapper {
+  @extend .comments-section__form-wrapper;
+}
+
+.comments-container {
+  @extend .comments-section__container;
+}
+
+.comments-list {
+  @extend .comments-section__list;
+}
+
+.show-more-wrapper {
+  @extend .comments-section__more-wrapper;
+}
+
+.empty-comments {
+  @extend .comments-section__empty;
+}
+
+.empty-icon {
+  @extend .comments-section__empty-icon;
+}
+
+.has-action {
+  @extend .comment-card--has-action;
+}
+
+.comment-header {
+  @extend .comment-card__header;
+}
+
+.comment-meta {
+  @extend .comment-card__meta;
+}
+
+.comment-author {
+  @extend .comment-card__author;
+}
+
+.author-avatar {
+  @extend .comment-card__avatar;
+}
+
+.author-details {
+  @extend .comment-card__author-details;
+}
+
+.author-name {
+  @extend .comment-card__author-name;
+}
+
+.comment-timestamp {
+  @extend .comment-card__timestamp;
+}
+
+.edited-tag {
+  @extend .comment-card__edited;
+}
+
+.comment-actions {
+  @extend .comment-card__actions;
+}
+
+.comment-content {
+  @extend .comment-card__content;
+}
+
+.comment-action-tag {
+  @extend .comment-card__action-tag;
+}
+
+.action-icon {
+  @extend .comment-card__action-icon;
+}
+
+.action-text {
+  @extend .comment-card__action-text;
+}
+
+.comment-text {
+  @extend .comment-card__text;
+}
+
+.comment-message-info {
+  @extend .comment-card__message-info;
+}
+
+.message-type-icon {
+  @extend .comment-card__message-icon;
+}
+
+.message-label {
+  @extend .comment-card__message-label;
+}

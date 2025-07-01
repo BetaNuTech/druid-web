@@ -6,7 +6,7 @@
     <% next unless leads.size > 0 %>
     <div class="duplicate-group" data-group-id="group-<%= group_index %>">
       <div class="group-header">
-        <button type="button" class="group-toggle-btn" data-toggle="collapse" data-target="#duplicate-group-<%= group_index %>">
+        <button type="button" class="group-toggle-btn" data-toggle="collapse" data-target="#duplicate-group-<%= group_index %>" aria-expanded="false" aria-controls="duplicate-group-<%= group_index %>">
           <%= glyph(:chevron_right) %>
           <span class="group-count"><%= leads.count %> leads</span>
         </button>
@@ -45,7 +45,7 @@
                     <%= link_to trigger_state_event_lead_path(id: lead.id, eventid: 'disqualify', format: :js),
                         method: :post,
                         remote: true,
-                        class: 'btn btn-sm btn-warning',
+                        class: "btn btn--small btn--warning",
                         data: { confirm: "Are you sure you want to disqualify this lead?" } do %>
                       <%= glyph(:remove) %> Disqualify
                     <% end %>

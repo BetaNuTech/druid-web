@@ -4,7 +4,7 @@
       <h1>My Task Calendar</h1>
       <div class="calendar-controls">
         <% if policy(ScheduledAction).new? %>
-          <%= link_to new_scheduled_action_path, class: "btn btn-success schedule-new-task" do %>
+          <%= link_to new_scheduled_action_path, class: "btn btn--success schedule-new-task" do %>
             <span class="glyphicon glyphicon-plus"></span>
             Schedule New Task
           <% end %>
@@ -100,7 +100,7 @@
       <% unless @limit_set %>
         <div class="col-md-6 text-right" style="position: relative; top: 2em;">
           <%= link_to(scheduled_actions_path(limit: 200, start_date: @start_date, all: @all_tasks, team: @team_tasks)) do %>
-            <span class="btn btn-xs btn-info">View All</span>
+            <span class="btn btn--extra-small btn--info">View All</span>
           <% end %>
         </div>
       <% end %>

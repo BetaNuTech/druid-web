@@ -1,89 +1,70 @@
-<div id="dashboard_today" class="row">
-  <div class="col-md-12">
-
-    <!-- Header -->
-    <div class="row">
-      <div class="col-md-12">
-        <h3>
-          <%= glyph(:task) %>
-          Today
-        </h3>
+<div id="dashboard_today" class="section section--today">
+  <div class="section-header">
+    <div class="section-header__content">
+      <div class="section-header__icon">
+        <%= glyph(:task) %>
       </div>
+      <h3 class="section-header__title">Today</h3>
     </div>
-    <!-- End Header -->
+  </div>
 
-    <div class="row">
-      <div class="col-md-12">
-        <div class="leads-header">
-          <span class="text-nowrap lead">
-            <% lead_text = @open_leads.count == 1 ? "Lead" : "Leads" %>
-            <% if @limit_leads != @open_leads.count %>
-              <%= @limit_leads %> of
-              <%= @open_leads.count %> Open <%= lead_text %>
-            <% else %>
-              <%= @open_leads.count %> Open <%= lead_text %>
-            <% end %>
-          </span>
-          <% if @open_leads.count > 0 && policy(Lead).mass_assignment? %>
-            <%= tooltip_block('leads-mass-assign-link') do %>
-              <%= link_to("Assign...", mass_assignment_leads_path, class: "btn btn-xs btn-primary") %>
-            <% end %>
-          <% end %>
+  <div class="section__content">
+    <div class="leads-header">
+      <div class="leads-header__info">
+        <span class="u-text--nowrap badge">
+          <% lead_text = @open_leads.count == 1 ? "Lead" : "Leads" %>
           <% if @limit_leads != @open_leads.count %>
-            <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn-xs btn-primary") %>
+            <%= @limit_leads %> of
+            <%= @open_leads.count %> Open <%= lead_text %>
+          <% else %>
+            <%= @open_leads.count %> Open <%= lead_text %>
           <% end %>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <table class="table lead_listing" id="unclaimed_lead_listing">
-          <thead></thead>
-          <tbody>
-            <!-- Unclaimed Leads -->
-            <%= render collection: @open_leads.limit(@limit_leads), partial: 'lead' %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <% if @today_actions.any? || true %>
-          <div class="tasks-section">
-            <div class="section-header">
-              <h2>
-                <%= glyph(:time) %>
-                Tasks Due Today
-                <% if @today_actions.any? %>
-                  <span class="tasks-count"><%= @today_actions.count %></span>
-                <% end %>
-              </h2>
-              <% if @today_actions.count > 20 %>
-                <div class="header-actions">
-                  <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn-primary" %>
-                </div>
-              <% end %>
-            </div>
-            
-            <div class="tasks-container">
-              <% if @today_actions.any? %>
-                <div class="tasks-list">
-                  <%= render collection: @today_actions.limit(20), partial: 'scheduled_action_card', locals: { task_type: 'today' } %>
-                </div>
-              <% else %>
-                <div class="empty-tasks">
-                  <span class="empty-icon"><%= glyph(:ok) %></span>
-                  <p>All caught up!</p>
-                  <p class="text-muted">No tasks are due today</p>
-                </div>
-              <% end %>
-            </div>
-          </div>
+        </span>
+        <% if @open_leads.count > 0 && policy(Lead).mass_assignment? %>
+          <%= tooltip_block('leads-mass-assign-link') do %>
+            <%= link_to("Assign...", mass_assignment_leads_path, class: "btn btn--primary btn--small") %>
+          <% end %>
+        <% end %>
+        <% if @limit_leads != @open_leads.count %>
+          <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn--primary btn--small") %>
         <% end %>
       </div>
     </div>
 
+    <div class="lead-list" id="unclaimed_lead_listing">
+      <%= render collection: @open_leads.limit(@limit_leads), partial: 'lead' %>
+    </div>
+    
+    <% if @today_actions.any? %>
+      <div class="tasks-section">
+        <div class="section-header section-header--info">
+          <div class="section-header__content">
+            <div class="section-header__icon">
+              <%= glyph(:time) %>
+            </div>
+            <h3 class="section-header__title">
+              Tasks Due Today
+              <span class="section-header__count"><%= @today_actions.count %></span>
+            </h3>
+            <% if @today_actions.count > 20 %>
+              <div class="section-header__actions">
+                <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn--primary btn--small" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <div class="tasks-list">
+          <%= render collection: @today_actions.limit(20), partial: 'home/task_card', as: :scheduled_action_card, locals: { task_type: 'today' } %>
+        </div>
+      </div>
+    <% elsif @open_leads.empty? %>
+      <div class="empty-state empty-state--compact">
+        <div class="empty-state__icon empty-state__icon--success">
+          <%= glyph(:ok) %>
+        </div>
+        <p>All caught up! No leads or tasks for today.</p>
+      </div>
+    <% end %>
   </div>
 </div>

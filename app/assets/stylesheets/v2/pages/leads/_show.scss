@@ -1,0 +1,1476 @@
+// Lead Show Page Styles
+// Based on BlueSky Design System V2
+
+@import '../../variables';
+
+// =============================================================================
+// Lead Detail Page Container
+// =============================================================================
+.lead-detail {
+  min-height: 100vh;
+  background: $gray-50;
+  padding-bottom: $spacing-2xl;
+  position: relative;
+  
+  // Ensure proper stacking context
+  > * {
+    position: relative;
+  }
+  
+  // State controls wrapper
+  &__state-controls {
+    position: relative;
+    z-index: 500; // High z-index for dropdown functionality
+    overflow: visible !important;
+    
+    // Ensure state toggle dropdowns work
+    .state_toggle {
+      position: relative;
+      overflow: visible !important;
+      
+      .dropdown {
+        position: static !important;
+        
+        &.open {
+          .dropdown-menu {
+            z-index: 10000 !important;
+            position: absolute !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Bootstrap container support
+.container-fluid {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+// Property selection comes from the application layout
+// No need for custom property header styles here
+
+// =============================================================================
+// Lead Hero Section
+// =============================================================================
+.lead-hero {
+  background: $white;
+  margin: $spacing-md 0 0 0; // Only top margin for spacing from property selection
+  position: relative;
+  z-index: 20;
+  display: block;
+  clear: both;
+  
+  &__accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(180deg, lighten($primary, 15%) 0%, $primary 100%);
+    z-index: 1;
+    overflow: hidden;
+    
+    // Add subtle pattern
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 15px,
+          rgba(255, 255, 255, 0.05) 15px,
+          rgba(255, 255, 255, 0.05) 30px
+        );
+    }
+  }
+  
+  &__banner {
+    background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+    position: relative;
+    min-height: 80px;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    // Add subtle pattern overlay
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(255, 255, 255, 0.03) 10px,
+          rgba(255, 255, 255, 0.03) 20px
+        );
+      pointer-events: none;
+    }
+    
+    // Add decorative bottom accent
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(to right, $brand-teal 0%, $success 50%, $warning 100%);
+    }
+  }
+  
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: $spacing-xs;
+    padding: $spacing-lg $spacing-xl;
+    padding-left: 80px; // Account for accent bar
+    padding-right: 180px; // Reserve space for Edit button
+    min-height: 80px;
+    position: relative;
+    z-index: 3;
+    
+    > div {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+  }
+  
+  &__name {
+    font-size: 28px;
+    font-weight: 600;
+    color: $white;
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex: 1;
+    min-width: 0; // Allow flex item to shrink below content size
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: $spacing-md;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  &__vip-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border-radius: 50%;
+    color: $white;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+    animation: pulse-vip 2s ease-in-out infinite;
+    margin-left: $spacing-sm;
+  }
+  
+  &__classification {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, $warning 0%, darken($warning, 5%) 100%);
+    color: $white;
+    padding: 4px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: $spacing-xs;
+    margin-right: $spacing-md;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba($warning, 0.3);
+    text-transform: none;
+    letter-spacing: 0.2px;
+    line-height: 1.3;
+    
+    // Remove max-width and overflow to let it size naturally
+    // Only add back if needed for very long classifications
+  }
+  
+  &__subtitle {
+    font-size: $font-size-sm;
+    color: rgba($white, 0.9);
+    font-weight: $font-weight-regular;
+  }
+  
+  &__actions {
+    flex-shrink: 0; // Prevent button from shrinking
+    position: absolute;
+    right: $spacing-xl;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10; // Ensure button is clickable
+    
+    // Use standard button styles
+    .btn {
+      position: relative; // Ensure button is clickable
+      z-index: 1;
+      
+      // Light button variant on blue background
+      &--light {
+        background: rgba($white, 0.95);
+        color: $primary;
+        border: 1px solid rgba($white, 0.3);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        
+        &:hover {
+          background: $white;
+          color: $primary;
+          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+          transform: translateY(-1px);
+        }
+        
+        &:active {
+          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+          transform: translateY(0);
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Lead Stats Bar
+// =============================================================================
+.lead-stats {
+  background: $white;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  gap: $spacing-xl;
+  flex-wrap: wrap;
+  border-bottom: 1px solid $gray-200;
+  margin-bottom: $spacing-lg;
+  
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    min-width: 140px;
+    
+    &:not(:last-child) {
+      border-right: 1px solid $gray-200;
+      padding-right: $spacing-lg;
+    }
+  }
+  
+  &__icon {
+    width: 32px;
+    height: 32px;
+    background: $gray-100;
+    border: 1px solid $gray-200;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: $gray-600;
+    flex-shrink: 0;
+  }
+  
+  &__content {
+    flex: 1;
+  }
+  
+  &__label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: $gray-500;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin-bottom: 2px;
+    font-weight: $font-weight-medium;
+  }
+  
+  &__value {
+    display: block;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semi-bold;
+    color: $gray-900;
+    line-height: 1.2;
+  }
+  
+  // Priority specific styling
+  &__item--priority {
+    &.lead-stats__item--urgent {
+      .lead-stats__icon {
+        background: rgba($danger, 0.1);
+        border-color: $danger;
+        color: $danger;
+      }
+      .lead-stats__value {
+        color: $danger;
+      }
+    }
+    
+    &.lead-stats__item--high {
+      .lead-stats__icon {
+        background: rgba($warning, 0.1);
+        border-color: $warning;
+        color: $warning;
+      }
+      .lead-stats__value {
+        color: darken($warning, 10%);
+      }
+    }
+    
+    &.lead-stats__item--normal {
+      .lead-stats__icon {
+        background: rgba($success, 0.1);
+        border-color: $success;
+        color: $success;
+      }
+    }
+  }
+  
+  // State specific styling  
+  &__item--state {
+    &.lead-stats__item--open {
+      .lead-stats__icon {
+        background: rgba($primary, 0.1);
+        border-color: $primary;
+        color: $primary;
+      }
+    }
+    
+    &.lead-stats__item--prospect {
+      .lead-stats__icon {
+        background: rgba($info, 0.1);
+        border-color: $info;
+        color: $info;
+      }
+    }
+    
+    &.lead-stats__item--showing {
+      .lead-stats__icon {
+        background: rgba($brand-teal, 0.1);
+        border-color: $brand-teal;
+        color: $brand-teal;
+      }
+    }
+    
+    &.lead-stats__item--application {
+      .lead-stats__icon {
+        background: rgba($warning, 0.1);
+        border-color: $warning;
+        color: $warning;
+      }
+    }
+    
+    &.lead-stats__item--resident {
+      .lead-stats__icon {
+        background: rgba($success, 0.1);
+        border-color: $success;
+        color: $success;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Quick Navigation Section
+// =============================================================================
+.quick-nav-section {
+  background: linear-gradient(135deg, rgba($brand-light-blue, 0.05) 0%, rgba($brand-teal, 0.03) 100%);
+  border-bottom: 1px solid $gray-200;
+  padding: $spacing-lg 0;
+  margin-bottom: $spacing-xl;
+  position: relative;
+  z-index: 10;
+  
+  // Override default section-header styles for centering
+  .section-header {
+    text-align: center;
+    background: none;
+    border: none;
+    padding: 0 $spacing-lg;
+    margin-bottom: $spacing-lg;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    
+    h3 {
+      display: inline-block;
+      position: relative;
+      padding-left: 28px;
+      margin: 0 auto;
+      
+      .glyphicon {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+  }
+  
+  .quick-nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+    padding: 0 $spacing-lg;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .quick-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-lg;
+    background: $white;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    color: $brand-deep-blue;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba($brand-teal, 0.1) 0%, rgba($brand-light-blue, 0.1) 100%);
+      transition: left 0.3s ease;
+      z-index: 0;
+    }
+    
+    .glyphicon {
+      font-size: 16px;
+      color: $brand-teal;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+    
+    span {
+      position: relative;
+      z-index: 1;
+    }
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba($brand-teal, 0.15);
+      border-color: $brand-teal;
+      color: $brand-deep-blue;
+      text-decoration: none;
+      
+      &::before {
+        left: 0;
+      }
+      
+      .glyphicon {
+        transform: scale(1.1);
+      }
+    }
+    
+    // Special styling for duplicates
+    &.quick-nav-duplicates {
+      .glyphicon {
+        color: $warning;
+      }
+      
+      &:hover {
+        box-shadow: 0 6px 20px rgba($warning, 0.15);
+        border-color: $warning;
+        
+        &::before {
+          background: linear-gradient(135deg, rgba($warning, 0.1) 0%, rgba($warning, 0.05) 100%);
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// State Controls Section
+// =============================================================================
+.state-controls-section {
+  background: white;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid $gray-200;
+  position: relative;
+  z-index: 200;
+  overflow: visible !important;
+  min-height: 60px;
+  
+  // Ensure dropdowns appear above ALL other content
+  .dropdown,
+  .btn-group {
+    position: relative;
+    z-index: 250;
+  }
+  
+  .dropdown-menu,
+  .selectize-dropdown,
+  .bootstrap-select .dropdown-menu,
+  .open > .dropdown-menu {
+    z-index: 9999 !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+  }
+  
+  // Bootstrap dropdown open state
+  .dropdown.open,
+  .btn-group.open {
+    position: static !important;
+    
+    .dropdown-menu {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+  
+  // State button styling
+  .btn-group {
+    .btn {
+      background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+      border: 2px solid $primary;
+      color: $white;
+      font-weight: $font-weight-medium;
+      padding: 8px 16px;
+      border-radius: $border-radius-sm;
+      box-shadow: 0 2px 8px rgba($primary, 0.2);
+      
+      &:hover,
+      &:focus {
+        background: linear-gradient(135deg, lighten($primary, 8%) 0%, $primary 100%);
+        border-color: lighten($primary, 8%);
+        color: $white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba($primary, 0.3);
+      }
+      
+      .caret {
+        margin-left: $spacing-sm;
+      }
+    }
+  }
+  
+  // State selection dropdown
+  .state-selection {
+    .dropdown-toggle {
+      background: linear-gradient(135deg, $gray-100 0%, $gray-200 100%);
+      border: 2px solid $gray-300;
+      color: $gray-700;
+      font-weight: $font-weight-medium;
+      padding: 8px 16px;
+      border-radius: $border-radius-sm;
+      
+      &:hover {
+        background: linear-gradient(135deg, $gray-200 0%, $gray-300 100%);
+        border-color: $gray-400;
+        color: $gray-800;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Main Content Grid
+// =============================================================================
+.lead-content {
+  margin-top: $spacing-xl;
+  
+  .row {
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+  
+  .col-md-4,
+  .col-md-12 {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+// =============================================================================
+// Info Cards (Contact, Property, Preferences)
+// =============================================================================
+.info-card {
+  background: $white;
+  border-radius: $border-radius-md;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: $spacing-xl;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  
+  .card-header {
+    background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+    padding: $spacing-lg;
+    border-bottom: 2px solid $gray-200;
+    
+    h3 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semi-bold;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        color: $brand-teal;
+        font-size: 20px;
+        width: 20px;
+        text-align: center;
+      }
+    }
+  }
+  
+  .card-body {
+    padding: $spacing-lg;
+  }
+}
+
+// Contact Card Styles
+.contact-card {
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-md;
+    padding: $spacing-md 0;
+    border-bottom: 1px solid $gray-100;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    &:first-child {
+      padding-top: 0;
+    }
+    
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba($brand-teal, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $brand-teal;
+      flex-shrink: 0;
+    }
+    
+    .contact-content {
+      flex: 1;
+      
+      .contact-label {
+        display: block;
+        font-size: 12px;
+        color: $gray-600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+        font-weight: $font-weight-medium;
+      }
+      
+      .contact-value {
+        font-size: $font-size-base;
+        color: $gray-800;
+        font-weight: $font-weight-medium;
+        
+        a {
+          color: inherit;
+          text-decoration: none;
+          
+          &:hover {
+            color: $primary;
+            text-decoration: underline;
+          }
+        }
+        
+        &.missing {
+          color: $danger;
+          font-style: italic;
+        }
+      }
+    }
+    
+    &.missing-email {
+      .contact-icon {
+        background: rgba($danger, 0.1);
+        color: $danger;
+      }
+    }
+  }
+}
+
+// Property Card Styles  
+.property-card {
+  .property-item {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-md;
+    padding: $spacing-md 0;
+    border-bottom: 1px solid $gray-100;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    &:first-child {
+      padding-top: 0;
+    }
+    
+    .property-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba($brand-teal, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $brand-teal;
+      flex-shrink: 0;
+    }
+    
+    .property-content {
+      flex: 1;
+      
+      .property-label {
+        display: block;
+        font-size: 12px;
+        color: $gray-600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+        font-weight: $font-weight-medium;
+      }
+      
+      .property-value {
+        font-size: $font-size-base;
+        color: $gray-800;
+        font-weight: $font-weight-medium;
+        
+        a {
+          color: $brand-teal;
+          text-decoration: none;
+          
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+        
+        .duplicate-warning {
+          color: $danger;
+          margin-left: $spacing-sm;
+          
+          &:hover {
+            color: darken($danger, 10%);
+          }
+        }
+        
+        .btn {
+          margin-left: $spacing-sm;
+        }
+      }
+    }
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: $spacing-xl $spacing-lg;
+    
+    .empty-icon {
+      font-size: 48px;
+      color: $gray-400;
+      display: block;
+      margin-bottom: $spacing-md;
+    }
+    
+    p {
+      color: $gray-600;
+      font-size: $font-size-sm;
+      margin: 0;
+    }
+  }
+}
+
+// Preferences Card Styles
+.preferences-card {
+  .preference-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-md 0;
+    border-bottom: 1px solid $gray-100;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    &:first-child {
+      padding-top: 0;
+    }
+    
+    .pref-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba($brand-teal, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $brand-teal;
+      flex-shrink: 0;
+    }
+    
+    .pref-content {
+      flex: 1;
+      
+      .pref-label {
+        display: block;
+        font-size: 12px;
+        color: $gray-600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+        font-weight: $font-weight-medium;
+      }
+      
+      .pref-value {
+        font-size: $font-size-base;
+        color: $gray-800;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Notes Card Styles
+// =============================================================================
+.notes-card {
+  .note-item {
+    margin-bottom: $spacing-lg;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    // Follow up note
+    &.follow-up-note {
+      display: flex;
+      gap: $spacing-lg;
+      padding: $spacing-lg;
+      background: rgba($warning, 0.03);
+      border: 1px solid rgba($warning, 0.2);
+      border-radius: $border-radius-md;
+      transition: all 0.2s ease;
+      
+      .note-icon {
+        width: 44px;
+        height: 44px;
+        background: rgba($warning, 0.15);
+        color: $warning;
+        box-shadow: 0 2px 8px rgba($warning, 0.15);
+        border-radius: $border-radius-md;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 20px;
+      }
+      
+      .note-content {
+        flex: 1;
+        
+        .note-label {
+          display: block;
+          font-size: 11px;
+          color: $gray-600;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          margin-bottom: $spacing-sm;
+          font-weight: $font-weight-semi-bold;
+        }
+        
+        .note-value {
+          font-size: $font-size-lg;
+          color: $gray-900;
+          font-weight: $font-weight-semi-bold;
+          line-height: 1.4;
+        }
+      }
+      
+      &:hover {
+        background: rgba($warning, 0.05);
+        border-color: $warning;
+      }
+    }
+    
+    // Lead notes and import notes
+    &.lead-notes-item,
+    &.import-notes-item {
+      padding: $spacing-lg;
+      background: $gray-50;
+      border-radius: $border-radius-md;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+      
+      .note-header {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        margin-bottom: $spacing-lg;
+        
+        .note-icon {
+          width: 32px;
+          height: 32px;
+          background: rgba($primary, 0.1);
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: $primary;
+          font-size: 16px;
+        }
+        
+        .note-label {
+          font-size: 12px;
+          color: $gray-600;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          font-weight: $font-weight-semi-bold;
+        }
+      }
+      
+      .note-text {
+        font-size: $font-size-lg;
+        color: $gray-800;
+        line-height: 1.5;
+        margin: 0;
+        white-space: pre-wrap;
+        font-weight: $font-weight-regular;
+      }
+    }
+    
+    // Special styling for lead notes
+    &.lead-notes-item {
+      background: linear-gradient(135deg, rgba($primary, 0.05) 0%, rgba($info, 0.03) 100%);
+      
+      .note-header .note-icon {
+        background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+        color: $white;
+        box-shadow: 0 4px 12px rgba($primary, 0.25);
+      }
+      
+      .note-text {
+        color: $gray-900;
+        font-weight: 450;
+      }
+    }
+    
+    // Import notes styling
+    &.import-notes-item {
+      .note-header .note-icon {
+        background: rgba($gray-500, 0.1);
+        color: $gray-600;
+      }
+      
+      .note-text {
+        font-size: $font-size-sm;
+        color: $gray-700;
+        background: $white;
+        padding: $spacing-md;
+        border-radius: $border-radius-sm;
+        border: 1px solid $gray-200;
+      }
+    }
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: $spacing-xl $spacing-lg;
+    
+    .empty-icon {
+      font-size: 48px;
+      color: $gray-400;
+      display: block;
+      margin-bottom: $spacing-md;
+    }
+    
+    p {
+      color: $gray-600;
+      font-size: $font-size-sm;
+      margin: 0;
+    }
+  }
+}
+
+// =============================================================================
+// Section Headers (Standard Pattern)
+// =============================================================================
+.section-header {
+  background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+  padding: $spacing-lg;
+  border-bottom: 2px solid $gray-200;
+  margin-bottom: 0;
+  
+  h2, h3 {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semi-bold;
+    color: $gray-800;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    .glyphicon {
+      color: $brand-teal;
+      font-size: 20px;
+      width: 20px;
+      text-align: center;
+    }
+  }
+  
+  // Modifier: Centered header
+  &--centered {
+    text-align: center;
+    background: none;
+    border: none;
+    padding: 0 $spacing-lg;
+    display: block;
+    width: 100%;
+    
+    h2, h3 {
+      display: inline-block;
+      position: relative;
+      padding-left: 28px;
+      margin: 0 auto;
+      
+      .glyphicon {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+  }
+  
+  // Modifier: Header with actions (like messages section)
+  &--with-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    .header-actions {
+      display: flex;
+      gap: $spacing-md;
+    }
+  }
+}
+
+// =============================================================================
+// Simple Tasks Section Header (like original design)
+// =============================================================================
+.tasks-section {
+  .tasks-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-lg;
+    padding: 0;
+    background: none;
+    border: none;
+    
+    h2 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semi-bold;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        color: $brand-teal;
+        font-size: 18px;
+        width: 18px;
+        text-align: center;
+      }
+    }
+    
+    .task-actions {
+      display: flex;
+      gap: $spacing-sm;
+      align-items: center;
+      
+      .btn {
+        font-size: $font-size-sm;
+        padding: 6px 12px;
+      }
+      
+      .show-completed-toggle {
+        font-size: $font-size-sm;
+        color: $gray-600;
+        text-decoration: none;
+        
+        &:hover {
+          color: $primary;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Section Wrapper
+// =============================================================================
+.section-wrapper {
+  margin-bottom: $spacing-2xl;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// =============================================================================
+// Lead Errors
+// =============================================================================
+.lead-errors {
+  margin: 0 0 $spacing-xl 0;
+  border-radius: 8px;
+  
+  h4 {
+    margin-top: 0;
+  }
+  
+  ul {
+    margin-bottom: $spacing-lg;
+  }
+}
+
+// =============================================================================
+// VIP Animation
+// =============================================================================
+@keyframes pulse-vip {
+  0% {
+    box-shadow: 0 2px 4px rgba(213, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(213, 0, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 2px 4px rgba(213, 0, 0, 0.3);
+  }
+}
+
+// =============================================================================
+// Messages Section
+// =============================================================================
+.messages-section {
+  background: $white;
+  border-radius: $border-radius-md;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: $spacing-xl;
+  overflow: hidden;
+  
+  .section-header {
+    background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+    padding: $spacing-lg;
+    border-bottom: 2px solid $gray-200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    h2 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semi-bold;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        color: $brand-teal;
+      }
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: $spacing-md;
+      
+      .btn {
+        background: linear-gradient(135deg, $primary 0%, lighten($primary, 8%) 100%);
+        border: 2px solid transparent;
+        color: $white;
+        font-weight: $font-weight-medium;
+        padding: 8px 16px;
+        border-radius: $border-radius-sm;
+        font-size: $font-size-sm;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xs;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba($primary, 0.2);
+        
+        .glyphicon {
+          font-size: 14px;
+        }
+        
+        &:hover {
+          background: linear-gradient(135deg, lighten($primary, 8%) 0%, lighten($primary, 15%) 100%);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba($primary, 0.3);
+          text-decoration: none;
+          color: $white;
+        }
+        
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba($primary, 0.3);
+        }
+      }
+    }
+  }
+  
+  .message-alerts {
+    padding: $spacing-md $spacing-lg 0;
+    
+    .alert {
+      border-radius: $border-radius-sm;
+      padding: $spacing-md;
+      margin-bottom: $spacing-md;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        flex-shrink: 0;
+      }
+      
+      &--warning {
+        background: rgba($warning, 0.1);
+        border: 1px solid rgba($warning, 0.3);
+        color: darken($warning, 20%);
+      }
+      
+      &--info {
+        background: rgba($info, 0.1);
+        border: 1px solid rgba($info, 0.3);
+        color: darken($info, 20%);
+      }
+    }
+  }
+  
+  .messages-container {
+    padding: $spacing-md;
+  }
+  
+  .messages-list {
+    // Message cards will inherit from the message card styles
+  }
+  
+  .empty-messages {
+    text-align: center;
+    padding: $spacing-2xl $spacing-lg;
+    
+    .empty-icon {
+      font-size: 48px;
+      color: $gray-400;
+      display: block;
+      margin-bottom: $spacing-md;
+    }
+    
+    p {
+      color: $gray-600;
+      font-size: $font-size-base;
+      margin: 0 0 $spacing-sm 0;
+      
+      &.text-muted {
+        font-size: $font-size-sm;
+        color: $gray-500;
+      }
+    }
+  }
+  
+  // Roommate messages styling
+  .roommate-messages-section {
+    border-top: 2px solid $gray-200;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-lg;
+    
+    .roommate-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: $spacing-lg;
+      padding: 0 $spacing-md;
+      
+      h3 {
+        margin: 0;
+        font-size: $font-size-base;
+        font-weight: $font-weight-semi-bold;
+        color: $gray-700;
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        
+        .glyphicon {
+          color: $brand-medium-blue;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+// Message cards inherit from shared component styles in components/_message-card.scss
+
+// =============================================================================
+// Responsive Design
+// =============================================================================
+@media (max-width: 991px) {
+  .lead-hero {
+    &__content {
+      flex-direction: column;
+      gap: $spacing-lg;
+    }
+    
+    &__actions {
+      width: 100%;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+  
+  .lead-stats {
+    flex-direction: column;
+    gap: $spacing-lg;
+    
+    &__item {
+      border-right: none;
+      padding-right: 0;
+      min-width: auto;
+    }
+  }
+  
+  .quick-nav-section {
+    .quick-nav-links {
+      gap: $spacing-md;
+      padding: 0 $spacing-lg;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .lead-hero {
+    &__banner {
+      padding: $spacing-lg;
+    }
+    
+    &__name {
+      font-size: $font-size-2xl;
+      flex-wrap: wrap;
+      justify-content: center;
+      text-align: center;
+      
+      .lead-hero__vip-badge {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
+    }
+    
+    &__subtitle {
+      font-size: $font-size-sm;
+      text-align: center;
+    }
+  }
+  
+  .lead-stats {
+    padding: $spacing-md;
+    gap: $spacing-md;
+    
+    &__item {
+      flex-direction: column;
+      text-align: center;
+      padding: $spacing-md;
+      background: $gray-50;
+      border-radius: 8px;
+      border: 1px solid $gray-200;
+      
+      .lead-stats__icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: $spacing-sm;
+      }
+    }
+  }
+  
+  .quick-nav-section {
+    padding: $spacing-md 0;
+    
+    .quick-nav-links {
+      flex-direction: column;
+      gap: $spacing-sm;
+      padding: 0 $spacing-md;
+    }
+    
+    .quick-nav-link {
+      width: 100%;
+      max-width: 300px;
+      justify-content: center;
+    }
+  }
+  
+  .info-card {
+    margin-bottom: $spacing-lg;
+    
+    .card-header,
+    .card-body {
+      padding: $spacing-md;
+    }
+  }
+}

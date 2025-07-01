@@ -1,0 +1,18 @@
+// Units Page Styles - BEM Structure
+// Minimal styles for units listing
+
+@import '../../variables';
+
+// Vacant unit row styling
+.units-table {
+  &__row {
+    &--vacant {
+      background-color: lighten($success, 45%);
+    }
+  }
+}
+
+// Legacy support
+tr.vacant {
+  @extend .units-table__row--vacant;
+}

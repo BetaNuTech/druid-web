@@ -1,0 +1,415 @@
+// Icons Component - BEM Structure
+// Consistent icon styling and enhancements
+
+@import '../variables';
+@import '../functions';
+
+// =============================================================================
+// Icon Block
+// =============================================================================
+
+.icon {
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  vertical-align: baseline;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  // Size modifiers
+  &--xs {
+    font-size: 12px;
+  }
+  
+  &--sm {
+    font-size: 14px;
+  }
+  
+  &--md {
+    font-size: 16px;
+  }
+  
+  &--lg {
+    font-size: 20px;
+  }
+  
+  &--xl {
+    font-size: 24px;
+  }
+  
+  &--2xl {
+    font-size: 32px;
+  }
+  
+  // Color modifiers
+  &--primary {
+    color: $primary;
+  }
+  
+  &--secondary {
+    color: $secondary;
+  }
+  
+  &--success {
+    color: $success;
+  }
+  
+  &--warning {
+    color: $warning;
+  }
+  
+  &--danger {
+    color: $danger;
+  }
+  
+  &--info {
+    color: $info;
+  }
+  
+  &--muted {
+    color: $gray-500;
+  }
+  
+  &--white {
+    color: $white;
+  }
+  
+  // Special effects
+  &--glow {
+    text-shadow: 0 0 3px currentColor;
+  }
+  
+  &--spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  &--pulse {
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  &--bounce {
+    animation: bounce 1s ease-in-out;
+  }
+  
+  // Spacing helpers
+  &--spaced-right {
+    margin-right: $spacing-xs;
+  }
+  
+  &--spaced-left {
+    margin-left: $spacing-xs;
+  }
+  
+  &--spaced {
+    margin: 0 $spacing-xs;
+  }
+}
+
+// =============================================================================
+// Glyphicon Enhancements
+// =============================================================================
+
+// Override Bootstrap glyphicon defaults
+.glyphicon {
+  // Ensure proper display
+  display: inline-block;
+  vertical-align: middle;
+  
+  // Fix common alignment issues
+  &[class*="glyphicon-"] {
+    top: 0; // Reset Bootstrap's relative positioning
+  }
+}
+
+// Specific icon enhancements
+.glyphicon-fire {
+  color: $danger !important; // Force red color for fire icons
+  text-shadow: 0 0 3px rgba($danger, 0.5);
+  animation: flicker 2s ease-in-out infinite;
+  
+  // Stagger animation for multiple fire icons
+  &:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+  
+  &:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+  
+  // Force color in various contexts
+  .card & {
+    color: $danger !important;
+  }
+  
+  .lead-card & {
+    color: $danger !important;
+  }
+  
+  .priority-marker & {
+    color: $danger !important;
+  }
+  
+  // Ensure color persists in links
+  a & {
+    color: $danger !important;
+  }
+}
+
+// Status icons
+.glyphicon-ok,
+.glyphicon-ok-circle,
+.glyphicon-ok-sign {
+  color: $success;
+}
+
+.glyphicon-remove,
+.glyphicon-remove-circle,
+.glyphicon-remove-sign,
+.glyphicon-ban-circle {
+  color: $danger;
+}
+
+.glyphicon-warning-sign,
+.glyphicon-exclamation-sign {
+  color: $warning;
+}
+
+.glyphicon-info-sign,
+.glyphicon-question-sign {
+  color: $info;
+}
+
+// Action icons
+.glyphicon-pencil,
+.glyphicon-edit {
+  color: $primary;
+}
+
+.glyphicon-trash {
+  color: $danger;
+  
+  &:hover {
+    color: darken($danger, 10%);
+  }
+}
+
+// Communication icons
+.glyphicon-envelope {
+  color: $info;
+}
+
+.glyphicon-phone,
+.glyphicon-earphone {
+  color: $success;
+}
+
+.glyphicon-comment,
+.glyphicon-comment {
+  color: $primary;
+}
+
+// =============================================================================
+// Icon Groups
+// =============================================================================
+
+.icon-group {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  
+  // Stack modifier
+  &--stack {
+    flex-direction: column;
+    gap: $spacing-xs / 2;
+  }
+  
+  // Tight modifier
+  &--tight {
+    gap: 2px;
+  }
+  
+  // Spaced modifier
+  &--spaced {
+    gap: $spacing-sm;
+  }
+}
+
+// =============================================================================
+// Icon Badges
+// =============================================================================
+
+.icon-badge {
+  position: relative;
+  display: inline-block;
+  
+  // Badge element
+  &__count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 6px;
+    background: $danger;
+    color: $white;
+    font-size: 11px;
+    font-weight: $font-weight-bold;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 9px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  // Alert dot
+  &__alert {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 8px;
+    height: 8px;
+    background: $danger;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+// =============================================================================
+// Icon Buttons
+// =============================================================================
+
+.icon-button {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $border-radius-sm;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: $gray-100;
+  }
+  
+  &:active {
+    background: $gray-200;
+  }
+  
+  // Size modifiers
+  &--sm {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  
+  &--lg {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  // Style modifiers
+  &--primary {
+    color: $primary;
+    
+    &:hover {
+      background: rgba($primary, 0.1);
+    }
+  }
+  
+  &--danger {
+    color: $danger;
+    
+    &:hover {
+      background: rgba($danger, 0.1);
+    }
+  }
+}
+
+// =============================================================================
+// Priority Markers with Icons
+// =============================================================================
+
+.priority-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  
+  // Ensure fire icons are red
+  .glyphicon-fire {
+    color: $danger !important;
+    text-shadow: 0 0 3px rgba($danger, 0.5);
+    animation: flicker 2s ease-in-out infinite;
+  }
+  
+  // High priority (3 fires)
+  &--high {
+    .glyphicon-fire {
+      &:nth-child(1) {
+        animation-delay: 0s;
+      }
+      &:nth-child(2) {
+        animation-delay: 0.3s;
+      }
+      &:nth-child(3) {
+        animation-delay: 0.6s;
+      }
+    }
+  }
+  
+  // Medium priority (2 fires)
+  &--medium {
+    .glyphicon-fire {
+      &:nth-child(1) {
+        animation-delay: 0s;
+      }
+      &:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+    }
+  }
+  
+  // Low priority (1 fire)
+  &--low {
+    .glyphicon-fire {
+      opacity: 0.8;
+    }
+  }
+}
+
+// =============================================================================
+// Utility Classes
+// =============================================================================
+
+// Force icon colors (use sparingly)
+.icon-color {
+  &--primary { color: $primary !important; }
+  &--secondary { color: $secondary !important; }
+  &--success { color: $success !important; }
+  &--warning { color: $warning !important; }
+  &--danger { color: $danger !important; }
+  &--info { color: $info !important; }
+  &--muted { color: $gray-500 !important; }
+  &--white { color: $white !important; }
+}
+
+// Ensure animations are defined
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.05) rotate(-2deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(0.98) rotate(1deg);
+  }
+  75% {
+    opacity: 0.85;
+    transform: scale(1.02) rotate(-1deg);
+  }
+}

@@ -226,7 +226,14 @@ class Lead < ApplicationRecord
     end
 
     def handle_scheduled_action_completion(scheduled_action=nil)
-      create_scheduled_action_contact_event(scheduled_action) if scheduled_action
+      if scheduled_action
+        begin
+          create_scheduled_action_contact_event(scheduled_action)
+        rescue => e
+          Rails.logger.error "Failed to create contact event for scheduled action #{scheduled_action.id}: #{e.message}"
+          # Don't let contact event creation failure prevent scheduled action completion
+        end
+      end
       set_priority
     end
 

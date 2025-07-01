@@ -38,10 +38,10 @@
           <% if current_user.present? %>
             <li>
               <div class="btn-group">
-                <%= link_to(root_path, class: "btn btn-primary", id: "navigation_dashboard_menu_link") do %>
+                <%= link_to(root_path, class: "btn btn--primary", id: "navigation_dashboard_menu_link") do %>
                   <span class="glyphicon glyphicon-th-large"></span> Dashboard
                 <% end %>
-                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+                <button type="button" class="btn dropdown-toggle btn--primary" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -59,10 +59,10 @@
 
             <li> <!-- Leads -->
               <div class="btn-group">
-                <%= link_to(search_leads_path, class: "btn btn-primary") do %>
+                <%= link_to(search_leads_path, class: "btn btn--primary") do %>
                   <span class="glyphicon glyphicon-flag"></span> Leads
                 <% end %>
-                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+                <button type="button" class="btn dropdown-toggle btn--primary" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -124,7 +124,7 @@
 
             <li>
               <div class="btn-group">
-                <%= link_to(messages_path, class: "btn btn-primary", id: 'navigation_messages_menu_link') do %>
+                <%= link_to(messages_path, class: "btn btn--primary", id: 'navigation_messages_menu_link') do %>
                   <% if current_user.messages.unread.where.not(state: 'draft').any? %>
                     <span id="messages_incoming_notification"><span style="color: red" class="glyphicon glyphicon-warning-sign"></span></span>
                   <% else %>
@@ -138,8 +138,8 @@
             <% if false %>
             <li> <!-- Messaging -->
               <div class="btn-group">
-                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span> Messaging</a>
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                <a href="#" class="btn btn--info"><span class="glyphicon glyphicon-envelope"></span> Messaging</a>
+                <button type="button" class="btn btn--info dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -160,8 +160,8 @@
             <% if false %>
             <li> <!-- Reports -->
               <div class="btn-group">
-                <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-stats"></span> Reports</a>
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                <a href="#" class="btn btn--info"><span class="glyphicon glyphicon-stats"></span> Reports</a>
+                <button type="button" class="btn btn--info dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -176,10 +176,10 @@
             <% if policy(Property).index? %>
             <li> <!-- Properties -->
               <div class="btn-group">
-                <%= link_to(properties_path, class: "btn btn-primary") do %>
+                <%= link_to(properties_path, class: "btn btn--primary") do %>
                   <span class="glyphicon glyphicon-home"></span> Properties
                 <% end %>
-                <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+                <button type="button" class="btn dropdown-toggle btn--primary" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -250,8 +250,8 @@
             <%# if current_user.admin? %>
             <li> <!-- System -->
               <div class="btn-group">
-                <a  href="#" class="btn btn-primary"><span class="glyphicon glyphicon-wrench"></span> System</a>
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <a  href="#" class="btn btn--primary"><span class="glyphicon glyphicon-wrench"></span> System</a>
+                <button type="button" class="btn btn--primary dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -329,10 +329,10 @@
           <li> <!-- Account -->
             <div class="btn-group">
               <% if current_user.present? %>
-                <%= link_to(edit_user_path(current_user), method: :get, class: "btn btn-primary") do %>
+                <%= link_to(edit_user_path(current_user), method: :get, class: "btn btn--primary") do %>
                   <span class="glyphicon glyphicon-user"></span> Account
                 <% end %>
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn--primary dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -350,7 +350,7 @@
                 </ul>
               <% else %>
                 <% if false %>
-                  <%= link_to(new_user_session_path, class: "btn btn-primary") do %>
+                  <%= link_to(new_user_session_path, class: "btn btn--primary") do %>
                     <span class="glyphicon glyphicon-off"></span> Login
                   <% end %>
                 <% end %>
@@ -362,10 +362,10 @@
         <% if current_user.present? %>
           <li> <!-- Help -->
             <div class="btn-group">
-              <%= link_to(current_page_help_path, method: :get, class: "btn btn-primary") do %>
+              <%= link_to(current_page_help_path, method: :get, class: "btn btn--primary") do %>
                 <span class="glyphicon glyphicon-question-sign"></span>
               <% end %>
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              <button type="button" class="btn btn--primary dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
                 <span class="sr-only">Toggle Dropdown</span>
               </button>

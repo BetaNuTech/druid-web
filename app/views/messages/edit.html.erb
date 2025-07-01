@@ -1,14 +1,17 @@
-<div class="row">
-  <div class="col-md-12">
-    <p class="lead">
+<div class="message-compose">
+  <div class="message-compose__header">
+    <p class="message-compose__title">
       <% if @message.draft? %>
-        Draft
+        <span class="message-detail__title-badge">Draft</span>
       <% end %>
       <%= @message_type&.name || '?' %>
       Message for
       <%= @messageable&.name || '?' %>
-      <%= link_to('Discard', @message, method: :delete, data: { confirm: 'Discard this message without sending?' }, class: 'btn btn-xs btn-primary' ) if @message.draft? %>
+      <%= link_to('Discard', @message, method: :delete, data: { confirm: 'Discard this message without sending?' }, class: "btn btn--danger btn--xs" ) if @message.draft? %>
     </p>
+  </div>
+  
+  <div class="message-compose__form-section">
     <%= render partial: 'form', locals: { message: @message, message_type: @message_type }  %>
   </div>
 </div>

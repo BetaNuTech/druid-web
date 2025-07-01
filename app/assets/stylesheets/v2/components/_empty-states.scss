@@ -1,0 +1,385 @@
+// Empty States Component Styles
+// Based on BlueSky Design System V2
+// Consistent patterns for empty content displays
+
+@import '../variables';
+
+// Base empty state styles
+.empty-state {
+  text-align: center;
+  padding: $spacing-xl * 2;
+  color: $gray-600;
+  
+  // Icon display
+  &__icon {
+    margin: 0 auto $spacing-lg;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $gray-100;
+    border-radius: 50%;
+    font-size: 24px;
+    color: $gray-400;
+    
+    // Icon size variants
+    &--sm {
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+    
+    &--lg {
+      width: 80px;
+      height: 80px;
+      font-size: 36px;
+    }
+    
+    // Icon color variants
+    &--primary {
+      background: rgba($primary, 0.1);
+      color: $primary;
+    }
+    
+    &--success {
+      background: rgba($success, 0.1);
+      color: $success;
+    }
+    
+    &--warning {
+      background: rgba($warning, 0.1);
+      color: $warning;
+    }
+    
+    &--info {
+      background: rgba($brand-teal, 0.1);
+      color: $brand-teal;
+    }
+  }
+  
+  // Title text
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin: 0 0 $spacing-sm;
+    
+    &--lg {
+      font-size: $font-size-2xl;
+    }
+  }
+  
+  // Description text
+  &__text {
+    font-size: $font-size-base;
+    line-height: 1.6;
+    color: $gray-600;
+    margin: 0 auto $spacing-lg;
+    max-width: 480px;
+    
+    &--sm {
+      font-size: $font-size-sm;
+    }
+  }
+  
+  // Action button container
+  &__actions {
+    display: flex;
+    gap: $spacing-md;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    
+    .btn {
+      min-width: 120px;
+    }
+  }
+  
+  // Image variant
+  &__image {
+    margin: 0 auto $spacing-lg;
+    max-width: 240px;
+    opacity: 0.8;
+    
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+// Empty state variants
+.empty-state {
+  // Minimal variant - just text
+  &--minimal {
+    padding: $spacing-lg;
+    
+    .empty-state__icon {
+      display: none;
+    }
+    
+    .empty-state__title {
+      font-size: $font-size-lg;
+      color: $gray-600;
+      font-weight: normal;
+    }
+  }
+  
+  // Compact variant - smaller padding
+  &--compact {
+    padding: $spacing-lg $spacing-md;
+    
+    .empty-state__icon {
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+      margin-bottom: $spacing-md;
+    }
+    
+    .empty-state__title {
+      font-size: $font-size-base;
+      margin-bottom: $spacing-xs;
+    }
+    
+    .empty-state__text {
+      font-size: $font-size-sm;
+      margin-bottom: $spacing-md;
+    }
+  }
+  
+  // Card variant - with background
+  &--card {
+    background: $gray-50;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    padding: $spacing-xl;
+  }
+  
+  // Error variant
+  &--error {
+    .empty-state__icon {
+      background: rgba($danger, 0.1);
+      color: $danger;
+    }
+    
+    .empty-state__title {
+      color: $danger;
+    }
+  }
+  
+  // Search variant
+  &--search {
+    .empty-state__icon {
+      background: rgba($primary, 0.1);
+      color: $primary;
+    }
+  }
+}
+
+// Common empty state patterns
+// No results
+.no-results {
+  @extend .empty-state;
+  @extend .empty-state--compact;
+  
+  .empty-state__icon {
+    @extend .empty-state__icon--primary;
+    
+    &::before {
+      content: '\e003'; // Bootstrap search icon
+      font-family: 'Glyphicons Halflings';
+    }
+  }
+}
+
+// No data
+.no-data {
+  @extend .empty-state;
+  
+  .empty-state__icon {
+    &::before {
+      content: '\e032'; // Bootstrap folder icon
+      font-family: 'Glyphicons Halflings';
+    }
+  }
+}
+
+// Loading state
+.loading-state {
+  @extend .empty-state;
+  @extend .empty-state--minimal;
+  
+  &__spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto $spacing-md;
+    border: 3px solid $gray-300;
+    border-top-color: $primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  &__text {
+    color: $gray-600;
+    font-size: $font-size-base;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Error state
+.error-state {
+  @extend .empty-state;
+  @extend .empty-state--error;
+  
+  .empty-state__icon {
+    &::before {
+      content: '\e101'; // Bootstrap warning-sign icon
+      font-family: 'Glyphicons Halflings';
+    }
+  }
+}
+
+// Empty table state
+.table-empty-state {
+  @extend .empty-state;
+  @extend .empty-state--compact;
+  
+  td {
+    padding: $spacing-xl !important;
+  }
+}
+
+// Empty list state
+.list-empty-state {
+  @extend .empty-state;
+  @extend .empty-state--card;
+  margin: $spacing-lg 0;
+}
+
+// Empty section state (within cards)
+.section-empty-state {
+  @extend .empty-state;
+  @extend .empty-state--minimal;
+  padding: $spacing-md;
+  
+  .empty-state__text {
+    margin-bottom: 0;
+  }
+}
+
+// Force consistent icon styling across all empty states
+.empty-state__icon,
+.empty-icon {
+  width: 64px !important;
+  height: 64px !important;
+  font-size: 24px !important;
+  color: $gray-400 !important;
+  background: $gray-100 !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto $spacing-md !important;
+  opacity: 1 !important;
+  
+  // Override any glyphicon colors
+  &.glyphicon,
+  .glyphicon {
+    color: $gray-400 !important;
+    font-size: 24px !important;
+  }
+}
+
+// Specific overrides for section empty states
+.empty-comments .empty-icon,
+.empty-messages .empty-icon,
+.empty-notes .empty-icon,
+.empty-tasks .empty-icon,
+.empty-duplicates .empty-icon,
+.empty-timeline .empty-icon,
+.empty-roommates .empty-icon {
+  width: 64px !important;
+  height: 64px !important;
+  font-size: 24px !important;
+  color: $gray-400 !important;
+  background: $gray-100 !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto $spacing-md !important;
+  opacity: 1 !important;
+  
+  &.glyphicon,
+  .glyphicon {
+    color: $gray-400 !important;
+    font-size: 24px !important;
+  }
+}
+
+// Section-specific empty states (for backward compatibility)
+.empty-roommates,
+.empty-messages,
+.empty-comments,
+.empty-notes,
+.empty-tasks,
+.empty-duplicates,
+.empty-timeline {
+  text-align: center;
+  padding: $spacing-xl * 2;
+  color: $gray-500;
+  
+  p {
+    margin: 0 0 $spacing-sm 0;
+    font-size: $font-size-lg;
+    color: $gray-600;
+    
+    &.text-muted {
+      margin: 0;
+      font-size: $font-size-base;
+      color: $gray-500;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 767px) {
+  .empty-state {
+    padding: $spacing-lg;
+    
+    &__title {
+      font-size: $font-size-lg;
+    }
+    
+    &__text {
+      font-size: $font-size-sm;
+    }
+    
+    &__actions {
+      flex-direction: column;
+      width: 100%;
+      
+      .btn {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+  }
+  
+  // Section-specific empty states
+  .empty-roommates,
+  .empty-messages,
+  .empty-comments,
+  .empty-notes,
+  .empty-tasks,
+  .empty-duplicates,
+  .empty-timeline {
+    padding: $spacing-lg;
+  }
+}

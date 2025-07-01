@@ -1,0 +1,262 @@
+// Grid Component
+// BEM-based grid system to replace Bootstrap's grid
+// Based on BlueSky Design System V2
+
+@import '../variables';
+
+// Grid container
+.grid {
+  width: 100%;
+  
+  &__container {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: $spacing-md;
+    padding-left: $spacing-md;
+    
+    // Container sizes
+    @media (min-width: 576px) {
+      max-width: 540px;
+    }
+    
+    @media (min-width: 768px) {
+      max-width: 720px;
+    }
+    
+    @media (min-width: 992px) {
+      max-width: 960px;
+    }
+    
+    @media (min-width: 1200px) {
+      max-width: 1140px;
+    }
+    
+    @media (min-width: 1400px) {
+      max-width: 1320px;
+    }
+    
+    // Fluid container
+    &--fluid {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+  
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -$spacing-sm;
+    margin-left: -$spacing-sm;
+    
+    // Row modifiers
+    &--no-gutters {
+      margin-right: 0;
+      margin-left: 0;
+      
+      > .grid__col {
+        padding-right: 0;
+        padding-left: 0;
+      }
+    }
+    
+    &--align-start {
+      align-items: flex-start;
+    }
+    
+    &--align-center {
+      align-items: center;
+    }
+    
+    &--align-end {
+      align-items: flex-end;
+    }
+    
+    &--justify-start {
+      justify-content: flex-start;
+    }
+    
+    &--justify-center {
+      justify-content: center;
+    }
+    
+    &--justify-end {
+      justify-content: flex-end;
+    }
+    
+    &--justify-between {
+      justify-content: space-between;
+    }
+    
+    &--justify-around {
+      justify-content: space-around;
+    }
+  }
+  
+  &__col {
+    position: relative;
+    width: 100%;
+    padding-right: $spacing-sm;
+    padding-left: $spacing-sm;
+    
+    // Auto-sizing column
+    &--auto {
+      flex: 0 0 auto;
+      width: auto;
+    }
+    
+    // Equal width columns
+    &--equal {
+      flex: 1 0 0%;
+    }
+  }
+}
+
+// Column sizes - Mobile first approach
+// Generate columns for each breakpoint
+$grid-columns: 12;
+
+// Default columns (all sizes)
+@for $i from 1 through $grid-columns {
+  .grid__col--#{$i} {
+    flex: 0 0 calc(#{$i} / #{$grid-columns} * 100%);
+    max-width: calc(#{$i} / #{$grid-columns} * 100%);
+  }
+}
+
+// Offset columns
+@for $i from 1 through $grid-columns - 1 {
+  .grid__col--offset-#{$i} {
+    margin-left: calc(#{$i} / #{$grid-columns} * 100%);
+  }
+}
+
+// Small devices (≥576px)
+@media (min-width: 576px) {
+  @for $i from 1 through $grid-columns {
+    .grid__col--sm-#{$i} {
+      flex: 0 0 calc(#{$i} / #{$grid-columns} * 100%);
+      max-width: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+  
+  @for $i from 1 through $grid-columns - 1 {
+    .grid__col--sm-offset-#{$i} {
+      margin-left: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+}
+
+// Medium devices (≥768px)
+@media (min-width: 768px) {
+  @for $i from 1 through $grid-columns {
+    .grid__col--md-#{$i} {
+      flex: 0 0 calc(#{$i} / #{$grid-columns} * 100%);
+      max-width: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+  
+  @for $i from 1 through $grid-columns - 1 {
+    .grid__col--md-offset-#{$i} {
+      margin-left: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+}
+
+// Large devices (≥992px)
+@media (min-width: 992px) {
+  @for $i from 1 through $grid-columns {
+    .grid__col--lg-#{$i} {
+      flex: 0 0 calc(#{$i} / #{$grid-columns} * 100%);
+      max-width: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+  
+  @for $i from 1 through $grid-columns - 1 {
+    .grid__col--lg-offset-#{$i} {
+      margin-left: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+}
+
+// Extra large devices (≥1200px)
+@media (min-width: 1200px) {
+  @for $i from 1 through $grid-columns {
+    .grid__col--xl-#{$i} {
+      flex: 0 0 calc(#{$i} / #{$grid-columns} * 100%);
+      max-width: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+  
+  @for $i from 1 through $grid-columns - 1 {
+    .grid__col--xl-offset-#{$i} {
+      margin-left: calc(#{$i} / #{$grid-columns} * 100%);
+    }
+  }
+}
+
+// Legacy Bootstrap Grid Compatibility
+// Temporary mappings during migration
+.container {
+  @extend .grid__container;
+}
+
+.container-fluid {
+  @extend .grid__container;
+  @extend .grid__container--fluid;
+}
+
+.row {
+  @extend .grid__row;
+}
+
+// Column mappings
+@for $i from 1 through $grid-columns {
+  .col-#{$i} {
+    @extend .grid__col;
+    @extend .grid__col--#{$i};
+  }
+  
+  .col-sm-#{$i} {
+    @extend .grid__col;
+    @extend .grid__col--sm-#{$i};
+  }
+  
+  .col-md-#{$i} {
+    @extend .grid__col;
+    @extend .grid__col--md-#{$i};
+  }
+  
+  .col-lg-#{$i} {
+    @extend .grid__col;
+    @extend .grid__col--lg-#{$i};
+  }
+  
+  .col-xl-#{$i} {
+    @extend .grid__col;
+    @extend .grid__col--xl-#{$i};
+  }
+}
+
+// Offset mappings
+@for $i from 1 through $grid-columns - 1 {
+  .col-offset-#{$i} {
+    @extend .grid__col--offset-#{$i};
+  }
+  
+  .col-sm-offset-#{$i} {
+    @extend .grid__col--sm-offset-#{$i};
+  }
+  
+  .col-md-offset-#{$i} {
+    @extend .grid__col--md-offset-#{$i};
+  }
+  
+  .col-lg-offset-#{$i} {
+    @extend .grid__col--lg-offset-#{$i};
+  }
+  
+  .col-xl-offset-#{$i} {
+    @extend .grid__col--xl-offset-#{$i};
+  }
+}

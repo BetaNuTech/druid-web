@@ -1,42 +1,36 @@
-<div id="dashboard_upcoming" class="row">
-  <div class="col-md-12">
-
-    <!-- Heading -->
-    <div class="row">
-      <div class="col-md-12">
-        <h3>
-          <%= glyph(:task) %>
-          Upcoming
-        </h3>
+<div id="dashboard_upcoming" class="section section--upcoming">
+  <div class="section-header">
+    <div class="section-header__content">
+      <div class="section-header__icon">
+        <%= glyph(:calendar) %>
       </div>
-    </div>
-    <!-- End Heading -->
-
-    <!-- Listing -->
-    <div class="row <%= 'tasks-section tasks-upcoming' if scheduled_actions.any? %>">
-      <div class="col-md-12">
-        <% if scheduled_actions.count > 20 %>
-          <div class="tasks-header">
-            <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn-sm btn-primary float-right" %>
-          </div>
-        <% end %>
-        
+      <h3 class="section-header__title">
+        Upcoming
         <% if scheduled_actions.any? %>
-          <div class="task-cards">
-            <%= render collection: scheduled_actions.limit(20), partial: 'scheduled_action_card', locals: { task_type: 'upcoming' } %>
-          </div>
-        <% else %>
-          <div class="tasks-empty-state">
-            <div class="empty-icon">
-              <%= glyph(:calendar) %>
-            </div>
-            <div class="empty-title">No upcoming tasks</div>
-            <div class="empty-description">You're all clear for the future</div>
-          </div>
+          <span class="section-header__count"><%= scheduled_actions.count %></span>
         <% end %>
-      </div>
+      </h3>
+      <% if scheduled_actions.count > 20 %>
+        <div class="section-header__actions">
+          <%= link_to "View All", scheduled_actions_path(team: true), class: "btn btn--primary btn--small" %>
+        </div>
+      <% end %>
     </div>
-    <!-- End Listing -->
+  </div>
 
+  <div class="section__content">
+    <% if scheduled_actions.any? %>
+      <div class="task-cards">
+        <%= render collection: scheduled_actions.limit(20), partial: 'home/task_card', as: :scheduled_action_card, locals: { task_type: 'upcoming' } %>
+      </div>
+    <% else %>
+      <div class="section__content section__content--empty">
+        <div class="empty-state__icon">
+          <%= glyph(:calendar) %>
+        </div>
+        <p>No upcoming tasks</p>
+        <p class="u-text--muted">You're all clear for the future</p>
+      </div>
+    <% end %>
   </div>
 </div>

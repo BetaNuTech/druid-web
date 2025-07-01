@@ -177,7 +177,14 @@ module ApplicationHelper
   end
 
   def nav_item_active?(key, action=nil)
-    params[:controller] == key.to_s && (action ? params[:action] == action.to_s : true)
+    # Special case for home - should be active on dashboard
+    if key == :home
+      params[:controller] == 'home' && (params[:action] == 'dashboard' || params[:action] == 'index')
+    elsif action
+      params[:controller] == key.to_s && params[:action] == action.to_s
+    else
+      params[:controller] == key.to_s
+    end
   end
 
   def nav_item_class(key, action=nil)

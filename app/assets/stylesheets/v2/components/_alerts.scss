@@ -1,0 +1,241 @@
+// Alert Component
+// User feedback messages and notifications
+// Based on BlueSky Design System V2
+
+@import '../variables';
+@import '../functions';
+
+// Base alert styles
+.alert {
+  position: relative;
+  padding: $spacing-md $spacing-lg;
+  margin-bottom: $spacing-md;
+  border: 1px solid transparent;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  
+  // Alert with icon
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-right: $spacing-sm;
+    flex-shrink: 0;
+    
+    .glyphicon {
+      font-size: 16px;
+    }
+  }
+  
+  // Alert content wrapper
+  &__content {
+    flex: 1;
+    
+    p {
+      margin: 0;
+      
+      &:not(:last-child) {
+        margin-bottom: $spacing-xs;
+      }
+    }
+    
+    a {
+      font-weight: $font-weight-medium;
+      text-decoration: underline;
+    }
+  }
+  
+  // Close button
+  &__close {
+    position: absolute;
+    top: $spacing-sm;
+    right: $spacing-sm;
+    padding: $spacing-xs;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    color: inherit;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+    
+    &:focus {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+      opacity: 1;
+    }
+  }
+  
+  // Alert with close button padding adjustment
+  &--dismissible {
+    padding-right: $spacing-2xl;
+  }
+  
+  // Alert variants
+  &--success {
+    background-color: rgba($success, 0.1);
+    border-color: rgba($success, 0.2);
+    color: darken($success, 20%);
+    
+    .alert__icon {
+      color: $success;
+    }
+    
+    a {
+      color: darken($success, 25%);
+      
+      &:hover {
+        color: darken($success, 30%);
+      }
+    }
+  }
+  
+  &--danger {
+    background-color: rgba($danger, 0.1);
+    border-color: rgba($danger, 0.2);
+    color: darken($danger, 20%);
+    
+    .alert__icon {
+      color: $danger;
+    }
+    
+    a {
+      color: darken($danger, 25%);
+      
+      &:hover {
+        color: darken($danger, 30%);
+      }
+    }
+  }
+  
+  &--warning {
+    background-color: rgba($warning, 0.1);
+    border-color: rgba($warning, 0.2);
+    color: darken($warning, 20%);
+    
+    .alert__icon {
+      color: $warning;
+    }
+    
+    a {
+      color: darken($warning, 25%);
+      
+      &:hover {
+        color: darken($warning, 30%);
+      }
+    }
+  }
+  
+  &--info {
+    background-color: rgba($brand-teal, 0.1);
+    border-color: rgba($brand-teal, 0.2);
+    color: darken($brand-teal, 20%);
+    
+    .alert__icon {
+      color: $brand-teal;
+    }
+    
+    a {
+      color: darken($brand-teal, 25%);
+      
+      &:hover {
+        color: darken($brand-teal, 30%);
+      }
+    }
+  }
+  
+  // Alert with flex layout for icon + content
+  &--with-icon {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  // Smaller alert variant
+  &--sm {
+    padding: $spacing-sm $spacing-md;
+    font-size: $font-size-sm;
+  }
+  
+  // Larger alert variant
+  &--lg {
+    padding: $spacing-lg $spacing-xl;
+    font-size: $font-size-lg;
+  }
+  
+  // Alert list
+  &__list {
+    margin: $spacing-xs 0 0 0;
+    padding-left: $spacing-lg;
+    
+    li {
+      margin-bottom: $spacing-xs;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// Alert group for multiple alerts
+.alert-group {
+  margin-bottom: $spacing-md;
+  
+  .alert {
+    margin-bottom: $spacing-sm;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Legacy Bootstrap Alert Compatibility
+// Temporary mappings during migration
+.alert-success {
+  @extend .alert;
+  @extend .alert--success;
+}
+
+.alert-danger {
+  @extend .alert;
+  @extend .alert--danger;
+}
+
+.alert-warning {
+  @extend .alert;
+  @extend .alert--warning;
+}
+
+.alert-info {
+  @extend .alert;
+  @extend .alert--info;
+}
+
+.alert-dismissible {
+  @extend .alert--dismissible;
+}
+
+// Animation for alert appearance
+@keyframes alertSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert {
+  animation: alertSlideIn 0.3s ease-out;
+}

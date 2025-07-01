@@ -1,38 +1,39 @@
-<div class="row" id="dashboard_my_leads">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-6">
-        <h3>
-          <%= glyph(:person) %>
-          Property Leads
-        </h3>
+<div class="section section--property-leads" id="dashboard_my_leads">
+  <div class="section-header">
+    <div class="section-header__content">
+      <div class="section-header__icon">
+        <%= glyph(:person) %>
       </div>
+      <h3 class="section-header__title">
+        Property Leads
+      </h3>
     </div>
-    <% if current_user.property.present? %>
-    <div class="row">
-      <div class="col-md-6">
-        <span class="lead">
+  </div>
+  
+  <% if current_user.property.present? %>
+    <div class="section__stats">
+      <div class="section__stats-item">
+        <span class="section__stats-value">
           <%= current_user.property.leads.early_pipeline.count %> Active Leads
         </span>
       </div>
-      <div class="col-md-3">
-        <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{open prospect showing application} }}), class: "btn btn-xs btn-primary") %>
-      </div>
-      <div class="col-md-3">
-        <%= link_to("Duplicates", duplicate_leads_property_path(id: current_user.property), class: "btn btn-xs btn-primary") %>
+      <div class="section__stats-actions">
+        <%= link_to("More...", search_leads_path({lead_search: {property_ids: [current_user.property.id], states: %w{open prospect showing application} }}), class: "btn btn--xs btn--primary") %>
+        <%= link_to("Duplicates", duplicate_leads_property_path(id: current_user.property), class: "btn btn--xs btn--primary") %>
       </div>
     </div>
-    <% end %>
-    <table class="table lead_listing">
-      <thead></thead>
-      <tbody>
+  <% end %>
+  
+  <div class="section__content">
+    <table class="data-table">
+      <tbody class="data-table__body">
         <% if current_user.property.present? %>
           <% current_user.property.leads.in_progress.high_priority.each do |lead| %>
             <tr>
               <td width="70%">
-                <span class="lead"> <%= link_to(lead.name, lead_path(lead)) %> </span>
+                <span class="lead-row__name"> <%= link_to(lead.name, lead_path(lead)) %> </span>
                 <% if lead.property.present? %>
-                  for <span class="text-nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
+                  for <span class="u-text--nowrap"><%= link_to(lead.property.name, property_path(lead.property)) %></span>
                 <% end %>
                 <%= render partial: "leads/contact_mini_card", locals: {lead: lead} %>
               </td>
@@ -44,14 +45,14 @@
                 <br>
                 <%= glyph(:comment) %> <%= short_datetime(lead.last_comm) %>
                 <br>
-                <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge") %></a>
+                <%= glyph(:task) %> <%= link_to(lead.scheduled_actions.incomplete.count, lead_path(id: lead.id, anchor: 'scheduled_actions'), class: "badge badge--primary") %>
               </td>
             </tr>
           <% end %>
         <% else %>
           <tr>
             <td>
-              <p class="lead">None</p>
+              <p class="empty-state__text">None</p>
             </td>
           </tr>
         <% end %>

@@ -1,0 +1,723 @@
+// Home Dashboard Page Styles
+// Using BlueSky Design System V2 BEM Components
+
+@import '../../variables';
+
+// Dashboard page wrapper
+.dashboard {
+  padding: $spacing-lg 0;
+  width: 100%;
+  
+  // Container for max-width and padding
+  &__container {
+    max-width: 1600px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    
+    @media (max-width: $screen-sm-max) {
+      padding: 0 $spacing-md;
+    }
+  }
+  
+  // Main grid layout
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    width: 100%;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr minmax(350px, 450px);
+      align-items: start;
+    }
+    
+    @media (min-width: $screen-md-min) {
+      grid-template-columns: 1fr minmax(400px, 500px);
+      align-items: start;
+    }
+  }
+  
+  // Left column (main content)
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  // Right column (sidebar content)
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+// Lead row component
+.lead-row {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: stretch;
+  width: 100%;
+  margin-bottom: $spacing-lg; // Standard spacing between cards (24px)
+  background: white;
+  transition: all 0.2s ease;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &:hover {
+    background: $gray-50;
+  }
+  
+  &__actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    padding-right: $spacing-sm;
+    
+    .btn {
+      white-space: nowrap;
+    }
+  }
+  
+  &__content {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    
+    // Card styling within lead row
+    .card {
+      margin-bottom: 0;
+      width: 100%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid $gray-200;
+      
+      &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        border-color: $brand-teal;
+      }
+      
+      // Ensure card classes override old lead_card styles
+      &.card--status {
+        display: block !important;
+      }
+      
+      // Make priority flames stand out more in dashboard view
+      .lead-priority {
+        margin-left: auto;
+        padding: 2px 6px;
+        background: rgba($danger, 0.1);
+        border-radius: $border-radius-sm;
+      }
+    }
+  }
+  
+  &__form {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+  }
+}
+
+// Lead list component
+.lead-list {
+  display: flex;
+  flex-direction: column;
+  
+  // When inside Today section, add padding for visual breathing room
+  .section--today & {
+    padding-top: $spacing-lg; // Add space above first card
+  }
+  
+  // Direct card children (sidebar views)
+  > .card {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: $spacing-lg; // Standard spacing between cards (24px)
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid $gray-200;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border-color: $brand-teal;
+    }
+  }
+  
+  &--empty {
+    padding: $spacing-xl;
+    text-align: center;
+    color: $gray-500;
+  }
+}
+
+// Task list component
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  
+  &--empty {
+    padding: $spacing-xl;
+    text-align: center;
+    color: $gray-500;
+  }
+}
+
+// Property quicklinks component
+.quicklinks {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $spacing-lg;
+  }
+  
+  &__card {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+  }
+  
+  &__card-header {
+    margin-bottom: $spacing-md;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $gray-100;
+  }
+  
+  &__logo {
+    height: 30px;
+    width: auto;
+  }
+  
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semi-bold;
+    
+    a {
+      color: $gray-800;
+      text-decoration: none;
+      
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+  
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &__stat-item {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-xs;
+  }
+  
+  &__stat-label {
+    font-size: $font-size-sm;
+    color: $gray-600;
+  }
+  
+  &__stat-value {
+    font-weight: $font-weight-medium;
+    color: $primary;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    align-items: center;
+  }
+  
+  &__link {
+    font-size: $font-size-sm;
+    color: $gray-600;
+    text-decoration: none;
+    
+    &:hover {
+      color: $primary;
+      text-decoration: underline;
+    }
+  }
+  
+  // Legacy list support
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  &__item {
+    padding: $spacing-sm $spacing-md;
+    background: $gray-50;
+    border-radius: $border-radius-sm;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: $gray-100;
+      transform: translateX(4px);
+    }
+    
+    a {
+      color: $gray-700;
+      text-decoration: none;
+      display: block;
+      
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+}
+
+// Backward compatibility
+.dashboard-page {
+  @extend .dashboard;
+}
+
+.row {
+  // Remove Bootstrap negative margins when inside dashboard
+  .dashboard & {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.col-xs-12,
+.col-md-8,
+.col-md-4 {
+  // Remove Bootstrap padding when inside dashboard
+  .dashboard & {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// Section spacing
+.section {
+  margin-bottom: $spacing-xl;
+  
+  // Override any ID-based padding from old styles
+  &#dashboard_today,
+  &#dashboard_upcoming,
+  &#dashboard_my_leads,
+  &#dashboard_waitlist {
+    padding: 0 !important;
+    
+    // Section header should fill to edges
+    > .section-header {
+      margin: 0;
+      border-radius: ($border-radius-md - 1px) ($border-radius-md - 1px) 0 0;
+    }
+  }
+  
+  // Today section - adjust content padding
+  &#dashboard_today {
+    .section__content {
+      // Will be overridden when tasks section is present
+    }
+  }
+  
+  // Today section specific styles
+  &--today {
+    .leads-header {
+      margin-bottom: 0;
+      padding-bottom: $spacing-md;
+      border-bottom: 1px solid $gray-200;
+      
+      &__info {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xs;
+        
+        .lead-count {
+          font-weight: $font-weight-medium;
+          color: $gray-700;
+          margin-right: $spacing-sm;
+        }
+        
+        // Tooltip block should not add extra spacing
+        span[data-toggle="tooltip"] {
+          display: inline-flex;
+        }
+      }
+    }
+    
+    // Lead listing table
+    .table.lead-listing {
+      margin-bottom: $spacing-md;
+      
+      td {
+        vertical-align: middle;
+        padding: $spacing-md;
+        border: none; // Remove all borders since we have cards
+      }
+    }
+    
+    // Tasks section inside Today section - simpler nested design
+    .section__content > .tasks-section {
+      margin: $spacing-md (-$spacing-lg) (-$spacing-lg) (-$spacing-lg) !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+      width: calc(100% + #{$spacing-lg * 2}) !important;
+      
+      > .section-header {
+        margin: 0 0 $spacing-md 0 !important;
+        padding: $spacing-md $spacing-lg !important;
+        background: $gray-50 !important;
+        background-image: none !important;
+        border-top: 1px solid $gray-200 !important;
+        border-bottom: 1px solid $gray-200 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-radius: 0 !important;
+        width: calc(100% + #{$spacing-lg * 2}) !important;
+        
+        // Simple flat header for nested sections
+        .section-header__icon {
+          width: 24px !important;
+          height: 24px !important;
+          font-size: 14px !important;
+          background: $white !important;
+          color: $primary !important;
+          box-shadow: none !important;
+        }
+        
+        .section-header__title {
+          font-size: 16px !important;
+        }
+      }
+      
+      > .tasks-list {
+        padding: 0 $spacing-lg $spacing-lg $spacing-lg !important;
+      }
+    }
+    
+    // Lead row styles specific to Today section
+    .lead-row {
+      // No need to redefine spacing - it's already defined in the main component
+      // Just add Today-specific enhancements
+      
+      &:hover {
+        background: $gray-50;
+      }
+      
+      // Adjust button positioning for dashboard context
+      &__actions {
+        padding-top: $spacing-md; // Align with card content
+      }
+    }
+    
+    // Tasks section within today
+    .tasks-section {
+      margin-top: $spacing-lg;
+      padding-top: $spacing-lg;
+      border-top: 2px solid $gray-200;
+      
+      .tasks-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: $spacing-md;
+        
+        h4 {
+          margin: 0;
+          display: flex;
+          align-items: center;
+          gap: $spacing-sm;
+          font-size: 18px;
+          font-weight: $font-weight-semi-bold;
+          color: $gray-900;
+          
+          .glyphicon {
+            color: $brand-teal;
+          }
+        }
+      }
+      
+      .tasks-list {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+      }
+    }
+  }
+  
+  // My Leads section
+  &--my-leads,
+  &--waitlist {
+    .section__content {
+      padding: $spacing-lg; // Add padding for proper spacing
+    }
+    
+    .lead-list {
+      max-height: 600px;
+      overflow-y: auto;
+      margin: -$spacing-lg; // Negative margin to offset padding
+      padding: $spacing-lg; // Internal padding for scroll
+      
+      // Lead cards in list
+      .card {
+        margin-bottom: $spacing-md; // Space between cards
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      
+      .card--clickable {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          text-decoration: none;
+          
+          .lead-name a {
+            color: $primary;
+          }
+        }
+      }
+      
+      // Custom scrollbar
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: $gray-100;
+        border-radius: 3px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: $gray-400;
+        border-radius: 3px;
+        
+        &:hover {
+          background: $gray-500;
+        }
+      }
+    }
+  }
+  
+  // Waitlist specific
+  &--waitlist {
+    // Waitlist cards can have special styling if needed
+    .card {
+      // Additional waitlist card styles can go here
+    }
+  }
+}
+
+// Property selection bar
+#propertyselection--container {
+  .form__group {
+    margin: 0;
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+    
+    select {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .btn {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Empty state overrides for dashboard
+.section--today,
+.section--upcoming {
+  .empty-state {
+    &--compact {
+      padding: $spacing-xl $spacing-lg;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: $screen-md-min) {
+  // Stack columns on smaller screens
+  .dashboard-page {
+    padding: $spacing-md;
+    
+    .col-md-8,
+    .col-md-4 {
+      width: 100%;
+      
+      .section {
+        margin-bottom: $spacing-lg;
+      }
+    }
+  }
+  
+  // Adjust lead list height on mobile
+  .section--my-leads,
+  .section--waitlist {
+    .lead-list {
+      max-height: none;
+    }
+  }
+}
+
+// Empty state component (reusable across dashboard)
+.empty-state {
+  padding: $spacing-2xl;
+  text-align: center;
+  
+  &__icon {
+    font-size: 48px;
+    color: $gray-300;
+    margin-bottom: $spacing-md;
+  }
+  
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    margin: 0 0 $spacing-sm 0;
+  }
+  
+  &__text {
+    color: $gray-500;
+    margin: 0;
+  }
+}
+
+// Badge component (for counts, statuses)
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  border-radius: $border-radius-full;
+  background: $gray-200;
+  color: $gray-700;
+  
+  &--primary {
+    background: $primary;
+    color: $white;
+  }
+  
+  &--success {
+    background: $success;
+    color: $white;
+  }
+  
+  &--warning {
+    background: $warning;
+    color: $white;
+  }
+  
+  &--danger {
+    background: $danger;
+    color: $white;
+  }
+  
+  &--info {
+    background: $info;
+    color: $white;
+  }
+}
+
+// Data table component - removed as we're using lead-list instead
+
+// Tasks section specific styles
+.tasks-section {
+  @extend .section;
+  
+  &__list {
+    @extend .task-list;
+  }
+}
+
+// Lead count specific
+.lead-count {
+  @extend .badge;
+  @extend .badge--primary;
+}
+
+// Table compatibility - removed as we're using lead-list components
+
+// Property quicklinks backward compatibility
+.property_quicklinks {
+  @extend .quicklinks;
+  
+  ul {
+    @extend .quicklinks__list;
+  }
+  
+  li {
+    @extend .quicklinks__item;
+  }
+}
+
+// Override content layout for dashboard pages
+.home-index #viewcontent,
+.home-dashboard #viewcontent {
+  width: 100%;
+  max-width: none;
+  
+  // Ensure dashboard uses full width
+  .dashboard {
+    width: 100%;
+  }
+}
+
+// Global card containment for dashboard
+.home-dashboard {
+  // Ensure all cards are properly contained
+  .card {
+    box-sizing: border-box;
+    max-width: 100%;
+    
+    // Prevent link cards from breaking layout
+    &.card--clickable {
+      display: block;
+      width: 100%;
+    }
+  }
+  
+  // Fix section content overflow
+  .section__content {
+    overflow: hidden;
+  }
+}

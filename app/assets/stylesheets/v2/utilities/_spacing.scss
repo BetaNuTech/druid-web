@@ -1,0 +1,187 @@
+// Spacing Utility Classes
+// Based on BlueSky Design System V2
+
+@import '../variables';
+
+// Margin utilities
+// Format: .m{direction}-{size}
+// Directions: t (top), r (right), b (bottom), l (left), x (horizontal), y (vertical), '' (all)
+// Sizes: 0-5 mapping to spacing scale
+
+$directions: (
+  '': '',
+  't': '-top',
+  'r': '-right', 
+  'b': '-bottom',
+  'l': '-left'
+);
+
+$sizes: (
+  '0': 0,
+  '1': $spacing-xs,    // 4px
+  '2': $spacing-sm,    // 8px
+  '3': $spacing-md,    // 16px
+  '4': $spacing-lg,    // 24px
+  '5': $spacing-xl,    // 32px
+  '6': $spacing-2xl    // 48px
+);
+
+// Generate margin utilities
+@each $dir-key, $dir-value in $directions {
+  @each $size-key, $size-value in $sizes {
+    .m#{$dir-key}-#{$size-key} {
+      @if $dir-key == '' {
+        margin: $size-value;
+      } @else if $dir-key == 'x' {
+        margin-left: $size-value;
+        margin-right: $size-value;
+      } @else if $dir-key == 'y' {
+        margin-top: $size-value;
+        margin-bottom: $size-value;
+      } @else {
+        margin#{$dir-value}: $size-value;
+      }
+    }
+  }
+}
+
+// Generate padding utilities
+@each $dir-key, $dir-value in $directions {
+  @each $size-key, $size-value in $sizes {
+    .p#{$dir-key}-#{$size-key} {
+      @if $dir-key == '' {
+        padding: $size-value;
+      } @else if $dir-key == 'x' {
+        padding-left: $size-value;
+        padding-right: $size-value;
+      } @else if $dir-key == 'y' {
+        padding-top: $size-value;
+        padding-bottom: $size-value;
+      } @else {
+        padding#{$dir-value}: $size-value;
+      }
+    }
+  }
+}
+
+// Auto margins
+.m-auto { margin: auto; }
+.mt-auto { margin-top: auto; }
+.mr-auto { margin-right: auto; }
+.mb-auto { margin-bottom: auto; }
+.ml-auto { margin-left: auto; }
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+// Negative margins
+@each $size-key, $size-value in $sizes {
+  @if $size-key != '0' {
+    .m-n#{$size-key} { margin: -$size-value; }
+    .mt-n#{$size-key} { margin-top: -$size-value; }
+    .mr-n#{$size-key} { margin-right: -$size-value; }
+    .mb-n#{$size-key} { margin-bottom: -$size-value; }
+    .ml-n#{$size-key} { margin-left: -$size-value; }
+    .mx-n#{$size-key} {
+      margin-left: -$size-value;
+      margin-right: -$size-value;
+    }
+    .my-n#{$size-key} {
+      margin-top: -$size-value;
+      margin-bottom: -$size-value;
+    }
+  }
+}
+
+// Gap utilities for flexbox/grid
+.gap-0 { gap: 0; }
+.gap-1 { gap: $spacing-xs; }
+.gap-2 { gap: $spacing-sm; }
+.gap-3 { gap: $spacing-md; }
+.gap-4 { gap: $spacing-lg; }
+.gap-5 { gap: $spacing-xl; }
+.gap-6 { gap: $spacing-2xl; }
+
+// Special spacing wrapper utility
+.u-spacing {
+  &--xs { margin-top: $spacing-xs; }
+  &--sm { margin-top: $spacing-sm; }
+  &--md { margin-top: $spacing-md; }
+  &--lg { margin-top: $spacing-lg; }
+  &--xl { margin-top: $spacing-xl; }
+  &--2xl { margin-top: $spacing-2xl; }
+}
+
+// Responsive spacing utilities
+@media (min-width: 768px) {
+  @each $dir-key, $dir-value in $directions {
+    @each $size-key, $size-value in $sizes {
+      .m#{$dir-key}-md-#{$size-key} {
+        @if $dir-key == '' {
+          margin: $size-value;
+        } @else if $dir-key == 'x' {
+          margin-left: $size-value;
+          margin-right: $size-value;
+        } @else if $dir-key == 'y' {
+          margin-top: $size-value;
+          margin-bottom: $size-value;
+        } @else {
+          margin#{$dir-value}: $size-value;
+        }
+      }
+      
+      .p#{$dir-key}-md-#{$size-key} {
+        @if $dir-key == '' {
+          padding: $size-value;
+        } @else if $dir-key == 'x' {
+          padding-left: $size-value;
+          padding-right: $size-value;
+        } @else if $dir-key == 'y' {
+          padding-top: $size-value;
+          padding-bottom: $size-value;
+        } @else {
+          padding#{$dir-value}: $size-value;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  @each $dir-key, $dir-value in $directions {
+    @each $size-key, $size-value in $sizes {
+      .m#{$dir-key}-lg-#{$size-key} {
+        @if $dir-key == '' {
+          margin: $size-value;
+        } @else if $dir-key == 'x' {
+          margin-left: $size-value;
+          margin-right: $size-value;
+        } @else if $dir-key == 'y' {
+          margin-top: $size-value;
+          margin-bottom: $size-value;
+        } @else {
+          margin#{$dir-value}: $size-value;
+        }
+      }
+      
+      .p#{$dir-key}-lg-#{$size-key} {
+        @if $dir-key == '' {
+          padding: $size-value;
+        } @else if $dir-key == 'x' {
+          padding-left: $size-value;
+          padding-right: $size-value;
+        } @else if $dir-key == 'y' {
+          padding-top: $size-value;
+          padding-bottom: $size-value;
+        } @else {
+          padding#{$dir-value}: $size-value;
+        }
+      }
+    }
+  }
+}

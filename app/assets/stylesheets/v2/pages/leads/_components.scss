@@ -1,0 +1,337 @@
+// Lead-specific Component Styles
+// Based on BlueSky Design System V2
+
+@import '../../variables';
+
+// Lead Card Component
+// Uses Card Design 3 with teal accent
+// Apply classes: .card .card--status .card--status-teal .lead-card
+.lead-card {
+  // Lead-specific customizations only
+  // (base card styles come from .card .card--status classes)
+  min-height: 120px;
+  
+  // Lead name styling
+  .lead-card__name {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: $brand-deep-blue;
+    margin-bottom: $spacing-xs;
+    
+    a {
+      color: inherit;
+      
+      &:hover {
+        color: darken($brand-deep-blue, 10%);
+      }
+    }
+  }
+  
+  // Property name
+  .lead-card__property {
+    font-size: $font-size-sm;
+    color: $brand-medium-blue;
+    margin-bottom: $spacing-sm;
+  }
+  
+  // Lead meta info
+  .lead-card__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    
+    .glyphicon {
+      font-size: 12px;
+      margin-right: $spacing-xs;
+    }
+  }
+  
+  // Lead state labels
+  // Apply base class: .badge
+  .lead-card__state {
+    // Badge styles will come from .badge class
+    
+    // State modifiers - apply with .badge-{state} classes
+    // &--open { use .badge-success }
+    // &--contacted { use .badge-info }
+    // &--scheduled { use .badge-primary }
+    // &--qualified { use .badge-success }
+    // &--waitlist { use .badge-warning }
+    // &--disqualified { use .badge-danger }
+  }
+  
+  // Priority indicators
+  .lead-card__priority {
+    display: inline-block;
+    margin-left: $spacing-sm;
+    font-size: 16px;
+  }
+  
+  // VIP indicator
+  .lead-card__vip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #FF1744 0%, #D50000 100%);
+    color: $white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: $spacing-sm;
+    animation: pulse-vip 2s ease-in-out infinite;
+    
+    .glyphicon {
+      font-size: 12px;
+    }
+  }
+  
+  // Contact info blockquote
+  .lead-card__contact {
+    background: rgba($brand-light-blue, 0.08);
+    border: 1px solid rgba($brand-light-blue, 0.2);
+    border-radius: 0;
+    border-top-right-radius: $border-radius-sm;
+    border-bottom-right-radius: $border-radius-sm;
+    padding: 10px 14px;
+    margin: $spacing-sm 0 $spacing-sm $spacing-lg;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    position: relative;
+    overflow: hidden;
+    
+    // Colored left border using pseudo-element
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: $brand-medium-blue;
+    }
+    
+    .glyphicon {
+      color: $brand-medium-blue;
+      margin-right: $spacing-sm;
+    }
+  }
+  
+  // Lead notes
+  .lead-card__notes {
+    background: rgba($warning, 0.06);
+    border: 1px solid rgba($warning, 0.2);
+    border-radius: 0;
+    border-top-right-radius: $border-radius-sm;
+    border-bottom-right-radius: $border-radius-sm;
+    padding: 10px 14px 10px 30px;
+    margin: $spacing-sm 0;
+    font-size: $font-size-sm;
+    color: darken($warning, 25%);
+    position: relative;
+    overflow: hidden;
+    
+    // Warning icon
+    .glyphicon-info-sign {
+      position: absolute;
+      left: 10px;
+      top: 11px;
+      color: $warning;
+      font-size: 12px;
+    }
+    
+    // Colored left border
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: $warning;
+    }
+  }
+  
+  // State-based accent colors
+  // Apply additional classes based on state:
+  // &[data-state="urgent"] - add .card--status-danger class
+  // &[data-state="qualified"] - add .card--status-success class
+}
+
+// Lead Detail Hero Section
+// NOTE: This is an older style - the actual lead hero styles are in _show.scss
+// Keeping minimal styles here to avoid conflicts
+.lead-hero--legacy {
+  background: linear-gradient(135deg, lighten($brand-deep-blue, 55%) 0%, lighten($brand-light-blue, 45%) 100%);
+  padding: $spacing-xl;
+  margin: -$spacing-xl -$spacing-xl $spacing-xl;
+  border-radius: 0 0 $border-radius-md $border-radius-md;
+  
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $brand-deep-blue;
+    margin: 0;
+  }
+  
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+  }
+  
+  &__info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $spacing-lg;
+  }
+  
+  &__info-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    .glyphicon {
+      color: $brand-medium-blue;
+      font-size: 16px;
+    }
+    
+    span {
+      color: $gray-700;
+      font-size: $font-size-base;
+    }
+  }
+}
+
+// Lead Timeline Component
+.lead-timeline {
+  position: relative;
+  padding-left: $spacing-xl;
+  
+  // Vertical line
+  &::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: $gray-200;
+  }
+  
+  &__item {
+    position: relative;
+    margin-bottom: $spacing-lg;
+    
+    // Timeline dot
+    &::before {
+      content: '';
+      position: absolute;
+      left: -25px;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      background: $white;
+      border: 2px solid $brand-teal;
+      border-radius: 50%;
+    }
+    
+    // Different dot colors for different events
+    &--message::before { border-color: $primary; }
+    &--task::before { border-color: $success; }
+    &--note::before { border-color: $warning; }
+    &--system::before { border-color: $gray-400; }
+  }
+  
+  &__content {
+    // Apply classes: .card .card--info
+    padding: $spacing-md;
+  }
+  
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-sm;
+  }
+  
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    margin: 0;
+  }
+  
+  &__time {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+}
+
+// Animation for VIP indicator
+@keyframes pulse-vip {
+  0% {
+    box-shadow: 0 2px 4px rgba(213, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(213, 0, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 2px 4px rgba(213, 0, 0, 0.3);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 767px) {
+  .lead-card {
+    min-height: 100px;
+    
+    &__meta {
+      flex-wrap: wrap;
+      gap: $spacing-sm;
+    }
+  }
+  
+  .lead-hero {
+    padding: $spacing-lg;
+    margin: -$spacing-lg -$spacing-lg $spacing-lg;
+    
+    &__title {
+      font-size: $font-size-2xl;
+    }
+    
+    &__info {
+      grid-template-columns: 1fr;
+      gap: $spacing-md;
+    }
+  }
+}
+
+// Usage Example:
+// <div class="lead-card" data-state="open">
+//   <div class="lead-card__header">
+//     <div class="lead-card__vip">
+//       <i class="glyphicon glyphicon-heart"></i>
+//     </div>
+//     <div>
+//       <h3 class="lead-card__name">
+//         <a href="/leads/123">John Doe</a>
+//       </h3>
+//       <div class="lead-card__property">
+//         <a href="/properties/456">Sunset Apartments</a>
+//       </div>
+//     </div>
+//   </div>
+//   <div class="lead-card__meta">
+//     <span class="lead-card__state lead-card__state--open">Open</span>
+//     <span><i class="glyphicon glyphicon-time"></i> 2 hours ago</span>
+//     <span><i class="glyphicon glyphicon-comment"></i> Last contact: Yesterday</span>
+//   </div>
+// </div>

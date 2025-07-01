@@ -1,0 +1,197 @@
+// Color Utility Classes
+// Based on BlueSky Design System V2
+
+@import '../variables';
+
+// Text color utilities
+.text-primary { color: $primary; }
+.text-secondary { color: $brand-teal; }
+.text-success { color: $success; }
+.text-warning { color: $warning; }
+.text-danger { color: $danger; }
+.text-info { color: $info; }
+
+// Brand colors
+.text-deep-blue { color: $brand-deep-blue; }
+.text-medium-blue { color: $brand-medium-blue; }
+.text-light-blue { color: $brand-light-blue; }
+.text-teal { color: $brand-teal; }
+
+// Neutral colors
+.text-white { color: $white; }
+.text-black { color: $black; }
+.text-gray-50 { color: $gray-50; }
+.text-gray-100 { color: $gray-100; }
+.text-gray-200 { color: $gray-200; }
+.text-gray-300 { color: $gray-300; }
+.text-gray-400 { color: $gray-400; }
+.text-gray-500 { color: $gray-500; }
+.text-gray-600 { color: $gray-600; }
+.text-gray-700 { color: $gray-700; }
+.text-gray-800 { color: $gray-800; }
+.text-gray-900 { color: $gray-900; }
+
+// Special text colors
+.text-muted { color: $gray-600; }
+.text-body { color: $gray-700; }
+.text-heading { color: $gray-900; }
+
+// Background color utilities
+.bg-primary { background-color: $primary; }
+.bg-secondary { background-color: $brand-teal; }
+.bg-success { background-color: $success; }
+.bg-warning { background-color: $warning; }
+.bg-danger { background-color: $danger; }
+.bg-info { background-color: $info; }
+
+// Brand backgrounds
+.bg-deep-blue { background-color: $brand-deep-blue; }
+.bg-medium-blue { background-color: $brand-medium-blue; }
+.bg-light-blue { background-color: $brand-light-blue; }
+.bg-teal { background-color: $brand-teal; }
+
+// Neutral backgrounds
+.bg-white { background-color: $white; }
+.bg-black { background-color: $black; }
+.bg-gray-50 { background-color: $gray-50; }
+.bg-gray-100 { background-color: $gray-100; }
+.bg-gray-200 { background-color: $gray-200; }
+.bg-gray-300 { background-color: $gray-300; }
+.bg-gray-400 { background-color: $gray-400; }
+.bg-gray-500 { background-color: $gray-500; }
+.bg-gray-600 { background-color: $gray-600; }
+.bg-gray-700 { background-color: $gray-700; }
+.bg-gray-800 { background-color: $gray-800; }
+.bg-gray-900 { background-color: $gray-900; }
+
+// Light backgrounds (with transparency)
+.bg-primary-light { background-color: rgba($primary, 0.1); }
+.bg-secondary-light { background-color: rgba($brand-teal, 0.1); }
+.bg-success-light { background-color: rgba($success, 0.1); }
+.bg-warning-light { background-color: rgba($warning, 0.1); }
+.bg-danger-light { background-color: rgba($danger, 0.1); }
+.bg-info-light { background-color: rgba($info, 0.1); }
+
+// Gradient backgrounds
+.bg-gradient-primary {
+  background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, $brand-teal 0%, darken($brand-teal, 10%) 100%);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, $success 0%, darken($success, 10%) 100%);
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(135deg, $warning 0%, darken($warning, 10%) 100%);
+}
+
+.bg-gradient-danger {
+  background: linear-gradient(135deg, $danger 0%, darken($danger, 10%) 100%);
+}
+
+.bg-gradient-gray {
+  background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
+}
+
+// Border color utilities
+.border-primary { border-color: $primary; }
+.border-secondary { border-color: $brand-teal; }
+.border-success { border-color: $success; }
+.border-warning { border-color: $warning; }
+.border-danger { border-color: $danger; }
+.border-info { border-color: $info; }
+
+// Neutral borders
+.border-white { border-color: $white; }
+.border-gray-50 { border-color: $gray-50; }
+.border-gray-100 { border-color: $gray-100; }
+.border-gray-200 { border-color: $gray-200; }
+.border-gray-300 { border-color: $gray-300; }
+.border-gray-400 { border-color: $gray-400; }
+.border-gray-500 { border-color: $gray-500; }
+.border-gray-600 { border-color: $gray-600; }
+.border-gray-700 { border-color: $gray-700; }
+.border-gray-800 { border-color: $gray-800; }
+.border-gray-900 { border-color: $gray-900; }
+
+// Border utilities
+.border { border: 1px solid $gray-200; }
+.border-0 { border: 0; }
+.border-top { border-top: 1px solid $gray-200; }
+.border-right { border-right: 1px solid $gray-200; }
+.border-bottom { border-bottom: 1px solid $gray-200; }
+.border-left { border-left: 1px solid $gray-200; }
+
+// Border width
+.border-2 { border-width: 2px; }
+.border-3 { border-width: 3px; }
+.border-4 { border-width: 4px; }
+
+// Hover color utilities
+.hover\:text-primary:hover { color: $primary; }
+.hover\:text-secondary:hover { color: $brand-teal; }
+.hover\:text-success:hover { color: $success; }
+.hover\:text-warning:hover { color: $warning; }
+.hover\:text-danger:hover { color: $danger; }
+
+.hover\:bg-primary:hover { background-color: $primary; }
+.hover\:bg-secondary:hover { background-color: $brand-teal; }
+.hover\:bg-gray-50:hover { background-color: $gray-50; }
+.hover\:bg-gray-100:hover { background-color: $gray-100; }
+
+// Opacity utilities
+.opacity-0 { opacity: 0; }
+.opacity-25 { opacity: 0.25; }
+.opacity-50 { opacity: 0.5; }
+.opacity-75 { opacity: 0.75; }
+.opacity-100 { opacity: 1; }
+
+// Link color utilities
+a {
+  &.link-primary {
+    color: $primary;
+    &:hover { color: darken($primary, 10%); }
+  }
+  
+  &.link-secondary {
+    color: $brand-teal;
+    &:hover { color: darken($brand-teal, 10%); }
+  }
+  
+  &.link-success {
+    color: $success;
+    &:hover { color: darken($success, 10%); }
+  }
+  
+  &.link-warning {
+    color: $warning;
+    &:hover { color: darken($warning, 10%); }
+  }
+  
+  &.link-danger {
+    color: $danger;
+    &:hover { color: darken($danger, 10%); }
+  }
+  
+  &.link-muted {
+    color: $gray-600;
+    &:hover { color: $gray-800; }
+  }
+}
+
+// BEM-style background utilities (for migration)
+.bg {
+  &--primary { background-color: $primary; }
+  &--secondary { background-color: $brand-teal; }
+  &--success { background-color: $success; }
+  &--warning { background-color: $warning; }
+  &--danger { background-color: $danger; }
+  &--info { background-color: $info; }
+  &--white { background-color: $white; }
+  &--light { background-color: $gray-50; }
+  &--dark { background-color: $gray-800; }
+}

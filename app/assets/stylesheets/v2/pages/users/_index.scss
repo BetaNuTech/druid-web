@@ -1,0 +1,38 @@
+// Users Page Styles - BEM Structure
+// Minimal styles for users listing
+
+@import '../../variables';
+
+// User table styling
+.users-table {
+  &__row {
+    &--deactivated {
+      font-style: italic;
+      color: $gray-500;
+    }
+  }
+}
+
+// Setting toggle states
+.setting-toggle {
+  &--on {
+    color: $success;
+  }
+  
+  &--off {
+    color: $gray-400;
+  }
+}
+
+// Legacy support
+.deactivated {
+  @extend .users-table__row--deactivated;
+}
+
+.setting.on {
+  @extend .setting-toggle--on;
+}
+
+.setting.off {
+  @extend .setting-toggle--off;
+}

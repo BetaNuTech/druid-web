@@ -3,10 +3,10 @@
     <%= glyph(:envelope) %> <%= lead.email %><br/>
   <% end %>
   <% if lead.phone1.present? %>
-    <%= glyph(:earphone) %> <%= lead.phone1 %>
+    <%= glyph(:earphone) %> <%= number_to_phone(lead.phone1, area_code: true) %>
   <% end %>
   <% if lead.phone2.present? %>
     <br/>
-    <%= glyph(:earphone) %> <%= lead.phone2 %>
+    <%= glyph(:earphone) %> <%= number_to_phone(lead.phone2, area_code: true) %>
   <% end %>
 </blockquote>

@@ -5,6 +5,9 @@
  * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
  * vendor/assets/stylesheets directory can be referenced here using a relative path.
  *
- *= require_tree ./v2/
+ * Note: We use main.scss as the entry point instead of require_tree to control import order
+ * and exclude the archive directory
+ *
+ *= require ./v2/main
  *= require_self
  */

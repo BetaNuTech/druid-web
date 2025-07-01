@@ -1,0 +1,100 @@
+// Teams Page Styles - BEM Structure
+// Styles for team management pages
+
+@import '../../variables';
+
+// Team header section
+.team-header {
+  background-color: $gray-50;
+  padding: $spacing-lg 0;
+  margin-bottom: $spacing-xl;
+  
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  &__title {
+    h1 {
+      margin: 0;
+      font-size: $font-size-h2;
+      color: $gray-900;
+    }
+    
+    p {
+      margin: $spacing-xs 0 0;
+      color: $gray-600;
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+  }
+}
+
+// Team membership control
+.team-membership {
+  &__header {
+    padding: $spacing-md;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-200;
+    
+    h3 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-medium;
+    }
+  }
+  
+  &__body {
+    padding: $spacing-lg;
+  }
+}
+
+// Team list
+.teams-list {
+  .panel {
+    margin-bottom: $spacing-md;
+  }
+}
+
+// Legacy support for existing markup
+#team-membership-control {
+  .panel-heading {
+    @extend .team-membership__header;
+  }
+  
+  .panel-body {
+    @extend .team-membership__body;
+  }
+}
+
+.team-header-section {
+  @extend .team-header;
+  
+  .container {
+    @extend .team-header__content;
+  }
+}
+
+// Typography adjustments
+.teams-page {
+  h3 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-md;
+  }
+  
+  h4 {
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+  }
+}
+
+// Button positioning tweaks
+.teams-page .btn-group {
+  margin-bottom: $spacing-md;
+}

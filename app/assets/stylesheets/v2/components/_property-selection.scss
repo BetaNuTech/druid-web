@@ -1,0 +1,225 @@
+// Property Selection Component - BEM Structure
+// Replaces legacy property_selection.scss
+
+@import '../variables';
+@import '../functions';
+
+// =============================================================================
+// Property Selection Block
+// =============================================================================
+
+.property-selector {
+  margin-bottom: $spacing-lg;
+  
+  // Form wrapper
+  &__form {
+    margin: 0;
+  }
+  
+  // Container for the selection controls
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    background: $white;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-sm;
+    
+    @media (max-width: $screen-xs-max) {
+      flex-wrap: wrap;
+      gap: $spacing-sm;
+    }
+  }
+  
+  // Label element
+  &__label {
+    margin: 0;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+    }
+  }
+  
+  // Icon in label
+  &__icon {
+    color: $primary;
+    font-size: 16px;
+  }
+  
+  // Select dropdown
+  &__select {
+    flex: 1;
+    max-width: 300px;
+    height: 36px;
+    padding: 6px 32px 6px 12px;
+    color: $gray-700;
+    background-color: $white;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius-sm;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-regular;
+    font-size: $font-size-base;
+    line-height: 1.42857143;
+    cursor: pointer;
+    transition: $transition-base;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    // Custom dropdown arrow
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    box-shadow: $shadow-sm;
+    
+    &:hover {
+      border-color: $primary;
+      box-shadow: $shadow-md;
+    }
+    
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.25);
+      outline: none;
+    }
+    
+    // Option styles
+    option {
+      color: $gray-700;
+      background-color: $white;
+      font-family: $font-family-primary;
+      
+      &[selected],
+      &:checked {
+        color: $gray-700;
+        background-color: $gray-100;
+      }
+    }
+    
+    @media (max-width: $screen-xs-max) {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+  
+  // Submit button
+  &__button {
+    margin: 0;
+    flex-shrink: 0;
+    
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+    }
+    
+    // Hidden state
+    &--hidden {
+      display: none;
+    }
+  }
+  
+  // Inline modifier (removes bottom margin)
+  &--inline {
+    margin-bottom: 0;
+  }
+  
+  // Compact modifier
+  &--compact {
+    .property-selector__container {
+      padding: $spacing-xs $spacing-sm;
+    }
+    
+    .property-selector__select {
+      height: 32px;
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// =============================================================================
+// Legacy Support (temporary during migration)
+// =============================================================================
+
+// Support old IDs and classes
+#propertyselection--form {
+  &.property-selection-inline {
+    @extend .property-selector--inline;
+  }
+}
+
+#propertyselection--container {
+  &.property-selection-container {
+    @extend .property-selector__container;
+  }
+}
+
+.property-selection-label {
+  @extend .property-selector__label;
+  
+  .glyphicon {
+    @extend .property-selector__icon;
+  }
+}
+
+.property-selection-select {
+  @extend .property-selector__select;
+}
+
+#propertyselection--selector {
+  @extend .property-selector__select;
+  
+  // Override any legacy styles
+  &.form-control {
+    @extend .property-selector__select;
+  }
+}
+
+.property-selection-button {
+  @extend .property-selector__button;
+}
+
+#propertyselection--submit-button {
+  @extend .property-selector__button;
+  
+  &.hidden {
+    @extend .property-selector__button--hidden;
+  }
+}
+
+// Legacy positioning fixes
+#propertyselection--container:not(.property-selection-container) {
+  margin-bottom: $spacing-lg;
+  position: relative;
+  z-index: 990;
+  
+  @media (max-width: $screen-xs-max) {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-top: 0;
+    margin-bottom: $spacing-md;
+  }
+  
+  .row {
+    margin: 0;
+  }
+  
+  .col-md-6 {
+    width: auto !important;
+    float: none !important;
+  }
+  
+  .form-group {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+}

@@ -1,0 +1,374 @@
+// Roommates Section Component
+// For displaying roommate information on lead detail page
+
+@import '../../variables';
+
+// Roommates Section Block
+.roommates-section {
+  margin-bottom: $spacing-xl;
+  
+  // Section header with action
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    
+    h2 {
+      margin: 0;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        font-size: 20px;
+        color: $primary;
+      }
+    }
+  }
+  
+  // Container
+  &__container {
+    // Container styles if needed
+  }
+  
+  // List of roommates
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+  
+  // Individual roommate card
+  &__card {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  
+  // Main info row
+  &__main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $spacing-md;
+    gap: $spacing-md;
+  }
+  
+  // Identity section
+  &__identity {
+    display: flex;
+    gap: $spacing-md;
+    flex: 1;
+  }
+  
+  // Avatar
+  &__avatar {
+    width: 48px;
+    height: 48px;
+    background: rgba($primary, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary;
+    flex-shrink: 0;
+    
+    .glyphicon {
+      font-size: 20px;
+    }
+  }
+  
+  // Info
+  &__info {
+    flex: 1;
+  }
+  
+  // Name
+  &__name {
+    margin: 0 0 $spacing-xs 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    
+    a {
+      color: $gray-900;
+      text-decoration: none;
+      
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+  
+  // Status badges
+  &__status {
+    display: flex;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+  }
+  
+  // Badge
+  &__badge {
+    display: inline-block;
+    padding: 2px $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-regular;
+    
+    &.occupancy-primary {
+      background: rgba($primary, 0.1);
+      color: $primary;
+    }
+    
+    &.occupancy-occupant {
+      background: rgba($success, 0.1);
+      color: $success;
+    }
+    
+    &.relationship {
+      background: rgba($info, 0.1);
+      color: $info;
+    }
+  }
+  
+  // Actions
+  &__actions {
+    display: flex;
+    gap: $spacing-xs;
+    flex-shrink: 0;
+  }
+  
+  // Details section
+  &__details {
+    border-top: 1px solid $gray-100;
+    padding-top: $spacing-md;
+  }
+  
+  // Contact info
+  &__contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-bottom: $spacing-md;
+  }
+  
+  // Contact item
+  &__contact-item {
+    display: flex;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    background: $gray-50;
+    border-radius: $border-radius-sm;
+    flex: 1;
+    min-width: 250px;
+    
+    &--allowed {
+      background: rgba($success, 0.05);
+    }
+  }
+  
+  // Contact icon
+  &__contact-icon {
+    color: $gray-500;
+    flex-shrink: 0;
+  }
+  
+  // Contact info wrapper
+  &__contact-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+  
+  // Contact value
+  &__contact-value {
+    font-size: $font-size-base;
+    color: $gray-900;
+  }
+  
+  // Contact badge
+  &__contact-badge {
+    padding: 2px $spacing-sm;
+    border-radius: $border-radius-xs;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    
+    &--allowed {
+      background: $success;
+      color: $white;
+    }
+    
+    &--not-allowed {
+      background: $gray-400;
+      color: $white;
+    }
+  }
+  
+  // No contact
+  &__no-contact {
+    color: $gray-500;
+    font-style: italic;
+  }
+  
+  // Notes
+  &__notes {
+    background: $gray-50;
+    border-radius: $border-radius-sm;
+    padding: $spacing-md;
+  }
+  
+  // Notes label
+  &__notes-label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    margin-bottom: $spacing-xs;
+    font-size: $font-size-sm;
+  }
+  
+  // Notes content
+  &__notes-content {
+    color: $gray-700;
+    line-height: 1.5;
+  }
+  
+  // Empty state
+  &__empty {
+    text-align: center;
+    padding: $spacing-xl * 2;
+    color: $gray-500;
+  }
+  
+  // Empty icon
+  &__empty-icon {
+    font-size: 48px;
+    color: $gray-300;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+    display: block;
+  }
+}
+
+// Backward compatibility
+.section-header {
+  @extend .roommates-section__header;
+}
+
+.roommates-container {
+  @extend .roommates-section__container;
+}
+
+.roommates-list {
+  @extend .roommates-section__list;
+}
+
+.roommate-card {
+  @extend .roommates-section__card;
+}
+
+.roommate-main {
+  @extend .roommates-section__main;
+}
+
+.roommate-identity {
+  @extend .roommates-section__identity;
+}
+
+.roommate-avatar {
+  @extend .roommates-section__avatar;
+}
+
+.roommate-info {
+  @extend .roommates-section__info;
+}
+
+.roommate-name {
+  @extend .roommates-section__name;
+}
+
+.roommate-status {
+  @extend .roommates-section__status;
+}
+
+.status-badge {
+  @extend .roommates-section__badge;
+}
+
+.roommate-actions {
+  @extend .roommates-section__actions;
+}
+
+.roommate-details {
+  @extend .roommates-section__details;
+}
+
+.roommate-contact {
+  @extend .roommates-section__contact;
+}
+
+.contact-item {
+  @extend .roommates-section__contact-item;
+}
+
+.contact-allowed {
+  @extend .roommates-section__contact-item--allowed;
+}
+
+.contact-icon {
+  @extend .roommates-section__contact-icon;
+}
+
+.contact-info {
+  @extend .roommates-section__contact-info;
+}
+
+.contact-value {
+  @extend .roommates-section__contact-value;
+}
+
+.contact-badge {
+  @extend .roommates-section__contact-badge;
+}
+
+.allowed {
+  @extend .roommates-section__contact-badge--allowed;
+}
+
+.not-allowed {
+  @extend .roommates-section__contact-badge--not-allowed;
+}
+
+.no-contact {
+  @extend .roommates-section__no-contact;
+}
+
+.roommate-notes {
+  @extend .roommates-section__notes;
+}
+
+.notes-label {
+  @extend .roommates-section__notes-label;
+}
+
+.notes-content {
+  @extend .roommates-section__notes-content;
+}
+
+.empty-roommates {
+  @extend .roommates-section__empty;
+}
+
+.empty-icon {
+  @extend .roommates-section__empty-icon;
+}

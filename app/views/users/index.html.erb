@@ -7,14 +7,14 @@
           <small>at <%= @current_property.name %></small>
         <% end %>
         <small>
-          <%= link_to('Show All', users_path(all: true), class: "btn btn-sm btn-primary")  %>
+          <%= link_to('Show All', users_path(all: true), class: "btn btn--small btn--primary")  %>
         </small>
       <% end %>
     </h1>
   </div>
   <% if policy(User).new? %>
     <div class="col-md-4 text-right">
-      <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" if policy(User).create? %>
+      <%= link_to 'Create New User', new_user_path, class: "btn btn--small btn--primary" if policy(User).create? %>
     </div>
   <% end %>
 </div>
@@ -85,7 +85,7 @@
 <% if policy(User).new? %>
   <div class="row">
     <div class="col-md-12 text-right">
-      <%= link_to 'Create New User', new_user_path, class: "btn btn-sm btn-primary" if policy(User).create? %>
+      <%= link_to 'Create New User', new_user_path, class: "btn btn--small btn--primary" if policy(User).create? %>
     </div>
   </div>
 <% end %>

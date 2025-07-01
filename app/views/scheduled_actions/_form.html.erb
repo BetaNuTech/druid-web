@@ -29,83 +29,85 @@
   </div>
 
   <div class="row">
-    <div class="col-md-4 form-group">
-      <%= form.label :user_id, 'Task Owner' %>
-      <%= form.select :user_id, scheduled_action_user_id_select_options(scheduled_action, current_user), {include_blank: false}, {id: :scheduled_action_user_id, class: 'form-control'} %>
+    <div class="col-md-4 form__group">
+      <%= form.label :user_id, 'Task Owner', class: 'form__label' %>
+      <%= form.select :user_id, scheduled_action_user_id_select_options(scheduled_action, current_user), {include_blank: false}, {id: :scheduled_action_user_id, class: 'form__control'} %>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-4 form-group">
-      <%= form.label :lead_action_id, "Action" %>
-      <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id, state: ( scheduled_action.target&.state rescue nil )), {include_blank: true},{id: :scheduled_action_lead_action_id, class: "form-control"} %>
+    <div class="col-md-4 form__group">
+      <%= form.label :lead_action_id, "Action", class: 'form__label' %>
+      <%= form.select :lead_action_id, select_action(scheduled_action.lead_action_id, state: ( scheduled_action.target&.state rescue nil )), {include_blank: true},{id: :scheduled_action_lead_action_id, class: "form__control"} %>
       <div id="scheduled_action_article">
         <%= scheduled_action_article_select(scheduled_action: scheduled_action, action: scheduled_action.lead_action) if scheduled_action.lead_action.present? %>
       </div>
     </div>
     <% if @current_user.setting_enabled?(:select_task_reason) %>
-      <div class="col-md-4 form-group">
-        <%= form.label :reason_id, "Reason" %>
-        <%= form.select :reason_id, select_reason(scheduled_action.reason_id),{include_blank: true},{id: :scheduled_action_reason, class: "form-control"} %>
+      <div class="col-md-4 form__group">
+        <%= form.label :reason_id, "Reason", class: 'form__label' %>
+        <%= form.select :reason_id, select_reason(scheduled_action.reason_id),{include_blank: true},{id: :scheduled_action_reason, class: "form__control"} %>
       </div>
     <% end %>
   </div>
   <div class="row">
     <div class="col-md-6">
       <div class="scheduled_action_schedule_selection">
-        <%= form.label :schedule %>
+        <%= form.label :schedule, class: 'form__label' %>
         <span id="schedule_conflict_message">Conflict</span>
         <%= form.schedule_select :schedule, style: :bootstrap, until: true, input_types: {date: :date_picker, time: :time_picker, datetime: :datetime_picker} %>
       </div>
     </div>
   </div>
   <div class="row">
-    <div class="form-group col-md-2">
+    <div class="form__group col-md-2">
       <div>
-        <%= form.label :schedule_duration, "Duration" %>
-        <%= select_tag "scheduled_action_schedule_duration", scheduled_action_schedule_durations(@scheduled_action.schedule), {name: "scheduled_action[schedule_attributes][duration]", class: "form-control"} %>
+        <%= form.label :schedule_duration, "Duration", class: 'form__label' %>
+        <%= select_tag "scheduled_action_schedule_duration", scheduled_action_schedule_durations(@scheduled_action.schedule), {name: "scheduled_action[schedule_attributes][duration]", class: "form__control"} %>
       </div>
     </div>
   </div>
   <div class="row">
-    <div class="form-group col-md-8">
-      <%= form.label :description %>
-      <%= form.text_area :description, id: :scheduled_action_description, class: 'form-control', rows: 5%>
+    <div class="form__group col-md-8">
+      <%= form.label :description, class: 'form__label' %>
+      <%= form.text_area :description, id: :scheduled_action_description, class: 'form__control', rows: 5%>
     </div>
   </div>
-  <fieldset id="scheduled_action_form_notification_controls" style="display: <%= @scheduled_action.wants_notification? ? 'block' : 'none' %>">
-    <legend>Notification</legend>
+  <fieldset class="fieldset" id="scheduled_action_form_notification_controls" style="display: <%= @scheduled_action.wants_notification? ? 'block' : 'none' %>">
+    <legend class="fieldset__legend">Notification</legend>
     <div class="row">
-      <div class="form-group col-md-4">
+      <div class="form__group col-md-4">
         <div>
-          <%= form.check_box :notify, class: 'form-check-input', id: "scheduled_action_notify" %>
-          <%= form.label :notify, "Send Email/SMS Reminder to Lead" %>
+          <div class="form__check">
+            <%= form.check_box :notify, class: 'form__check-input', id: "scheduled_action_notify" %>
+            <%= form.label :notify, "Send Email/SMS Reminder to Lead", class: 'form__check-label' %>
+          </div>
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-md-4">
-        <%= form.label 'Use Template' %>
-        <span class="btn btn-xs btn-info" id="scheduled_action_load_notification_template">Load</span>
+      <div class="form__group col-md-4">
+        <%= form.label 'Use Template', class: 'form__label' %>
+        <span class="btn btn--extra-small btn--info" id="scheduled_action_load_notification_template">Load</span>
         <%= select_tag('scheduled_action_message_template_id',
                        message_template_options(MessageType.email, nil),
-                       { include_blank: true, id: 'message_template_select', class: 'form-control' }) %>
+                       { include_blank: true, id: 'message_template_select', class: 'form__control' }) %>
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-md-8">
-        <%= form.label :notification_message, "Message" %>
-        <%= form.text_area :notification_message, id: :scheduled_action_notification_message, class: 'form-control', rows: 20 %>
+      <div class="form__group col-md-8">
+        <%= form.label :notification_message, "Message", class: 'form__label' %>
+        <%= form.text_area :notification_message, id: :scheduled_action_notification_message, class: 'form__control', rows: 20 %>
       </div>
     </div>
   </fieldset>
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Save</button>
-      <%= link_to 'Cancel', :back, class: "btn btn-xs btn-info"   %>
+  <div class="form__group">
+    <button type="submit" class="btn btn--primary" onclick="console.log('Button clicked'); return true;">Save</button>
+      <%= link_to 'Cancel', :back, class: "btn btn--info btn--xs"   %>
   </div>
   <% if policy(@scheduled_action).destroy? && !@scheduled_action.new_record? %>
     <p class="text-right">
-      <%= link_to('Delete', scheduled_action_path(@scheduled_action), class: "btn btn-danger btn-small", method: :delete, data: {confirm: 'Are you sure you want to delete this Task?'} )%>
+      <%= link_to('Delete', scheduled_action_path(@scheduled_action), class: "btn btn--danger btn--sm", method: :delete, data: {confirm: 'Are you sure you want to delete this Task?'} )%>
     </p>
   <% end %>
 <% end %>

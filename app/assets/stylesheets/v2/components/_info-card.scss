@@ -1,0 +1,376 @@
+// Info Card Component
+// Used for displaying structured information on detail pages
+// BEM structure for consistent naming throughout
+
+@import '../variables';
+
+// Info Card Block
+.info-card {
+  background: $white;
+  border-radius: $border-radius-md;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: $spacing-lg;
+  overflow: hidden;
+  
+  // Card type modifiers
+  &--contact,
+  &--property,
+  &--preferences,
+  &--notes,
+  &--source-doc {
+    // All info cards share the same base styles
+    // These modifiers are for semantic clarity and potential future customization
+  }
+  
+  // Card Header
+  &__header {
+    padding: $spacing-lg;
+    background: linear-gradient(to right, $gray-50 0%, $white 100%);
+    border-bottom: 1px solid $gray-100;
+    
+    h3 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        font-size: 18px;
+        color: $primary;
+      }
+    }
+  }
+  
+  // Card Body
+  &__body {
+    padding: $spacing-lg;
+  }
+  
+  // Info Item (generic container for any info row)
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-md;
+    padding: $spacing-sm 0;
+    border-bottom: 1px solid $gray-50;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    &:first-child {
+      padding-top: 0;
+    }
+    
+    // Modifiers for specific item types
+    &--missing-email {
+      .info-card__value {
+        color: $danger;
+        font-style: italic;
+      }
+    }
+    
+    &--follow-up {
+      background: rgba($warning, 0.05);
+      padding: $spacing-md;
+      border-radius: $border-radius-sm;
+      margin-bottom: $spacing-md;
+      border: 1px solid rgba($warning, 0.2);
+      border-bottom: 1px solid rgba($warning, 0.2);
+    }
+    
+    &--lead-notes,
+    &--import-notes {
+      flex-direction: column;
+      gap: $spacing-sm;
+      padding: $spacing-md 0;
+    }
+  }
+  
+  // Icon element
+  &__icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($primary, 0.08);
+    color: $primary;
+    border-radius: $border-radius-sm;
+    flex-shrink: 0;
+    font-size: 16px;
+    
+    .glyphicon {
+      font-size: inherit;
+    }
+  }
+  
+  // Content wrapper
+  &__content {
+    flex: 1;
+    min-width: 0; // Prevent overflow
+  }
+  
+  // Label element
+  &__label {
+    display: block;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    font-weight: $font-weight-regular;
+    margin-bottom: 2px;
+  }
+  
+  // Value element
+  &__value {
+    display: block;
+    font-size: $font-size-base;
+    color: $gray-900;
+    font-weight: $font-weight-regular;
+    word-break: break-word;
+    
+    // Links within values
+    a {
+      color: $primary;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    
+    // Missing value modifier
+    &--missing {
+      color: $gray-500;
+      font-style: italic;
+    }
+  }
+  
+  // Text content (for longer form text like notes)
+  &__text {
+    font-size: $font-size-base;
+    color: $gray-700;
+    line-height: 1.6;
+    
+    p {
+      margin: 0 0 $spacing-sm 0;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  // Warning element
+  &__warning {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    color: $warning;
+    font-size: $font-size-sm;
+    margin-left: $spacing-sm;
+    
+    .glyphicon {
+      font-size: 14px;
+    }
+  }
+  
+  // Header within body (for subsections)
+  &__section-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-sm;
+    
+    .info-card__icon {
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+    }
+    
+    .info-card__label {
+      font-size: $font-size-base;
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Empty State Component (used within info cards)
+.empty-state {
+  text-align: center;
+  padding: $spacing-xl;
+  color: $gray-500;
+  
+  &__icon {
+    font-size: 48px;
+    color: $gray-300;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+  }
+  
+  &__text {
+    font-size: $font-size-base;
+    color: $gray-500;
+    margin: 0;
+  }
+}
+
+// Backward compatibility layer
+.contact-card {
+  @extend .info-card;
+  @extend .info-card--contact;
+}
+
+.property-card {
+  @extend .info-card;
+  @extend .info-card--property;
+}
+
+.preferences-card {
+  @extend .info-card;
+  @extend .info-card--preferences;
+}
+
+.notes-card {
+  @extend .info-card;
+  @extend .info-card--notes;
+}
+
+.source-doc-card {
+  @extend .info-card;
+  @extend .info-card--source-doc;
+}
+
+.card-header {
+  @extend .info-card__header;
+}
+
+.card-body {
+  @extend .info-card__body;
+}
+
+// Contact-specific compatibility
+.contact-item {
+  @extend .info-card__item;
+}
+
+.contact-icon {
+  @extend .info-card__icon;
+}
+
+.contact-content {
+  @extend .info-card__content;
+}
+
+.contact-label {
+  @extend .info-card__label;
+}
+
+.contact-value {
+  @extend .info-card__value;
+}
+
+.missing-email {
+  @extend .info-card__item--missing-email;
+}
+
+.missing {
+  @extend .info-card__value--missing;
+}
+
+// Property-specific compatibility
+.property-item {
+  @extend .info-card__item;
+}
+
+.property-icon {
+  @extend .info-card__icon;
+}
+
+.property-content {
+  @extend .info-card__content;
+}
+
+.property-label {
+  @extend .info-card__label;
+}
+
+.property-value {
+  @extend .info-card__value;
+}
+
+.duplicate-warning {
+  @extend .info-card__warning;
+}
+
+// Preferences-specific compatibility
+.preference-item {
+  @extend .info-card__item;
+}
+
+.pref-icon {
+  @extend .info-card__icon;
+}
+
+.pref-content {
+  @extend .info-card__content;
+}
+
+.pref-label {
+  @extend .info-card__label;
+}
+
+.pref-value {
+  @extend .info-card__value;
+}
+
+// Notes-specific compatibility
+.note-item {
+  @extend .info-card__item;
+}
+
+.follow-up-note {
+  @extend .info-card__item--follow-up;
+}
+
+.lead-notes-item {
+  @extend .info-card__item--lead-notes;
+}
+
+.import-notes-item {
+  @extend .info-card__item--import-notes;
+}
+
+.note-header {
+  @extend .info-card__section-header;
+}
+
+.note-icon {
+  @extend .info-card__icon;
+}
+
+.note-content {
+  @extend .info-card__content;
+}
+
+.note-label {
+  @extend .info-card__label;
+}
+
+.note-value {
+  @extend .info-card__value;
+}
+
+.note-text {
+  @extend .info-card__text;
+}
+
+// Empty state compatibility
+.empty-icon {
+  @extend .empty-state__icon;
+}

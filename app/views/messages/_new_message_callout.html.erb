@@ -2,22 +2,22 @@
   <% if policy(messageable).compose_message? %>
     <% available_types = messageable.message_types_available.compact.uniq %>
     <% available_types.each do |message_type| %>
-      <%= form_tag new_message_path, method: :get, class: 'message-button-form' do %>
+      <%= form_tag new_message_path, method: :get, class: 'new-message-callout__form' do %>
         <%= hidden_field_tag('messageable_id', messageable.id) %>
         <%= hidden_field_tag('messageable_type', messageable.class.name) %>
         <%= hidden_field_tag('message_type_id', message_type.id) %>
         <% if message_type.name.downcase.include?('sms') %>
-          <button type="submit" class="btn btn-message btn-sms">
+          <button type="submit" class="btn btn--primary btn--sm">
             <%= glyph(:phone) %>
             <span>Send SMS</span>
           </button>
         <% elsif message_type.name.downcase.include?('email') %>
-          <button type="submit" class="btn btn-message btn-email">
+          <button type="submit" class="btn btn--primary btn--sm">
             <%= glyph(:envelope) %>
             <span>Send Email</span>
           </button>
         <% else %>
-          <button type="submit" class="btn btn-message btn-default">
+          <button type="submit" class="btn btn--primary btn--sm">
             <%= glyph(:comment) %>
             <span>Send <%= message_type.name %></span>
           </button>
@@ -25,7 +25,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <div class="no-message-options">
+    <div class="new-message-callout__no-options">
       <%= glyph(:info_sign) %> To send a message, ensure an email address or phone number is available.
     </div>
   <% end %>

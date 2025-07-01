@@ -1,4 +1,4 @@
-<%= link_to 'Full Form', new_lead_path, class: 'btn btn-sm btn-primary' %>
+<%= link_to 'Full Form', new_lead_path, class: "btn btn--small btn--primary" %>
 <br/>
 <br/>
 
@@ -21,50 +21,48 @@
   <% end %>
 
   <div class="row">
-    <div class="col-md-6 form-group">
-      <%= form.label :first_name %>
-      <%= form.text_field :first_name, id: :lead_first_name, class: "form-control" %>
+    <div class="col-md-6 form__group">
+      <%= form.label :first_name, class: 'form__label' %>
+      <%= form.text_field :first_name, id: :lead_first_name, class: "form__control" %>
     </div>
-    <div class="col-md-6 form-group">
-      <%= form.label :last_name %>
-      <%= form.text_field :last_name, id: :lead_last_name, class: "form-control" %>
+    <div class="col-md-6 form__group">
+      <%= form.label :last_name, class: 'form__label' %>
+      <%= form.text_field :last_name, id: :lead_last_name, class: "form__control" %>
     </div>
   </div>
 
   <% if lead.property.setting_enabled?(:lead_company_information) %>
     <div class="row">
-      <div class="col-md-6 form-group">
-        <%= form.label :company %>
-        <%= form.text_field :company, id: :lead_company, class: "form-control" %>
+      <div class="col-md-6 form__group">
+        <%= form.label :company, class: 'form__label' %>
+        <%= form.text_field :company, id: :lead_company, class: "form__control" %>
       </div>
-      <div class="col-md-6 form-group">
-        <%= form.label :company_title, 'Title' %>
-        <%= form.text_field :company_title, id: :lead_company_title, class: "form-control" %>
+      <div class="col-md-6 form__group">
+        <%= form.label :company_title, 'Title', class: 'form__label' %>
+        <%= form.text_field :company_title, id: :lead_company_title, class: "form__control" %>
       </div>
     </div>
   <% end %>
 
   <div class="row">
-    <div class="col-md-6 form-group">
-      <%= form.label :phone1, 'Phone Number (primary)' %>
-      <%= form.telephone_field :phone1, class: "form-control" %>
+    <div class="col-md-6 form__group">
+      <%= form.label :phone1, 'Phone Number (primary)', class: 'form__label' %>
+      <%= form.telephone_field :phone1, class: "form__control" %>
     </div>
-    <div class="col-md-6 form-group">
-      <%= form.label :email %>
-      <%= form.email_field :email, class: "form-control" %>
+    <div class="col-md-6 form__group">
+      <%= form.label :email, class: 'form__label' %>
+      <%= form.email_field :email, class: "form__control" %>
     </div>
   </div>
 
   <% if (model_units = lead.property.housing_units.for_showings.order(unit: :asc)).any? %>
     <div class="row">
-      <div class="col-md-12 form-group">
-        <%= form.label :show_unit, 'Show Unit' %>
+      <div class="col-md-12 form__group">
+        <%= form.label :show_unit, 'Show Unit', class: 'form__label' %>
           <% model_units.each do |unit| %>
-            <div class="row">
-              <div class="col-md-12">
-                <%= form.radio_button :show_unit, unit.id, {id: "show_unit_#{unit.id}"} %>
-                <%= form.label :show_unit, unit.display_name2, for: "show_unit_#{unit.id}" %>
-              </div>
+            <div class="form__check">
+              <%= form.radio_button :show_unit, unit.id, {id: "show_unit_#{unit.id}", class: 'form__check-input'} %>
+              <%= form.label :show_unit, unit.display_name2, for: "show_unit_#{unit.id}", class: 'form__check-label' %>
             </div>
           <% end %>
       </div>
@@ -72,19 +70,19 @@
   <% end%>
 
   <div class="row">
-    <div class="col-md-12 form-group">
-      <%= form.label :notes, 'Notes' %>
-      <%= form.text_area :notes, id: :lead_notes, class: "form-control", rows: 3 %>
+    <div class="col-md-12 form__group">
+      <%= form.label :notes, 'Notes', class: 'form__label' %>
+      <%= form.text_area :notes, id: :lead_notes, class: "form__control", rows: 3 %>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-6 form-group">
-      <%= form.label :referral, 'Lead Source/Referral Origin' %>
-      <small>Select or enter a referral source</small>
-      <%= form.select :referral, select_lead_referral_source('Drive By'), {include_blank: true}, { id: :lead_referral, class: "form-control" } %>
+    <div class="col-md-6 form__group">
+      <%= form.label :referral, 'Lead Source/Referral Origin', class: 'form__label' %>
+      <small class="form__text">Select or enter a referral source</small>
+      <%= form.select :referral, select_lead_referral_source('Drive By'), {include_blank: true}, { id: :lead_referral, class: "form__control" } %>
     </div>
-    <div class="col-md-6 form-group">
+    <div class="col-md-6 form__group">
       <div id="lead_referrable">
         <%= lead_referrable_select(lead: lead, referral: lead.referral) %>
       </div>
@@ -92,9 +90,9 @@
   </div>
 
 
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">Save</button>
-    <%= link_to('Cancel', :back, class: 'btn btn-xs btn-info') %>
+  <div class="form__group">
+    <button type="submit" class="btn btn--primary">Save</button>
+    <%= link_to('Cancel', :back, class: "btn btn--xs btn--info") %>
   </div>
 <% end %>
 

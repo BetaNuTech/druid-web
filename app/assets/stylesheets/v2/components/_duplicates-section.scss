@@ -1,0 +1,50 @@
+// Duplicates Section Component
+// Special styling for duplicate warnings with warning colors
+
+@import '../variables';
+
+// Duplicates Section Block
+.duplicates-section {
+  position: relative;
+  
+  // Warning accent bar on left
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, $warning 0%, darken($warning, 10%) 100%);
+    border-radius: $border-radius-lg 0 0 $border-radius-lg;
+    z-index: 1;
+  }
+  
+  // When inside a section, adjust spacing
+  .section & {
+    margin: -$spacing-xl;
+    margin-top: 0;
+    
+    &::before {
+      left: 0;
+    }
+  }
+  
+  // Container with warning background
+  .duplicates-container {
+    padding: $spacing-lg;
+    background: rgba($warning, 0.03);
+    border-radius: 0 0 ($border-radius-lg - 1px) ($border-radius-lg - 1px);
+    
+    // Empty state
+    .empty-state {
+      color: darken($warning, 10%);
+      
+      &__icon {
+        color: $warning;
+      }
+    }
+  }
+}
+
+// The duplicates-container class is defined above, no need for backward compatibility

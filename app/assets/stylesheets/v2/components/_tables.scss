@@ -1,0 +1,446 @@
+// Table Component Styles
+// Based on BlueSky Design System V2
+
+@import '../variables';
+
+// Base table styles
+.table {
+  width: 100%;
+  margin-bottom: $spacing-lg;
+  background-color: $white;
+  border-collapse: collapse;
+  
+  // Table header
+  thead {
+    th {
+      padding: $spacing-md $spacing-lg;
+      text-align: left;
+      font-weight: $font-weight-semi-bold;
+      color: $gray-600;
+      background-color: $gray-50;
+      border-bottom: 2px solid $gray-200;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      
+      &.sortable {
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: $gray-100;
+          color: $primary;
+        }
+        
+        &::after {
+          content: '⇅';
+          margin-left: $spacing-xs;
+          opacity: 0.3;
+          font-size: 12px;
+        }
+        
+        &.sorted-asc::after {
+          content: '↑';
+          opacity: 1;
+          color: $primary;
+        }
+        
+        &.sorted-desc::after {
+          content: '↓';
+          opacity: 1;
+          color: $primary;
+        }
+      }
+      
+      &.text-center {
+        text-align: center;
+      }
+      
+      &.text-right {
+        text-align: right;
+      }
+    }
+  }
+  
+  // Table body
+  tbody {
+    tr {
+      transition: background-color 0.15s ease;
+      
+      &:hover {
+        background-color: $gray-50;
+      }
+      
+      &.clickable {
+        cursor: pointer;
+        
+        &:hover {
+          background-color: rgba($primary, 0.05);
+        }
+      }
+      
+      // Zebra striping
+      &:nth-child(even) {
+        background-color: rgba($gray-50, 0.5);
+      }
+      
+      // Selected row
+      &.selected {
+        background-color: rgba($primary, 0.1);
+        
+        td {
+          font-weight: $font-weight-medium;
+        }
+      }
+    }
+    
+    td {
+      padding: $spacing-md $spacing-lg;
+      border-bottom: 1px solid $gray-100;
+      color: $gray-700;
+      vertical-align: middle;
+      
+      &.text-center {
+        text-align: center;
+      }
+      
+      &.text-right {
+        text-align: right;
+      }
+      
+      // Cell with badges/labels
+      .badge,
+      .label {
+        margin: 0 2px;
+      }
+      
+      // Cell with actions
+      &.actions {
+        white-space: nowrap;
+        text-align: right;
+        
+        .btn {
+          margin-left: $spacing-xs;
+        }
+      }
+      
+      // Emphasized text
+      strong {
+        color: $gray-900;
+        font-weight: $font-weight-semi-bold;
+      }
+      
+      // Links in cells
+      a {
+        color: $primary;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  // Empty state
+  &.table-empty {
+    tbody tr td {
+      padding: $spacing-xl;
+      text-align: center;
+      color: $gray-500;
+      font-style: italic;
+    }
+  }
+}
+
+// Table variations
+.table {
+  // Striped table
+  &.table-striped {
+    tbody tr:nth-child(odd) {
+      background-color: $gray-50;
+    }
+  }
+  
+  // Bordered table
+  &.table-bordered {
+    border: 1px solid $gray-200;
+    
+    th,
+    td {
+      border: 1px solid $gray-200;
+    }
+  }
+  
+  // Hover table
+  &.table-hover {
+    tbody tr:hover {
+      background-color: rgba($primary, 0.05);
+    }
+  }
+  
+  // Condensed table
+  &.table-condensed {
+    th,
+    td {
+      padding: $spacing-sm $spacing-md;
+    }
+  }
+  
+  // Fixed layout
+  &.table-fixed {
+    table-layout: fixed;
+  }
+}
+
+// Responsive table wrapper
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: $spacing-lg;
+  
+  .table {
+    margin-bottom: 0;
+    min-width: 100%;
+  }
+  
+  // Shadow indicators for scrolling
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, rgba($white, 1) 0%, rgba($white, 0) 100%);
+  }
+  
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, rgba($white, 1) 0%, rgba($white, 0) 100%);
+  }
+}
+
+// Table with cards layout (for mobile)
+@media (max-width: 767px) {
+  .table-card-view {
+    display: block;
+    
+    thead {
+      display: none;
+    }
+    
+    tbody {
+      display: block;
+      
+      tr {
+        display: block;
+        margin-bottom: $spacing-md;
+        border: 1px solid $gray-200;
+        border-radius: $border-radius-md;
+        padding: $spacing-md;
+        background: $white;
+        
+        &:hover {
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+      }
+      
+      td {
+        display: block;
+        border: none;
+        padding: $spacing-xs 0;
+        text-align: left !important;
+        
+        &::before {
+          content: attr(data-label);
+          font-weight: $font-weight-semi-bold;
+          color: $gray-600;
+          display: inline-block;
+          width: 120px;
+          margin-right: $spacing-sm;
+        }
+        
+        &.actions {
+          padding-top: $spacing-md;
+          border-top: 1px solid $gray-200;
+          margin-top: $spacing-sm;
+          
+          &::before {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Specific table styles for units
+.units-table {
+  .unit-name {
+    font-weight: $font-weight-semi-bold;
+    color: $gray-900;
+  }
+  
+  .occupancy-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    
+    .glyphicon {
+      font-size: 14px;
+    }
+    
+    // Occupied status
+    .glyphicon-user {
+      color: $warning;
+    }
+    
+    // Vacant status
+    .glyphicon-ok {
+      color: $success;
+    }
+  }
+  
+  .model-badge {
+    background: $info;
+    color: white;
+    padding: 2px 6px;
+    border-radius: $border-radius-sm;
+    font-size: 10px;
+    font-weight: $font-weight-bold;
+    margin-left: 6px;
+  }
+}
+
+// Specific table styles for leads
+.leads-table {
+  .lead-name {
+    font-weight: $font-weight-semi-bold;
+    color: $gray-900;
+  }
+  
+  .lead-state {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    
+    &.state-new {
+      background-color: rgba($brand-teal, 0.1);
+      color: darken($brand-teal, 10%);
+    }
+    
+    &.state-contacted {
+      background-color: rgba($primary, 0.1);
+      color: darken($primary, 10%);
+    }
+    
+    &.state-scheduled {
+      background-color: rgba($info, 0.1);
+      color: darken($info, 10%);
+    }
+    
+    &.state-qualified {
+      background-color: rgba($success, 0.1);
+      color: darken($success, 10%);
+    }
+    
+    &.state-disqualified {
+      background-color: rgba($danger, 0.1);
+      color: darken($danger, 10%);
+    }
+  }
+}
+
+// Table filters/controls
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+  gap: $spacing-md;
+  
+  .table-search {
+    flex: 1;
+    max-width: 300px;
+  }
+  
+  .table-filters {
+    display: flex;
+    gap: $spacing-sm;
+  }
+  
+  .table-actions {
+    display: flex;
+    gap: $spacing-sm;
+  }
+}
+
+// Pagination
+.table-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: $spacing-lg;
+  
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: $spacing-xs;
+    
+    li {
+      a,
+      span {
+        display: block;
+        padding: $spacing-sm $spacing-md;
+        border: 1px solid $gray-300;
+        border-radius: $border-radius-sm;
+        color: $gray-700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: $gray-50;
+          border-color: $primary;
+          color: $primary;
+        }
+      }
+      
+      &.active {
+        a,
+        span {
+          background-color: $primary;
+          border-color: $primary;
+          color: $white;
+        }
+      }
+      
+      &.disabled {
+        a,
+        span {
+          opacity: 0.5;
+          cursor: not-allowed;
+          
+          &:hover {
+            background-color: transparent;
+            border-color: $gray-300;
+            color: $gray-700;
+          }
+        }
+      }
+    }
+  }
+}

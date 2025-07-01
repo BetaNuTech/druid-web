@@ -25,15 +25,15 @@
 
   <% if message.new_record? || message.body_missing? %>
     <div class='row'>
-      <div class='col-md-4 form-group'>
-        <%= form.label :message_template_id, 'Template' %>
-        <%= link_to('Load', '#' , { id: 'message_template_load_button', class: 'btn btn-xs btn-info', data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type, reply_to: @reply_to_id)} }) %>
-        <%= link_to('View', message_template_path(id: message.message_template), {id: 'message_template_view_button', target: '_blank', class: 'btn btn-xs btn-info'}) if message.message_template.present? %>
+      <div class='col-md-4 form__group'>
+        <%= form.label :message_template_id, 'Template', class: 'form__label' %>
+        <%= link_to('Load', '#' , { id: 'message_template_load_button', class: "btn btn--info btn--small", data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type, reply_to: @reply_to_id)} }) %>
+        <%= link_to('View', message_template_path(id: message.message_template), {id: 'message_template_view_button', target: '_blank', class: "btn btn--info btn--small"}) if message.message_template.present? %>
         <% if any_message_templates_available?(message_type) %>
           <%= form.select :message_template_id, message_template_options(message_type, message.message_template_id),
-          { include_blank: true}, { id: 'message_template_select', class: 'form-control' } %>
+          { include_blank: true}, { id: 'message_template_select', class: 'form__control' } %>
         <% else %>
-          <p>
+          <p class="form__text">
             None available.
           </p>
         <% end %>
@@ -46,18 +46,18 @@
 
   <% if edit_message_subject?(message) %>
     <div class='row'>
-      <div class='col-md-12 form-group'>
-        <%= form.label :subject %>
-        <%= form.text_field :subject, class: 'form-control' %>
+      <div class='col-md-12 form__group'>
+        <%= form.label :subject, class: 'form__label' %>
+        <%= form.text_field :subject, class: 'form__control' %>
       </div>
     </div>
   <% else %>
     <%= form.hidden_field :subject, value: '(No Subject)' %>
   <% end %>
   <div class='row'>
-    <div class='col-md-12 form-group'>
-      <%= form.label :body %>
-      <%= form.text_area :body, { rows: 10, id: (message.rich_editor? ? 'html_editor_v2' : 'plain_editor'), class: 'form-control' } %>
+    <div class='col-md-12 form__group'>
+      <%= form.label :body, class: 'form__label' %>
+      <%= form.text_area :body, { rows: 10, id: (message.rich_editor? ? 'html_editor_v2' : 'plain_editor'), class: 'form__control' } %>
     </div>
   </div>
 
@@ -66,11 +66,11 @@
   <% end %>
 
   <div class='row'>
-    <div class='col-md-6 form-group'>
-      <button type='submit' class='btn btn-info'>Save Draft and Preview</button>
-      <button id="send_now_button" type='submit' class='btn btn-primary'>Send Now</button>
-      <%#= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn-xs btn-info" if @message.messageable.present? %>
-      <%= link_to 'Back', :back, class: "btn btn-xs btn-info"  %>
+    <div class='col-md-6 form__group'>
+      <button type='submit' class='btn btn--info'>Save Draft and Preview</button>
+      <button id="send_now_button" type='submit' class='btn btn--primary'>Send Now</button>
+      <%#= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn--xs btn-info" if @message.messageable.present? %>
+      <%= link_to 'Back', :back, class: "btn btn--info btn--small"  %>
     </div>
   </div>
 <% end %>

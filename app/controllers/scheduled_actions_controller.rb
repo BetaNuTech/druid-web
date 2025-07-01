@@ -100,23 +100,32 @@ class ScheduledActionsController < ApplicationController
 
   def conflict_check
     conflicts = false
-    # Find the record or build
-    id = params["scheduled_action"]["id"]
-    @scheduled_action = ScheduledAction.where(id: id).first || ScheduledAction.new
+    begin
+      # Find the record or build
+      id = params.dig("scheduled_action", "id")
+      @scheduled_action = ScheduledAction.where(id: id).first || ScheduledAction.new
 
-    # Use the submitted Schedule attributes without saving
-    @scheduled_action.schedule ||= Schedule.new
-    @scheduled_action.schedule.attributes = conflict_check_params["schedule_attributes"]
+      # Use the submitted Schedule attributes without saving
+      @scheduled_action.schedule ||= Schedule.new
+      if params.dig("scheduled_action", "schedule_attributes").present?
+        @scheduled_action.schedule.attributes = conflict_check_params["schedule_attributes"]
+      end
 
-    # Shuffle record ownership temporarily for policy authorization
-    user = @scheduled_action.user || current_user
-    @scheduled_action.user = current_user
-    authorize @scheduled_action
-    @scheduled_action.user = user
-    conflicts = @scheduled_action.conflicting.any?
+      # Shuffle record ownership temporarily for policy authorization
+      user = @scheduled_action.user || current_user
+      @scheduled_action.user = current_user
+      authorize @scheduled_action
+      @scheduled_action.user = user
+      conflicts = @scheduled_action.conflicting.any?
 
-    respond_to do |format|
-      format.json { render json: conflicts }
+      respond_to do |format|
+        format.json { render json: conflicts }
+      end
+    rescue => e
+      Rails.logger.error "Conflict check error: #{e.message}"
+      respond_to do |format|
+        format.json { render json: false } # Default to no conflict on error
+      end
     end
   end
 

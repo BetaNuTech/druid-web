@@ -1,35 +1,62 @@
-<div class="timeline-card" id="timeline_<%= activity.id %>">
-  <div class="timeline-content">
-    <div class="timeline-header">
-      <div class="timeline-meta">
-        <% if activity.lead_action.present? %>
-          <span class="action-type">
-            <%= action_and_reason(activity) %>
-          </span>
+<div class="timeline-item <%= activity.lead_action.present? ? "timeline-item--#{activity.lead_action.name.parameterize}" : 'timeline-item--note' %>" id="timeline_<%= activity.id %>">
+  <div class="timeline-card">
+    <div class="timeline-card__icon">
+      <% if activity.lead_action.present? %>
+        <%= glyph(activity.lead_action.glyph || :record) %>
+      <% elsif activity.respond_to?(:messageable) && activity.messageable.present? %>
+        <% if activity.messageable_type == 'Message' %>
+          <%= glyph(activity.messageable.category == 'sms' ? :phone : :envelope) %>
+        <% else %>
+          <%= glyph(:comment) %>
         <% end %>
-        <span class="timeline-timestamp">
-          <%= short_datetime(activity.created_at) %>
-        </span>
-        <% if activity.user.present? %>
-          <span class="timeline-user">
-            by <%= activity.user.name %>
-          </span>
-        <% end %>
-      </div>
+      <% else %>
+        <%= glyph(:comment) %>
+      <% end %>
     </div>
     
-    <% if note_content(activity).present? %>
-      <div class="timeline-body">
-        <%= simple_format(note_content(activity)) %>
-      </div>
-    <% end %>
-    
-    <% if activity.respond_to?(:messageable) && activity.messageable.present? %>
-      <div class="timeline-related">
-        <span class="related-label">
-          <%= activity.messageable_type == 'Message' ? "#{activity.messageable.category.upcase} message" : activity.messageable_type %>
+    <div class="timeline-card__content">
+      <div class="timeline-card__header">
+        <h4 class="timeline-card__title">
+          <% if activity.lead_action.present? %>
+            <%= action_and_reason(activity) %>
+          <% elsif activity.respond_to?(:messageable) && activity.messageable.present? %>
+            <%= activity.messageable_type == 'Message' ? "#{activity.messageable.category.upcase} Message" : activity.messageable_type %>
+          <% else %>
+            Comment
+          <% end %>
+        </h4>
+        <span class="timeline-card__timestamp">
+          <%= short_datetime(activity.created_at) %>
         </span>
       </div>
-    <% end %>
+      
+      <% if activity.user.present? %>
+        <div class="timeline-card__meta">
+          <span class="timeline-card__user">
+            <%= glyph(:user) %> <%= activity.user.name %>
+          </span>
+        </div>
+      <% end %>
+      
+      <% if note_content(activity).present? %>
+        <div class="timeline-card__body">
+          <%= simple_format(note_content(activity)) %>
+        </div>
+      <% end %>
+      
+      <% if activity.respond_to?(:state_event) && activity.state_event.present? %>
+        <div class="timeline-card__state-change">
+          <span class="timeline-card__state-badge timeline-card__state-badge--<%= activity.state_event %>">
+            <%= activity.state_event.humanize %>
+          </span>
+          <% if activity.respond_to?(:to_state) && activity.to_state.present? %>
+            <span class="timeline-card__state-arrow">→</span>
+            <span class="timeline-card__state-badge timeline-card__state-badge--<%= activity.to_state %>">
+              <%= activity.to_state.humanize %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>

@@ -1,4 +1,59 @@
 $(document).on('turbolinks:load', function() {
+  console.log("Scheduled actions JS loaded");
+  
+  // Debug all form submissions
+  $(document).on('submit', 'form', function(e) {
+    console.log("Form submission detected:", this.id, this.action);
+  });
+  
+  // Handle form submission to ensure CKEDITOR data is synchronized
+  $('#scheduled_action_form').on('submit', function(e) {
+    console.log("Form submission triggered");
+    
+    // Check if form is valid
+    var form = this;
+    if (!form.checkValidity || !form.checkValidity()) {
+      console.log("Form validation failed");
+      return true; // Let browser handle validation
+    }
+    
+    if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances["scheduled_action_notification_message"]) {
+      try {
+        // Update the textarea with CKEDITOR content before submission
+        CKEDITOR.instances["scheduled_action_notification_message"].updateElement();
+        console.log("CKEDITOR content updated");
+      } catch(error) {
+        console.error("Error updating CKEDITOR content:", error);
+      }
+    }
+    
+    console.log("Form data:", $(this).serialize());
+    console.log("Form action:", $(this).attr('action'));
+    console.log("Form method:", $(this).attr('method'));
+    
+    // Allow form submission to continue
+    return true;
+  });
+  
+  // Debug button click
+  $('button[type="submit"]').on('click', function(e) {
+    console.log("Submit button clicked");
+    console.log("Button:", this);
+    console.log("Form found:", $('#scheduled_action_form').length);
+  });
+  
+  // Add a global function to test form submission
+  window.testFormSubmit = function() {
+    console.log("Testing form submission...");
+    var form = $('#scheduled_action_form');
+    console.log("Form found:", form.length);
+    if (form.length > 0) {
+      console.log("Submitting form programmatically");
+      form.submit();
+    } else {
+      console.log("Form not found!");
+    }
+  };
 
   function schedule_conflict_check(e){
     var scheduled_action_form = $("#scheduled_action_form");
@@ -21,6 +76,13 @@ $(document).on('turbolinks:load', function() {
           $("select[id^=scheduled_action_schedule_attributes_time]").removeClass("scheduling_conflict");
           $("#schedule_conflict_message").removeClass("scheduling_conflict");
         }
+      })
+      .fail(function(xhr, status, error){
+        console.error("Conflict check failed:", error);
+        // Remove conflict indicators on error to not block form submission
+        $("select[id^=scheduled_action_schedule_attributes_date]").removeClass("scheduling_conflict");
+        $("select[id^=scheduled_action_schedule_attributes_time]").removeClass("scheduling_conflict");
+        $("#schedule_conflict_message").removeClass("scheduling_conflict");
       })
   }
   schedule_conflict_check();
@@ -88,10 +150,13 @@ $(document).on('turbolinks:load', function() {
     });
   })
 
-  var editor = CKEDITOR.instances["scheduled_action_notification_message"];
-  if (editor != undefined) {
-    editor.destroy()
-    CKEDITOR.replace("scheduled_action_notification_message");
+  // Check if CKEDITOR is available before trying to use it
+  if (typeof CKEDITOR !== 'undefined') {
+    var editor = CKEDITOR.instances["scheduled_action_notification_message"];
+    if (editor != undefined) {
+      editor.destroy()
+      CKEDITOR.replace("scheduled_action_notification_message");
+    }
   }
 
   // Convert schedule hour select options from 24h to 12h

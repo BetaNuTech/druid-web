@@ -1,0 +1,121 @@
+// BlueSky Design System V2 - Main Import File
+// This file imports all v2 styles in the correct order
+
+// 1. Variables and Functions (must come first)
+@import 'variables';
+@import 'functions';
+
+// 2. Base styles
+@import 'base/reset';
+@import 'base/typography';
+@import 'base/global';
+
+// 3. Components (order matters for specificity)
+@import 'components/buttons';
+@import 'components/buttons-compat'; // Bootstrap 3 compatibility
+@import 'components/cards';
+@import 'components/info-card'; // Info card component for detail pages
+@import 'components/sections'; // Section wrappers and layout
+@import 'components/state-toggle'; // State toggle breadcrumb component
+@import 'components/section-headers';
+@import 'components/badges';
+@import 'components/labels'; // Label component (replaces Bootstrap labels)
+@import 'components/forms';
+@import 'components/selectize'; // Selectize.js customization
+@import 'components/tables'; // Table styling
+@import 'components/empty-states'; // Empty state patterns
+@import 'components/tasks'; // Task section styling
+@import 'components/navigation'; // Navigation header and sidebar
+@import 'components/footer'; // Footer component
+@import 'components/message-card'; // Message card component (import first)
+@import 'components/messages'; // Other message components
+@import 'components/property-selection'; // Property selection dropdown
+@import 'components/breadcrumbs'; // State flow breadcrumbs
+@import 'components/modals'; // Modal dialogs and overlays
+@import 'components/icons'; // Icon styling and enhancements
+@import 'components/grid'; // Grid system (replaces Bootstrap grid)
+@import 'components/alerts'; // Alert messages and notifications
+@import 'components/source-email'; // Source email display component
+@import 'components/duplicates-section'; // Duplicates section wrapper
+@import 'components/quick-navigation'; // Quick navigation with teal buttons
+@import 'components/timeline-section'; // Timeline activity section for leads
+
+// 4. Layout components
+// @import 'layouts/sidebar'; // TODO: Create this file
+// @import 'layouts/header'; // TODO: Create this file
+// @import 'layouts/content'; // TODO: Create this file
+// @import 'layouts/responsive'; // TODO: Create this file
+
+// 5. Page-specific styles
+@import 'pages/home/dashboard';
+@import 'pages/leads/index'; // Lead pages including show and components
+@import 'pages/leads/components';
+@import 'pages/leads/tasks';
+@import 'pages/messages/index'; // Messages index page styles
+// @import 'pages/messages/show'; // TODO: Create this file
+// @import 'pages/messages/compose'; // TODO: Create this file
+// @import 'pages/tasks/index'; // TODO: Create this file
+@import 'pages/units/index'; // Units listing styles
+@import 'pages/users/index'; // Users listing styles
+@import 'pages/teams/index'; // Teams management styles
+@import 'pages/message-templates/index'; // Message templates styles
+@import 'pages/calendar/index'; // Calendar view styles
+@import 'pages/duplicates/index'; // Duplicate lead detection
+@import 'pages/comments/index'; // Comments section styles
+@import 'pages/notes/index'; // Notes section styles
+@import 'pages/properties/index'; // Properties management styles
+@import 'pages/roommates/index'; // Roommates section styles
+
+// 6. Utility classes (should come last for highest specificity)
+@import 'utilities/spacing';
+@import 'utilities/colors';
+@import 'utilities/display';
+@import 'utilities/layout'; // Float, position, and layout utilities
+@import 'utilities/text'; // Text utilities (wrapping, colors, alignment)
+@import 'utilities/animations'; // Animation keyframes and utilities
+@import 'utilities/dropdown-fixes'; // Dropdown z-index fixes
+@import 'utilities/empty-state-overrides'; // Empty state icon overrides - MUST be last
+
+// 7. Legacy page-specific styles (to be migrated to BEM)
+// @import 'animations'; // Archived - animations moved to components
+// @import 'navigation'; // Archived - migrated to components/_navigation.scss
+// @import 'site'; // Archived - global styles moved to base/_global.scss
+// @import 'footer'; // Archived - migrated to components/_footer.scss
+// @import 'property_selection'; // Archived - migrated to components/_property-selection.scss
+// @import 'breadcrumbs'; // Archived - migrated to components/_breadcrumbs.scss
+
+// Lead-related styles
+// @import 'leads'; // Archived - replaced by BEM components
+// @import 'lead-detail'; // Archived - causing priority conflicts
+// @import 'lead-messages'; // Archived - migrated to components/_messages.scss
+// @import 'lead-tasks'; // Archived - replaced by components/_tasks.scss
+// Lead card styles moved to components/_cards.scss
+// @import 'lead_actions'; // Archived - glyph samples not needed
+// @import 'duplicates'; // Archived - migrated to pages/duplicates/index
+
+// Message-related styles
+// @import 'messages'; // Archived - replaced by BEM message components
+// @import 'messages-common'; // Archived - migrated to components/_messages.scss
+// @import 'messages-index'; // Archived - migrated to components/_messages.scss
+// @import 'message_templates'; // Archived - migrated to pages/message-templates/index
+
+// Other features
+// @import 'calendar'; // Archived - migrated to pages/calendar/index
+// @import 'comments'; // Archived - moved to pages/comments/index
+// @import 'notes'; // Archived - moved to pages/notes/index
+// @import 'properties'; // Archived - moved to pages/properties/index
+// @import 'roommates'; // Archived - moved to pages/roommates/index
+// @import 'scheduled_actions'; // Archived - replaced by BEM task cards
+// @import 'support-ticket-modal'; // Archived - migrated to components/_modals.scss
+// @import 'tasks'; // Archived - replaced by BEM task cards
+// @import 'teams'; // Archived - migrated to pages/teams/index
+// @import 'timeline'; // Archived - migrated to components/_timeline-section.scss
+// @import 'units'; // Archived - migrated to pages/units/index
+// @import 'users'; // Archived - migrated to pages/users/index
+
+// Import order rationale:
+// - Variables/functions first (needed by everything else)
+// - Base styles establish foundation
+// - Components define reusable patterns
+// - Utilities come last for easy overrides
+// - Legacy styles imported last until migrated to BEM

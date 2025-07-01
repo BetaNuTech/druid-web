@@ -1,0 +1,60 @@
+<div class="card card--clickable card--status card--status-primary" data-href="<%= completion_form_scheduled_action_path(scheduled_action_card) %>">
+  <div class="card__body">
+    <div class="card__task-layout">
+      <div class="card__icon card__icon--<%= scheduled_action_card.lead_action.try(:glyph) || 'primary' %>">
+        <%= glyph(scheduled_action_card.lead_action.try(:glyph) || :list_alt) %>
+      </div>
+      
+      <div class="card__details">
+        <div class="card__meta">
+          <%= glyph(:time) %>
+          <%= short_datetime(scheduled_action_card.schedule.to_datetime) %>
+        </div>
+        
+        <h4 class="card__title">
+          <%= action_and_reason(scheduled_action_card) %>
+        </h4>
+        
+        <% if scheduled_action_card.description.present? %>
+          <p class="card__description">
+            <%= scheduled_action_card.description %>
+            <% unless scheduled_action_card.target == current_user %>
+              <span class="u-text--primary">
+                for <%= scheduled_action_card.target.name rescue '' %>
+              </span>
+            <% end %>
+          </p>
+        <% end %>
+      </div>
+      
+      <div class="card__actions" onclick="event.stopPropagation();">
+        <% if policy(scheduled_action_card).complete? %>
+          <%= link_to(completion_form_scheduled_action_path(scheduled_action_card, event: 'complete'), 
+                      class: 'btn btn--success btn--icon',
+                      title: 'Complete Task',
+                      data: { toggle: 'tooltip', placement: 'top' }) do %>
+            <%= glyph(:ok) %>
+          <% end %>
+        <% end %>
+        
+        <% if policy(scheduled_action_card).edit? %>
+          <%= link_to(edit_scheduled_action_path(scheduled_action_card), 
+                      class: 'btn btn--secondary btn--icon',
+                      title: 'Edit Task',
+                      data: { toggle: 'tooltip', placement: 'top' }) do %>
+            <%= glyph(:pencil) %>
+          <% end %>
+        <% end %>
+        
+        <% if policy(scheduled_action_card).complete? %>
+          <%= link_to(completion_form_scheduled_action_path(scheduled_action_card, event: 'reject'), 
+                      class: 'btn btn--danger btn--icon',
+                      title: 'Reject Task',
+                      data: { toggle: 'tooltip', placement: 'top', confirm: 'Are you sure you want to reject this task?' }) do %>
+            <%= glyph(:remove) %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+// Source Email Component
+// For displaying original email source on lead detail page
+
+@import '../variables';
+
+// Source Email Section Block
+.source-email-section {
+  margin-bottom: $spacing-xl;
+  
+  // Section header
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    background: $white;
+    padding: $spacing-lg;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    
+    h2 {
+      margin: 0;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      .glyphicon {
+        font-size: 20px;
+        color: $primary;
+      }
+    }
+  }
+  
+  // Toggle text
+  &__toggle-text {
+    margin-right: $spacing-xs;
+  }
+  
+  // Container
+  &__container {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-top: -$spacing-sm;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  
+  // Preview container
+  &__preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+  
+  // Preview wrapper
+  &__preview-wrapper {
+    background: $gray-50;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-sm;
+    padding: $spacing-md;
+    
+    h5 {
+      margin: 0 0 $spacing-md 0;
+      font-size: $font-size-base;
+      font-weight: $font-weight-medium;
+      color: $gray-700;
+    }
+  }
+  
+  // Preview frame
+  &__preview-frame {
+    width: 100%;
+    min-height: 400px;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius-sm;
+    background: $white;
+  }
+}
+
+// Backward compatibility
+.section-header {
+  @extend .source-email-section__header;
+}
+
+.toggle-text {
+  @extend .source-email-section__toggle-text;
+}
+
+.source-email-container {
+  @extend .source-email-section__container;
+}
+
+.email-preview-container {
+  @extend .source-email-section__preview-container;
+}
+
+.email-preview-wrapper {
+  @extend .source-email-section__preview-wrapper;
+}
+
+.email-preview-frame {
+  @extend .source-email-section__preview-frame;
+}

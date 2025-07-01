@@ -1,11 +1,14 @@
-<% if lead.duplicates.present? %>
-  <div class="duplicates-section">
-    <div class="section-header">
-      <h2><%= glyph(:duplicate) %> Possible Duplicates</h2>
-      <span class="duplicate-count"><%= lead.duplicate_records.count %> potential matches</span>
+<div class="section-header section-header--warning">
+  <div class="section-header__content">
+    <div class="section-header__icon">
+      <%= glyph(:duplicate) %>
     </div>
-    <div class="duplicates-container">
-      <%= render partial: "duplicates_v2", locals: {duplicates: lead.duplicate_records} %>
-    </div>
+    <h3 class="section-header__title">
+      Possible Duplicates
+      <span class="section-header__count"><%= lead.duplicate_records.count %></span>
+    </h3>
   </div>
-<% end %>
+</div>
+<div class="duplicates-container">
+  <%= render partial: "duplicates_v2", locals: {duplicates: lead.duplicate_records} %>
+</div>

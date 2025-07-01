@@ -1,0 +1,149 @@
+// Section Components
+// Consistent section styling for detail pages
+
+@import '../variables';
+
+// Lead Detail Block (main wrapper)
+.lead-detail {
+  // Main wrapper styles already exist in other files
+  // This ensures proper namespacing for child elements
+  
+  &__errors {
+    margin: $spacing-lg 0;
+  }
+  
+  &__state-controls {
+    background: $gray-50;
+    padding: $spacing-md 0;
+    border-bottom: 1px solid $gray-200;
+  }
+  
+  &__quick-nav {
+    background: $white;
+    padding: $spacing-lg 0;
+    border-bottom: 1px solid $gray-100;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  &__quick-nav-links {
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+  
+  &__quick-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
+    background: $gray-50;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-sm;
+    color: $gray-700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: $primary;
+      border-color: $primary;
+      color: $white;
+      text-decoration: none;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba($primary, 0.2);
+      
+      .glyphicon {
+        color: $white;
+      }
+    }
+    
+    &--duplicates {
+      background: rgba($warning, 0.1);
+      border-color: rgba($warning, 0.3);
+      color: darken($warning, 10%);
+      
+      &:hover {
+        background: $warning;
+        border-color: $warning;
+        color: $white;
+      }
+    }
+    
+    .glyphicon {
+      font-size: 14px;
+      color: $gray-600;
+      transition: color 0.2s ease;
+    }
+  }
+  
+  &__content {
+    padding: $spacing-lg 0;
+  }
+}
+
+// Generic section wrapper
+.section-wrapper {
+  margin-bottom: $spacing-xl;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Section headers (should be component-specific)
+.section-header {
+  margin-bottom: $spacing-lg;
+  
+  h3 {
+    margin: 0;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-medium;
+    color: $gray-800;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    .glyphicon {
+      font-size: 20px;
+      color: $primary;
+    }
+  }
+  
+  &--with-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+  }
+}
+
+// Backward compatibility
+.state-controls-section {
+  @extend .lead-detail__state-controls;
+}
+
+.quick-nav-section {
+  @extend .lead-detail__quick-nav;
+}
+
+.quick-nav-links {
+  @extend .lead-detail__quick-nav-links;
+}
+
+.quick-nav-link {
+  @extend .lead-detail__quick-nav-link;
+}
+
+.quick-nav-duplicates {
+  @extend .lead-detail__quick-nav-link--duplicates;
+}
+
+.lead-content {
+  @extend .lead-detail__content;
+}
+
+.lead-errors {
+  @extend .lead-detail__errors;
+}

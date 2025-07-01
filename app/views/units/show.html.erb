@@ -14,7 +14,7 @@
             <strong>Property:</strong>
             <%= link_to(@unit.property_name, property_path(@unit.property)) %>
           </p>
-        </div>
+         </div>
       </div>
 
       <div class="row">
@@ -47,7 +47,7 @@
               <strong>None</strong>
             <% end %>
           </p>
-        </div>
+         </div>
       </div>
 
       <div class="row">
@@ -56,13 +56,13 @@
             <strong>Rental Type:</strong>
             <%= @unit.rental_type_name %>
           </p>
-        </div>
+         </div>
         <div class="col-md-4">
           <p>
             <strong>Unit Type:</strong>
             <%= @unit.unit_type_name %>
           </p>
-        </div>
+         </div>
       </div>
 
       <div class="row">
@@ -71,7 +71,7 @@
             <strong>Model Unit?:</strong>
             <%= @unit.model? ? 'Yes' : 'No' %>
           </p>
-        </div>
+         </div>
       </div>
 
       <div class="row">
@@ -134,7 +134,7 @@
             <strong>Address1:</strong>
             <%= @unit.address1 %>
           </p>
-        </div>
+         </div>
       </div>
 
       <div class="row">
@@ -143,7 +143,7 @@
             <strong>Address2:</strong>
             <%= @unit.address2 %>
           </p>
-        </div>
+         </div>
       </div>
 
       <div class="row">
@@ -152,31 +152,31 @@
             <strong>City:</strong>
             <%= @unit.city %>
           </p>
-        </div>
+         </div>
         <div class="col-md-2">
           <p>
             <strong>State:</strong>
             <%= @unit.state %>
           </p>
-        </div>
+         </div>
         <div class="col-md-2">
           <p>
             <strong>Zip:</strong>
             <%= @unit.zip %>
           </p>
-        </div>
+         </div>
         <div class="col-md-2">
           <p>
             <strong>Country:</strong>
             <%= @unit.country %>
           </p>
-        </div>
+         </div>
       </div>
 
       <div class="row">
         <div class="col-md-4">
-          <%= link_to 'Edit', edit_property_unit_path(@unit.property, @unit), class: 'btn btn-sm btn-primary' %>
-          <%= link_to 'Back', :back, class: 'btn btn-xs btn-info' %>
+          <%= link_to 'Edit', edit_property_unit_path(@unit.property, @unit), class: "btn btn--small btn--primary" %>
+          <%= link_to 'Back', :back, class: "btn btn--xs btn--info" %>
         </div>
       </div>
 

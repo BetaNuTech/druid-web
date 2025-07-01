@@ -1,22 +1,24 @@
-<fieldset>
-  <legend>General</legend>
+<fieldset class="fieldset">
+  <legend class="fieldset__legend">General</legend>
   <div class="row">
     <div class="col-md-8">
-      <div class="form-group">
-        <%= form.label :name %>
-        <%= form.text_field :name, id: :property_name, class: "form-control"  %>
+      <div class="form__group">
+        <%= form.label :name, class: 'form__label' %>
+        <%= form.text_field :name, id: :property_name, class: "form__control"  %>
       </div>
 
-      <div class="form-group">
-        <%= form.label :logo %>
+      <div class="form__group">
+        <%= form.label :logo, class: 'form__label' %>
         <% if property.logo.attached? %>
           <div style="padding: 10px 5px;">
             <%= image_tag(property.logo.variant(resize: "100x100"), alt: "#{@property.name} logo" )%>
-            <%= form.label :remove_logo, class: "checkbox-inline" %>
-            <%= form.check_box :remove_logo %>
+            <div class="form__check form__check--inline">
+              <%= form.check_box :remove_logo, class: 'form__check-input' %>
+              <%= form.label :remove_logo, class: "form__check-label" %>
+            </div>
           </div>
         <% end %>
-        <%= form.file_field :logo, class: 'form-control' %>
+        <%= form.file_field :logo, class: 'form__control' %>
       </div>
 
       <!-- 
@@ -27,26 +29,26 @@
       -->
 
       <div class="row">
-        <div class="col-md-4 form-group">
-          <%= form.label :units %>
-          <%= form.number_field :units, id: :property_units, class: "form-control" %>
+        <div class="col-md-4 form__group">
+          <%= form.label :units, class: 'form__label' %>
+          <%= form.number_field :units, id: :property_units, class: "form__control" %>
         </div>
       </div>
 
-      <div class="form-group">
-        <%= form.label :notes %>
-        <%= form.text_area :notes, id: :property_notes, class: "form-control" %>
+      <div class="form__group">
+        <%= form.label :notes, class: 'form__label' %>
+        <%= form.text_area :notes, id: :property_notes, class: "form__control" %>
       </div>
 
-      <div class="form-group">
-        <%= form.label :team %>
-        <%= form.select :team_id, select_team(@property.team_id), {include_blank: true}, { id: :property_team_id, class: "form-control" } %>
+      <div class="form__group">
+        <%= form.label :team, class: 'form__label' %>
+        <%= form.select :team_id, select_team(@property.team_id), {include_blank: true}, { id: :property_team_id, class: "form__control" } %>
       </div>
 
-      <div class="form-group">
-        <div class="form-check-label">
-          <%= form.check_box :active, class: 'form-check-input' %>
-          Property is Active?
+      <div class="form__group">
+        <div class="form__check">
+          <%= form.check_box :active, class: 'form__check-input' %>
+          <%= form.label :active, "Property is Active?", class: 'form__check-label' %>
         </div>
       </div>
     </div>

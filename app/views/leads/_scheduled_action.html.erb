@@ -1,57 +1,59 @@
-<div class="task-card <%= scheduled_action.is_completed? ? 'task-completed' : 'task-pending' %> clickable" 
+<div class="card card--clickable card--status <%= scheduled_action.is_completed? ? 'card--status-success' : 'card--status-primary' %>" 
      id="scheduled_action_<%= scheduled_action.id %>"
-     data-task-url="<%= policy(scheduled_action).show? ? completion_form_scheduled_action_path(scheduled_action) : '' %>">
-  <div class="task-card-header">
-    <div class="task-icon">
-      <%= glyph(scheduled_action.lead_action.try(:glyph) || :pin) %>
-    </div>
-    <div class="task-type">
-      <%= action_and_reason(scheduled_action) %>
-    </div>
-    <div class="task-actions">
-      <% if policy(scheduled_action).edit? %>
-        <%= link_to(edit_scheduled_action_path(scheduled_action), 
-                    class: 'btn-task-action btn-edit',
-                    title: 'Edit Task',
-                    data: { toggle: 'tooltip', placement: 'left' }) do %>
-          <%= glyph(:edit) %>
-        <% end %>
-      <% end %>
-      
-      <% if policy(scheduled_action).complete? && !scheduled_action.completed? %>
-        <%= link_to('#', 
-                    class: 'btn-task-action btn-complete scheduled_action-complete-button',
-                    title: 'Complete Task',
-                    data: { scheduled_action_id: scheduled_action.id, toggle: 'tooltip', placement: 'left' }) do %>
-          <%= glyph(:ok) %>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-  
-  <div class="task-card-body">
-    <% if scheduled_action.description.present? %>
-      <p class="task-description"><%= scheduled_action.description %></p>
-    <% end %>
-    
-    <% unless scheduled_action.target == current_user %>
-      <div class="task-target">
-        <span class="glyphicon glyphicon-user"></span>
-        <%= link_to(scheduled_action.target.name, url_for(scheduled_action.target)) rescue '' %>
+     data-href="<%= policy(scheduled_action).show? ? completion_form_scheduled_action_path(scheduled_action) : '' %>">
+  <div class="card__body">
+    <div class="card__task-layout">
+      <div class="card__icon card__icon--<%= scheduled_action.lead_action.try(:glyph) || 'primary' %>">
+        <%= glyph(scheduled_action.lead_action.try(:glyph) || :list_alt) %>
       </div>
-    <% end %>
-  </div>
-  
-  <div class="task-card-footer">
-    <div class="task-date <%= 'task-overdue' if !scheduled_action.completed? && scheduled_action.schedule.to_datetime < Time.current %>">
-      <span class="glyphicon glyphicon-calendar"></span>
-      <% unless scheduled_action.schedule.duration.present? %>
-        <%= scheduled_action.completed? ? 'Completed' : 'Due' %>
-      <% end %>
-      <%= short_datetime(scheduled_action.schedule.to_datetime) %>
-      <% if scheduled_action.schedule.duration.present? %>
-        to <%= short_time scheduled_action.schedule.end_time_to_datetime %>
-      <% end %>
+      
+      <div class="card__details">
+        <div class="card__meta <%= 'text-danger' if !scheduled_action.completed? && scheduled_action.schedule.to_datetime < Time.current %>">
+          <%= glyph(:time) %>
+          <% unless scheduled_action.schedule.duration.present? %>
+            <%= scheduled_action.completed? ? 'Completed' : 'Due' %>
+          <% end %>
+          <%= short_datetime(scheduled_action.schedule.to_datetime) %>
+          <% if scheduled_action.schedule.duration.present? %>
+            to <%= short_time scheduled_action.schedule.end_time_to_datetime %>
+          <% end %>
+        </div>
+        
+        <h4 class="card__title">
+          <%= action_and_reason(scheduled_action) %>
+        </h4>
+        
+        <% if scheduled_action.description.present? || (scheduled_action.target != current_user) %>
+          <p class="card__description">
+            <%= scheduled_action.description if scheduled_action.description.present? %>
+            <% unless scheduled_action.target == current_user %>
+              <span class="text-primary">
+                for <%= link_to(scheduled_action.target.name, url_for(scheduled_action.target), class: 'text-primary') rescue '' %>
+              </span>
+            <% end %>
+          </p>
+        <% end %>
+      </div>
+      
+      <div class="card__actions" onclick="event.stopPropagation();">
+        <% if policy(scheduled_action).complete? && !scheduled_action.completed? %>
+          <%= link_to(completion_form_scheduled_action_path(scheduled_action, event: 'complete'), 
+                      class: 'btn btn--success btn--icon',
+                      title: 'Complete Task',
+                      data: { toggle: 'tooltip', placement: 'top' }) do %>
+            <%= glyph(:ok) %>
+          <% end %>
+        <% end %>
+        
+        <% if policy(scheduled_action).edit? %>
+          <%= link_to(edit_scheduled_action_path(scheduled_action), 
+                      class: 'btn btn--secondary btn--icon',
+                      title: 'Edit Task',
+                      data: { toggle: 'tooltip', placement: 'top' }) do %>
+            <%= glyph(:pencil) %>
+          <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
