@@ -320,20 +320,15 @@ class Message < ApplicationRecord
     when message_type.nil?
       return 'NONE'
     when message_type.sms?
+      # For SMS: returns the Twilio phone number from MESSAGE_DELIVERY_TWILIO_PHONE
       return Messages::Sender.find_adapter(self).base_senderid
     when message_type.email?
-      # Use MESSAGE_DELIVERY_REPLY_TO as the base CloudMailin address
-      reply_to_env = ENV['MESSAGE_DELIVERY_REPLY_TO']
-      if reply_to_env.present? && reply_to_env.include?('@')
-        # Extract the CloudMailin address and add thread ID
-        base_address = reply_to_env.split('@').first
-        domain = reply_to_env.split('@').last
-        return "#{base_address}+#{threadid}@#{domain}"
-      else
-        # Fallback to constructed address if MESSAGE_DELIVERY_REPLY_TO is not set
-        email_prefix = (messageable.is_a?(Lead) || messageable.is_a?(Roommate)) ? 'leasing' : 'bluesky'
-        return "#{email_prefix}+#{threadid}@cloudmailin.net"
-      end
+      # For Email: CRITICAL - This must use the CloudMailin address from MESSAGE_DELIVERY_REPLY_TO
+      # base_senderid returns the full CloudMailin address (e.g., "1b524cb3122f466ecc5a@cloudmailin.net")
+      # We add the thread ID using '+' addressing: "1b524cb3122f466ecc5a+threadid@cloudmailin.net"
+      # This allows CloudMailin to route replies back to the correct conversation thread
+      # WARNING: Do NOT use SMTP_DOMAIN here - CloudMailin needs its specific address to route replies
+      return Messages::Sender.find_adapter(self).base_senderid.sub('@',"+#{threadid}@")
     end
   end
 
