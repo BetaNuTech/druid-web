@@ -295,8 +295,7 @@ class Message < ApplicationRecord
     if message_type.email? && outgoing?
       # Use different email prefixes based on messageable type
       email_prefix = (messageable.is_a?(Lead) || messageable.is_a?(Roommate)) ? 'leasing' : 'bluesky'
-      # Use CloudMailin domain for lead/message FROM addresses
-      verified_sender = "#{email_prefix}@#{ENV.fetch('CLOUDMAILIN_DOMAIN', 'cloudmailin.net')}"
+      verified_sender = "#{email_prefix}@#{ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')}"
       return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluecrest Residential'}\" <#{verified_sender}>"
     else
       return senderid
@@ -323,12 +322,18 @@ class Message < ApplicationRecord
     when message_type.sms?
       return Messages::Sender.find_adapter(self).base_senderid
     when message_type.email?
-      # Use different email prefixes based on messageable type for threading
-      email_prefix = (messageable.is_a?(Lead) || messageable.is_a?(Roommate)) ? 'leasing' : 'bluesky'
-      # Use CloudMailin domain for lead/message handling
-      base_domain = ENV.fetch('CLOUDMAILIN_DOMAIN', 'cloudmailin.net')
-      base_address = "#{email_prefix}@#{base_domain}"
-      return base_address.sub('@',"+#{threadid}@")
+      # Use MESSAGE_DELIVERY_REPLY_TO as the base CloudMailin address
+      reply_to_env = ENV['MESSAGE_DELIVERY_REPLY_TO']
+      if reply_to_env.present? && reply_to_env.include?('@')
+        # Extract the CloudMailin address and add thread ID
+        base_address = reply_to_env.split('@').first
+        domain = reply_to_env.split('@').last
+        return "#{base_address}+#{threadid}@#{domain}"
+      else
+        # Fallback to constructed address if MESSAGE_DELIVERY_REPLY_TO is not set
+        email_prefix = (messageable.is_a?(Lead) || messageable.is_a?(Roommate)) ? 'leasing' : 'bluesky'
+        return "#{email_prefix}+#{threadid}@cloudmailin.net"
+      end
     end
   end
 
