@@ -337,76 +337,15 @@ a.card {
     margin: 0;
   }
   
-  // Action buttons styling
+  // Action buttons styling - inherit from button component
   .btn--icon {
+    // Card-specific size override
     width: 32px;
     height: 32px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: $border-radius-sm;
-    transition: all 0.2s ease;
     
+    // Smaller icon for card context
     .glyphicon {
       font-size: 14px;
-    }
-    
-    &.btn--success {
-      background: $white;
-      border: 1px solid $gray-300;
-      color: $success;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      
-      &:hover {
-        background: $success;
-        border-color: $success;
-        color: $white !important;
-        transform: translateY(-1px);
-        box-shadow: 0 3px 6px rgba($success, 0.15);
-        
-        .glyphicon {
-          color: $white !important;
-        }
-      }
-    }
-    
-    &.btn--secondary {
-      background: $white;
-      border: 1px solid $gray-300;
-      color: $primary;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      
-      &:hover {
-        background: $primary;
-        border-color: $primary;
-        color: $white !important;
-        transform: translateY(-1px);
-        box-shadow: 0 3px 6px rgba($primary, 0.15);
-        
-        .glyphicon {
-          color: $white !important;
-        }
-      }
-    }
-    
-    &.btn--danger {
-      background: $white;
-      border: 1px solid $gray-300;
-      color: $danger;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      
-      &:hover {
-        background: $danger;
-        border-color: $danger;
-        color: $white !important;
-        transform: translateY(-1px);
-        box-shadow: 0 3px 6px rgba($danger, 0.15);
-        
-        .glyphicon {
-          color: $white !important;
-        }
-      }
     }
   }
 }

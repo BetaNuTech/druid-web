@@ -15,10 +15,20 @@
   &__container {
     text-align: center;
     padding: 0 $spacing-lg;
+    margin: 0 auto; // Center the container
+    max-width: 1200px; // Add max-width for better centering
     
     @media (min-width: $screen-md-min) {
       margin-left: 250px; // Account for sidebar
       padding-left: $spacing-xl;
+      
+      // Remove margin when no sidebar is present
+      body.no-sidebar ~ #footer & {
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: $spacing-lg;
+        padding-right: $spacing-lg;
+      }
     }
   }
   
@@ -79,6 +89,16 @@
   
   .container {
     @extend .footer__container;
+    
+    // Override margin when no sidebar
+    @media (min-width: $screen-md-min) {
+      body.no-sidebar ~ #footer & {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
   }
   
   .text-muted {

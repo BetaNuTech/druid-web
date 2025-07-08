@@ -25,9 +25,9 @@
   <% end %>
   
   <div class="section__content">
-    <table class="data-table">
-      <tbody class="data-table__body">
-        <% if current_user.property.present? %>
+    <% if current_user.property.present? && current_user.property.leads.in_progress.high_priority.any? %>
+      <table class="data-table">
+        <tbody class="data-table__body">
           <% current_user.property.leads.in_progress.high_priority.each do |lead| %>
             <tr>
               <td width="70%">
@@ -49,14 +49,20 @@
               </td>
             </tr>
           <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="empty-state empty-state--compact">
+        <div class="empty-state__icon">
+          <%= glyph(:person) %>
+        </div>
+        <% if current_user.property.present? %>
+          <p class="empty-state__text">No high priority leads</p>
+          <p class="empty-state__text empty-state__text--sm text-muted">High priority leads will appear here</p>
         <% else %>
-          <tr>
-            <td>
-              <p class="empty-state__text">None</p>
-            </td>
-          </tr>
+          <p class="empty-state__text">No property assigned</p>
         <% end %>
-      </tbody>
-    </table>
+      </div>
+    <% end %>
   </div>
 </div>

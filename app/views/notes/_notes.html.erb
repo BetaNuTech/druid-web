@@ -1,5 +1,6 @@
 
-      <table class="table">
+      <div class="table-responsive">
+        <table class="table" data-clickable-rows="true">
         <thead>
           <tr>
             <th>Author</th>
@@ -7,7 +8,7 @@
             <th>Action</th>
             <th>Reason</th>
             <th>Content</th>
-            <th></th>
+            <th class="text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -34,15 +35,16 @@
                   <small>Updated <%= long_datetime(note.updated_at) %></small>
                 <% end %>
               </td>
-              <td class="text-nowrap">
+              <td class="actions text-nowrap">
                 <% if policy(note).edit? %>
-                  <%= link_to edit_note_path(note) do %><%= glyph(:edit) %><% end %>&nbsp;
+                  <%= link_to edit_note_path(note), class: "btn btn--icon btn--xs btn--primary", title: "Edit" do %><%= glyph(:pencil) %><% end %>
                 <% end %>
                 <% if policy(note).destroy? %>
-                  <%= link_to note, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+                  <%= link_to note, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--icon btn--xs btn--danger", title: "Delete" do %><%= glyph(:delete) %><% end %>
                 <% end %>
               </td>
             </tr>
           <% end %>
         </tbody>
-      </table>
+        </table>
+      </div>

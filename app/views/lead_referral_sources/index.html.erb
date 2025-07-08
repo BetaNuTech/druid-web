@@ -1,3 +1,4 @@
+<div class="section">
 <div class="row">
   <div class="col-md-6">
     <h1>Lead Referral Sources</h1>
@@ -14,24 +15,29 @@
     <% if @lead_referral_sources.empty? %>
       <p class="lead">None</p>
     <% else %>
-      <thead>
-        <table class="table">
-          <th>Name</th>
-          <th>Actions</th>
-        </thead>
+      <div class="table-responsive">
+        <table class="table" data-clickable-rows="true">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
         <tbody>
           <% @lead_referral_sources.each do |lead_referral_source| %>
             <tr>
               <td><%= lead_referral_source.name %></td>
-              <td>
-                <%= model_link_with_tooltip(lead_referral_source, :show) %>&nbsp;
-                <%= model_link_with_tooltip(lead_referral_source, :edit) %>&nbsp;
-                <%= model_link_with_tooltip(lead_referral_source, :destroy) %>&nbsp;
+              <td class="actions">
+                <%= model_link_with_tooltip(lead_referral_source, :show) %>
+                <%= model_link_with_tooltip(lead_referral_source, :edit) %>
+                <%= model_link_with_tooltip(lead_referral_source, :destroy) %>
               </td>
             </tr>
           <% end %>
         </tbody>
-      </table>
+        </table>
+      </div>
     <% end %>
   </div>
 </div>
+</section>

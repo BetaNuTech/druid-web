@@ -12,46 +12,46 @@
   <% end %>
 
   <div class="row">
-    <div class="col-md-6 form-group">
-      <%= form.label :property, class: 'form-label' %>
-      <%= form.select :property_id, select_property(unit_type.property_id), {include_blank: true}, {class: "form-control"} %>
+    <div class="col-md-6 form__group">
+      <%= form.label :property, class: 'form__label' %>
+      <%= form.select :property_id, select_property(unit_type.property_id), {include_blank: true}, {class: "form__control"} %>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-6 form-group">
-      <%= form.label :name, class: 'form-label' %>
-      <%= form.text_field :name, id: :unit_type_name, class: "form-control" %>
+    <div class="col-md-6 form__group">
+      <%= form.label :name, class: 'form__label' %>
+      <%= form.text_field :name, id: :unit_type_name, class: "form__control" %>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-8 form-group">
-      <%= form.label :description, class: 'form-label' %>
-      <%= form.text_area :description, id: :unit_type_description, class: "form-control" %>
+    <div class="col-md-8 form__group">
+      <%= form.label :description, class: 'form__label' %>
+      <%= form.text_area :description, id: :unit_type_description, class: "form__control" %>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-2 form-group">
-      <%= form.label :sqft, "Square Feet", class: 'form-label' %>
-      <%= form.number_field :sqft, class: "form-control" %>
+    <div class="col-md-2 form__group">
+      <%= form.label :sqft, "Square Feet", class: 'form__label' %>
+      <%= form.number_field :sqft, class: "form__control" %>
     </div>
-    <div class="col-md-2 form-group">
-      <%= form.label :bedrooms, class: 'form-label' %>
-      <%= form.number_field :bedrooms, class: "form-control" %>
+    <div class="col-md-2 form__group">
+      <%= form.label :bedrooms, class: 'form__label' %>
+      <%= form.number_field :bedrooms, class: "form__control" %>
     </div>
-    <div class="col-md-2 form-group">
-      <%= form.label :bathrooms, class: 'form-label' %>
-      <%= form.number_field :bathrooms, class: "form-control" %>
+    <div class="col-md-2 form__group">
+      <%= form.label :bathrooms, class: 'form__label' %>
+      <%= form.number_field :bathrooms, class: "form__control" %>
     </div>
-    <div class="col-md-2 form-group">
-      <%= form.label :market_rent, class: 'form-label' %>
-      <%= form.number_field :market_rent, class: "form-control" %>
+    <div class="col-md-2 form__group">
+      <%= form.label :market_rent, class: 'form__label' %>
+      <%= form.number_field :market_rent, class: "form__control" %>
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
   </div>
 <% end %>

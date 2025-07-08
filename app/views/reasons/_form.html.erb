@@ -13,27 +13,27 @@
 
   <div class="fieldset-content">
     <div class="row">
-      <div class="form-group">
+      <div class="form__group">
         <%= form.label :name %>
-        <%= form.text_field :name, id: :reason_name, class: "form-control" %>
+        <%= form.text_field :name, id: :reason_name, class: "form__control" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="form-group">
+      <div class="form__group">
         <%= form.label :description %>
-        <%= form.text_field :description, id: :reason_description, class: "form-control" %>
+        <%= form.text_field :description, id: :reason_description, class: "form__control" %>
       </div>
     </div>
 
-    <div class="form-check-label">
-      <%= form.check_box :active, class: 'form-check-input' %>
-      Reason is active?
+    <div class="form__check">
+      <%= form.check_box :active, class: 'form__check-input' %>
+      <%= form.label :active, 'Reason is active?', class: 'form__check-label' %>
     </div>
 
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
   </div>
 <% end %>

@@ -31,15 +31,15 @@
               <% else %>
                 <%= agent_form.select :user_id,
                   select_property_user(property: property, selected: agent_form.object.user_id, all: true),
-                  {include_blank: true}, class: "form-control selectize" %>
+                  {include_blank: true}, class: "form__control selectize" %>
               <% end %>
             </div>
             <div class="col-md-3">
               <%= agent_form.label :role %>
-              <%= agent_form.select :role, select_user_role(agent_form.object.role), {}, class: "form-control" %>
+              <%= agent_form.select :role, select_user_role(agent_form.object.role), {}, class: "form__control" %>
             </div>
             <div class="col-md-2" style="padding-top: 2em">
-              <%= agent_form.check_box :_destroy, class: "form-check-input" %>
+              <%= agent_form.check_box :_destroy, class: "form__check-input" %>
               <%= agent_form.label :_destroy, 'Remove' %>
             </div>
           </div>

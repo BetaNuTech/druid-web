@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-6">
     <h1>Teams</h1>
@@ -10,14 +11,15 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <table class="table">
+    <div class="table-responsive">
+      <table class="table" data-clickable-rows="true">
       <thead>
         <tr>
           <th>Name</th>
           <th>Description</th>
           <th>Properties</th>
           <th>Members</th>
-          <th>Actions</th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -47,16 +49,17 @@
                 <p>None</p>
               <% end %>
             </td>
-            <td>
-              <%= link_to(glyph(:object_align_bottom), stats_manager_path(team_ids: [team.id])) %>
-              <%= link_to team do %><%= glyph(:show) %><% end if policy(team).show? %>&nbsp;
-              <%= link_to edit_team_path(team) do %><%= glyph(:edit) %><% end if policy(team).edit? %>&nbsp;
-              <%= link_to team, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(team).destroy? %>
+            <td class="actions">
+              <%= link_to stats_manager_path(team_ids: [team.id]), class: "btn btn--icon btn--xs btn--ghost", title: "Stats" do %><%= glyph(:object_align_bottom) %><% end %>
+              <%= link_to team, class: "btn btn--icon btn--xs btn--ghost", title: "View" do %><%= glyph(:show) %><% end if policy(team).show? %>
+              <%= link_to edit_team_path(team), class: "btn btn--icon btn--xs btn--primary", title: "Edit" do %><%= glyph(:pencil) %><% end if policy(team).edit? %>
+              <%= link_to team, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--icon btn--xs btn--danger", title: "Delete" do %><%= glyph(:delete) %><% end if policy(team).destroy? %>
             </td>
           </tr>
         <% end %>
       </tbody>
-    </table>
+      </table>
+    </div>
   </div>
 </div>
 <div class="row">
@@ -66,3 +69,4 @@
   </div>
   <% end %>
 </div>
+</section>

@@ -18,9 +18,9 @@
         <% allowed_properties = policy(marketing_source).allowed_properties %>
         <% if allowed_properties.count > 1 %>
           <div class="row">
-            <div class="col-sm-12 col-lg-6 form-group">
+            <div class="col-sm-12 col-lg-6 form__group">
               <%= form.label :property_id %>
-              <%= form.select :property_id, options_for_select(allowed_properties.map {|p| [p.name, p.id]}, marketing_source.property_id), { include_blank: false }, { class: 'form-control', id: 'lead_source_property_id' } %>
+              <%= form.select :property_id, options_for_select(allowed_properties.map {|p| [p.name, p.id]}, marketing_source.property_id), { include_blank: false }, { class: 'form__control', id: 'lead_source_property_id' } %>
             </div>
           </div>
         <% else %>
@@ -29,41 +29,41 @@
         <% end %>
 
         <div class="row">
-          <div class="col-md-12 form-group">
+          <div class="col-md-12 form__group">
             <%= form.label :name %>
-            <%= form.text_field :name, class: 'form-control', placeholder: 'i.e. Apartments.com (shown in Lead referral)' %>
+            <%= form.text_field :name, class: 'form__control', placeholder: 'i.e. Apartments.com (shown in Lead referral)' %>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12 form-group">
+          <div class="col-md-12 form__group">
             <%= form.label :description %>
-            <%= form.text_area :description, rows: 4, class: 'form-control' %>
+            <%= form.text_area :description, rows: 4, class: 'form__control' %>
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-3 form-group">
+          <div class="col-xs-3 form__group">
             <%= form.check_box :active, {id: 'marketing_source--form--active--toggle'} %>
             <%= form.label :active %>
           </div>
           <div class="col-xs-9">
             <div class="row">
-              <div class="col-md-12 form-group">
+              <div class="col-md-12 form__group">
                 <%= form.label :start_date %><br/>
                 <%= form.date_field :start_date,
                     { include_blank: true,
                       start_year: (Date.current.year),
                       end_year: (Date.current.year + 1),
-                     class: "form-control form-control-date-select marketing_source--form--start_date--select" } %>
+                     class: "form__control form__control--date-select marketing_source--form--start_date--select" } %>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12 form-group">
+              <div class="col-md-12 form__group">
                 <%= form.label :end_date %><br/>
                 <%= form.date_field :end_date,
                     { include_blank: true,
                       start_year: (Date.current.year),
                       end_year: (Date.current.year + 1),
-                     class: "form-control form-control-date-select marketing_source--form--start_date--select" } %>
+                     class: "form__control form__control--date-select marketing_source--form--start_date--select" } %>
               </div>
             </div>
           </div>
@@ -72,16 +72,16 @@
       <fieldset>
         <legend>Fees</legend>
         <div class="row">
-          <div class="col-xs-6 form-group">
+          <div class="col-xs-6 form__group">
             <%= form.label :fee_type %>
             <%= form.select :fee_type, marketing_source_fee_type_options(marketing_source.fee_type),
-              {include_blank: false}, {class: 'form-control', id: 'marketing_source--form--fee_type--select'} %>
+              {include_blank: false}, {class: 'form__control', id: 'marketing_source--form--fee_type--select'} %>
           </div>
-          <div class="col-xs-6 form-group">
+          <div class="col-xs-6 form__group">
             <%= form.label :fee_rate %>
             <div class="input-group">
-              <span class="input-group-addon">$</span>
-              <%= form.text_field :fee_rate, { class: 'form-control', id: 'marketing_source--form--fee_rate--input' } %>
+              <span class="input-group__addon">$</span>
+              <%= form.text_field :fee_rate, { class: 'form__control', id: 'marketing_source--form--fee_rate--input' } %>
 
             </div>
           </div>
@@ -94,19 +94,19 @@
         <legend>Tracking</legend>
 
         <div class="row">
-          <div class="col-md-12 form-group">
+          <div class="col-md-12 form__group">
             <% integration_options = MarketingSources::IncomingIntegrationHelper.new(property: marketing_source.property, integration: marketing_source.lead_source).options_for_integration %>
             <%= form.label :lead_source_id, 'Lead Source' %>
-            <%#= form.select :lead_source_id, lead_source_incoming_integration_options(marketing_source.lead_source_id), {include_blank: true}, { class: 'form-control', id: 'marketing_source--email_lead_source--selector' } %>
-            <%= form.select :lead_source_id, marketing_source_lead_source_options(marketing_source), {include_blank: false}, {class: 'form-control', id: 'marketing_source--lead_source--selector'} %>
+            <%#= form.select :lead_source_id, lead_source_incoming_integration_options(marketing_source.lead_source_id), {include_blank: true}, { class: 'form__control', id: 'marketing_source--email_lead_source--selector' } %>
+            <%= form.select :lead_source_id, marketing_source_lead_source_options(marketing_source), {include_blank: false}, {class: 'form__control', id: 'marketing_source--lead_source--selector'} %>
             <span id="lead_source_helpBlock" class="help-block"><%= integration_options[:description] %></span>
           </div>
         </div>
 
         <div class="row tracking_code_entry_container hidden">
-          <div class="col-md-12 form-group tracking_code_entry">
+          <div class="col-md-12 form__group tracking_code_entry">
             <%= form.label :tracking_code %>
-            <%= form.text_field :tracking_code, placeholder: 'Enter tracking code', class: 'form-control' %>
+            <%= form.text_field :tracking_code, placeholder: 'Enter tracking code', class: 'form__control' %>
             <span id="tracking_code_helpBlock" class="help-block">Unused</span>
           </div>
         </div>
@@ -115,17 +115,17 @@
           <div class="col-md-12">
             <h4>Email Tracking</h4>
             <div class="row">
-              <div class="col-md-12 form-group">
+              <div class="col-md-12 form__group">
                 <% integration_options = MarketingSources::IncomingIntegrationHelper.new(property: marketing_source.property, integration: marketing_source.email_lead_source).options_for_integration %>
                 <%= form.label :email_lead_source_id, 'Email Integration' %>
-                <%= form.select :email_lead_source_id, marketing_source_email_lead_source_options(marketing_source), {include_blank: true}, { class: 'form-control', id: 'marketing_source--email_lead_source--selector' } %>
+                <%= form.select :email_lead_source_id, marketing_source_email_lead_source_options(marketing_source), {include_blank: true}, { class: 'form__control', id: 'marketing_source--email_lead_source--selector' } %>
                 <span id="email_lead_source_helpBlock" class="help-block"><%= integration_options[:description] %></span>
               </div>
             </div>
             <div class="row tracking_email_entry">
-              <div class="col-md-12 form-group">
+              <div class="col-md-12 form__group">
                 <%= form.label :tracking_email %>
-                <%= form.email_field :tracking_email, placeholder: 'Enter tracking email', class: 'form-control' %>
+                <%= form.email_field :tracking_email, placeholder: 'Enter tracking email', class: 'form__control' %>
               </div>
             </div>
           </div>
@@ -135,21 +135,21 @@
           <div class="col-md-12">
             <h4>Phone Tracking</h4>
             <div class="row">
-              <div class="col-md-12 form-group">
+              <div class="col-md-12 form__group">
                 <% integration_options = MarketingSources::IncomingIntegrationHelper.new( property: marketing_source.property, integration: marketing_source.phone_lead_source).options_for_integration %>
                 <%= form.label :phone_lead_source_id, 'Phone Integration' %>
-                <%= form.select :phone_lead_source_id, marketing_source_phone_lead_source_options(marketing_source), {include_blank: true}, { class: 'form-control', id: 'marketing_source--phone_lead_source--selector' } %>
+                <%= form.select :phone_lead_source_id, marketing_source_phone_lead_source_options(marketing_source), {include_blank: true}, { class: 'form__control', id: 'marketing_source--phone_lead_source--selector' } %>
                 <span id="phone_lead_source_helpBlock" class="help-block"><%= integration_options[:description] %></span>
               </div>
             </div>
             <div class="row">
-              <div class="col-xs-6 form-group tracking_number_entry hidden">
+              <div class="col-xs-6 form__group tracking_number_entry hidden">
                 <%= form.label :tracking_number %>
-                <%= form.phone_field :tracking_number, placeholder: 'XXX-XXX-XXXX', class: 'form-control' %>
+                <%= form.phone_field :tracking_number, placeholder: 'XXX-XXX-XXXX', class: 'form__control' %>
               </div>
-              <div class="col-xs-6 form-group destination_number_entry hidden">
+              <div class="col-xs-6 form__group destination_number_entry hidden">
                 <%= form.label :destination_number %>
-                <%= form.phone_field :destination_number, placeholder: 'XXX-XXX-XXXX', class: 'form-control' %>
+                <%= form.phone_field :destination_number, placeholder: 'XXX-XXX-XXXX', class: 'form__control' %>
               </div>
             </div>
           </div>
@@ -159,9 +159,9 @@
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
-    <%= link_to 'Back', :back, class: "btn btn--small btn--default" %>
+    <%= link_to 'Back', :back, class: "btn btn--small btn--ghost" %>
   </div>
 
 <% end %>

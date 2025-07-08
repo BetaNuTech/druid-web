@@ -39,7 +39,7 @@
         
         <% if policy(scheduled_action_card).edit? %>
           <%= link_to(edit_scheduled_action_path(scheduled_action_card), 
-                      class: 'btn btn--secondary btn--icon',
+                      class: 'btn btn--primary btn--icon',
                       title: 'Edit Task',
                       data: { toggle: 'tooltip', placement: 'top' }) do %>
             <%= glyph(:pencil) %>

@@ -23,10 +23,10 @@
             <td>
               <%= render partial: "lead_card", locals: {lead: lead} %>
             </td>
-            <td class="nowrap">
-              <%= link_to lead do %><%= glyph(:show) %><% end %>&nbsp;
-              <%= link_to edit_lead_path(lead) do %><%= glyph(:edit) %><% end %>&nbsp;
-              <%= link_to lead, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+            <td class="nowrap actions">
+              <%= link_to lead, class: "btn btn--icon btn--xs btn--ghost", title: "View" do %><%= glyph(:show) %><% end %>
+              <%= link_to edit_lead_path(lead), class: "btn btn--icon btn--xs btn--primary", title: "Edit" do %><%= glyph(:pencil) %><% end %>
+              <%= link_to lead, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--icon btn--xs btn--danger", title: "Delete" do %><%= glyph(:delete) %><% end %>
             </td>
           </tr>
         <% end %>

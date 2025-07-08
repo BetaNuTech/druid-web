@@ -43,13 +43,13 @@
               </div>
             </div>
             
-            <div class="roommate-actions">
+            <div class="card__actions">
               <% if policy(roommate).edit? %>
                 <%= link_to edit_lead_roommate_path(@lead, roommate), 
-                    class: 'btn--action btn--edit', 
+                    class: 'btn btn--icon btn--primary', 
                     title: 'Edit Roommate',
                     data: { toggle: 'tooltip', placement: 'left' } do %>
-                  <%= glyph(:edit) %>
+                  <%= glyph(:pencil) %>
                 <% end %>
               <% end %>
               
@@ -61,7 +61,7 @@
                       toggle: 'tooltip',
                       placement: 'left'
                     },
-                    class: 'btn--action btn--delete',
+                    class: 'btn btn--icon btn--danger',
                     title: 'Remove Roommate' do %>
                   <%= glyph(:trash) %>
                 <% end %>

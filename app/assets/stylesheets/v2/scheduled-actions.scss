@@ -1,0 +1,316 @@
+// Scheduled Actions Page Styles
+// Calendar header and task type toggle
+
+@import 'variables';
+@import 'functions';
+
+// Calendar header layout
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xl;
+  flex-wrap: wrap;
+  gap: $spacing-lg;
+  
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+    
+    h1 {
+      margin: 0;
+    }
+  }
+  
+  &__right {
+    margin-left: auto;
+  }
+}
+
+// Task type toggle slider
+.task-type-toggle {
+  display: inline-flex;
+  background: $gray-100;
+  border-radius: $border-radius-lg;
+  padding: 4px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  position: relative;
+  
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: 8px 16px;
+    border-radius: $border-radius-md;
+    text-decoration: none;
+    color: $gray-600;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 2;
+    white-space: nowrap;
+    
+    .glyphicon {
+      font-size: 14px;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+    
+    &:hover {
+      color: $gray-800;
+      text-decoration: none;
+      
+      .glyphicon {
+        opacity: 1;
+      }
+    }
+    
+    &.active {
+      background: $white;
+      color: $primary;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      
+      .glyphicon {
+        opacity: 1;
+        color: $primary;
+      }
+      
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+}
+
+// Mobile adjustments
+@media (max-width: 767px) {
+  .calendar-header {
+    &__left {
+      width: 100%;
+      
+      h1 {
+        font-size: $font-size-xl;
+      }
+      
+      .schedule-new-task {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    &__right {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  
+  .task-type-toggle {
+    &__option {
+      padding: 6px 12px;
+      font-size: $font-size-xs;
+      
+      .glyphicon {
+        font-size: 12px;
+      }
+      
+      // Hide text on mobile, show only icons
+      @media (max-width: 480px) {
+        span:not(.glyphicon) {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+// Schedule new task button enhancement
+.schedule-new-task {
+  .glyphicon {
+    margin-right: $spacing-xs;
+  }
+}
+
+// Calendar-specific styles
+.scheduled_action_calendar_day {
+  min-height: 80px;
+  padding: $spacing-xs;
+  
+  .scheduled_action_calendar_entry {
+    font-size: $font-size-xs;
+    line-height: 1.4;
+    
+    a {
+      color: $primary;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Task sections
+.row + .row {
+  h3 {
+    margin-top: $spacing-xl;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+// Calendar navigation
+.simple-calendar {
+  .calendar-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    padding: $spacing-md 0;
+    
+    // Month/Year title
+    .calendar-title {
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-semi-bold;
+      color: $gray-900;
+      margin: 0;
+    }
+    
+    // Previous/Next navigation
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: $spacing-xs;
+      padding: 8px 16px;
+      border-radius: $border-radius-md;
+      text-decoration: none;
+      font-weight: $font-weight-medium;
+      font-size: $font-size-sm;
+      transition: all 0.2s ease;
+      
+      // Previous button
+      &:first-child {
+        color: $primary;
+        background: transparent;
+        border: 1px solid $gray-300;
+        
+        &::before {
+          content: '←';
+          font-size: 16px;
+          margin-right: 4px;
+        }
+        
+        &:hover {
+          background: $primary;
+          border-color: $primary;
+          color: $white;
+          transform: translateX(-2px);
+        }
+      }
+      
+      // Next button
+      &:last-child {
+        color: $primary;
+        background: transparent;
+        border: 1px solid $gray-300;
+        
+        &::after {
+          content: '→';
+          font-size: 16px;
+          margin-left: 4px;
+        }
+        
+        &:hover {
+          background: $primary;
+          border-color: $primary;
+          color: $white;
+          transform: translateX(2px);
+        }
+      }
+    }
+  }
+  
+  // Calendar table styling
+  table {
+    width: 100%;
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    
+    thead {
+      tr {
+        background: $gray-50;
+      }
+      
+      th {
+        padding: $spacing-md;
+        text-align: center;
+        font-weight: $font-weight-semi-bold;
+        font-size: $font-size-sm;
+        color: $gray-600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid $gray-200;
+      }
+    }
+    
+    tbody {
+      td {
+        border: 1px solid $gray-100;
+        padding: $spacing-sm;
+        vertical-align: top;
+        background: $white;
+        transition: background-color 0.15s ease;
+        
+        &:hover {
+          background: $gray-50;
+        }
+        
+        &.today {
+          background: rgba($primary, 0.05);
+          
+          &:hover {
+            background: rgba($primary, 0.08);
+          }
+        }
+        
+        &.prev-month,
+        &.next-month {
+          background: $gray-50;
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+}
+
+// Mobile adjustments for calendar
+@media (max-width: 767px) {
+  .simple-calendar {
+    .calendar-heading {
+      flex-wrap: wrap;
+      gap: $spacing-md;
+      text-align: center;
+      
+      .calendar-title {
+        width: 100%;
+        font-size: $font-size-xl;
+      }
+      
+      a {
+        flex: 1;
+        justify-content: center;
+        
+        &:first-child::before,
+        &:last-child::after {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

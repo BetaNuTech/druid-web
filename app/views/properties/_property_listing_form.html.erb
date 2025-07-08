@@ -6,23 +6,23 @@
   <%= listing_form.hidden_field :property_id %>
   <%= listing_form.hidden_field :source_id %>
   <div class="row">
-    <div class="col-md-2 form-group property-listing-form-source-name">
-      <label class="form-label">Source</label>
-      <p class="form-control-static"><%= listing_form.object.source.name %></p>
+    <div class="col-md-2 form__group property-listing-form-source-name">
+      <label class="form__label">Source</label>
+      <p class="form__control-static"><%= listing_form.object.source.name %></p>
     </div>
-    <div class="col-md-3 form-group">
-      <%= listing_form.label :code, 'Listing Code', class: 'form-label sr-only' %>
-      <%= listing_form.text_field :code, placeholder: 'Listing Code or ID', class: 'form-control' %>
+    <div class="col-md-3 form__group">
+      <%= listing_form.label :code, 'Listing Code', class: 'form__label sr-only' %>
+      <%= listing_form.text_field :code, placeholder: 'Listing Code or ID', class: 'form__control' %>
     </div>
-    <div class="col-md-3 form-group">
-      <%= listing_form.label :description, class: 'form-label sr-only' %>
-      <%= listing_form.text_field :description, placeholder: 'Description', class: 'form-control' %>
+    <div class="col-md-3 form__group">
+      <%= listing_form.label :description, class: 'form__label sr-only' %>
+      <%= listing_form.text_field :description, placeholder: 'Description', class: 'form__control' %>
     </div>
-    <div class="col-md-3 form-group">
-      <label class="form-label">&nbsp;</label>
-      <div class="form-check">
-        <%= listing_form.check_box :active, class: 'form-check__input' %>
-        <%= listing_form.label :active, 'Active?', class: 'form-check__label' %>
+    <div class="col-md-3 form__group">
+      <label class="form__label">&nbsp;</label>
+      <div class="form__check">
+        <%= listing_form.check_box :active, class: 'form__check-input' %>
+        <%= listing_form.label :active, 'Active?', class: 'form__check-label' %>
       </div>
     </div>
   </div>

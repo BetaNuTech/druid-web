@@ -24,12 +24,12 @@
         <%= render collection: scheduled_actions.limit(20), partial: 'home/task_card', as: :scheduled_action_card, locals: { task_type: 'upcoming' } %>
       </div>
     <% else %>
-      <div class="section__content section__content--empty">
+      <div class="empty-state empty-state--compact">
         <div class="empty-state__icon">
           <%= glyph(:calendar) %>
         </div>
-        <p>No upcoming tasks</p>
-        <p class="u-text--muted">You're all clear for the future</p>
+        <p class="empty-state__text">No upcoming tasks</p>
+        <p class="empty-state__text empty-state__text--sm text-muted">You're all clear for the future</p>
       </div>
     <% end %>
   </div>

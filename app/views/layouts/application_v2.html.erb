@@ -13,7 +13,7 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body<%- if @webpack %> data-no-turbolink data-no-transition-cache<% end %>>
+  <body class="<%= 'no-sidebar' if devise_controller? %>"<%- if @webpack %> data-no-turbolink data-no-transition-cache<% end %>>
     <div id="app_layout" class="">
       <div id="headerrow" class="header">
         <div class="header__appname">

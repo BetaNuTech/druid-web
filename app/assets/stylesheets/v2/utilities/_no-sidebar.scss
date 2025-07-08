@@ -1,0 +1,34 @@
+// No Sidebar Utility
+// Removes sidebar-related margins on pages without a sidebar (e.g., authentication pages)
+
+@import '../variables';
+
+// Apply to body element for pages without sidebar
+body.no-sidebar {
+  // Only affects desktop (992px+) where sidebar is normally visible
+  @media (min-width: $screen-md-min) {
+    // Remove margin from content areas
+    #app_layout #content.content,
+    .content,
+    #content,
+    #viewcontent {
+      margin-left: 0 !important;
+    }
+    
+    // Remove margin from alerts and notifications
+    .alert,
+    .notifications {
+      margin-left: 0 !important;
+    }
+  }
+  
+  // Footer requires special handling as it's a sibling of body
+  & ~ #footer {
+    @media (min-width: $screen-md-min) {
+      margin-left: 0 !important;
+      
+      // Note: The footer container centering is handled in _footer.scss
+      // to work properly with the @extend directive
+    }
+  }
+}

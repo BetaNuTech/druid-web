@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-6">
     <h1>Roles</h1>
@@ -8,13 +9,14 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <table class="table">
+    <div class="table-responsive">
+      <table class="table" data-clickable-rows="true">
       <thead>
         <tr>
           <th>Name</th>
           <th>Slug</th>
           <th>Description</th>
-          <th>Actions</th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -23,14 +25,16 @@
             <td><strong><%= role.name %></strong></td>
             <td><%= role.slug %></td>
             <td><%= role.description %></td>
-            <td>
-              <%= model_link_with_tooltip(role, :show) %>&nbsp;
-              <%= model_link_with_tooltip(role, :edit) %>&nbsp;
-              <%= model_link_with_tooltip(role, :destroy) %>&nbsp;
+            <td class="actions">
+              <%= model_link_with_tooltip(role, :show) %>
+              <%= model_link_with_tooltip(role, :edit) %>
+              <%= model_link_with_tooltip(role, :destroy) %>
             </td>
           </tr>
         <% end %>
       </tbody>
-    </table>
+      </table>
+    </div>
   </div>
 </div>
+</section>

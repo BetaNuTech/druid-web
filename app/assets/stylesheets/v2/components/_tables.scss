@@ -73,11 +73,29 @@
         background-color: $gray-50;
       }
       
-      &.clickable {
+      &.clickable,
+      &.table__row--clickable {
         cursor: pointer;
         
-        &:hover {
+        &:hover,
+        &.table__row--hover {
           background-color: rgba($primary, 0.05);
+          
+          td {
+            &:first-child {
+              position: relative;
+              
+              &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 3px;
+                background-color: $primary;
+              }
+            }
+          }
         }
       }
       
@@ -120,9 +138,36 @@
       &.actions {
         white-space: nowrap;
         text-align: right;
+        padding-right: $spacing-md;
         
         .btn {
           margin-left: $spacing-xs;
+          
+          &:first-child {
+            margin-left: 0;
+          }
+          
+          // Icon buttons in tables need proper sizing
+          &.btn--icon {
+            &.btn--xs {
+              width: 28px;
+              height: 28px;
+              
+              .glyphicon {
+                font-size: 13px;
+              }
+            }
+          }
+        }
+        
+        // Ensure tooltips work properly with buttons
+        span[data-toggle="tooltip"] {
+          display: inline-block;
+          margin-left: $spacing-xs;
+          
+          &:first-child {
+            margin-left: 0;
+          }
         }
       }
       
@@ -197,6 +242,7 @@
 
 // Responsive table wrapper
 .table-responsive {
+  position: relative;
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -207,26 +253,59 @@
     min-width: 100%;
   }
   
-  // Shadow indicators for scrolling
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 20px;
-    pointer-events: none;
-    z-index: 1;
+  // Shadow indicators for scrolling - removed static implementation
+  // These fade effects should only appear when content actually overflows
+  // and would require JavaScript to detect scroll state dynamically
+}
+
+// Mobile table adjustments
+@media (max-width: 767px) {
+  .table {
+    // Allow text wrapping in regular cells
+    td {
+      white-space: normal;
+      word-break: break-word;
+    }
+    
+    // Prevent button wrapping ONLY in actions column
+    td.actions,
+    td:last-child {
+      // Only apply nowrap if it contains buttons
+      &:has(.btn),
+      &.actions {
+        white-space: nowrap !important;
+        min-width: 70px; // Ensure enough space for buttons
+      }
+      
+      .btn {
+        margin-left: 2px; // Reduce spacing on mobile
+        
+        &.btn--icon.btn--xs {
+          width: 26px;
+          height: 26px;
+          
+          .glyphicon {
+            font-size: 12px;
+          }
+        }
+      }
+      
+      span[data-toggle="tooltip"] {
+        margin-left: 2px;
+        
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
   }
   
-  &::before {
-    left: 0;
-    background: linear-gradient(to right, rgba($white, 1) 0%, rgba($white, 0) 100%);
-  }
-  
-  &::after {
-    right: 0;
-    background: linear-gradient(to left, rgba($white, 1) 0%, rgba($white, 0) 100%);
+  // Optional: Enable horizontal scroll if needed
+  .table-responsive {
+    .table {
+      // Remove min-width to allow natural table sizing
+      min-width: auto;
+    }
   }
 }
 
@@ -283,6 +362,7 @@
     }
   }
 }
+
 
 // Specific table styles for units
 .units-table {

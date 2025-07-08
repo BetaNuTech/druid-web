@@ -1,0 +1,61 @@
+// Message Template Show Page Styles - BEM Structure
+// Styling for message template preview and autofill help
+
+@import '../../variables';
+@import '../../functions';
+
+// Message template preview container
+.message-template-preview {
+  &__container {
+    margin-bottom: $spacing-lg;
+  }
+
+  &__iframe {
+    width: 100%;
+    border: 0;
+    margin: 1em; // Match v0/v1 styling
+    display: block;
+  }
+}
+
+// Autofill help section
+.autofill-help {
+  &__section {
+    background-color: $gray-50;
+    padding: $spacing-md;
+    border-radius: $border-radius-md;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    margin-bottom: $spacing-md;
+  }
+
+  &__list {
+    margin: 0;
+    
+    dt {
+      font-size: 1.1em;
+      font-weight: bold;
+      font-style: italic;
+      margin-top: $spacing-sm;
+      color: $primary;
+    }
+    
+    dd {
+      margin-left: $spacing-lg;
+      margin-bottom: $spacing-sm;
+      color: $gray-600;
+    }
+  }
+}
+
+// Legacy support - maintain backward compatibility
+iframe#message_template_preview {
+  @extend .message-template-preview__iframe;
+}
+
+dl.autofill_help {
+  @extend .autofill-help__list;
+}

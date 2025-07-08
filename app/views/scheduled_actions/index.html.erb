@@ -1,18 +1,21 @@
+<section class="section">
 <div class="row">
   <div class="col-md-12">
     <div class="calendar-header">
-      <h1>My Task Calendar</h1>
-      <div class="calendar-controls">
+      <div class="calendar-header__left">
+        <h1>My Task Calendar</h1>
         <% if policy(ScheduledAction).new? %>
-          <%= link_to new_scheduled_action_path, class: "btn btn--success schedule-new-task" do %>
+          <%= link_to new_scheduled_action_path, class: "btn btn--primary schedule-new-task" do %>
             <span class="glyphicon glyphicon-plus"></span>
             Schedule New Task
           <% end %>
         <% end %>
-        
-        <div class="task-type-selector">
+      </div>
+      
+      <div class="calendar-header__right">
+        <div class="task-type-toggle">
           <%= link_to scheduled_actions_path(team: true), 
-              class: "task-type-btn #{!@all_tasks ? 'active' : ''}", 
+              class: "task-type-toggle__option #{!@all_tasks ? 'active' : ''}", 
               data: { toggle: "tooltip", placement: "bottom" }, 
               title: "View scheduled tours" do %>
             <span class="glyphicon glyphicon-home"></span>
@@ -20,7 +23,7 @@
           <% end %>
           
           <%= link_to scheduled_actions_path(all: true), 
-              class: "task-type-btn #{@all_tasks && !@team_tasks ? 'active' : ''}", 
+              class: "task-type-toggle__option #{@all_tasks && !@team_tasks ? 'active' : ''}", 
               data: { toggle: "tooltip", placement: "bottom" }, 
               title: "View your personal tasks" do %>
             <span class="glyphicon glyphicon-user"></span>
@@ -28,10 +31,10 @@
           <% end %>
           
           <%= link_to scheduled_actions_path(all: true, team: true), 
-              class: "task-type-btn #{@all_tasks && @team_tasks ? 'active' : ''}", 
+              class: "task-type-toggle__option #{@all_tasks && @team_tasks ? 'active' : ''}", 
               data: { toggle: "tooltip", placement: "bottom" }, 
               title: "View all team tasks" do %>
-            <span class="glyphicon glyphicon-users"></span>
+            <span class="glyphicon glyphicon-th-list"></span>
             Team Tasks
           <% end %>
         </div>
@@ -72,8 +75,9 @@
   </div>
 </div>
 <% end %>
-
+</section>
 <!-- Due and Upcoming tasks -->
+<section class="section">
 <div class="row">
   <div class="col-md-12">
     <div class="row">
@@ -88,8 +92,10 @@
     </div>
   </div>
 </div>
+</section>
 
 <!-- Previous tasks -->
+<section class="section">
 <% cache([@current_user, "calendar_previous_tasks", @start_date, @current_user.task_calendar_expiration]) do %>
 <div class="row">
   <div class="col-md-12">
@@ -98,10 +104,8 @@
         <h3>Previous</h3>
       </div>
       <% unless @limit_set %>
-        <div class="col-md-6 text-right" style="position: relative; top: 2em;">
-          <%= link_to(scheduled_actions_path(limit: 200, start_date: @start_date, all: @all_tasks, team: @team_tasks)) do %>
-            <span class="btn btn--extra-small btn--info">View All</span>
-          <% end %>
+        <div class="col-md-6 text-right">
+          <%= link_to "View All", scheduled_actions_path(limit: 200, start_date: @start_date, all: @all_tasks, team: @team_tasks), class: "btn btn--small btn--info" %>
         </div>
       <% end %>
     </div>
@@ -113,3 +117,4 @@
   </div>
 </div>
 <% end %>
+</section>

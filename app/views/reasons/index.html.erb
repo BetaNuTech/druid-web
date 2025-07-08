@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-6">
     <h1>Reasons</h1>
@@ -11,29 +12,32 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Active?</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @reasons.each do |reason| %>
+    <div class="table-responsive">
+      <table class="table" data-clickable-rows="true">
+        <thead>
           <tr>
-            <td class="first-column"><%= reason.name %></td>
-            <td><%= reason.description %></td>
-            <td><%= reason.active ? "Yes" : "No" %></td>
-            <td>
-              <%= model_link_with_tooltip(reason, :show) %>&nbsp;
-              <%= model_link_with_tooltip(reason, :edit) %>&nbsp;
-              <%= model_link_with_tooltip(reason, :destroy) %>&nbsp;
-            </td>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Active?</th>
+            <th class="text-right">Actions</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% @reasons.each do |reason| %>
+            <tr>
+              <td class="first-column"><%= reason.name %></td>
+              <td><%= reason.description %></td>
+              <td><%= reason.active ? "Yes" : "No" %></td>
+              <td class="actions">
+                <%= model_link_with_tooltip(reason, :show) %>
+                <%= model_link_with_tooltip(reason, :edit) %>
+                <%= model_link_with_tooltip(reason, :destroy) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
+</section>

@@ -1,5 +1,40 @@
 $(document).on("turbolinks:load", function(){
   window.slide_nav = new SlideNav();
+  
+  // Handle no-sidebar pages layout adjustments
+  if ($('body').hasClass('no-sidebar')) {
+    function adjustNoSidebarLayout() {
+      // Remove margins from content area
+      $('#content, .content, #viewcontent').css('margin-left', '0');
+      
+      // Handle footer differently based on screen size
+      if ($(window).width() >= 992) { // Desktop
+        // Center the footer container
+        $('#footer .container, #footer .footer__container').css({
+          'margin-left': 'auto',
+          'margin-right': 'auto',
+          'padding-left': '15px',
+          'padding-right': '15px'
+        });
+        
+        $('#footer').css('margin-left', '0');
+      } else {
+        // On mobile/tablet, just ensure no left margin
+        $('#footer, #footer .container').css('margin-left', '0');
+      }
+    }
+    
+    // Run immediately
+    adjustNoSidebarLayout();
+    
+    // Run on window resize
+    $(window).on('resize', function() {
+      setTimeout(adjustNoSidebarLayout, 100);
+    });
+    
+    // Run after potential dynamic updates
+    setTimeout(adjustNoSidebarLayout, 500);
+  }
 });
 
 class SlideNav {

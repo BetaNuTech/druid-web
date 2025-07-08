@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-8">
     <h1>
@@ -20,13 +21,14 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <table class="table">
+    <div class="table-responsive">
+      <table class="table" data-clickable-rows="true">
       <thead>
         <tr>
           <th>Name</th>
           <th>Contact</th>
           <th>Role and Membership</th>
-          <th>Actions</th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
 
@@ -68,18 +70,19 @@
                 <% end %>
               </ul>
             </td>
-            <td>
-              <%= model_link_with_tooltip(user, :show) %>&nbsp;
-              <%= model_link_with_tooltip(user, :edit) %>&nbsp;
-              <%= model_link_with_tooltip(user, :destroy) %>&nbsp;
+            <td class="actions">
+              <%= model_link_with_tooltip(user, :show) %>
+              <%= model_link_with_tooltip(user, :edit) %>
+              <%= model_link_with_tooltip(user, :destroy) %>
               <%= tooltip_block('user-impersonate-link') do %>
-                <%= link_to home_impersonate_path(id: user.id), method: :post, data: {confirm: "Impersonate #{user.name}?"} do %><%= glyph(:sunglasses) %><% end %>
+                <%= link_to home_impersonate_path(id: user.id), method: :post, data: {confirm: "Impersonate #{user.name}?"}, class: "btn btn--icon btn--xs btn--info", title: "Impersonate" do %><%= glyph(:sunglasses) %><% end %>
               <% end if policy(user).impersonate?%>
             </td>
           </tr>
         <% end %>
       </tbody>
-    </table>
+      </table>
+    </div>
   </div>
 </div>
 <% if policy(User).new? %>
@@ -89,3 +92,4 @@
     </div>
   </div>
 <% end %>
+</section>

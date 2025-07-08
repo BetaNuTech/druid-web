@@ -1,4 +1,31 @@
-<div class="timeline-item <%= activity.lead_action.present? ? "timeline-item--#{activity.lead_action.name.parameterize}" : 'timeline-item--note' %>" id="timeline_<%= activity.id %>">
+<%
+  # Map lead actions and activity types to timeline CSS classes
+  timeline_class = if activity.lead_action.present?
+    case activity.lead_action.name.downcase
+    when /state.*(change|transition)/i
+      'timeline-item--state-change'
+    when /email/i
+      'timeline-item--email-sent'
+    when /sms|text/i
+      'timeline-item--sms-sent'
+    when /message/i
+      'timeline-item--message-sent'
+    when /task/i
+      activity.respond_to?(:completed?) && activity.completed? ? 'timeline-item--task-completed' : 'timeline-item--lead-task'
+    when /opt.?in/i
+      'timeline-item--lead-email-sms-opt-in'
+    when /comment|note/i
+      'timeline-item--comment'
+    else
+      "timeline-item--#{activity.lead_action.name.parameterize}"
+    end
+  elsif activity.respond_to?(:messageable) && activity.messageable.present? && activity.messageable_type == 'Message'
+    activity.messageable.category == 'sms' ? 'timeline-item--sms-sent' : 'timeline-item--email-sent'
+  else
+    'timeline-item--note'
+  end
+%>
+<div class="timeline-item <%= timeline_class %>" id="timeline_<%= activity.id %>">
   <div class="timeline-card">
     <div class="timeline-card__icon">
       <% if activity.lead_action.present? %>

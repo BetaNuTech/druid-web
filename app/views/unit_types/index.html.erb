@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-6">
     <% if @property.present? %>
@@ -8,7 +9,8 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <table class="table">
+    <div class="table-responsive">
+      <table class="table" data-clickable-rows="true">
       <thead>
         <tr>
           <th>Property</th>
@@ -26,14 +28,16 @@
               <%= unit_type.size_summary %><br/>
               <%= unit_type.description %>
             </td>
-            <td>
-              <%= link_to property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:show) %><% end if policy(unit_type).show? %>&nbsp;
-              <%= link_to edit_property_unit_type_path(unit_type.property, unit_type) do %><%= glyph(:edit) %><% end if policy(unit_type).edit? %>&nbsp;
-              <%= link_to unit_type, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end if policy(unit_type).destroy? %>
+            <td class="actions">
+              <%= link_to property_unit_type_path(unit_type.property, unit_type), class: "btn btn--icon btn--xs btn--ghost", title: "View" do %><%= glyph(:show) %><% end if policy(unit_type).show? %>
+              <%= link_to edit_property_unit_type_path(unit_type.property, unit_type), class: "btn btn--icon btn--xs btn--primary", title: "Edit" do %><%= glyph(:pencil) %><% end if policy(unit_type).edit? %>
+              <%= link_to unit_type, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--icon btn--xs btn--danger", title: "Delete" do %><%= glyph(:delete) %><% end if policy(unit_type).destroy? %>
             </td>
           </tr>
         <% end %>
       </tbody>
-    </table>
+      </table>
+    </div>
   </div>
 </div>
+</section>

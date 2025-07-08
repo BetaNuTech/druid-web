@@ -17,30 +17,30 @@
       <legend>Lead Source Details</legend>
 
       <div class="row">
-        <div class="col-md-8 form-group">
-          <%= form.label :name, class: 'form-label' %>
-          <%= form.text_field :name, id: :lead_source_name, class: "form-control" %>
+        <div class="col-md-8 form__group">
+          <%= form.label :name, class: 'form__label' %>
+          <%= form.text_field :name, id: :lead_source_name, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-xs-6 form-group">
-          <%= form.label 'Slug/Adapter', class: 'form-label' %>
-          <%= form.select :slug, select_supported_parsers(@lead_source.slug),{}, {id: :lead_source_slug, class: "form-control"} %>
+        <div class="col-xs-6 form__group">
+          <%= form.label 'Slug/Adapter', class: 'form__label' %>
+          <%= form.select :slug, select_supported_parsers(@lead_source.slug),{}, {id: :lead_source_slug, class: "form__control"} %>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-xs-4 form-group">
-          <div class="form-check-label">
-            <%= form.check_box :active, id: :lead_source_active, class: "form-check-input" %>
-            Active?
+        <div class="col-xs-4 form__group">
+          <div class="form__check">
+            <%= form.check_box :active, id: :lead_source_active, class: "form__check-input" %>
+            <%= form.label :active, 'Active?', class: 'form__check-label' %>
           </div>
         </div>
-        <div class="col-xs-4 form-group">
-          <div class="form-check">
-            <%= form.check_box :incoming, id: :lead_source_incoming, class: "form-check__input" %>
-            <%= form.label :incoming, 'Incoming?', class: 'form-check__label' %>
+        <div class="col-xs-4 form__group">
+          <div class="form__check">
+            <%= form.check_box :incoming, id: :lead_source_incoming, class: "form__check-input" %>
+            <%= form.label :incoming, 'Incoming?', class: 'form__check-label' %>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
     </fieldset>
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
     <%= link_to('Cancel', :back, class: "btn btn--xs btn--info") %>
   </div>

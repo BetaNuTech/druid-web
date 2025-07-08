@@ -31,13 +31,15 @@
         <% end %>
       </div>
     <% else %>
-      <div class="section__content section__content--empty">
+      <div class="empty-state empty-state--compact">
         <div class="empty-state__icon">
           <%= glyph(:user) %>
         </div>
-        <p>No active leads</p>
+        <p class="empty-state__text">No active leads</p>
         <% unless Flipflop.enabled?(:design_v1) %>
-          <%= link_to('Create New Walk-In', custom_new_leads_path(entry: 'walkin'), {class: 'btn btn--primary btn--small'}) %>
+          <div class="empty-state__actions">
+            <%= link_to('Create New Walk-In', custom_new_leads_path(entry: 'walkin'), {class: 'btn btn--primary btn--small'}) %>
+          </div>
         <% end %>
       </div>
     <% end %>

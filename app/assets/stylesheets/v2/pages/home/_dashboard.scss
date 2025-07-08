@@ -564,10 +564,31 @@
 
 // Empty state overrides for dashboard
 .section--today,
-.section--upcoming {
+.section--upcoming,
+.section--my-leads,
+.section--property-leads,
+.section--waitlist {
   .empty-state {
+    margin: 0 auto;
+    
     &--compact {
       padding: $spacing-xl $spacing-lg;
+    }
+    
+    // Ensure icons are centered
+    .empty-state__icon {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+    
+    // Ensure text is centered
+    .empty-state__text {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 }

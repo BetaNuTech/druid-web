@@ -62,20 +62,34 @@
   &--email-sent::before,
   &--sms-sent::before {
     border-color: $brand-teal;
+    background: $brand-teal;
   }
   
   &--lead-email-sms-opt-in::before {
     border-color: $info;
+    background: $info;
   }
   
   &--lead-task::before,
   &--task-completed::before {
     border-color: $primary;
+    background: $primary;
   }
   
   &--note::before,
   &--comment::before {
     border-color: $gray-500;
+    background: $gray-500;
+  }
+  
+  // Default colored dot for any other timeline items (fallback)
+  // Apply to any timeline-item that has a modifier but isn't one of the specific types above
+  &[class*="timeline-item--"] {
+    &::before {
+      // Only apply if it doesn't already have a background color
+      background: $white;
+      border-color: $gray-600;
+    }
   }
 }
 

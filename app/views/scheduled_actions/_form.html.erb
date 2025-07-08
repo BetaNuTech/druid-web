@@ -87,7 +87,7 @@
     </div>
     <div class="row">
       <div class="form__group col-md-4">
-        <%= form.label 'Use Template', class: 'form__label' %>
+        <label for="message_template_select" class="form__label">Use Template</label>
         <span class="btn btn--extra-small btn--info" id="scheduled_action_load_notification_template">Load</span>
         <%= select_tag('scheduled_action_message_template_id',
                        message_template_options(MessageType.email, nil),

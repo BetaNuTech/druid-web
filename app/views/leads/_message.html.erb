@@ -5,7 +5,7 @@
     <span class="text-nowrap">
       <% if message.draft? %>
         <%= tooltip_block('message-edit-link') do %>
-          <%= link_to(glyph(:edit), edit_message_path(message), class: "btn btn--xs btn--primary") if policy(message).edit? %>
+          <%= link_to(glyph(:pencil), edit_message_path(message), class: "btn btn--xs btn--primary") if policy(message).edit? %>
         <% end %>
         <%= message_type_indicator(message) %>
         <%= link_to("Send Now", deliver_message_path(message), {method: :post, class: "btn btn--small btn--primary" }) %>

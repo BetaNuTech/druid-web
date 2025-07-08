@@ -1,29 +1,31 @@
-<div class="row">
-  <div class="col-md-12">
-    <h2>Forgot your password?</h2>
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-      <div class="row">
-        <div class="col-md-12">
-          <%= devise_error_messages! %>
-        </div>
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="card card--auth">
+      <div class="card__body">
+          <h2 class="auth__title text-center">Forgot your password?</h2>
+          <p class="auth__subtitle text-center text-muted">Enter your email address and we'll send you instructions to reset your password.</p>
+          
+          <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+            <% if devise_error_messages! != "" %>
+              <div class="alert alert-danger">
+                <%= devise_error_messages! %>
+              </div>
+            <% end %>
 
-        <div class="row" >
-          <div class="col-md-6 form__group">
-            <%= f.label :email, class: 'form__label' %>
-            <%= f.email_field :email, { class: "form__control", autofocus: true } %>
+            <div class="form__group">
+              <%= f.label :email, class: 'form__label' %>
+              <%= f.email_field :email, { class: "form__control", autofocus: true, placeholder: "Enter your email address" } %>
+            </div>
+
+            <div class="form__group">
+              <button type="submit" class="btn btn--primary btn--block btn--lg">Send Password Reset Instructions</button>
+            </div>
+          <% end %>
+          
+          <div class="auth__links text-center">
+            <%= render "devise/shared/links" %>
           </div>
-        </div>
-
-      <div class="row">
-        <div class="col-md-6 form__group">
-          <button type="submit" class="btn btn--primary">Send Password Reset Instructions</button>
-        </div>
       </div>
-    <% end %>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <%= render "devise/shared/links" %>
+    </div>
   </div>
 </div>

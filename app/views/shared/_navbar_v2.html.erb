@@ -117,6 +117,14 @@
         <% end %>
       </div>
     <% end %>
+    <% if ( current_user.admin? || current_user.manager? ) && policy(Resident).index? %>
+      <div class="sidebar--item <%= nav_item_class(:residents) %>">
+        <%= link_to(residents_path) do %>
+          <%= image_tag('/icons/users.svg') %>
+          <span class="sidebar--item-content">Residents</span>
+        <% end %>
+      </div>
+    <% end %>
     <% if policy(Unit).index? %>
       <div class="sidebar--item <%= nav_item_class(:units) %>">
         <%= link_to(units_path) do %>
@@ -231,7 +239,7 @@
         <span class="sidebar--item-content">Help</span>
       <% end %>
     </div>
-    <div class="sidebar--item <%= nav_item_class(:articles) %>">
+    <div class="sidebar--item">
       <a href="#" data-toggle="modal" data-target="#supportTicketModal">
         <%= image_tag('/icons/help.svg') %>
         <span class="sidebar--item-content">Support Ticket</span>

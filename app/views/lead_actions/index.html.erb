@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-6">
     <h1>Lead Actions</h1>
@@ -10,7 +11,8 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <table class="table">
+    <div class="table-responsive">
+      <table class="table" data-clickable-rows="true">
       <thead>
         <tr>
           <th>Name</th>
@@ -20,7 +22,7 @@
           <th>Is Contact?</th>
           <th>Notify Leads?</th>
           <th>State Affinity</th>
-          <th>Actions</th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -33,21 +35,23 @@
             <td><%= lead_action.is_contact ? "Yes" : "No" %></td>
             <td><%= lead_action.notify? ? "Yes" : "No" %></td>
             <td><%= lead_action.state_affinity&.capitalize %></td>
-            <td class="text-nowrap">
-              <%= model_link_with_tooltip(lead_action, :show) %>&nbsp;
-              <%= model_link_with_tooltip(lead_action, :edit) %>&nbsp;
-              <%= model_link_with_tooltip(lead_action, :destroy) %>&nbsp;
+            <td class="actions text-nowrap">
+              <%= model_link_with_tooltip(lead_action, :show) %>
+              <%= model_link_with_tooltip(lead_action, :edit) %>
+              <%= model_link_with_tooltip(lead_action, :destroy) %>
             </td>
           </tr>
         <% end %>
       </tbody>
-    </table>
+      </table>
+    </div>
   </div>
 </div>
-<div classs="row">
+<div class="row">
   <% if policy(LeadAction).new? %>
     <div class="col-md-12 text-right">
       <%= link_to 'Create New Lead Action', new_lead_action_path, class: "btn btn--xs btn--primary" %>
     </div>
   <% end %>
 </div>
+</section>

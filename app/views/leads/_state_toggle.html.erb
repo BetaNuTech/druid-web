@@ -24,7 +24,12 @@
         <% state_options.each do |state_option| %>
           <% if state_option == lead.state %>
             <li class="crumb dropdown">
-              <a role="button" class="crumb-link crumb-active <%= %> dropdown-toggle" data-toggle="dropdown" data-state="<%= state_option %>" href="#" aria-haspopup="true" aria-expanded="false"><%= lead.state.capitalize %></a>
+              <a role="button" class="crumb-link crumb-active dropdown-toggle" data-toggle="dropdown" data-state="<%= state_option %>" href="#" aria-haspopup="true" aria-expanded="false">
+                <% if state_option == 'showing' %>
+                  <%= glyph(:home) %>
+                <% end %>
+                <%= lead.state.capitalize %>
+              </a>
               <% if policy(lead).permitted_state_events.any? %>
               <ul class="dropdown-menu" role="menu">
                 <% policy(lead).permitted_state_events.each do |event_name| %>
@@ -40,7 +45,12 @@
             </li>
           <% else %>
             <li class="crumb">
-              <a class="crumb-link crumb-inactive" data-state="<%= state_option %>" href="#" onClick="return false;"><%= state_option.capitalize %></a>
+              <a class="crumb-link crumb-inactive" data-state="<%= state_option %>" href="#" onClick="return false;">
+                <% if state_option == 'showing' %>
+                  <%= glyph(:home) %>
+                <% end %>
+                <%= state_option.capitalize %>
+              </a>
             </li>
           <% end %>
 
@@ -48,11 +58,9 @@
       </ul>
     </div>
   </div>
-  <div class="state_toggle-agent row">
-    <div class="col-md-12 nowrap">
-      <% if lead.user.present? %>
-        <strong>Agent:</strong> <%= lead.user.name %>
-      <% end %>
+  <% if lead.user.present? %>
+    <div class="state_toggle-agent">
+      <span>Agent: <%= lead.user.name %></span>
     </div>
-  </div>
+  <% end %>
 </div>

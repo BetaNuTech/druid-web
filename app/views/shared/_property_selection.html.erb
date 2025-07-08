@@ -1,10 +1,10 @@
 <% if policy(Property).select_current? %>
   <%= form_tag(select_current_properties_path, method: :post, remote: false, id: 'propertyselection--form', class: 'property-selection-inline') do %>
     <div id="propertyselection--container" class="property-selection-container">
-      <label class="property-selection-label">
+      <label for="propertyselection--selector" class="property-selection-label">
         <%= glyph(:home) %> Property:
       </label>
-      <%= select_tag :property_id, property_options_for_current(@current_property&.id), id: 'propertyselection--selector', class: "form-control property-selection-select" %>
+      <%= select_tag :property_id, property_options_for_current(@current_property&.id), id: 'propertyselection--selector', class: "form__control property-selection-select" %>
       <%= submit_tag 'Select', id: 'propertyselection--submit-button', class: 'btn btn--primary btn--small property-selection-button hidden' %>
     </div>
   <% end %>

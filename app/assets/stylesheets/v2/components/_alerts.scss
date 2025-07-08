@@ -15,6 +15,26 @@
   font-size: $font-size-base;
   line-height: $line-height-base;
   
+  // Ensure buttons inside alerts maintain their styles
+  .btn {
+    &.btn--primary,
+    &.btn--success,
+    &.btn--danger,
+    &.btn--warning,
+    &.btn--info,
+    &.btn--teal {
+      color: $white !important;
+      
+      &:link,
+      &:visited,
+      &:hover,
+      &:focus,
+      &:active {
+        color: $white !important;
+      }
+    }
+  }
+  
   // Alert with icon
   &__icon {
     display: inline-flex;

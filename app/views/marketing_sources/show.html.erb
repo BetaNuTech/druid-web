@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-12">
     <% unless @marketing_source.active? %>
@@ -8,7 +9,7 @@
     <h1>
       <%= @marketing_source.name %>
       <%= link_to('Edit', edit_marketing_source_path(@marketing_source), class: "btn btn--small btn--primary") %>
-      <%= link_to('See All...', marketing_sources_path, class: "btn btn--small btn--default") %>
+      <%= link_to('See All...', marketing_sources_path, class: "btn btn--small btn--ghost") %>
     </h1>
   </div>
 </div>
@@ -105,3 +106,4 @@
     </table>
   </div>
 </div>
+</section>

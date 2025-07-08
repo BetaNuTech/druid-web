@@ -120,25 +120,25 @@ module ApplicationHelper
     case action.to_sym
     when :duplicate
       tooltip_block(slug) do
-        link_to url_for([obj.class, action: :new]) + "?source_id=#{obj.id}" do
+        link_to url_for([obj.class, action: :new]) + "?source_id=#{obj.id}", class: "btn btn--icon btn--xs btn--ghost" do
           glyph(:copy)
         end
       end if policy(obj).new?
     when :show
       tooltip_block(slug) do
-        link_to objs do
+        link_to objs, class: "btn btn--icon btn--xs btn--ghost" do
           glyph(:show)
         end
       end if policy(obj).show?
     when :edit
       tooltip_block(slug) do
-        link_to url_for([ :edit, *objs ]) do
+        link_to url_for([ :edit, *objs ]), class: "btn btn--icon btn--xs btn--primary" do
           glyph(:edit)
         end
       end if policy(obj).edit?
     when :destroy
       tooltip_block(slug) do
-        link_to(objs, method: :delete, data: {confirm: 'Are you sure you want to delete this?'}) do
+        link_to(objs, method: :delete, class: "btn btn--icon btn--xs btn--danger", data: {confirm: 'Are you sure you want to delete this?'}) do
           glyph(:delete)
         end
       end if policy(obj).destroy?

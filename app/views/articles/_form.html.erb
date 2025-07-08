@@ -20,55 +20,55 @@
       </div>
     <% end %>
     <div class="row">
-      <div class="col-md-2 form-group">
-        <%= form.label :articletype, 'Type', class: 'form-label' %>
-        <%= form.select :articletype, select_articletype(@article), {}, class: "form-control" %>
+      <div class="col-md-2 form__group">
+        <%= form.label :articletype, 'Type', class: 'form__label' %>
+        <%= form.select :articletype, select_articletype(@article), {}, class: "form__control" %>
       </div>
-      <div class="col-md-2 form-group">
-        <%= form.label :audience, 'Audience Role', class: 'form-label' %>
-        <%= form.select :audience, select_article_audience(@article), {}, class: "form-control" %>
+      <div class="col-md-2 form__group">
+        <%= form.label :audience, 'Audience Role', class: 'form__label' %>
+        <%= form.select :audience, select_article_audience(@article), {}, class: "form__control" %>
       </div>
-      <div class="col-md-4 form-group">
-        <%= form.label :category, class: 'form-label' %>
-        <%= form.select :category, select_article_category(@article.category), {}, class: "form-control" %>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-8 form-group">
-        <%= form.label :contextid, 'Context', class: 'form-label' %>
-        <%= form.select :contextid, select_article_contextid(@article.contextid), {}, class: "form-control selectize-nocreate" %>
+      <div class="col-md-4 form__group">
+        <%= form.label :category, class: 'form__label' %>
+        <%= form.select :category, select_article_category(@article.category), {}, class: "form__control" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-8 form-group">
-        <%= form.label :title, class: 'form-label' %>
-        <%= form.text_field :title, class: "form-control" %>
+      <div class="col-md-8 form__group">
+        <%= form.label :contextid, 'Context', class: 'form__label' %>
+        <%= form.select :contextid, select_article_contextid(@article.contextid), {}, class: "form__control selectize-nocreate" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-12 form-group">
-        <%= form.label :body, class: 'form-label' %>
-        <%= form.text_area :body, { rows: 40, id: 'html_editor_v2' , class: 'form-control' } %>
+      <div class="col-md-8 form__group">
+        <%= form.label :title, class: 'form__label' %>
+        <%= form.text_field :title, class: "form__control" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 form__group">
+        <%= form.label :body, class: 'form__label' %>
+        <%= form.text_area :body, { rows: 40, id: 'html_editor_v2' , class: 'form__control' } %>
       </div>
     </div>
 
 
     <div class="row">
-      <div class="col-md-3 form-group">
-        <label class="form-label">&nbsp;</label>
-        <div class="form-check">
-          <%= form.check_box :published, class: 'form-check__input' %>
-          <%= form.label :published, 'Published', class: 'form-check__label' %>
+      <div class="col-md-3 form__group">
+        <label class="form__label">&nbsp;</label>
+        <div class="form__check">
+          <%= form.check_box :published, class: 'form__check-input' %>
+          <%= form.label :published, 'Published', class: 'form__check-label' %>
         </div>
       </div>
     </div>
 
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
     <%= link_to 'Back', articles_path, class: "btn btn--xs btn--info" %>
   </div>

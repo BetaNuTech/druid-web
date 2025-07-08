@@ -41,19 +41,6 @@ $(document).on('turbolinks:load', function() {
     console.log("Button:", this);
     console.log("Form found:", $('#scheduled_action_form').length);
   });
-  
-  // Add a global function to test form submission
-  window.testFormSubmit = function() {
-    console.log("Testing form submission...");
-    var form = $('#scheduled_action_form');
-    console.log("Form found:", form.length);
-    if (form.length > 0) {
-      console.log("Submitting form programmatically");
-      form.submit();
-    } else {
-      console.log("Form not found!");
-    }
-  };
 
   function schedule_conflict_check(e){
     var scheduled_action_form = $("#scheduled_action_form");

@@ -1,9 +1,11 @@
+<section class="section">
 <div class="row">
-  <div class="col-md-12">
-    <div class="page-header">
-      <h1>Units at <%= @property&.name || 'Unknown' %></h1>
-    </div>
-  </div>
+  <div class="col-md-6">
+  <% if @property.present? %>
+    <h2><%= @property.name %></h2>
+  <% end %>
+  <h1>Units</h1>
+</div>
 </div>
 
 <div class="row">
@@ -16,7 +18,7 @@
       </div>
       
       <div class="table-responsive">
-        <table class="table table--hover units-table">
+        <table class="table table--hover units-table" data-clickable-rows="true">
       <thead>
         <tr>
           <th>Unit</th>
@@ -26,7 +28,7 @@
           <th>Size</th>
           <th>Beds</th>
           <th>Market Rent</th>
-          <th></th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
 
@@ -54,18 +56,18 @@
                 </td>
                 <td class="actions" data-label="Actions">
                   <% if policy(unit).show? %>
-                    <%= link_to unit, class: "btn btn--xs btn--default", title: 'View' do %>
-                      <%= glyph(:eye_open) %>
+                    <%= link_to unit, class: "btn btn--icon btn--xs btn--ghost", title: 'View' do %>
+                      <%= glyph(:show) %>
                     <% end %>
                   <% end %>
                   <% if policy(unit).edit? %>
-                    <%= link_to edit_unit_path(unit), class: "btn btn--xs btn--primary", title: 'Edit' do %>
-                      <%= glyph(:edit) %>
+                    <%= link_to edit_unit_path(unit), class: "btn btn--icon btn--xs btn--primary", title: 'Edit' do %>
+                      <%= glyph(:pencil) %>
                     <% end %>
                   <% end %>
                   <% if policy(unit).destroy? %>
-                    <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--xs btn--danger", title: 'Delete' do %>
-                      <%= glyph(:trash) %>
+                    <%= link_to unit, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--icon btn--xs btn--danger", title: 'Delete' do %>
+                      <%= glyph(:delete) %>
                     <% end %>
                   <% end %>
                 </td>
@@ -107,3 +109,4 @@
     });
   });
 </script>
+</section>

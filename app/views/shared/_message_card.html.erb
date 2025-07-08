@@ -83,7 +83,7 @@
         <% if message.draft? %>
           <% if policy(message).edit? %>
             <%= link_to edit_message_path(message), class: "btn btn--small", title: 'Edit Draft', data: { 'no-turbolink': true } do %>
-              <%= glyph(:edit) %> Edit
+              <%= glyph(:pencil) %> Edit
             <% end %>
           <% end %>
           <%= link_to deliver_message_path(message), method: :post, class: "btn btn--small", data: { 'no-turbolink': true } do %>

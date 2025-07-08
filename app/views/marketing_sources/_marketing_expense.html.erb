@@ -19,7 +19,7 @@
   <td class="marketing_expense_fee_total_display" width=15%>
     <strong><%= number_to_currency(marketing_expense.fee_total) %></strong>
     <% if policy(marketing_expense).edit? %>
-      <%= link_to(glyph(:edit), edit_marketing_source_marketing_expense_path(marketing_expense.marketing_source, marketing_expense), class: 'hidden') %>
+      <%= link_to(edit_marketing_source_marketing_expense_path(marketing_expense.marketing_source, marketing_expense), class: 'btn btn--icon btn--xs btn--primary', title: 'Edit') do %><%= glyph(:pencil) %><% end %>
     <% else %>
       &nbsp;
     <% end %>

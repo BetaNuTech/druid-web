@@ -13,16 +13,16 @@
 
   <div>
     <div class="row">
-      <div class="col-md-4 form-group">
-        <%= form.label :name, class: 'form-label' %>
-        <%= form.text_field :name, id: :lead_action_name, class: "form-control" %>
+      <div class="col-md-4 form__group">
+        <%= form.label :name, class: 'form__label' %>
+        <%= form.text_field :name, id: :lead_action_name, class: "form__control" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-4 form-group">
-        <%= form.label :glyph, class: 'form-label' %>
-        <%= form.select :glyph, select_glyph(@lead_action.glyph),{include_blank: true}, { id: :lead_action_glyph, class: "form-control" } %>
+      <div class="col-md-4 form__group">
+        <%= form.label :glyph, class: 'form__label' %>
+        <%= form.select :glyph, select_glyph(@lead_action.glyph),{include_blank: true}, { id: :lead_action_glyph, class: "form__control" } %>
       </div>
       <div class="col-md-8">
         <%= render partial: "glyph_samples" %>
@@ -30,44 +30,44 @@
     </div>
 
     <div class="row">
-      <div class="col-md-8 form-group">
-        <%= form.label :description, class: 'form-label' %>
-        <%= form.text_field :description, id: :lead_action_description, class: "form-control" %>
+      <div class="col-md-8 form__group">
+        <%= form.label :description, class: 'form__label' %>
+        <%= form.text_field :description, id: :lead_action_description, class: "form__control" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-4 form-group">
-        <%= form.label :state_affinity, class: 'form-label' %>
+      <div class="col-md-4 form__group">
+        <%= form.label :state_affinity, class: 'form__label' %>
         <%= form.select :state_affinity,
           select_lead_action_state_affinity(@lead_action.state_affinity), {},
-          class: "form-control"
+          class: "form__control"
         %>
       </div>
     </div>
 
-    <div class="form-check">
-      <%= form.check_box :notify, class: 'form-check__input' %>
-      <%= form.label :notify, 'Issue Notification to Lead?', class: 'form-check__label' %>
+    <div class="form__check">
+      <%= form.check_box :notify, class: 'form__check-input' %>
+      <%= form.label :notify, 'Issue Notification to Lead?', class: 'form__check-label' %>
     </div>
 
-    <div class="form-check">
-      <%= form.check_box :is_contact, class: 'form-check__input' %>
-      <%= form.label :is_contact, 'Lead Action is a Lead Contact event?', class: 'form-check__label' %>
+    <div class="form__check">
+      <%= form.check_box :is_contact, class: 'form__check-input' %>
+      <%= form.label :is_contact, 'Lead Action is a Lead Contact event?', class: 'form__check-label' %>
     </div>
 
-    <div class="form-check">
-      <%= form.check_box :active, class: 'form-check__input' %>
-      <%= form.label :active, 'Lead Action is active?', class: 'form-check__label' %>
+    <div class="form__check">
+      <%= form.check_box :active, class: 'form__check-input' %>
+      <%= form.label :active, 'Lead Action is active?', class: 'form__check-label' %>
     </div>
 
-    <div class="form-check">
-      <%= form.check_box :is_system, class: 'form-check__input' %>
-      <%= form.label :is_system, 'Lead Action is a System Action?', class: 'form-check__label' %>
+    <div class="form__check">
+      <%= form.check_box :is_system, class: 'form__check-input' %>
+      <%= form.label :is_system, 'Lead Action is a System Action?', class: 'form__check-label' %>
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
   </div>
 <% end %>

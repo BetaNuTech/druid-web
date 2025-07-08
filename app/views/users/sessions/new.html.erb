@@ -1,42 +1,45 @@
-<div class="row">
-  <div class="col-md-12">
-    <h2>Log in to Bluesky</h2>
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-      <div class="row">
-        <div class="col-md-6 form__group">
-          <%= f.label :email, class: "form__label" %>
-          <%= f.email_field :email, { autofocus: true,  class: "form__control" } %>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6 form__group">
-          <%= f.label :password, class: "form__label" %>
-          <%= f.password_field :password, { autocomplete: "off", class: "form__control" } %>
-        </div>
-      </div>
-
-      <% if devise_mapping.rememberable? -%>
-        <div class="row">
-          <div class="col-md-6 form__group">
-            <div class="form__check">
-              <%= f.check_box :remember_me, class: "form__check-input" %>
-              <%= f.label :remember_me, class: "form__check-label" %>
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="card card--auth">
+      <div class="card__body">
+          <h2 class="auth__title text-center">Log in to BlueSky</h2>
+          <p class="auth__subtitle text-center text-muted">Welcome back! Please log in to your account.</p>
+          
+          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+            <% if flash[:alert] %>
+              <div class="alert alert-danger">
+                <%= flash[:alert] %>
+              </div>
+            <% end %>
+            
+            <div class="form__group">
+              <%= f.label :email, class: "form__label" %>
+              <%= f.email_field :email, { autofocus: true, class: "form__control", placeholder: "Enter your email address" } %>
             </div>
-          </div>
-        </div>
-      <% end -%>
 
-      <div class="row">
-        <div class="col-md-6 form__group">
-          <button type="submit" class="btn btn--primary">Log In</button>
-        </div>
+            <div class="form__group">
+              <%= f.label :password, class: "form__label" %>
+              <%= f.password_field :password, { autocomplete: "off", class: "form__control", placeholder: "Enter your password" } %>
+            </div>
+
+            <% if devise_mapping.rememberable? -%>
+              <div class="form__group">
+                <div class="form__check">
+                  <%= f.check_box :remember_me, class: "form__check-input" %>
+                  <%= f.label :remember_me, class: "form__check-label" %>
+                </div>
+              </div>
+            <% end -%>
+
+            <div class="form__group">
+              <button type="submit" class="btn btn--primary btn--block btn--lg">Log In</button>
+            </div>
+          <% end %>
+          
+          <div class="auth__links text-center">
+            <%= render "devise/shared/links" %>
+          </div>
       </div>
-    <% end %>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <%= render "devise/shared/links" %>
+    </div>
   </div>
 </div>

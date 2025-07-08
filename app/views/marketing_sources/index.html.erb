@@ -1,3 +1,4 @@
+<section class="section">
 <div class="row">
   <div class="col-md-6">
     <h1>Marketing Sources</h1>
@@ -7,8 +8,8 @@
 <%= form_tag(marketing_sources_path, remote: false, method: :get) do %>
   <div class="row">
     <div class="col-xs-6 col-md-3">
-        <div class="form-group">
-          <%= select_tag :property_id, marketing_source_properties(@property_id), class: 'form-control' %>
+        <div class="form__group">
+          <%= select_tag :property_id, marketing_source_properties(@property_id), class: 'form__control' %>
         </div>
     </div>
     <div class="col-xs-2 col-md-2">
@@ -90,3 +91,4 @@
     </div>
   </div>
 <% end %>
+</section>

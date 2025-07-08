@@ -15,27 +15,27 @@
     <fieldset>
       <legend>Role Information</legend>
       <div class="row">
-        <div class="col-md-8 form-group">
-          <%= form.label :name, class: 'form-label' %>
-          <%= form.text_field :name, id: :role_name, class: "form-control" %>
+        <div class="col-md-8 form__group">
+          <%= form.label :name, class: 'form__label' %>
+          <%= form.text_field :name, id: :role_name, class: "form__control" %>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-8 form-group">
-          <%= form.label :slug, class: 'form-label' %>
-          <%= form.text_field :slug, id: :role_slug, class: "form-control" %>
+        <div class="col-md-8 form__group">
+          <%= form.label :slug, class: 'form__label' %>
+          <%= form.text_field :slug, id: :role_slug, class: "form__control" %>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-8 form-group">
-          <%= form.label :description, class: 'form-label' %>
-          <%= form.text_area :description, id: :role_description, class: "form-control" %>
+        <div class="col-md-8 form__group">
+          <%= form.label :description, class: 'form__label' %>
+          <%= form.text_area :description, id: :role_description, class: "form__control" %>
         </div>
       </div>
     </fieldset>
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
   </div>
 <% end %>

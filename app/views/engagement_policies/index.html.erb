@@ -1,51 +1,57 @@
+<section class="section">
 <div class="row">
   <div class="col-md-8">
     <h1>Engagement Policies</h1>
   </div>
 </div>
 
-<div class="row ">
+<div class="row">
   <div class="col-md-12">
 
     <% @engagement_policies.group_by(&:property).each do |property, policies| %>
       <div class="row">
         <h2><%= property ? property.name : 'Default' %></h2>
 
-        <table class="table">
-          <thead>
-            <th>Lead State</th>
-            <th>Tasks</th>
-            <th>Version</th>
-          </thead>
-          <tbody>
-            <% policies.
-                sort{|x,y| Lead.state_names.index(x.lead_state) <=> Lead.state_names.index(y.lead_state)}.
-              each do |policy| %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
               <tr>
-                <td> <%= policy.lead_state.capitalize %> </td>
-                <td>
-                  <ol>
-                    <% policy.actions.active.each do |action| %>
-                      <li>
-                        <strong><%= action.lead_action.name %></strong>
-                        <p>
-                          <i>Deadline:</i> <%= action.deadline %> hours &bull;
-                          <i>Retries:</i> <%= action.retry_count %> &bull;
-                          <i>Retry Delay:</i> <%= action.retry_delay %> hours &bull;
-                          <i>Score:</i> <%= action.score %> points
-                        </p>
-                      </li>
-                    <% end %>
-                  </ol>
-                </td>
-                <td style="width: 5%"><%= policy.version %></td>
+                <th>Lead State</th>
+                <th>Tasks</th>
+                <th>Version</th>
               </tr>
-            <% end %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% policies.
+                  sort{|x,y| Lead.state_names.index(x.lead_state) <=> Lead.state_names.index(y.lead_state)}.
+                each do |policy| %>
+                <tr>
+                  <td> <%= policy.lead_state.capitalize %> </td>
+                  <td>
+                    <ol>
+                      <% policy.actions.active.each do |action| %>
+                        <li>
+                          <strong><%= action.lead_action.name %></strong>
+                          <p>
+                            <i>Deadline:</i> <%= action.deadline %> hours &bull;
+                            <i>Retries:</i> <%= action.retry_count %> &bull;
+                            <i>Retry Delay:</i> <%= action.retry_delay %> hours &bull;
+                            <i>Score:</i> <%= action.score %> points
+                          </p>
+                        </li>
+                      <% end %>
+                    </ol>
+                  </td>
+                  <td style="width: 5%"><%= policy.version %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
 
       </div>
     <% end %>
 
   </div>
 </div>
+</section>

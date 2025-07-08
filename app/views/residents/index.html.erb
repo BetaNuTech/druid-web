@@ -1,21 +1,28 @@
+<section class="section">
 <div class="row">
   <div class="col-md-6">
+    <% if @property.present? %>
+      <h2><%= @property.name %></h2>
+    <% end %>
     <h1>Residents</h1>
   </div>
 </div>
 
 <div class="row">
   <div class="col-md-12">
-    <table id="residents-table" class="table">
-      <thead>
-        <th>Resident ID</th>
-        <th>Status</th>
-        <th>Name</th>
-        <th>Property</th>
-        <th>Unit</th>
-        <th>Contact</th>
-        <th></th>
-      </thead>
+    <div class="table-responsive">
+      <table id="residents-table" class="table" data-clickable-rows="true">
+        <thead>
+          <tr>
+            <th>Resident ID</th>
+            <th>Status</th>
+            <th>Name</th>
+            <th>Property</th>
+            <th>Unit</th>
+            <th>Contact</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
       <tbody>
         <% @residents.each do |resident| %>
           <tr>
@@ -37,15 +44,16 @@
                 <% end %>
               </p>
             </td>
-            <td>
-              <%= link_to property_resident_path(resident.property, resident) do %><%= glyph(:show) %><% end %>&nbsp;
-              <%= link_to edit_property_resident_path(resident.property, resident) do %><%= glyph(:edit) %><% end %>&nbsp;
-              <%= link_to resident, method: :delete, data: { confirm: 'Are you sure?' } do %><%= glyph(:delete) %><% end %>
+            <td class="actions">
+              <%= link_to property_resident_path(resident.property, resident), class: "btn btn--icon btn--xs btn--ghost", title: "View" do %><%= glyph(:show) %><% end %>
+              <%= link_to edit_property_resident_path(resident.property, resident), class: "btn btn--icon btn--xs btn--primary", title: "Edit" do %><%= glyph(:pencil) %><% end %>
+              <%= link_to resident, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn--icon btn--xs btn--danger", title: "Delete" do %><%= glyph(:delete) %><% end %>
             </td>
           </tr>
         <% end %>
       </tbody>
-
-    </table>
+      </table>
+    </div>
   </div>
 </div>
+</section>

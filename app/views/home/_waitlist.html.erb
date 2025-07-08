@@ -25,11 +25,11 @@
           <% end %>
         </div>
       <% else %>
-        <div class="section__content section__content--empty">
+        <div class="empty-state empty-state--compact">
           <div class="empty-state__icon">
             <%= glyph(:hourglass) %>
           </div>
-          <p>No leads are currently on the waitlist</p>
+          <p class="empty-state__text">No leads are currently on the waitlist</p>
         </div>
       <% end %>
   <% else %>
@@ -43,11 +43,11 @@
     </div>
     
     <div class="section__content">
-      <div class="section__content section__content--empty">
+      <div class="empty-state empty-state--compact">
         <div class="empty-state__icon">
           <%= glyph(:home) %>
         </div>
-        <p>No property assigned</p>
+        <p class="empty-state__text">No property assigned</p>
       </div>
     </div>
   <% end %>

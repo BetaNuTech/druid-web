@@ -103,11 +103,6 @@
     background: white;
     border-color: $gray-300;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    
-    .roommate-actions {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
   }
   
   .roommate-main {
@@ -188,49 +183,6 @@
               border: 1px solid rgba($primary, 0.2);
             }
           }
-        }
-      }
-    }
-    
-    .roommate-actions {
-      display: flex;
-      gap: 8px;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s ease;
-      
-      .btn-action {
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: white;
-        border: 1px solid $gray-300;
-        border-radius: 6px;
-        color: $gray-600;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        
-        &:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        &.btn-edit:hover {
-          background: rgba($primary, 0.1);
-          border-color: $primary;
-          color: $primary;
-        }
-        
-        &.btn-delete:hover {
-          background: rgba($danger, 0.1);
-          border-color: $danger;
-          color: $danger;
-        }
-        
-        .glyphicon {
-          font-size: 14px;
         }
       }
     }
@@ -356,12 +308,6 @@
     .roommate-main {
       flex-direction: column;
       gap: 12px;
-      
-      .roommate-actions {
-        opacity: 1 !important;
-        visibility: visible !important;
-        align-self: flex-end;
-      }
     }
     
     .roommate-identity {

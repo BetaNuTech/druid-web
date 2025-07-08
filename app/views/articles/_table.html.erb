@@ -1,6 +1,7 @@
 <% if collection.any? %>
   <h2><%= collection.first.articletype.humanize %></h2>
-  <table class="table">
+  <div class="table-responsive">
+    <table class="table" data-clickable-rows="true">
     <thead>
       <tr>
         <th>Title</th>
@@ -11,7 +12,7 @@
         <th>Article Type</th>
         <th>Category</th>
         <th>Context</th>
-        <th></th>
+        <th class="text-right">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -25,13 +26,14 @@
         <td><%= article.articletype.humanize %></td>
         <td><%= article.category.humanize %></td>
         <td><%= article.contextid %></td>
-        <td class="nowrap">
-          <%= link_to(glyph(:show), article_path(article)) if policy(article).show? %>
-          <%= link_to(glyph(:edit), edit_article_path(article)) if policy(article).edit? %>
-          <%= link_to(glyph(:delete), article_path(article), method: :delete, data: {confirm: 'Are you sure you want to delete this Article?'}) if policy(article).destroy? %>
+        <td class="actions">
+          <%= model_link_with_tooltip(article, :show) %>
+          <%= model_link_with_tooltip(article, :edit) %>
+          <%= model_link_with_tooltip(article, :destroy) %>
         </td>
       </tr>
       <% end %>
     </tbody>
-  </table>
+    </table>
+  </div>
 <% end %>

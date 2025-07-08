@@ -14,15 +14,15 @@
         <%= phone_form.hidden_field :category, value: 'work' %>
         <div class="col-md-3">
           <%= phone_form.label :name %>
-          <%= phone_form.text_field :name, class: "form-control" %>
+          <%= phone_form.text_field :name, class: "form__control" %>
         </div>
         <div class="col-md-1">
           <%= phone_form.label :prefix %>
-          <%= phone_form.number_field :prefix, class: "form-control" %>
+          <%= phone_form.number_field :prefix, class: "form__control" %>
         </div>
         <div class="col-md-2">
           <%= phone_form.label :number %>
-          <%= phone_form.telephone_field :number, class: "form-control" %>
+          <%= phone_form.telephone_field :number, class: "form__control" %>
         </div>
         <div class="col-md-2" style="padding-top: 2em;">
           <%= phone_form.check_box :_destroy %>

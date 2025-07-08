@@ -17,6 +17,17 @@
     position: relative;
   }
   
+  // Add container padding when sidebar collapses
+  @media (max-width: 1199px) {
+    padding-left: $spacing-md;
+    padding-right: $spacing-md;
+  }
+  
+  @media (max-width: 767px) {
+    padding-left: $spacing-sm;
+    padding-right: $spacing-sm;
+  }
+  
   // State controls wrapper
   &__state-controls {
     position: relative;
@@ -59,49 +70,23 @@
 // =============================================================================
 .lead-hero {
   background: $white;
-  margin: $spacing-md 0 0 0; // Only top margin for spacing from property selection
-  position: relative;
-  z-index: 20;
-  display: block;
-  clear: both;
-  
-  &__accent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 60px;
-    height: 100%;
-    background: linear-gradient(180deg, lighten($primary, 15%) 0%, $primary 100%);
-    z-index: 1;
-    overflow: hidden;
-    
-    // Add subtle pattern
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: 
-        repeating-linear-gradient(
-          -45deg,
-          transparent,
-          transparent 15px,
-          rgba(255, 255, 255, 0.05) 15px,
-          rgba(255, 255, 255, 0.05) 30px
-        );
-    }
-  }
+  margin-top: $spacing-md;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: $border-radius-lg;
+  overflow: hidden;
   
   &__banner {
-    background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+    background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
     position: relative;
-    min-height: 80px;
-    z-index: 2;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: $spacing-lg $spacing-xl;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    min-height: 100px;
+    flex-wrap: wrap;
     
-    // Add subtle pattern overlay
+    // Decorative overlay pattern
     &::before {
       content: '';
       position: absolute;
@@ -109,138 +94,205 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: 
-        repeating-linear-gradient(
-          45deg,
-          transparent,
-          transparent 10px,
-          rgba(255, 255, 255, 0.03) 10px,
-          rgba(255, 255, 255, 0.03) 20px
-        );
+      background-image: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
       pointer-events: none;
     }
     
-    // Add decorative bottom accent
+    // Bottom accent line
     &::after {
       content: '';
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 2px;
-      background: linear-gradient(to right, $brand-teal 0%, $success 50%, $warning 100%);
+      height: 3px;
+      background: linear-gradient(90deg, 
+        $brand-teal 0%, 
+        $success 25%, 
+        $warning 50%, 
+        $danger 75%, 
+        $brand-teal 100%
+      );
     }
   }
   
   &__content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: $spacing-xs;
-    padding: $spacing-lg $spacing-xl;
-    padding-left: 80px; // Account for accent bar
-    padding-right: 180px; // Reserve space for Edit button
-    min-height: 80px;
-    position: relative;
-    z-index: 3;
-    
-    > div {
-      display: flex;
-      align-items: center;
-      gap: $spacing-md;
-    }
+    flex: 1;
+    min-width: 0;
+    z-index: 1;
   }
   
   &__name {
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 32px;
+    font-weight: 700;
     color: $white;
     margin: 0;
     line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    flex: 1;
-    min-width: 0; // Allow flex item to shrink below content size
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding-right: $spacing-md;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    // Handle long names
+    @media (min-width: 992px) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    @media (max-width: 991px) {
+      font-size: 28px;
+      flex-wrap: wrap;
+    }
+    
+    @media (max-width: 767px) {
+      font-size: 24px;
+    }
   }
   
   &__vip-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
     border-radius: 50%;
     color: $white;
-    font-size: 12px;
+    font-size: 16px;
     box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
     animation: pulse-vip 2s ease-in-out infinite;
-    margin-left: $spacing-sm;
+    flex-shrink: 0;
   }
   
   &__classification {
-    display: inline-flex;
-    align-items: center;
-    background: linear-gradient(135deg, $warning 0%, darken($warning, 5%) 100%);
-    color: $white;
-    padding: 4px 14px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 600;
+    display: inline-block;
+    background: rgba($warning, 0.2);
+    color: $warning;
+    padding: 4px 12px;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semi-bold;
     margin-top: $spacing-xs;
-    margin-right: $spacing-md;
-    white-space: nowrap;
-    box-shadow: 0 2px 4px rgba($warning, 0.3);
-    text-transform: none;
-    letter-spacing: 0.2px;
-    line-height: 1.3;
-    
-    // Remove max-width and overflow to let it size naturally
-    // Only add back if needed for very long classifications
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   
   &__subtitle {
-    font-size: $font-size-sm;
-    color: rgba($white, 0.9);
+    font-size: $font-size-base;
+    color: rgba($white, 0.85);
     font-weight: $font-weight-regular;
+    margin-top: $spacing-xs;
   }
   
   &__actions {
-    flex-shrink: 0; // Prevent button from shrinking
-    position: absolute;
-    right: $spacing-xl;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10; // Ensure button is clickable
+    flex-shrink: 0;
+    z-index: 2;
     
-    // Use standard button styles
     .btn {
-      position: relative; // Ensure button is clickable
-      z-index: 1;
+      white-space: nowrap;
       
-      // Light button variant on blue background
       &--light {
-        background: rgba($white, 0.95);
+        background: rgba($white, 0.9);
         color: $primary;
-        border: 1px solid rgba($white, 0.3);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 2px solid rgba($white, 0.5);
+        font-weight: $font-weight-semi-bold;
+        padding: 10px 20px;
         
         &:hover {
           background: $white;
-          color: $primary;
-          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+          border-color: $white;
           transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
         &:active {
-          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
           transform: translateY(0);
         }
+      }
+    }
+  }
+}
+
+// Responsive adjustments for lead hero
+
+// Large tablets and small desktops (when sidebar typically collapses)
+@media (max-width: 1199px) {
+  .lead-hero {
+    &__banner {
+      padding: $spacing-lg;
+    }
+    
+    &__content {
+      flex: 1 1 auto;
+      min-width: 300px;
+    }
+    
+    &__name {
+      font-size: 28px;
+    }
+    
+    &__actions {
+      flex: 0 0 auto;
+    }
+  }
+}
+
+// Tablets
+@media (max-width: 991px) {
+  .lead-hero {
+    &__banner {
+      padding: $spacing-md $spacing-lg;
+    }
+    
+    &__content {
+      flex: 1 1 100%;
+      margin-bottom: $spacing-sm;
+    }
+    
+    &__name {
+      font-size: 26px;
+    }
+    
+    &__actions {
+      flex: 1 1 auto;
+      
+      .btn {
+        padding: 8px 16px;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+// Mobile
+@media (max-width: 767px) {
+  .lead-hero {
+    margin-top: $spacing-sm;
+    
+    &__banner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: $spacing-md;
+      padding: $spacing-lg;
+      min-height: auto;
+    }
+    
+    &__content {
+      text-align: center;
+      margin-bottom: 0;
+    }
+    
+    &__name {
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    &__actions {
+      width: 100%;
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
       }
     }
   }
@@ -251,12 +303,11 @@
 // =============================================================================
 .lead-stats {
   background: $white;
-  padding: $spacing-md $spacing-lg;
+  padding: $spacing-lg $spacing-xl;
   display: flex;
-  gap: $spacing-xl;
+  gap: $spacing-2xl;
   flex-wrap: wrap;
-  border-bottom: 1px solid $gray-200;
-  margin-bottom: $spacing-lg;
+  border-top: 1px solid $gray-100;
   
   &__item {
     display: flex;

@@ -1,0 +1,222 @@
+// Authentication Pages Styles
+// Login, Password Reset, Sign Up, etc.
+// Pure BEM implementation without Bootstrap dependencies
+
+@import '../variables';
+
+// Full page wrapper
+.auth-page {
+  min-height: calc(100vh - 50px); // Account for 50px header
+  background: $gray-50;
+  display: flex;
+  flex-direction: column;
+  
+  // Reset margins
+  margin: 0;
+}
+
+// Authentication container - centers the card
+.auth-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  
+  // Adjust for visual centering with header
+  padding-bottom: calc(#{$spacing-xl} + 50px);
+}
+
+// Authentication card
+.card--auth {
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+  .card__body {
+    padding: $spacing-2xl;
+  }
+}
+
+// Authentication title
+.auth__title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-semi-bold;
+  color: $gray-900;
+  margin-bottom: $spacing-sm;
+}
+
+// Authentication subtitle
+.auth__subtitle {
+  font-size: $font-size-base;
+  color: $gray-600;
+  margin-bottom: $spacing-xl;
+  line-height: 1.5;
+}
+
+// Authentication form styles
+.auth-container {
+  .form__group {
+    margin-bottom: $spacing-lg;
+    
+    &:last-of-type {
+      margin-bottom: $spacing-xl;
+    }
+  }
+  
+  .form__label {
+    display: block;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    margin-bottom: $spacing-xs;
+  }
+  
+  .form__control {
+    display: block;
+    width: 100%;
+    padding: $spacing-md;
+    font-size: $font-size-base;
+    line-height: 1.5;
+    color: $gray-900;
+    background-color: $white;
+    background-clip: padding-box;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius-md;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    
+    &:focus {
+      color: $gray-900;
+      background-color: $white;
+      border-color: $primary;
+      outline: 0;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+    
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+  
+  // Checkbox styling - Pure BEM without Bootstrap
+  .form__check {
+    display: flex;
+    align-items: center;
+    
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      margin-right: $spacing-sm;
+      flex-shrink: 0;
+      cursor: pointer;
+      
+      // Reset any inherited styles
+      position: static;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    label {
+      margin: 0;
+      font-weight: normal;
+      cursor: pointer;
+      user-select: none;
+      
+      // Reset any inherited styles
+      display: inline;
+      padding: 0;
+      min-height: auto;
+    }
+  }
+}
+
+// Button modifications for auth pages
+.auth-container {
+  .btn--block {
+    width: 100%;
+    display: block;
+  }
+  
+  .btn--lg {
+    padding: $spacing-md $spacing-xl;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// Authentication links section
+.auth__links {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-xl;
+  border-top: 1px solid $gray-200;
+  
+  a {
+    color: $primary;
+    text-decoration: none;
+    font-size: $font-size-sm;
+    display: inline-block;
+    margin-bottom: $spacing-sm;
+    transition: color 0.15s ease;
+    
+    &:hover {
+      text-decoration: underline;
+      color: darken($primary, 10%);
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Alert styling for auth pages
+.auth-container {
+  .alert {
+    margin-bottom: $spacing-lg;
+    padding: $spacing-md;
+    border-radius: $border-radius-md;
+    font-size: $font-size-sm;
+    
+    &.alert-danger {
+      background: rgba($danger, 0.1);
+      border: 1px solid rgba($danger, 0.2);
+      color: $danger;
+    }
+    
+    &.alert-success {
+      background: rgba($success, 0.1);
+      border: 1px solid rgba($success, 0.2);
+      color: $success;
+    }
+  }
+}
+
+// Text utilities
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: $gray-600;
+}
+
+// Responsive adjustments
+@media (max-width: 767px) {
+  .card--auth {
+    .card__body {
+      padding: $spacing-lg;
+    }
+  }
+  
+  .auth__title {
+    font-size: $font-size-xl;
+  }
+  
+  .auth-container {
+    padding: $spacing-lg;
+  }
+}
+

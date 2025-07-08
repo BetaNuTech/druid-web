@@ -57,6 +57,11 @@
     border: none;
     box-shadow: 0 2px 4px rgba($success, 0.2);
     
+    // Ensure glyphicons are visible
+    .glyphicon {
+      color: $white;
+    }
+    
     &:hover {
       background: linear-gradient(135deg, lighten($success, 5%) 0%, $success 100%);
       transform: translateY(-1px);

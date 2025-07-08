@@ -113,19 +113,22 @@
 
   <div class="row">
     <div class="col-md-12">
-      <table class="table table--striped">
-        <thead>
-          <tr>
-            <th>Dates</th>
-            <th>Description</th>
-            <th>Qty</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= render partial: 'marketing_expense', collection: marketing_source.marketing_expenses.order('start_date DESC') %>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table--striped">
+          <thead>
+            <tr>
+              <th>Dates</th>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= render partial: 'marketing_expense', collection: marketing_source.marketing_expenses.order('start_date DESC') %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

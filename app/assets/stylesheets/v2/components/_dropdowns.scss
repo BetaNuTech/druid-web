@@ -1,0 +1,148 @@
+// Dropdown Component
+// Handles all dropdown menu styles and behaviors
+// Includes Bootstrap 3 compatibility and z-index management
+
+@import '../variables';
+
+// Base dropdown styles
+// Note: Excluding crumb dropdowns and state toggle dropdowns which have their own styles
+.dropdown:not(.crumb):not(#crumbs .dropdown) {
+  position: relative;
+  
+  // Open state
+  &.open {
+    // Allow dropdown to escape parent overflow constraints
+    position: static !important;
+    
+    > .dropdown-menu {
+      z-index: $zindex-dropdown !important;
+      position: absolute !important;
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+}
+
+// Dropdown menu styles
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: $zindex-dropdown;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: $font-size-base;
+  text-align: left;
+  list-style: none;
+  background-color: $white;
+  background-clip: padding-box;
+  border: 1px solid $gray-200;
+  border-radius: $border-radius-md;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  
+  // Right-aligned dropdowns
+  &.pull-right,
+  &.dropdown-menu-right {
+    right: 0;
+    left: auto;
+  }
+  
+  // Links within dropdown
+  > li > a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: $gray-700;
+    white-space: nowrap;
+    text-decoration: none;
+    
+    &:hover,
+    &:focus {
+      color: $gray-900;
+      background-color: $gray-100;
+    }
+  }
+  
+  // Active state
+  > .active > a {
+    &,
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $primary;
+      outline: 0;
+    }
+  }
+  
+  // Disabled state
+  > .disabled > a {
+    &,
+    &:hover,
+    &:focus {
+      color: $gray-500;
+      background-color: transparent;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Dividers
+.dropdown-divider {
+  height: 1px;
+  margin: 9px 0;
+  overflow: hidden;
+  background-color: $gray-200;
+}
+
+// Headers
+.dropdown-header {
+  display: block;
+  padding: 3px 20px;
+  font-size: $font-size-sm;
+  line-height: 1.42857143;
+  color: $gray-600;
+  white-space: nowrap;
+}
+
+// Special dropdown contexts requiring higher z-index
+// Note: State toggle dropdowns are handled in _state-toggle.scss
+
+// Dropdowns inside modals
+.modal {
+  .dropdown.open .dropdown-menu {
+    z-index: $zindex-modal + 10 !important; // Above modal content
+  }
+}
+
+// Dropdowns in fixed navbars
+.navbar-fixed-top,
+.navbar-fixed-bottom {
+  .dropdown.open .dropdown-menu {
+    z-index: $zindex-fixed + 10 !important; // Above fixed navbar
+  }
+}
+
+// Third-party dropdown integrations
+
+// Selectize dropdowns
+.selectize-dropdown {
+  z-index: $zindex-dropdown !important;
+  
+  // Inside modals
+  .modal & {
+    z-index: $zindex-modal + 10 !important;
+  }
+}
+
+// Bootstrap select plugin
+.bootstrap-select {
+  .dropdown-menu {
+    z-index: $zindex-dropdown !important;
+  }
+}

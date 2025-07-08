@@ -16,7 +16,7 @@
 @import 'components/cards';
 @import 'components/info-card'; // Info card component for detail pages
 @import 'components/sections'; // Section wrappers and layout
-@import 'components/state-toggle'; // State toggle breadcrumb component
+@import 'components/state-toggle'; // State toggle breadcrumb component (includes fixes)
 @import 'components/section-headers';
 @import 'components/badges';
 @import 'components/labels'; // Label component (replaces Bootstrap labels)
@@ -35,6 +35,7 @@
 @import 'components/icons'; // Icon styling and enhancements
 @import 'components/grid'; // Grid system (replaces Bootstrap grid)
 @import 'components/alerts'; // Alert messages and notifications
+@import 'components/dropdowns'; // Dropdown menus and behaviors
 @import 'components/source-email'; // Source email display component
 @import 'components/duplicates-section'; // Duplicates section wrapper
 @import 'components/quick-navigation'; // Quick navigation with teal buttons
@@ -47,6 +48,7 @@
 // @import 'layouts/responsive'; // TODO: Create this file
 
 // 5. Page-specific styles
+@import 'pages/auth'; // Authentication pages (login, password reset, etc.)
 @import 'pages/home/dashboard';
 @import 'pages/leads/index'; // Lead pages including show and components
 @import 'pages/leads/components';
@@ -65,6 +67,7 @@
 @import 'pages/notes/index'; // Notes section styles
 @import 'pages/properties/index'; // Properties management styles
 @import 'pages/roommates/index'; // Roommates section styles
+@import 'scheduled-actions'; // Scheduled actions page styles
 
 // 6. Utility classes (should come last for highest specificity)
 @import 'utilities/spacing';
@@ -73,7 +76,7 @@
 @import 'utilities/layout'; // Float, position, and layout utilities
 @import 'utilities/text'; // Text utilities (wrapping, colors, alignment)
 @import 'utilities/animations'; // Animation keyframes and utilities
-@import 'utilities/dropdown-fixes'; // Dropdown z-index fixes
+@import 'utilities/no-sidebar'; // No sidebar utility for auth pages
 @import 'utilities/empty-state-overrides'; // Empty state icon overrides - MUST be last
 
 // 7. Legacy page-specific styles (to be migrated to BEM)

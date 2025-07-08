@@ -16,17 +16,17 @@
     <fieldset>
       <legend>Property</legend>
       <div class="row">
-        <div class="form-group col-md-4">
+        <div class="form__group col-md-4">
           <%= form.label :property_id %>
-          <%= form.select :property_id, select_property(@resident.property_id), {include_blank: true}, { id: :resident_property_id, class: "form-control" } %>
+          <%= form.select :property_id, select_property(@resident.property_id), {include_blank: true}, { id: :resident_property_id, class: "form__control" } %>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form__group col-md-4">
           <%= form.label :unit_id %>
-          <%= form.select :unit_id, select_unit(property: @resident.property, val: @resident.unit_id), {include_blank: true}, { id: :resident_unit_id, class: "form-control" } %>
+          <%= form.select :unit_id, select_unit(property: @resident.property, val: @resident.unit_id), {include_blank: true}, { id: :resident_unit_id, class: "form__control" } %>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form__group col-md-4">
           <%= form.label :status %>
-          <%= form.select :status, select_resident_status(@resident.status), {}, id: :resident_status, class: "form-control" %>
+          <%= form.select :status, select_resident_status(@resident.status), {}, id: :resident_status, class: "form__control" %>
         </div>
       </div>
     </fieldset>
@@ -34,54 +34,54 @@
     <fieldset>
       <legend>Address</legend>
       <div class="row">
-        <div class="form-group col-md-2">
+        <div class="form__group col-md-2">
           <%= form.label :title %>
-          <%= form.select :title, titles_for_select(@resident.title), {include_blank: true}, {id: :resident_title, class: "form-control"} %>
+          <%= form.select :title, titles_for_select(@resident.title), {include_blank: true}, {id: :resident_title, class: "form__control"} %>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form__group col-md-4">
           <%= form.label :first_name %>
-          <%= form.text_field :first_name, id: :resident_first_name, class: "form-control" %>
+          <%= form.text_field :first_name, id: :resident_first_name, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
+        <div class="form__group col-md-2">
           <%= form.label :middle_name %>
-          <%= form.text_field :middle_name, id: :resident_middle_name, class: "form-control" %>
+          <%= form.text_field :middle_name, id: :resident_middle_name, class: "form__control" %>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form__group col-md-4">
           <%= form.label :last_name %>
-          <%= form.text_field :last_name, id: :resident_last_name, class: "form-control" %>
+          <%= form.text_field :last_name, id: :resident_last_name, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-12">
+        <div class="form__group col-md-12">
           <%= form.label :address1 %>
-          <%= form.text_field :address1, id: :resident_address1, class: "form-control" %>
+          <%= form.text_field :address1, id: :resident_address1, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-12">
+        <div class="form__group col-md-12">
           <%= form.label :address2 %>
-          <%= form.text_field :address2, id: :resident_address2, class: "form-control" %>
+          <%= form.text_field :address2, id: :resident_address2, class: "form__control" %>
         </div>
       </div>
 
       <div class="row">
-        <div class="form-group col-md-4">
+        <div class="form__group col-md-4">
           <%= form.label :city %>
-          <%= form.text_field :city, id: :resident_city, class: "form-control" %>
+          <%= form.text_field :city, id: :resident_city, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
+        <div class="form__group col-md-2">
           <%= form.label :state %>
-          <%= form.text_field :state, id: :resident_state, class: "form-control" %>
+          <%= form.text_field :state, id: :resident_state, class: "form__control" %>
         </div>
-        <div class="form-group col-md-2">
+        <div class="form__group col-md-2">
           <%= form.label :zip %>
-          <%= form.text_field :zip, id: :resident_zip, class: "form-control" %>
+          <%= form.text_field :zip, id: :resident_zip, class: "form__control" %>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form__group col-md-4">
           <%= form.label :country %>
-          <%= form.text_field :country, id: :resident_country, class: "form-control" %>
+          <%= form.text_field :country, id: :resident_country, class: "form__control" %>
         </div>
       </div>
 
@@ -90,7 +90,7 @@
 
   <%= render partial: "detail_form", locals: {form: form} %>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
   </div>
 <% end %>

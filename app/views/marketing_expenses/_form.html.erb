@@ -18,49 +18,49 @@
   </div>
 
   <div class="row">
-    <div class="col-xs-4 col-sm-3 form-group">
-      <%= form.label :fee_type, class: 'form-label' %>
+    <div class="col-xs-4 col-sm-3 form__group">
+      <%= form.label :fee_type, class: 'form__label' %>
       <%= form.select :fee_type, marketing_source_fee_type_options(marketing_expense.fee_type),
-        {include_blank: false}, {class: 'form-control' } %>
+        {include_blank: false}, {class: 'form__control' } %>
     </div>
     <div class="col-xs-4 col-sm-3">
       <%= form.label :fee_total, 'Total' %>
       <div class="input-group">
-        <span class="input-group-addon">$</span>
-        <%= form.text_field :fee_total, class: 'form-control' %>
+        <span class="input-group__addon">$</span>
+        <%= form.text_field :fee_total, class: 'form__control' %>
       </div>
     </div>
     <div class="col-xs-4 col-sm-3">
       <%= form.label :quantity %>
-      <%= form.number_field :quantity, min: 0, class: 'form-control' %>
+      <%= form.number_field :quantity, min: 0, class: 'form__control' %>
     </div>
   </div>
 
   <div class="row">
     <div class="col-sm-4">
       <%= form.label :invoice %>
-      <%= form.text_field :invoice, class: 'form-control' %>
+      <%= form.text_field :invoice, class: 'form__control' %>
     </div>
     <div class="col-sm-8">
       <%= form.label :description %>
-      <%= form.text_field :description, class: 'form-control' %>
+      <%= form.text_field :description, class: 'form__control' %>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-xs-6 col-sm-3 form-group">
-      <%= form.label :start_date, class: 'form-label' %>
-      <%= form.date_field :start_date, class: 'form-control' %>
+    <div class="col-xs-6 col-sm-3 form__group">
+      <%= form.label :start_date, class: 'form__label' %>
+      <%= form.date_field :start_date, class: 'form__control' %>
     </div>
-    <div class="col-xs-6 col-sm-3 form-group">
-      <%= form.label :end_date, class: 'form-label' %>
-      <%= form.date_field :end_date, class: 'form-control' %>
+    <div class="col-xs-6 col-sm-3 form__group">
+      <%= form.label :end_date, class: 'form__label' %>
+      <%= form.date_field :end_date, class: 'form__control' %>
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form__group">
     <button type="submit" class="btn btn--primary">Save</button>
-    <%= link_to 'Back', :back, class: "btn btn--small btn--default" %>
+    <%= link_to 'Back', :back, class: "btn btn--small btn--ghost" %>
   </div>
 
 <% end %>

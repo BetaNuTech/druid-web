@@ -10,16 +10,19 @@
 <div class="row">
   <div class="col-md-12">
     <% if @roommates.present? %>
-      <table class="table">
-        <thead>
-          <th>Occupancy</th>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Address</th>
-          <th>Notes</th>
-          <th>Actions</th>
-        </thead>
+      <div class="table-responsive">
+        <table class="table" data-clickable-rows="true">
+          <thead>
+            <tr>
+              <th>Occupancy</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Notes</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
         <tbody>
           <% @roommates.each do |roommate| %>
             <tr>
@@ -28,7 +31,8 @@
             </tr>
           <% end %>
         </tbody>
-      </table>
+        </table>
+      </div>
     <% else %>
       <p class="lead">None</p>
     <% end %>

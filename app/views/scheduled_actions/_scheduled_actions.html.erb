@@ -1,7 +1,8 @@
 <% if scheduled_actions.empty? %>
   <p class="lead">None</p>
 <% else %>
-  <table class="table">
+  <div class="table-responsive">
+    <table class="table" data-clickable-rows="true">
     <thead>
       <tr>
         <th>Subject / Owner</th>
@@ -9,13 +10,13 @@
           Action/Reason
           & Description
         </th>
-        <th></th>
+        <th class="text-right">Actions</th>
       </tr>
     </thead>
     <tbody>
       <% scheduled_actions.each do |scheduled_action| %>
         <% next unless policy(scheduled_action).completion_form? %>
-        <tr>
+        <tr class="clickable" data-href="<%= policy(scheduled_action).show? ? completion_form_scheduled_action_path(scheduled_action) : '' %>">
           <td class="text-nowrap">
             <%= render partial: "scheduled_actions/target_name", locals: {scheduled_action: scheduled_action} %><br/>
             <small> (<%= scheduled_action.user.try(:name) || 'None' %>) </small>
@@ -37,24 +38,25 @@
               <% end %>
             </p>
           </td>
-          <td class="text-nowrap">
+          <td class="actions text-nowrap">
             <% if policy(scheduled_action).edit? %>
-              <%= link_to(edit_scheduled_action_path(scheduled_action)) do %>
-                <%= glyph(:edit) %>
+              <%= link_to(edit_scheduled_action_path(scheduled_action), class: "btn btn--icon btn--xs btn--primary", title: "Edit") do %>
+                <%= glyph(:pencil) %>
               <% end %>
             <% end %>
             <% if scheduled_action.pending? %>
-              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete'), title: 'Complete Task' ) do %><%= glyph(:ok) %><% end %>&nbsp;
-              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete_retry'), title: 'Complete and Re-Attempt Task Later' ) do %><%= glyph(:refresh) %><% end %>&nbsp;
-              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'reject'), title: 'Reject Task' ) do %><%= glyph(:remove) %><% end %>&nbsp;
-              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'note'), title: 'Write Note' ) do %><%= glyph(:file) %><% end %>&nbsp;
+              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete'), class: "btn btn--icon btn--xs btn--success", title: 'Complete Task' ) do %><%= glyph(:ok) %><% end %>
+              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'complete_retry'), class: "btn btn--icon btn--xs btn--info", title: 'Complete and Re-Attempt Task Later' ) do %><%= glyph(:refresh) %><% end %>
+              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'reject'), class: "btn btn--icon btn--xs btn--danger", title: 'Reject Task' ) do %><%= glyph(:remove) %><% end %>
+              <%= link_to( completion_form_scheduled_action_path(scheduled_action, event: 'note'), class: "btn btn--icon btn--xs btn--ghost", title: 'Write Note' ) do %><%= glyph(:file) %><% end %>
             <% else %>
-              <%= link_to(scheduled_action_status(scheduled_action), completion_form_scheduled_action_path(scheduled_action)) %>
+              <%= link_to(scheduled_action_status(scheduled_action), completion_form_scheduled_action_path(scheduled_action), class: "btn btn--icon btn--xs btn--ghost") %>
             <% end %>
 
           </td>
         </tr>
       <% end %>
     </tbody>
-  </table>
+    </table>
+  </div>
 <% end %>
