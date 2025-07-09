@@ -436,6 +436,8 @@ Cloudmailin provides incoming mail via webhooks. Incoming mail is used by the fo
   * Lead import from Internet Listing Services
   * Incoming (email) Messages for the Lead Messaging feature
 
+For detailed information about CloudMailin email processing, lead creation, duplicate detection, and troubleshooting, see `doc/cloudmailin_incoming_leads.md`.
+
 #### BlueSky Configuration
 
 Webhook requests are authorized and validated with a `token` param. Go to `LeadSource#Show` to view and/or reset the `token`
