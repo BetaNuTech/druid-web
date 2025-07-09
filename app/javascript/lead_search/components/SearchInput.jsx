@@ -12,7 +12,6 @@ class SearchInput extends React.Component {
   handleUpdateSearchInput = (event) => {
     const new_value = event.target.value
     this.setState({value: new_value})
-    this.props.onModifyFilter()
     this.props.onUpdateSearchInput(new_value)
   }
 
@@ -33,15 +32,23 @@ class SearchInput extends React.Component {
   render() {
     return(
       <div className={Style.SearchInput}>
-        <div className="input-group">
-          <input type="text" className="form-control"
+        <div className={Style.searchBox}>
+          <input 
+            type="text" 
+            className={Style.searchBox__input}
             onChange={this.handleUpdateSearchInput}
             onKeyPress={this.handleInputKeyPress}
             value={this.state.value}
+            placeholder="Search leads..."
           />
-          <span className="input-group-addon" onClick={this.handleSubmitSearch}>
+          <button 
+            type="button"
+            className={Style.searchBox__button} 
+            onClick={this.handleSubmitSearch}
+            aria-label="Search"
+          >
             <span className="glyphicon glyphicon-search"></span>
-          </span>
+          </button>
         </div>
       </div>
     )
