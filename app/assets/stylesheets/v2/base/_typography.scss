@@ -58,12 +58,18 @@ p {
 // Links
 a {
   color: $primary;
-  text-decoration: none;
+  text-decoration: none !important; // Force no underline
   transition: color 0.2s ease;
+  
+  &:hover,
+  &:active,
+  &:focus,
+  &:visited {
+    text-decoration: none !important; // Remove underline on all states
+  }
   
   &:hover {
     color: darken($primary, 10%);
-    text-decoration: none; // Remove underline on hover
   }
   
   &:focus {
@@ -83,6 +89,16 @@ a {
       color: inherit;
     }
   }
+}
+
+// Universal rule to ensure no text decoration on any link state
+a,
+a:link,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+  text-decoration: none !important;
 }
 
 // Lists

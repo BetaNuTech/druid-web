@@ -1,12 +1,25 @@
+@import '../../../assets/stylesheets/v2/variables';
+
+.LeadSearchLeadLink {
+  text-decoration: none !important;
+  color: inherit;
+  display: block;
+  
+  &:hover {
+    text-decoration: none !important;
+  }
+}
+
 .LeadSearchLead {
   background: #ffffff;
   border: 1px solid #e9ecef;
-  border-radius: 16px;
-  margin: 20px 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  margin: 16px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
+  cursor: pointer;
   
   // Priority indicator border
   &::before {
@@ -21,8 +34,8 @@
   }
   
   &:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.06);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
     border-color: #dee2e6;
     
     // Expand priority indicator on hover
@@ -53,12 +66,13 @@
   .LeadSearchLead {
     display: grid;
     grid-gap: 0;
-    grid-template-columns: 40% 30% 30%;
-    grid-template-areas: "LeadPriority LeadPriority LeadPriority"
-                         "LeadActions LeadActions LeadActions"
-                         "LeadContact LeadProperty LeadPreferences"
-                         "LeadNotes LeadNotes LeadNotes"
-                         "LeadComments LeadComments LeadComments"
+    grid-template-columns: 40% 60%;
+    grid-template-areas: "LeadPriority LeadPriority"
+                         "LeadContact LeadProperty"
+                         "LeadContact LeadPreferences"
+                         "LeadActions LeadActions"
+                         "LeadNotes LeadNotes"
+                         "LeadComments LeadComments"
                          ;
   }
 }
@@ -84,7 +98,7 @@
   background: linear-gradient(to bottom, #f8f9fa, #f3f4f6);
   border-bottom: 1px solid #e9ecef;
   padding: 0;
-  margin: -1px -1px 20px -1px;
+  margin: -1px -1px 12px -1px;
   position: relative;
 
   ul {
@@ -97,11 +111,11 @@
 
   li {
     margin: 0;
-    padding: 12px 20px;
+    padding: 6px 12px;
     display: flex;
     align-items: center;
     border-right: 1px solid rgba(233, 236, 239, 0.8);
-    min-width: 150px;
+    min-width: 100px;
     transition: background 0.2s ease;
     
     &:hover {
@@ -113,17 +127,17 @@
     }
 
     strong {
-      font-size: 10px;
+      font-size: 9px;
       text-transform: uppercase;
       color: #868e96;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      margin-right: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-right: 6px;
       white-space: nowrap;
     }
 
     span {
-      font-size: 14px;
+      font-size: 13px;
       color: #212529;
       font-weight: 500;
       
@@ -131,34 +145,34 @@
       &.priority-urgent {
         color: #fff;
         background: #dc3545;
-        padding: 2px 10px;
-        border-radius: 12px;
+        padding: 1px 8px;
+        border-radius: 10px;
         font-weight: 600;
-        font-size: 12px;
+        font-size: 11px;
       }
       
       &.priority-high {
         color: #fff;
         background: #fd7e14;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
+        padding: 1px 8px;
+        border-radius: 10px;
+        font-size: 11px;
       }
       
       &.priority-normal {
         color: #6c757d;
         background: #e9ecef;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
+        padding: 1px 8px;
+        border-radius: 10px;
+        font-size: 11px;
       }
       
       &.priority-low {
         color: #868e96;
         background: #f1f3f5;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
+        padding: 1px 8px;
+        border-radius: 10px;
+        font-size: 11px;
       }
       
       // State colors with dots
@@ -229,61 +243,26 @@
 
 .contact {
   grid-area: LeadContact;
-  padding: 0 20px 16px 20px;
+  padding: 0 16px 12px 16px;
 }
 
 .lead_name {
   font-size: 1.4em;
-  font-weight: 600;
+  font-weight: 700;
   color: #212529;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: block;
   
-  a {
-    color: #0d6efd;
-    text-decoration: none !important;
-    transition: all 0.2s ease;
-    position: relative;
-    
-    &:hover {
-      color: #0b5ed7;
-      text-decoration: none !important;
-      
-      // Custom underline effect
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -2px;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, #0d6efd, #0b5ed7);
-        transform: scaleX(1);
-        transform-origin: left;
-      }
-    }
-    
-    // Animated underline
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: -2px;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, #0d6efd, #0b5ed7);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
+  span {
+    color: #212529;
   }
 }
 
 .contact_info {
   grid-area: LeadContactInfo;
-  font-size: 14px;
-  line-height: 2;
-  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 4px;
   
   .glyphicon {
     color: #adb5bd;
@@ -302,9 +281,9 @@
 
 .property {
   grid-area: LeadProperty;
-  padding: 0 20px 16px 20px;
+  padding: 0 16px 12px 16px;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.6;
   
   .glyphicon {
     color: #adb5bd;
@@ -335,42 +314,56 @@
 
 .preferences {
   grid-area: LeadPreferences;
-  padding: 0 20px 16px 20px;
-  font-size: 14px;
-  line-height: 1.8;
+  padding: 0 16px 12px 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  display: flex;
+  flex-wrap: wrap;
   
   strong {
     display: inline;
     margin-right: 4px;
-    color: #6c757d;
-    font-weight: 600;
+    color: #495057;
+    font-weight: 700;
     font-size: 13px;
   }
   
   span {
-    display: block;
-    margin-bottom: 4px;
+    display: inline-block;
+    margin-right: 16px;
+    white-space: nowrap;
     
     &:last-child {
-      margin-bottom: 0;
+      margin-right: 0;
     }
   }
 }
 
 .notes {
   grid-area: LeadNotes;
-  padding: 20px;
-  background: linear-gradient(to bottom, #fafbfc, #f8f9fa);
-  border-top: 1px solid #e9ecef;
-  margin: 0 -1px;
+  padding: 16px;
+  background: transparent;
+  border-top: none;
+  margin: 0;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: #e9ecef;
+  }
   
   strong {
-    display: block;
+    display: inline-block;
     margin-bottom: 8px;
-    color: #6c757d;
-    font-size: 11px;
+    color: $brand-teal;
+    font-size: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     font-weight: 700;
   }
   
@@ -383,9 +376,11 @@
     &.lead_notes {
       background: white;
       padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #e9ecef;
-      font-style: italic;
+      border-radius: 6px;
+      border: 2px solid $brand-teal;
+      font-style: normal;
+      color: #212529;
+      font-weight: 500;
     }
   }
 }

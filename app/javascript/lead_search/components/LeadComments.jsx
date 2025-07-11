@@ -13,10 +13,14 @@ class LeadComments extends React.Component {
   }
 
   render() {
+    if (!this.props.comments || this.props.comments.length === 0) {
+      return null;
+    }
+    
     return(
       <div className={Style.LeadComments}>
         <p>
-          <strong>Agent Comments: </strong><br/>
+          <strong>Agent Comments: </strong>
           { this.comment_list() }
         </p>  
       </div>

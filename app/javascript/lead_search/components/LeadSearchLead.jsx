@@ -20,7 +20,8 @@ class LeadSearchLead extends React.Component {
 
   render() {
     return(
-      <div className={Style.LeadSearchLead} key={this.props.data.id} data-priority={this.props.data.priority}>
+      <a href={this.props.data.web_url} className={Style.LeadSearchLeadLink}>
+        <div className={Style.LeadSearchLead} key={this.props.data.id} data-priority={this.props.data.priority}>
         <div className={Style.priority}>
           <ul>
             <li>
@@ -53,32 +54,48 @@ class LeadSearchLead extends React.Component {
                 <span className={Style.vip_icon}><span className="glyphicon glyphicon-heart" aria-hidden="true"> </span></span>
               </React.Fragment> : <span></span>
             }
-            <a href={this.props.data.web_url}>
+            <span>
               {this.props.data.title}&nbsp;
               {this.props.data.first_name}&nbsp;
               {this.props.data.last_name}
-            </a>
+            </span>
           </span>
           <br/>
-          <span>
-            <strong>
-              &nbsp;&nbsp;
-              {this.props.data.company}&nbsp;
-              {this.props.data.company_title}&nbsp;
-            </strong>
-            { this.props.data.company != undefined || this.props.data.company_title != undefined ? <br/> : '' }
-          </span>
-          <LeadActions lead_id={this.props.data.id} lead_state={this.props.data.state} />
-          <br/>
+          {(this.props.data.company || this.props.data.company_title) && (
+            <span>
+              <strong>
+                {this.props.data.company}
+                {this.props.data.company && this.props.data.company_title && ' - '}
+                {this.props.data.company_title}
+              </strong>
+              <br/>
+            </span>
+          )}
           <span className={Style.contact_info} >
-            <span title="Primary Phone" className="glyphicon glyphicon-earphone" />&nbsp;
-            {this.props.data.phone1}<br/>
-            <span title="Secondary Phone" className="glyphicon glyphicon-earphone" />&nbsp;
-            {this.props.data.phone2}<br/>
-            <span title="Email Address" className="glyphicon glyphicon-envelope" />&nbsp;
-            {this.props.data.email}<br/>
-            <span title="Fax Number" className="glyphicon glyphicon-file" />&nbsp;
-            {this.props.data.fax}
+            {this.props.data.phone1 && (
+              <React.Fragment>
+                <span title="Primary Phone" className="glyphicon glyphicon-earphone" />&nbsp;
+                {this.props.data.phone1}<br/>
+              </React.Fragment>
+            )}
+            {this.props.data.phone2 && (
+              <React.Fragment>
+                <span title="Secondary Phone" className="glyphicon glyphicon-earphone" />&nbsp;
+                {this.props.data.phone2}<br/>
+              </React.Fragment>
+            )}
+            {this.props.data.email && (
+              <React.Fragment>
+                <span title="Email Address" className="glyphicon glyphicon-envelope" />&nbsp;
+                {this.props.data.email}<br/>
+              </React.Fragment>
+            )}
+            {this.props.data.fax && (
+              <React.Fragment>
+                <span title="Fax Number" className="glyphicon glyphicon-file" />&nbsp;
+                {this.props.data.fax}
+              </React.Fragment>
+            )}
           </span>
         </div>
         <div className={Style.property}>
@@ -87,9 +104,9 @@ class LeadSearchLead extends React.Component {
             <React.Fragment>
               <span>
                 <span className="glyphicon glyphicon-home" />&nbsp;
-                <a href={this.props.data.property.web_url} >
+                <span>
                   {this.props.data.property.name}
-                </a>
+                </span>
               </span><br/>
               <span>
                 <span className="glyphicon glyphicon-download-alt" />&nbsp;
@@ -98,36 +115,44 @@ class LeadSearchLead extends React.Component {
             </React.Fragment> :
             <span>No Property<br/></span>
           }
-          <span>
-            <span className="glyphicon glyphicon-user" />&nbsp;
-            {this.props.data.referral}
-          </span>
+          {this.props.data.referral && (
+            <span>
+              <span className="glyphicon glyphicon-user" />&nbsp;
+              {this.props.data.referral}
+            </span>
+          )}
         </div>
         <div className={Style.preferences}>
           <span>
             <strong>Move-In: </strong>
             {this.formatDate(this.props.data.preference.move_in)}
-          </span><br/>
-          <span><strong>Price: </strong>
+          </span>
+          <span>
+            <strong>Price: </strong>
             ${this.props.data.preference.max_price || 'Any'}
-          </span><br/>
-          <span><strong>Beds/Baths: </strong>
+          </span>
+          <span>
+            <strong>Beds/Baths: </strong>
             {this.props.data.preference.beds || '?'} beds / {this.props.data.preference.baths || '?'} baths
-          </span><br/>
-          <span><strong>Unit Size: </strong>
+          </span>
+          <span>
+            <strong>Unit Size: </strong>
             {this.props.data.preference.min_area || 'Any' } <i>ft<sup>2</sup></i>
             &nbsp;-&nbsp;
             {this.props.data.preference.max_area || 'Any'} <i>ft<sup>2</sup></i>
-          </span><br/>
+          </span>
         </div>
-        <div className={Style.notes}>
-          <p className={Style.lead_notes}>
-            <strong>Lead Notes: </strong>
-            {this.props.data.preference.notes}
-          </p>
-        </div>
+        <LeadActions lead_id={this.props.data.id} lead_state={this.props.data.state} />
+        {this.props.data.preference.notes && (
+          <div className={Style.notes}>
+            <p className={Style.lead_notes}>
+              <strong>Lead Notes:</strong> {this.props.data.preference.notes}
+            </p>
+          </div>
+        )}
         <LeadComments lead_id={this.props.data.id} comments={this.props.data.comments} />
       </div>
+      </a>
     );
   }
 }

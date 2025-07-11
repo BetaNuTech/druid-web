@@ -26,7 +26,9 @@
           <% end %>
         <% end %>
         <% if @limit_leads != @open_leads.count %>
-          <%= link_to("Show All", search_leads_path(lead_search: {states: ['open']}), class: "btn btn--primary btn--small") %>
+          <% search_params = { states: ['open'] } %>
+          <% search_params[:property_ids] = [@current_property.id] if @current_property.present? %>
+          <%= link_to("Show All", search_leads_path(lead_search: search_params), class: "btn btn--primary btn--small") %>
         <% end %>
       </div>
     </div>

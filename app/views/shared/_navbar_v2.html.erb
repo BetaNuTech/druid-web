@@ -51,7 +51,9 @@
   </div>
   <div class="sidebar--item-group">
     <div class="sidebar--item <%= nav_item_class(:leads, :search) %>">
-      <%= link_to(search_leads_path(lead_search: {states: ['open']})) do %>
+      <% search_params = { states: ['open'] } %>
+      <% search_params[:property_ids] = [@current_property.id] if @current_property.present? %>
+      <%= link_to(search_leads_path(lead_search: search_params)) do %>
         <%= image_tag('/icons/open_folder.svg') %>
         <span class="sidebar--item-content">Open</span>
       <% end %>
@@ -69,7 +71,9 @@
       <% end %>
     </div>
     <div class="sidebar--item <%= nav_item_class(:leads, :search) %>">
-      <%= link_to(search_leads_path(lead_search: {states: ['waitlist']})) do %>
+      <% waitlist_params = { states: ['waitlist'] } %>
+      <% waitlist_params[:property_ids] = [@current_property.id] if @current_property.present? %>
+      <%= link_to(search_leads_path(lead_search: waitlist_params)) do %>
         <%= image_tag('/icons/hourglass.svg') %>
         <span class="sidebar--item-content">Waitlist</span>
       <% end %>

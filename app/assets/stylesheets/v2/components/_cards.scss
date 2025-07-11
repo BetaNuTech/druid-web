@@ -492,11 +492,12 @@ a.card {
   align-items: flex-start;
   gap: $spacing-xs;
   font-size: $font-size-sm;
-  color: $gray-600;
+  color: $gray-700;
+  font-weight: $font-weight-medium;
   margin-top: $spacing-sm;
   
   .glyphicon {
-    color: $gray-500;
+    color: $brand-teal;
     flex-shrink: 0;
     margin-top: 2px;
   }
