@@ -311,6 +311,11 @@
     border: none;
   }
   
+  // Section with dropdowns (allows overflow for dropdown menus)
+  &--with-dropdowns {
+    overflow: visible;
+  }
+  
   // Flush section (no margin)
   &--flush {
     margin-bottom: 0;
