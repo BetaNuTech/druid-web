@@ -7,7 +7,7 @@
     :message_type_id: <%= MessageType.sms&.id %>
     :subject: None
     :body: |
-      Thanks for your interest in {{property_name}}! If you would like to learn more or set an appointment by text, please reply "yes" to this message. If you rather opt out, please reply "stop".
+      Thank you for your interest in {{property_name}}! If you’d like to learn more or schedule an appointment via text, simply reply “YES” to this message. To opt out, reply “STOP.”
   - :name: <%= Leads::Messaging::SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME %>
     :message_type_id: <%= MessageType.sms&.id %>
     :subject: None
