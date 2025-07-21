@@ -361,5 +361,105 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         expect(completed_email.reload.status).to eq('completed')
       end
     end
+    
+    context "with invalid email prefixes" do
+      let(:blueskyleads_email_data) {
+        {
+          headers: {
+            'From' => 'blueskyleads@vintage-edge.com',
+            'To' => "property+#{property.id}@cloudmailin.net",
+            'Subject' => 'Rental Inquiry',
+            'Date' => '2025-06-10 16:39:50 UTC'
+          },
+          plain: 'I am interested in your property. Call me at 555-987-6543.'
+        }
+      }
+      
+      let(:blueskyleads_raw_email) { create(:cloudmailin_raw_email, raw_data: blueskyleads_email_data, property_code: property.id.to_s) }
+      
+      let(:invalid_email_response) {
+        {
+          'is_lead' => true,
+          'lead_type' => 'rental_inquiry',
+          'confidence' => 0.95,
+          'source_match' => 'Unknown',
+          'lead_data' => {
+            'first_name' => 'Potential',
+            'last_name' => 'Tenant',
+            'email' => nil, # OpenAI should return null for invalid email prefix
+            'phone1' => '5559876543',
+            'notes' => 'Interested in property'
+          },
+          'classification_reason' => 'Email contains rental inquiry'
+        }
+      }
+      
+      before do
+        openai_client = instance_double(OpenaiClient)
+        allow(OpenaiClient).to receive(:new).and_return(openai_client)
+        allow(openai_client).to receive(:analyze_email).and_return(invalid_email_response)
+      end
+      
+      it "creates lead with null email when OpenAI identifies invalid prefix" do
+        expect {
+          described_class.perform_now(blueskyleads_raw_email)
+        }.to change { Lead.count }.by(1)
+        
+        lead = Lead.last
+        # OpenAI returned null for email, so no fallback extraction should occur
+        expect(lead.email).to be_nil
+        expect(lead.phone1).to eq('5559876543')
+        expect(blueskyleads_raw_email.reload.status).to eq('completed')
+      end
+      
+      context "with multiple emails where one is valid" do
+        let(:multiple_emails_response) {
+          {
+            'is_lead' => true,
+            'lead_type' => 'rental_inquiry',
+            'confidence' => 0.95,
+            'source_match' => 'Unknown',
+            'lead_data' => {
+              'first_name' => 'John',
+              'last_name' => 'Doe',
+              'email' => 'john.doe@gmail.com', # Valid email found despite invalid From header
+              'phone1' => '5551234567',
+              'notes' => 'Contact: john.doe@gmail.com'
+            },
+            'classification_reason' => 'Email contains rental inquiry'
+          }
+        }
+        
+        let(:leasing_email_data) {
+          {
+            headers: {
+              'From' => 'leasing@propertymanagement.com',
+              'To' => "property+#{property.id}@cloudmailin.net",
+              'Subject' => 'Rental Inquiry from John Doe',
+              'Date' => '2025-06-10 16:39:50 UTC'
+            },
+            plain: 'John Doe (john.doe@gmail.com) is interested. Phone: 555-123-4567'
+          }
+        }
+        
+        let(:leasing_raw_email) { create(:cloudmailin_raw_email, raw_data: leasing_email_data, property_code: property.id.to_s) }
+        
+        before do
+          openai_client = instance_double(OpenaiClient)
+          allow(OpenaiClient).to receive(:new).and_return(openai_client)
+          allow(openai_client).to receive(:analyze_email).and_return(multiple_emails_response)
+        end
+        
+        it "uses valid email when invalid prefix email is in From header" do
+          expect {
+            described_class.perform_now(leasing_raw_email)
+          }.to change { Lead.count }.by(1)
+          
+          lead = Lead.last
+          expect(lead.email).to eq('john.doe@gmail.com')
+          expect(leasing_raw_email.reload.status).to eq('completed')
+        end
+      end
+    end
   end
 end

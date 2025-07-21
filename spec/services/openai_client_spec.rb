@@ -240,4 +240,26 @@ RSpec.describe OpenaiClient do
       end
     end
   end
+  
+  describe "#system_prompt" do
+    it "includes invalid email prefixes from environment" do
+      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com').and_return('bluecrestresidential.com')
+      allow(ENV).to receive(:fetch).with('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').and_return('blueskyleads,leasing')
+      
+      prompt = client.send(:system_prompt, property)
+      
+      expect(prompt).to include('blueskyleads, leasing')
+      expect(prompt).to include('Do not select emails that start with any of these prefixes')
+      expect(prompt).to include('return null for the email field unless another valid email address is found')
+    end
+    
+    it "handles custom invalid email prefixes" do
+      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com').and_return('bluecrestresidential.com')
+      allow(ENV).to receive(:fetch).with('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').and_return('test1,test2,test3')
+      
+      prompt = client.send(:system_prompt, property)
+      
+      expect(prompt).to include('test1, test2, test3')
+    end
+  end
 end
