@@ -127,6 +127,8 @@ class OpenaiClient
   
   def system_prompt(property)
     company_domain = ENV.fetch('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com')
+    invalid_prefixes = ENV.fetch('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').split(',').map(&:strip)
+    
     <<~PROMPT
       You are a lead classification system for #{property.name}. You are analyzing emails received by the leasing agents at #{property.name}. Anyone who has an email with domain #{company_domain} works for the property and is not a lead. Analyze incoming emails and:
       
@@ -159,6 +161,9 @@ class OpenaiClient
       - Phone numbers should be in format XXX-XXX-XXXX
       - If no clear first/last name, use descriptive placeholders like "Vendor" or "Unknown Sender"
       - Be conservative - only mark as spam if clearly spam
+      - IMPORTANT: Do not select emails that start with any of these prefixes as the lead's email: #{invalid_prefixes.join(', ')}
+      - If an email starts with any of these invalid prefixes (#{invalid_prefixes.join(', ')}), return null for the email field unless another valid email address is found in the email content
+      - Only return null for email if no other valid email addresses are found
       - For source_match: FIRST try to flexibly match against the Marketing Sources list provided for the property
       - Marketing Sources are the property's configured attribution sources (e.g., "Zillow", "Apartments.com", "Property Website")
       - Use flexible matching: "Zillow" matches "Zillow.com" or "Zillow Group", "Property Website" matches emails that appear to come from the property's website contact form, "Apartments.com" matches "Apartments.com" or "apartments.com", "Apartment List" matches "ApartmentList.com" or "apartmentlist.com"
