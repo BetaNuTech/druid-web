@@ -479,18 +479,39 @@
   &--my-leads,
   &--waitlist {
     .section__content {
-      padding: $spacing-lg; // Add padding for proper spacing
+      padding: 0; // Remove padding to let lead-list handle spacing
+      overflow: hidden; // Contain the scrollable area
     }
     
     .lead-list {
       max-height: 600px;
       overflow-y: auto;
-      margin: -$spacing-lg; // Negative margin to offset padding
-      padding: $spacing-lg; // Internal padding for scroll
+      padding: $spacing-lg; // Internal padding for proper spacing
+      position: relative;
+      
+      // Shadow indicator when scrollable
+      &::after {
+        content: '';
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      // Show shadow when not scrolled to bottom
+      &:not(:hover) {
+        overflow-y: overlay; // Overlay scrollbar on webkit browsers
+      }
       
       // Lead cards in list
       .card {
         margin-bottom: $spacing-md; // Space between cards
+        overflow: visible; // Allow card content to display fully
         
         &:last-child {
           margin-bottom: 0;
@@ -512,24 +533,29 @@
         }
       }
       
-      // Custom scrollbar
+      // Custom scrollbar - always visible when content overflows
       &::-webkit-scrollbar {
-        width: 6px;
+        width: 8px;
       }
       
       &::-webkit-scrollbar-track {
         background: $gray-100;
-        border-radius: 3px;
+        border-radius: 4px;
       }
       
       &::-webkit-scrollbar-thumb {
         background: $gray-400;
-        border-radius: 3px;
+        border-radius: 4px;
+        min-height: 30px;
         
         &:hover {
           background: $gray-500;
         }
       }
+      
+      // Firefox scrollbar styling
+      scrollbar-width: thin;
+      scrollbar-color: $gray-400 $gray-100;
     }
   }
   
@@ -737,8 +763,8 @@
     }
   }
   
-  // Fix section content overflow
+  // Fix section content overflow - allow each section to control its own overflow
   .section__content {
-    overflow: hidden;
+    overflow: visible; // Default to visible, sections can override as needed
   }
 }
