@@ -188,4 +188,31 @@ $(document).on('turbolinks:load', function() {
   $(document).on('hidden.bs.dropdown', '#crumbs .dropdown', function() {
     $(this).find('.dropdown-menu').removeAttr('style');
   });
+  
+  // Mobile state panel handling
+  if ($(window).width() <= 767) {
+    // Prevent default dropdown on mobile
+    $(document).on('click', '.mobile-state-trigger', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Show mobile panel instead
+      $('#mobile-state-panel').addClass('mobile-state-panel--open');
+      $('body').css('overflow', 'hidden'); // Prevent background scrolling
+      
+      return false;
+    });
+    
+    // Close mobile panel
+    $(document).on('click', '.mobile-state-panel__close, .mobile-state-panel__overlay', function() {
+      $('#mobile-state-panel').removeClass('mobile-state-panel--open');
+      $('body').css('overflow', ''); // Restore scrolling
+    });
+    
+    // Close panel when option is clicked (will navigate to new page)
+    $(document).on('click', '.mobile-state-panel__option', function() {
+      $('#mobile-state-panel').removeClass('mobile-state-panel--open');
+      $('body').css('overflow', '');
+    });
+  }
 });

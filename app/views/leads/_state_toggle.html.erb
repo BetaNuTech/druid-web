@@ -1,12 +1,34 @@
 <div class="state_toggle">
   <div class="row" >
     <div class="col-md-12" class="dropdown">
+      <!-- Mobile State Selection Panel -->
+      <div class="mobile-state-panel" id="mobile-state-panel">
+        <div class="mobile-state-panel__overlay"></div>
+        <div class="mobile-state-panel__content">
+          <div class="mobile-state-panel__header">
+            <h3>Select Next State</h3>
+            <button type="button" class="mobile-state-panel__close">&times;</button>
+          </div>
+          <div class="mobile-state-panel__options">
+            <% if policy(lead).permitted_state_events.any? %>
+              <% policy(lead).permitted_state_events.each do |event_name| %>
+                <%= link_to(progress_state_lead_path(id: lead.id, eventid: event_name), class: "mobile-state-panel__option") do %>
+                  <strong><%= event_name.to_s.humanize.titlecase %></strong>
+                  <small><%= lead_transition_help_text(event_name) %></small>
+                <% end %>
+              <% end %>
+            <% else %>
+              <p class="mobile-state-panel__empty">No state transitions available</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
       <ul id="crumbs" class="dropdown">
         <% state_options = %w{open prospect showing application resident} %>
         <% is_other_state = (! state_options.include?(lead.state)) %>
         <% if is_other_state %>
           <li class="crumb dropdown">
-            <a role="button" class="crumb-link crumb-active crumb-isolated dropdown-toggle" data-toggle="dropdown" data-state="<%= lead.state %>" href="#" aria-haspopup="true" aria-expanded="false"><%= lead.state.capitalize %></a>
+            <a role="button" class="crumb-link crumb-active crumb-isolated dropdown-toggle mobile-state-trigger" data-toggle="dropdown" data-state="<%= lead.state %>" href="#" aria-haspopup="true" aria-expanded="false"><%= lead.state.capitalize %></a>
             <% if policy(lead).permitted_state_events.any? %>
             <ul class="dropdown-menu" role="menu">
               <% policy(lead).permitted_state_events.each do |event_name| %>
@@ -24,7 +46,7 @@
         <% state_options.each do |state_option| %>
           <% if state_option == lead.state %>
             <li class="crumb dropdown">
-              <a role="button" class="crumb-link crumb-active dropdown-toggle" data-toggle="dropdown" data-state="<%= state_option %>" href="#" aria-haspopup="true" aria-expanded="false">
+              <a role="button" class="crumb-link crumb-active dropdown-toggle mobile-state-trigger" data-toggle="dropdown" data-state="<%= state_option %>" href="#" aria-haspopup="true" aria-expanded="false">
                 <% if state_option == 'showing' %>
                   <%= glyph(:home) %>
                 <% end %>
