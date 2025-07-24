@@ -40,7 +40,7 @@
                 <em>First:</em> <%= short_datetime(lead.first_comm) %>
               </td>
               <td>
-                <% lead.messages.outgoing.where(classification: 'default').limit(1).order(delivered_at: :desc).each do |message| %>
+                <% if message = @latest_messages[lead.id] %>
                   <p>
                     <small>
                       (<%= message.delivered_at&.strftime("%m/%d %l:%M%p") || '-' %>)
@@ -49,7 +49,7 @@
                     <%= truncate(strip_tags(message.body||''), length: 100) %>
                   </p>
                 <% end %>
-                <% lead.comments.where(classification: ['comment']).order(created_at: :desc).limit(3).each do |comment| %>
+                <% (@latest_comments[lead.id] || []).each do |comment| %>
                   <p>
                     <small>
                       (<%= comment.created_at&.strftime("%m/%d %l:%M%p") || '-' %>)

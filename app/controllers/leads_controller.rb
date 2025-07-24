@@ -208,11 +208,43 @@ class LeadsController < ApplicationController
   # Display the status of active leads for the current property
   def status_dashboard
     authorize Lead
-    @leads = @current_property.present? ?
-      @current_property.leads.includes([ :comments, :messages, {user: :profile} ]).
-        where(leads: {state: [ 'prospect', 'showing']}).
-        order("user_profiles.last_name ASC, user_profiles.first_name ASC, leads.last_name ASC, leads.first_name ASC") :
-      Lead.where("1=0") # return empty set if there is no current property
+    if @current_property.present?
+      # First get the leads with user associations
+      @leads = @current_property.leads
+        .includes({user: :profile})
+        .where(state: ['prospect', 'showing'])
+        .order("user_profiles.last_name ASC, user_profiles.first_name ASC, leads.last_name ASC, leads.first_name ASC")
+      
+      # Preload all relevant messages and comments to avoid N+1 queries
+      lead_ids = @leads.map(&:id)
+      
+      # Get all outgoing default messages for these leads
+      all_messages = Message.outgoing
+        .where(messageable_type: 'Lead', messageable_id: lead_ids, classification: 'default')
+        .order(delivered_at: :desc)
+      
+      # Get all comments for these leads  
+      all_comments = Note
+        .where(notable_type: 'Lead', notable_id: lead_ids, classification: 'comment')
+        .order(created_at: :desc)
+      
+      # Group and get latest message per lead
+      @latest_messages = {}
+      all_messages.each do |message|
+        @latest_messages[message.messageable_id] ||= message
+      end
+      
+      # Group and get latest 3 comments per lead
+      @latest_comments = {}
+      all_comments.each do |comment|
+        @latest_comments[comment.notable_id] ||= []
+        @latest_comments[comment.notable_id] << comment if @latest_comments[comment.notable_id].size < 3
+      end
+    else
+      @leads = Lead.where("1=0") # return empty set if there is no current property
+      @latest_messages = {}
+      @latest_comments = {}
+    end
   end
 
   private

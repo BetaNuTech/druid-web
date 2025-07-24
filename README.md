@@ -716,6 +716,19 @@ puts File.read('/tmp/inactive_tracking_numbers.csv')
 # Run the console commands above and copy the output directly
 ```
 
+### HEROKU DB => LOCAL DB
+run ./load_db_production.sh
+
+### PRODUCTION DB => DEV DB
+heroku maintenance:on -a cobalt-dev
+heroku ps:scale worker=0 -a cobalt-dev
+heroku ps:scale clock=0 -a cobalt-dev
+heroku pg:backups capture -a cobalt-dev
+heroku pg:copy cobalt-production::DATABASE_URL DATABASE_URL -a cobalt-dev --confirm cobalt-dev
+heroku ps:scale worker=1 -a cobalt-dev
+heroku ps:scale clock=1 -a cobalt-dev
+heroku maintenance:off -a cobalt-dev
+
 ### Important Notes:
 - This operation preserves all historical data including leads, conversions, and ROI metrics
 - The phone numbers become immediately available for reuse by other marketing sources
