@@ -107,6 +107,22 @@
     margin-bottom: 0;
   }
   
+  // Modifier: No vertical padding
+  &--no-padding-y {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  
+  // Modifier: No padding at all
+  &--no-padding {
+    padding: 0;
+  }
+  
+  // Modifier: Compact section (less margin)
+  &--compact {
+    margin-bottom: $spacing-md;
+  }
+  
   @media (max-width: 767px) {
     padding: $spacing-lg $spacing-md;
     margin-bottom: $spacing-lg;

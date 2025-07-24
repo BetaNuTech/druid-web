@@ -9,7 +9,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-xl;
+  margin-bottom: $spacing-lg; // Reduced from $spacing-xl (32px to 24px)
   flex-wrap: wrap;
   gap: $spacing-lg;
   
@@ -170,6 +170,7 @@
     align-items: center;
     margin-bottom: $spacing-lg;
     padding: $spacing-md 0;
+    padding-top: 0;
     
     // Month/Year title
     .calendar-title {

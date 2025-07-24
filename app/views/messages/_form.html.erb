@@ -25,21 +25,22 @@
 
   <% if message.new_record? || message.body_missing? %>
     <div class='row'>
-      <div class='col-md-4 form__group'>
+      <div class='col-md-8 form__group'>
         <%= form.label :message_template_id, 'Template', class: 'form__label' %>
-        <%= link_to('Load', '#' , { id: 'message_template_load_button', class: "btn btn--info btn--small", data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type, reply_to: @reply_to_id)} }) %>
-        <%= link_to('View', message_template_path(id: message.message_template), {id: 'message_template_view_button', target: '_blank', class: "btn btn--info btn--small"}) if message.message_template.present? %>
-        <% if any_message_templates_available?(message_type) %>
-          <%= form.select :message_template_id, message_template_options(message_type, message.message_template_id),
-          { include_blank: true}, { id: 'message_template_select', class: 'form__control' } %>
-        <% else %>
-          <p class="form__text">
-            None available.
-          </p>
-        <% end %>
-      </div>
-      <div class='col-md-2'>
-        <br/>
+        <div class="d-flex flex-wrap align-items-center">
+          <% if any_message_templates_available?(message_type) %>
+            <%= form.select :message_template_id, message_template_options(message_type, message.message_template_id),
+            { include_blank: true}, { id: 'message_template_select', class: 'form__control', style: 'display: inline-block; width: auto; min-width: 200px; margin-right: 10px; margin-bottom: 5px;' } %>
+            <div style="margin-bottom: 5px;">
+              <%= link_to('Load', '#' , { id: 'message_template_load_button', class: "btn btn--info btn--small", style: 'margin-right: 5px;', data: {baseurl: new_message_url(message_type_id: message.message_type_id, messageable_id: message.messageable_id, messageable_type: message.messageable_type, reply_to: @reply_to_id)} }) %>
+              <%= link_to('View', message_template_path(id: message.message_template), {id: 'message_template_view_button', target: '_blank', class: "btn btn--info btn--small"}) if message.message_template.present? %>
+            </div>
+          <% else %>
+            <p class="form__text">
+              None available.
+            </p>
+          <% end %>
+        </div>
       </div>
     </div>
   <% end %>
@@ -66,11 +67,12 @@
   <% end %>
 
   <div class='row'>
-    <div class='col-md-6 form__group'>
-      <button type='submit' class='btn btn--info'>Save Draft and Preview</button>
-      <button id="send_now_button" type='submit' class='btn btn--primary'>Send Now</button>
-      <%#= link_to "Back to #{@message.messageable_type.humanize}", url_for(@message.messageable), class: "btn btn--xs btn-info" if @message.messageable.present? %>
-      <%= link_to 'Back', :back, class: "btn btn--info btn--small"  %>
+    <div class='col-md-12 form__group'>
+      <div class="d-flex flex-wrap" style="gap: 10px;">
+        <button type='submit' class='btn btn--info'>Save Draft and Preview</button>
+        <button id="send_now_button" type='submit' class='btn btn--primary'>Send Now</button>
+        <%= link_to 'Back', :back, class: "btn btn--info btn--small"  %>
+      </div>
     </div>
   </div>
 <% end %>

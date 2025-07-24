@@ -43,4 +43,21 @@ $(document).on('turbolinks:load', function() {
     // Hide the button
     $(this).fadeOut(300);
   });
+  
+  // Handle message template loading
+  $('#message_template_load_button').on('click', function(e) {
+    e.preventDefault();
+    
+    var templateId = $('#message_template_select').val();
+    if (!templateId) {
+      alert('Please select a template to load');
+      return;
+    }
+    
+    var baseUrl = $(this).data('baseurl');
+    var url = baseUrl + '&message_template_id=' + templateId;
+    
+    // Redirect to load the template
+    window.location.href = url;
+  });
 });
