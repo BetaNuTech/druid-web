@@ -55,4 +55,27 @@
       border: 0;
     }
   }
+  
+  // iOS-specific date input fixes
+  @supports (-webkit-touch-callout: none) {
+    input[type="date"] {
+      // Reset iOS default styling
+      -webkit-appearance: none;
+      // Adjust padding for proper vertical centering on iOS
+      padding: 12px;
+      // Ensure text is vertically centered
+      line-height: normal;
+      vertical-align: middle;
+      // Consistent height to prevent shifting
+      height: 42px;
+      
+      // Override webkit datetime edit styles for iOS
+      &::-webkit-datetime-edit,
+      &::-webkit-datetime-edit-fields-wrapper {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+    }
+  }
 }

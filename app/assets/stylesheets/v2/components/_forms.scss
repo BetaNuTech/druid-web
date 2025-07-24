@@ -423,6 +423,22 @@ input[type="month"].form__control {
   }
 }
 
+// Date select dropdowns - Display inline with auto width
+.form__control--date-select {
+  width: auto !important;
+  display: inline-block !important;
+  margin-right: $spacing-sm;
+  
+  // Ensure dropdowns hug their content
+  min-width: 0;
+  max-width: none;
+  
+  // Last dropdown doesn't need margin
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
 // Show feedback when needed (BEM)
 .was-validated .form__control--invalid ~ .form__feedback--invalid,
 .form__control--invalid ~ .form__feedback--invalid {

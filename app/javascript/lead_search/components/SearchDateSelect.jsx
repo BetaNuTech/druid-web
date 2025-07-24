@@ -51,17 +51,10 @@ class SearchDateSelect extends React.Component {
       <div className={Style.SearchDateSelect}>
         <label>{this.props.filter}</label>
         <input 
-          type="text" 
+          type="date" 
           name={this.activeFilter().param}
           className="form-control date-input" 
           value={this.state.value}
-          placeholder="mm/dd/yyyy"
-          onFocus={(e) => e.target.type = 'date'}
-          onBlur={(e) => {
-            if (!e.target.value) {
-              e.target.type = 'text'
-            }
-          }}
           onChange={ e => this.handleChange(e)}
         />
       </div>

@@ -410,8 +410,7 @@
           width: 24px !important;
           height: 24px !important;
           font-size: 14px !important;
-          background: $white !important;
-          color: $primary !important;
+          // Removed white background override to keep teal gradient
           box-shadow: none !important;
         }
         
