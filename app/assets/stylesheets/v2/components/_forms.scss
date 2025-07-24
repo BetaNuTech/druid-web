@@ -396,6 +396,33 @@ textarea.form__control {
   min-height: 100px;
 }
 
+// Date inputs with BEM - Fix vertical alignment
+input[type="date"].form__control,
+input[type="time"].form__control,
+input[type="datetime-local"].form__control,
+input[type="month"].form__control {
+  line-height: 1.2; // Reduce line-height to center text vertically
+  padding-top: 10px; // Adjust top padding
+  padding-bottom: 10px; // Adjust bottom padding
+  
+  // Chrome/Safari specific fixes
+  &::-webkit-datetime-edit,
+  &::-webkit-datetime-edit-fields-wrapper,
+  &::-webkit-datetime-edit-text,
+  &::-webkit-datetime-edit-month-field,
+  &::-webkit-datetime-edit-day-field,
+  &::-webkit-datetime-edit-year-field {
+    padding: 0;
+    line-height: 1;
+  }
+  
+  // Firefox specific
+  &::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+  }
+}
+
 // Show feedback when needed (BEM)
 .was-validated .form__control--invalid ~ .form__feedback--invalid,
 .form__control--invalid ~ .form__feedback--invalid {
@@ -509,6 +536,33 @@ textarea.form__control {
 .was-validated .form-control:valid ~ .valid-feedback,
 .form-control.is-valid ~ .valid-feedback {
   display: block;
+}
+
+// Date inputs with Bootstrap class - Fix vertical alignment
+input[type="date"].form-control,
+input[type="time"].form-control,
+input[type="datetime-local"].form-control,
+input[type="month"].form-control {
+  line-height: 1.2; // Reduce line-height to center text vertically
+  padding-top: 10px; // Adjust top padding
+  padding-bottom: 10px; // Adjust bottom padding
+  
+  // Chrome/Safari specific fixes
+  &::-webkit-datetime-edit,
+  &::-webkit-datetime-edit-fields-wrapper,
+  &::-webkit-datetime-edit-text,
+  &::-webkit-datetime-edit-month-field,
+  &::-webkit-datetime-edit-day-field,
+  &::-webkit-datetime-edit-year-field {
+    padding: 0;
+    line-height: 1;
+  }
+  
+  // Firefox specific
+  &::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+  }
 }
 
 // Rails error handling

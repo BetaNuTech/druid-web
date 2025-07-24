@@ -19,6 +19,7 @@
     font-size: 14px;
     background: white;
     transition: all 0.2s ease;
+    line-height: 1.2; // Fix vertical alignment
     
     &:focus {
       border-color: #0d6efd;
@@ -29,6 +30,29 @@
     &::placeholder {
       color: #6c757d;
       opacity: 1;
+    }
+  }
+  
+  // Date input specific fixes for vertical alignment
+  input[type="date"] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    
+    // Chrome/Safari specific fixes
+    &::-webkit-datetime-edit,
+    &::-webkit-datetime-edit-fields-wrapper,
+    &::-webkit-datetime-edit-text,
+    &::-webkit-datetime-edit-month-field,
+    &::-webkit-datetime-edit-day-field,
+    &::-webkit-datetime-edit-year-field {
+      padding: 0;
+      line-height: 1;
+    }
+    
+    // Firefox specific
+    &::-moz-focus-inner {
+      padding: 0;
+      border: 0;
     }
   }
 }
