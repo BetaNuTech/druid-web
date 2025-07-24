@@ -127,51 +127,65 @@ $(document).on('turbolinks:load', function() {
     }
   });
   
-  // Mobile dropdown positioning fix
+  // Dropdown positioning fixes
   $(document).on('shown.bs.dropdown', '#crumbs .dropdown', function() {
-    if ($(window).width() <= 767) {
-      var $dropdown = $(this).find('.dropdown-menu');
-      var $toggle = $(this).find('.dropdown-toggle');
+    var windowWidth = $(window).width();
+    var $dropdown = $(this).find('.dropdown-menu');
+    var $toggle = $(this).find('.dropdown-toggle');
+    
+    // Tablet/narrow desktop: ensure dropdown is visible when sidebar is present
+    if (windowWidth >= 768 && windowWidth <= 1200) {
+      var toggleOffset = $toggle.offset();
+      var dropdownWidth = $dropdown.outerWidth();
+      var viewportWidth = $(window).width();
+      
+      // Check if dropdown would be cut off on the right
+      if (toggleOffset.left + dropdownWidth > viewportWidth - 20) {
+        // Position from right edge instead
+        $dropdown.css({
+          'left': 'auto',
+          'right': '0'
+        });
+      }
+    }
+    // Mobile: full-width centered dropdown
+    else if (windowWidth <= 767) {
       var toggleOffset = $toggle.offset();
       var windowHeight = $(window).height();
       var dropdownHeight = $dropdown.outerHeight();
       
-      // Calculate best position
-      var topPosition = toggleOffset.top + $toggle.outerHeight() + 10;
+      // Calculate position for fixed positioning on mobile
+      var topPosition = toggleOffset.top + $toggle.outerHeight() + 5;
+      
+      // Apply fixed positioning for mobile
+      $dropdown.css({
+        'top': topPosition + 'px'
+      });
       
       // Check if dropdown would go below viewport
-      if (topPosition + dropdownHeight > windowHeight) {
-        // Position above the toggle if there's more room
-        var bottomPosition = windowHeight - toggleOffset.top + 10;
-        if (toggleOffset.top > windowHeight / 2) {
+      if (topPosition + dropdownHeight > $(window).scrollTop() + windowHeight) {
+        var maxHeight = $(window).scrollTop() + windowHeight - topPosition - 20;
+        if (maxHeight < 200) {
+          // Position above if not enough space below
           $dropdown.css({
-            'position': 'fixed',
             'top': 'auto',
-            'bottom': bottomPosition + 'px',
-            'left': '10px',
-            'right': '10px'
+            'bottom': ($(window).height() - toggleOffset.top + 5) + 'px',
+            'max-height': Math.min(toggleOffset.top - $(window).scrollTop() - 20, 400) + 'px',
+            'overflow-y': 'auto'
           });
         } else {
-          // Still position below but ensure it fits
+          // Add scrolling if needed
           $dropdown.css({
-            'position': 'fixed',
-            'top': topPosition + 'px',
-            'bottom': 'auto',
-            'left': '10px',
-            'right': '10px',
-            'max-height': (windowHeight - topPosition - 10) + 'px'
+            'max-height': maxHeight + 'px',
+            'overflow-y': 'auto'
           });
         }
-      } else {
-        // Normal positioning below
-        $dropdown.css({
-          'position': 'fixed',
-          'top': topPosition + 'px',
-          'bottom': 'auto',
-          'left': '10px',
-          'right': '10px'
-        });
       }
     }
+  });
+  
+  // Clean up dropdown positioning on close
+  $(document).on('hidden.bs.dropdown', '#crumbs .dropdown', function() {
+    $(this).find('.dropdown-menu').removeAttr('style');
   });
 });

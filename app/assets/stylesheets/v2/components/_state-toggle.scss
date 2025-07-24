@@ -13,6 +13,7 @@
   border-bottom: 1px solid $gray-100;
   position: relative;
   z-index: 100;
+  overflow: visible !important;
   
   // Breadcrumb list container
   &__crumbs {
@@ -24,6 +25,7 @@
     gap: 0;
     flex-wrap: wrap;
     justify-content: center;
+    overflow: visible !important; // Ensure dropdowns aren't clipped
   }
   
   // Individual state item
@@ -34,17 +36,29 @@
     
     // Dropdown variant for state with actions
     &--dropdown {
-      position: static !important;
+      position: relative; // Allow dropdown to position relative to this
+      
+      // On medium screens, adjust positioning
+      @media (min-width: 768px) and (max-width: 1200px) {
+        position: static; // Allow dropdown to escape container
+      }
       
       .dropdown-menu {
         margin-top: $spacing-xs;
         min-width: 240px;
-        z-index: 9999 !important;
-        position: absolute !important;
+        max-width: 320px;
+        z-index: 9999; // Maximum z-index to appear above everything
         border: none;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         border-radius: $border-radius-md;
         padding: $spacing-xs 0;
+        background-color: $white; // Ensure solid background
+        
+        // On tablets/narrow screens, position to avoid sidebar
+        @media (min-width: 768px) and (max-width: 1200px) {
+          left: 0;
+          margin-left: 100px; // Offset to the right to avoid sidebar overlap
+        }
         
         li {
           padding: 0;
@@ -225,17 +239,12 @@
   
   // Override generic dropdown styles for crumb dropdowns
   .dropdown {
-    position: static !important;
+    position: relative;
     
     &.open {
-      position: static !important; // Maintain static positioning when open
-      
       > .dropdown-menu {
-        z-index: 9999 !important;
-        position: absolute !important;
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
+        z-index: 9999; // Maximum z-index
+        display: block;
       }
     }
   }
@@ -345,10 +354,13 @@
   }
 }
 
-// ==========================================3===================================
+// =============================================================================
 // Responsive Design
 // =============================================================================
 
+// =============================================================================
+// Mobile Styles
+// =============================================================================
 @media (max-width: 767px) {
   .state-toggle {
     padding: $spacing-sm 0;
@@ -363,7 +375,7 @@
       font-size: 11px;
       min-height: 28px;
       
-      .glyphicon-home {
+      .glyphicon {
         font-size: 12px;
       }
     }
@@ -375,5 +387,30 @@
         font-size: $font-size-xs;
       }
     }
+    
+    // Mobile dropdown positioning
+    &__crumb--dropdown {
+      .dropdown-menu {
+        position: fixed;
+        left: 10px;
+        right: 10px;
+        width: auto;
+      }
+    }
+  }
+  
+  // Legacy mobile support
+  #crumbs {
+    .dropdown {
+      &.open {
+        .dropdown-menu {
+          position: fixed;
+          left: 10px;
+          right: 10px;
+          width: auto;
+        }
+      }
+    }
   }
 }
+

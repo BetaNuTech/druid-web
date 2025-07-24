@@ -121,11 +121,9 @@
   </section>
 
   <!-- Tasks Section (Priority - tied to state changes) -->
-  <% if @lead.scheduled_actions.incomplete.any? %>
-    <section class="section">
-      <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
-    </section>
-  <% end %>
+  <section class="section">
+    <%= render partial: 'scheduled_actions', locals: {lead: @lead} %>
+  </section>
 
   <!-- Main Content Grid -->
   <section class="section">

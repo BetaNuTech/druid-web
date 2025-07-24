@@ -91,6 +91,28 @@
   }
 }
 
+// Main section container
+.section {
+  position: relative;
+  background: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  
+  // Ensure sections don't overlap dropdowns
+  z-index: 1;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 767px) {
+    padding: $spacing-lg $spacing-md;
+    margin-bottom: $spacing-lg;
+  }
+}
+
 // Section headers (should be component-specific)
 .section-header {
   margin-bottom: $spacing-lg;

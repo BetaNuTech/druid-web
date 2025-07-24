@@ -31,25 +31,8 @@
   // State controls wrapper
   &__state-controls {
     position: relative;
-    z-index: 500; // High z-index for dropdown functionality
-    overflow: visible !important;
-    
-    // Ensure state toggle dropdowns work
-    .state_toggle {
-      position: relative;
-      overflow: visible !important;
-      
-      .dropdown {
-        position: static !important;
-        
-        &.open {
-          .dropdown-menu {
-            z-index: 10000 !important;
-            position: absolute !important;
-          }
-        }
-      }
-    }
+    overflow: visible;
+    z-index: 1000; // Ensure dropdowns can appear above other content
   }
 }
 
@@ -78,6 +61,7 @@
   &__banner {
     background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
     position: relative;
+    overflow: hidden; // Keep overflow hidden on banner for rounded corners
     padding: $spacing-lg $spacing-xl;
     display: flex;
     align-items: center;
