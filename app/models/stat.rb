@@ -486,7 +486,7 @@ EOS
           {
             id: lead.id,
             label: lead.name,
-            created_at: distance_of_time_in_words(lead.first_comm, DateTime.current),
+            created_at: lead.first_comm.present? ? distance_of_time_in_words(lead.first_comm, DateTime.current) : 'No communication',
             url: "/leads/#{lead.id}",
             priority: lead.priority,
             property_id: lead.property_id,
