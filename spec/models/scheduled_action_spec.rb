@@ -190,4 +190,95 @@ RSpec.describe ScheduledAction, type: :model do
       refute(scheduled_action1.valid?)
     end
   end
+
+  describe "system user for notifications" do
+    let(:system_user) { 
+      user = User.find_by(email: 'system@bluesky.internal')
+      if user.nil?
+        user = User.create!(
+          email: 'system@bluesky.internal',
+          password: SecureRandom.hex(32),
+          role: Role.find_or_create_by!(name: 'Administrator', slug: 'administrator'),
+          confirmed_at: Time.current,
+          system_user: true
+        )
+        user.create_profile!(first_name: 'Bluesky')
+      end
+      user
+    }
+    let(:lead) { create(:lead, phone1: '555-555-5555', phone1_type: 'Cell') }
+    let(:notification_action) { create(:lead_action, notify: true) }
+    let(:scheduled_action) { create(:scheduled_action, 
+      target: lead, 
+      lead_action: notification_action,
+      notification_message: "Test notification",
+      notify: true
+    ) }
+
+    before do
+      system_user # ensure system user exists
+      lead.preference.update!(optin_sms: true, optin_email: true)
+    end
+
+    describe "#send_notification" do
+      it "uses system user as sender for appointment reminder messages" do
+        allow(lead).to receive(:message_types_available).and_return([MessageType.email])
+        
+        expect(Message).to receive(:new_message).with(
+          hash_including(
+            from: system_user,
+            to: lead,
+            subject: 'Appointment Reminder',
+            body: "Test notification"
+          )
+        ).and_return(double(save!: true, deliver!: true))
+        
+        scheduled_action.send_notification
+      end
+
+      it "sends notifications via SMS with system user" do
+        allow(lead).to receive(:message_types_available).and_return([MessageType.sms])
+        
+        expect(Message).to receive(:new_message).with(
+          hash_including(
+            from: system_user,
+            to: lead,
+            message_type: MessageType.sms,
+            subject: 'Appointment Reminder'
+          )
+        ).and_return(double(save!: true, deliver!: true))
+        
+        scheduled_action.send_notification
+      end
+
+      it "sends notifications via both email and SMS with system user" do
+        allow(lead).to receive(:message_types_available).and_return([MessageType.email, MessageType.sms])
+        
+        # Expect both email and SMS messages
+        expect(Message).to receive(:new_message).with(
+          hash_including(from: system_user, message_type: MessageType.email)
+        ).and_return(double(save!: true, deliver!: true))
+        
+        expect(Message).to receive(:new_message).with(
+          hash_including(from: system_user, message_type: MessageType.sms)
+        ).and_return(double(save!: true, deliver!: true))
+        
+        scheduled_action.send_notification
+      end
+
+      it "strips HTML from SMS notifications" do
+        scheduled_action.notification_message = "<p>HTML notification</p>"
+        allow(lead).to receive(:message_types_available).and_return([MessageType.sms])
+        
+        expect(Message).to receive(:new_message).with(
+          hash_including(
+            from: system_user,
+            body: "HTML notification"
+          )
+        ).and_return(double(save!: true, deliver!: true))
+        
+        scheduled_action.send_notification
+      end
+    end
+  end
 end

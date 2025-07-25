@@ -1213,4 +1213,116 @@ RSpec.describe Lead, type: :model do
       end
     end
   end
+
+  describe "automated messaging with system user" do
+    let(:system_user) { 
+      user = User.find_by(email: 'system@bluesky.internal')
+      if user.nil?
+        user = User.create!(
+          email: 'system@bluesky.internal',
+          password: SecureRandom.hex(32),
+          role: Role.find_or_create_by!(name: 'Administrator', slug: 'administrator'),
+          confirmed_at: Time.current,
+          system_user: true
+        )
+        user.create_profile!(first_name: 'Bluesky')
+      end
+      user
+    }
+    let(:lead) { create(:lead, phone1: '555-555-5555', phone1_type: 'Cell') }
+    let(:property) { lead.property }
+
+    before do
+      system_user # ensure system user exists
+    end
+
+    describe "#send_sms_optin_request" do
+      it "uses system user as sender instead of agent" do
+        allow(MessageTemplate).to receive(:where).and_return(
+          double(first: create(:message_template))
+        )
+        
+        expect(Message).to receive(:new_message).with(
+          hash_including(from: system_user)
+        ).and_return(double(save!: true, deliver!: true))
+        
+        lead.send_sms_optin_request
+      end
+    end
+
+    describe "#send_initial_sms_response" do
+      it "uses system user as sender for initial SMS response" do
+        lead.preference.update!(optin_sms: true)
+        allow(MessageTemplate).to receive(:where).and_return(
+          double(first: create(:message_template))
+        )
+        
+        expect(Message).to receive(:new_message).with(
+          hash_including(
+            from: system_user,
+            message_type: MessageType.sms,
+            classification: 'marketing'
+          )
+        ).and_return(double(save!: true, deliver!: true, reload: true))
+        
+        lead.send_initial_sms_response
+      end
+    end
+
+    describe "#send_initial_email_response" do
+      it "uses system user as sender for initial email response" do
+        allow(MessageTemplate).to receive(:where).and_return(
+          double(first: create(:message_template))
+        )
+        
+        expect(Message).to receive(:new_message).with(
+          hash_including(
+            from: system_user,
+            message_type: MessageType.email,
+            classification: 'marketing'
+          )
+        ).and_return(double(save!: true, deliver!: true, reload: true))
+        
+        lead.send_initial_email_response
+      end
+    end
+
+    describe "engagement policy messaging" do
+      describe "#send_rental_application" do
+        let(:scheduled_action) { create(:scheduled_action) }
+        
+        it "uses system user as sender for rental application emails" do
+          allow(MessageTemplate).to receive(:where).and_return(
+            double(first: create(:message_template))
+          )
+          
+          expect(Message).to receive(:new_message).with(
+            hash_including(
+              from: system_user,
+              to: lead,
+              message_type: MessageType.email
+            )
+          ).and_return(double(save: true, deliver!: true, reload: true))
+          
+          lead.send_rental_application(scheduled_action: scheduled_action)
+        end
+
+        it "sends rental application even without an assigned agent" do
+          lead.update!(user: nil)
+          property.assignments.destroy_all
+          
+          template = create(:message_template)
+          allow(MessageTemplate).to receive(:where).and_return(double(first: template))
+          
+          message = double(save: true, deliver!: true, reload: true)
+          expect(Message).to receive(:new_message).with(
+            hash_including(from: system_user)
+          ).and_return(message)
+          
+          result = lead.send_rental_application(scheduled_action: scheduled_action)
+          expect(result).to be_truthy
+        end
+      end
+    end
+  end
 end

@@ -3,6 +3,27 @@
 #
 
 ##
+# System User
+unless User.exists?(email: 'system@bluesky.internal')
+  puts " * Creating Bluesky system user"
+  admin_role = Role.find_or_create_by(name: 'Administrator')
+  
+  system_user = User.create!(
+    email: 'system@bluesky.internal',
+    password: SecureRandom.hex(32),
+    role: admin_role,
+    confirmed_at: Time.current,
+    system_user: true
+  )
+  
+  system_user.create_profile!(
+    first_name: 'Bluesky'
+  )
+  
+  puts "   - Created Bluesky system user [OK]".green
+end
+
+##
 # Roles
 roles = {
   administrator: "Highest level role",

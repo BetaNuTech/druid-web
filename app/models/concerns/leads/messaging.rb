@@ -293,7 +293,7 @@ module Leads
         if destination_present && message_template.present?
           # Send Message to Lead
           message = Message.new_message(
-            from: agent,
+            from: User.system,
             to: self,
             message_type: message_type,
             message_template: message_template,
@@ -444,7 +444,7 @@ module Leads
 
         if message_template.present? 
           message = Message.new_message(
-            from: agent,
+            from: User.system,
             to: self,
             message_type: MessageType.sms,
             message_template: message_template,
@@ -479,7 +479,7 @@ module Leads
 
         if message_template.present? 
           message = Message.new_message(
-            from: agent,
+            from: User.system,
             to: self,
             message_type: MessageType.email,
             message_template: message_template,

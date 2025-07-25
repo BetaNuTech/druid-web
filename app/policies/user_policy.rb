@@ -19,6 +19,8 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
+    return false if record.system?
+    
     case user
     when -> (u) { u === record }
       true
@@ -62,12 +64,16 @@ class UserPolicy < ApplicationPolicy
    end
 
   def destroy?
+    return false if record.system?
+    
     !record.deactivated? &&
       user != record &&
       edit?
   end
 
   def impersonate?
+    return false if record.system?
+    
     !record.deactivated? && user.administrator? && !record.administrator?
   end
 

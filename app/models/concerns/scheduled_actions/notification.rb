@@ -40,7 +40,7 @@ module ScheduledActions
                           notification_message :
                           ActionView::Base.full_sanitizer.sanitize(notification_message)
           message = Message.new_message(
-            from: user,
+            from: User.system,
             to: target,
             message_type: message_type,
             subject: 'Appointment Reminder',

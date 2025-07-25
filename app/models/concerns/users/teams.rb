@@ -44,7 +44,7 @@ module Users
       end
 
       def without_team
-        includes(:membership).where(team_users: {id: nil})
+        includes(:membership).where(team_users: {id: nil}).where(system_user: false)
       end
 
       def team_managers
@@ -57,7 +57,7 @@ module Users
       end
 
       def team_agents
-        includes(:membership).where(team_users: {teamrole_id: Teamrole.agent&.id})
+        includes(:membership).where(team_users: {teamrole_id: Teamrole.agent&.id}).where(system_user: false)
       end
 
     end

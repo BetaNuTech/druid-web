@@ -37,9 +37,9 @@ module Leads
         message_template = MessageTemplate.where(name: message_template_name).first
         errors = {errors: []}
 
-        if message_template && agent
+        if message_template
           message = Message.new_message(
-            from: agent,
+            from: User.system,
             to: self,
             message_type: MessageType.email,
             message_template: message_template,
@@ -56,9 +56,6 @@ module Leads
           error = StandardError.new(error_message)
           if message_template.nil?
             errors[:errors] << "Missing Message Template: '#{message_template_name}'"
-          end
-          if agent.nil?
-            errors[:errors] << "Lead has no agent, and property has no manager"
           end
           ErrorNotification.send(error,errors)
           comment_content = "NOT SENT: #{message_template_name} -- #{errors[:errors].join('; ')}"

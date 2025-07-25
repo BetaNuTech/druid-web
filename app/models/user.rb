@@ -52,14 +52,20 @@ class User < ApplicationRecord
   ### Scopes
   scope :by_name_asc, -> {
     includes(:profile).
+    where(system_user: false).
     order("user_profiles.last_name ASC, user_profiles.first_name ASC")
   }
-  scope :active, -> { where.not(deactivated: true) }
+  scope :active, -> { where.not(deactivated: true).where(system_user: false) }
+  scope :non_system, -> { where(system_user: false) }
 
   ### Callbacks
   after_save :deactivation_cleanup
+  before_validation :prevent_system_user_deactivation, if: :system?
 
   ### Class Methods
+  def self.system
+    find_by(system_user: true)
+  end
 
   ### Instance Methods
 
@@ -70,12 +76,13 @@ class User < ApplicationRecord
   def deactivate!
     transaction do
       assignments.destroy_all
-      update(deactivated: true)
+      update!(deactivated: true)
     end
     reload
   end
 
   def active_for_authentication?
+    return true if system?
     super && !deactivated? && member_of_an_active_property?
   end
 
@@ -165,6 +172,10 @@ class User < ApplicationRecord
     logins
   end
 
+  def system?
+    system_user
+  end
+
   handle_asynchronously :deactivation_cleanup, queue: :low_priority
 
   def reassign_leads(user:)
@@ -172,6 +183,15 @@ class User < ApplicationRecord
       leads.in_progress.each do |lead|
         lead.reassign(user: user)
       end
+    end
+  end
+
+  private
+
+  def prevent_system_user_deactivation
+    if deactivated_changed? && deactivated?
+      errors.add(:base, "System user cannot be deactivated")
+      throw :abort
     end
   end
 end
