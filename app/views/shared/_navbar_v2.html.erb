@@ -22,8 +22,9 @@
         <%= image_tag('/icons/home.svg') %>
         <span class="sidebar--item-content">Home</span>
       <% end %>
-      <% if ( (@property || @current_property).leads.open.any? rescue false ) %>
-        <span class="sidebar--item-alert">&#9679;</span>
+      <% open_leads_count = ((@property || @current_property).leads.open.count rescue 0) %>
+      <% if open_leads_count > 0 %>
+        <span class="sidebar--item-alert"><%= open_leads_count %></span>
       <% end %>
     </div>
     <div class="sidebar--item <%= nav_item_class(:messages) %>">
@@ -31,8 +32,9 @@
         <%= image_tag('/icons/messages.svg') %>
         <span class="sidebar--item-content">Messages</span>
       <% end %>
-      <% if current_user.messages.for_leads.relevant_to_leads.incoming.unread.any? %>
-        <span class="sidebar--item-alert">&#9679;</span>
+      <% unread_messages_count = current_user.messages.for_leads.relevant_to_leads.incoming.unread.count %>
+      <% if unread_messages_count > 0 %>
+        <span class="sidebar--item-alert"><%= unread_messages_count %></span>
       <% end %>
     </div>
     <div class="sidebar--item <%= nav_item_class(:scheduled_actions) %>">
@@ -40,8 +42,9 @@
         <%= image_tag('/icons/calendar.svg') %>
         <span class="sidebar--item-content">Calendar</span>
       <% end %>
-      <% if current_user.scheduled_actions.incomplete.any? %>
-        <span class="sidebar--item-alert">&#9679;</span>
+      <% incomplete_actions_count = current_user.scheduled_actions.incomplete.count %>
+      <% if incomplete_actions_count > 0 %>
+        <span class="sidebar--item-alert"><%= incomplete_actions_count %></span>
       <% end %>
     </div>
   </div>
