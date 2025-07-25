@@ -303,6 +303,21 @@
   }
 }
 
+// Empty state styling for messages page
+.messages-page .empty-state {
+  text-align: center;
+  
+  &__title {
+    text-align: center;
+  }
+  
+  &__text {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 // Clean up: Remove old nested container styles
 // The following classes are deprecated:
 // - messages-page__section (use .section instead)
