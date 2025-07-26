@@ -18,14 +18,27 @@
   
   <div class="message-detail__info-group">
     <div class="message-detail__contact">
-      <strong>From:</strong>
-      <%= @message.sender_name %>
-      (<%= @message.senderid %>)
+      <div class="message-detail__contact-line">
+        <strong>From:</strong>
+        <%= @message.sender_name %>
+      </div>
+      <div class="message-detail__contact-details">
+        <% if @message.outgoing? && @message.message_type&.email? %>
+          <div>From: <%= @message.from_address %></div>
+          <div>Reply-To: <%= @message.senderid %></div>
+        <% else %>
+          <div><%= @message.senderid %></div>
+        <% end %>
+      </div>
     </div>
     <div class="message-detail__contact">
-      <strong>To:</strong>
-      <%= @message.recipient_name %>
-      (<%= @message.recipientid %>)
+      <div class="message-detail__contact-line">
+        <strong>To:</strong>
+        <%= @message.recipient_name %>
+      </div>
+      <div class="message-detail__contact-details">
+        <div><%= @message.recipientid %></div>
+      </div>
     </div>
   </div>
   

@@ -63,9 +63,9 @@
   
   // Contact info
   &__contact {
-    display: inline-flex;
-    align-items: center;
-    gap: $spacing-sm;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
     padding: $spacing-sm $spacing-md;
     background: $gray-100;
     border: 1px solid $gray-200;
@@ -75,6 +75,21 @@
     strong {
       font-weight: $font-weight-medium;
       color: $gray-700;
+    }
+    
+    &-line {
+      display: flex;
+      align-items: baseline;
+      gap: $spacing-sm;
+    }
+    
+    &-details {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+      margin-left: $spacing-lg;
+      font-size: $font-size-sm;
+      color: $gray-600;
     }
   }
   
