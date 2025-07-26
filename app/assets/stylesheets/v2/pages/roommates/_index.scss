@@ -50,11 +50,11 @@
 
 // Roommates Container
 .roommates-container {
-  padding: 24px;
+  padding: 16px 24px;
   
   .empty-roommates {
     text-align: center;
-    padding: 60px 20px;
+    padding: 32px 20px !important; // Override the default empty-states padding
     
     .empty-icon {
       display: inline-block;
