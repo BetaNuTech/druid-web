@@ -7,15 +7,21 @@ class CreateBlueskySystemUser < ActiveRecord::Migration[6.1]
     system_user = User.find_or_initialize_by(email: 'system@bluesky.internal')
     
     if system_user.new_record?
-      system_user.assign_attributes(
+      attributes = {
         password: SecureRandom.hex(32),
         role: admin_role,
-        confirmed_at: Time.current,
-        system_user: true
-      )
+        confirmed_at: Time.current
+      }
+      # Only set system_user if column exists
+      attributes[:system_user] = true if User.column_names.include?('system_user')
+      
+      system_user.assign_attributes(attributes)
       system_user.save!
     else
-      system_user.update!(system_user: true)
+      # Only update system_user if column exists
+      if User.column_names.include?('system_user')
+        system_user.update!(system_user: true)
+      end
     end
     
     # Create or update user profile with just first name
