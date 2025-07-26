@@ -44,7 +44,9 @@ module Users
       end
 
       def without_team
-        includes(:membership).where(team_users: {id: nil}).where(system_user: false)
+        scope = includes(:membership).where(team_users: {id: nil})
+        scope = scope.where(system_user: false) if column_names.include?('system_user')
+        scope
       end
 
       def team_managers
@@ -57,7 +59,9 @@ module Users
       end
 
       def team_agents
-        includes(:membership).where(team_users: {teamrole_id: Teamrole.agent&.id}).where(system_user: false)
+        scope = includes(:membership).where(team_users: {teamrole_id: Teamrole.agent&.id})
+        scope = scope.where(system_user: false) if column_names.include?('system_user')
+        scope
       end
 
     end

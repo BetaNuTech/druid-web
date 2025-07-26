@@ -51,12 +51,18 @@ class User < ApplicationRecord
 
   ### Scopes
   scope :by_name_asc, -> {
-    includes(:profile).
-    where(system_user: false).
-    order("user_profiles.last_name ASC, user_profiles.first_name ASC")
+    scope = includes(:profile).order("user_profiles.last_name ASC, user_profiles.first_name ASC")
+    scope = scope.where(system_user: false) if column_names.include?('system_user')
+    scope
   }
-  scope :active, -> { where.not(deactivated: true).where(system_user: false) }
-  scope :non_system, -> { where(system_user: false) }
+  scope :active, -> { 
+    scope = where.not(deactivated: true)
+    scope = scope.where(system_user: false) if column_names.include?('system_user')
+    scope
+  }
+  scope :non_system, -> { 
+    column_names.include?('system_user') ? where(system_user: false) : all
+  }
 
   ### Callbacks
   after_save :deactivation_cleanup
@@ -64,6 +70,7 @@ class User < ApplicationRecord
 
   ### Class Methods
   def self.system
+    return nil unless column_names.include?('system_user')
     find_by(system_user: true)
   end
 
@@ -173,6 +180,7 @@ class User < ApplicationRecord
   end
 
   def system?
+    return false unless self.class.column_names.include?('system_user')
     system_user
   end
 
@@ -189,6 +197,9 @@ class User < ApplicationRecord
   private
 
   def prevent_system_user_deactivation
+    return unless self.class.column_names.include?('system_user')
+    return unless system_user
+    
     if deactivated_changed? && deactivated?
       errors.add(:base, "System user cannot be deactivated")
       throw :abort

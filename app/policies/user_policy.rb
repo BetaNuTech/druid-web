@@ -19,7 +19,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
-    return false if record.system?
+    return false if record.respond_to?(:system?) && record.system?
     
     case user
     when -> (u) { u === record }
@@ -64,7 +64,7 @@ class UserPolicy < ApplicationPolicy
    end
 
   def destroy?
-    return false if record.system?
+    return false if record.respond_to?(:system?) && record.system?
     
     !record.deactivated? &&
       user != record &&
@@ -72,7 +72,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def impersonate?
-    return false if record.system?
+    return false if record.respond_to?(:system?) && record.system?
     
     !record.deactivated? && user.administrator? && !record.administrator?
   end
