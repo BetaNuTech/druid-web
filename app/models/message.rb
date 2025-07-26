@@ -514,10 +514,18 @@ class Message < ApplicationRecord
     lead_action = LeadAction.find_or_create_by(name: note_action)
     
     unless messageable.comments.exists?(notable: self, lead_action: lead_action)
+      comment_content = if message_type&.sms?
+        "Sent: [SMS]"
+      elsif message_type&.email?
+        "Sent: [Email] #{subject}"
+      else
+        "Sent: #{subject}"
+      end
+      
       messageable.comments.create(
         user: user,
         lead_action: lead_action,
-        content: "SENT: #{subject}",
+        content: comment_content,
         notable: self
       )
     end
