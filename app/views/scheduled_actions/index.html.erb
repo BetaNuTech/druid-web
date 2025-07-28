@@ -44,7 +44,7 @@
 </div>
 
 <!-- Calendar component -->
-<% cache([@current_user, "calendar_table", @start_date, @current_user.task_calendar_expiration]) do %>
+<% cache([@current_user, "calendar_table", @start_date, @current_user.task_calendar_expiration, @team_tasks, @all_tasks, @current_property&.id]) do %>
 <div class="row" style="padding-top: 0;">
   <div class="col-md-12">
     <% events = @scheduled_actions.sorted_by_due_asc %>
