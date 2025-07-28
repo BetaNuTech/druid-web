@@ -54,6 +54,9 @@ class ScheduledActionsController < ApplicationController
 
     skope = skope.where("scheduled_actions.created_at > ?", @start_date - 1.month)
     @scheduled_actions = skope.includes(:schedule).valid
+    
+    # Calculate cache expiration based on the viewing context
+    @calendar_cache_expiration = calculate_calendar_cache_expiration(skope)
   end
 
 
@@ -252,6 +255,40 @@ class ScheduledActionsController < ApplicationController
         @scheduled_action.user :
         current_user
       return user
+    end
+    
+    def calculate_calendar_cache_expiration(scope)
+      # Build a base scope without the date filter to catch newly created tasks
+      base_scope = if @team_tasks && @current_property
+        # Team tasks for current property
+        ScheduledAction.for_property(@current_property).where(target_type: 'Lead')
+      elsif @team_tasks
+        # Team tasks for all user's properties
+        user_ids = PropertyUser.where(property_id: current_user.property_ids).pluck(:user_id).uniq
+        ScheduledAction.where(user_id: user_ids, target_type: 'Lead')
+      else
+        # Personal tasks only
+        current_user.scheduled_actions
+      end
+      
+      # Apply the same filters as the view, but without date restriction
+      unless @all_tasks
+        base_scope = base_scope.joins(:lead_action).where(lead_actions: {name: LeadAction::SHOWING_ACTION_NAME})
+      end
+      
+      # Get the most recent update/creation timestamp
+      last_timestamp = base_scope.maximum(:updated_at)&.to_i || DateTime.current.to_i
+      
+      # Also check for the most recent creation to catch brand new tasks
+      last_created = base_scope.maximum(:created_at)&.to_i || DateTime.current.to_i
+      last_timestamp = [last_timestamp, last_created].max
+      
+      # If no recent updates (> 12 hours), use current time to force periodic refresh
+      if last_timestamp < (DateTime.current - 12.hours).to_i
+        DateTime.current.to_i
+      else
+        last_timestamp
+      end
     end
 
 end

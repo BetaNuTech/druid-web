@@ -10,6 +10,11 @@
             Schedule New Task
           <% end %>
         <% end %>
+        <% if params[:refresh_cache] %>
+          <span class="text-muted" style="margin-left: 10px;">
+            <span class="glyphicon glyphicon-refresh"></span> Cache refreshed
+          </span>
+        <% end %>
       </div>
       
       <div class="calendar-header__right">
@@ -38,13 +43,24 @@
             Team Tasks
           <% end %>
         </div>
+        
+        <%= link_to scheduled_actions_path(all: params[:all], team: params[:team], refresh_cache: true), 
+            class: "btn btn--small btn--secondary", 
+            style: "margin-left: 10px;",
+            data: { toggle: "tooltip", placement: "bottom" }, 
+            title: "Reload Calendar (Invalidates cached version)" do %>
+          <span class="glyphicon glyphicon-refresh"></span>
+        <% end %>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Calendar component -->
-<% cache([@current_user, "calendar_table", @start_date, @current_user.task_calendar_expiration, @team_tasks, @all_tasks, @current_property&.id]) do %>
+<% cache_key = [@current_user, "calendar_table", @start_date, @calendar_cache_expiration, @team_tasks, @all_tasks, @current_property&.id]
+   cache_key << Time.current.to_i if params[:refresh_cache]
+%>
+<% cache(cache_key) do %>
 <div class="row" style="padding-top: 0;">
   <div class="col-md-12">
     <% events = @scheduled_actions.sorted_by_due_asc %>
@@ -96,7 +112,10 @@
 
 <!-- Previous tasks -->
 <section class="section section--no-padding-y">
-<% cache([@current_user, "calendar_previous_tasks", @start_date, @current_user.task_calendar_expiration, @team_tasks, @all_tasks, @current_property&.id]) do %>
+<% cache_key = [@current_user, "calendar_previous_tasks", @start_date, @calendar_cache_expiration, @team_tasks, @all_tasks, @current_property&.id]
+   cache_key << Time.current.to_i if params[:refresh_cache]
+%>
+<% cache(cache_key) do %>
 <div class="row">
   <div class="col-md-12">
     <div class="row">
