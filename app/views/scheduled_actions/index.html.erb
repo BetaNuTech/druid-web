@@ -96,7 +96,7 @@
 
 <!-- Previous tasks -->
 <section class="section section--no-padding-y">
-<% cache([@current_user, "calendar_previous_tasks", @start_date, @current_user.task_calendar_expiration]) do %>
+<% cache([@current_user, "calendar_previous_tasks", @start_date, @current_user.task_calendar_expiration, @team_tasks, @all_tasks, @current_property&.id]) do %>
 <div class="row">
   <div class="col-md-12">
     <div class="row">
