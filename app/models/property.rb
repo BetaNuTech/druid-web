@@ -33,7 +33,7 @@
 #  leasing_phone        :string
 #  voice_menu_enabled   :boolean          default(FALSE)
 #  appsettings          :jsonb
-#
+#  tour_booking_url     :string
 
 class Property < ApplicationRecord
   ### Class Concerns/Extensions
