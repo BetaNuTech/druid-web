@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_07_29_134200) do
+ActiveRecord::Schema.define(version: 2025_07_29_140807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -486,8 +486,7 @@ ActiveRecord::Schema.define(version: 2025_07_29_134200) do
     t.string "leasing_phone"
     t.boolean "voice_menu_enabled", default: false
     t.jsonb "appsettings", default: {}
-    t.string "virtual_tour_booking_url"
-    t.string "in_person_tour_booking_url"
+    t.string "tour_booking_url"
     t.index ["active"], name: "index_properties_on_active"
     t.index ["team_id"], name: "index_properties_on_team_id"
   end
