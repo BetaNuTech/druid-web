@@ -40,6 +40,8 @@ module Leads
           'property_phone' => property.try(:formatted_phone_number),
           'property_school_district' => property.try(:school_district),
           'property_application_url' => property.try(:application_url),
+          'property_virtual_tour_booking_url' => property.try(:virtual_tour_booking_url),
+          'property_in_person_tour_booking_url' => property.try(:in_person_tour_booking_url),
           'html_email_header_image' => ("%s://%s/email_header_sapphire-620.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
           'email_business_logo' => ("%s://%s/bluecrest_logo_small.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),
           'email_housing_logo' => ("%s://%s/equal_housing_logo.png" % [ENV.fetch('APPLICATION_PROTOCOL', 'https'), ENV.fetch('APPLICATION_HOST','')]),

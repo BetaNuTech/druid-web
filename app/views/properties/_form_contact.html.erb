@@ -95,5 +95,19 @@
         <%= form.text_field :application_url, id: :property_application_url, class: "form__control" %>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-12 form__group">
+        <%= form.label :virtual_tour_booking_url, 'Virtual Tour Booking URL', class: 'form__label' %>
+        <%= form.text_field :virtual_tour_booking_url, id: :property_virtual_tour_booking_url, class: "form__control" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 form__group">
+        <%= form.label :in_person_tour_booking_url, 'In-Person Tour Booking URL', class: 'form__label' %>
+        <%= form.text_field :in_person_tour_booking_url, id: :property_in_person_tour_booking_url, class: "form__control" %>
+      </div>
+    </div>
   </div>
 </fieldset>

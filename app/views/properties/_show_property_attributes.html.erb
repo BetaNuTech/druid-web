@@ -121,6 +121,28 @@
     </div>
   <% end %>
 
+  <% if @property.virtual_tour_booking_url.present? %>
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>Virtual Tour Booking URL:</strong>
+          <%= link_to @property.virtual_tour_booking_url, @property.virtual_tour_booking_url, target: "_blank" %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @property.in_person_tour_booking_url.present? %>
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <strong>In-Person Tour Booking URL:</strong>
+          <%= link_to @property.in_person_tour_booking_url, @property.in_person_tour_booking_url, target: "_blank" %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Property Details -->
   <div class="row">
     <div class="col-md-4">

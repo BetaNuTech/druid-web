@@ -53,7 +53,8 @@ class Property < ApplicationRecord
   ALLOWED_PARAMS = [ :name, :address1, :address2, :address3, :city, :state, :zip, :country,
                     :organization, :contact_name, :phone, :maintenance_phone, :leasing_phone,
                     :fax, :email, :website, :units, :notes, :school_district,
-                    :amenities, :active, :application_url, :team_id, :timezone,
+                    :amenities, :active, :application_url, :virtual_tour_booking_url,
+                    :in_person_tour_booking_url, :team_id, :timezone,
                     :logo, :remove_logo, :call_lead_generation, :voice_menu_enabled,
                     { working_hours: {} } ]
 
