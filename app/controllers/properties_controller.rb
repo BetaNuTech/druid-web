@@ -90,7 +90,7 @@ class PropertiesController < ApplicationController
     authorize Property
     @current_property = Property.find(params[:property_id])
     cookies[:current_property] = @current_property.id if @current_property
-    redirect_to URI(request.referer).path
+    redirect_to request.referer || root_path
   end
 
   def user_stats
