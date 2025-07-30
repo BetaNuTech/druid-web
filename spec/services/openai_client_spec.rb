@@ -239,6 +239,112 @@ RSpec.describe OpenaiClient do
         expect(result).to be_nil
       end
     end
+    
+    context "with SMS consent detection" do
+      let(:tour_confirmation_email) {
+        {
+          headers: {
+            'From' => 'tours@property.com',
+            'To' => 'property+ABC123@cloudmailin.net',
+            'Subject' => 'Tour Confirmation - Test Property',
+            'Date' => '2025-06-10 16:39:50 UTC'
+          },
+          plain: 'Tour confirmed for John Doe. By registering, you agree to our Terms of Use and Privacy Policy and consent to be contacted at the phone number and email address you have provided by text message and/or autodialer for any purpose, including marketing, by the property and anyone acting on their behalf.'
+        }
+      }
+      
+      let(:sms_consent_response) {
+        {
+          'choices' => [{
+            'message' => {
+              'content' => {
+                'is_lead' => true,
+                'lead_type' => 'rental_inquiry',
+                'confidence' => 0.95,
+                'source_match' => 'Property Website',
+                'has_sms_consent' => true,
+                'lead_data' => {
+                  'first_name' => 'John',
+                  'last_name' => 'Doe',
+                  'email' => 'john.doe@example.com',
+                  'phone1' => '555-123-4567',
+                  'phone2' => nil,
+                  'notes' => 'Tour confirmation received. User has Opted In to Text Messages.',
+                  'preferred_move_in_date' => nil,
+                  'unit_type' => nil,
+                  'company' => nil
+                },
+                'classification_reason' => 'Tour booking confirmation email with SMS consent'
+              }.to_json
+            }
+          }]
+        }
+      }
+      
+      let(:no_sms_consent_response) {
+        {
+          'choices' => [{
+            'message' => {
+              'content' => {
+                'is_lead' => true,
+                'lead_type' => 'rental_inquiry',
+                'confidence' => 0.95,
+                'source_match' => 'Zillow',
+                'has_sms_consent' => false,
+                'lead_data' => {
+                  'first_name' => 'Jane',
+                  'last_name' => 'Smith',
+                  'email' => 'jane.smith@example.com',
+                  'phone1' => '555-987-6543',
+                  'phone2' => nil,
+                  'notes' => 'Interested in 2BR unit',
+                  'preferred_move_in_date' => nil,
+                  'unit_type' => '2BR',
+                  'company' => nil
+                },
+                'classification_reason' => 'Standard rental inquiry without consent language'
+              }.to_json
+            }
+          }]
+        }
+      }
+      
+      it "detects SMS consent in tour confirmation emails" do
+        allow(http).to receive(:request).and_return(
+          double('response', code: '200', body: sms_consent_response.to_json)
+        )
+        
+        result = client.analyze_email(tour_confirmation_email, property, active_sources)
+        
+        expect(result['has_sms_consent']).to be true
+        expect(result['lead_data']['notes']).to include('User has Opted In to Text Messages.')
+      end
+      
+      it "does not detect SMS consent when consent language is absent" do
+        allow(http).to receive(:request).and_return(
+          double('response', code: '200', body: no_sms_consent_response.to_json)
+        )
+        
+        result = client.analyze_email(email_content, property, active_sources)
+        
+        expect(result['has_sms_consent']).to be false
+        expect(result['lead_data']['notes']).not_to include('User has Opted In to Text Messages.')
+      end
+      
+      it "handles missing has_sms_consent field for backward compatibility" do
+        # Remove has_sms_consent from response
+        backward_compatible_response = successful_response.deep_dup
+        
+        allow(http).to receive(:request).and_return(
+          double('response', code: '200', body: backward_compatible_response.to_json)
+        )
+        
+        result = client.analyze_email(email_content, property, active_sources)
+        
+        expect(result).to be_a(Hash)
+        expect(result).not_to have_key('has_sms_consent')
+      end
+    end
   end
   
   describe "#system_prompt" do
@@ -260,6 +366,17 @@ RSpec.describe OpenaiClient do
       prompt = client.send(:system_prompt, property)
       
       expect(prompt).to include('test1, test2, test3')
+    end
+    
+    it "includes SMS consent detection instructions" do
+      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com').and_return('bluecrestresidential.com')
+      allow(ENV).to receive(:fetch).with('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').and_return('blueskyleads,leasing')
+      
+      prompt = client.send(:system_prompt, property)
+      
+      expect(prompt).to include('"has_sms_consent": true/false')
+      expect(prompt).to include('consent to be contacted at the phone number')
+      expect(prompt).to include('User has Opted In to Text Messages.')
     end
   end
 end

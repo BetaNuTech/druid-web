@@ -142,6 +142,7 @@ class OpenaiClient
         "lead_type": "rental_inquiry|resident|vendor|spam|unknown",
         "confidence": 0.0-1.0,
         "source_match": "source name or null",
+        "has_sms_consent": true/false,
         "lead_data": {
           "first_name": "string or null",
           "last_name": "string or null",
@@ -171,6 +172,16 @@ class OpenaiClient
       - If no Marketing Source matches, return your best guess of the actual source based on email patterns, domains, from address, subject line, or content
       - Always return a source_match value - either a matched Marketing Source or your best guess of the source
       - Notes should add additional context from the lead data that would be helpful for the leasing agent to know.
+      - Check if the email indicates the lead has consented to be contacted at their phone number
+      - Look for language patterns indicating consent to phone/SMS contact such as:
+        - "consent to be contacted at the phone number"
+        - "agree to receive text messages" 
+        - "opted in to SMS/text"
+        - "consent to text"
+        - References to agreeing to terms that include phone/text communication
+      - This consent language typically appears in tour booking or registration confirmation emails
+      - Set has_sms_consent: true if such consent language is detected
+      - When has_sms_consent is true, append to the notes field: "User has Opted In to Text Messages."
     PROMPT
   end
   

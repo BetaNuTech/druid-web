@@ -133,6 +133,40 @@ class ProcessCloudmailinEmailJob < ApplicationJob
           content: "AI Classification: #{analysis['lead_type'].humanize}\nReason: #{analysis['classification_reason']}\nConfidence: #{(analysis['confidence'] * 100).round}%"
         )
       end
+      
+      # Handle SMS consent if detected
+      if analysis['has_sms_consent'] == true && lead.preference.present?
+        # Set opt-in on this lead
+        lead.preference.optin_sms = true
+        lead.preference.optin_sms_date = DateTime.current
+        lead.preference.save!
+        
+        # Add system note
+        Note.create!(
+          notable: lead,
+          classification: 'system',
+          content: "SMS opt-in detected from email content (tour booking confirmation). Lead pre-consented to SMS."
+        )
+        
+        # Find and update all duplicate leads to have SMS opt-in
+        duplicate_leads = lead.duplicates.includes(:preference)
+        duplicate_leads.each do |dup_lead|
+          if dup_lead.preference.present? && !dup_lead.preference.optin_sms?
+            dup_lead.preference.optin_sms = true
+            dup_lead.preference.optin_sms_date = DateTime.current
+            dup_lead.preference.save!
+            
+            Note.create!(
+              notable: dup_lead,
+              classification: 'system', 
+              content: "SMS opt-in inherited from duplicate lead #{lead.id} (detected in email)"
+            )
+          end
+        end
+      end
+      
+      # IMPORTANT: Trigger duplicate marking and messaging flow
+      lead.mark_duplicates
     else
       error_message = "Lead creation failed: #{lead.errors.full_messages.join(', ')}"
       raw_email.mark_failed!(error_message)
