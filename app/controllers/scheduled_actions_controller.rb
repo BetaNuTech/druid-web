@@ -16,7 +16,13 @@ class ScheduledActionsController < ApplicationController
     @all_tasks = (params[:all] || 'false') == 'true'
     @team_tasks = (params[:team] || 'false') == 'true'
     skope = nil
-    @start_date = (Date.parse(params[:start_date]) rescue Date.current.beginning_of_month)
+    # Always use beginning of month for consistency
+    if params[:start_date].present?
+      parsed_date = Date.parse(params[:start_date]) rescue Date.current
+      @start_date = parsed_date.beginning_of_month
+    else
+      @start_date = Date.current.beginning_of_month
+    end
 
     if @lead
       # Lead id provide: scope Tasks to that Lead.
@@ -52,11 +58,24 @@ class ScheduledActionsController < ApplicationController
         where(lead_actions: {name: LeadAction::SHOWING_ACTION_NAME})
     end
 
-    skope = skope.where("scheduled_actions.created_at > ?", @start_date - 1.month)
-    @scheduled_actions = skope.includes(:schedule).valid
+    # Filter by scheduled date range to include all visible days in the calendar
+    # The calendar always shows a 5-week grid (5 rows x 7 days = 35 days)
+    # Start from the Monday before or on the 1st of the month
+    start_of_calendar = @start_date.beginning_of_week(:monday)
+    # End 34 days after that (5 weeks total = 35 days)
+    end_of_calendar = (start_of_calendar + 34.days).end_of_day
     
-    # Calculate cache expiration based on the viewing context
-    @calendar_cache_expiration = calculate_calendar_cache_expiration(skope)
+    calendar_skope = skope.joins(:schedule).where(
+      "schedules.date >= ? AND schedules.date <= ?", 
+      start_of_calendar, 
+      end_of_calendar
+    )
+    
+    @scheduled_actions = calendar_skope.includes(:schedule).valid
+    
+    # Create separate queries for Due/Upcoming and Previous sections (relative to today, not calendar month)
+    @upcoming_scheduled_actions = skope.includes(:schedule).valid.upcoming_or_incomplete.sorted_by_due_desc.limit(50)
+    @previous_scheduled_actions = skope.includes(:schedule).valid.previous_month.sorted_by_due_desc.limit(20)
   end
 
 
@@ -255,40 +274,6 @@ class ScheduledActionsController < ApplicationController
         @scheduled_action.user :
         current_user
       return user
-    end
-    
-    def calculate_calendar_cache_expiration(scope)
-      # Build a base scope without the date filter to catch newly created tasks
-      base_scope = if @team_tasks && @current_property
-        # Team tasks for current property
-        ScheduledAction.for_property(@current_property).where(target_type: 'Lead')
-      elsif @team_tasks
-        # Team tasks for all user's properties
-        user_ids = PropertyUser.where(property_id: current_user.property_ids).pluck(:user_id).uniq
-        ScheduledAction.where(user_id: user_ids, target_type: 'Lead')
-      else
-        # Personal tasks only
-        current_user.scheduled_actions
-      end
-      
-      # Apply the same filters as the view, but without date restriction
-      unless @all_tasks
-        base_scope = base_scope.joins(:lead_action).where(lead_actions: {name: LeadAction::SHOWING_ACTION_NAME})
-      end
-      
-      # Get the most recent update/creation timestamp
-      last_timestamp = base_scope.maximum(:updated_at)&.to_i || DateTime.current.to_i
-      
-      # Also check for the most recent creation to catch brand new tasks
-      last_created = base_scope.maximum(:created_at)&.to_i || DateTime.current.to_i
-      last_timestamp = [last_timestamp, last_created].max
-      
-      # If no recent updates (> 12 hours), use current time to force periodic refresh
-      if last_timestamp < (DateTime.current - 12.hours).to_i
-        DateTime.current.to_i
-      else
-        last_timestamp
-      end
     end
 
 end
