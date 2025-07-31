@@ -366,6 +366,9 @@ module Leads
 
       # Ensure SMS messaging consent and compliance 
       def request_first_sms_authorization_if_open_and_unique
+        # Don't send opt-in request if already opted in
+        return false if preference&.optin_sms?
+        
         if open? && !(messages.outgoing.sms.for_compliance.any? || any_sms_compliance_messages_for_recipient? )
           send_sms_optin_request
         else

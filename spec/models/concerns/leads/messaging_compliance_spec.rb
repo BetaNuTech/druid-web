@@ -37,6 +37,36 @@ RSpec.describe "Leads::Messaging compliance message handling", type: :model do
     # Re-enable delayed job
     Delayed::Worker.delay_jobs = true
   end
+  
+  describe "#request_first_sms_authorization_if_open_and_unique" do
+    context "when lead is already opted in to SMS" do
+      before do
+        lead.preference.update!(optin_sms: true, optin_sms_date: DateTime.current)
+      end
+      
+      it "does not send SMS opt-in request" do
+        expect(lead).not_to receive(:send_sms_optin_request)
+        
+        result = lead.request_first_sms_authorization_if_open_and_unique
+        
+        expect(result).to be false
+      end
+      
+      it "does not create any compliance messages" do
+        expect {
+          lead.request_first_sms_authorization_if_open_and_unique
+        }.not_to change { Message.count }
+      end
+    end
+    
+    context "when lead is not opted in and no compliance messages exist" do
+      it "sends SMS opt-in request" do
+        expect(lead).to receive(:send_sms_optin_request)
+        
+        lead.request_first_sms_authorization_if_open_and_unique
+      end
+    end
+  end
 
   describe "#send_compliance_message" do
     context "when sending SMS opt-in request" do

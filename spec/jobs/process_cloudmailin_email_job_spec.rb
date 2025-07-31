@@ -467,7 +467,7 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         openai_lead_response.merge(
           'has_sms_consent' => true,
           'lead_data' => openai_lead_response['lead_data'].merge(
-            'notes' => 'Tour confirmation received. User has Opted In to Text Messages.'
+            'notes' => 'Tour confirmation received.'
           )
         )
       }
@@ -492,6 +492,25 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
           expect(lead.preference.optin_sms).to be true
           expect(lead.preference.optin_sms_date).to be_present
           expect(lead.preference.optin_sms_date).to be_within(1.minute).of(DateTime.current)
+        end
+        
+        it "includes SMS consent message in preference notes" do
+          described_class.perform_now(raw_email)
+          
+          lead = raw_email.reload.lead
+          expect(lead.preference.notes).to include("Lead has consented to receiving text messages.")
+          expect(lead.preference.notes).to include("Tour confirmation received.")
+          expect(lead.preference.notes).to include("Processed by AI")
+        end
+        
+        it "does not send SMS opt-in request when already opted in" do
+          # Mock the message sending to verify it's not called
+          expect_any_instance_of(Lead).not_to receive(:send_sms_optin_request)
+          
+          described_class.perform_now(raw_email)
+          
+          lead = raw_email.reload.lead
+          expect(lead.preference.optin_sms).to be true
         end
         
         it "creates a system note about SMS opt-in detection" do

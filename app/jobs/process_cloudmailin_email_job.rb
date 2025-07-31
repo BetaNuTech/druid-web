@@ -214,6 +214,7 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     notes_parts = []
     notes_parts << lead_info['notes'] if lead_info['notes'].present?
     notes_parts << "Unit type requested: #{lead_info['unit_type']}" if lead_info['unit_type'].present?
+    notes_parts << "Lead has consented to receiving text messages." if analysis['has_sms_consent'] == true
     notes_parts << "Processed by AI"
     preference_attrs[:notes] = notes_parts.join("\n\n")
     

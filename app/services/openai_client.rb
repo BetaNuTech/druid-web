@@ -181,7 +181,6 @@ class OpenaiClient
         - References to agreeing to terms that include phone/text communication
       - This consent language typically appears in tour booking or registration confirmation emails
       - Set has_sms_consent: true if such consent language is detected
-      - When has_sms_consent is true, append to the notes field: "User has Opted In to Text Messages."
     PROMPT
   end
   

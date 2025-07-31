@@ -269,7 +269,7 @@ RSpec.describe OpenaiClient do
                   'email' => 'john.doe@example.com',
                   'phone1' => '555-123-4567',
                   'phone2' => nil,
-                  'notes' => 'Tour confirmation received. User has Opted In to Text Messages.',
+                  'notes' => 'Tour confirmation received.',
                   'preferred_move_in_date' => nil,
                   'unit_type' => nil,
                   'company' => nil
@@ -317,7 +317,7 @@ RSpec.describe OpenaiClient do
         result = client.analyze_email(tour_confirmation_email, property, active_sources)
         
         expect(result['has_sms_consent']).to be true
-        expect(result['lead_data']['notes']).to include('User has Opted In to Text Messages.')
+        expect(result['lead_data']['notes']).to eq('Tour confirmation received.')
       end
       
       it "does not detect SMS consent when consent language is absent" do
@@ -328,7 +328,7 @@ RSpec.describe OpenaiClient do
         result = client.analyze_email(email_content, property, active_sources)
         
         expect(result['has_sms_consent']).to be false
-        expect(result['lead_data']['notes']).not_to include('User has Opted In to Text Messages.')
+        expect(result['lead_data']['notes']).not_to include('consented')
       end
       
       it "handles missing has_sms_consent field for backward compatibility" do
@@ -376,7 +376,7 @@ RSpec.describe OpenaiClient do
       
       expect(prompt).to include('"has_sms_consent": true/false')
       expect(prompt).to include('consent to be contacted at the phone number')
-      expect(prompt).to include('User has Opted In to Text Messages.')
+      expect(prompt).not_to include('User has Opted In to Text Messages.')
     end
   end
 end
