@@ -103,6 +103,7 @@ module Yardi
           end
 
           request_options = {
+            service: 'ItfILSGuestCard',
             method: 'ImportYardiGuest_Login',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid,
