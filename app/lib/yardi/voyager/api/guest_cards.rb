@@ -50,6 +50,7 @@ module Yardi
             memo
           end
           request_options = {
+            service: 'ItfILSGuestCard',
             method: 'GetYardiGuestActivity_Search',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid,
@@ -71,6 +72,7 @@ module Yardi
         # Return GuestCards for the given property id and date window
         def getGuestCardsDateRange(propertyid, start_date: nil, end_date: DateTime.current)
           request_options = {
+            service: 'ItfILSGuestCard',
             method: 'GetYardiGuestActivity_DateRange',
             resource: 'ItfILSGuestCard.asmx',
             propertyid: propertyid,
