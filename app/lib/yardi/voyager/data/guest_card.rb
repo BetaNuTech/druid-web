@@ -337,7 +337,7 @@ module Yardi
                       end
 
                       xml.Email customer.email
-                      if customer.expected_move_in.present? && customer.expected_move_in > ( lead.first_comm + 1.week )
+                      if customer.expected_move_in.present? && lead.first_comm.present? && customer.expected_move_in > ( lead.first_comm + 1.week )
                         xml.Lease {
                           xml.ExpectedMoveInDate customer.expected_move_in
                         }
