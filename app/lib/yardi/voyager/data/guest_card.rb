@@ -429,6 +429,7 @@ module Yardi
 
 				def has_preferences?
 					( expected_move_in.present? &&
+						first_comm.present? &&
 						expected_move_in > ( first_comm + 1.week ) ) ||
 					bathrooms.present? || bedrooms.present?
 				end
