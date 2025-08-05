@@ -63,7 +63,7 @@ class LeadEngagementReport
     }
 
     @report = lead_scope.includes(:property, :user).all.
-        sort_by{|lead| [lead.property.name, lead.user.last_name, lead.user.first_name, lead.last_name, lead.first_name]}.
+        sort_by{|lead| [lead.property.name.to_s, lead.user.last_name.to_s, lead.user.first_name.to_s, lead.last_name.to_s, lead.first_name.to_s]}.
         inject([]) do |memo, lead|
       contacts = lead.contact_events.where(article_type: %w{Message LeadAction})
       total_contacts = contacts.count
