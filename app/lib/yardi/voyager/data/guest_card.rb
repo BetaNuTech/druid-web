@@ -347,6 +347,7 @@ module Yardi
 
                   xml.CustomerPreferences {
                     if customer.expected_move_in.present? &&
+                      lead.first_comm.present? &&
                       customer.expected_move_in > ( lead.first_comm + 1.week )
                       xml.TargetMoveInDate customer.expected_move_in
                     end
@@ -510,6 +511,7 @@ module Yardi
                       end
                       xml.Email customer.email
                       if customer.expected_move_in.present? &&
+                        lead.first_comm.present? &&
                         customer.expected_move_in > ( lead.first_comm + 1.week )
                         xml.Lease {
                           xml.ExpectedMoveInDate customer.expected_move_in
@@ -519,6 +521,7 @@ module Yardi
                   }
                   xml.CustomerPreferences {
                     if customer.expected_move_in.present? &&
+                      lead.first_comm.present? &&
                       customer.expected_move_in > ( lead.first_comm + 1.week )
                         xml.TargetMoveInDate customer.expected_move_in
                     end
@@ -544,7 +547,8 @@ module Yardi
                   unless lead.remoteid.present?
                     # New GuestCards in Voyager must provide at least one Event record.
                     xml.Events {
-                      xml.Event('EventType' => 'Other', 'EventDate' => lead.first_comm.strftime(REMOTE_DATE_FORMAT) ) {
+                      event_date = (lead.first_comm || lead.created_at || DateTime.current).strftime(REMOTE_DATE_FORMAT)
+                      xml.Event('EventType' => 'Other', 'EventDate' => event_date ) {
                         xml.EventID('IDValue' => '')
                         xml.Agent {
                           xml.AgentName {
