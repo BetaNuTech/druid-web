@@ -39,6 +39,42 @@ The following task will attempt to reparse Leads from the past month.
 
 `heroku run rake leads:incoming:reparse --app druid-prod`
 
+## Analyze Tenacity Scores
+
+Tenacity scores measure how many times agents contact leads before changing their state. The score maxes out at 3 contacts (perfect score of 10). You can analyze tenacity scores for any property using its listing code.
+
+To run a tenacity analysis:
+
+```ruby
+# Connect to production console
+heroku run rails console --app druid-prod
+
+# Load the analysis script
+load 'doc/scripts/tenacity_analysis.rb'
+
+# Run analysis for Vintage Edge (using property code "1002edge")
+TenacityAnalysis.new('1002edge').run
+
+# Or use the convenience method
+analyze_tenacity('1002edge')
+
+# To analyze more leads per agent (default is 10)
+TenacityAnalysis.new('1002edge', lead_limit: 20).run
+
+# Export to CSV format
+TenacityAnalysis.new('1002edge').run(format: :csv)
+# Or
+export_tenacity_csv('1002edge', limit: 20)
+```
+
+The analysis shows:
+- Individual lead tenacity scores (0-10 scale)
+- Contact events for each lead (what type and when)
+- Agent summaries (average tenacity, percentage with 3+ contacts)
+- Overall property statistics
+
+Note: Only "reportable" leads are included (not disqualified, resident, or exresident states).
+
 # Users
 
 # Messages
