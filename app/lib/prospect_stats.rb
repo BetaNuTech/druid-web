@@ -202,14 +202,49 @@ class ProspectStats
       where(condition_sql, time_window_start(window), @end_date)
   end
 
-  # Approximate prospect count excluding duplicates
+  # Prospect count with duplicates properly consolidated into clusters
   def prospect_count(skope, window)
     Rails.logger.info "=== ProspectStats: prospect_count #{window}"
     return cache(stat: 'prospect_count', skope: skope, window: window) do
       prospect_ids = prospect_count_all_scope(skope, window).select(:id).map(&:id)
-      duplicate_count = DuplicateLead.where(lead_id: prospect_ids).
-        select("distinct lead_id").count
-      prospect_ids.size - (duplicate_count / 2)
+
+      # Handle empty case
+      return 0 if prospect_ids.empty?
+
+      # Build adjacency graph of duplicate relationships
+      graph = Hash.new { |h, k| h[k] = Set.new }
+
+      # Get all duplicate relationships involving our prospects
+      DuplicateLead.where("reference_id IN (?) OR lead_id IN (?)", prospect_ids, prospect_ids).each do |dup|
+        # Only include relationships where both leads are in our prospect list
+        if prospect_ids.include?(dup.reference_id) && prospect_ids.include?(dup.lead_id)
+          graph[dup.reference_id] << dup.lead_id
+          graph[dup.lead_id] << dup.reference_id
+        end
+      end
+
+      # Count connected components using DFS
+      visited = Set.new
+      cluster_count = 0
+
+      prospect_ids.each do |lead_id|
+        next if visited.include?(lead_id)
+
+        # DFS to find all connected leads in this duplicate cluster
+        stack = [lead_id]
+        while stack.any?
+          current = stack.pop
+          next if visited.include?(current)
+          visited << current
+          # Add all unvisited neighbors to the stack
+          neighbors = graph[current] || []
+          stack.concat(neighbors.reject { |n| visited.include?(n) })
+        end
+
+        cluster_count += 1
+      end
+
+      cluster_count
     end
   end
 
