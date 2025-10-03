@@ -633,19 +633,38 @@ namespace :prospects do
         next
       end
 
+      # Parse date for first_comm
+      first_comm = nil
+      if date.present?
+        begin
+          # Handle various date formats (M/D/YY or MM/DD/YYYY)
+          # Assume 2-digit years are 2025
+          date_str = date.strip
+          parsed_date = Date.strptime(date_str, '%m/%d/%y') rescue Date.strptime(date_str, '%m/%d/%Y')
+          # If year is < 100, assume it's 2000s
+          if parsed_date.year < 100
+            parsed_date = Date.new(2000 + parsed_date.year, parsed_date.month, parsed_date.day)
+          end
+          first_comm = parsed_date.to_datetime
+        rescue StandardError => e
+          puts "Warning: Could not parse date '#{date}' for row #{row_num}: #{e.message}"
+        end
+      end
+
       # Build notes with original date if available
       notes = []
       notes << "Imported from CSV: #{channel}" if channel.present?
-      notes << "Original date: #{date}" if date.present?
+      notes << "Original date: #{date}" if date.present? && first_comm.nil?
       notes_text = notes.any? ? notes.join(', ') : nil
 
       # Create lead (or simulate in dry run)
       if dry_run
-        puts "Would create: #{first_name} #{last_name} | #{email || 'no email'} | #{phone || 'no phone'}"
+        puts "Would create: #{first_name} #{last_name} | #{email || 'no email'} | #{phone || 'no phone'} | first_comm: #{first_comm || 'not set'}"
         created_leads << {
           name: "#{first_name} #{last_name}",
           email: email,
           phone: phone,
+          first_comm: first_comm,
           row: row_num
         }
       else
@@ -660,7 +679,8 @@ namespace :prospects do
             referral: channel || 'CSV Import',
             state: 'open',
             priority: 'high',
-            notes: notes_text
+            notes: notes_text,
+            first_comm: first_comm
           )
 
           # Create preference for the lead (required by views)
@@ -672,6 +692,7 @@ namespace :prospects do
             name: "#{first_name} #{last_name}",
             email: email,
             phone: phone,
+            first_comm: first_comm,
             row: row_num
           }
 
@@ -724,9 +745,9 @@ namespace :prospects do
       FileUtils.mkdir_p(File.dirname(output_file))
 
       CSV.open(output_file, 'w') do |csv|
-        csv << ['Lead ID', 'Name', 'Email', 'Phone', 'Source Row']
+        csv << ['Lead ID', 'Name', 'Email', 'Phone', 'First Contact', 'Source Row']
         created_leads.each do |lead|
-          csv << [lead[:id], lead[:name], lead[:email], lead[:phone], lead[:row]]
+          csv << [lead[:id], lead[:name], lead[:email], lead[:phone], lead[:first_comm], lead[:row]]
         end
       end
 

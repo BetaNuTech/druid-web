@@ -213,8 +213,8 @@ Created leads will have:
 - **State**: open
 - **Priority**: high
 - **Referral**: Channel from CSV (e.g., "zillow.com")
-- **Notes**: Original date and channel from CSV
-- **first_comm**: NOT set (only set when actual communication happens)
+- **Notes**: Channel from CSV (date only in notes if unparseable)
+- **first_comm**: Set to the date from CSV when the prospect came in
 
 ### Safety Features
 - Checks for existing leads with same email/phone at the property
