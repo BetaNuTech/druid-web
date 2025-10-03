@@ -75,6 +75,159 @@ The analysis shows:
 
 Note: Only "reportable" leads are included (not disqualified, resident, or exresident states).
 
+## Match CSV Prospects Against Existing Leads
+
+This task compares a CSV file of prospects against existing leads in the database to identify which prospects are already in the system and which are new. It matches by email first, then falls back to name matching with date proximity checking.
+
+### Input CSV Format
+
+Place your CSV file in `tmp/prospects/` directory. The file supports 1-3 rows per prospect:
+
+```
+Row 1: Name, Date, Channel, Additional Info
+Row 2 (optional): Email or Phone, (empty), Tags, Touchpoint
+Row 3 (optional): Phone or Email, (empty), Tags, Touchpoint
+```
+
+Supported formats:
+- **Name only** (1 row) - for name-based matching
+- **Name + Email** (2 rows)
+- **Name + Phone** (2 rows)
+- **Name + Email + Phone** (3 rows, either order)
+
+Example:
+```csv
+John Smith,8/12/25,Referral,
+johnsmith@email.com,,,
+(555) 123-4567,,,
+Jane Doe,9/15/25,Organic Search,Web-Desktop
+janedoe@email.com,,SEO Touched,Registration
+```
+
+Phone numbers are automatically formatted to match the database storage (10-digit strings).
+
+### Running the Task
+
+```bash
+# With filename and property code
+bundle exec rake 'prospects:match[prospects_1002edge.csv,1002edge]'
+
+# Auto-detect property code from filename
+bundle exec rake 'prospects:match[prospects_1002edge.csv]'
+
+# Interactive mode (will prompt for filename)
+bundle exec rake 'prospects:match[,1002edge]'
+
+# Production
+heroku run "rake 'prospects:match[prospects_1001rawe.csv,1001rawe]'" --app druid-prod
+```
+
+### Output Files
+
+The task generates two timestamped CSV files in `tmp/prospects/results/`:
+
+**Matched file** (`[property_code]_matched_[timestamp].csv`):
+- Name
+- Email
+- Phone
+- Current State (lead's current status)
+- State Changed Date
+- Lead ID
+- Match Type (email, phone, name, or initial+last)
+- Duplicate Count (if multiple matches found)
+
+**Unmatched file** (`[property_code]_unmatched_[timestamp].csv`):
+- Name
+- Email
+- Phone
+- Date
+- Channel
+- Tags/Touches
+
+### Matching Logic
+
+1. **Email Match**: Exact email match at the specified property
+2. **Phone Match**: Exact phone match at the specified property (checks both phone1 and phone2 fields)
+3. **Full Name Match**: Both first and last name match, with lead created within 30 days of prospect date
+4. **Initial+Last Match**: First initial + full last name (e.g., "J Smith" matches "John Smith"), with date proximity
+5. **First+Initial Match**: Full first name + last initial (e.g., "John S" matches "John Smith"), with date proximity
+6. **Initials Match**: Both first and last initials (e.g., "J S" matches "John Smith"), with date proximity
+
+Phone numbers are normalized before matching (country codes and formatting are removed). All name-based matching requires the lead to be created within 30 days of the prospect date. The task reports statistics showing how many prospects were matched by each method.
+
+## Create Leads from Unmatched Prospects
+
+After running the match task, you can import the unmatched prospects as new leads. This task reads the unmatched CSV file and creates leads in the system.
+
+### Requirements
+- CSV must have headers: Name, Email, Phone, Date, Channel, Tags/Touches
+- Rows without email OR phone are skipped (must have at least one)
+- Leads are created with state: 'open' and priority: 'high'
+
+### Running Locally
+
+```bash
+# Dry run mode (preview without creating)
+bundle exec rake 'prospects:create_leads[1002edge_unmatched_20251002.csv,1002edge,true]'
+
+# Actually create leads
+bundle exec rake 'prospects:create_leads[1002edge_unmatched_20251002.csv,1002edge]'
+
+# File will be found automatically in:
+# - tmp/prospects/results/ (where unmatched files are saved)
+# - tmp/prospects/
+# - current directory
+```
+
+### Running on Heroku
+
+Since stdin doesn't pipe through `heroku run`, use one of these methods:
+
+```bash
+# Method 1: Upload to S3 or GitHub Gist first
+# Upload your CSV to S3 or create a GitHub Gist, then:
+heroku run bash --app druid-prod
+curl -o /tmp/unmatched.csv "https://your-s3-or-gist-url/file.csv"
+bundle exec rake 'prospects:create_leads[/tmp/unmatched.csv,1002edge]'
+exit
+
+# Method 2: Inline with heredoc (for smaller files)
+heroku run bash --app druid-prod
+cat > /tmp/unmatched.csv << 'EOF'
+Name,Email,Phone,Date,Channel,Tags/Touches
+John Doe,john@example.com,(555) 123-4567,10/1/25,zillow.com,
+Jane Smith,jane@example.com,,10/2/25,apartments.com,
+EOF
+bundle exec rake 'prospects:create_leads[/tmp/unmatched.csv,1002edge]'
+exit
+
+# Method 3: Using Rails console (for very small datasets)
+heroku run rails console --app druid-prod
+# Then paste and run the lead creation code directly
+```
+
+### Lead Creation Details
+
+Created leads will have:
+- **Source**: "Manual CSV Import" lead source
+- **State**: open
+- **Priority**: high
+- **Referral**: Channel from CSV (e.g., "zillow.com")
+- **Notes**: Original date and channel from CSV
+- **first_comm**: NOT set (only set when actual communication happens)
+
+### Safety Features
+- Checks for existing leads with same email/phone at the property
+- Validates property exists before creating
+- Dry run mode for previewing
+- Saves results to `tmp/prospects/results/created_leads_[property]_[timestamp].csv`
+
+### Output
+The task provides:
+- Summary of created/skipped/error counts
+- List of skipped duplicates with existing Lead IDs
+- CSV file with all created lead IDs for reference
+
 # Users
 
 # Messages
