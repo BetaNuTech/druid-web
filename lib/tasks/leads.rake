@@ -499,7 +499,7 @@ namespace :leads do
           group.each do |lead|
             lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up'
             lead.follow_up_at = follow_up_date
-            lead.trigger_event(event_name: :postpone)
+            lead.trigger_event(event_name: :postpone, user: User.system)
           end
         end
       else
@@ -508,7 +508,7 @@ namespace :leads do
         old_leads.each do |lead|
           lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up'
           lead.follow_up_at = follow_up_base
-          lead.trigger_event(event_name: :postpone)
+          lead.trigger_event(event_name: :postpone, user: User.system)
         end
       end
     end

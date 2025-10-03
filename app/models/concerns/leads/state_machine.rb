@@ -81,14 +81,16 @@ module Leads
         pending_revisit.each do |lead|
           next unless lead.property&.active?
           Rails.logger.warn "Lead #{lead.id} is ready to revisit"
-          lead.trigger_event(event_name: 'revisit')
+          lead.trigger_event(event_name: 'revisit', user: User.system)
         end
       end
 
       def process_waitlist
         can_leave_waitlist.each do |lead|
           next unless lead.member_of_an_active_property?
-          lead.trigger_event(event_name: 'revisit_unit_available', user: lead.user)
+          # Use lead's assigned user if available, otherwise use system user
+          user = lead.user || User.system
+          lead.trigger_event(event_name: 'revisit_unit_available', user: user)
         end
       end
 
@@ -102,7 +104,7 @@ module Leads
 
     included do
       has_many :lead_transitions
-      attr_accessor :ignore_incomplete_tasks, :transition_memo, :skip_event_notifications
+      attr_accessor :ignore_incomplete_tasks, :transition_memo, :skip_event_notifications, :transition_user
 
       after_create :create_initial_transition
       after_save :disqualified_lead_checks
@@ -280,6 +282,7 @@ module Leads
       def trigger_event(event_name:, user: false)
         event = event_name.to_sym
         if permitted_state_events.include?(event)
+          self.transition_user = user
           self.aasm.fire(event, user)
           return self.save
         else
@@ -326,13 +329,14 @@ module Leads
           last_state: last_state || aasm.from_state,
           current_state: current_state || aasm.to_state,
           classification: self.classification || 'lead',
-          memo: self.transition_memo
+          memo: self.transition_memo,
+          user: self.transition_user
         )
       end
 
       def create_lead_transition_note(last_state: nil, current_state: nil)
         self.comments << self.comments.build(
-          user: nil,
+          user: self.transition_user,
           lead_action: LeadAction.where(name: STATE_TRANSITION_LEAD_ACTION).first,
           reason: Reason.where(name: STATE_TRANSITION_REASON).last,
           content: "Lead transitioned from %s to %s.%s" % [

@@ -26,4 +26,5 @@ class LeadTransition < ApplicationRecord
 
   ### Associations
   belongs_to :lead
+  belongs_to :user, optional: true
 end

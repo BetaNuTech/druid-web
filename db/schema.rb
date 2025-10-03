@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_07_29_140807) do
+ActiveRecord::Schema.define(version: 2025_10_03_160733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -266,9 +266,11 @@ ActiveRecord::Schema.define(version: 2025_07_29_140807) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "remoteid"
+    t.uuid "user_id"
     t.index ["last_state", "current_state", "created_at"], name: "state_xtn"
     t.index ["last_state", "current_state"], name: "index_lead_transitions_on_last_state_and_current_state"
     t.index ["lead_id"], name: "index_lead_transitions_on_lead_id"
+    t.index ["user_id"], name: "index_lead_transitions_on_user_id"
   end
 
   create_table "leads", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -808,6 +810,7 @@ ActiveRecord::Schema.define(version: 2025_07_29_140807) do
   add_foreign_key "lead_referrals", "lead_referral_sources", name: "lead_referrals_lead_referral_source_id_fk"
   add_foreign_key "lead_referrals", "leads", name: "lead_referrals_lead_id_fk"
   add_foreign_key "lead_transitions", "leads", name: "lead_transitions_lead_id_fk"
+  add_foreign_key "lead_transitions", "users"
   add_foreign_key "leads", "lead_sources", name: "leads_lead_source_id_fk"
   add_foreign_key "leads", "properties", name: "leads_property_id_fk"
   add_foreign_key "leads", "users", name: "leads_user_id_fk"

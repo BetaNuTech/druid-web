@@ -86,6 +86,7 @@ module Leads
       lead.set_conversion_date
       lead.save!
       lead.transition_memo = "Automatic transition due to matching Resident[#{resident&.id || '?'}]"
+      lead.transition_user = User.system
       lead.create_lead_transition(last_state: old_state, current_state: new_state)
       lead.create_lead_transition_note(last_state: old_state, current_state: new_state)
       lead.clear_all_tasks
