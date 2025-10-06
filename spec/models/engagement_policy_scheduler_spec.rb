@@ -13,7 +13,7 @@ RSpec.describe EngagementPolicyScheduler do
 
     let(:scheduler) {  EngagementPolicyScheduler.new }
     let(:initial_state) { 'open' }
-    let(:secondary_state) { 'claimed' }
+    let(:secondary_state) { 'prospect' }
 
     it "should create ScheduledActions for the Lead based on Policy" do
       seed_engagement_policy
@@ -36,7 +36,7 @@ RSpec.describe EngagementPolicyScheduler do
 
       lead.scheduled_actions.update_all(state: 'rejected')
       lead.reload
-      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.trigger_event(event_name: 'work', user: agent)
       lead.reload
       policy = EngagementPolicy.for_state('prospect').without_property.last
       scheduled_actions = lead.scheduled_actions
@@ -57,7 +57,7 @@ RSpec.describe EngagementPolicyScheduler do
       #seed_engagement_policy
       #lead = create(:lead, state: initial_state )
       #lead.reload
-      #lead.trigger_event(event_name: 'claim', user: agent)
+      #lead.trigger_event(event_name: 'work', user: agent)
       #lead.reload
 
       #scheduled_actions = lead.scheduled_actions
@@ -79,7 +79,7 @@ RSpec.describe EngagementPolicyScheduler do
       #seed_engagement_policy
       #lead = create(:lead, state: initial_state )
       #lead.reload
-      #lead.trigger_event(event_name: 'claim', user: agent)
+      #lead.trigger_event(event_name: 'work', user: agent)
       #lead.reload
 
       #scheduled_actions = lead.scheduled_actions
@@ -106,7 +106,7 @@ RSpec.describe EngagementPolicyScheduler do
         seed_engagement_policy
         lead = create(:lead, state: initial_state )
         lead.reload
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         scheduled_actions = lead.scheduled_actions.order("created_at ASC")
 
@@ -157,7 +157,7 @@ RSpec.describe EngagementPolicyScheduler do
         seed_engagement_policy
         lead = create(:lead, state: initial_state )
         lead.reload
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         scheduled_actions = lead.scheduled_actions.order("created_at ASC")
         original_action = scheduled_actions.last
@@ -173,7 +173,7 @@ RSpec.describe EngagementPolicyScheduler do
         lead = create(:lead, state: initial_state )
         lead.reload
         assert(agent2 != lead.user)
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         scheduled_actions = lead.scheduled_actions.order("created_at ASC")
         original_action = scheduled_actions.last
@@ -208,7 +208,7 @@ RSpec.describe EngagementPolicyScheduler do
       seed_engagement_policy
       lead = create(:lead, state: initial_state )
       lead.reload
-      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.trigger_event(event_name: 'work', user: agent)
       lead.reload
       scheduled_actions = lead.scheduled_actions.order("created_at ASC")
 
@@ -242,7 +242,7 @@ RSpec.describe EngagementPolicyScheduler do
                             )}
 
       it "given a Message record it should create a message reply task assigned to the associated Lead" do
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         message
         task = EngagementPolicyScheduler.new.create_lead_incoming_message_reply_task(message)

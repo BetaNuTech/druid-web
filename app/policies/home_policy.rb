@@ -20,7 +20,7 @@ class HomePolicy < ApplicationPolicy
     true
   end
 
-  def insert_unclaimed_lead?
+  def insert_open_lead?
     user.admin? || user.agent?
   end
 

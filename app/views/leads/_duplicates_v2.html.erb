@@ -16,7 +16,16 @@
         <div class="group-content">
           <% leads.each_with_index do |lead_record, index| %>
             <% lead = lead_record[:record] %>
-            <div class="duplicate-card <%= index == 0 ? 'primary-lead' : 'secondary-lead' %> <%= lead == @lead ? 'current-lead' : '' %> <%= lead != @lead ? 'clickable' : '' %>" <%= lead != @lead ? "data-lead-url='#{lead_path(lead)}'" : '' %>>
+            <%
+              css_classes = []
+              css_classes << (index == 0 ? 'primary-lead' : 'secondary-lead')
+              css_classes << 'current-lead' if lead == @lead
+              css_classes << 'clickable' if lead != @lead
+
+              data_attrs = {}
+              data_attrs[:lead_url] = "/leads/#{lead.id}" if lead != @lead
+            %>
+            <%= content_tag :div, class: ['duplicate-card'] + css_classes, data: data_attrs do %>
               <div class="duplicate-header">
                 <div class="lead-info">
                   <div class="lead-avatar">
@@ -41,13 +50,13 @@
                 </div>
                 
                 <div class="duplicate-actions">
-                  <% if lead != @lead && policy(lead).disqualify? %>
-                    <%= link_to trigger_state_event_lead_path(id: lead.id, eventid: 'disqualify', format: :js),
+                  <% if lead != @lead && policy(lead).invalidate? %>
+                    <%= link_to trigger_state_event_lead_path(id: lead.id, eventid: 'invalidate', classification: 'duplicate', format: :js),
                         method: :post,
                         remote: true,
                         class: "btn btn--small btn--warning",
-                        data: { confirm: "Are you sure you want to disqualify this lead?" } do %>
-                      <%= glyph(:remove) %> Disqualify
+                        data: { confirm: "Are you sure you want to invalidate this lead as a duplicate?" } do %>
+                      <%= glyph(:remove) %> Invalidate
                     <% end %>
                   <% end %>
                 </div>
@@ -109,7 +118,7 @@
                   </div>
                 <% end %>
               </div>
-            </div>
+            <% end %>
           <% end %>
         </div>
       </div>

@@ -190,10 +190,10 @@ module Leads
       end
 
       def after_mark_duplicates
-        auto_disqualify
-        unless disqualified?
+        auto_invalidate
+        unless invalidated?
           delay.broadcast_to_streams
-          
+
           if property&.setting_enabled?(:lead_auto_welcome)
             send_new_lead_messaging
           else
@@ -220,44 +220,44 @@ module Leads
 
       handle_asynchronously :mark_duplicates, queue: :lead_dedupe
 
-      def auto_disqualify
-        disqualify_if_resident and return true
-        #disqualify_if_duplicate_from_voyager and return true
-        disqualify_if_high_confidence_duplicate and return true
+      def auto_invalidate
+        invalidate_if_resident and return true
+        #invalidate_if_duplicate_from_voyager and return true
+        invalidate_if_high_confidence_duplicate and return true
 
         true
       end
 
-      # Disqualify this lead if it is likely a resident
-      # returns true only if disqualified
-      def disqualify_if_resident
+      # Invalidate this lead if it is likely a resident
+      # returns true only if invalidated
+      def invalidate_if_resident
         return false unless property.present? && Lead.open_possible_residents(property).map{|opr| opr['id'] }.include?(id)
 
         self.classification = :resident
-        self.transition_memo = 'Automatically disqualified as a Resident'
-        trigger_event(event_name: 'disqualify')
+        self.transition_memo = 'Automatically invalidated as a Resident'
+        trigger_event(event_name: 'invalidate')
         save
         reload
         true
       end
 
-      # Disqualify this lead if it is likely a duplicate
-      # returns true only if disqualified
-      def disqualify_if_high_confidence_duplicate
-        return false if disqualified?
-        return false unless (message = auto_disqualify_lead?)
+      # Invalidate this lead if it is likely a duplicate
+      # returns true only if invalidated
+      def invalidate_if_high_confidence_duplicate
+        return false if invalidated?
+        return false unless (message = auto_invalidate_lead?)
 
         self.classification = :duplicate
-        self.transition_memo = "Automatically disqualified because #{message}" 
-        trigger_event(event_name: 'disqualify')
+        self.transition_memo = "Automatically invalidated because #{message}"
+        trigger_event(event_name: 'invalidate')
         save
         reload
 
         true
       end
 
-      def auto_disqualify_lead?
-        # Phone number Matches disqualified leads classified as spam
+      def auto_invalidate_lead?
+        # Phone number Matches invalidated leads classified as spam
         return 'this lead originated from a spam call' if spam_matches.any?
 
         # Check for feature flag
@@ -270,7 +270,7 @@ module Leads
         # Abort if all of the duplicates belong to other properties
         return false if dupes.all?{|lead| lead.property_id != property_id }
 
-        # Abort if all matches are already disqualified
+        # Abort if all matches are already invalidated
         return false if dupes.all?{|lead| lead.classification == 'duplicate'}
 
         # At least one of the matches is in progress already
@@ -302,7 +302,7 @@ module Leads
           return 'a matching lead was recently submitted by the same referrer'
         end
 
-        non_worked_states = ['abandoned', 'future', 'waitlist', 'resident', 'exresident']
+        non_worked_states = ['future', 'waitlist', 'resident', 'exresident']
         if (matches = dupes.select{|lead| non_worked_states.include?(lead.state)}).present?
           # Presence of resident matches implies a Resident contact, so this would be a duplicate
           # Otherwise this may be a valid contact
@@ -378,7 +378,7 @@ module Leads
       conditions = []
       conditions << 'state = :state'
       conditions << 'classification = :classification'
-      conditions_hash[:state] = 'disqualified'
+      conditions_hash[:state] = 'invalidated'
       conditions_hash[:classification] = Lead.classifications['spam']
       conditions_str += '(' + conditions.join(' AND ') + ')'
 
@@ -393,15 +393,15 @@ module Leads
 
     class_methods do
 
-      def disqualify_open_resident_leads(property=nil)
+      def invalidate_open_resident_leads(property=nil)
         properties = property ? [property] : Property.active
 
         properties.each do |p|
           lead_ids = open_possible_residents(p).map{|r| r['id']}
           Lead.where(id: lead_ids).each do |lead|
             lead.classification = :resident
-            lead.transition_memo = 'Automatically disqualified as a Resident'
-            lead.trigger_event(event_name: 'disqualify')
+            lead.transition_memo = 'Automatically invalidated as a Resident'
+            lead.trigger_event(event_name: 'invalidate')
             lead.save
           end
         end

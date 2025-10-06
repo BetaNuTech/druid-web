@@ -307,8 +307,8 @@ module Leads
               msg = "Lead Adapter Error! Can't update Lead[#{lead.id}] state for GuestCard[#{guestcard.prospect_id}] for Property[#{@property.name}] with record_type[#{guestcard.record_type}]"
               Rails.logger.warn msg
               if !lead.open?
-                # If the Lead is unclaimed, this issue isn't urgent and doesn't require notification.
-                # ( We assume that the Lead is unclaimed for a reason )
+                # If the Lead is open (not being worked), this issue isn't urgent and doesn't require notification.
+                # ( We assume that the Lead is open for a reason )
                 ErrorNotification.send(StandardError.new(msg), {lead_id: lead.id, guestcard: guestcard.summary})
                 Note.create( # create_event_note
                   classification: 'error',
@@ -440,7 +440,7 @@ module Leads
         record_type_state_map = {
           'applicant' => 'application',
           'approved_applicant' => 'approved',
-          'canceled' => 'abandoned',
+          'canceled' => 'future',
           'current_resident' => 'resident',
           'denied_applicant' => 'denied',
           'former_resident' => 'exresident',
@@ -464,9 +464,7 @@ module Leads
             priority = 'high'
           when 'open'
             priority = 'urgent'
-          when 'disqualified'
-            priority = 'zero'
-          when 'abandoned'
+          when 'invalidated', 'future'
             priority = 'zero'
           else
             priority = 'urgent'

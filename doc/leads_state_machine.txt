@@ -1,28 +1,34 @@
-In the Bluesky application, the Lead model has a state machine that defines the possible states and events for a Lead record. The possible states for a Lead are 'open', 'prospect', 'showing', 'application', 'approved', 'denied', 'resident', 'exresident', 'disqualified', 'abandoned', 'future', and 'waitlist'. The state machine is defined in the Leads::StateMachine concern.
+In the Bluesky application, the Lead model has a state machine that defines the possible states and events for a Lead record. The possible states for a Lead are 'open', 'prospect', 'showing', 'application', 'approved', 'denied', 'resident', 'exresident', 'invalidated', 'future', and 'waitlist'. The state machine is defined in the Leads::StateMachine concern.
 
 The state machine includes the following states:
 - 'open': This is the default state for a new Lead record. It represents a Lead that has been created but not yet progressed to the prospect stage.
-- 'prospect': This state represents a Lead that has progressed beyond the open stage and is now considered a prospect.
+- 'prospect': This state represents a Lead that has progressed beyond the open stage and is now being worked by an agent.
 - 'showing': This state represents a Lead that is scheduled for a showing.
 - 'application': This state represents a Lead that has submitted an application.
 - 'approved': This state represents a Lead whose application has been approved.
 - 'denied': This state represents a Lead whose application has been denied.
 - 'resident': This state represents a Lead that has become a resident.
 - 'exresident': This state represents a Lead that was previously a resident but is no longer.
-- 'disqualified': This state represents a Lead that has been disqualified for some reason.
-- 'abandoned': This state represents a Lead that has been marked as abandoned.
-- 'future': This state represents a Lead that has been postponed for future consideration.
+- 'invalidated': This state represents a Lead that is not a real lead (vendor, spam, resident, duplicate, etc.).
+- 'future': This state represents a Lead that has been nurtured for future follow-up (will be automatically reopened if property is active).
 - 'waitlist': This state represents a Lead that has been placed on a waitlist.
 
 The state machine also defines several events that can transition a Lead from one state to another. These events include:
-- 'claim': This event transitions a Lead from the open state to the prospect state. It is triggered when a user claims a Lead.
-- 'disqualify': This event transitions a Lead from any state to the disqualified state. It is used to mark a Lead as disqualified for some reason.
-- 'postpone': This event transitions a Lead from any state to the future state. It is used to postpone the progress of a Lead.
-- 'abandon': This event transitions a Lead from any state to the abandoned state. It is used to mark a Lead as abandoned.
-- 'apply': This event transitions a Lead from the prospect state to the application state. It is triggered when a Lead submits an application.
+- 'work': This event transitions a Lead from the open state to the prospect state. It is triggered when an agent begins working a Lead.
+- 'invalidate': This event transitions a Lead from any state to the invalidated state. It is used to mark a Lead as not a real lead (vendor, spam, duplicate, etc.).
+- 'nurture': This event transitions a Lead from any state to the future state. It is used to nurture a real Lead for future opportunities (90-275 days).
+- 'validate': This event transitions a Lead from the invalidated state back to the open state. It is used to revalidate a Lead that was previously invalidated.
+- 'show': This event transitions a Lead to the showing state. It is triggered when a showing is scheduled.
+- 'apply': This event transitions a Lead from the prospect/showing state to the application state. It is triggered when a Lead submits an application.
 - 'approve': This event transitions a Lead from the application state to the approved state. It is triggered when a Lead's application is approved.
 - 'deny': This event transitions a Lead from the application state to the denied state. It is triggered when a Lead's application is denied.
-- 'requalify': This event transitions a Lead from the disqualified state back to the prospect state. It is used to requalify a Lead that was previously disqualified.
+- 'lodge': This event transitions a Lead to the resident state. It is triggered when a Lead becomes a resident.
+- 'discharge': This event transitions a Lead from resident to exresident state.
+- 'release': This event transitions a Lead from prospect back to open state, releasing responsibility for the Lead.
+- 'reopen': This event transitions a Lead from the future state back to open when the follow-up date arrives (only if property is active).
+- 'wait_for_unit': This event transitions a Lead to the waitlist state when waiting for a unit to become available.
+- 'reopen_unit_available': This event transitions a Lead from waitlist to open when the unit becomes available.
+- 'rework': This event forces a Lead from waitlist to prospect state (even if unit is not available).
 
 When a Lead transitions from one state to another, several actions are performed. These actions include:
 - Creating a LeadTransition record: A LeadTransition record is created to track the transition from the previous state to the current state. This record includes information such as the last state, current state, classification, and memo.
@@ -32,3 +38,63 @@ When a Lead transitions from one state to another, several actions are performed
 In addition to the state machine, the Lead model includes other concerns and modules that provide additional functionality and behavior for Leads, such as engagement policy actions, priority, search, messaging, duplicates, export, referrals, broadcasts, remote synchronization, roommates, and contact events. These concerns define additional methods and logic that can be used to manipulate and interact with Lead records.
 
 Overall, the state machine and related concerns provide a structured way to manage the progress and lifecycle of Lead records in the Bluesky application.
+
+================================================================================
+STATE MACHINE EVENT REFERENCE (Updated: 2025-10-06)
+================================================================================
+
+This table shows all available state transition events, their allowed source
+states, destination state, and description. This reflects the current
+implementation in app/models/concerns/leads/state_machine.rb.
+
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| Event                  | From States               | To State    | Description                                           |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| work                   | open, exresident          | prospect    | Assume responsibility for this Lead                   |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| show                   | prospect                  | showing     | This Lead is being shown a Unit                       |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| apply                  | prospect, showing         | application | The Lead is starting the application process          |
+|                        |                           |             | (sends rental application email - requires email)     |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| approve                | application, denied       | approved    | This Lead's application was approved                  |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| deny                   | application, approved     | denied      | This Lead's application was denied                    |
+|                        |                           |             | (requires memo)                                       |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| lodge                  | approved, application     | resident    | This Lead is now a Resident                           |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| discharge              | resident                  | exresident  | This is a Resident moving out                         |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| invalidate             | open, prospect            | invalidated | This is not a Lead (vendor, resident, spam,           |
+|                        |                           |             | duplicate, etc.) (requires memo)                      |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| validate               | invalidated               | open        | Mark this Lead as Open                                |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| release                | prospect                  | open        | Release responsibility for this Lead and make it Open |
+|                        |                           |             | (requires memo)                                       |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| nurture                | open, prospect, showing,  | future      | Nurture this Lead for future follow-up                |
+|                        | application, approved,    |             | (requires memo and follow-up date: 90-275 days)       |
+|                        | denied                    |             |                                                       |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| reopen                 | future                    | open        | Mark this Lead as Open again                          |
+|                        |                           |             | (automatically triggered when follow-up date arrives) |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| wait_for_unit          | open, prospect, showing,  | waitlist    | Put this Lead on waitlist until the Unit is available |
+|                        | application, approved     |             | (requires unit preference set)                        |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| reopen_unit_available  | waitlist                  | open        | The Unit is available, so make this Lead Open         |
+|                        |                           |             | (automatically triggered when preferred unit becomes  |
+|                        |                           |             | available)                                            |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+| rework                 | waitlist                  | prospect    | Force this Lead to the Prospect state (unit may not   |
+|                        |                           |             | be available)                                         |
++------------------------+---------------------------+-------------+-------------------------------------------------------+
+
+NOTES:
+- Events with "requires memo" in description are in ACTION_MEMO_TRANSITIONS and require an explanation
+- Guards (may_progress?, may_apply?, etc.) may further restrict when events are available
+- may_progress? requires all scheduled tasks to be completed
+- may_apply? requires: is_lead? AND may_progress? AND email.present?
+- After all events: creates LeadTransition record, timeline note, and scheduled actions (if EngagementPolicy exists)

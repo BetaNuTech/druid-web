@@ -41,9 +41,9 @@ function subscribeIncomingLeads(channels, property) {
 function issueIncomingLeadNotifications(lead) {
   console.log('Incoming Lead: ', lead['id'], lead['name']);
 
-  // Insert Lead into Unclaimed Leads listing on Dashboard
+  // Insert Lead into Open Leads listing on Dashboard
   // TODO: this will be bad for performance at scale. better to build the DOM node here than to use an ajax call.
-  $.ajax('/home/insert_unclaimed_lead.js?id=' + lead['id']);
+  $.ajax('/home/insert_open_lead.js?id=' + lead['id']);
 
   // Add badge to navigation if not already present
   if ($("#dashboard_incoming_notification")[0] == null) {

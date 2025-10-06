@@ -37,14 +37,14 @@ module Users
       stats = {}
       @skope.each do |user|
         stats[user.id] = {
-          claimed: lead_transitions(user: user, last_state: 'open', current_state: 'prospect',
+          worked: lead_transitions(user: user, last_state: 'open', current_state: 'prospect',
                                     start_date: @start_date, end_date: @end_date).count,
-          abandoned: lead_transitions(user: user, last_state: Leads::StateMachine::CLAIMED_STATES, current_state: 'abandoned',
+          nurtured: lead_transitions(user: user, last_state: Leads::StateMachine::WORKED_STATES, current_state: 'future',
                                       start_date: @start_date, end_date: @end_date).count,
-          disqualified: lead_transitions(user: user, last_state: Leads::StateMachine::CLAIMED_STATES , current_state: 'disqualified',
+          invalidated: lead_transitions(user: user, last_state: Leads::StateMachine::WORKED_STATES , current_state: 'invalidated',
                                          start_date: @start_date, end_date: @end_date).count,
           showings: showings(user: user, start_date: @start_date, end_date: @end_date),
-          applications: lead_transitions(user: user, last_state: Leads::StateMachine::CLAIMED_STATES , current_state: 'application',
+          applications: lead_transitions(user: user, last_state: Leads::StateMachine::WORKED_STATES , current_state: 'application',
                                          start_date: @start_date, end_date: @end_date).count,
         }
       end

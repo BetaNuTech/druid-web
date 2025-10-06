@@ -47,13 +47,13 @@ RSpec.describe Leads::Adapters::YardiVoyager do
       expect(updated_lead.id).to eq(lead.id)
     end
 
-    it "handles the creation of cancelled Guestcards/Disqualified Leads" do
+    it "handles the creation of cancelled Guestcards/Future Leads" do
       guestcard = guestcards.select{|gc| gc.record_type = 'canceled'}.first
       updated_lead = adapter.send(:lead_from_guestcard, guestcard)
       assert updated_lead.new_record?
       assert updated_lead.valid?
       assert updated_lead.save
-      expect( updated_lead.state ).to eq('abandoned')
+      expect( updated_lead.state ).to eq('future')
       expect( updated_lead.priority ).to eq('zero')
     end
   end

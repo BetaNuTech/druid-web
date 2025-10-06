@@ -36,7 +36,7 @@
                 </div>
                 <div class="quicklinks__stat-item">
                   <span class="quicklinks__stat-label">Active:</span>
-                  <%= link_to(property.leads.active.count, search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'claimed']}}), class: "quicklinks__stat-value") %>
+                  <%= link_to(property.leads.active.count, search_leads_path({lead_search: {property_ids: [property.id], states: ['prospect', 'showing', 'application']}}), class: "quicklinks__stat-value") %>
                 </div>
               </div>
               

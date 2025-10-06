@@ -42,14 +42,14 @@ RSpec.describe ScheduledActionsController, type: :controller do
     seed_engagement_policy
     Lead.destroy_all
     @lead = create(:lead, state: 'open', property_id: team1_agent1.property.id)
-    @lead.trigger_event(event_name: 'claim', user: team1_agent1)
+    @lead.trigger_event(event_name: 'work', user: team1_agent1)
     @lead.reload
   end
 
   describe "GET #index" do
     let(:lead) {
       lead = create(:lead, property: agent.property)
-      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.trigger_event(event_name: 'work', user: agent)
       lead.reload
       lead
     }

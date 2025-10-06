@@ -57,9 +57,9 @@
     // &--open { use .badge-success }
     // &--contacted { use .badge-info }
     // &--scheduled { use .badge-primary }
-    // &--qualified { use .badge-success }
+    // &--qualified { use .badge-success }  // Legacy - no longer used
     // &--waitlist { use .badge-warning }
-    // &--disqualified { use .badge-danger }
+    // &--invalidated { use .badge-danger }
   }
   
   // Priority indicators
@@ -156,7 +156,7 @@
   // State-based accent colors
   // Apply additional classes based on state:
   // &[data-state="urgent"] - add .card--status-danger class
-  // &[data-state="qualified"] - add .card--status-success class
+  // &[data-state="qualified"] - add .card--status-success class  // Legacy - no longer used
 }
 
 // Lead Detail Hero Section

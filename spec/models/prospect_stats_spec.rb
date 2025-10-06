@@ -24,8 +24,8 @@ RSpec.describe ProspectStats do
 
     before do
       lead1; lead2; lead3; lead4
-      lead1.trigger_event(event_name: 'claim', user: agent)
-      lead2.trigger_event(event_name: 'claim', user: agent)
+      lead1.trigger_event(event_name: 'work', user: agent)
+      lead2.trigger_event(event_name: 'work', user: agent)
       listing; listing2; listing3
       cobalt_source; voyager_source
     end

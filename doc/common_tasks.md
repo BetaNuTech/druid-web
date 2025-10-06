@@ -10,7 +10,7 @@ All "in-progress" leads may be reassigned from one user to another, specifying t
 
 `heroku run "rake leads:reassign[from_user@example.com,to_user@example.com]" --app druid-prod`
 
-## Mass Disqualification
+## Mass Invalidation
 
 Bluesky does not provide a UI to perform large-scale edits or modification of Leads. These tasks should be performed using the Rails console.
 
@@ -19,11 +19,13 @@ It is highly suggested to trigger a new production database capture and load the
 ```
 property = Property.active.where(name: "Peyton Stakes").first
 time_window = 1.day.ago..
-memo = "Mass disqualified because XXX REASON"
+memo = "Mass invalidated because XXX REASON"
 leads = Lead.where(property: property, created_at: time_window, state: :open);
 puts "#{leads.count} Leads found"
-leads.each{|lead| lead.transition_memo = memo; lead.classification = :lost; lead.trigger_event(event_name: 'disqualify')}
+leads.each{|lead| lead.transition_memo = memo; lead.classification = :spam; lead.trigger_event(event_name: 'invalidate')}
 ```
+
+**Note**: Use `invalidate` for non-real leads (spam, vendors, residents). Use `nurture` for real leads that won't convert now.
 
 ## Standardize Lead Sources
 

@@ -58,7 +58,7 @@ class ProspectStats
             "Closings180": closing_rate(property, 180),
             "Closings30": closing_rate(property, 30),
             "Closings10": closing_rate(property, 10),
-            "UnclaimedLeadsNow": unclaimed_leads_now(property),
+            "OpenLeadsNow": open_leads_now(property),
             "Tenacity30": Statistic.rolling_month_property_tenacity_grade(property),
             "LeadSpeed30": Statistic.rolling_month_property_leadspeed_grade(property)
           }
@@ -100,7 +100,7 @@ class ProspectStats
             "Closings180": closing_rate(user, 180),
             "Closings30": closing_rate(user, 30),
             "Closings10": closing_rate(user, 10),
-            "UnclaimedLeadsNow": unclaimed_leads_now(user),
+            "OpenLeadsNow": open_leads_now(user),
             "Tenacity30": Statistic.tenacity_grade_for(user, time_start: Statistic.utc_month_start - 1.month),
             "LeadSpeed30": Statistic.lead_speed_grade_for(user, interval: :month, time_start: Statistic.utc_month_start - 1.month)
           }
@@ -141,7 +141,7 @@ class ProspectStats
             "Closings180": closing_rate(team, 180),
             "Closings30": closing_rate(team, 30),
             "Closings10": closing_rate(team, 10),
-            "UnclaimedLeadsNow": unclaimed_leads_now(team),
+            "OpenLeadsNow": open_leads_now(team),
             "Tenacity30": "I",
             "LeadSpeed30": Statistic.lead_speed_grade_for(team, interval: :month, time_start: Statistic.utc_month_start - 1.month)
           }
@@ -183,7 +183,7 @@ class ProspectStats
   def prospect_count_all_scope(skope, window)
     join_sql = "INNER JOIN lead_transitions ON lead_transitions.lead_id = leads.id"
     transition_states_sql = %w{exresident}.map{|s| "'#{s}'"}.join(',')
-    exclude_lead_states_sql = %w{disqualified}.map{|s| "'#{s}'"}.join(',')
+    exclude_lead_states_sql = %w{invalidated}.map{|s| "'#{s}'"}.join(',')
 
     condition_sql=<<~SQL
       ( leads.classification IS NULL OR leads.classification = 0)
@@ -310,7 +310,7 @@ class ProspectStats
     return rate
   end
 
-  def unclaimed_leads_now(context)
+  def open_leads_now(context)
     case context
     when Team
       skope = Lead.where(user_id: context.members.pluck(&:id))

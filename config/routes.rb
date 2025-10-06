@@ -130,7 +130,7 @@ Rails.application.routes.draw do
   namespace :home do
     get 'manager_dashboard', to: 'manager_dashboard'
     get 'dashboard', to: 'dashboard'
-    get 'insert_unclaimed_lead', to: 'insert_unclaimed_lead'
+    get 'insert_open_lead', to: 'insert_open_lead'
     post 'impersonate', to: 'impersonate'
     post 'end_impersonation', to: 'end_impersonation'
   end

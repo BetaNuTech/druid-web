@@ -128,8 +128,8 @@ namespace :db do
         puts "  - #{lead.name}: interested in the property #{property.name}"
         if (Faker::Boolean.boolean(true_ratio: 0.2))
           lead.user = agent
-          lead.claim if lead.open?
-          puts "    + Claimed by #{agent.name}"
+          lead.work if lead.open?
+          puts "    + Worked by #{agent.name}"
         end
       }
 

@@ -36,10 +36,10 @@ class AgentStatus extends React.Component {
           <em>On Time:</em> {Math.round( d.task_completion_rate * 100.0 )}%<br/>
         </td>
         <td>
-          <em>Claimed:</em>&nbsp;
-            <a href={this.leadSearchLink(d.id, ['prospect', 'showing', 'application', 'approved', 'denied'] ,d.start_date, d.end_date)} target="_blank">{d.claimed_leads}</a><br/>
+          <em>Working:</em>&nbsp;
+            <a href={this.leadSearchLink(d.id, ['prospect', 'showing', 'application', 'approved', 'denied'] ,d.start_date, d.end_date)} target="_blank">{d.worked_leads}</a><br/>
           <em>Closed:</em>&nbsp;
-            <a href={this.leadSearchLink(d.id, ['disqualified', 'abandoned', 'future', 'waitlist'], d.start_date, d.end_date)} target="_blank">{d.closed_leads}</a><br/>
+            <a href={this.leadSearchLink(d.id, ['invalidated', 'future', 'waitlist'], d.start_date, d.end_date)} target="_blank">{d.closed_leads}</a><br/>
         </td>
       </tr>
     ))

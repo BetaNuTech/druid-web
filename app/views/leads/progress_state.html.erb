@@ -4,6 +4,18 @@
   </div>
 </div>
 
+<% if flash[:alert] %>
+  <div class="alert alert-danger" role="alert">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<% if flash[:notice] %>
+  <div class="alert alert-success" role="alert">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
 <%= form_tag update_state_lead_path(@lead), method: :post, class: "form" do %>
 
   <div class="row">
@@ -22,11 +34,34 @@
     </div>
   </div>
 
-  <% if @eventid == 'postpone' %>
+  <% if @eventid == 'nurture' %>
     <div class="row">
       <div class="col-md-6 form__group">
         <%= label_tag "Follow Up On", nil, class: 'form__label' %>
-        <%= date_select :follow_up_at, nil, {}, {class: 'form__control form__control--date-select'}  %>
+        <%
+          # Date range: 90 to 275 days from today
+          min_date = Date.current + 90.days
+          max_date = Date.current + 275.days
+          default_date = Date.current + 90.days
+        %>
+        <%= date_select :follow_up_at, nil,
+            {
+              start_year: min_date.year,
+              end_year: max_date.year,
+              default: default_date,
+              order: [:month, :day, :year]
+            },
+            {
+              class: 'form__control form__control--date-select',
+              data: {
+                min_date: min_date.to_s,
+                max_date: max_date.to_s
+              }
+            }
+        %>
+        <small class="form-text">
+          Choose a date between <%= min_date.strftime('%B %d, %Y') %> and <%= max_date.strftime('%B %d, %Y') %> (90-275 days from today)
+        </small>
       </div>
     </div>
   <% end %>

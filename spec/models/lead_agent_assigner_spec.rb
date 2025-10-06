@@ -286,7 +286,7 @@ RSpec.describe Leads::AgentAssigner do
         refute(service.valid?)
         expect(service.errors.count).to eq(1)
         expect(service.errors.first[:lead]).to eq(lead1a)
-        expect(service.errors.first[:error]).to eq('Mass re-assignment of claimed Leads is not supported')
+        expect(service.errors.first[:error]).to eq('Mass re-assignment of worked Leads is not supported')
       end
     end
 

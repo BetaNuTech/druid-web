@@ -101,7 +101,7 @@ RSpec.describe PropertyUser, type: :model do
       seed_engagement_policy
       assert(user.properties = [property1])
       assert(manager.properties = [property1])
-      lead.trigger_event(event_name: 'claim', user: agent)
+      lead.trigger_event(event_name: 'work', user: agent)
       agent.reload
       manager_action_count = manager.tasks_pending.count
       agent_action_count = agent.tasks_pending.count

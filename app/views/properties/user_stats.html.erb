@@ -32,11 +32,11 @@
             <td style="white-space: nowrap;">
               <p>
                 <b>Leads</b><br/>
-                <i>Claimed: </i> <%= @stats[:leads][id][:claimed] %>
+                <i>Worked: </i> <%= @stats[:leads][id][:worked] %>
                 &mdash;
-                <i>Abandoned: </i> <%= @stats[:leads][id][:abandoned] %>
+                <i>Nurtured: </i> <%= @stats[:leads][id][:nurtured] %>
                 &mdash;
-                <i>Disqualified: </i> <%= @stats[:leads][id][:disqualified] %>
+                <i>Invalidated: </i> <%= @stats[:leads][id][:invalidated] %>
                 <br/>
                 <i>Showings: </i> <%= @stats[:leads][id][:showings] %>
                 &mdash;

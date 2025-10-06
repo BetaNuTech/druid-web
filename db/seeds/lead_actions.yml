@@ -3,8 +3,8 @@
   :version: 5
   :key: :name
   :data:
-  - :name: Claim Lead
-    :description: Claim a new/open Lead
+  - :name: Work Lead
+    :description: Work a new/open Lead
     :glyph: flag
     :active: true
     :is_contact: false
@@ -122,9 +122,9 @@
     :active: true
     :state_affinity: 'approved'
     :is_system: false
-  - :name: Transition to Disqualified
+  - :name: Transition to Invalidated
     :glyph: thumbs-down
-    :description: Make notes and transition lead to 'disqualified' state
+    :description: Make notes and transition lead to 'invalidated' state
     :is_contact: false
     :active: true
     :state_affinity: 'none'

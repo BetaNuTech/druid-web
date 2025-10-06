@@ -44,6 +44,9 @@
           <div class="lead-stats__content">
             <span class="lead-stats__label">State</span>
             <span class="lead-stats__value"><%= @lead.state %></span>
+            <% if @lead.future? && @lead.follow_up_at.present? %>
+              <small class="lead-stats__subtitle">Reopens <%= short_date(@lead.follow_up_at) %></small>
+            <% end %>
           </div>
         </div>
         
@@ -333,8 +336,14 @@
               <div class="info-card__item info-card__item--follow-up">
                 <span class="info-card__icon"><%= glyph(:bell) %></span>
                 <div class="info-card__content">
-                  <span class="info-card__label">Follow Up</span>
-                  <span class="info-card__value"><%= long_date(@lead.follow_up_at) %></span>
+                  <% if @lead.future? %>
+                    <span class="info-card__label">Auto-Reopens On</span>
+                    <span class="info-card__value"><%= long_date(@lead.follow_up_at) %></span>
+                    <small class="info-card__hint">Lead will automatically return to Open state on this date (if property is active)</small>
+                  <% else %>
+                    <span class="info-card__label">Follow Up</span>
+                    <span class="info-card__value"><%= long_date(@lead.follow_up_at) %></span>
+                  <% end %>
                 </div>
               </div>
             <% end %>

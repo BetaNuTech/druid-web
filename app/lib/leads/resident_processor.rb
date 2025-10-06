@@ -159,7 +159,7 @@ module Leads
                       OR leads.phone2 = resident_info.resident_phone2
                       OR leads.email = resident_info.resident_email) )
       WHERE
-        leads.state NOT IN ('disqualified', 'abandoned', 'denied', 'resident')
+        leads.state NOT IN ('invalidated', 'denied', 'resident')
       ORDER BY
         leads.created_at ASC
       ;

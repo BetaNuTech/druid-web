@@ -148,7 +148,7 @@ class Lead < ApplicationRecord
 
     def reportable?
       ['lead', nil].include?( classification ) &&
-        !['resident', 'exresident', 'disqualified'].include?(state)
+        !['resident', 'exresident', 'invalidated'].include?(state)
     end
 
     def is_lead?

@@ -17,7 +17,7 @@
             Open: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open']}})) do %><%= property.leads.open.count %><% end %>
           </span> &bullet;
           <span class="text-nowrap">
-            Active: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'claimed']}})) do %><%= property.leads.active.count %><% end %>
+            Active: <%= link_to(search_leads_path({lead_search: {property_ids: [property.id], states: ['open', 'prospect', 'showing', 'application', 'approved']}})) do %><%= property.leads.active.count %><% end %>
           </span>
           <span class="text-nowrap">
             Other: <%= link_to("Duplicates", duplicate_leads_property_path(id: property.id)) %>

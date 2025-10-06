@@ -8,9 +8,9 @@ namespace :messages do
     Message.retry_deliveries(start_time: start_time)
   end
 
-  desc "Fix Disqualified Lead Messages"
+  desc "Fix Invalidated Lead Messages"
   task :fix_notifications => :environment do
-    skope = Message.joins("inner join leads on messages.messageable_id = leads.id").where(leads: {state: 'disqualified'}, messages: {read_at: nil})
+    skope = Message.joins("inner join leads on messages.messageable_id = leads.id").where(leads: {state: 'invalidated'}, messages: {read_at: nil})
     Message.mark_read!(skope)
   end
 

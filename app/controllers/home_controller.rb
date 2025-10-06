@@ -46,7 +46,7 @@ class HomeController < ApplicationController
     end
   end
 
-  def insert_unclaimed_lead
+  def insert_open_lead
     authorize User, policy_class: HomePolicy
     @lead = current_user.available_leads.find(params[:id])
   end

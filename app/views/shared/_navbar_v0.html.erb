@@ -86,12 +86,12 @@
                   </li>
                   <li>
                     <%= link_to(search_leads_path(lead_search: {states: ['open']})) do %>
-                      <span class="glyphicon glyphicon-envelope"></span> Unclaimed Leads
+                      <span class="glyphicon glyphicon-envelope"></span> Open Leads
                     <% end %>
                   </li>
                   <li>
-                    <%= link_to(search_leads_path(lead_search: {states: Lead::CLAIMED_STATES})) do %>
-                      <span class="glyphicon glyphicon-flag"></span> Claimed Leads
+                    <%= link_to(search_leads_path(lead_search: {states: Lead::WORKED_STATES})) do %>
+                      <span class="glyphicon glyphicon-flag"></span> Working Leads
                     <% end %>
                   </li>
                   <li>

@@ -321,7 +321,7 @@ RSpec.describe HomeController, type: :controller do
     it "should be successful" do
       lead = create(:lead, property: agent.property, state: 'open')
       sign_in agent
-      get :insert_unclaimed_lead, params: {id: lead.id}, xhr: true
+      get :insert_open_lead, params: {id: lead.id}, xhr: true
       expect(response).to be_successful
     end
 

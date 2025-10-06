@@ -15,16 +15,16 @@ RSpec.describe "Lead Message Preference Compliance" do
     include_context "twilio_incoming_message"
 
       let(:token) { twilio_adapter_token }
-      let(:claimed_lead) {
+      let(:worked_lead) {
         lead.preference.optin_sms = false
         lead.preference.optin_sms_date = nil
         lead.preference.save!
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         lead
       }
       let(:acceptance_sms_payload) {
-        request_message = claimed_lead.messages.last
+        request_message = worked_lead.messages.last
         {
           'To' => request_message.senderid,
           'From' => request_message.recipientid,
@@ -33,7 +33,7 @@ RSpec.describe "Lead Message Preference Compliance" do
         }
       }
       let(:refusal_sms_payload) {
-        request_message = claimed_lead.messages.last
+        request_message = worked_lead.messages.last
         {
           'To' => request_message.senderid,
           'From' => request_message.recipientid,
@@ -69,10 +69,10 @@ RSpec.describe "Lead Message Preference Compliance" do
       end
 
     ### This is done on create now
-      #describe "when claiming a lead" do
+      #describe "when working a lead" do
         #it "sends an sms opt-in request" do
           #expect(lead.messages.for_compliance.count).to eq(0)
-          #lead.trigger_event(event_name: 'claim', user: agent)
+          #lead.trigger_event(event_name: 'work', user: agent)
           #lead.reload
           #expect(lead.messages.for_compliance.count).to eq(1)
         #end

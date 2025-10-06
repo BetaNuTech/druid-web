@@ -96,7 +96,7 @@ RSpec.describe ScheduledActionPolicy do
       describe 'a lead task' do
         before do
           seed_engagement_policy
-          lead.trigger_event(event_name: 'claim', user: task_owner)
+          lead.trigger_event(event_name: 'work', user: task_owner)
           scheduled_action
         end
 
@@ -151,7 +151,7 @@ RSpec.describe ScheduledActionPolicy do
       describe 'a lead task' do
         before do
           seed_engagement_policy
-          lead.trigger_event(event_name: 'claim', user: task_owner)
+          lead.trigger_event(event_name: 'work', user: task_owner)
           scheduled_action
         end
 
@@ -206,7 +206,7 @@ RSpec.describe ScheduledActionPolicy do
       describe 'a lead task' do
         before do
           seed_engagement_policy
-          lead.trigger_event(event_name: 'claim', user: task_owner)
+          lead.trigger_event(event_name: 'work', user: task_owner)
           scheduled_action
         end
 

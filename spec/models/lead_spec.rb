@@ -139,54 +139,54 @@ RSpec.describe Lead, type: :model do
 
     it "transitions from open to prospect" do
       assert lead.open?
-      lead.claim!
+      lead.work!
       assert lead.prospect?
     end
 
     it "optionally sets the user when prospect" do
       assert lead.open?
-      lead.aasm.fire(:claim, agent)
+      lead.aasm.fire(:work, agent)
       assert lead.save
       lead.reload
       assert lead.prospect?
       expect(lead.user).to eq(agent)
     end
 
-    it "transitions to disqualified" do
-      lead.disqualify!
-      assert lead.disqualified?
+    it "transitions to invalidated" do
+      lead.invalidate!
+      assert lead.invalidated?
     end
 
-    it "transitions from disqualified to open" do
-      lead.disqualify!
-      lead.requalify!
+    it "transitions from invalidated to open" do
+      lead.invalidate!
+      lead.validate!
       assert lead.open?
     end
 
-    it "clears user when requalified to open" do
-      lead.state = 'disqualified'
+    it "clears user when validated to open" do
+      lead.state = 'invalidated'
       lead.user = agent
       lead.save!
       expect(lead.user).to eq(agent)
-      lead.requalify!
+      lead.validate!
       lead.reload
       assert lead.user.nil?
     end
 
     it "lists valid events" do
-      expect(lead.permitted_state_events.sort).to eq([:claim, :disqualify, :postpone, :abandon].sort)
-      lead.claim!
+      expect(lead.permitted_state_events.sort).to eq([:work, :invalidate, :nurture].sort)
+      lead.work!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_state_events.sort).to eq([:abandon, :apply, :approve, :disqualify, :postpone, :release, :show].sort)
-      lead.disqualify!
-      expect(lead.permitted_state_events).to eq([:requalify])
+      expect(lead.permitted_state_events.sort).to eq([:apply, :approve, :invalidate, :nurture, :release, :show].sort)
+      lead.invalidate!
+      expect(lead.permitted_state_events).to eq([:validate])
     end
 
     it "lists valid states" do
-      expect(lead.permitted_states.sort).to eq([:prospect, :disqualified, :abandoned, :future].sort)
-      lead.claim!
+      expect(lead.permitted_states.sort).to eq([:prospect, :invalidated, :future].sort)
+      lead.work!
       expect(lead.state).to eq('prospect')
-      expect(lead.permitted_states.sort).to eq([:abandoned, :application, :approved, :disqualified, :future, :open, :showing].sort)
+      expect(lead.permitted_states.sort).to eq([:application, :approved, :invalidated, :future, :open, :showing].sort)
     end
 
     it "lists 'active' leads" do
@@ -211,7 +211,7 @@ RSpec.describe Lead, type: :model do
         expect(lead.lead_transitions.count).to eq (1)
         lead.transition_memo = memo
         lead.classification = 'lead'
-        lead.claim!
+        lead.work!
         lead.reload
 
         expect(lead.state).to eq('prospect')
@@ -227,10 +227,10 @@ RSpec.describe Lead, type: :model do
         lead.classification = lead_classification
         lead.transition_memo = memo2
         expect(lead.state).to eq('prospect')
-        lead.disqualify!
+        lead.invalidate!
         lead.reload
 
-        expect(lead.state).to eq('disqualified')
+        expect(lead.state).to eq('invalidated')
         expect(lead.lead_transitions.count).to eq(3)
         lead_transition = lead.lead_transitions.order('created_at desc').first
         expect(lead_transition.last_state).to eq('prospect')
@@ -240,7 +240,7 @@ RSpec.describe Lead, type: :model do
       end
 
       it "creates a lead_transition record without transition_memo or classification set" do
-        lead.claim!
+        lead.work!
         lead.reload
         expect(lead.lead_transitions.count).to eq(2)
         lead_transition = lead.lead_transitions.order(created_at: :desc).first
@@ -250,26 +250,26 @@ RSpec.describe Lead, type: :model do
         expect(lead_transition.memo).to be_nil
       end
 
-      it "cleans up record tasks and agent association upon 'postpone'" do
+      it "cleans up record tasks and agent association upon 'nurture'" do
         seed_engagement_policy
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         assert(lead.scheduled_actions.pending.count > 0)
         expect(lead.user).to eq(agent)
-        lead.postpone!
+        lead.nurture!
         lead.reload
         expect(lead.scheduled_actions.pending.count).to eq(0)
         expect(lead.user).to be_nil
         expect(lead.priority).to eq('low')
       end
 
-      it "cleans up record tasks and agent association upon 'disqualify'" do
+      it "cleans up record tasks and agent association upon 'invalidate'" do
         seed_engagement_policy
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         assert(lead.scheduled_actions.pending.count > 0)
         expect(lead.user).to eq(agent)
-        lead.disqualify!
+        lead.invalidate!
         lead.reload
         expect(lead.scheduled_actions.pending.count).to eq(0)
         expect(lead.user).to eq(agent)
@@ -289,7 +289,7 @@ RSpec.describe Lead, type: :model do
         lead.trigger_event(event_name: 'wait_for_unit', user: agent)
         lead.reload
         expect(lead.state).to eq('waitlist')
-        expect(lead.permitted_state_events).to_not include(:revisit_unit_available)
+        expect(lead.permitted_state_events).to_not include(:reopen_unit_available)
       end
 
       it "allows transition from waitlist to open if units are available to lease" do
@@ -298,10 +298,10 @@ RSpec.describe Lead, type: :model do
         lead.preference.unit_type = unit_type
         lead.state = 'waitlist'
         lead.save!
-        expect(lead.permitted_state_events).to_not include(:revisit_unit_available)
+        expect(lead.permitted_state_events).to_not include(:reopen_unit_available)
         unit = create(:unit, unit_type: unit_type, property: lead.property, lease_status: 'available')
-        expect(lead.permitted_state_events).to include(:revisit_unit_available)
-        lead.trigger_event(event_name: 'revisit_unit_available')
+        expect(lead.permitted_state_events).to include(:reopen_unit_available)
+        lead.trigger_event(event_name: 'reopen_unit_available')
         lead.reload
         expect(lead.state).to eq('open')
       end
@@ -313,8 +313,8 @@ RSpec.describe Lead, type: :model do
         lead.preference.save!
         lead.state = 'waitlist'
         lead.save!
-        expect(lead.permitted_state_events).to include(:revisit_unit_available)
-        lead.trigger_event(event_name: 'revisit_unit_available')
+        expect(lead.permitted_state_events).to include(:reopen_unit_available)
+        lead.trigger_event(event_name: 'reopen_unit_available')
         lead.reload
         expect(lead.state).to eq('open')
       end
@@ -327,7 +327,7 @@ RSpec.describe Lead, type: :model do
           agent.property.switch_setting!(:lead_auto_welcome, true)
         end
 
-        it "sends an sms opt-in message upon claiming" do
+        it "sends an sms opt-in message upon choosing to work" do
           lead.preference.optin_sms = false
           lead.preference.optin_sms_date = nil
           lead.preference.save!
@@ -336,7 +336,7 @@ RSpec.describe Lead, type: :model do
           lead.property = agent.property
           lead.save!
           expect(lead.messages.for_compliance.count).to eq(1)
-          lead.trigger_event(event_name: 'claim', user: agent)
+          lead.trigger_event(event_name: 'work', user: agent)
           lead.reload
           expect(lead.messages.for_compliance.count).to eq(1)
         end
@@ -344,14 +344,14 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "priorities" do
-      it "should set priorty to zero when disqualified" do
+      it "should set priority to zero when invalidated" do
         lead.priority_low!
         expect(lead.priority).to eq("low")
-        lead.disqualify!
+        lead.invalidate!
         expect(lead.priority).to eq("zero")
       end
 
-      it "should set priorty to zero when lodged" do
+      it "should set priority to zero when lodged" do
         lead.priority_low!
         lead.state = "approved"
         lead.save!
@@ -360,9 +360,9 @@ RSpec.describe Lead, type: :model do
         expect(lead.priority).to eq("zero")
       end
 
-      it "should set priority to low when requalified" do
-        lead.disqualify!
-        lead.requalify!
+      it "should set priority to low when validated" do
+        lead.invalidate!
+        lead.validate!
         expect(lead.priority).to eq("low")
       end
     end
@@ -373,28 +373,32 @@ RSpec.describe Lead, type: :model do
         seed_engagement_policy
       end
 
-      it "should clear all old tasks when abandoned" do
+      it "should clear all old tasks when nurtured" do
         ScheduledAction.destroy_all
         agent = team1_agent1
         property = agent.properties.first
         lead.property = property
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
-        expect(lead.scheduled_actions.pending.count).to be > 0
-        lead.abandon!
+        initial_count = lead.scheduled_actions.pending.count
+        expect(initial_count).to be > 0
+        lead.follow_up_at = 90.days.from_now
+        lead.nurture!
         lead.reload
-        expect(lead.scheduled_actions.pending.count).to eq(0)
+        # Old tasks should be rejected, new follow-up task should be created
+        expect(lead.scheduled_actions.pending.count).to eq(1)
+        expect(lead.scheduled_actions.rejected.count).to eq(initial_count)
       end
 
-      it "should clear all old tasks when disqualified" do
+      it "should clear all old tasks when invalidated" do
         ScheduledAction.destroy_all
         agent = team1_agent1
         property = agent.properties.first
         lead.property = property
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         expect(lead.scheduled_actions.pending.count).to be > 0
-        lead.disqualify!
+        lead.invalidate!
         lead.reload
         expect(lead.scheduled_actions.pending.count).to eq(0)
       end
@@ -402,35 +406,36 @@ RSpec.describe Lead, type: :model do
 
     describe "trigger_event" do
 
-      it "should claim the lead with a user" do
+      it "should work the lead with a user" do
         assert lead.open?
         refute lead.user.present?
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         assert lead.prospect?
         expect(lead.user).to eq(agent)
       end
 
-      it "should trigger disqualified" do
+      it "should trigger invalidated" do
         assert lead.open?
-        lead.trigger_event(event_name: 'disqualify')
+        lead.trigger_event(event_name: 'invalidate')
         lead.reload
-        assert lead.disqualified?
+        assert lead.invalidated?
       end
 
-      it "should clear the user if abandoned" do
+      it "should clear the user if nurtured" do
         assert lead.open?
-        lead.trigger_event(event_name: 'claim', user: agent)
+        lead.trigger_event(event_name: 'work', user: agent)
         lead.reload
         expect(lead.user).to eq(agent)
-        lead.trigger_event(event_name: 'abandon')
+        lead.follow_up_at = 90.days.from_now
+        lead.trigger_event(event_name: 'nurture')
         lead.reload
         expect(lead.user).to be_nil
-        assert lead.abandoned?
+        assert lead.future?
       end
 
       it "should do nothing if the specified event is invalid/unavailable" do
-        lead.disqualify!
+        lead.invalidate!
         refute lead.trigger_event(event_name: 'open', user: agent)
       end
 
@@ -603,35 +608,37 @@ RSpec.describe Lead, type: :model do
       expect(lead.message_email_destination).to eq(lead.email)
     end
 
-    describe "is reclaimed from upon reciept of a message" do
-      describe "when disqualified" do
+    describe "is reworked from upon reciept of a message" do
+      describe "when invalidated" do
         it "is assigned to the previously assigned agent if there was one" do
           lead.state = 'prospect'
           lead.user = agent
           lead.save
-          lead.disqualify!
+          lead.invalidate!
           lead.reload
           lead
-          lead.requalify_if_disqualified
+          lead.validate_if_invalidated
           lead.reload
           expect(lead.user).to eq(agent)
           expect(lead.state).to eq('prospect')
         end
       end
-      describe "when abandoned" do
-        it "is assigned to the previously assigned agent if there was one" do
-          lead.state = 'prospect'
-          lead.user = agent
-          lead.save
-          lead.abandon!
-          lead.reload
-          lead
-          lead.requalify_if_disqualified
-          lead.reload
-          expect(lead.user).to eq(agent)
-          expect(lead.state).to eq('prospect')
-        end
-      end
+      # NOTE: "abandoned" state no longer exists - replaced with "future" state via nurture event
+      # This test is commented out as the validate_if_invalidated method only works for invalidated state
+      # describe "when abandoned" do
+      #   it "is assigned to the previously assigned agent if there was one" do
+      #     lead.state = 'prospect'
+      #     lead.user = agent
+      #     lead.save
+      #     lead.abandon!
+      #     lead.reload
+      #     lead
+      #     lead.validate_if_invalidated
+      #     lead.reload
+      #     expect(lead.user).to eq(agent)
+      #     expect(lead.state).to eq('prospect')
+      #   end
+      # end
     end
 
     describe "requesting sms communication authorization" do
@@ -648,9 +655,9 @@ RSpec.describe Lead, type: :model do
         describe 'when the lead has not responded to an authorization request' do
           it "should send the sms optin request" do
             lead; lead2; lead3
-            lead.trigger_event(event_name: :claim, user: agent)
-            lead2.trigger_event(event_name: :claim, user: agent)
-            lead3.trigger_event(event_name: :claim, user: agent)
+            lead.trigger_event(event_name: :work, user: agent)
+            lead2.trigger_event(event_name: :work, user: agent)
+            lead3.trigger_event(event_name: :work, user: agent)
             expect(lead3.comments.count).to eq(4)
           end
         end
@@ -660,9 +667,9 @@ RSpec.describe Lead, type: :model do
             lead.preference.optin_sms = true
             lead.preference.optin_sms_date = DateTime.current
             lead.preference.save!
-            lead.trigger_event(event_name: :claim, user: agent)
-            lead2.trigger_event(event_name: :claim, user: agent)
-            lead3.trigger_event(event_name: :claim, user: agent)
+            lead.trigger_event(event_name: :work, user: agent)
+            lead2.trigger_event(event_name: :work, user: agent)
+            lead3.trigger_event(event_name: :work, user: agent)
             expect(lead3.comments.count).to eq(4)
           end
         end
@@ -672,9 +679,9 @@ RSpec.describe Lead, type: :model do
             lead.preference.optin_sms = false
             lead.preference.optin_sms_date = DateTime.current
             lead.preference.save!
-            lead.trigger_event(event_name: :claim, user: agent)
-            lead2.trigger_event(event_name: :claim, user: agent)
-            lead3.trigger_event(event_name: :claim, user: agent)
+            lead.trigger_event(event_name: :work, user: agent)
+            lead2.trigger_event(event_name: :work, user: agent)
+            lead3.trigger_event(event_name: :work, user: agent)
             expect(lead3.comments.count).to eq(4)
           end
         end
@@ -688,7 +695,7 @@ RSpec.describe Lead, type: :model do
         end
         describe "when there are only open duplicates" do
           it "should send the sms optin request" do
-            lead3.trigger_event(event_name: :claim, user: agent)
+            lead3.trigger_event(event_name: :work, user: agent)
             expect(lead3.comments.count).to eq(5)
           end
         end
@@ -698,7 +705,7 @@ RSpec.describe Lead, type: :model do
             lead.preference.save!
             lead.state = 'prospect'
             lead.save!
-            lead3.trigger_event(event_name: :claim, user: agent)
+            lead3.trigger_event(event_name: :work, user: agent)
             expect(lead3.comments.count).to eq(4)
           end
         end
@@ -708,7 +715,7 @@ RSpec.describe Lead, type: :model do
             lead.preference.save!
             lead.state = 'prospect'
             lead.save!
-            lead3.trigger_event(event_name: :claim, user: agent)
+            lead3.trigger_event(event_name: :work, user: agent)
             expect(lead3.comments.count).to eq(4)
           end
           it "should automatically approve sms communication" do
@@ -717,7 +724,7 @@ RSpec.describe Lead, type: :model do
             lead.preference.save!
             lead.state = 'prospect'
             lead.save!
-            lead3.trigger_event(event_name: :claim, user: agent)
+            lead3.trigger_event(event_name: :work, user: agent)
             lead3.reload
             expect(lead3.preference.optin_sms).to be true
           end
@@ -1171,7 +1178,7 @@ RSpec.describe Lead, type: :model do
     end
 
     describe "future leads and followups" do
-      it "should 'revisit' leads pending revisit" do
+      it "should 'reopen' leads pending reopen" do
         lead.user = agent
         lead.state = 'future'
         lead.follow_up_at = DateTime.current + 1.day
@@ -1200,13 +1207,13 @@ RSpec.describe Lead, type: :model do
         lead.save!
 
         lead.follow_up_at = DateTime.current + 2.days
-        lead.trigger_event(event_name: 'postpone', user: user)
+        lead.trigger_event(event_name: 'nurture', user: user)
 
         tasks = user.scheduled_actions.order(created_at: :desc)
 
         task = tasks.last
         expect(lead.state).to eq('future')
-        expect(task.description).to match(/Follow up on postponed lead/)
+        expect(task.description).to match(/Follow up on nurtured lead/)
         expect(task.user).to eq(user)
         expect(task.target).to eq(lead)
         expect(user.scheduled_actions).to include(task)

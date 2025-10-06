@@ -108,11 +108,11 @@ namespace :leads do
     end
   end
 
-  desc "Disqualify Null"
-  task :disqualify_null => :environment do
+  desc "Invalidate Null"
+  task :invalidate_null => :environment do
     Lead.open.where(referral: 'Null').each do |lead|
       lead.classification = :parse_failure
-      lead.disqualify
+      lead.invalidate
       lead.save
       print '.'
     end
@@ -159,7 +159,7 @@ namespace :leads do
 
   desc "Process Follow-Ups"
   task :process_followups => :environment do
-    pending_count = Lead.pending_revisit.count
+    pending_count = Lead.pending_reopen.count
     puts "Processing Lead followups (#{pending_count})"
     Lead.process_followups
   end
@@ -278,7 +278,7 @@ namespace :leads do
         leads = adapter.updateGuestCards(start_date: start_date)
         reporter.call(leads, 'for update')
 
-        # Cancel Guestcards for leads disqualified recently
+        # Cancel Guestcards for leads invalidated recently
         leads = adapter.cancelGuestCards(start_date: start_date)
         reporter.call(leads, 'to cancel')
       end
@@ -387,23 +387,23 @@ namespace :leads do
     end
   end
 
-  namespace :disqualified do
-    desc "Reject Tasks assigned to Disqualified Leads"
+  namespace :invalidated do
+    desc "Reject Tasks assigned to Invalidated Leads"
     task :reject_tasks => :environment do
       skope = ScheduledAction.
         joins("INNER JOIN leads ON leads.id = scheduled_actions.target_id AND scheduled_actions.target_type = 'Lead'").
         incomplete.
-        where(leads: {state: [:disqualified, :approved]})
+        where(leads: {state: [:invalidated, :approved]})
       count = skope.count
 
-      puts "* Rejecting tasks for Disqualified and Approved Leads"
+      puts "* Rejecting tasks for Invalidated and Approved Leads"
       puts " - #{count} tasks found"
       if count > 1
         print " - rejecting tasks..."
         ScheduledAction.
             joins("INNER JOIN leads ON leads.id = scheduled_actions.target_id AND scheduled_actions.target_type = 'Lead'").
             incomplete.
-            where(leads: {state: [:disqualified, :approved]}).
+            where(leads: {state: [:invalidated, :approved]}).
           update_all(state: :rejected)
       end
       puts "DONE."
@@ -423,10 +423,10 @@ namespace :leads do
       puts "DONE!"
     end
 
-    desc "Disqualify if a Resident"
-    task :disqualify_residents => :environment do
-      puts '** Disqualifying as resident any open leads that match a current Resident record'
-      Lead.disqualify_open_resident_leads
+    desc "Invalidate if a Resident"
+    task :invalidate_residents => :environment do
+      puts '** Invalidating as resident any open leads that match a current Resident record'
+      Lead.invalidate_open_resident_leads
     end
   end
 
@@ -495,20 +495,20 @@ namespace :leads do
         batch_size = [(old_leads.count / 90).to_i, 30].max
         old_leads.find_in_batches(batch_size: batch_size).with_index do |group, index|
           follow_up_date = follow_up_base + index.days
-          puts " - Postponing #{group.count} Leads for #{property.name} until #{follow_up_date}"
+          puts " - Nurturing #{group.count} Leads for #{property.name} until #{follow_up_date}"
           group.each do |lead|
-            lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up'
+            lead.notes = (lead.notes || '') + 'This old lead was automatically nurtured for later follow-up'
             lead.follow_up_at = follow_up_date
-            lead.trigger_event(event_name: :postpone, user: User.system)
+            lead.trigger_event(event_name: :nurture, user: User.system)
           end
         end
       else
         follow_up_date = follow_up_base
-        puts " - Postponing #{old_leads.count} Leads for #{property.name} until #{follow_up_date}"
+        puts " - Nurturing #{old_leads.count} Leads for #{property.name} until #{follow_up_date}"
         old_leads.each do |lead|
-          lead.notes = (lead.notes || '') + 'This old lead was automatically postponed for later follow-up'
+          lead.notes = (lead.notes || '') + 'This old lead was automatically nurtured for later follow-up'
           lead.follow_up_at = follow_up_base
-          lead.trigger_event(event_name: :postpone, user: User.system)
+          lead.trigger_event(event_name: :nurture, user: User.system)
         end
       end
     end

@@ -166,7 +166,7 @@ class LeadPolicy < ApplicationPolicy
   end
 
   # Allow admin or Lead owner to reassign Lead to another User
-  #  but disallow claiming another Agent's Lead
+  #  but disallow working another Agent's Lead
   def change_user?
     is_owner? || user.manager? || user.admin?
   end
@@ -186,12 +186,12 @@ class LeadPolicy < ApplicationPolicy
     user.admin? || show?
   end
 
-  def disqualify?
-    !record.disqualified? && edit?
+  def invalidate?
+    !record.invalidated? && edit?
   end
 
   def change_classification?
-    record.disqualified? && edit?
+    record.invalidated? && edit?
   end
 
   def change_contact_preferences?

@@ -261,7 +261,8 @@
       color: $primary;
     }
     
-    &--disqualified,
+    &--invalidated,
+    &--disqualified,  // Backward compatibility
     &--cancelled,
     &--rejected {
       background: rgba($danger, 0.1);

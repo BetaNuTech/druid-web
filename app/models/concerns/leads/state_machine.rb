@@ -3,31 +3,30 @@ module Leads
     extend ActiveSupport::Concern
 
     PENDING_STATES = %w{open prospect showing application future waitlist}.freeze
-    CLAIMED_STATES = %w{prospect showing application approved denied resident}.freeze
+    WORKED_STATES = %w{prospect showing application approved denied resident}.freeze
     IN_PROGRESS_STATES = %w{prospect showing application }.freeze
-    CLOSED_STATES = %w{ disqualified abandoned resident exresident future waitlist}.freeze
+    CLOSED_STATES = %w{ invalidated resident exresident future waitlist}.freeze
     EARLY_PIPELINE_STATES = %w{open prospect showing application}.freeze
     STATE_TRANSITION_LEAD_ACTION = 'State Transition'
     STATE_TRANSITION_REASON = 'Pipeline Event'
     TRANSITION_HELP_TEXT = {
-      abandon: 'this Lead cannot or will not sign a lease',
       show: 'this Lead is being shown a Unit',
       apply: 'the Lead is starting the application process',
       approve: 'this Lead\'s application was approved',
-      claim: 'assume responsibility for this Lead',
+      work: 'assume responsibility for this Lead',
       deny: 'this Lead\'s application was denied',
       discharge: 'this is a Resident moving out',
-      disqualify: 'this is not a Lead (vendor, resident, spam, duplicate, etc.)',
+      invalidate: 'this is not a Lead (vendor, resident, spam, duplicate, etc.)',
       lodge: 'this Lead is now a Resident',
-      requalify: 'mark this Lead as Open',
+      validate: 'mark this Lead as Open',
       release: 'release responsibility for this Lead and make it Open',
-      postpone: 'follow-up on this Lead in the future',
-      revisit: 'mark this Lead as Open again',
+      nurture: 'nurture this Lead for future follow-up',
+      reopen: 'mark this Lead as Open again',
       wait_for_unit: 'put this Lead on waitlist until the Unit is available',
-      revisit_unit_available: 'the Unit is available, so make this Lead Open',
-      reclaim: 'force this Lead to the Prospect state (unit may not be available)'
+      reopen_unit_available: 'the Unit is available, so make this Lead Open',
+      rework: 'force this Lead to the Prospect state (unit may not be available)'
     }.freeze
-    ACTION_MEMO_TRANSITIONS = %w{abandon disqualify release postpone deny}.freeze
+    ACTION_MEMO_TRANSITIONS = %w{invalidate release nurture deny}.freeze
 
     class_methods do
 
@@ -43,7 +42,7 @@ module Leads
         where(state: IN_PROGRESS_STATES)
       end
 
-      def pending_revisit
+      def pending_reopen
         where(state: 'future').
           where("follow_up_at IS NOT NULL AND follow_up_at <= ?", DateTime.current)
       end
@@ -78,10 +77,10 @@ module Leads
       end
 
       def process_followups
-        pending_revisit.each do |lead|
+        pending_reopen.each do |lead|
           next unless lead.property&.active?
-          Rails.logger.warn "Lead #{lead.id} is ready to revisit"
-          lead.trigger_event(event_name: 'revisit', user: User.system)
+          Rails.logger.warn "Lead #{lead.id} is ready to reopen"
+          lead.trigger_event(event_name: 'reopen', user: User.system)
         end
       end
 
@@ -90,7 +89,7 @@ module Leads
           next unless lead.member_of_an_active_property?
           # Use lead's assigned user if available, otherwise use system user
           user = lead.user || User.system
-          lead.trigger_event(event_name: 'revisit_unit_available', user: user)
+          lead.trigger_event(event_name: 'reopen_unit_available', user: user)
         end
       end
 
@@ -107,7 +106,7 @@ module Leads
       attr_accessor :ignore_incomplete_tasks, :transition_memo, :skip_event_notifications, :transition_user
 
       after_create :create_initial_transition
-      after_save :disqualified_lead_checks
+      after_save :invalidated_lead_checks
 
       # https://github.com/aasm/aasm
       include AASM
@@ -121,17 +120,11 @@ module Leads
         state :denied
         state :resident
         state :exresident
-        state :disqualified
-        state :abandoned
+        state :invalidated
         state :future
         state :waitlist
 
         after_all_events :after_all_events_callback
-
-        event :abandon do
-          transitions from: [ :open, :prospect, :application, :showing, :approved, :denied ], to: :abandoned,
-            after: ->(*args) { set_priority_zero; event_clear_user(*args); clear_all_tasks; }
-        end
 
         event :show do
           transitions from: [:prospect], to: :showing
@@ -145,13 +138,13 @@ module Leads
         end
 
         event :approve do
-          transitions from: [:prospect, :showing, :application, :denied], to: :approved,
+          transitions from: [:application, :denied], to: :approved,
             guard: :may_progress?
         end
 
-        event :claim do
-          transitions from: [ :open, :exresident, :abandoned ], to: :prospect,
-            after: ->(*args) { after_claim(*args) }
+        event :work do
+          transitions from: [ :open, :exresident ], to: :prospect,
+            after: ->(*args) { after_work(*args) }
         end
 
         event :deny do
@@ -163,8 +156,8 @@ module Leads
             guard: :may_progress?
         end
 
-        event :disqualify do
-          transitions from: [:open, :prospect], to: :disqualified,
+        event :invalidate do
+          transitions from: [:open, :prospect], to: :invalidated,
             after: ->(*args) { set_priority_zero; clear_all_tasks; mark_all_messages_read }
         end
 
@@ -174,8 +167,8 @@ module Leads
             guard: :may_progress?
         end
 
-        event :requalify do
-          transitions from: [ :disqualified, :abandoned ], to: :open,
+        event :validate do
+          transitions from: [ :invalidated ], to: :open,
             after: ->(*args) { event_clear_user; set_priority_low }
         end
 
@@ -184,12 +177,12 @@ module Leads
             after: ->(*args) { event_clear_user; set_priority_urgent }
         end
 
-        event :postpone do
-          transitions from: [:open, :prospect, :showing, :application], to: :future,
+        event :nurture do
+          transitions from: [:open, :prospect, :showing, :application, :approved, :denied], to: :future,
             after: -> (*args) {clear_all_tasks; create_follow_up_task; event_clear_user; set_priority_low}
         end
 
-        event :revisit do
+        event :reopen do
           transitions from: [ :future ], to: :open,
             after: -> (*args) {unset_follow_up_at}
         end
@@ -200,31 +193,31 @@ module Leads
             after: -> (*args) {clear_all_tasks; set_priority_low}
         end
 
-        event :revisit_unit_available do
+        event :reopen_unit_available do
           transitions from: :waitlist, to: :open,
             guard: :unit_preference_available?,
             after: -> (*args) { set_priority_urgent }
         end
 
-        event :reclaim do
+        event :rework do
           transitions from: :waitlist, to: :prospect,
             after: ->(*args) { event_set_user(*args) }
         end
 
       end
 
-      def event_set_user(claimant=nil)
-        self.user = claimant if claimant.present?
+      def event_set_user(worker=nil)
+        self.user = worker if worker.present?
       end
 
-      def event_clear_user(claimant=nil)
+      def event_clear_user(worker=nil)
         self.user = nil
       end
 
-      def force_complete_all_tasks(claimant=nil)
-        if claimant.present?
+      def force_complete_all_tasks(worker=nil)
+        if worker.present?
           scheduled_actions.pending.each do |action|
-            action.user_id = claimant.id
+            action.user_id = worker.id
             action.complete!
           end
         end
@@ -234,8 +227,8 @@ module Leads
         scheduled_actions.incomplete.update_all(state: 'rejected')
       end
 
-      def disqualified_lead_checks
-        if state == 'disqualified'
+      def invalidated_lead_checks
+        if state == 'invalidated'
           mark_all_messages_read
         end
       end
@@ -304,7 +297,7 @@ module Leads
         create_scheduled_actions # Leads::EngagementPolicy#create_scheduled_actions
       end
 
-      def after_claim(user=nil)
+      def after_work(user=nil)
         event_set_user(user)
         force_complete_all_tasks(user)
         if property&.setting_enabled?(:lead_auto_welcome)
@@ -370,7 +363,7 @@ module Leads
           lead_action: lead_action,
           reason: reason,
           schedule: schedule,
-          description: "Follow up on postponed lead: #{name}"
+          description: "Follow up on nurtured lead: #{name}"
         )
         action.save
         action

@@ -431,12 +431,13 @@
       color: darken($info, 10%);
     }
     
-    &.state-qualified {
+    &.state-qualified {  // Legacy - no longer used
       background-color: rgba($success, 0.1);
       color: darken($success, 10%);
     }
-    
-    &.state-disqualified {
+
+    &.state-invalidated,
+    &.state-disqualified {  // Backward compatibility
       background-color: rgba($danger, 0.1);
       color: darken($danger, 10%);
     }

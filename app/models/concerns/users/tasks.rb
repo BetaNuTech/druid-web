@@ -62,7 +62,7 @@ module Users
       end
 
       def showing_rate(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
-        claimed_leads_count = self.leads.includes(:transitions).
+        worked_leads_count = self.leads.includes(:transitions).
           where(lead_transitions: {created_at: start_date..end_date, current_state: 'prospect'}).
           count.to_f
         showings = self.scheduled_actions.includes(:engagement_policy_action_compliance).
@@ -70,7 +70,7 @@ module Users
                 engagement_policy_action_compliances: { completed_at: start_date..end_date}).
           count.to_f
 
-        if claimed_leads_count == 0
+        if worked_leads_count == 0
           return 1.0
         else
           if showings < 1
@@ -78,7 +78,7 @@ module Users
           end
         end
 
-        return (showings/claimed_leads_count).round(2)
+        return (showings/worked_leads_count).round(2)
       end
 
 

@@ -1,0 +1,60 @@
+<% if @eventid == 'nurture' %>
+  <div class="row">
+    <div class="col-md-6 form__group">
+      <%= label_tag "Follow Up On", nil, class: 'form__label' %>
+
+      <!-- Quick Select Options -->
+      <div class="btn-group btn-group-sm mb-2" role="group">
+        <button type="button" class="btn btn-outline-primary nurture-quick-select" data-days="90">3 months</button>
+        <button type="button" class="btn btn-outline-primary nurture-quick-select" data-days="120">4 months</button>
+        <button type="button" class="btn btn-outline-primary nurture-quick-select" data-days="180">6 months</button>
+        <button type="button" class="btn btn-outline-primary nurture-quick-select" data-days="275">9 months</button>
+      </div>
+
+      <!-- Custom Date Select -->
+      <%
+        # Date range: 90 to 275 days from today
+        min_date = Date.current + 90.days
+        max_date = Date.current + 275.days
+        default_date = Date.current + 90.days
+      %>
+      <%= date_select :follow_up_at, nil,
+          {
+            start_year: min_date.year,
+            end_year: max_date.year,
+            default: default_date,
+            order: [:month, :day, :year]
+          },
+          {
+            class: 'form__control form__control--date-select',
+            data: {
+              min_date: min_date.to_s,
+              max_date: max_date.to_s
+            }
+          }
+      %>
+      <small class="form-text">
+        Choose a date between <%= min_date.strftime('%B %d, %Y') %> and <%= max_date.strftime('%B %d, %Y') %> (90-275 days from today)
+      </small>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // Quick select buttons for common nurture periods
+    $('.nurture-quick-select').on('click', function(e) {
+      e.preventDefault();
+      var days = parseInt($(this).data('days'));
+      var futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + days);
+
+      // Set the date selects
+      $('#follow_up_at_1i').val(futureDate.getFullYear());
+      $('#follow_up_at_2i').val(futureDate.getMonth() + 1);
+      $('#follow_up_at_3i').val(futureDate.getDate());
+
+      // Highlight selected button
+      $('.nurture-quick-select').removeClass('btn-primary').addClass('btn-outline-primary');
+      $(this).removeClass('btn-outline-primary').addClass('btn-primary');
+    });
+  </script>
+<% end %>

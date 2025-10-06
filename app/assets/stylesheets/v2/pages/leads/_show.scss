@@ -341,7 +341,15 @@
     color: $gray-900;
     line-height: 1.2;
   }
-  
+
+  &__subtitle {
+    display: block;
+    font-size: 11px;
+    color: $gray-600;
+    margin-top: 2px;
+    font-weight: $font-weight-normal;
+  }
+
   // Priority specific styling
   &__item--priority {
     &.lead-stats__item--urgent {
@@ -660,10 +668,18 @@
   margin-bottom: $spacing-xl;
   overflow: hidden;
   transition: all 0.3s ease;
-  
+
   &:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     transform: translateY(-2px);
+  }
+
+  &__hint {
+    display: block;
+    font-size: 12px;
+    color: $gray-600;
+    margin-top: 4px;
+    font-style: italic;
   }
   
   .card-header {

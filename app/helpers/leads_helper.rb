@@ -84,7 +84,7 @@ module LeadsHelper
       'badge badge-warning'
     when 'approved'
       'badge badge-success'
-    when 'denied', 'abandoned', 'disqualified'
+    when 'denied', 'invalidated'
       'badge badge-danger'
     when 'resident'
       'badge badge-success'
@@ -103,6 +103,25 @@ module LeadsHelper
 
   def lead_transition_help_text(event)
     Lead::TRANSITION_HELP_TEXT.fetch(event, '')
+  end
+
+  def nurture_date_options
+    [
+      ['3 months (90 days)', 90],
+      ['4 months (120 days)', 120],
+      ['6 months (180 days)', 180],
+      ['9 months (275 days)', 275]
+    ]
+  end
+
+  def nurture_date_range
+    {
+      min_days: 90,
+      max_days: 275,
+      min_date: Date.current + 90.days,
+      max_date: Date.current + 275.days,
+      default_date: Date.current + 90.days
+    }
   end
 
   def call_log_timestamp(lead)
@@ -271,11 +290,12 @@ module LeadsHelper
     all_classes.delete('parse_failure')
     selected_classification = lead.classification
     case event
-    when 'abandon', 'show', 'apply', 'deny', 'approve', 'lodge', 'requalify', 'postpone', 'revisit', 'wait_for_unit', 'revisit_unit_available', 'release'
+    when 'show', 'apply', 'deny', 'approve', 'lodge', 'validate', 'nurture', 'reopen', 'wait_for_unit', 'reopen_unit_available', 'release'
       all_classes = ['lead']
       selected_classification = 'lead'
-    when 'disqualify'
-      all_classes.delete('lead') if event == 'disqualify'
+    when 'invalidate'
+      all_classes.delete('lead')
+      all_classes.delete('lost')  # Real leads should be nurtured, not invalidated as lost
     end
     [all_classes, selected_classification]
   end

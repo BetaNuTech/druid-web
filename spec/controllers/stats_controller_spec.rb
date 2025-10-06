@@ -13,7 +13,7 @@
 
     #before do
       #lead1; lead2; lead3; lead4
-      #lead1.trigger_event(event_name: 'claim', user: agent)
+      #lead1.trigger_event(event_name: 'work', user: agent)
     #end
 
     #it "should be successful" do

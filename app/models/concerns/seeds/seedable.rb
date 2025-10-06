@@ -10,8 +10,8 @@ module Seeds
       #     :version: 1
       #     :key: :name
       #     :data:
-      #     - :name: Claim Lead
-      #       :description: Claim a new/open Lead
+      #     - :name: Work Lead
+      #       :description: Work a new/open Lead
       #       :active: true
       #     - :name: First Contact
       #       :description: Contact Lead for the first time (Phone/SMS/Email)

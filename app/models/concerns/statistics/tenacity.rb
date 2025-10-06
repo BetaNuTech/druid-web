@@ -56,7 +56,7 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   ( leads.classification = 0 OR leads.classification IS NULL ) AND
                   leads.id = contact_events.lead_id AND
-                  leads.state NOT IN ('resident', 'exresident', 'disqualified') AND
+                  leads.state NOT IN ('resident', 'exresident', 'invalidated') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
               GROUP BY
                 contact_events.user_id,
@@ -161,7 +161,7 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   ( leads.classification = 0 OR leads.classification IS NULL ) AND
                   leads.id = contact_events.lead_id AND
-                  leads.state NOT IN ('resident', 'exresident', 'disqualified') AND
+                  leads.state NOT IN ('resident', 'exresident', 'invalidated') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
               GROUP BY
                 contact_events.user_id,
@@ -232,7 +232,7 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   ( leads.classification = 0 OR leads.classification IS NULL ) AND
                   leads.id = contact_events.lead_id AND
-                  leads.state NOT IN ('resident', 'exresident', 'disqualified') AND
+                  leads.state NOT IN ('resident', 'exresident', 'invalidated') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
               GROUP BY
                 contact_events.user_id,

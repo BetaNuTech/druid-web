@@ -51,10 +51,10 @@ module Leads
         return false unless valid?
 
         if @lead.open?
-          success = @lead.trigger_event(event_name: :claim, user: @agent)
-          add_error "Agent could not claim Lead" unless success
+          success = @lead.trigger_event(event_name: :work, user: @agent)
+          add_error "Agent could not work Lead" unless success
         else
-          add_error 'Mass re-assignment of claimed Leads is not supported'
+          add_error 'Mass re-assignment of working Leads is not supported'
         end
 
         return valid?

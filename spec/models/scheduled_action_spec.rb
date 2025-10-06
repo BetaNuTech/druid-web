@@ -68,7 +68,7 @@ RSpec.describe ScheduledAction, type: :model do
       end
 
       it "should allow the owner agent to complete a task" do
-        lead.trigger_event(event_name: 'claim', user: team1_agent1)
+        lead.trigger_event(event_name: 'work', user: team1_agent1)
         lead.reload
         scheduled_action = lead.scheduled_actions.last
         expect(scheduled_action.user).to eq(team1_agent1)
@@ -87,7 +87,7 @@ RSpec.describe ScheduledAction, type: :model do
 
       it "should allow an agent to complete a task assigned to another agent in the same team" do
         lead = create(:lead, state: 'open')
-        lead.trigger_event(event_name: 'claim', user: team1_agent1)
+        lead.trigger_event(event_name: 'work', user: team1_agent1)
         lead.reload
         scheduled_action = lead.scheduled_actions.pending.last
         expect(scheduled_action.state).to eq('pending')
@@ -99,7 +99,7 @@ RSpec.describe ScheduledAction, type: :model do
       end
 
       #it "should disallow an agent to complete a task assigned to another agent in a different team" do
-        #lead.trigger_event(event_name: 'claim', user: team1_agent1)
+        #lead.trigger_event(event_name: 'work', user: team1_agent1)
         #lead.reload
         #scheduled_action = lead.scheduled_actions.first
         #expect(scheduled_action.user).to eq(team1_agent1)
@@ -116,7 +116,7 @@ RSpec.describe ScheduledAction, type: :model do
       let(:lead) {
         lead = create(:lead, state: 'open')
         lead.first_comm = 1.hour.ago
-        lead.trigger_event(event_name: 'claim', user: team1_agent1)
+        lead.trigger_event(event_name: 'work', user: team1_agent1)
         lead.reload
         lead
       }

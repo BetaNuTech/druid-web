@@ -139,12 +139,12 @@ RSpec.describe DuplicateLead do
           test_strategy = Flipflop::FeatureSet.current.test!
           test_strategy.switch!(:lead_automatic_dedupe, true)
         end
-        let(:spam_number) {  '1555556666'} 
-        let(:spam_lead) { create(:lead, first_name: 'Test', last_name: 'foo', phone1: spam_number, state: 'disqualified', property_id: agent.property.id, classification: 'spam') }
-        it "should disqualify leads matching the phone number of spam leads" do
+        let(:spam_number) {  '1555556666'}
+        let(:spam_lead) { create(:lead, first_name: 'Test', last_name: 'foo', phone1: spam_number, state: 'invalidated', property_id: agent.property.id, classification: 'spam') }
+        it "should invalidate leads matching the phone number of spam leads" do
           spam_lead
           new_lead = create(:lead, first_name: 'Test2', phone1: spam_number, state: 'prospect', property_id: agent.property.id)
-          assert(new_lead.auto_disqualify_lead?)
+          assert(new_lead.auto_invalidate_lead?)
         end
       end
 
@@ -163,7 +163,7 @@ RSpec.describe DuplicateLead do
     end
   end
 
-  describe "automatic disqualification of leads matching residents" do
+  describe "automatic invalidation of leads matching residents" do
     let(:property) { create(:property) }
     let(:matching_first_name1) { 'Firstname' }
     let(:matching_last_name1) { 'Lastname' }
@@ -181,23 +181,23 @@ RSpec.describe DuplicateLead do
       reference_resident2
     end
 
-    it "should not automatically disqualify if there are no matches" do
+    it "should not automatically invalidate if there are no matches" do
       non_matching_lead
       non_matching_lead.reload
       expect(non_matching_lead.state).to eq('open')
       expect(non_matching_lead.classification).to be_nil
     end
 
-    it "should automatically disqualify leads matching resident records" do
+    it "should automatically invalidate leads matching resident records" do
       matching_lead
       matching_lead.reload
-      expect(matching_lead.state).to eq('disqualified')
+      expect(matching_lead.state).to eq('invalidated')
       expect(matching_lead.classification).to eq('resident')
     end
 
   end
 
-  describe "automatic duplicate disqualification" do
+  describe "automatic duplicate invalidation" do
     let(:reference_lead1) { create(:lead, state: 'prospect', email: "duplicate_test@example.com") } # for matching by email
     let(:reference_lead2) { create(:lead, state: 'prospect', phone1: "555-111-2222") } # for matching by phone
     let(:reference_lead3) { create(:lead, state: 'prospect') } # for (not) matching by name only
@@ -226,15 +226,15 @@ RSpec.describe DuplicateLead do
     end
 
     describe "when the feature is not enabled" do
-      it "should not auto disqualify leads" do
+      it "should not auto invalidate leads" do
         test_strategy = Flipflop::FeatureSet.current.test!
         test_strategy.switch!(:lead_automatic_dedupe, false)
         reference_lead1; reference_lead2; reference_lead3;
         matching_by_email; matching_by_phone; match_by_name_only
         matching_by_email.reload; matching_by_phone.reload; match_by_name_only.reload
 
-        refute(matching_by_email.disqualified?)
-        refute(matching_by_phone.disqualified?)
+        refute(matching_by_email.invalidated?)
+        refute(matching_by_phone.invalidated?)
       end
     end
 
@@ -243,7 +243,7 @@ RSpec.describe DuplicateLead do
         test_strategy = Flipflop::FeatureSet.current.test!
         test_strategy.switch!(:lead_automatic_dedupe, true)
       end
-      it 'should not disqualify if first or last name is missing' do
+      it 'should not invalidate if first or last name is missing' do
         property = default_property
         existing_lead_1 = create(:lead, state: 'prospect', property: property, last_name: nil)
         matching_lead_1 = create(:lead, state: 'open', property: property,
@@ -253,10 +253,10 @@ RSpec.describe DuplicateLead do
                                  email: existing_lead_1.email)
         existing_lead_1.reload
         matching_lead_1.reload
-        refute(matching_lead_1.disqualified?)
+        refute(matching_lead_1.invalidated?)
       end
 
-      it 'should still disqualify if phone or email is missing' do
+      it 'should still invalidate if phone or email is missing' do
         property = default_property
         Lead.destroy_all
         existing_lead_1 = create(:lead, state: 'prospect', property: property)
@@ -267,16 +267,16 @@ RSpec.describe DuplicateLead do
                                  email: existing_lead_1.email)
         existing_lead_1.reload
         matching_lead_1.reload
-        
-        # Force the disqualify check to run
-        matching_lead_1.send(:disqualify_if_high_confidence_duplicate)
+
+        # Force the invalidate check to run
+        matching_lead_1.send(:invalidate_if_high_confidence_duplicate)
         matching_lead_1.reload
-        
-        assert(matching_lead_1.disqualified?)
+
+        assert(matching_lead_1.invalidated?)
       end
 
 
-      it "should not disqualify if all matches are already disqualified" do
+      it "should not invalidate if all matches are already invalidated" do
         property = default_property
         existing_lead_1 = create(:lead, state: 'prospect', property: property)
         existing_lead_1.reload
@@ -291,13 +291,13 @@ RSpec.describe DuplicateLead do
         existing_lead_1.reload
         matching_lead_1.reload
         matching_lead_2.reload
-        assert(matching_lead_1.disqualified?)
-        assert(matching_lead_2.disqualified?)
+        assert(matching_lead_1.invalidated?)
+        assert(matching_lead_2.invalidated?)
       end
 
-      it "should not disqualify if there is an newer in-progress match" do
+      it "should not invalidate if there is an newer in-progress match" do
         property = default_property
-        existing_lead_1 = create(:lead, state: 'disqualified', property: property)
+        existing_lead_1 = create(:lead, state: 'invalidated', property: property)
         matching_lead_1 = create(:lead, state: 'open', property: property,
                                  first_name: existing_lead_1.first_name,
                                  last_name: existing_lead_1.last_name,
@@ -311,13 +311,13 @@ RSpec.describe DuplicateLead do
         existing_lead_1.reload
         matching_lead_1.reload
         matching_lead_2.reload
-        refute(matching_lead_1.auto_disqualify_lead?)
+        refute(matching_lead_1.auto_invalidate_lead?)
       end
 
-      it "should disqualify if there is an older in-progress match" do
+      it "should invalidate if there is an older in-progress match" do
         property = default_property
         Lead.destroy_all
-        existing_lead_1 = create(:lead, state: 'disqualified', property: property)
+        existing_lead_1 = create(:lead, state: 'invalidated', property: property)
         existing_lead_1.reload
         matching_lead_1 = create(:lead, state: 'prospect', property: property,
                                  first_name: existing_lead_1.first_name,
@@ -333,41 +333,41 @@ RSpec.describe DuplicateLead do
         matching_lead_1.reload
         matching_lead_2.reload
 
-        assert(matching_lead_2.disqualified?)
+        assert(matching_lead_2.invalidated?)
       end
 
 
-      it "should automatically disqualify full matches" do
+      it "should automatically invalidate full matches" do
         # Use a specific property to ensure all leads are in the same property
         property = default_property
         Lead.destroy_all
-        
+
         # Make sure the reference leads and matching leads are created very close in time
         # to ensure they're within the HIGH_CONFIDENCE_DUPLICATE_MAX_AGE_DAYS threshold
         # and in the same property
         reference_lead1_fixed = create(:lead, state: 'prospect', email: "duplicate_test@example.com", property: property)
         matching_by_email_fixed = create(:lead, state: 'open', first_name: reference_lead1_fixed.first_name, last_name: reference_lead1_fixed.last_name, email: "duplicate_test@example.com", property: property)
-        
+
         reference_lead2_fixed = create(:lead, state: 'prospect', phone1: "555-111-2222", property: property)
         matching_by_phone_fixed = create(:lead, state: 'open', first_name: reference_lead2_fixed.first_name, last_name: reference_lead2_fixed.last_name, phone1: "555-111-2222", property: property)
-        
+
         reference_lead3_fixed = create(:lead, state: 'prospect', property: property)
         match_by_name_only_fixed = create(:lead, state: 'open', first_name: reference_lead3_fixed.first_name, last_name: reference_lead3_fixed.last_name, property: property)
-        
-        # Force disqualify check to run
-        matching_by_email_fixed.send(:disqualify_if_high_confidence_duplicate)
-        matching_by_phone_fixed.send(:disqualify_if_high_confidence_duplicate)
-        match_by_name_only_fixed.send(:disqualify_if_high_confidence_duplicate)
-        
+
+        # Force invalidate check to run
+        matching_by_email_fixed.send(:invalidate_if_high_confidence_duplicate)
+        matching_by_phone_fixed.send(:invalidate_if_high_confidence_duplicate)
+        match_by_name_only_fixed.send(:invalidate_if_high_confidence_duplicate)
+
         # Reload to get the updated states
         matching_by_email_fixed.reload
         matching_by_phone_fixed.reload
         match_by_name_only_fixed.reload
 
-        assert(matching_by_email_fixed.disqualified?)
-        assert(matching_by_phone_fixed.disqualified?)
-        refute(match_by_name_only_fixed.disqualified?)
-        refute(miss_by_date.disqualified?)
+        assert(matching_by_email_fixed.invalidated?)
+        assert(matching_by_phone_fixed.invalidated?)
+        refute(match_by_name_only_fixed.invalidated?)
+        refute(miss_by_date.invalidated?)
       end
     end
 
@@ -385,17 +385,17 @@ RSpec.describe DuplicateLead do
         @lead4 = create(:lead, state: 'open',  property: @property2, first_name: @resident2.first_name, last_name: @resident2.last_name, phone1: @resident2.detail.phone1)
       end
 
-      it "should disqualify all open leads matching residents" do
+      it "should invalidate all open leads matching residents" do
         @lead1.reload; @lead2.reload; @lead3.reload; @lead4.reload
         #@lead2.state = 'open'; @lead2.save
         #@lead4.state = 'open'; @lead4.save
 
-        Lead.disqualify_open_resident_leads
+        Lead.invalidate_open_resident_leads
 
-        refute(@lead1.disqualified?)
-        assert(@lead2.disqualified?)
-        refute(@lead3.disqualified?)
-        assert(@lead4.disqualified?)
+        refute(@lead1.invalidated?)
+        assert(@lead2.invalidated?)
+        refute(@lead3.invalidated?)
+        assert(@lead4.invalidated?)
       end
 
       it 'should report possible resident leads in a csv document' do

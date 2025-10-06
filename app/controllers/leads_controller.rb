@@ -93,7 +93,7 @@ class LeadsController < ApplicationController
 
     respond_to do |format|
       if !@lead.errors.any?
-        @lead.trigger_event(event_name: 'claim', user: assigned_agent) if assigned_agent.present?
+        @lead.trigger_event(event_name: 'work', user: assigned_agent) if assigned_agent.present?
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
       else
@@ -134,7 +134,8 @@ class LeadsController < ApplicationController
     authorize @lead
     @lead.transition_memo = params[:memo] if params[:memo].present?
     @lead.classification = params[:classification] if params[:classification].present?
-    @success = trigger_lead_state_event(lead: @lead, event_name: params[:eventid])
+    event_name = map_legacy_event_name(params[:eventid])
+    @success = trigger_lead_state_event(lead: @lead, event_name: event_name)
     respond_to do |format|
       format.js
       format.json { render :show, status: :ok, location: @lead }
@@ -144,8 +145,8 @@ class LeadsController < ApplicationController
 
   def progress_state
     authorize @lead
-    @eventid = params[:eventid]
-    if @eventid == 'claim'
+    @eventid = map_legacy_event_name(params[:eventid])
+    if @eventid == 'work'
       trigger_lead_state_event(lead: @lead, event_name: @eventid)
       redirect_to(@lead)
     end
@@ -156,10 +157,37 @@ class LeadsController < ApplicationController
     params.permit!
     @lead.transition_memo = params[:memo] if params[:memo].present?
     @lead.classification = params[:classification] if params[:classification].present?
-    if params[:follow_up_at].present?
-      @lead.follow_up_at = ( DateTime.new(*(params[:follow_up_at].values.map(&:to_i))) rescue ( DateTime.current + 3.months ))
+
+    event_name = map_legacy_event_name(params[:eventid])
+
+    # Handle nurture follow-up date with validation
+    if (event_name == 'nurture' || event_name == 'postpone') && params[:follow_up_at].present?
+      begin
+        # date_select returns params with keys: "(1i)" => year, "(2i)" => month, "(3i)" => day
+        year = params[:follow_up_at]["(1i)"].to_i
+        month = params[:follow_up_at]["(2i)"].to_i
+        day = params[:follow_up_at]["(3i)"].to_i
+
+        follow_up_date = Date.new(year, month, day)
+        min_date = Date.current + 90.days
+        max_date = Date.current + 275.days
+
+        # Validate the date is within allowed range
+        if follow_up_date < min_date || follow_up_date > max_date
+          flash[:alert] = "Follow-up date must be between #{min_date.strftime('%B %d, %Y')} and #{max_date.strftime('%B %d, %Y')} (90-275 days from today). You selected #{follow_up_date.strftime('%B %d, %Y')}."
+          redirect_to(progress_state_lead_path(@lead, eventid: event_name)) and return
+        end
+
+        # Set follow_up_at to 8am NYC time (Eastern Time)
+        @lead.follow_up_at = follow_up_date.in_time_zone('America/New_York').change(hour: 8)
+      rescue => e
+        Rails.logger.error("Error parsing nurture follow_up_at date: #{e.message}")
+        # Default to 90 days from now at 8am NYC time
+        @lead.follow_up_at = (Date.current + 90.days).in_time_zone('America/New_York').change(hour: 8)
+      end
     end
-    @success = trigger_lead_state_event(lead: @lead, event_name: params[:eventid])
+
+    @success = trigger_lead_state_event(lead: @lead, event_name: event_name)
     redirect_to(@lead)
   end
 
@@ -310,5 +338,17 @@ class LeadsController < ApplicationController
         success = lead.trigger_event(event_name: event_name, user: current_user)
       end
       return success
+    end
+
+    # Map legacy event names to new ones for backward compatibility
+    def map_legacy_event_name(event_name)
+      mapping = {
+        'claim' => 'work',
+        'disqualify' => 'invalidate',
+        'requalify' => 'validate',
+        'postpone' => 'nurture',
+        'abandon' => 'nurture' # Redirect abandon to nurture
+      }
+      mapping[event_name] || event_name
     end
 end

@@ -55,7 +55,7 @@ RSpec.describe LeadSearch do
 
     let(:lead2) {
       create(:lead,
-             state: 'disqualified', priority: 'low', id_number: "11223344",
+             state: 'invalidated', priority: 'low', id_number: "11223344",
              property: property2,
              source: lead_source2,
              first_comm: 2.days.ago,
@@ -90,7 +90,7 @@ RSpec.describe LeadSearch do
     end
 
     it "searches by state" do
-      search = LeadSearch.new({states: ['prospect', 'disqualified']})
+      search = LeadSearch.new({states: ['prospect', 'invalidated']})
       expect(search.collection.to_a.sort).to eq([lead2, lead1].sort)
     end
 

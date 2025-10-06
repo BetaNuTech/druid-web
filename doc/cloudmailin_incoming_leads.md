@@ -100,7 +100,7 @@ The system ignores certain email and phone values when checking for duplicates:
    - Name combination (first + last)
    - Remote ID
 3. Creates `DuplicateLead` records linking potential duplicates
-4. Runs `auto_disqualify` checks
+4. Runs `auto_invalidate` checks
 5. If not auto-disqualified, lead remains active but linked to duplicates
 
 ## Lead Classification

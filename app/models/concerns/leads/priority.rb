@@ -73,8 +73,9 @@ module Leads
           denied: 1,
           resident: 0,
           exresident: 0,
-          disqualified: 0,
-          abandoned: 0
+          invalidated: 0,
+          future: 0,
+          waitlist: 1
         }
 
         score = state_scores.fetch(state.to_sym, 0)

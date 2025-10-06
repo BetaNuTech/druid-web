@@ -582,12 +582,10 @@ module Yardi
               'current_resident'
             when 'exresident'
               'former_resident'
-            when 'disqualified'
-              'canceled'
-            when 'abandoned'
-              'canceled'
             when 'future'
-              'future_resident'
+              'canceled'
+            when 'invalidated'
+              'prospect'  # invalidated leads are spam/fake - map to prospect if syncing to Yardi
             else
               'prospect'
             end

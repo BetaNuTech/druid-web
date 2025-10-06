@@ -72,7 +72,7 @@ class MessageTemplatePolicy < ApplicationPolicy
   end
 
   # Allow admin or MessageTemplate owner to reassign MessageTemplate to another User
-  #  but disallow claiming another Agent's MessageTemplate
+  #  but disallow working another Agent's MessageTemplate
   def change_user?
     user.admin? || is_owner? || property_manager?
   end

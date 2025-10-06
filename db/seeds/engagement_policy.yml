@@ -8,8 +8,8 @@
       :description: Global Engagement Policy for 'open' Leads
       :active: true
       :engagement_policy_actions:
-        - :lead_action_name: Claim Lead
-          :description: Claim open Lead
+        - :lead_action_name: Work Lead
+          :description: Work open Lead
           :deadline: 1
           :retry_count: 0
           :retry_delay: 0
@@ -126,14 +126,8 @@
           :active: true
     - :version: 2
       :property_name: null
-      :lead_state: disqualified
-      :description: Global Engagement Policy for 'disqualified' Leads
-      :active: true
-      :engagement_policy_actions: []
-    - :version: 2
-      :property_name: null
-      :lead_state: abandoned
-      :description: Global Engagement Policy for 'abandoned' Leads
+      :lead_state: invalidated
+      :description: Global Engagement Policy for 'invalidated' Leads
       :active: true
       :engagement_policy_actions: []
     - :version: 1

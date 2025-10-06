@@ -93,8 +93,8 @@ class MessagePolicy < ApplicationPolicy
     when nil
       true
     when Lead
-      # Dont list messages for disqualified leads
-      user.admin? || record.messageable.state != 'disqualified'
+      # Dont list messages for invalidated leads
+      user.admin? || record.messageable.state != 'invalidated'
     else
       true
     end

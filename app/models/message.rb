@@ -176,7 +176,7 @@ class Message < ApplicationRecord
   end
 
   def self.relevant_to_leads
-    where("leads.state != 'disqualified' AND messages.state != 'draft'")
+    where("leads.state != 'invalidated' AND messages.state != 'draft'")
   end
 
   ### Instance Methods

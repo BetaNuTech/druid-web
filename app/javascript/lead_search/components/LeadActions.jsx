@@ -7,13 +7,17 @@ class LeadActions extends React.Component {
     let actions = []
     switch(this.props.lead_state) {
       case 'open':
-        actions = ['Claim', 'Disqualify', 'Abandon']
+        actions = ['Work', 'Invalidate', 'Nurture']
         break
       case 'prospect':
-        actions = ['Disqualify', 'Abandon']
+        actions = ['Invalidate', 'Nurture']
         break
-      case 'disqualified':
-        actions = ['Requalify']
+      case 'invalidated':
+        actions = ['Validate']
+        break
+      case 'disqualified': // Backward compatibility for old state name
+        actions = ['Validate']
+        break
       default:
         actions = []
     }
@@ -21,17 +25,53 @@ class LeadActions extends React.Component {
   }
 
   action_url(action) {
-    return(`/leads/${this.props.lead_id}/trigger_state_event?eventid=${action}`)
+    const eventMapping = {
+      'Work': 'work',
+      'Invalidate': 'invalidate',
+      'Nurture': 'nurture',
+      'Validate': 'validate',
+      // Legacy mappings for backward compatibility
+      'Claim': 'work',
+      'Disqualify': 'invalidate',
+      'Abandon': 'nurture',
+      'Requalify': 'validate'
+    }
+    const eventid = eventMapping[action] || action.toLowerCase()
+
+    // Invalidate and Nurture need the progress_state form (require classification and/or date)
+    const needsForm = ['invalidate', 'nurture'].includes(eventid)
+
+    if (needsForm) {
+      return(`/leads/${this.props.lead_id}/progress_state?eventid=${eventid}`)
+    } else {
+      return(`/leads/${this.props.lead_id}/trigger_state_event?eventid=${eventid}`)
+    }
   }
 
   action_link(action) {
-    const actionid = action.toLowerCase()
-    let data_remote = 'false'
-    let data_target = '_blank'
+    const eventMapping = {
+      'Work': 'work',
+      'Invalidate': 'invalidate',
+      'Nurture': 'nurture',
+      'Validate': 'validate',
+      'Claim': 'work',
+      'Disqualify': 'invalidate',
+      'Abandon': 'nurture',
+      'Requalify': 'validate'
+    }
+    const eventid = eventMapping[action] || action.toLowerCase()
+    const needsForm = ['invalidate', 'nurture'].includes(eventid)
 
-    return(
-      <a href={this.action_url(action.toLowerCase())} className="btn btn-xs btn-primary" data-remote="false" data-method="post" rel="nofollow">{action}</a>
-    )
+    // Form actions use GET, direct triggers use POST
+    if (needsForm) {
+      return(
+        <a href={this.action_url(action)} className="btn btn-xs btn-primary">{action}</a>
+      )
+    } else {
+      return(
+        <a href={this.action_url(action)} className="btn btn-xs btn-primary" data-remote="false" data-method="post" rel="nofollow">{action}</a>
+      )
+    }
   }
 
   action_buttons() {

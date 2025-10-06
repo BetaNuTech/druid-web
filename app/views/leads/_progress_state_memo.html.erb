@@ -1,5 +1,5 @@
 <% if action_memo_visible?(eventid) %>
-  <% if eventid == 'abandon' %>
+  <% if eventid == 'nurture' || eventid == 'abandon' %>
     <div class="row">
       <div class="col-md-6 form__group">
         <label class="form__label"><b>Reason</b></label>
@@ -14,6 +14,18 @@
         <div class="form__check">
           <%= radio_button :memo, lead.transition_memo, 'Availability', {id: 'transition_memo_availability', name: 'memo', class: 'form__check-input'} %>
           <%= label_tag "transition_memo_availability", "Availability", class: 'form__check-label' %>
+        </div>
+        <div class="form__check">
+          <%= radio_button :memo, lead.transition_memo, 'Timing', {id: 'transition_memo_timing', name: 'memo', class: 'form__check-input'} %>
+          <%= label_tag "transition_memo_timing", "Timing - Not Ready Now", class: 'form__check-label' %>
+        </div>
+        <div class="form__check">
+          <%= radio_button :memo, lead.transition_memo, 'Qualification', {id: 'transition_memo_qualification', name: 'memo', class: 'form__check-input'} %>
+          <%= label_tag "transition_memo_qualification", "Qualification", class: 'form__check-label' %>
+        </div>
+        <div class="form__check">
+          <%= radio_button :memo, lead.transition_memo, 'Competition', {id: 'transition_memo_competition', name: 'memo', class: 'form__check-input'} %>
+          <%= label_tag "transition_memo_competition", "Chose Another Property", class: 'form__check-label' %>
         </div>
         <div class="form__check">
           <%= radio_button :memo, lead.transition_memo, 'Other', {id: 'transition_memo_other', name: 'memo', class: 'form__check-input'} %>

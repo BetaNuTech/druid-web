@@ -213,8 +213,9 @@
     
     &.state-new { color: $success; }
     &.state-contacted { color: $info; }
-    &.state-qualified { color: $primary; }
-    &.state-disqualified { color: $gray-500; }
+    &.state-qualified { color: $primary; }  // Legacy - no longer used
+    &.state-invalidated { color: $gray-500; }
+    &.state-disqualified { color: $gray-500; }  // Backward compatibility
   }
   
   // Created date

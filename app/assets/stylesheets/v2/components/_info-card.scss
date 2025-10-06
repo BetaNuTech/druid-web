@@ -81,6 +81,11 @@
       margin-bottom: $spacing-md;
       border: 1px solid rgba($warning, 0.2);
       border-bottom: 1px solid rgba($warning, 0.2);
+
+      // Override the first-child padding removal for this special box
+      &:first-child {
+        padding-top: $spacing-md;
+      }
     }
     
     &--lead-notes,

@@ -141,13 +141,13 @@ RSpec.describe LeadsController, type: :controller do
     describe "as an agent" do
       it "returns a successful response" do
         sign_in agent
-        get :progress_state, params: {id: lead.id, eventid: 'abandon' }
+        get :progress_state, params: {id: lead.id, eventid: 'nurture' }
         expect(response).to be_successful
       end
 
-      it "redirects to the lead if this is a 'claim'" do
+      it "redirects to the lead if this is a 'work'" do
         sign_in agent
-        get :progress_state, params: {id: lead.id, eventid: 'claim' }
+        get :progress_state, params: {id: lead.id, eventid: 'work' }
         expect(response).to redirect_to(lead_url(lead))
       end
     end
@@ -495,7 +495,7 @@ RSpec.describe LeadsController, type: :controller do
         expect(lead.user).to eq(corporate)
       end
 
-      it "disallows Lead owner from claiming the Lead from another User" do
+      it "disallows Lead owner from working the Lead from another User" do
         sign_in agent
         lead = Lead.create! valid_attributes
         lead.user = corporate
@@ -700,18 +700,18 @@ RSpec.describe LeadsController, type: :controller do
 
     it "should deny access if unauthorized" do
       # POST without any authentication
-      post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
+      post :trigger_state_event, params: { id: lead.to_param, eventid: 'work'}, format: :js
       expect(response.status).to eq(401)
 
       # POST as an unroled/unauthorized user
       sign_in unroled_user
-      post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
+      post :trigger_state_event, params: { id: lead.to_param, eventid: 'work'}, format: :js
       expect(response.status).to eq(401)
     end
 
     it "should trigger event if the event is valid" do
       sign_in agent
-      post :trigger_state_event, params: { id: lead.to_param, eventid: 'claim'}, format: :js
+      post :trigger_state_event, params: { id: lead.to_param, eventid: 'work'}, format: :js
       expect(response).to be_successful
       lead.reload
       assert lead.prospect?
@@ -735,29 +735,34 @@ RSpec.describe LeadsController, type: :controller do
         params: { id: lead.id,
                   memo: 'foobar',
                   classification: 'lead',
-                  eventid: 'claim' }
+                  eventid: 'work' }
       lead.reload
       expect(response).to be_redirect
       expect(lead.state).to eq('prospect')
     end
 
-    it "should assign a follow_up_at when the Lead is 'postponed'" do
+    it "should assign a follow_up_at when the Lead is 'nurtured'" do
       lead.state = 'prospect'
       lead.user = agent
       lead.save
+
+      # Calculate a valid follow-up date (90 days from now)
+      future_date = Date.current + 90.days
 
       sign_in agent
       post :update_state,
         params: { id: lead.id,
                   memo: 'foobar',
                   classification: 'lead',
-                  eventid: 'postpone',
-                  follow_up_at: {'(1i)': 2018, '(2i)': 12, '(3i)': 1}
+                  eventid: 'nurture',
+                  follow_up_at: {'(1i)': future_date.year.to_s, '(2i)': future_date.month.to_s, '(3i)': future_date.day.to_s}
                 }
       lead.reload
       expect(response).to be_redirect
       expect(lead.state).to eq('future')
-      expect(lead.follow_up_at).to eq(DateTime.new(2018,12,1))
+      # follow_up_at is set to 8am NYC time
+      expected_time = future_date.in_time_zone('America/New_York').change(hour: 8)
+      expect(lead.follow_up_at).to be_within(1.minute).of(expected_time)
     end
   end
 

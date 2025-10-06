@@ -228,7 +228,7 @@ module Leads
 
     def process_junk(lead)
       lead.classification = 'parse_failure'
-      lead.disqualify
+      lead.invalidate
       lead.save
       lead
     end

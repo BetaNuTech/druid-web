@@ -123,7 +123,7 @@ class User < ApplicationRecord
   end
 
   # User's leads which changed state from 'open' to 'prospect'
-  def claimed_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
+  def worked_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
     return Lead.includes(:lead_transitions).
               where(leads: { user_id: self.id }).
               where(lead_transitions: {

@@ -3,7 +3,7 @@ module Statistics
     extend ActiveSupport::Concern
 
     included do
-      LEADSPEED_EXCLUDED_LEAD_STATES = [ 'resident', 'exresident', 'disqualified' ]
+      LEADSPEED_EXCLUDED_LEAD_STATES = [ 'resident', 'exresident', 'invalidated' ]
       LEADSPEED_EXCLUDED_SOURCES = ['YardiVoyager']
 
       def self.lead_speed_grade(minutes)

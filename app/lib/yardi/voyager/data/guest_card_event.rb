@@ -28,7 +28,7 @@ module Yardi
 
           ### Lead state transitions as events
           #transition_events = lead.transitions.where(remoteid: nil).map do |xtn|
-          # Only send initial claim event as first contact
+          # Only send initial lead creation event as first contact
           transition_events = lead.transitions.where(remoteid: nil, last_state: 'none', current_state: 'open')
           out += transition_events.map do |xtn|
             GuestCardEvent.from_lead_state_transition(xtn)
@@ -71,7 +71,7 @@ module Yardi
             event.reasons = 'Emailed'
             event.event_type = 'Other'
           else
-            if lead_transition.current_state == 'disqualified'
+            if lead_transition.current_state == 'invalidated'
               event.event_type = 'Cancel'
             else
               event.event_type = 'Other'

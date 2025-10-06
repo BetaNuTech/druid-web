@@ -1,8 +1,8 @@
-<div class="lead-row" id="unclaimed_lead_<%= lead.id %>">
+<div class="lead-row" id="open_lead_<%= lead.id %>">
   <div class="lead-row__actions">
     <% if lead.open? && policy(lead).permitted_state_events.any? %>
-      <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'claim'), method: 'post', local: true, class: 'lead-row__form' ) do %>
-        <%= submit_tag('Claim', class: "btn btn--primary btn--small", id: "lead-claim-button")%>
+      <%= form_with(url: trigger_state_event_lead_path(id: lead.id, eventid: 'work'), method: 'post', local: true, class: 'lead-row__form' ) do %>
+        <%= submit_tag('Work', class: "btn btn--primary btn--small", id: "lead-work-button")%>
       <% end %>
     <% end %>
   </div>

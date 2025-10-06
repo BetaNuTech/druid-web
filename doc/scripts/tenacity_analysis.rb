@@ -186,11 +186,11 @@ class TenacityAnalysis
 
   def get_reportable_leads_for_agent(agent)
     # Get leads assigned to this agent that are reportable (valid for tenacity scoring)
-    # Reportable means: classification is 'lead' or nil, and state is not resident/exresident/disqualified
+    # Reportable means: classification is 'lead' or nil, and state is not resident/exresident/invalidated
     agent.leads
       .where(property: property)
       .where(classification: ['lead', nil])
-      .where.not(state: ['resident', 'exresident', 'disqualified'])
+      .where.not(state: ['resident', 'exresident', 'invalidated'])
       .includes(:contact_events => :user)
       .order(created_at: :desc)
       .limit(lead_limit)
