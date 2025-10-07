@@ -1,75 +1,89 @@
 class RenameLeadStatesAndEvents < ActiveRecord::Migration[6.1]
   def up
-    # Update lead states
+    # Update lead states - simple and fast
     say_with_time "Updating lead states from 'disqualified' to 'invalidated'" do
       Lead.where(state: 'disqualified').update_all(state: 'invalidated')
     end
 
     say_with_time "Updating lead states from 'abandoned' to 'future'" do
-      # Smart scheduling: spread out follow-ups per property, max 50 per day
-      abandoned_leads = Lead.includes(:property).where(state: 'abandoned')
-      abandoned_count = abandoned_leads.count
-      leads_per_day = 50
-      base_days_out = 90
-
+      total_abandoned = 0
       total_properties = 0
-      total_batches = 0
-      property_summaries = []
+      base_days_out = 90
+      leads_per_day = 50
 
-      # Group by property and process each property's leads
-      abandoned_leads.group_by(&:property_id).each do |property_id, property_leads|
-        property = property_leads.first&.property
+      # Look up LeadAction and Reason once for all notes
+      lead_action = LeadAction.find_by(name: 'State Transition')
+      reason = Reason.find_by(name: 'Pipeline Event')
+      lead_action_id = lead_action&.id
+      reason_id = reason&.id
+
+      # Get all unique property IDs for abandoned leads
+      property_ids = Lead.where(state: 'abandoned').distinct.pluck(:property_id)
+
+      puts "  Processing #{property_ids.count} properties with abandoned leads..."
+
+      property_ids.each do |property_id|
+        property_abandoned_count = 0
+        property = Property.find_by(id: property_id)
         property_name = property&.name || "Property #{property_id || 'None'}"
-        property_status = property&.active? ? 'Active' : 'Inactive'
 
-        # Sort by created_at DESC (most recent first)
-        sorted_leads = property_leads.sort_by { |lead| lead.created_at }.reverse
+        # Array to accumulate note attributes for bulk insert
+        notes_to_insert = []
 
-        puts "  Processing #{sorted_leads.count} abandoned leads for #{property_name} (#{property_status})"
+        # Process this property's abandoned leads in batches
+        Lead.where(state: 'abandoned', property_id: property_id).find_in_batches(batch_size: 100) do |batch|
+          batch.each do |lead|
+            # Each property starts fresh at 90 days out
+            # First 50 leads → 90 days, next 50 → 91 days, etc.
+            days_offset = (property_abandoned_count / leads_per_day)
+            follow_up_date = (Date.current + (base_days_out + days_offset).days).in_time_zone('America/New_York').change(hour: 8)
 
-        property_batch_count = 0
-
-        # Schedule in batches of 50 per day
-        sorted_leads.each_slice(leads_per_day).with_index do |lead_batch, batch_index|
-          # Set to 8am NYC time (Eastern Time)
-          follow_up_date = (Date.current + (base_days_out + batch_index).days).in_time_zone('America/New_York').change(hour: 8)
-
-          lead_batch.each do |lead|
             lead.update_columns(
               state: 'future',
               follow_up_at: follow_up_date
             )
 
-            Note.create(
-              notable: lead,
+            # Add note attributes for bulk insert
+            batch_number = (property_abandoned_count / leads_per_day) + 1
+            notes_to_insert << {
+              notable_id: lead.id,
+              notable_type: 'Lead',
               classification: 'system',
-              content: "Lead state migrated from 'abandoned' to 'future' as part of state system update. Follow-up scheduled for #{follow_up_date.to_date} (batch #{batch_index + 1}).",
-              lead_action: LeadAction.find_by(name: 'State Transition'),
-              reason: Reason.find_by(name: 'Pipeline Event')
-            )
+              content: "Lead state migrated from 'abandoned' to 'future' as part of state system update. Follow-up scheduled for #{follow_up_date.to_date} (batch #{batch_number}).",
+              lead_action_id: lead_action_id,
+              reason_id: reason_id,
+              created_at: Time.current,
+              updated_at: Time.current
+            }
+
+            property_abandoned_count += 1
+            total_abandoned += 1
           end
 
-          puts "    Batch #{batch_index + 1}: #{lead_batch.count} leads scheduled for #{follow_up_date.to_date}"
-          property_batch_count += 1
-          total_batches += 1
+          # Bulk insert every 1000 notes to keep memory low
+          if notes_to_insert.size >= 1000
+            Note.insert_all(notes_to_insert) if notes_to_insert.any?
+            notes_to_insert = []
+          end
         end
 
-        property_summaries << "#{property_name}: #{sorted_leads.count} leads in #{property_batch_count} batches"
+        # Insert any remaining notes for this property
+        Note.insert_all(notes_to_insert) if notes_to_insert.any?
+
+        # Log per-property summary
+        batches = (property_abandoned_count.to_f / leads_per_day).ceil
+        puts "    #{property_name}: #{property_abandoned_count} leads in #{batches} batch(es)"
         total_properties += 1
       end
 
       puts "\n  ===== Migration Summary ====="
-      puts "  Total abandoned leads migrated: #{abandoned_count}"
+      puts "  Total abandoned leads migrated: #{total_abandoned}"
       puts "  Properties processed: #{total_properties}"
-      puts "  Total batches created: #{total_batches}"
-      puts "  Leads per day limit: #{leads_per_day}"
-      puts "  Follow-ups start: #{base_days_out} days from now"
-      puts "  Follow-ups end: #{base_days_out + total_batches - 1} days from now"
-      puts "\n  Property breakdown:"
-      property_summaries.each { |summary| puts "    - #{summary}" }
+      puts "  Leads per day per property: #{leads_per_day}"
+      puts "  Each property starts at: #{base_days_out} days from now"
       puts "  ============================="
 
-      abandoned_count
+      total_abandoned
     end
 
     # Update lead_transitions table
@@ -80,13 +94,6 @@ class RenameLeadStatesAndEvents < ActiveRecord::Migration[6.1]
       LeadTransition.where(last_state: 'abandoned').update_all(last_state: 'future')
       LeadTransition.where(current_state: 'abandoned').update_all(current_state: 'future')
     end
-
-    # Update classifications if stored separately
-    say_with_time "Ensuring lead classifications are preserved" do
-      # Classifications are separate from states, so no changes needed
-      # Just logging for clarity
-      Lead.where(state: 'invalidated').group(:classification).count
-    end
   end
 
   def down
@@ -95,14 +102,21 @@ class RenameLeadStatesAndEvents < ActiveRecord::Migration[6.1]
       Lead.where(state: 'invalidated').update_all(state: 'disqualified')
     end
 
-    say_with_time "Reverting lead states from 'future' with migration notes to 'abandoned'" do
-      # Find leads that were migrated from abandoned to future
+    say_with_time "Reverting lead states from 'future' to 'abandoned'" do
+      # Find and revert leads that were migrated (have the migration note)
       migrated_lead_ids = Note.where(
         classification: 'system',
-        content: Note.arel_table[:content].matches("Lead state migrated from 'abandoned' to 'future' as part of state system update%")
-      ).pluck(:notable_id)
+        notable_type: 'Lead'
+      ).where("content LIKE ?", "Lead state migrated from 'abandoned' to 'future'%")
+        .pluck(:notable_id)
 
       Lead.where(id: migrated_lead_ids, state: 'future').update_all(state: 'abandoned', follow_up_at: nil)
+
+      # Delete the migration notes
+      Note.where(
+        classification: 'system',
+        notable_type: 'Lead'
+      ).where("content LIKE ?", "Lead state migrated from 'abandoned' to 'future'%").delete_all
     end
 
     # Revert lead_transitions table
@@ -110,8 +124,8 @@ class RenameLeadStatesAndEvents < ActiveRecord::Migration[6.1]
       LeadTransition.where(last_state: 'invalidated').update_all(last_state: 'disqualified')
       LeadTransition.where(current_state: 'invalidated').update_all(current_state: 'disqualified')
 
-      # Note: We can't perfectly reverse abandoned/future transitions without more data
-      # This is a best-effort rollback
+      LeadTransition.where(last_state: 'future').update_all(last_state: 'abandoned')
+      LeadTransition.where(current_state: 'future').update_all(current_state: 'abandoned')
     end
   end
 end
