@@ -98,6 +98,10 @@ class LeadsController < ApplicationController
         format.json { render :show, status: :created, location: @lead }
       else
         @lead.build_preference unless @lead.preference.present?
+        # Ensure property association is loaded for form re-rendering
+        if @lead.property_id.present? && @lead.property.nil?
+          @lead.property = Property.find_by(id: @lead.property_id)
+        end
         format.html { render :new }
         format.json { render json: @lead.errors, status: :unprocessable_entity }
       end

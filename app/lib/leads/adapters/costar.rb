@@ -13,7 +13,7 @@ module Leads
       # Return parsed data and meta-information as a Leads::Creator::Result
       def parse
         lead = Lead.new(@data)
-        lead.validate
+        lead.valid?  # Run Rails validations (not the AASM 'validate' event)
         status = lead.valid? ? :ok : :invalid
         result = Leads::Creator::Result.new( status: status, lead: @data, errors: lead.errors, property_code: @property_code)
         return result

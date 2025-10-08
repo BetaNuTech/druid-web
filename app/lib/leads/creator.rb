@@ -198,7 +198,7 @@ module Leads
         @lead.errors.add(:base, 'Lead is being processed asynchronously')
         return @lead
       when :invalid
-        @lead.validate
+        @lead.valid?  # Run validations (not the AASM 'validate' event)
         parse_result.errors.each do |err|
           @lead.errors.add(:base, err)
         end

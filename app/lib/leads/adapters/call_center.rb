@@ -17,7 +17,7 @@ module Leads
         @data['first_name'] = full_name.first
         @data['last_name'] = full_name.last
         lead = Lead.new(@data)
-        lead.validate
+        lead.valid?  # Run Rails validations (not the AASM 'validate' event)
         status = lead.valid? ? :ok : :invalid
         result = Leads::Creator::Result.new( status: status, lead: @data, errors: lead.errors, property_code: @property_code)
         return result

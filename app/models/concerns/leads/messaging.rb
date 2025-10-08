@@ -218,7 +218,7 @@ module Leads
         return unless invalidated?
 
         user = revisions.map(&:user).compact.last || property&.managers&.first
-        validate
+        trigger_event(event_name: :validate, user: User.system)  # Explicitly trigger the AASM event
         trigger_event(event_name: :work, user: user) if user
         save
         reload

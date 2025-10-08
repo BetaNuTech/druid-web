@@ -86,7 +86,7 @@ module Leads
 
       def build(data:, property_code:)
         lead = Lead.new(data)
-        lead.validate
+        lead.valid?  # Run Rails validations (not the AASM 'validate' event)
         if matching_lead?(lead)
           lead.errors.add(:phone1, 'Duplicate Nextiva Call Record') if matching_lead?(lead)
           status = :invalid

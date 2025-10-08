@@ -31,7 +31,7 @@
     </div>
   </div>
 
-  <% if lead.property.setting_enabled?(:lead_company_information) %>
+  <% if lead.property&.setting_enabled?(:lead_company_information) %>
     <div class="row">
       <div class="col-md-6 form__group">
         <%= form.label :company, class: 'form__label' %>
@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  <% if (model_units = lead.property.housing_units.for_showings.order(unit: :asc)).any? %>
+  <% if lead.property && (model_units = lead.property.housing_units.for_showings.order(unit: :asc)).any? %>
     <div class="row">
       <div class="col-md-12 form__group">
         <%= form.label :show_unit, 'Show Unit', class: 'form__label' %>

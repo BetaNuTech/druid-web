@@ -46,7 +46,7 @@ module Leads
 
       def build(data:, property_code:)
         lead = Lead.new(data)
-        lead.validate
+        lead.valid?  # Run Rails validations (not the AASM 'validate' event)
         status = lead.valid? ? :ok : :invalid
         result = Leads::Creator::Result.new( status: status, lead: data, errors: lead.errors, property_code: property_code, parser: @parser)
         return result
