@@ -169,6 +169,195 @@ namespace :prospects do
       }
     end
 
+    # Helper method to parse Yardi Prospect Directory Report format (standard CSV with headers)
+    def parse_yardi_prospects_csv(filepath)
+      all_prospects = []
+      seen_emails = Set.new
+      seen_phones = Set.new
+      duplicate_emails = Hash.new(0)
+      duplicate_phones = Hash.new(0)
+      prospects_without_contact = []
+
+      lines = File.readlines(filepath).map(&:strip).reject(&:empty?)
+
+      # Find the header row (should be around row 5, contains "Property Name,Prospect Name...")
+      header_row_index = nil
+      lines.each_with_index do |line, idx|
+        row = CSV.parse_line(line)
+        if row && row[0] == 'Property Name' && row[1] == 'Prospect Name'
+          header_row_index = idx
+          break
+        end
+      end
+
+      if header_row_index.nil?
+        raise "Could not find header row in Yardi format CSV. Expected 'Property Name,Prospect Name,...'"
+      end
+
+      # Parse header to get column indices
+      header = CSV.parse_line(lines[header_row_index])
+      property_code_idx = header.index('Property Name')
+      name_idx = header.index('Prospect Name')
+      office_phone_idx = header.index('Office Tel. Number')
+      cell_phone_idx = header.index('Cell Number')
+      email_idx = header.index('Email')
+      source_idx = header.index('Source')
+      date_idx = header.index('Contact Date')
+      agent_idx = header.index('Agent')
+      status_idx = header.index('Status')
+
+      # Process data rows (skip header and any metadata after it)
+      data_start = header_row_index + 1
+
+      # Skip the property name repeat row if it exists
+      if data_start < lines.length
+        first_data_row = CSV.parse_line(lines[data_start])
+        # Check if this is a property name row (has property name but no prospect name)
+        if first_data_row && first_data_row[name_idx].blank? && first_data_row[property_code_idx].present?
+          data_start += 1
+        end
+      end
+
+      lines[data_start..-1].each do |line|
+        row = CSV.parse_line(line)
+        next unless row && row.size > name_idx
+
+        name = row[name_idx]
+        next if name.blank?
+
+        # Skip property name separator rows
+        next if row[email_idx].blank? && row[cell_phone_idx].blank? && row[office_phone_idx].blank?
+
+        email = row[email_idx]
+        cell_phone = row[cell_phone_idx]
+        office_phone = row[office_phone_idx]
+        source = row[source_idx]
+        date = row[date_idx]
+        agent = row[agent_idx]
+        status = row[status_idx]
+
+        # Filter out Yardi scrubbed emails
+        email = nil if email.present? && email.include?('@yardi.scrub')
+
+        # Prefer cell phone over office phone
+        phone = cell_phone.present? ? cell_phone : office_phone
+
+        # Format and validate phone number
+        formatted_phone = nil
+        if phone.present?
+          # Skip obviously invalid phone numbers
+          cleaned = phone.gsub(/[^0-9]/, '')
+          if cleaned.length >= 10 && !phone.include?('(000)000-0000')
+            formatted_phone = PhoneNumber.format_phone(phone)
+          end
+        end
+
+        # Parse name into first and last
+        name_parts = name.to_s.strip.split(/\s+/)
+        first_name = name_parts.first
+        last_name = name_parts.size > 1 ? name_parts[1..-1].join(' ') : nil
+
+        # Parse the date (format is M/D/YYYY)
+        parsed_date = nil
+        if date.present?
+          begin
+            # Handle format like "6/10/2025"
+            parsed_date = Date.strptime(date, "%m/%d/%Y")
+          rescue => e
+            # Try alternate parsing
+            begin
+              parts = date.split('/')
+              if parts.length == 3
+                month, day, year = parts
+                parsed_date = Date.new(year.to_i, month.to_i, day.to_i)
+              end
+            rescue
+              parsed_date = nil
+            end
+          end
+        end
+
+        # Clean email
+        clean_email = email.present? && email.include?('@') ? email.downcase.strip : nil
+
+        # Process prospect if we have contact info or valid name for matching
+        if clean_email.present? || formatted_phone.present? || (first_name.present? && last_name.present?)
+          prospect = {
+            name: name,
+            first_name: first_name,
+            last_name: last_name,
+            email: clean_email,
+            phone: formatted_phone,
+            date: date,
+            parsed_date: parsed_date,
+            channel: source,
+            agent: agent,
+            status: status,
+            extra: nil,
+            tags: nil,
+            touchpoint: nil
+          }
+
+          # Track duplicates and add only unique contacts
+          is_duplicate = false
+
+          if prospect[:email].present?
+            if seen_emails.include?(prospect[:email])
+              duplicate_emails[prospect[:email]] += 1
+              is_duplicate = true
+            else
+              seen_emails.add(prospect[:email])
+            end
+          end
+
+          if prospect[:phone].present? && !is_duplicate
+            if seen_phones.include?(prospect[:phone])
+              duplicate_phones[prospect[:phone]] += 1
+              is_duplicate = true
+            else
+              seen_phones.add(prospect[:phone])
+            end
+          end
+
+          if !is_duplicate
+            all_prospects << prospect
+          elsif prospect[:email].blank? && prospect[:phone].blank?
+            # Keep prospects without contact info (for name-based matching)
+            prospects_without_contact << prospect
+          end
+        end
+      end
+
+      # Add prospects without contact info to the final list
+      all_prospects.concat(prospects_without_contact)
+
+      # Return prospects and stats
+      {
+        prospects: all_prospects,
+        total_parsed: all_prospects.count + duplicate_emails.values.sum + duplicate_phones.values.sum,
+        unique_with_email: seen_emails.size,
+        unique_with_phone: seen_phones.size,
+        without_contact: prospects_without_contact.count,
+        duplicate_emails: duplicate_emails,
+        duplicate_phones: duplicate_phones
+      }
+    end
+
+    # Helper to detect CSV format
+    def detect_csv_format(filepath)
+      # Read first 10 lines to check format
+      lines = File.readlines(filepath).first(10)
+
+      lines.each do |line|
+        row = CSV.parse_line(line)
+        if row && row[0] == 'Property Name' && row[1] == 'Prospect Name'
+          return :yardi
+        end
+      end
+
+      :legacy
+    end
+
     # Determine filename and property code
     filename = args[:filename]
     property_code = args[:property_code]
@@ -232,10 +421,18 @@ namespace :prospects do
 
     puts "Processing prospects for property: #{property.name}"
     puts "Reading file: #{filepath}"
+
+    # Detect CSV format
+    csv_format = detect_csv_format(filepath)
+    puts "Detected format: #{csv_format == :yardi ? 'Yardi Prospect Directory Report' : 'Legacy multi-row format'}"
     puts "-" * 50
 
-    # Parse the CSV
-    result = parse_prospects_csv(filepath)
+    # Parse the CSV using the appropriate parser
+    result = if csv_format == :yardi
+      parse_yardi_prospects_csv(filepath)
+    else
+      parse_prospects_csv(filepath)
+    end
     prospects = result[:prospects]
 
     # Print input file statistics
