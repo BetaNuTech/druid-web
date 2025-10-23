@@ -11,9 +11,16 @@ module Properties
     included do
 
       def new_leads_for_sync
+        # Include leads in early pipeline with assigned user
+        # AND leads in 'future' state without remoteid (even if user_id is nil,
+        # since nurture event clears user_id but we can find last assigned user from transitions)
         return leads.
-          where(remoteid: [ nil, '' ], state: Lead::EARLY_PIPELINE_STATES).
-          where.not(user_id: nil)
+          where(remoteid: [ nil, '' ]).
+          where(
+            "(state IN (?) AND user_id IS NOT NULL) OR state = ?",
+            Lead::EARLY_PIPELINE_STATES,
+            'future'
+          )
       end
 
       def leads_for_sync

@@ -206,7 +206,11 @@ class Lead < ApplicationRecord
     end
 
     def creditable_agent
-      last_showing_agent || agent
+      # For Yardi guest cards and other credit attribution:
+      # 1. Credit the agent who did the showing (if any)
+      # 2. Otherwise, credit the last assigned user (handles 'future' state where user_id is cleared)
+      # 3. Otherwise, fall back to current user or property primary agent
+      last_showing_agent || User.find_by(id: last_assigned_user_id) || agent
     end
 
     def source_document

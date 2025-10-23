@@ -214,6 +214,19 @@ module Leads
         self.user = nil
       end
 
+      # Find the last user who was assigned to this lead
+      # Used for leads in 'future' state where user_id has been cleared
+      # but we need to credit the agent who worked the lead
+      def last_assigned_user_id
+        return user_id if user_id.present?
+
+        # Find most recent transition where a user was assigned
+        lead_transitions
+          .where.not(user_id: nil)
+          .order(created_at: :desc)
+          .first&.user_id
+      end
+
       def force_complete_all_tasks(worker=nil)
         if worker.present?
           scheduled_actions.pending.each do |action|
