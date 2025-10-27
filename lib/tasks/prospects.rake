@@ -183,11 +183,18 @@ namespace :prospects do
       # Find the header row (should be around row 5, contains "Property Name,Prospect Name...")
       header_row_index = nil
       lines.each_with_index do |line, idx|
-        row = CSV.parse_line(line)
+        # Remove BOM if present
+        clean_line = line.sub(/\A\xEF\xBB\xBF/, '')
+        row = CSV.parse_line(clean_line)
         if row && row[0] == 'Property Name' && row[1] == 'Prospect Name'
           header_row_index = idx
           break
         end
+      end
+
+      # Remove BOM from header row if found
+      if header_row_index
+        lines[header_row_index] = lines[header_row_index].sub(/\A\xEF\xBB\xBF/, '')
       end
 
       if header_row_index.nil?
@@ -343,15 +350,153 @@ namespace :prospects do
       }
     end
 
+    # Helper method to parse simple CSV format (Date, Name, Email, Phone)
+    def parse_simple_csv(filepath)
+      all_prospects = []
+      seen_emails = Set.new
+      seen_phones = Set.new
+      duplicate_emails = Hash.new(0)
+      duplicate_phones = Hash.new(0)
+      prospects_without_contact = []
+
+      # Find the header row (might not be the first row)
+      lines = File.readlines(filepath)
+      header_row_index = 0
+
+      lines.each_with_index do |line, idx|
+        # Remove BOM if present
+        clean_line = line.sub(/\A\xEF\xBB\xBF/, '')
+        row = CSV.parse_line(clean_line)
+        if row && row[0] == 'Date' && row[1] == 'Name' && row[2] == 'Email' && row[3] == 'Phone'
+          header_row_index = idx
+          break
+        end
+      end
+
+      # Remove BOM from header row if present
+      lines[header_row_index] = lines[header_row_index].sub(/\A\xEF\xBB\xBF/, '')
+
+      # Read CSV starting from the header row
+      csv_content = CSV.parse(lines[header_row_index..-1].join, headers: true)
+
+      csv_content.each do |row|
+        # Get values from columns
+        date = row['Date']
+        name = row['Name']
+        email = row['Email']
+        phone = row['Phone']
+
+        # Skip if no contact info
+        next if email.blank? && phone.blank?
+
+        # Parse the name into first and last
+        first_name = nil
+        last_name = nil
+        if name.present?
+          name_parts = name.to_s.strip.split(/\s+/)
+          first_name = name_parts.first
+          last_name = name_parts.size > 1 ? name_parts[1..-1].join(' ') : nil
+        end
+
+        # Parse the date (format is M/D/YY or M/D/YYYY)
+        parsed_date = nil
+        if date.present?
+          begin
+            # Handle format like "8/12/25" as August 12, 2025 or "8/12/2025"
+            if date =~ /(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/
+              month, day, year = $1, $2, $3
+              # Add century to 2-digit year
+              full_year = year.length == 2 ? "20#{year}" : year
+              parsed_date = Date.strptime("#{month}/#{day}/#{full_year}", "%m/%d/%Y")
+            end
+          rescue => e
+            parsed_date = nil
+          end
+        end
+
+        # Format phone number
+        formatted_phone = nil
+        if phone.present?
+          formatted_phone = PhoneNumber.format_phone(phone)
+        end
+
+        # Clean email
+        clean_email = email.present? && email.include?('@') ? email.downcase.strip : nil
+
+        # Skip if no valid contact info
+        next if clean_email.blank? && formatted_phone.blank?
+
+        prospect = {
+          name: name,
+          first_name: first_name,
+          last_name: last_name,
+          email: clean_email,
+          phone: formatted_phone,
+          date: date,
+          parsed_date: parsed_date,
+          channel: nil,
+          extra: nil,
+          tags: nil,
+          touchpoint: nil
+        }
+
+        # Track duplicates and add only unique contacts
+        is_duplicate = false
+
+        if prospect[:email].present?
+          if seen_emails.include?(prospect[:email])
+            duplicate_emails[prospect[:email]] += 1
+            is_duplicate = true
+          else
+            seen_emails.add(prospect[:email])
+          end
+        end
+
+        if prospect[:phone].present? && !is_duplicate
+          if seen_phones.include?(prospect[:phone])
+            duplicate_phones[prospect[:phone]] += 1
+            is_duplicate = true
+          else
+            seen_phones.add(prospect[:phone])
+          end
+        end
+
+        if !is_duplicate
+          all_prospects << prospect
+        elsif prospect[:email].blank? && prospect[:phone].blank?
+          # Keep prospects without contact info (though this shouldn't happen with our validation)
+          prospects_without_contact << prospect
+        end
+      end
+
+      # Add prospects without contact info to the final list
+      all_prospects.concat(prospects_without_contact)
+
+      # Return prospects and stats
+      {
+        prospects: all_prospects,
+        total_parsed: all_prospects.count + duplicate_emails.values.sum + duplicate_phones.values.sum,
+        unique_with_email: seen_emails.size,
+        unique_with_phone: seen_phones.size,
+        without_contact: prospects_without_contact.count,
+        duplicate_emails: duplicate_emails,
+        duplicate_phones: duplicate_phones
+      }
+    end
+
     # Helper to detect CSV format
     def detect_csv_format(filepath)
       # Read first 10 lines to check format
       lines = File.readlines(filepath).first(10)
 
       lines.each do |line|
-        row = CSV.parse_line(line)
+        # Remove BOM if present
+        clean_line = line.sub(/\A\xEF\xBB\xBF/, '')
+        row = CSV.parse_line(clean_line)
         if row && row[0] == 'Property Name' && row[1] == 'Prospect Name'
           return :yardi
+        elsif row && row[0] == 'Date' && row[1] == 'Name' && row[2] == 'Email' && row[3] == 'Phone'
+          return :simple
         end
       end
 
@@ -424,15 +569,23 @@ namespace :prospects do
 
     # Detect CSV format
     csv_format = detect_csv_format(filepath)
-    puts "Detected format: #{csv_format == :yardi ? 'Yardi Prospect Directory Report' : 'Legacy multi-row format'}"
+    format_name = case csv_format
+                  when :yardi then 'Yardi Prospect Directory Report'
+                  when :simple then 'Simple format (Date, Name, Email, Phone)'
+                  else 'Legacy multi-row format'
+                  end
+    puts "Detected format: #{format_name}"
     puts "-" * 50
 
     # Parse the CSV using the appropriate parser
-    result = if csv_format == :yardi
-      parse_yardi_prospects_csv(filepath)
-    else
-      parse_prospects_csv(filepath)
-    end
+    result = case csv_format
+             when :yardi
+               parse_yardi_prospects_csv(filepath)
+             when :simple
+               parse_simple_csv(filepath)
+             else
+               parse_prospects_csv(filepath)
+             end
     prospects = result[:prospects]
 
     # Print input file statistics
@@ -521,8 +674,8 @@ namespace :prospects do
         match_type = 'phone' if leads_found.any?
       end
 
-      # If no email or phone match, try name matching with date proximity
-      if leads_found.empty? && prospect[:first_name].present? && prospect[:last_name].present?
+      # If no email or phone match, try name matching with date proximity (skip for simple format)
+      if leads_found.empty? && csv_format != :simple && prospect[:first_name].present? && prospect[:last_name].present?
         name_leads = nil
 
         # Check if first name or last name is just an initial (single letter, possibly with period)
