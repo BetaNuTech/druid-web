@@ -58,6 +58,26 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   leads.state NOT IN ('resident', 'exresident', 'invalidated') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
+              LEFT JOIN lead_preferences
+                ON lead_preferences.lead_id = leads.id
+              LEFT JOIN messages
+                ON contact_events.article_type = 'Message' AND contact_events.article_id = messages.id
+              LEFT JOIN message_types
+                ON messages.message_type_id = message_types.id
+              LEFT JOIN users AS message_users
+                ON messages.user_id = message_users.id
+              WHERE
+                -- Exclude leads with no email and no SMS opt-in
+                NOT (
+                  (leads.email IS NULL OR leads.email = '') AND
+                  (lead_preferences.optin_sms = false OR lead_preferences.optin_sms IS NULL)
+                )
+                -- Exclude SMS messages from system user
+                AND NOT (
+                  contact_events.article_type = 'Message' AND
+                  message_types.name = 'SMS' AND
+                  message_users.system_user = true
+                )
               GROUP BY
                 contact_events.user_id,
                 leads.id
@@ -163,6 +183,26 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   leads.state NOT IN ('resident', 'exresident', 'invalidated') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
+              LEFT JOIN lead_preferences
+                ON lead_preferences.lead_id = leads.id
+              LEFT JOIN messages
+                ON contact_events.article_type = 'Message' AND contact_events.article_id = messages.id
+              LEFT JOIN message_types
+                ON messages.message_type_id = message_types.id
+              LEFT JOIN users AS message_users
+                ON messages.user_id = message_users.id
+              WHERE
+                -- Exclude leads with no email and no SMS opt-in
+                NOT (
+                  (leads.email IS NULL OR leads.email = '') AND
+                  (lead_preferences.optin_sms = false OR lead_preferences.optin_sms IS NULL)
+                )
+                -- Exclude SMS messages from system user
+                AND NOT (
+                  contact_events.article_type = 'Message' AND
+                  message_types.name = 'SMS' AND
+                  message_users.system_user = true
+                )
               GROUP BY
                 contact_events.user_id,
                 leads.id
@@ -234,6 +274,26 @@ module Statistics
                   leads.id = contact_events.lead_id AND
                   leads.state NOT IN ('resident', 'exresident', 'invalidated') AND
                   leads.created_at BETWEEN '#{time_start}' AND '#{time_end}'
+              LEFT JOIN lead_preferences
+                ON lead_preferences.lead_id = leads.id
+              LEFT JOIN messages
+                ON contact_events.article_type = 'Message' AND contact_events.article_id = messages.id
+              LEFT JOIN message_types
+                ON messages.message_type_id = message_types.id
+              LEFT JOIN users AS message_users
+                ON messages.user_id = message_users.id
+              WHERE
+                -- Exclude leads with no email and no SMS opt-in
+                NOT (
+                  (leads.email IS NULL OR leads.email = '') AND
+                  (lead_preferences.optin_sms = false OR lead_preferences.optin_sms IS NULL)
+                )
+                -- Exclude SMS messages from system user
+                AND NOT (
+                  contact_events.article_type = 'Message' AND
+                  message_types.name = 'SMS' AND
+                  message_users.system_user = true
+                )
               GROUP BY
                 contact_events.user_id,
                 leads.id

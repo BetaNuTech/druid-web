@@ -6,12 +6,17 @@ class LeadSpeed extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: this.props.data.data
+      data: this.props.data.data,
+      showInfo: false
     }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({data: nextProps.data.data})
+  }
+
+  toggleInfo = () => {
+    this.setState({ showInfo: !this.state.showInfo })
   }
 
   recordIcon = (type) => {
@@ -49,7 +54,48 @@ class LeadSpeed extends React.Component {
   render(){
     return(
       <div className={Style.LeadSpeed}>
-        <h4>Lead Speed</h4>
+        <h4>
+          Lead Speed
+          <button
+            className={Style.infoButton}
+            onClick={this.toggleInfo}
+            type="button"
+            aria-label="Lead Speed Information"
+          >
+            <img src="/icons/help.svg" alt="Info" className={Style.infoIcon} />
+          </button>
+        </h4>
+
+        {this.state.showInfo && (
+          <div className={Style.infoBox}>
+            <div className={Style.infoHeader}>
+              <strong>How Lead Speed Works</strong>
+              <button
+                className={Style.closeButton}
+                onClick={this.toggleInfo}
+                type="button"
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <div className={Style.infoContent}>
+              <p>
+                <strong>Timer starts:</strong> From when the lead is created (not when claimed or moved to prospect state).
+              </p>
+              <p><strong>Grading Scale:</strong></p>
+              <ul>
+                <li><strong>Grade A:</strong> 0-29 minutes - Excellent response time</li>
+                <li><strong>Grade B:</strong> 30-120 minutes (0.5-2 hours) - Good response time</li>
+                <li><strong>Grade C:</strong> 120+ minutes (2+ hours) - Needs improvement</li>
+              </ul>
+              <p className={Style.noteText}>
+                <em>Note: Phone-sourced leads get automatic first contact at creation (0 minutes) since the lead calling in is the first contact.</em>
+              </p>
+            </div>
+          </div>
+        )}
+
         <table className="table">
           <thead>
             <tr>

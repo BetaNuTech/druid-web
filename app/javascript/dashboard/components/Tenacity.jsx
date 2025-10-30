@@ -6,12 +6,17 @@ class Tenacity extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: this.props.data.data
+      data: this.props.data.data,
+      showInfo: false
     }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({data: nextProps.data.data})
+  }
+
+  toggleInfo = () => {
+    this.setState({ showInfo: !this.state.showInfo })
   }
 
   recordIcon = (type) => {
@@ -49,7 +54,60 @@ class Tenacity extends React.Component {
   render(){
     return(
       <div className={Style.Tenacity}>
-        <h4>Tenacity</h4>
+        <h4>
+          Tenacity
+          <button
+            className={Style.infoButton}
+            onClick={this.toggleInfo}
+            type="button"
+            aria-label="Tenacity Information"
+          >
+            <img src="/icons/help.svg" alt="Info" className={Style.infoIcon} />
+          </button>
+        </h4>
+
+        {this.state.showInfo && (
+          <div className={Style.infoBox}>
+            <div className={Style.infoHeader}>
+              <strong>How Tenacity Works</strong>
+              <button
+                className={Style.closeButton}
+                onClick={this.toggleInfo}
+                type="button"
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <div className={Style.infoContent}>
+              <p>
+                <strong>What it measures:</strong> How persistently agents follow up with leads. Higher scores mean more consistent contact attempts.
+              </p>
+              <p><strong>Scoring Scale:</strong></p>
+              <ul>
+                <li><strong>1 touch:</strong> 3.3 score - Minimal follow-up</li>
+                <li><strong>2 touches:</strong> 6.7 score - Good follow-up</li>
+                <li><strong>3+ touches:</strong> 10.0 score - Excellent persistence (max score)</li>
+              </ul>
+              <p><strong>What counts as a "touch":</strong></p>
+              <ul>
+                <li>✓ Emails sent to leads (including automated welcome emails)</li>
+                <li>✓ Manual text messages sent by agents</li>
+                <li>✓ Completed tasks like calls, appointments, or showings</li>
+                <li>✓ Notes added to contact activities</li>
+              </ul>
+              <p><strong>What does NOT count:</strong></p>
+              <ul>
+                <li>✗ Automated SMS opt-in requests and confirmations</li>
+                <li>✗ Leads with no email who haven't opted in to SMS</li>
+              </ul>
+              <p className={Style.noteText}>
+                <em>Note: The score is calculated per lead, then averaged across all leads to give the agent's overall tenacity score.</em>
+              </p>
+            </div>
+          </div>
+        )}
+
         <table className="table">
           <thead>
             <tr>
