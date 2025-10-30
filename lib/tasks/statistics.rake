@@ -92,6 +92,46 @@ namespace :statistics do
       puts "*** Generating Team LeadSpeed Statistics for the past 2 hours"
       Team.all.each{|team| Statistic.generate_team_leadspeed(team: team, resolution: 60, time_start: Statistic.utc_hour_start - 2.hours)}
     end
+
+    desc "daily backfill - catch any missed hourly statistics"
+    task :backfill_daily => :environment do
+      puts "*** Daily LeadSpeed Backfill: Generating stats for past 24 hours"
+
+      # Process last 24 hours, hour by hour, to catch any gaps
+      cursor = 24.hours.ago.beginning_of_hour
+      hour_count = 0
+
+      while cursor <= DateTime.current.beginning_of_hour
+        # Users
+        Statistic.generate_leadspeed(resolution: 60, time_start: cursor, time_end: cursor + 1.hour)
+
+        # Properties
+        Property.active.each do |property|
+          Statistic.generate_property_leadspeed(property: property, resolution: 60, time_start: cursor, time_end: cursor + 1.hour)
+        end
+
+        # Teams
+        Team.all.each do |team|
+          Statistic.generate_team_leadspeed(team: team, resolution: 60, time_start: cursor, time_end: cursor + 1.hour)
+        end
+
+        cursor += 1.hour
+        hour_count += 1
+      end
+
+      puts "*** Processed #{hour_count} hours"
+      puts "*** Running rollups to ensure daily/weekly stats are current"
+
+      # Run rollups for the last 2 days to ensure everything is current
+      2.times do |i|
+        Statistic.rollup_leadspeed(interval: :day, time_start: (i + 1).days.ago.beginning_of_day)
+      end
+
+      # Run weekly rollup for current week
+      Statistic.rollup_leadspeed(interval: :week, time_start: DateTime.current.beginning_of_week)
+
+      puts "*** Daily backfill complete"
+    end
   end
 
   desc "Rollup Stats"
