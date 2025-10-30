@@ -26,7 +26,7 @@ $(document).on('turbolinks:load', function() {
     e.preventDefault();
     var $button = $(this);
     var $moreComments = $('#more_comments');
-    
+
     if ($moreComments.is(':visible')) {
       $moreComments.slideUp(300);
       $button.html('<i class="glyphicon glyphicon-chevron-down"></i> Show ' + $button.data('count') + ' More Comments');
@@ -35,7 +35,27 @@ $(document).on('turbolinks:load', function() {
       $button.html('<i class="glyphicon glyphicon-chevron-up"></i> Show Less');
     }
   });
-  
+
+  // Toggle completed tasks functionality
+  $('#lead_task_toggle_completed').off('click.taskToggle').on('click.taskToggle', function(e) {
+    e.preventDefault();
+    var $button = $(this);
+    var $completedTasks = $('.completed-tasks');
+    var $pendingTasks = $('.pending-tasks');
+
+    if ($completedTasks.is(':visible')) {
+      // Show pending tasks, hide completed
+      $completedTasks.slideUp(300);
+      $pendingTasks.slideDown(300);
+      $button.find('.toggle-text').text('Show Completed');
+    } else {
+      // Show completed tasks, hide pending
+      $pendingTasks.slideUp(300);
+      $completedTasks.slideDown(300);
+      $button.find('.toggle-text').text('Show Pending');
+    }
+  });
+
   // Quick navigation smooth scrolling
   $('.quick-nav-link').off('click.quickNav').on('click.quickNav', function(e) {
     e.preventDefault();
