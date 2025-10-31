@@ -1,0 +1,371 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="page-header">
+        Automatic Lead Messages for <%= @property.name %>
+      </h1>
+    </div>
+  </div>
+
+  <% if @property.errors.any? %>
+    <div class="alert alert-danger">
+      <h4>Please fix the following errors:</h4>
+      <ul>
+        <% @property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @property, url: property_messages_path(@property), method: :patch, local: true do |form| %>
+    <div class="row">
+      <div class="col-md-7">
+        <!-- SMS Opt-In Messages Section -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">SMS Opt-In Messages</h3>
+          </div>
+          <div class="panel-body">
+            <% unless @property.lead_auto_request_sms_opt_in? %>
+              <div class="alert alert-warning">
+                <i class="fa fa-exclamation-triangle"></i>
+                <strong>SMS Opt-In messages are currently disabled</strong> but you can still edit them below.
+                Enable 'Auto Request SMS Opt-In' in <%= link_to "Property Settings", edit_property_path(@property), target: "_blank" %> to activate these messages.
+              </div>
+            <% end %>
+
+            <!-- SMS Opt-In Request -->
+            <div class="form-group">
+              <label for="property_sms_opt_in_request_message" class="control-label">
+                SMS Opt-In Request
+                <small class="text-muted">(Sent to new leads automatically)</small>
+              </label>
+              <%= form.text_area :sms_opt_in_request_message,
+                  class: "form-control sms-message-input",
+                  rows: 4,
+                  data: { message_type: "opt_in_request" },
+                  maxlength: 320 %>
+              <div class="help-block">
+                <span class="char-count" data-for="opt_in_request">0</span> characters
+                <span class="segment-info" data-for="opt_in_request">(1 SMS segment)</span>
+                <br>
+                <small class="text-muted">
+                  <i class="fa fa-info-circle"></i> SMS messages over 160 characters are sent as multiple segments (each charged separately)
+                </small>
+                <br>
+                <span class="text-danger">
+                  <i class="fa fa-warning"></i> <strong>Required:</strong> Must include instructions to reply "YES" (or similar) to opt-in AND "STOP" to opt-out (TCPA compliance)
+                </span>
+                <br>
+                <small class="text-muted">
+                  Accepted opt-in keywords: YES, SI, OK, OKAY, SURE, START<br>
+                  Accepted opt-out keywords: STOP, DETENER, CANCEL, UNSUBSCRIBE, OPT OUT
+                </small>
+              </div>
+              <button type="button" class="btn btn-sm btn-info preview-sms-btn" data-message-type="opt_in_request">
+                Preview
+              </button>
+              <div class="sms-preview" id="opt_in_request_preview" style="display:none;">
+                <div class="well well-sm" style="margin-top: 10px;">
+                  <strong>Preview:</strong><br>
+                  <span class="preview-content"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- SMS Opt-In Confirmation -->
+            <div class="form-group">
+              <label for="property_sms_opt_in_confirmation_message" class="control-label">
+                SMS Opt-In Confirmation
+                <small class="text-muted">(Sent when lead replies YES)</small>
+              </label>
+              <%= form.text_area :sms_opt_in_confirmation_message,
+                  class: "form-control sms-message-input",
+                  rows: 3,
+                  data: { message_type: "opt_in_confirmation" },
+                  maxlength: 320 %>
+              <div class="help-block">
+                <span class="char-count" data-for="opt_in_confirmation">0</span> characters
+                <span class="segment-info" data-for="opt_in_confirmation">(1 SMS segment)</span>
+              </div>
+              <button type="button" class="btn btn-sm btn-info preview-sms-btn" data-message-type="opt_in_confirmation">
+                Preview
+              </button>
+              <div class="sms-preview" id="opt_in_confirmation_preview" style="display:none;">
+                <div class="well well-sm" style="margin-top: 10px;">
+                  <strong>Preview:</strong><br>
+                  <span class="preview-content"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- SMS Opt-Out Confirmation -->
+            <div class="form-group">
+              <label for="property_sms_opt_out_confirmation_message" class="control-label">
+                SMS Opt-Out Confirmation
+                <small class="text-muted">(Sent when lead replies STOP)</small>
+              </label>
+              <%= form.text_area :sms_opt_out_confirmation_message,
+                  class: "form-control sms-message-input",
+                  rows: 3,
+                  data: { message_type: "opt_out_confirmation" },
+                  maxlength: 320 %>
+              <div class="help-block">
+                <span class="char-count" data-for="opt_out_confirmation">0</span> characters
+                <span class="segment-info" data-for="opt_out_confirmation">(1 SMS segment)</span>
+                <br>
+                <span class="text-info">
+                  <i class="fa fa-info-circle"></i> This message bypasses opt-in checks to ensure delivery
+                </span>
+              </div>
+              <button type="button" class="btn btn-sm btn-info preview-sms-btn" data-message-type="opt_out_confirmation">
+                Preview
+              </button>
+              <div class="sms-preview" id="opt_out_confirmation_preview" style="display:none;">
+                <div class="well well-sm" style="margin-top: 10px;">
+                  <strong>Preview:</strong><br>
+                  <span class="preview-content"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Welcome Email Message Section -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Welcome Email Message</h3>
+          </div>
+          <div class="panel-body">
+            <% unless @property.lead_auto_welcome? %>
+              <div class="alert alert-warning">
+                <i class="fa fa-exclamation-triangle"></i>
+                <strong>Welcome email is currently disabled</strong> but you can still edit it below.
+                Enable 'Lead Auto Welcome' in <%= link_to "Property Settings", edit_property_path(@property), target: "_blank" %> to activate this message.
+              </div>
+            <% end %>
+
+            <!-- Email Subject -->
+            <div class="form-group">
+              <label for="property_lead_auto_welcome_email_subject" class="control-label">
+                Subject Line
+                <small class="text-muted">(Sent automatically to new leads)</small>
+              </label>
+              <%= form.text_field :lead_auto_welcome_email_subject,
+                  id: "property_lead_auto_welcome_email_subject",
+                  class: "form-control" %>
+            </div>
+
+            <!-- Email Body -->
+            <div class="form-group">
+              <label for="property_lead_auto_welcome_email_body" class="control-label">
+                Email Body
+              </label>
+              <%= form.text_area :lead_auto_welcome_email_body,
+                  id: "html_editor_v2",
+                  class: "form-control",
+                  rows: 10 %>
+              <div class="help-block">
+                <button type="button" class="btn btn-sm btn-info" id="preview_email_btn">
+                  Preview in New Tab
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fa fa-save"></i> Save All Messages
+          </button>
+          <%= link_to "Cancel", property_path(@property), class: "btn btn-default btn-lg" %>
+        </div>
+      </div>
+
+      <!-- Template Variables Cheatsheet -->
+      <div class="col-md-5">
+        <%= render partial: "message_templates/template_help" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Include Froala Editor -->
+<%= render partial: 'shared/editor_init' %>
+
+<!-- JavaScript for previews and character counting -->
+<script>
+$(document).ready(function() {
+  // Character counting for SMS messages
+  $('.sms-message-input').on('input', function() {
+    var messageType = $(this).data('message-type');
+    var charCount = $(this).val().length;
+    var segments = Math.ceil(charCount / 160) || 1;
+
+    // Update character count
+    $('.char-count[data-for="' + messageType + '"]').text(charCount);
+
+    // Update segment info
+    var segmentText = '(' + segments + ' SMS segment' + (segments > 1 ? 's' : '') + ')';
+    $('.segment-info[data-for="' + messageType + '"]').text(segmentText);
+
+    // Change color based on segments
+    if (segments > 2) {
+      $('.segment-info[data-for="' + messageType + '"]').removeClass('text-warning').addClass('text-danger');
+    } else if (segments > 1) {
+      $('.segment-info[data-for="' + messageType + '"]').removeClass('text-danger').addClass('text-warning');
+    } else {
+      $('.segment-info[data-for="' + messageType + '"]').removeClass('text-danger text-warning');
+    }
+
+    // Validate keywords for opt-in request message
+    if (messageType === 'opt_in_request') {
+      validateOptInKeywords($(this));
+    }
+  });
+
+  // Initialize character counts
+  $('.sms-message-input').trigger('input');
+
+  // Function to validate opt-in request keywords
+  function validateOptInKeywords(input) {
+    var text = input.val().toLowerCase();
+    var optInKeywords = ['yes', 'si', 'ok', 'okay', 'sure', 'start'];
+    var optOutKeywords = ['stop', 'detener', 'cancel', 'unsubscribe', 'opt out', 'opt-out'];
+
+    var hasOptIn = optInKeywords.some(function(keyword) {
+      return text.indexOf(keyword) !== -1;
+    });
+
+    var hasOptOut = optOutKeywords.some(function(keyword) {
+      return text.indexOf(keyword) !== -1;
+    });
+
+    var warningDiv = input.closest('.form-group').find('.keyword-validation-warning');
+
+    // Remove existing warning if present
+    if (warningDiv.length) {
+      warningDiv.remove();
+    }
+
+    // Add warning if missing required keywords
+    if (!hasOptIn || !hasOptOut) {
+      var warnings = [];
+      if (!hasOptIn) {
+        warnings.push('Missing opt-in keyword (YES, OK, etc.)');
+      }
+      if (!hasOptOut) {
+        warnings.push('Missing opt-out keyword (STOP, CANCEL, etc.)');
+      }
+
+      var warningHtml = '<div class="keyword-validation-warning alert alert-warning" style="margin-top: 10px;">' +
+                        '<i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> ' +
+                        warnings.join(' and ') +
+                        '</div>';
+
+      input.closest('.form-group').append(warningHtml);
+    }
+  }
+
+  // SMS Preview functionality
+  $('.preview-sms-btn').on('click', function(e) {
+    e.preventDefault();
+    var messageType = $(this).data('message-type');
+    var message = $('[data-message-type="' + messageType + '"]').val();
+    var previewDiv = $('#' + messageType + '_preview');
+
+    // If message is empty, use the placeholder text
+    if (!message || message.trim() === '') {
+      message = $('[data-message-type="' + messageType + '"]').attr('placeholder');
+    }
+
+    // Send AJAX request to get preview
+    $.post('<%= preview_sms_property_messages_path(@property) %>', {
+      message_type: messageType,
+      message: message,
+      authenticity_token: $('[name="authenticity_token"]').val()
+    }, function(response) {
+      previewDiv.find('.preview-content').text(response.preview);
+
+      // Add segment information
+      var segments = Math.ceil(response.char_count / 160);
+      var segmentInfo = '';
+      if (segments > 1) {
+        segmentInfo = '<br><span class="text-info"><i class="fa fa-info-circle"></i> This message will be sent as ' + segments + ' SMS segments</span>';
+      }
+      previewDiv.find('.preview-content').html(response.preview + segmentInfo);
+
+      previewDiv.slideDown();
+    }).fail(function() {
+      // If AJAX fails, do a simple client-side preview
+      var propertyName = '<%= @property.name %>';
+      var previewText = message.replace(/\{\{property_name\}\}/g, propertyName);
+      previewDiv.find('.preview-content').text(previewText);
+      previewDiv.slideDown();
+    });
+  });
+
+  // Email Preview functionality
+  $('#preview_email_btn').on('click', function(e) {
+    e.preventDefault();
+
+    var subject = $('#property_lead_auto_welcome_email_subject').val();
+    var body;
+
+    // Get body from Froala editor if active, otherwise from plain textarea
+    if (window.html_editor_v2 && typeof window.html_editor_v2.html !== 'undefined') {
+      body = window.html_editor_v2.html.get();
+    } else {
+      body = $('#plain_editor').val() || $('#html_editor_v2').val();
+    }
+
+    // Create form to submit to new tab
+    var form = $('<form>', {
+      method: 'POST',
+      action: '<%= preview_email_property_messages_path(@property) %>',
+      target: '_blank'
+    });
+
+    form.append($('<input>', {
+      type: 'hidden',
+      name: 'authenticity_token',
+      value: $('[name="authenticity_token"]').val()
+    }));
+
+    form.append($('<input>', {
+      type: 'hidden',
+      name: 'subject',
+      value: subject
+    }));
+
+    form.append($('<input>', {
+      type: 'hidden',
+      name: 'body',
+      value: body
+    }));
+
+    form.appendTo('body').submit().remove();
+  });
+});
+</script>
+
+<style>
+.sms-message-input {
+  font-family: 'Courier New', monospace;
+}
+
+.sms-preview {
+  margin-top: 10px;
+}
+
+.char-count.text-danger {
+  font-weight: bold;
+}
+
+.panel-heading h3 {
+  margin: 0;
+  font-size: 18px;
+}
+</style>

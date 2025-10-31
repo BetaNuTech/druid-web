@@ -5,6 +5,7 @@ module Properties
     MANAGED_SETTINGS = %w[
       lead_company_information
       lead_auto_welcome
+      lead_auto_request_sms_opt_in
     ].freeze
 
     included do
@@ -17,6 +18,10 @@ module Properties
 
       def lead_auto_welcome?
         setting_enabled?(:lead_auto_welcome)
+      end
+
+      def lead_auto_request_sms_opt_in?
+        setting_enabled?(:lead_auto_request_sms_opt_in)
       end
 
 

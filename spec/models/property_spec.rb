@@ -67,6 +67,41 @@ RSpec.describe Property, type: :model do
     end
   end
 
+  describe "default messages" do
+    it "sets default messages on creation" do
+      property = Property.create!(name: "Test Property", timezone: "America/New_York")
+
+      # SMS messages should have defaults
+      expect(property.sms_opt_in_request_message).to eq(Property::DEFAULT_SMS_OPT_IN_REQUEST)
+      expect(property.sms_opt_in_confirmation_message).to eq(Property::DEFAULT_SMS_OPT_IN_CONFIRMATION)
+      expect(property.sms_opt_out_confirmation_message).to eq(Property::DEFAULT_SMS_OPT_OUT_CONFIRMATION)
+
+      # Email messages should have defaults
+      expect(property.lead_auto_welcome_email_subject).to eq(Property::DEFAULT_WELCOME_EMAIL_SUBJECT)
+      expect(property.lead_auto_welcome_email_body).to eq(Property::DEFAULT_WELCOME_EMAIL_BODY)
+
+      # Appsetting should be enabled by default
+      expect(property.lead_auto_request_sms_opt_in?).to eq(true)
+    end
+
+    it "does not override custom messages on creation" do
+      property = Property.create!(
+        name: "Test Property",
+        timezone: "America/New_York",
+        sms_opt_in_request_message: "Custom opt-in message with YES and STOP",
+        lead_auto_welcome_email_subject: "Custom Subject"
+      )
+
+      # Custom messages should be preserved
+      expect(property.sms_opt_in_request_message).to eq("Custom opt-in message with YES and STOP")
+      expect(property.lead_auto_welcome_email_subject).to eq("Custom Subject")
+
+      # Other messages should still get defaults
+      expect(property.sms_opt_in_confirmation_message).to eq(Property::DEFAULT_SMS_OPT_IN_CONFIRMATION)
+      expect(property.lead_auto_welcome_email_body).to eq(Property::DEFAULT_WELCOME_EMAIL_BODY)
+    end
+  end
+
   describe "scopes" do
     it "can be active" do
       active_property; inactive_property

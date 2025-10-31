@@ -12,10 +12,9 @@ RSpec.describe "Leads::Messaging compliance message handling", type: :model do
   let(:sms_opt_out_confirmation_template) { create(:message_template, name: 'SMS Opt-Out Confirmation') }
 
   before do
-    # Enable lead automatic reply feature
+    # Mock Flipflop feature flags (default to false)
     allow(Flipflop).to receive(:enabled?).and_return(false)
-    allow(Flipflop).to receive(:enabled?).with(:lead_automatic_reply).and_return(true)
-    
+
     # Disable delayed job for testing
     Delayed::Worker.delay_jobs = false
     

@@ -78,9 +78,10 @@ class Property < ApplicationRecord
   scope :supporting_call_lead_generation, -> { where(call_lead_generation: true)}
 
   ### Callbacks
+  before_validation :format_phones
+  before_create :set_default_messages
 
   ### Class Methods
-  before_validation :format_phones
 
   # Lookup by ID or PropertyListing code
   def self.find_by_code_and_source(code:, source_id: nil)
@@ -137,6 +138,59 @@ class Property < ApplicationRecord
     DuplicateLead.includes("lead").where(leads: {property_id: self.id}).groups
   end
 
+  # Default SMS message templates (kept under 160 chars for single segment)
+  DEFAULT_SMS_OPT_IN_REQUEST = "Thanks for your interest in {{property_name}}! Reply YES to receive text updates about availability and tours. Reply STOP to opt out."
+  DEFAULT_SMS_OPT_IN_CONFIRMATION = "You're in! Your dedicated {{property_name}} leasing team is ready to help. Schedule your tour today: {{property_tour_booking_url}}"
+  DEFAULT_SMS_OPT_OUT_CONFIRMATION = "You've been unsubscribed from {{property_name}} texts. Reply YES anytime to resubscribe."
+  DEFAULT_WELCOME_EMAIL_SUBJECT = "Welcome to {{property_name}}!"
+  DEFAULT_WELCOME_EMAIL_BODY = "<p>Dear {{lead_first_name}},</p><p>Thank you for your interest in {{property_name}}! We're thrilled that you're considering our community as your next home.</p><p>Our team is committed to making your apartment search as smooth and enjoyable as possible. One of our experienced leasing professionals will be reaching out to you shortly to:</p><ul><li>Discuss your specific housing needs and preferences</li><li>Answer any questions about our community and amenities</li><li>Schedule a personalized tour at your convenience</li></ul><p><strong>Ready to see your future home?</strong></p><center style=\"margin: 20px 0;\"><a href=\"{{property_tour_booking_url}}\" style=\"display: inline-block; padding: 12px 30px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;\">Book a Tour Now</a></center><p><strong>Explore Our Community Online</strong><br>While you wait to hear from us, we invite you to visit <a href=\"{{property_website}}\">{{property_website}}</a> to:</p><ul><li>Browse our available floor plans and pricing</li><li>View our extensive amenities and community features</li><li>Take a virtual tour of our property</li><li>Learn about our neighborhood and local attractions</li></ul><p>If you have any immediate questions, please don't hesitate to call us at {{property_phone}} or reply to this email.</p><p>We look forward to welcoming you to {{property_name}} and helping you find the perfect place to call home!</p><p>Warm regards,<br>The {{property_name}} Team</p>"
+
+  # Methods to get messages with defaults
+  def sms_opt_in_request_message_with_default
+    sms_opt_in_request_message.presence || DEFAULT_SMS_OPT_IN_REQUEST
+  end
+
+  def sms_opt_in_confirmation_message_with_default
+    sms_opt_in_confirmation_message.presence || DEFAULT_SMS_OPT_IN_CONFIRMATION
+  end
+
+  def sms_opt_out_confirmation_message_with_default
+    sms_opt_out_confirmation_message.presence || DEFAULT_SMS_OPT_OUT_CONFIRMATION
+  end
+
+  def lead_auto_welcome_email_subject_with_default
+    lead_auto_welcome_email_subject.presence || DEFAULT_WELCOME_EMAIL_SUBJECT
+  end
+
+  def lead_auto_welcome_email_body_with_default
+    lead_auto_welcome_email_body.presence || DEFAULT_WELCOME_EMAIL_BODY
+  end
+
+  # Validation for required keywords in opt-in request
+  validate :sms_opt_in_includes_required_keywords, if: -> {
+    has_attribute?(:sms_opt_in_request_message) && sms_opt_in_request_message.present?
+  }
+
+  def sms_opt_in_includes_required_keywords
+    message_text = sms_opt_in_request_message.downcase
+
+    # Check for opt-in keywords (YES or similar)
+    opt_in_keywords = ['yes', 'si', 'ok', 'okay', 'sure', 'start']
+    has_opt_in = opt_in_keywords.any? { |keyword| message_text.include?(keyword) }
+
+    unless has_opt_in
+      errors.add(:sms_opt_in_request_message, "must include instructions to reply 'YES' or similar keyword (#{opt_in_keywords.join(', ').upcase}) to opt-in")
+    end
+
+    # Check for opt-out keywords (STOP or similar)
+    opt_out_keywords = ['stop', 'detener', 'cancel', 'unsubscribe', 'opt out', 'opt-out']
+    has_opt_out = opt_out_keywords.any? { |keyword| message_text.include?(keyword) }
+
+    unless has_opt_out
+      errors.add(:sms_opt_in_request_message, "must include the word 'STOP' or similar keyword for opt-out option (TCPA compliance)")
+    end
+  end
+
   private
 
   def format_phones
@@ -144,6 +198,24 @@ class Property < ApplicationRecord
     self.maintenance_phone = PhoneNumber.format_phone(self.maintenance_phone) if self.maintenance_phone.present?
     self.leasing_phone = PhoneNumber.format_phone(self.leasing_phone) if self.leasing_phone.present?
     self.fax = PhoneNumber.format_phone(self.fax) if self.fax.present?
+  end
+
+  def set_default_messages
+    # Only set defaults if the columns exist (protects during migrations)
+    if has_attribute?(:sms_opt_in_request_message)
+      # Set default SMS messages if not provided
+      self.sms_opt_in_request_message ||= DEFAULT_SMS_OPT_IN_REQUEST
+      self.sms_opt_in_confirmation_message ||= DEFAULT_SMS_OPT_IN_CONFIRMATION
+      self.sms_opt_out_confirmation_message ||= DEFAULT_SMS_OPT_OUT_CONFIRMATION
+
+      # Set default email messages if not provided
+      self.lead_auto_welcome_email_subject ||= DEFAULT_WELCOME_EMAIL_SUBJECT
+      self.lead_auto_welcome_email_body ||= DEFAULT_WELCOME_EMAIL_BODY
+    end
+
+    # Set default appsettings for SMS opt-in
+    self.appsettings ||= {}
+    self.appsettings['lead_auto_request_sms_opt_in'] ||= '1'
   end
 
 end

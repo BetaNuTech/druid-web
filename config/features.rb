@@ -15,8 +15,6 @@ Flipflop.configure do
   
   feature :design_v2, default: true, description: 'UI v2 with modern design system'
 
-  lead_automatic_reply_enabled = ['t', 'true', '1'].include? ENV.fetch('LEAD_AUTOMATIC_REPLY','false').downcase
-  feature :lead_automatic_reply, default: lead_automatic_reply_enabled, description: 'Automatically respond to incoming leads'
   lead_automatic_dedupe_enabled = ['t', 'true', '1'].include? ENV.fetch('LEAD_AUTOMATIC_DEDUPE','false').downcase
   feature :lead_automatic_dedupe, default: lead_automatic_dedupe_enabled, description: 'Automatically mark high confidence duplicates as invalidated as duplicate'
 

@@ -56,6 +56,11 @@ class PropertyPolicy < ApplicationPolicy
     user.admin? || same_property?
   end
 
+  def edit_messages?
+    # Allow admins, property managers, and property agents to edit automatic messages
+    user.admin? || user.property_manager?(record)
+  end
+
   def same_property?
     return false if record.nil?
     user.property_manager?(record) || user.property_agent?(record) || team_lead?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_04_181335) do
+ActiveRecord::Schema.define(version: 2025_10_28_161039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -489,6 +489,11 @@ ActiveRecord::Schema.define(version: 2025_10_04_181335) do
     t.boolean "voice_menu_enabled", default: false
     t.jsonb "appsettings", default: {}
     t.string "tour_booking_url"
+    t.text "sms_opt_in_request_message"
+    t.text "sms_opt_in_confirmation_message"
+    t.text "sms_opt_out_confirmation_message"
+    t.string "lead_auto_welcome_email_subject"
+    t.text "lead_auto_welcome_email_body"
     t.index ["active"], name: "index_properties_on_active"
     t.index ["team_id"], name: "index_properties_on_team_id"
   end

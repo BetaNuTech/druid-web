@@ -270,53 +270,103 @@ module Leads
         note_lead_action = LeadAction.where(name: note_lead_action_name).first
         note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
         message_type_name = message_type&.name&.downcase
-        
-        # Determine the correct template name based on message type and disposition
-        if message_type == MessageType.sms
+
+        # Use property-specific messages for SMS
+        if message_type == MessageType.sms && property.present?
+          # Get the appropriate message from property
           if assent
             if disposition == :confirmation
+              message_body = property.sms_opt_in_confirmation_message_with_default
               message_template_name = SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME
             else
+              message_body = property.sms_opt_in_request_message_with_default
               message_template_name = SMS_OPT_IN_MESSAGE_TEMPLATE_NAME
             end
           else
+            message_body = property.sms_opt_out_confirmation_message_with_default
             message_template_name = SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME
           end
-        else
-          # For email, we don't have specific opt-in/opt-out templates defined
-          # So we'll use nil and handle it appropriately
-          message_template_name = nil
-        end
-        
-        message_template = MessageTemplate.where(name: message_template_name).first if message_template_name.present?
-        destination_present = ( self.send("message_" + message_type_name + "_destination").present? rescue false )
 
-        if destination_present && message_template.present?
-          # Send Message to Lead
-          message = Message.new_message(
-            from: User.system,
-            to: self,
-            message_type: message_type,
-            message_template: message_template,
-            classification: 'compliance'
-          )
-          message.save!
-          message.deliver!
-          message.reload
-          comment_content = "SENT: #{message_template_name || "#{message_type_name} compliance message"}"
-        else
-          # Cannot send Message: send Error Notification
-          message = Message.new()
-          if !destination_present
-            error_message = "No #{message_type_name} destination available"
-          elsif !message_template.present?
-            error_message = "Message template '#{message_template_name}' not found" if message_template_name.present?
-            error_message ||= "No #{message_type_name} template configured for this action"
+          # Process template variables
+          template_data = message_template_data
+          template = Liquid::Template.parse(message_body)
+          processed_body = template.render(template_data)
+
+          destination_present = message_sms_destination.present?
+
+          if destination_present
+            # Create message directly without template
+            message = Message.new(
+              from: User.system,
+              to: self,
+              message_type: message_type,
+              body: processed_body,
+              classification: 'compliance'
+            )
+
+            # Special handling for opt-out confirmation to ensure delivery
+            if !assent && disposition == :confirmation
+              # This ensures the opt-out confirmation bypasses opt-in checks
+              message.skip_callbacks = true if message.respond_to?(:skip_callbacks=)
+            end
+
+            message.save!
+            message.deliver!
+            message.reload
+            comment_content = "SENT: #{message_template_name}"
           else
-            error_message = "Could not send #{message_type_name} message"
+            error_message = "No #{message_type_name} destination available"
+            comment_content = "NOT SENT: #{error_message}"
           end
-          error = StandardError.new(error_message)
-          comment_content = "NOT SENT: #{error_message}"
+        else
+          # Fall back to original template-based logic for non-SMS or if property not present
+          # Determine the correct template name based on message type and disposition
+          if message_type == MessageType.sms
+            if assent
+              if disposition == :confirmation
+                message_template_name = SMS_OPT_IN_CONFIRMATION_MESSAGE_TEMPLATE_NAME
+              else
+                message_template_name = SMS_OPT_IN_MESSAGE_TEMPLATE_NAME
+              end
+            else
+              message_template_name = SMS_OPT_OUT_CONFIRMATION_MESSAGE_TEMPLATE_NAME
+            end
+          else
+            # For email, we don't have specific opt-in/opt-out templates defined
+            # So we'll use nil and handle it appropriately
+            message_template_name = nil
+          end
+
+          message_template = MessageTemplate.where(name: message_template_name).first if message_template_name.present?
+          destination_present = ( self.send("message_" + message_type_name + "_destination").present? rescue false )
+
+          if destination_present && message_template.present?
+            # Send Message to Lead
+            message = Message.new_message(
+              from: User.system,
+              to: self,
+              message_type: message_type,
+              message_template: message_template,
+              classification: 'compliance'
+            )
+            message.save!
+            message.deliver!
+            message.reload
+            comment_content = "SENT: #{message_template_name || "#{message_type_name} compliance message"}"
+          else
+            # Cannot send Message: send Error Notification
+            message = Message.new()
+            if !destination_present
+              error_message = "No #{message_type_name} destination available"
+            elsif !message_template.present?
+              error_message = "Message template '#{message_template_name}' not found" if message_template_name.present?
+              error_message ||= "No #{message_type_name} template configured for this action"
+            else
+              error_message = "Could not send #{message_type_name} message"
+            end
+            error = StandardError.new(error_message)
+            comment_content = "NOT SENT: #{error_message}"
+          end
         end
 
         # Add activity entry to Lead timeline
@@ -368,7 +418,10 @@ module Leads
       def request_first_sms_authorization_if_open_and_unique
         # Don't send opt-in request if already opted in
         return false if preference&.optin_sms?
-        
+
+        # Check if property has SMS opt-in enabled
+        return false unless property&.lead_auto_request_sms_opt_in?
+
         if open? && !(messages.outgoing.sms.for_compliance.any? || any_sms_compliance_messages_for_recipient? )
           send_sms_optin_request
         else
@@ -422,12 +475,6 @@ module Leads
         # Don't send if we have contacted this recipient before
         return false if any_marketing_messages_for_recipient?
 
-        unless Flipflop.enabled?(:lead_automatic_reply)
-          message = "*** Lead[#{id}] Initial response messages not sent due to disabled 'lead_automatic_reply' feature setting. Envvar LEAD_AUTOMATIC_REPLY must be set to 'true'"
-          Rails.logger.info message
-          return false
-        end
-
         unless property.setting_enabled?(:lead_auto_welcome)
           message = "*** Lead[#{id}] Initial response messages not sent due to disabled 'lead_auto_welcome' Property Appsetting"
           Rails.logger.info message
@@ -476,25 +523,60 @@ module Leads
       def send_initial_email_response
         note_reason = Reason.where(name: MESSAGE_DELIVERY_COMMENT_REASON).first
         note_lead_action = LeadAction.where(name: INITIAL_RESPONSE_LEAD_ACTION).first
-        message_template_name = EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME
-        message_template = MessageTemplate.where(name: message_template_name).first
 
         return true unless message_email_destination.present?
+        return false unless property&.lead_auto_welcome?
 
-        if message_template.present? 
-          message = Message.new_message(
+        # Use property-specific email message
+        if property.present?
+          # Get subject and body from property
+          subject = property.lead_auto_welcome_email_subject_with_default
+          body = property.lead_auto_welcome_email_body_with_default
+
+          # Process template variables
+          template_data = message_template_data
+
+          # Process subject
+          subject_template = Liquid::Template.parse(subject)
+          processed_subject = subject_template.render(template_data)
+
+          # Process body
+          body_template = Liquid::Template.parse(body)
+          processed_body = body_template.render(template_data)
+
+          # Create message directly without template
+          message = Message.new(
             from: User.system,
             to: self,
             message_type: MessageType.email,
-            message_template: message_template,
+            subject: processed_subject,
+            body: processed_body,
             classification: 'marketing'
           )
           message.save!
           message.deliver!
           message.reload
-          comment_content = "SENT: #{message_template_name}"
+          comment_content = "SENT: Welcome Email"
         else
-          comment_content = "Initial new lead response not sent because the template is missing (#{EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME})"
+          # Fall back to template-based approach
+          message_template_name = EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME
+          message_template = MessageTemplate.where(name: message_template_name).first
+
+          if message_template.present?
+            message = Message.new_message(
+              from: User.system,
+              to: self,
+              message_type: MessageType.email,
+              message_template: message_template,
+              classification: 'marketing'
+            )
+            message.save!
+            message.deliver!
+            message.reload
+            comment_content = "SENT: #{message_template_name}"
+          else
+            comment_content = "Initial new lead response not sent because the template is missing (#{EMAIL_INITIAL_RESPONSE_TEMPLATE_NAME})"
+          end
         end
 
         note = Note.create!(
@@ -504,7 +586,7 @@ module Leads
           content: comment_content,
           classification: 'system'
         )
-        
+
         return true
       end
 

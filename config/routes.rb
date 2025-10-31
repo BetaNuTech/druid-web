@@ -66,6 +66,12 @@ Rails.application.routes.draw do
     resources :units
     resources :unit_types
     resources :residents
+    resource :messages, controller: 'property_messages', only: [:edit, :update] do
+      member do
+        post 'preview_sms'
+        post 'preview_email'
+      end
+    end
     collection do
       post 'select_current', to: 'properties#select_current'
     end

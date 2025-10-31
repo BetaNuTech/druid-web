@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email Preview - <%= @processed_subject %></title>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .preview-header {
+      background: #333;
+      color: white;
+      padding: 15px;
+      font-size: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .preview-header strong {
+      color: #ffc107;
+    }
+    .subject-line {
+      background: #f8f9fa;
+      padding: 15px;
+      border-bottom: 2px solid #dee2e6;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .email-preview-container {
+      background: white;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    iframe {
+      width: 100%;
+      border: none;
+      display: block;
+      min-height: 400px;
+    }
+  </style>
+  <script>
+    function resizeIframe(obj) {
+      try {
+        var body = obj.contentWindow.document.body;
+        var html = obj.contentWindow.document.documentElement;
+        var height = Math.max(body.scrollHeight, body.offsetHeight,
+                               html.clientHeight, html.scrollHeight, html.offsetHeight);
+        obj.style.height = height + 'px';
+      } catch(e) {
+        // If we can't access the iframe content, set a reasonable default
+        obj.style.height = '500px';
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="preview-header">
+    <strong>Email Preview</strong> - This is how the email will appear to the recipient
+    <br>
+    <small>Template variables have been replaced with sample data</small>
+  </div>
+
+  <div class="email-preview-container">
+    <div class="subject-line">
+      <strong>Subject:</strong> <%= @processed_subject.presence || "(No subject)" %>
+    </div>
+    <%
+      # Apply the email layout similar to how MessageTemplate#body_preview works
+      layout_path = Rails.root.join('app', 'views', 'layouts', 'message_templates', 'email.html.erb')
+      if File.exist?(layout_path)
+        layout_template = File.read(layout_path)
+        content = @processed_body
+        html_with_layout = ERB.new(layout_template).result(binding)
+
+        # Apply CSS inlining for proper email rendering
+        premailer = Premailer.new(
+          html_with_layout,
+          with_html_string: true,
+          input_encoding: 'UTF-8',
+          preserve_styles: true,
+          remove_classes: false
+        )
+        preview_html = premailer.to_inline_css
+      else
+        preview_html = @processed_body
+      end
+    %>
+    <iframe id="email-preview-iframe" srcdoc="<%= ERB::Util.html_escape(preview_html) %>" onload="resizeIframe(this)" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+  </div>
+</body>
+</html>
