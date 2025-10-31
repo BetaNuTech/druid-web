@@ -166,7 +166,8 @@ class ProcessCloudmailinEmailJob < ApplicationJob
       end
       
       # IMPORTANT: Trigger duplicate marking and messaging flow
-      lead.mark_duplicates
+      # Use _without_delay to run synchronously and ensure messaging is sent
+      lead.mark_duplicates_without_delay
     else
       error_message = "Lead creation failed: #{lead.errors.full_messages.join(', ')}"
       raw_email.mark_failed!(error_message)
