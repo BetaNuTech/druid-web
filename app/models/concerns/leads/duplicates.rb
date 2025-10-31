@@ -194,13 +194,11 @@ module Leads
         unless invalidated?
           delay.broadcast_to_streams
 
-          if property&.setting_enabled?(:lead_auto_welcome)
-            send_new_lead_messaging
-          else
-            message = "*** Lead[#{id}] Initial response messages not sent due to disabled 'lead_auto_welcome' Property Appsetting"
-            Rails.logger.info message
-            return false
-          end
+          # Always attempt to send new lead messaging
+          # Individual message types will check their own settings:
+          # - SMS opt-in checks lead_auto_request_sms_opt_in
+          # - Welcome email checks lead_auto_welcome
+          send_new_lead_messaging
         end
 
         true
