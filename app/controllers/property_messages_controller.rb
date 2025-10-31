@@ -2,6 +2,7 @@ class PropertyMessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_property
   before_action :authorize_property_messages
+  after_action :update_current_property_cookie, only: [:edit]
   # Preview actions are read-only, safe to skip CSRF for better reliability
   skip_before_action :verify_authenticity_token, only: [:preview_sms, :preview_email]
 
@@ -78,11 +79,15 @@ class PropertyMessagesController < ApplicationController
   private
 
   def set_property
-    @property = Property.find(params[:property_id])
+    @property = @current_property = Property.find(params[:property_id])
   end
 
   def authorize_property_messages
     authorize @property, :edit_messages?
+  end
+
+  def update_current_property_cookie
+    cookies[:current_property] = @property.id if @property
   end
 
   def property_message_params

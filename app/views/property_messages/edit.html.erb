@@ -198,6 +198,16 @@
 <!-- JavaScript for previews and character counting -->
 <script>
 $(document).ready(function() {
+  // Ensure Froala editor syncs before form submission
+  $('form').on('submit', function(e) {
+    // Sync Froala editor content to textarea if editor exists
+    if (window.html_editor_v2 && typeof window.html_editor_v2.html !== 'undefined') {
+      var content = window.html_editor_v2.html.get();
+      $('#html_editor_v2').val(content);
+    }
+    return true; // Allow form to submit
+  });
+
   // Character counting for SMS messages
   $('.sms-message-input').on('input', function() {
     var messageType = $(this).data('message-type');
