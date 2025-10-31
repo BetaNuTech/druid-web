@@ -78,6 +78,62 @@ namespace :statistics do
       puts "*** Generating Property Tenacity Statistics for the past month"
       Property.active.each{|property| Statistic.generate_property_tenacity(property: property, time_start: Statistic.utc_month_start - 1.month)}
     end
+
+    desc "daily regeneration - refresh current and last month to capture opt-ins and data changes"
+    task :regenerate_monthly => :environment do
+      puts "*** Daily Tenacity Regeneration: Current + Last Month"
+
+      # Time range: Last month start → current time
+      time_start = 1.month.ago.beginning_of_month
+      time_end = DateTime.current
+
+      puts "*** Time range: #{time_start.strftime('%Y-%m-%d')} to #{time_end.strftime('%Y-%m-%d')}"
+
+      # Delete existing statistics for this range to ensure fresh data
+      deleted_count = Statistic.where(
+        fact: 'tenacity',
+        time_start: time_start..time_end
+      ).delete_all
+      puts "*** Deleted #{deleted_count} existing tenacity records"
+
+      # Regenerate user tenacity
+      puts "*** Generating User Tenacity Statistics"
+      Statistic.generate_tenacity(time_start: time_start, time_end: time_end)
+
+      # Regenerate property tenacity
+      puts "*** Generating Property Tenacity Statistics"
+      property_count = 0
+      Property.active.each do |property|
+        Statistic.generate_property_tenacity(
+          property: property,
+          time_start: time_start,
+          time_end: time_end
+        )
+        property_count += 1
+      end
+      puts "*** Processed #{property_count} properties"
+
+      # Regenerate team tenacity
+      puts "*** Generating Team Tenacity Statistics"
+      team_count = 0
+      Team.all.each do |team|
+        Statistic.generate_team_tenacity(
+          team: team,
+          time_start: time_start,
+          time_end: time_end
+        )
+        team_count += 1
+      end
+      puts "*** Processed #{team_count} teams"
+
+      # Count new statistics
+      new_count = Statistic.where(
+        fact: 'tenacity',
+        time_start: time_start..time_end
+      ).count
+      puts "*** Created #{new_count} new tenacity records"
+      puts "*** Daily regeneration complete"
+    end
   end
 
   namespace :leadspeed do
