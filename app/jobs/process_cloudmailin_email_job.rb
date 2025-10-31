@@ -162,16 +162,16 @@ class ProcessCloudmailinEmailJob < ApplicationJob
       end
 
       # IMPORTANT: Trigger duplicate marking and messaging flow
-      # Call mark_duplicates synchronously to ensure duplicate detection happens immediately
+      # Run duplicate marking synchronously
       lead.mark_duplicates_without_delay
 
-      # Send messaging immediately (not via delayed job)
-      # This ensures SMS opt-in and welcome emails are sent right away
-      # Note: after_mark_duplicates will also queue a delayed job that calls send_new_lead_messaging,
-      # but send_new_lead_messaging is idempotent for SMS opt-in (checks if already sent)
-      unless lead.invalidated?
-        lead.send_new_lead_messaging
-      end
+      # Run the full after_mark_duplicates synchronously
+      # This includes:
+      # 1. auto_invalidate (checks for resident/duplicate invalidation)
+      # 2. broadcast_to_streams (if not invalidated)
+      # 3. send_new_lead_messaging (if not invalidated)
+      # Running this synchronously ensures invalidation happens BEFORE messaging
+      lead.after_mark_duplicates_without_delay
 
       # Only mark as completed AFTER all processing is done
       # This ensures if any error occurs above, the job can be safely retried
