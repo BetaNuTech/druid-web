@@ -27,6 +27,59 @@ leads.each{|lead| lead.transition_memo = memo; lead.classification = :spam; lead
 
 **Note**: Use `invalidate` for non-real leads (spam, vendors, residents). Use `nurture` for real leads that won't convert now.
 
+## Delete Leads by Phone Number
+
+Safely delete all leads with a specific phone number (useful for cleaning test data). This script handles all associations and checks for foreign key constraints.
+
+```ruby
+# Rails console script to delete leads by phone number
+# Usage: Paste this into rails console
+
+phone_number = '5551234567'  # Replace with target phone number
+leads = Lead.where(phone1: phone_number).or(Lead.where(phone2: phone_number))
+puts "Found #{leads.count} leads with phone #{phone_number}"
+
+leads.each do |lead|
+  begin
+    puts "\nDeleting #{lead.id}: #{lead.name}"
+
+    # Clean up associations
+    lead.messages.destroy_all
+    lead.duplicate_records.destroy_all
+    lead.duplicate_records_by_lead_id.destroy_all
+    Note.where(notable: lead).destroy_all
+    lead.lead_transitions.destroy_all if lead.respond_to?(:lead_transitions)
+    lead.scheduled_actions.destroy_all if lead.respond_to?(:scheduled_actions)
+    lead.activities.destroy_all if lead.respond_to?(:activities)
+
+    # Check for Resident reference
+    if Resident.where(lead_id: lead.id).exists?
+      puts "  Skipped - referenced by Resident"
+      next
+    end
+
+    # Unlink from raw emails
+    CloudmailinRawEmail.where(lead_id: lead.id).update_all(lead_id: nil)
+
+    # Delete the lead
+    lead.destroy!
+    puts "  ✅ Deleted"
+  rescue => e
+    puts "  ❌ Error: #{e.message}"
+  end
+end
+
+remaining = Lead.where(phone1: phone_number).or(Lead.where(phone2: phone_number)).count
+puts "\n#{remaining} leads remaining (if any, they're referenced by Residents)"
+```
+
+Common test phone numbers to clean up:
+- `5551234567` - Common test number
+- `5555555555` - Generic test number
+- `9999999999` - Another test pattern
+
+**Note**: Leads referenced by Resident records will be skipped to maintain data integrity.
+
 ## Standardize Lead Sources
 
 Agents often misspell Lead referral sources when entering manually. You may notice them in the Lead search UI. We have a task which standardizes known variations of Lead referral sources. Update the task at `lib/tasks/leads.rake` as needed to match the names of Marketing Sources.
