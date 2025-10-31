@@ -5,9 +5,12 @@ class ProcessCloudmailinEmailJob < ApplicationJob
   retry_on OpenaiClient::ServiceUnavailableError, wait: 5.minutes, attempts: 2
   
   def perform(raw_email)
-    return if raw_email.status == 'completed'
-    
-    raw_email.update!(status: 'processing')
+    # Use pessimistic locking to prevent concurrent processing
+    raw_email.with_lock do
+      return if raw_email.status == 'completed' || raw_email.status == 'processing'
+
+      raw_email.update!(status: 'processing')
+    end
     
     # Extract property from email
     property_code = raw_email.property_code
@@ -118,13 +121,6 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     lead.lead_source_id = cloudmailin_source.id
     
     if lead.save
-      raw_email.update!(
-        status: 'completed',
-        lead: lead,
-        processed_at: Time.current,
-        parser_used: 'OpenAI'
-      )
-      
       # Add note about AI classification
       if analysis['lead_type'] != 'rental_inquiry'
         Note.create!(
@@ -133,21 +129,21 @@ class ProcessCloudmailinEmailJob < ApplicationJob
           content: "AI Classification: #{analysis['lead_type'].humanize}\nReason: #{analysis['classification_reason']}\nConfidence: #{(analysis['confidence'] * 100).round}%"
         )
       end
-      
+
       # Handle SMS consent if detected
       if analysis['has_sms_consent'] == true && lead.preference.present?
         # Set opt-in on this lead
         lead.preference.optin_sms = true
         lead.preference.optin_sms_date = DateTime.current
         lead.preference.save!
-        
+
         # Add system note
         Note.create!(
           notable: lead,
           classification: 'system',
           content: "SMS opt-in detected from email content (tour booking confirmation). Lead pre-consented to SMS."
         )
-        
+
         # Find and update all duplicate leads to have SMS opt-in
         duplicate_leads = lead.duplicates.includes(:preference)
         duplicate_leads.each do |dup_lead|
@@ -155,25 +151,36 @@ class ProcessCloudmailinEmailJob < ApplicationJob
             dup_lead.preference.optin_sms = true
             dup_lead.preference.optin_sms_date = DateTime.current
             dup_lead.preference.save!
-            
+
             Note.create!(
               notable: dup_lead,
-              classification: 'system', 
+              classification: 'system',
               content: "SMS opt-in inherited from duplicate lead #{lead.id} (detected in email)"
             )
           end
         end
       end
-      
+
       # IMPORTANT: Trigger duplicate marking and messaging flow
-      # Use _without_delay to run synchronously and ensure messaging is sent immediately
+      # Call mark_duplicates synchronously to ensure duplicate detection happens immediately
       lead.mark_duplicates_without_delay
 
-      # Send new lead messaging immediately (SMS opt-in and welcome email)
-      # We call this directly to ensure it happens synchronously, not via delayed job
+      # Send messaging immediately (not via delayed job)
+      # This ensures SMS opt-in and welcome emails are sent right away
+      # Note: after_mark_duplicates will also queue a delayed job that calls send_new_lead_messaging,
+      # but send_new_lead_messaging is idempotent for SMS opt-in (checks if already sent)
       unless lead.invalidated?
         lead.send_new_lead_messaging
       end
+
+      # Only mark as completed AFTER all processing is done
+      # This ensures if any error occurs above, the job can be safely retried
+      raw_email.update!(
+        status: 'completed',
+        lead: lead,
+        processed_at: Time.current,
+        parser_used: 'OpenAI'
+      )
     else
       error_message = "Lead creation failed: #{lead.errors.full_messages.join(', ')}"
       raw_email.mark_failed!(error_message)
