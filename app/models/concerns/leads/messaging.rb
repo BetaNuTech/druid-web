@@ -296,10 +296,11 @@ module Leads
 
           if destination_present
             # Create message directly without template
-            message = Message.new(
+            message = Message.new_message(
               from: User.system,
               to: self,
               message_type: message_type,
+              subject: 'SMS Message', # SMS messages require a subject even though it's not displayed
               body: processed_body,
               classification: 'compliance'
             )
@@ -545,7 +546,7 @@ module Leads
           processed_body = body_template.render(template_data)
 
           # Create message directly without template
-          message = Message.new(
+          message = Message.new_message(
             from: User.system,
             to: self,
             message_type: MessageType.email,
