@@ -294,9 +294,18 @@ class Message < ApplicationRecord
   def from_address
     if message_type.email? && outgoing?
       # Use different email prefixes based on messageable type
-      email_prefix = (messageable.is_a?(Lead) || messageable.is_a?(Roommate)) ? 'leasing' : 'bluesky'
+      if messageable.is_a?(Lead) || messageable.is_a?(Roommate)
+        email_prefix = 'leasing'
+        display_suffix = ' Leasing'  # Add department to display name
+      else
+        email_prefix = 'bluesky'
+        display_suffix = ''  # No suffix for non-leasing emails
+      end
+
       verified_sender = "#{email_prefix}@#{ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')}"
-      return "\"#{user.name} at #{messageable.try(:property).try(:name) || 'Bluecrest Residential'}\" <#{verified_sender}>"
+      property_name = messageable.try(:property).try(:name) || 'Bluecrest Residential'
+
+      return "\"#{property_name}#{display_suffix}\" <#{verified_sender}>"
     else
       return senderid
     end
