@@ -73,8 +73,18 @@
       layout_path = Rails.root.join('app', 'views', 'layouts', 'message_templates', 'email.html.erb')
       if File.exist?(layout_path)
         layout_template = File.read(layout_path)
+
+        # First process the layout through Liquid to replace template variables
+        # Get the same template data used for the body
+        template_data = @sample_lead.message_template_data
+
+        # Process Liquid variables in the layout
+        liquid_template = Liquid::Template.parse(layout_template)
+        processed_layout = liquid_template.render(template_data)
+
+        # Now process with ERB, using the processed body as content
         content = @processed_body
-        html_with_layout = ERB.new(layout_template).result(binding)
+        html_with_layout = ERB.new(processed_layout).result(binding)
 
         # Apply CSS inlining for proper email rendering
         premailer = Premailer.new(

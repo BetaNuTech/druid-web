@@ -57,7 +57,22 @@ class PropertiesController < ApplicationController
   def update
     authorize @property
     respond_to do |format|
-      if @property.update(property_params)
+      # Get the filtered params
+      filtered_params = property_params
+
+      # Handle file uploads properly - remove empty file fields
+      [:logo, :email_header_image, :email_footer_logo].each do |field|
+        if filtered_params.key?(field)
+          file = filtered_params[field]
+          # Remove empty uploads to prevent clearing existing attachments
+          unless file.is_a?(ActionDispatch::Http::UploadedFile) &&
+                 file.original_filename.present? && file.size > 0
+            filtered_params.delete(field)
+          end
+        end
+      end
+
+      if @property.update(filtered_params)
         format.html { redirect_to @property, notice: 'Property was successfully updated.' }
         format.json { render :show, status: :ok, location: @property }
       else

@@ -240,7 +240,9 @@ class Message < ApplicationRecord
         <tt>#{body}</tt>
       EOF
     else
-      (message_template || MessageTemplate.default(self)).apply_layout(body)
+      template = message_template || MessageTemplate.default(self)
+      # Use apply_layout_with_liquid to process Liquid variables with message's template data
+      template.apply_layout_with_liquid(body, template_data)
     end
   end
 

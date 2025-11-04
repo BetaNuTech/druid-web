@@ -75,14 +75,26 @@ class PropertyPolicy < ApplicationPolicy
     valid_listing_params = [ { listings_attributes: PropertyListing::ALLOWED_PARAMS } ]
     valid_phone_number_params = [ { phone_numbers_attributes: PhoneNumber::ALLOWED_PARAMS } ]
     valid_property_user_params = [ {property_users_attributes: PropertyUser::ALLOWED_PARAMS}]
-    case user
-    when ->(u) { u.administrator? }
-      valid_property_params += [ Property::APPSETTING_PARAMS ]
-    when ->(u) { u.corporate? }
-      valid_property_params += [ Property::APPSETTING_PARAMS ]
-    when ->(u) { u.manager? }
-      valid_property_params += [ Property::APPSETTING_PARAMS ]
+
+    # If user can edit the property, they should be able to update its fields
+    if edit?
+      case user
+      when ->(u) { u.administrator? }
+        valid_property_params += [ Property::APPSETTING_PARAMS ]
+      when ->(u) { u.corporate? }
+        valid_property_params += [ Property::APPSETTING_PARAMS ]
+      when ->(u) { u.manager? }
+        valid_property_params += [ Property::APPSETTING_PARAMS ]
+      # Property managers can edit basic fields but not app settings
+      when ->(u) { u.property_manager?(record) }
+        # Keep the basic property params (including file uploads)
+        # but don't add APPSETTING_PARAMS
+      else
+        # For other cases where edit? is true but no specific role matches,
+        # still allow basic property params
+      end
     else
+      # User cannot edit this property at all
       valid_property_params = []
       valid_listing_params = []
       valid_phone_number_params = []

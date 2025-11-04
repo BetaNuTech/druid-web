@@ -21,7 +21,31 @@
         <%= form.file_field :logo, class: 'form__control' %>
       </div>
 
-      <!-- 
+      <!-- Email Header Image -->
+      <div class="form__group">
+        <%= form.label :email_header_image, "Email Header Image", class: 'form__label' %>
+        <% if property.email_header_image.attached? %>
+          <div style="padding: 10px 5px;">
+            <%= image_tag(property.email_header_image, style: "max-width: 310px;", alt: "Email header" )%>
+          </div>
+        <% end %>
+        <%= form.file_field :email_header_image, class: 'form__control' %>
+        <small class="form-text text-muted">Used in automated email headers. Recommended: at least 620px wide with 5:1 to 6:1 aspect ratio (e.g., 620px × 115px). Upload a new image to replace. Images cannot be deleted to preserve sent email integrity.</small>
+      </div>
+
+      <!-- Email Footer Logo -->
+      <div class="form__group">
+        <%= form.label :email_footer_logo, "Email Footer Logo", class: 'form__label' %>
+        <% if property.email_footer_logo.attached? %>
+          <div style="padding: 10px 5px;">
+            <%= image_tag(property.email_footer_logo.variant(resize: "150x150"), alt: "Email footer logo" )%>
+          </div>
+        <% end %>
+        <%= form.file_field :email_footer_logo, class: 'form__control' %>
+        <small class="form-text text-muted">Used in automated email footers. Upload a new image to replace. Images cannot be deleted to preserve sent email integrity.</small>
+      </div>
+
+      <!--
         <div class="form__group">
           <%= form.label :organization %>
           <%= form.text_field :organization, id: :property_organization, class: "form__control" %>

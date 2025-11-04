@@ -54,7 +54,10 @@ class Property < ApplicationRecord
                     :organization, :contact_name, :phone, :maintenance_phone, :leasing_phone,
                     :fax, :email, :website, :units, :notes, :school_district,
                     :amenities, :active, :application_url, :tour_booking_url, :team_id, :timezone,
-                    :logo, :remove_logo, :call_lead_generation, :voice_menu_enabled,
+                    :logo, :remove_logo,
+                    :email_header_image,
+                    :email_footer_logo,
+                    :call_lead_generation, :voice_menu_enabled,
                     { working_hours: {} } ]
 
   ## Associations

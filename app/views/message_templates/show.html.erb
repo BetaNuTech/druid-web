@@ -48,11 +48,14 @@
         <div class="message-template-preview__container">
           <p>
             <strong>Body:</strong>
+            <% if @current_property %>
+              <small class="text-muted">(showing graphics for <%= @current_property.name %>)</small>
+            <% end %>
           </p>
-          <iframe id="message_template_preview" 
-                  class="message-template-preview__iframe" 
-                  onload="resizeIframe(this)" 
-                  srcdoc="<%= @message_template.body_preview %>">
+          <iframe id="message_template_preview"
+                  class="message-template-preview__iframe"
+                  onload="resizeIframe(this)"
+                  srcdoc="<%= @message_template.body_preview(property: @current_property) %>">
           </iframe>
         </div>
       </div>
