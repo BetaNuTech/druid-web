@@ -5,7 +5,11 @@
     <div class="row">
       <div class="col-md-12">
         <%= link_to(url_for(@property.logo), target: "_blank") do %>
-          <%= image_tag(@property.logo.variant(resize: "200x200"), alt: "#{@property.name} logo" ) if @property.logo.attached? %>
+          <% if @property.logo.variable? %>
+            <%= image_tag(@property.logo.variant(resize: "200x200"), alt: "#{@property.name} logo" ) %>
+          <% else %>
+            <span><%= @property.logo.filename %> (<%= @property.logo.content_type %>)</span>
+          <% end %>
         <% end %>
       </div>
     </div>

@@ -3,7 +3,7 @@
     <div id="team-header" class="row bg-info">
     <% @current_user.properties.each do |property| %>
       <div class="team-header-property">
-        <% if property.logo.attached? %>
+        <% if property.logo.attached? && property.logo.variable? %>
           <%= link_to image_tag(property.logo.variant(resize: 'x30')), property_path(property) %><br/>
         <% else %>
           <h4><%= link_to(property.name, property_path(property)) %></h4><br/>

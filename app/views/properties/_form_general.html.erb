@@ -11,7 +11,11 @@
         <%= form.label :logo, class: 'form__label' %>
         <% if property.logo.attached? %>
           <div style="padding: 10px 5px;">
-            <%= image_tag(property.logo.variant(resize: "100x100"), alt: "#{@property.name} logo" )%>
+            <% if property.logo.variable? %>
+              <%= image_tag(property.logo.variant(resize: "100x100"), alt: "#{@property.name} logo" )%>
+            <% else %>
+              <span><%= property.logo.filename %> - Cannot display preview for <%= property.logo.content_type %></span>
+            <% end %>
             <div class="form__check form__check--inline">
               <%= form.check_box :remove_logo, class: 'form__check-input' %>
               <%= form.label :remove_logo, class: "form__check-label" %>
@@ -38,7 +42,11 @@
         <%= form.label :email_footer_logo, "Email Footer Logo", class: 'form__label' %>
         <% if property.email_footer_logo.attached? %>
           <div style="padding: 10px 5px;">
-            <%= image_tag(property.email_footer_logo.variant(resize: "150x150"), alt: "Email footer logo" )%>
+            <% if property.email_footer_logo.variable? %>
+              <%= image_tag(property.email_footer_logo.variant(resize: "150x150"), alt: "Email footer logo" )%>
+            <% else %>
+              <span><%= property.email_footer_logo.filename %> - Cannot display preview for <%= property.email_footer_logo.content_type %></span>
+            <% end %>
           </div>
         <% end %>
         <%= form.file_field :email_footer_logo, class: 'form__control' %>
