@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'noreply@blue-sky.app'
+  default from: "no-reply@#{ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')}"
   layout 'mailer'
 end

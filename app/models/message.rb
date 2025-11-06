@@ -297,10 +297,10 @@ class Message < ApplicationRecord
     if message_type.email? && outgoing?
       # Use different email prefixes based on messageable type
       if messageable.is_a?(Lead) || messageable.is_a?(Roommate)
-        email_prefix = 'leasing'
+        email_prefix = 'no-reply' # Changed from leasing to no-reply
         display_suffix = ' Leasing'  # Add department to display name
       else
-        email_prefix = 'bluesky'
+        email_prefix = 'no-reply' # Changed from bluesky to no-reply
         display_suffix = ''  # No suffix for non-leasing emails
       end
 
