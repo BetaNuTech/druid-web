@@ -80,6 +80,60 @@ Common test phone numbers to clean up:
 
 **Note**: Leads referenced by Resident records will be skipped to maintain data integrity.
 
+## Delete Leads by Email
+
+Safely delete all leads with a specific email address (useful for cleaning test data or removing duplicate contacts). This script handles all associations and checks for foreign key constraints.
+
+```ruby
+# Rails console script to delete leads by email
+# Usage: Paste this into rails console
+
+email_address = 'test@example.com'  # Replace with target email
+leads = Lead.where(email: email_address)
+puts "Found #{leads.count} leads with email #{email_address}"
+
+leads.each do |lead|
+  begin
+    puts "\nDeleting #{lead.id}: #{lead.name} (#{lead.email})"
+
+    # Clean up associations
+    lead.messages.destroy_all
+    lead.duplicate_records.destroy_all
+    lead.duplicate_records_by_lead_id.destroy_all
+    Note.where(notable: lead).destroy_all
+    lead.lead_transitions.destroy_all if lead.respond_to?(:lead_transitions)
+    lead.scheduled_actions.destroy_all if lead.respond_to?(:scheduled_actions)
+    lead.activities.destroy_all if lead.respond_to?(:activities)
+
+    # Check for Resident reference
+    if Resident.where(lead_id: lead.id).exists?
+      puts "  Skipped - referenced by Resident"
+      next
+    end
+
+    # Unlink from raw emails
+    CloudmailinRawEmail.where(lead_id: lead.id).update_all(lead_id: nil)
+
+    # Delete the lead
+    lead.destroy!
+    puts "  ✅ Deleted"
+  rescue => e
+    puts "  ❌ Error: #{e.message}"
+  end
+end
+
+remaining = Lead.where(email: email_address).count
+puts "\n#{remaining} leads remaining (if any, they're referenced by Residents)"
+```
+
+Common test emails to clean up:
+- `test@example.com` - Common test email
+- `demo@test.com` - Demo account email
+- `john.doe@example.com` - Generic test email
+- Any email ending with `@test.com` or `@example.com`
+
+**Note**: Leads referenced by Resident records will be skipped to maintain data integrity. This script only deletes leads where the email exactly matches - it does not use pattern matching or wildcards.
+
 ## Standardize Lead Sources
 
 Agents often misspell Lead referral sources when entering manually. You may notice them in the Lead search UI. We have a task which standardizes known variations of Lead referral sources. Update the task at `lib/tasks/leads.rake` as needed to match the names of Marketing Sources.
