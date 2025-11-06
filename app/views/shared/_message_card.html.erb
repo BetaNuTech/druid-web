@@ -30,17 +30,17 @@
             <span class="participant-direction"><%= message.incoming? ? 'INCOMING' : 'OUTGOING' %></span>
           </div>
           <div class="participant-from">
-            From: 
+            From:
             <% if message.incoming? && show_lead_link && message.messageable&.is_a?(Lead) %>
-              <%= link_to message.sender_name, lead_path(message.messageable) %>
+              <%= link_to message.sender_name, lead_path(message.messageable), onclick: "event.stopPropagation();" %>
             <% else %>
               <strong><%= message.sender_name %></strong>
             <% end %>
           </div>
           <div class="participant-to">
-            To: 
+            To:
             <% if message.outgoing? && show_lead_link && message.messageable&.is_a?(Lead) %>
-              <%= link_to message.recipient_name, lead_path(message.messageable) %>
+              <%= link_to message.recipient_name, lead_path(message.messageable), onclick: "event.stopPropagation();" %>
             <% else %>
               <strong><%= message.recipient_name %></strong>
             <% end %>
@@ -79,7 +79,7 @@
         <span><%= short_datetime(message.delivered_at || message.updated_at) %></span>
       </div>
       
-      <div class="message-actions">
+      <div class="message-actions" onclick="event.stopPropagation();">
         <% if message.draft? %>
           <% if policy(message).edit? %>
             <%= link_to edit_message_path(message), class: "btn btn--small", title: 'Edit Draft', data: { 'no-turbolink': true } do %>
@@ -95,14 +95,21 @@
               <%= glyph('send') %> Reply
             <% end %>
           <% end %>
-          <% if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
-            <%= link_to lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), 
-                class: "btn btn--small mark-as-read-btn", 
+          <% if !message.read? && message.incoming? && policy(message).mark_read? %>
+            <%
+              # Use simpler route when on messages index, otherwise use lead-specific route
+              mark_read_path = if show_lead_link && message.messageable&.is_a?(Lead)
+                mark_read_message_path(message)
+              else
+                lead_page_mark_read_lead_message_path(lead_id: message.messageable_id, id: message.id)
+              end
+            %>
+            <%= button_to mark_read_path,
+                class: "btn btn--small mark-as-read-btn",
                 id: "message-read-button-#{message.id}",
-                remote: true, 
-                method: :post,
                 title: 'Mark as Read',
-                data: { 'no-turbolink': true } do %>
+                form: { data: { remote: true } },
+                method: :post do %>
               <%= glyph(:envelope_open) %> Mark as Read
             <% end %>
           <% end %>

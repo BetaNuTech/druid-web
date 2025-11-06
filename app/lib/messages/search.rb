@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Messages
   class Search
     include ActiveModel::Model
@@ -8,19 +10,20 @@ module Messages
       outgoing: nil,
       failed: false,
       draft: false,
-      #sort_by: :date,
-      #sort_dir: :desc,
+      mine: false,
+      # sort_by: :date,
+      # sort_dir: :desc,
       paginate: true,
       page: 1
-    }
+    }.freeze
 
     VALID_OPTIONS = DEFAULT_OPTIONS.keys.freeze
     TRUE_VALUES = [true, 'true', 't', 'T', 1, '1'].freeze
 
-
-    def initialize(params: nil, scope: nil, user: nil)
+    def initialize(params: nil, scope: nil, user: nil, current_property: nil)
       @user = user
-      @scope = base_scope(scope: scope, user: @user)
+      @current_property = current_property
+      @scope = base_scope(scope: scope, user: @user, current_property: @current_property)
       @options = filter_params(params.dup)
       normalize_options
     end
@@ -34,9 +37,7 @@ module Messages
       skope = apply_includes(skope)
       skope = apply_filters(skope)
       skope = apply_sort(skope)
-      skope = apply_pagination(skope)
-
-      skope
+      apply_pagination(skope)
     end
 
     def pagination_params
@@ -46,7 +47,8 @@ module Messages
           incoming: incoming,
           outgoing: outgoing,
           failed: failed,
-          draft: draft
+          draft: draft,
+          mine: mine
         }
       }
     end
@@ -96,7 +98,15 @@ module Messages
     end
 
     def page=(value)
-      @options[:page] = [1, (value || 1).to_i ].max
+      @options[:page] = [1, (value || 1).to_i].max
+    end
+
+    def mine
+      is_true?(@options[:mine])
+    end
+
+    def mine=(value)
+      @options[:mine] = is_true?(value)
     end
 
     private
@@ -107,14 +117,20 @@ module Messages
 
     def apply_filters(skope)
       if outgoing
-        skope = skope.where(messages: {incoming: false}) 
+        skope = skope.where(messages: { incoming: false })
       else
-        skope = skope.where(messages: {read_at: nil, incoming: true}) if unread
-        skope = skope.where(messages: {incoming: true}) if incoming && !unread
+        skope = skope.where(messages: { read_at: nil, incoming: true }) if unread
+        skope = skope.where(messages: { incoming: true }) if incoming && !unread
       end
 
-      skope = skope.where(messages: {state: :failed}) if failed
-      skope = skope.where(messages: {state: :draft}) if draft
+      skope = skope.where(messages: { state: :failed }) if failed
+      skope = skope.where(messages: { state: :draft }) if draft
+
+      # Apply "mine" filter: messages I sent/received OR for leads assigned to me
+      if mine && @user
+        skope = skope.where('messages.user_id = ? OR leads.user_id = ?', @user.id, @user.id)
+      end
+
       skope
     end
 
@@ -122,7 +138,7 @@ module Messages
       # TODO: sort by options
 
       # Sort by date descending
-      skope.order(Arel.sql("COALESCE(messages.delivered_at, messages.updated_at) DESC"))
+      skope.order(Arel.sql('COALESCE(messages.delivered_at, messages.updated_at) DESC'))
     end
 
     def apply_pagination(skope)
@@ -130,7 +146,7 @@ module Messages
     end
 
     def apply_includes(skope)
-      skope.includes([:messageable, :message_type, :deliveries])
+      skope.includes(%i[messageable message_type deliveries])
     end
 
     def paginate?
@@ -140,15 +156,13 @@ module Messages
     def filter_params(in_params)
       in_params.permit! if in_params.respond_to?(:permit!)
       namespaced = in_params.fetch(:message, nil).present?
-      if namespaced 
+      if namespaced
         params = in_params[:message]
-        if in_params.fetch(:page,nil).present?
-          params[:page] = in_params[:page]
-        end
+        params[:page] = in_params[:page] if in_params.fetch(:page, nil).present?
       end
 
-      DEFAULT_OPTIONS.merge(( params||{} ).to_h.symbolize_keys).
-        slice(*VALID_OPTIONS)
+      DEFAULT_OPTIONS.merge((params || {}).to_h.symbolize_keys)
+                     .slice(*VALID_OPTIONS)
     end
 
     # Make options logically consistent
@@ -172,38 +186,33 @@ module Messages
         self.outgoing = false
         self.failed = false
         self.draft = false
-      else
-        if incoming
-          self.outgoing = false
-          self.draft = false
-          self.failed = false
-        elsif outgoing
-          self.unread = nil
-          self.incoming = nil
-        end
+      elsif incoming
+        self.outgoing = false
+        self.draft = false
+        self.failed = false
+      elsif outgoing
+        self.unread = nil
+        self.incoming = nil
       end
-
     end
 
-    def base_scope(scope: nil, user: nil)
-      # Extracted from MessagePolicy::IndexScope
+    def base_scope(scope: nil, user: nil, current_property: nil)
       skope = scope || Message
-      skope = case user
-      when ->(u) { u.admin? }
-        if user.monitor_all_messages?
-          skope.for_leads
-        else
-          skope.where(user_id: user.id)
-        end
-      when nil
-        Message
+      return Message if user.nil?
+
+      # Agents always see only their own messages at their assigned properties
+      return skope.for_leads.where(leads: { property_id: user.property_ids }).where(user_id: user.id) if user.agent?
+
+      # For Managers, Corporate, and Admins: show all messages for selected property
+      if current_property
+        # If a specific property is selected, show all messages for that property
+        skope.for_leads.where(leads: { property_id: current_property.id })
+      elsif user.admin?
+        # Admins with no property selected see all messages
+        skope.for_leads
       else
-        property_skope = skope.for_leads.where(leads: {property_id: user.property_ids})
-        if user.monitor_all_messages?
-          property_skope
-        else
-          property_skope.where(user_id: user.id)
-        end
+        # Managers/Corporate with no property selected see all messages for their properties
+        skope.for_leads.where(leads: { property_id: user.property_ids })
       end
     end
   end

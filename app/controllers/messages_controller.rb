@@ -1,16 +1,19 @@
+# frozen_string_literal: true
+
 class MessagesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_message, only: [:show, :edit, :update, :destroy]
-  before_action :set_message_type, only: [:show, :new, :edit, :create ]
-  before_action :set_message_template, only: [:show, :new, :edit, :create ]
-  before_action :set_messageable, only: [:index, :new, :show, :edit, :update, :create]
+  before_action :set_message, only: %i[show edit update destroy]
+  before_action :set_message_type, only: %i[show new edit create]
+  before_action :set_message_template, only: %i[show new edit create]
+  before_action :set_messageable, only: %i[index new show edit update create]
   after_action :verify_authorized
 
   # GET /messages
   # GET /messages.json
   def index
     authorize Message
-    @search = Messages::Search.new(params: params, scope: index_scope, user: @current_user)
+    @search = Messages::Search.new(params: params, scope: index_scope, user: @current_user,
+                                   current_property: @current_property)
     @messages = @search.call
   end
 
@@ -18,10 +21,10 @@ class MessagesController < ApplicationController
   # GET /messages/1.json
   def show
     authorize @message
-    if !@message.read? && policy(@message).mark_read?
-      Message.mark_read!(@message, current_user)
-      @message.reload
-    end
+    return unless !@message.read? && policy(@message).mark_read?
+
+    Message.mark_read!(@message, current_user)
+    @message.reload
   end
 
   def body_preview
@@ -135,71 +138,76 @@ class MessagesController < ApplicationController
     set_message
     authorize @message
     Message.mark_read!(@message, current_user)
-    redirect_to messages_path, notice: 'Marked message as read'
+    respond_to do |format|
+      format.html { redirect_to messages_path, notice: 'Marked message as read' }
+      format.js
+    end
   end
 
   def lead_page_mark_read
     set_message
     authorize @message
     Message.mark_read!(@message, current_user)
+    respond_to do |format|
+      format.html { redirect_back(fallback_location: messages_path) }
+      format.js
+    end
   end
-
 
   private
 
-    def deliver_message
-      @message.deliver!
-      Message.mark_read!(@message, current_user)
-      case @message.messageable
-      when Roommate
-        redirect_to @message.messageable.lead, notice: 'Message Sent'
-      else
-        redirect_to @message.messageable, notice: 'Message Sent'
-      end
+  def deliver_message
+    @message.deliver!
+    Message.mark_read!(@message, current_user)
+    case @message.messageable
+    when Roommate
+      redirect_to @message.messageable.lead, notice: 'Message Sent'
+    else
+      redirect_to @message.messageable, notice: 'Message Sent'
     end
+  end
 
-    def record_scope
-      return @messageable.present? ?
-        policy_scope(@messageable.messages) :
-        policy_scope(Message)
-    end
+  def record_scope
+    @messageable.present? ? policy_scope(@messageable.messages) : policy_scope(Message)
+  end
 
-    def index_scope
-      if @messageable.present?
-         @messageable.messages
-      else
-        Message
-      end
+  def index_scope
+    if @messageable.present?
+      @messageable.messages
+    else
+      Message
     end
+  end
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_message
-      @message = record_scope.find(params[:id] || params[:message_id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_message
+    @message = record_scope.find(params[:id] || params[:message_id])
+  end
 
-    def set_messageable
-      @messageable = Message.identify_messageable_from_params(params) || @message.try(:messageable)
-    end
+  def set_messageable
+    @messageable = Message.identify_messageable_from_params(params) || @message.try(:messageable)
+  end
 
-    def set_message_type
-      if (message_type_id = (( params[:message] || {} ).fetch(:message_type_id, params[:message_type_id]))).present?
-        @message_type = MessageType.find(message_type_id)
-      else
-        @message_type = @message.try(:message_type)
-      end
+  def set_message_type
+    if (message_type_id = (params[:message] || {}).fetch(:message_type_id, params[:message_type_id])).present?
+      @message_type = MessageType.find(message_type_id)
+    else
+      @message_type = @message.try(:message_type)
     end
+  end
 
-    def set_message_template
-      params.permit(:message_template_id)
-      if (message_template_id = (( params[:message] || {} ).fetch(:message_template_id, params[:message_template_id]))).present?
-        @message_template = MessageTemplate.find(message_template_id)
-      else
-        @message_template = @message.try(:message_template)
-      end
-    end
+  def set_message_template
+    params.permit(:message_template_id)
+    @message_template = if (message_template_id = (params[:message] || {}).fetch(:message_template_id,
+                                                                                 params[:message_template_id])).present?
+                          MessageTemplate.find(message_template_id)
+                        else
+                          @message.try(:message_template)
+                        end
+  end
 
-    def message_params
-      allowed_params = policy(@message||Message).allowed_params
-      params.require(:message).permit(*allowed_params)
-    end
+  def message_params
+    allowed_params = policy(@message || Message).allowed_params
+    params.require(:message).permit(*allowed_params)
+  end
 end

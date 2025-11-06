@@ -1,24 +1,22 @@
-class MessagePolicy < ApplicationPolicy
+# frozen_string_literal: true
 
+class MessagePolicy < ApplicationPolicy
   class IndexScope < Scope
     def resolve
       skope = scope
-      skope = case user
-        when ->(u) { u.admin? }
-          if user.monitor_all_messages?
-            skope.for_leads
-          else
-            skope.where(user_id: user.id)
-          end
-        else
-          if user.monitor_all_messages?
-            property_skope = skope.for_leads
-            property_skope.where(user_id: user.id).or(property_skope.where(leads: {property_id: user.property_ids}))
-          else
-            skope.where(user_id: user.id)
-          end
-        end
-      return skope.display_order
+
+      # Agents always see only their own messages at their assigned properties
+      skope = if user.agent?
+                skope.for_leads.where(leads: { property_id: user.property_ids }).where(user_id: user.id)
+              # Managers, Corporate, and Admins see all messages for their properties
+              elsif user.admin?
+                skope.for_leads
+              else
+                # Managers/Corporate see all messages for their properties
+                skope.for_leads.where(leads: { property_id: user.property_ids })
+              end
+
+      skope.display_order
     end
   end
 
@@ -26,13 +24,13 @@ class MessagePolicy < ApplicationPolicy
     def resolve
       skope = scope
       skope = case user
-        when ->(u) { u.admin? }
-          skope
-        else
-          property_skope = skope.joins("INNER JOIN leads ON leads.id = messages.messageable_id AND messages.messageable_type = 'Lead'")
-          property_skope.where(user_id: user.id).or(property_skope.where(leads: {property_id: user.property_ids}))
-        end
-      return skope.display_order
+              when lambda(&:admin?)
+                skope
+              else
+                property_skope = skope.joins("INNER JOIN leads ON leads.id = messages.messageable_id AND messages.messageable_type = 'Lead'")
+                property_skope.where(user_id: user.id).or(property_skope.where(leads: { property_id: user.property_ids }))
+              end
+      skope.display_order
     end
   end
 
@@ -79,8 +77,8 @@ class MessagePolicy < ApplicationPolicy
 
   def same_property?
     record&.messageable&.present? &&
-      (  user&.assigned_to_property?(record.messageable.property_id) ||
-         user&.team_lead?(property: record.messageable.property) )
+      (user&.assigned_to_property?(record.messageable.property_id) ||
+         user&.team_lead?(property: record.messageable.property))
   end
 
   def property_manager?

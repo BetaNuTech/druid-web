@@ -44,7 +44,7 @@
                   <%= glyph(:envelope) %> Unread
                 </span>
               </label>
-              
+
               <label class="messages-filter__option">
                 <%= form.check_box :draft, class: 'messages-filter__checkbox' %>
                 <span class="messages-filter__switch"></span>
@@ -52,7 +52,7 @@
                   <%= glyph(:file) %> Drafts
                 </span>
               </label>
-              
+
               <label class="messages-filter__option">
                 <%= form.check_box :failed, class: 'messages-filter__checkbox' %>
                 <span class="messages-filter__switch"></span>
@@ -60,6 +60,16 @@
                   <%= glyph(:warning_sign) %> Failed
                 </span>
               </label>
+
+              <% unless current_user.agent? %>
+                <label class="messages-filter__option">
+                  <%= form.check_box :mine, class: 'messages-filter__checkbox' %>
+                  <span class="messages-filter__switch"></span>
+                  <span class="messages-filter__label" title="Messages I sent/received or for leads assigned to me">
+                    <%= glyph(:user) %> Mine
+                  </span>
+                </label>
+              <% end %>
             </div>
           </div>
           
@@ -120,7 +130,7 @@
     <% end %>
   </section>
 
-  <% if current_user.setting_enabled?(:view_all_messages) %>
+  <% if current_user.agent? && current_user.setting_enabled?(:view_all_messages) %>
     <section class="section">
         <div class="alert alert--info">
           <h4 class="alert__title">
@@ -134,6 +144,17 @@
               <li>Uncheck "View all messages" option</li>
               <li>Click "Save"</li>
             </ol>
+          </div>
+        </div>
+    </section>
+  <% elsif !current_user.agent? %>
+    <section class="section">
+        <div class="alert alert--info">
+          <h4 class="alert__title">
+            <%= glyph(:info_sign) %> Filter your messages
+          </h4>
+          <div class="alert__content">
+            <p>As a <%= current_user.role.name %>, you can see all messages for your property. Use the "Mine" filter above to show only messages you sent/received or for leads assigned to you.</p>
           </div>
         </div>
     </section>

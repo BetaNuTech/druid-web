@@ -19,7 +19,7 @@
     </span>
     <p>
       <br/>
-      <%= link_to('Mark As Read', lead_message_lead_page_mark_read_path(lead_id: message.messageable_id, message_id: message.id), {class: "btn btn--primary btn--small", id: "message-read-button-#{message.id}",remote: true, method: :post}) if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
+      <%= button_to('Mark As Read', lead_page_mark_read_lead_message_path(lead_id: message.messageable_id, id: message.id), class: "btn btn--primary btn--small", id: "message-read-button-#{message.id}", form: { data: { remote: true } }, method: :post) if !message.read? && message.incoming? && policy(message).lead_page_mark_read? %>
     </p>
   </td>
   <td class="message_body_preview">

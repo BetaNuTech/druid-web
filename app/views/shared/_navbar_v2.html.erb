@@ -32,7 +32,22 @@
         <%= image_tag('/icons/messages.svg') %>
         <span class="sidebar--item-content">Messages</span>
       <% end %>
-      <% unread_messages_count = current_user.messages.for_leads.relevant_to_leads.incoming.unread.count %>
+      <%
+        # Role-based unread message count
+        if current_user.agent?
+          # Agents: only their unread messages
+          unread_messages_count = current_user.messages.for_leads.relevant_to_leads.incoming.unread.count
+        elsif @current_property
+          # Managers/Corporate/Admin with selected property: all unread for that property
+          unread_messages_count = Message.for_leads.relevant_to_leads.incoming.unread.where(leads: {property_id: @current_property.id}).count
+        elsif current_user.admin?
+          # Admins without property selection: all unread messages
+          unread_messages_count = Message.for_leads.relevant_to_leads.incoming.unread.count
+        else
+          # Managers/Corporate without property selection: all unread for their properties
+          unread_messages_count = Message.for_leads.relevant_to_leads.incoming.unread.where(leads: {property_id: current_user.property_ids}).count
+        end
+      %>
       <% if unread_messages_count > 0 %>
         <span class="sidebar--item-alert"><%= unread_messages_count %></span>
       <% end %>
