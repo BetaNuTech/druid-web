@@ -85,8 +85,8 @@ class LeadSpeed extends React.Component {
               </p>
               <p>
                 <strong>Business Hours Only:</strong> The timer only counts time during each property's configured office hours.
-                Time outside of business hours (nights, weekends, holidays, and closed days) is not counted.
-                If a lead comes in after hours, the timer starts when the office next opens.
+                Time outside of the property's office hours is not counted.
+                If a lead comes in when the office is closed, the timer starts when the office next opens.
               </p>
               <p><strong>Grading Scale:</strong></p>
               <ul>
