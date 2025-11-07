@@ -123,22 +123,26 @@ class User < ApplicationRecord
   end
 
   # User's leads which changed state from 'open' to 'prospect'
-  def worked_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
-    return Lead.includes(:lead_transitions).
+  def worked_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current, property_ids: nil)
+    scope = Lead.includes(:lead_transitions).
               where(leads: { user_id: self.id }).
               where(lead_transitions: {
                       last_state: 'open',
                       current_state: 'prospect',
                       created_at: start_date..end_date})
+    scope = scope.where(leads: { property_id: property_ids }) if property_ids.present? && property_ids.any?
+    return scope
   end
 
   # User's lead which changed state to 'approved'
-  def closed_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
-    return Lead.includes(:lead_transitions).
+  def closed_leads(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current, property_ids: nil)
+    scope = Lead.includes(:lead_transitions).
               where(leads: { user_id: self.id } ).
               where(lead_transitions: {
                 current_state: 'approved',
                 created_at: start_date..end_date })
+    scope = scope.where(leads: { property_id: property_ids }) if property_ids.present? && property_ids.any?
+    return scope
   end
 
 

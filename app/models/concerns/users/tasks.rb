@@ -7,8 +7,14 @@ module Users
       has_many :compliances, class_name: 'EngagementPolicyActionCompliance'
       has_many :engagement_policy_action_compliances
 
-      def score
-        compliances.sum(:score)
+      def score(property_ids: nil)
+        scope = compliances
+        if property_ids.present? && property_ids.any?
+          scope = scope.joins("INNER JOIN scheduled_actions ON scheduled_actions.id = engagement_policy_action_compliances.scheduled_action_id")
+            .joins("INNER JOIN leads ON scheduled_actions.target_type = 'Lead' AND scheduled_actions.target_id = leads.id")
+            .where(leads: { property_id: property_ids })
+        end
+        scope.sum('engagement_policy_action_compliances.score')
       end
 
       alias total_score score
@@ -23,28 +29,46 @@ module Users
         end
       end
 
-      def weekly_score
-        compliances.
-          where(completed_at: (Date.current.beginning_of_week)..DateTime.current).
-          sum(:score)
+      def weekly_score(property_ids: nil)
+        scope = compliances.where(completed_at: (Date.current.beginning_of_week)..DateTime.current)
+        if property_ids.present? && property_ids.any?
+          scope = scope.joins("INNER JOIN scheduled_actions ON scheduled_actions.id = engagement_policy_action_compliances.scheduled_action_id")
+            .joins("INNER JOIN leads ON scheduled_actions.target_type = 'Lead' AND scheduled_actions.target_id = leads.id")
+            .where(leads: { property_id: property_ids })
+        end
+        scope.sum('engagement_policy_action_compliances.score')
       end
 
-      def tasks_completed(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
-        ScheduledAction.includes(:engagement_policy_action_compliance).
+      def tasks_completed(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current, property_ids: nil)
+        scope = ScheduledAction.includes(:engagement_policy_action_compliance).
           where( engagement_policy_action_compliances: {completed_at: start_date..end_date},
                 scheduled_actions: {user_id: id} )
+        if property_ids.present? && property_ids.any?
+          scope = scope.joins("INNER JOIN leads ON scheduled_actions.target_type = 'Lead' AND scheduled_actions.target_id = leads.id")
+            .where(leads: { property_id: property_ids })
+        end
+        scope
       end
 
-      def tasks_pending
-        ScheduledAction.includes(:engagement_policy_action_compliance).
+      def tasks_pending(property_ids: nil)
+        scope = ScheduledAction.includes(:engagement_policy_action_compliance).
           where( engagement_policy_action_compliances: {state: 'pending'},
                 scheduled_actions: {user_id: id} )
+        if property_ids.present? && property_ids.any?
+          scope = scope.joins("INNER JOIN leads ON scheduled_actions.target_type = 'Lead' AND scheduled_actions.target_id = leads.id")
+            .where(leads: { property_id: property_ids })
+        end
+        scope
       end
 
       # On-time Task completion rate
-      def task_completion_rate(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current)
+      def task_completion_rate(start_date: (Date.current - 7.days).beginning_of_day, end_date: DateTime.current, property_ids: nil)
         skope = ScheduledAction.includes(:engagement_policy_action_compliance).
           where(scheduled_actions: {user_id: id})
+        if property_ids.present? && property_ids.any?
+          skope = skope.joins("INNER JOIN leads ON scheduled_actions.target_type = 'Lead' AND scheduled_actions.target_id = leads.id")
+            .where(leads: { property_id: property_ids })
+        end
         due_actions = skope.where(engagement_policy_action_compliances: {expires_at: start_date..end_date})
         completed_actions = skope.
           where(engagement_policy_action_compliances: { completed_at: start_date..end_date}).
