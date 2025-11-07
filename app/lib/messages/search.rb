@@ -200,8 +200,13 @@ module Messages
       skope = scope || Message
       return Message if user.nil?
 
-      # Agents always see only their own messages at their assigned properties
-      return skope.for_leads.where(leads: { property_id: user.property_ids }).where(user_id: user.id) if user.agent?
+      # Agents see their own messages plus system user messages for their assigned or unassigned leads
+      if user.agent?
+        system_user_id = User.system&.id
+        return skope.for_leads.where(leads: { property_id: user.property_ids })
+                    .where('messages.user_id = ? OR (messages.user_id = ? AND (leads.user_id = ? OR leads.user_id IS NULL))',
+                           user.id, system_user_id, user.id)
+      end
 
       # For Managers, Corporate, and Admins: show all messages for selected property
       if current_property
