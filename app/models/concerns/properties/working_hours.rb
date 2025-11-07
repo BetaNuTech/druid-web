@@ -132,7 +132,10 @@ module Properties
 
       def working_hours_difference_in_time(from, to)
         with_working_hours do
-          (::WorkingHours.working_time_between(from, to) / 60).to_i
+          # Convert times to property's timezone to ensure correct calculation
+          from_in_tz = from.in_time_zone(timezone)
+          to_in_tz = to.in_time_zone(timezone)
+          (::WorkingHours.working_time_between(from_in_tz, to_in_tz) / 60).to_i
         end
       end
 

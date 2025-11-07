@@ -121,10 +121,32 @@ module Leads
 
       def contact_lead_time(first_contact, timestamp)
         # Use created_at rather than first_comm so agents are not penalized for system delays
-        # compare_timestamp = (first_contact ? first_comm : last_comm).to_time
-        compare_timestamp = (first_contact ? created_at : last_comm).to_time
-        
-        ( [ ( timestamp.to_time - compare_timestamp ).to_i, 1 ].max / 60 ).to_i
+        compare_timestamp = (first_contact ? created_at : last_comm)
+
+        # Calculate simple elapsed time in minutes (for 48-hour cap check)
+        simple_elapsed_minutes = ( [ ( timestamp.to_time - compare_timestamp.to_time ).to_i, 1 ].max / 60 ).to_i
+
+        # Only apply business hours calculation for first 48 hours (2880 minutes)
+        # Anything over 48 hours is already graded as 'C', so optimization not needed
+        if simple_elapsed_minutes > 2880
+          return simple_elapsed_minutes
+        end
+
+        # Use property's business hours if available
+        if property.present? && property.respond_to?(:working_hours_difference_in_time)
+          begin
+            business_hours_minutes = property.working_hours_difference_in_time(compare_timestamp, timestamp)
+            # Return business hours calculation, with minimum of 1 minute
+            return [business_hours_minutes, 1].max
+          rescue => e
+            Rails.logger.warn "Failed to calculate business hours lead time for lead #{id}: #{e.message}"
+            # Fall back to simple calculation if business hours calculation fails
+            return simple_elapsed_minutes
+          end
+        end
+
+        # Fallback to simple calculation if no property or business hours unavailable
+        simple_elapsed_minutes
       rescue
         1
       end

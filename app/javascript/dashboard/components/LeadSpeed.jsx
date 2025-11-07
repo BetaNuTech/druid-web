@@ -83,11 +83,16 @@ class LeadSpeed extends React.Component {
               <p>
                 <strong>Timer starts:</strong> From when the lead is created (not when claimed or moved to prospect state).
               </p>
+              <p>
+                <strong>Business Hours Only:</strong> The timer only counts time during each property's configured office hours.
+                Time outside of business hours (nights, weekends, holidays, and closed days) is not counted.
+                If a lead comes in after hours, the timer starts when the office next opens.
+              </p>
               <p><strong>Grading Scale:</strong></p>
               <ul>
-                <li><strong>Grade A:</strong> 0-29 minutes - Excellent response time</li>
-                <li><strong>Grade B:</strong> 30-120 minutes (0.5-2 hours) - Good response time</li>
-                <li><strong>Grade C:</strong> 120+ minutes (2+ hours) - Needs improvement</li>
+                <li><strong>Grade A:</strong> 0-29 minutes (business hours) - Excellent response time</li>
+                <li><strong>Grade B:</strong> 30-120 minutes (business hours) - Good response time</li>
+                <li><strong>Grade C:</strong> 120+ minutes (business hours) - Needs improvement</li>
               </ul>
               <p className={Style.noteText}>
                 <em>Note: Phone-sourced leads get automatic first contact at creation (0 minutes) since the lead calling in is the first contact.</em>
