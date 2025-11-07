@@ -31,12 +31,12 @@ $(document).on('turbolinks:load', function() {
   });
 
   /* Toggle morning closed in Property Office Hours form */
-  $('input.working_hours_toggle_morning_closed').on('click', function(e){
+  $('input.working-hours-toggle--morning-closed').on('click', function(e){
     toggle_working_hours_inputs(e.target,'morning')
   });
 
-  /* Toggle morning closed in Property Office Hours form */
-  $('input.working_hours_toggle_afternoon_closed').on('click', function(e){
+  /* Toggle afternoon closed in Property Office Hours form */
+  $('input.working-hours-toggle--afternoon-closed').on('click', function(e){
     toggle_working_hours_inputs(e.target,'afternoon')
   });
 
@@ -45,8 +45,8 @@ $(document).on('turbolinks:load', function() {
 function toggle_working_hours_inputs(target,tod) {
   var dow = $(target).data('weekday');
   var is_checked = $(target).is(":checked");
-  var weekday_hours = $('.working_hours_' + dow + "_" + tod);
-  var input_selector = "div.working_hours_" + dow + "_" + tod + " select.working_hours_input"; 
+  var weekday_hours = $('.working-hours__' + dow + "--" + tod);
+  var input_selector = "div.working-hours__" + dow + "--" + tod + " select.working-hours__input";
 
   if (weekday_hours[0] != undefined) {
     if (is_checked) {
