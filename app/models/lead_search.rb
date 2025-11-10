@@ -1,5 +1,5 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date, :bedrooms, :vip]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date, :bedrooms, :vip, :has_move_in]
   LEAD_TABLE = Lead.table_name
   DEFAULT_PER_PAGE = 10
   MAX_PER_PAGE = 100
@@ -17,7 +17,10 @@ class LeadSearch
       desc: "COALESCE(#{LEAD_TABLE}.last_comm, #{LEAD_TABLE}.first_comm) DESC" },
     lead_name: {
       asc: "#{LEAD_TABLE}.last_name ASC, #{LEAD_TABLE}.first_name ASC",
-      desc: "#{LEAD_TABLE}.last_name DESC, #{LEAD_TABLE}.first_name DESC" }
+      desc: "#{LEAD_TABLE}.last_name DESC, #{LEAD_TABLE}.first_name DESC" },
+    move_in: {
+      asc: "lead_preferences.move_in ASC NULLS LAST",
+      desc: "lead_preferences.move_in DESC NULLS LAST" }
   }
 
   attr_reader :options, :skope
@@ -50,6 +53,7 @@ class LeadSearch
       filter_by_id_number.
       filter_by_date.
       filter_by_bedrooms.
+      filter_by_has_move_in.
       search_by_text
 
     if @perform_sort
@@ -63,7 +67,7 @@ class LeadSearch
   def full_options
     opts = {
       "Filters" => {
-        "_index" => ["Start Date", "End Date", "Vip", "Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search", "Bedrooms"],
+        "_index" => ["Start Date", "End Date", "Vip", "Agents", "Properties", "Priorities", "States", "Referrals", "Sources", "First Name", "Last Name", "ID Number", "Search", "Bedrooms", "Has Move-in Date"],
         "Vip" => {
           param: "vip",
           type: "select",
@@ -150,6 +154,12 @@ class LeadSearch
           values: Array(@options[:bedrooms]).map{|v| {label: v, value: v}},
           options: bedroom_options
         },
+        "Has Move-in Date" => {
+          param: "has_move_in",
+          type: "select",
+          values: has_move_in_values,
+          options: [{label: 'Yes', value: 'yes'}, {label: 'No', value: 'no'}]
+        },
       },
       "Pagination" => {
         "_index" => ["Page", "PerPage", "SortBy", "SortDir"],
@@ -168,7 +178,8 @@ class LeadSearch
           options: [ {label: 'Priority', value: 'priority'},
                      {label: 'First Contact', value: 'first_contact'},
                      {label: 'Last Contact', value: 'last_contact'},
-                     {label: 'Name', value: 'lead_name'} ]
+                     {label: 'Name', value: 'lead_name'},
+                     {label: 'Move-In Date', value: 'move_in'} ]
         },
         "SortDir" => {
           param: "sort_dir",
@@ -391,11 +402,39 @@ class LeadSearch
     return self
   end
 
+  def filter_by_has_move_in(has_move_in=nil)
+    has_move_in_options = has_move_in || @options[:has_move_in]
+    has_move_in_options = Array(has_move_in_options) unless has_move_in_options.is_a?(Array)
+    return self if has_move_in_options.blank?
+
+    has_move_in_options.map!(&:to_sym)
+    yes = has_move_in_options.include?(:yes)
+    no = has_move_in_options.include?(:no)
+
+    # No filter if both are set or both are unset
+    return self if ( yes && no ) || ( !yes && !no )
+
+    @skope = @skope.includes(:preference)
+
+    if yes
+      @skope = @skope.where.not(lead_preferences: {move_in: nil})
+    else
+      @skope = @skope.where(lead_preferences: {move_in: nil})
+    end
+
+    @filter_applied = true
+    return self
+  end
+
   def paginate
     @skope.limit(query_limit).offset(query_offset)
   end
 
   def sort
+    # Include preferences if sorting by move_in date
+    if query_sort_by == :move_in
+      @skope = @skope.includes(:preference)
+    end
     @skope = @skope.order(Arel.sql(query_sort))
     return self
   end
@@ -495,6 +534,16 @@ class LeadSearch
 
   def bedroom_options
     (1..4).to_a.map{|v| { label: v.to_s, value: v.to_s }}
+  end
+
+  def has_move_in_values
+    has_move_in_options = ( @options[:has_move_in] || [] ).map(&:to_sym)
+    yes = has_move_in_options.include?(:yes)
+    no = has_move_in_options.include?(:no)
+    [
+      {label: 'Yes', value: (yes ? 'yes' : false)},
+      {label: 'No', value: (no ? 'no' : false)}
+    ]
   end
 
 end

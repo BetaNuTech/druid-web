@@ -15,6 +15,7 @@ module Leads
         [ "Referral" , -> (lead) { lead.referral } ],
         [ "Email" , -> (lead) { lead.email } ],
         [ "Phone" , -> (lead) { lead.phone1 } ],
+        [ "Move-In Date" , -> (lead) { lead.preference.try(:move_in) } ],
         [ "Yardi?" , -> (lead) { lead.remoteid.present? } ],
         [ "Yardi ID" , -> (lead) { lead.remoteid } ],
         [ "Notes" , -> (lead) { lead.preference.try(:notes) } ],

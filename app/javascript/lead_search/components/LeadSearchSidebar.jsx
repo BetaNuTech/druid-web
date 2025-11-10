@@ -86,6 +86,18 @@ class LeadSearchSidebar extends React.Component {
               {this.filterInfo("Bedrooms")}
             </ul>
           </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>VIP</span>
+            <ul>
+              {this.filterInfo("Vip")}
+            </ul>
+          </div>
+          <div className={Style.FilterList}>
+            <span className={Style.FilterListItem}>Has Move-in Date</span>
+            <ul>
+              {this.filterInfo("Has Move-in Date")}
+            </ul>
+          </div>
           <div className="clearfix"></div>
         </div>
       </div>
