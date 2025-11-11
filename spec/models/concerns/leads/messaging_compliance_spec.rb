@@ -179,22 +179,39 @@ RSpec.describe "Leads::Messaging compliance message handling", type: :model do
   describe "#send_new_lead_messaging" do
     context "when lead is freshly created" do
       it "sends SMS opt-in request with proper note" do
-        # Skip the automatic reply 
+        # Skip the automatic reply
         allow(lead).to receive(:lead_automatic_reply).and_return(true)
         # Mock that we haven't sent compliance messages before
         allow(lead).to receive(:any_sms_compliance_messages_for_recipient?).and_return(false)
-        # Ensure messages can be sent 
+        # Ensure messages can be sent
         allow(lead).to receive(:open?).and_return(true)
         allow(lead).to receive(:messages).and_return(double(outgoing: double(sms: double(for_compliance: double(any?: false)))))
-        
+
         initial_count = Note.where(notable: lead).count
-        
+
         lead.send_new_lead_messaging
-        
+
         notes = Note.where(notable: lead).order(:created_at)
         compliance_note = notes.find { |n| n.content == "SENT: SMS Opt-In Request" }
         expect(compliance_note).to be_present
         expect(compliance_note.content).to eq("SENT: SMS Opt-In Request")
+      end
+    end
+  end
+
+  describe "#lead_automatic_reply" do
+    context "when property is nil" do
+      let(:non_default_source) { create(:lead_source, name: 'Test Source') }
+      let(:lead_without_property) { create(:lead, property: nil, source: non_default_source, email: 'test@example.com', phone1: '555-555-5555') }
+
+      it "returns false and does not raise an error" do
+        # Mock that we haven't contacted this recipient before
+        allow(lead_without_property).to receive(:any_marketing_messages_for_recipient?).and_return(false)
+
+        expect {
+          result = lead_without_property.lead_automatic_reply
+          expect(result).to be false
+        }.not_to raise_error
       end
     end
   end

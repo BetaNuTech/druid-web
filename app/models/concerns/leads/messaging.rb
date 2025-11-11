@@ -479,6 +479,9 @@ module Leads
         # Don't send if we have contacted this recipient before
         return false if any_marketing_messages_for_recipient?
 
+        # Don't send if property is missing
+        return false unless property.present?
+
         unless property.setting_enabled?(:lead_auto_welcome)
           message = "*** Lead[#{id}] Initial response messages not sent due to disabled 'lead_auto_welcome' Property Appsetting"
           Rails.logger.info message
