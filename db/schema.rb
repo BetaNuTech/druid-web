@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_11_03_000000) do
+ActiveRecord::Schema.define(version: 2025_11_11_180001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -226,6 +226,9 @@ ActiveRecord::Schema.define(version: 2025_11_03_000000) do
     t.datetime "optout_email_date"
     t.boolean "optin_sms", default: false
     t.datetime "optin_sms_date"
+    t.index ["beds"], name: "index_lead_preferences_on_beds"
+    t.index ["lead_id"], name: "index_lead_preferences_on_lead_id"
+    t.index ["move_in"], name: "index_lead_preferences_on_move_in"
   end
 
   create_table "lead_referral_sources", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -310,12 +313,17 @@ ActiveRecord::Schema.define(version: 2025_11_03_000000) do
     t.string "company_title"
     t.boolean "vip", default: false
     t.index ["classification"], name: "index_leads_on_classification"
+    t.index ["first_comm"], name: "index_leads_on_first_comm"
     t.index ["follow_up_at"], name: "index_leads_on_follow_up_at"
+    t.index ["last_comm"], name: "index_leads_on_last_comm"
+    t.index ["lead_source_id"], name: "index_leads_on_lead_source_id"
     t.index ["phone1", "phone2", "first_name", "last_name", "email"], name: "lead_dedupe_idx"
     t.index ["priority"], name: "index_leads_on_priority"
+    t.index ["property_id", "state", "first_comm"], name: "index_leads_on_property_state_first_comm"
     t.index ["property_id", "state", "vip"], name: "idx_leads_vip"
     t.index ["remoteid"], name: "index_leads_on_remoteid"
     t.index ["state"], name: "index_leads_on_state"
+    t.index ["user_id"], name: "index_leads_on_user_id"
   end
 
   create_table "marketing_expenses", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -441,6 +449,7 @@ ActiveRecord::Schema.define(version: 2025_11_03_000000) do
     t.datetime "updated_at", null: false
     t.integer "classification", default: 0
     t.index ["classification"], name: "index_notes_on_classification"
+    t.index ["notable_type", "notable_id", "classification", "created_at"], name: "index_notes_on_notable_and_classification"
     t.index ["user_id", "notable_id", "notable_type"], name: "index_notes_on_user_id_and_notable_id_and_notable_type"
   end
 

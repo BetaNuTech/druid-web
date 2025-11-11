@@ -28,7 +28,14 @@ class LeadSearch
   def initialize(options={}, skope=Lead, user=nil)
     @default_skope = skope
     @options = process_options(options)
-    @skope = @default_skope
+    # Always eager load associations to prevent N+1 queries
+    @skope = @default_skope.includes(
+      :user,
+      :source,
+      :property,
+      preference: :unit_type,
+      comments: [:user, :reason, :lead_action]
+    )
     @filter_applied = false
     @perform_sort = true
     @user = user
@@ -102,15 +109,19 @@ class LeadSearch
           param: "sources",
           type: "select",
           values: LeadSource.where(id: @options[:sources]).map{|s| {label: s.name, value: s.id}},
-          options: LeadSource.active.map{|s| {label: s.name, value: s.id}}
+          options: Rails.cache.fetch('lead_search_source_options', expires_in: 5.minutes) do
+            LeadSource.active.map{|s| {label: s.name, value: s.id}}
+          end
         },
         "Referrals" => {
           param: "referrals",
           type: "select",
           values: Array(@options[:referrals]).map{|r| {label: r, value: r}},
-          options: Lead.select("distinct(referral)").order("referral ASC").
-            map{|r| {label: r.referral, value: r.referral}}.
-            select{|r| r[:label].present? && r[:label] != 'Null' }
+          options: Rails.cache.fetch('lead_search_referral_options', expires_in: 5.minutes) do
+            Lead.select("distinct(referral)").order("referral ASC").
+              map{|r| {label: r.referral, value: r.referral}}.
+              select{|r| r[:label].present? && r[:label] != 'Null' }
+          end
         },
         "First Name" => {
           param: "first_name",
@@ -309,7 +320,6 @@ class LeadSearch
     user_ids ||= @options[:user_ids]
     if user_ids.present?
       @skope = @skope.
-        includes(:user).
         where(users: {id: user_ids})
       @filter_applied = true
     end
@@ -373,7 +383,6 @@ class LeadSearch
     referrals ||= @options[:referrals]
     if referrals.present?
       @skope = @skope.
-        includes(:preference).
         where(referral: referrals)
       @filter_applied = true
     end
@@ -395,7 +404,6 @@ class LeadSearch
     bedrooms ||= @options[:bedrooms]
     if bedrooms.present?
       @skope = @skope.
-        includes(:preference).
         where(lead_preferences: {beds: bedrooms})
       @filter_applied = true
     end
@@ -414,8 +422,6 @@ class LeadSearch
     # No filter if both are set or both are unset
     return self if ( yes && no ) || ( !yes && !no )
 
-    @skope = @skope.includes(:preference)
-
     if yes
       @skope = @skope.where.not(lead_preferences: {move_in: nil})
     else
@@ -431,10 +437,7 @@ class LeadSearch
   end
 
   def sort
-    # Include preferences if sorting by move_in date
-    if query_sort_by == :move_in
-      @skope = @skope.includes(:preference)
-    end
+    # Preference is already included in initialization
     @skope = @skope.order(Arel.sql(query_sort))
     return self
   end

@@ -35,6 +35,8 @@ module Leads
     end
 
     class_methods do
+      CSV_EXPORT_LIMIT = 1000
+
       def export_csv(search: nil, ids: [])
         case search
         when 'Property'
@@ -43,11 +45,21 @@ module Leads
           skope = self
         end
 
-        skope = skope.includes(:preference, :property)
+        # Eager load all associations used in CSV generation to prevent N+1 queries
+        skope = skope.includes(preference: :unit_type, property: :source)
+
+        # Limit export to prevent memory issues
+        total_count = skope.count
+        skope = skope.limit(CSV_EXPORT_LIMIT)
 
         return CSV.generate do |csv|
+          # Add warning if results are limited
+          if total_count > CSV_EXPORT_LIMIT
+            csv << ["WARNING: Results limited to #{CSV_EXPORT_LIMIT} of #{total_count} total leads"]
+          end
+
           csv << CSV_COLUMNS.map{|col| col[0] }
-          skope.all.each do |lead|
+          skope.find_each(batch_size: 100) do |lead|
             csv << CSV_COLUMNS.map{|col| col[1].call(lead) }
           end
         end
