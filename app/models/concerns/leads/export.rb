@@ -46,7 +46,7 @@ module Leads
         end
 
         # Eager load all associations used in CSV generation to prevent N+1 queries
-        skope = skope.includes(preference: :unit_type, property: :source)
+        skope = skope.includes(:property, preference: :unit_type)
 
         # Limit export to prevent memory issues
         total_count = skope.count
