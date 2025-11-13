@@ -23,7 +23,7 @@ module Yardi
 
         attr_accessor *ATTRIBUTES
 
-        def self.from_lead_events(lead)
+        def self.from_lead_events(lead, agent: nil)
           out = []
 
           ### Lead state transitions as events
@@ -45,6 +45,16 @@ module Yardi
             where(lead_actions: {notify: true}, scheduled_actions: {remoteid: [ nil, '' ]})
           out += pending_meetings.map do |sa|
             GuestCardEvent.from_scheduled_action(sa)
+          end
+
+          # Override agent if provided (for Lea AI "Admin" or other special cases)
+          if agent.present?
+            out.each do |event|
+              event.agent = {
+                first_name: agent.profile&.first_name || agent.first_name || '',
+                last_name: agent.profile&.last_name || agent.last_name || ''
+              }
+            end
           end
 
           out = out.sort_by{|event| event.date}

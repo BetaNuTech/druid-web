@@ -30,4 +30,83 @@ RSpec.describe Yardi::Voyager::Data::GuestCard do
     refute(guestcard.property_id.nil?)
   end
 
+  describe "Lea AI Admin agent assignment" do
+    let(:lea_property) { create(:property, :with_lea_ai) }
+    let(:regular_property) { create(:property) }
+    let(:system_user) { User.system }
+    let(:regular_user) { create(:user) }
+
+    before do
+      # Stub voyager_property_code method for both properties
+      allow(lea_property).to receive(:voyager_property_code).and_return('TEST123')
+      allow(regular_property).to receive(:voyager_property_code).and_return('REG456')
+    end
+
+    it "uses Admin agent for system user leads on Lea AI properties" do
+      lead = create(:lead, user: system_user, property: lea_property, state: 'open', remoteid: nil)
+
+      xml = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: true)
+
+      # Agent is in Events > Event > Agent > AgentName
+      expect(xml).to include('<FirstName>Admin</FirstName>')
+      expect(xml).to match(/<LastName\s*\/?>/)
+    end
+
+    it "uses regular agent for non-system user leads on Lea AI properties" do
+      lead = create(:lead, user: regular_user, property: lea_property, state: 'open', remoteid: nil)
+
+      xml = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: true)
+
+      expect(xml).to include("<AgentName><FirstName>#{regular_user.first_name}</FirstName><LastName>#{regular_user.last_name}</LastName></AgentName>")
+    end
+
+    it "uses None agent for unassigned leads (nil user) on Lea AI properties" do
+      lead = create(:lead, user: nil, property: lea_property, state: 'open', remoteid: nil)
+
+      xml = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: true)
+
+      # Unassigned leads should NOT get "Admin" agent
+      expect(xml).not_to include('<FirstName>Admin</FirstName>')
+      # Should get either creditable agent or "None None"
+      expect(xml).to include('<AgentName>')
+    end
+
+    it "uses None agent for system user leads on non-Lea-AI properties" do
+      lead = create(:lead, user: system_user, property: regular_property, state: 'open', remoteid: nil)
+
+      xml = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: true)
+
+      # System user on non-Lea property should NOT get "Admin" (only Lea AI properties get Admin)
+      expect(xml).not_to include('<FirstName>Admin</FirstName>')
+      # Should get creditable agent or system user's actual name (Bluesky)
+      expect(xml).to include('<AgentName>')
+    end
+
+    it "uses creditable agent when available instead of assigned user" do
+      credited_user = create(:user)
+      lead = create(:lead, user: regular_user, property: lea_property, state: 'open', remoteid: nil)
+
+      # Stub creditable_agent to return a different user
+      allow(lead).to receive(:creditable_agent).and_return(credited_user)
+
+      xml = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: true)
+
+      expect(xml).to include("<AgentName><FirstName>#{credited_user.first_name}</FirstName><LastName>#{credited_user.last_name}</LastName></AgentName>")
+    end
+
+    it "handles system user with Lea handoff lead (has conversation URL)" do
+      # Create unique email to avoid duplicate validation error
+      unique_email = "lea_handoff_#{SecureRandom.hex(4)}@example.com"
+      lead = create(:lead, user: system_user, property: lea_property, state: 'open', remoteid: nil,
+                    lea_conversation_url: 'https://lea.example.com/conversation/abc123',
+                    email: unique_email)
+
+      xml = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: true)
+
+      # Should use Admin since it's system user on Lea AI property
+      expect(xml).to include('<FirstName>Admin</FirstName>')
+      expect(xml).to match(/<LastName\s*\/?>/)
+    end
+  end
+
 end

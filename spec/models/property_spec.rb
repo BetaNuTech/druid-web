@@ -334,4 +334,29 @@ RSpec.describe Property, type: :model do
       end
     end
   end
+
+  describe "Lea AI settings" do
+    let(:property) { create(:property) }
+
+    it "defaults lea_ai_handling to false" do
+      expect(property.lea_ai_handling?).to be false
+    end
+
+    it "can enable lea_ai_handling" do
+      property.switch_setting!(:lea_ai_handling, true)
+      expect(property.lea_ai_handling?).to be true
+    end
+
+    it "can disable lea_ai_handling after enabling" do
+      property.switch_setting!(:lea_ai_handling, true)
+      property.switch_setting!(:lea_ai_handling, false)
+      expect(property.lea_ai_handling?).to be false
+    end
+
+    it "persists lea_ai_handling setting after reload" do
+      property.switch_setting!(:lea_ai_handling, true)
+      property.reload
+      expect(property.lea_ai_handling?).to be true
+    end
+  end
 end

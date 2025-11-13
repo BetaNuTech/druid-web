@@ -309,4 +309,19 @@ module LeadsHelper
     Lead::ACTION_MEMO_TRANSITIONS.include?(eventid.to_s)
   end
 
+  # Convert URLs in text to clickable links
+  # Used for displaying notes with embedded URLs (e.g., Lea conversation links)
+  def linkify_note_content(text)
+    return '' if text.blank?
+
+    # Convert URLs to clickable links
+    text = text.gsub(URI::regexp(%w[http https])) do |url|
+      "<a href=\"#{url}\" target=\"_blank\" rel=\"noopener noreferrer\">#{url}</a>"
+    end
+
+    # Then apply simple_format for newlines/paragraphs
+    # Disable sanitization since we've already created safe HTML links
+    simple_format(text, {}, sanitize: false)
+  end
+
 end

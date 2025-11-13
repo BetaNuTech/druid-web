@@ -139,10 +139,12 @@ class OpenaiClient
       Return ONLY valid JSON with this exact structure:
       {
         "is_lead": true/false,
-        "lead_type": "rental_inquiry|resident|vendor|spam|unknown",
+        "lead_type": "rental_inquiry|resident|vendor|spam|unknown|lea_handoff",
         "confidence": 0.0-1.0,
         "source_match": "source name or null",
         "has_sms_consent": true/false,
+        "lea_conversation_url": "string or null",
+        "lea_handoff_reason": "string or null",
         "lead_data": {
           "first_name": "string or null",
           "last_name": "string or null",
@@ -165,6 +167,19 @@ class OpenaiClient
       - IMPORTANT: Do not select emails that start with any of these prefixes as the lead's email: #{invalid_prefixes.join(', ')}
       - If an email starts with any of these invalid prefixes (#{invalid_prefixes.join(', ')}), return null for the email field unless another valid email address is found in the email content
       - Only return null for email if no other valid email addresses are found
+
+      LEA AI HANDOFF DETECTION:
+      - lead_type: "lea_handoff" if the email is a handoff from Lea AI assistant
+      - Detection criteria (ALL must be present):
+        1. Email body contains "Guest Card Details:" (case-insensitive)
+        2. Email body contains the word "handoff" (case-insensitive)
+        3. Email signature contains "Lea" or from address contains "lea@"
+        4. Email contains a "View conversation" link or similar conversation URL
+      - If detected as lea_handoff:
+        * Extract the conversation URL from "View conversation" link → lea_conversation_url
+        * Extract the handoff reason (e.g., "Tour request") → lea_handoff_reason
+        * Still extract all lead contact details from "Guest Card Details" section
+        * Set is_lead: true and confidence: 0.95+
       - For source_match: FIRST try to flexibly match against the Marketing Sources list provided for the property
       - Marketing Sources are the property's configured attribution sources (e.g., "Zillow", "Apartments.com", "Property Website")
       - Use flexible matching: "Zillow" matches "Zillow.com" or "Zillow Group", "Property Website" matches emails that appear to come from the property's website contact form, "Apartments.com" matches "Apartments.com" or "apartments.com", "Apartment List" matches "ApartmentList.com" or "apartmentlist.com"

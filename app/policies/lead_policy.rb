@@ -187,7 +187,13 @@ class LeadPolicy < ApplicationPolicy
   end
 
   def invalidate?
-    !record.invalidated? && edit?
+    return false if record.invalidated?
+
+    # Allow invalidating system user leads (Lea AI duplicates) even if assigned to system
+    return true if record.user&.system_user?
+
+    # Normal permission check
+    edit?
   end
 
   def change_classification?

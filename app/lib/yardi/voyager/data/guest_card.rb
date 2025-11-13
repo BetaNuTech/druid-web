@@ -28,7 +28,7 @@ module Yardi
         attr_accessor *ATTRIBUTES
         attr_accessor :debug
 
-        def self.from_lead(lead, yardi_property_id)
+        def self.from_lead(lead, yardi_property_id, agent: nil)
           card = GuestCard.new
           card.name_prefix = lead.title
           card.first_name = lead.first_name
@@ -43,7 +43,7 @@ module Yardi
 					card.bedrooms = lead&.preference&.beds
 					card.bathrooms = lead&.preference&.baths
           card.preference_comment = lead.preference.notes
-          card.events = Yardi::Voyager::Data::GuestCardEvent.from_lead_events(lead)
+          card.events = Yardi::Voyager::Data::GuestCardEvent.from_lead_events(lead, agent: agent)
           return card
         end
 
@@ -303,10 +303,18 @@ module Yardi
 
         def self.to_xml_2(lead:, include_events: false)
           organization = Yardi::Voyager::Api::Configuration.new.vendorname
-          agent = lead.creditable_agent ||
-                  User.new(profile: UserProfile.new(first_name: 'None', last_name: 'None'))
+
+          # For Lea AI properties: use "Admin" if system user is assigned
+          # This allows Lea AI to pick up unworked leads in Yardi
+          if lead.property&.lea_ai_handling? && lead.user&.system_user?
+            agent = User.new(profile: UserProfile.new(first_name: 'Admin', last_name: ''))
+          else
+            agent = lead.creditable_agent ||
+                    User.new(profile: UserProfile.new(first_name: 'None', last_name: 'None'))
+          end
+
           propertyid = lead.property.voyager_property_code
-          customer = GuestCard.from_lead(lead, propertyid)
+          customer = GuestCard.from_lead(lead, propertyid, agent: agent)
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.LeadManagement('xmlns' => '') {
               xml.Prospects {

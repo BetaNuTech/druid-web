@@ -255,6 +255,13 @@ module Leads
       end
 
       def auto_invalidate_lead?
+        # Don't auto-invalidate leads assigned to system user (awaiting Lea AI handoff)
+        # Check both the association and reload to ensure we have the current state
+        return false if user_id.present? && User.find_by(id: user_id)&.system_user?
+
+        # Don't auto-invalidate Lea handoff leads (they will match system user's lead as duplicate)
+        return false if lea_conversation_url.present?
+
         # Phone number Matches invalidated leads classified as spam
         return 'this lead originated from a spam call' if spam_matches.any?
 
@@ -264,6 +271,10 @@ module Leads
         # Abort if there are no matches
         dupes = high_confidence_duplicates.to_a
         return false unless dupes.any?
+
+        # Don't auto-invalidate if any duplicates are system user leads or Lea handoff leads
+        # This prevents regular leads from being invalidated when matched with Lea AI leads
+        return false if dupes.any? { |lead| (lead.user_id.present? && User.find_by(id: lead.user_id)&.system_user?) || lead.lea_conversation_url.present? }
 
         # Abort if all of the duplicates belong to other properties
         return false if dupes.all?{|lead| lead.property_id != property_id }

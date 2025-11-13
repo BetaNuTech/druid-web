@@ -640,5 +640,448 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         end
       end
     end
+
+    context "with Lea AI handoff detection" do
+      let(:lea_property) { create(:property, :with_lea_ai) }
+      let(:lea_listing) { create(:property_listing, property: lea_property, source: cloudmailin_source, code: lea_property.id) }
+      let(:system_user) { User.system }
+
+      let(:lea_handoff_response) {
+        {
+          'is_lead' => true,
+          'lead_type' => 'rental_inquiry',
+          'lea_handoff' => true,
+          'lea_conversation_url' => 'https://lea.example.com/conversation/abc123',
+          'lea_handoff_reason' => 'Email contains Guest Card Details and signature from Lea',
+          'confidence' => 0.98,
+          'source_match' => 'Zillow',
+          'lead_data' => {
+            'first_name' => 'Sarah',
+            'last_name' => 'Johnson',
+            'email' => 'sarah.johnson@example.com',
+            'phone1' => '555-888-9999',
+            'notes' => 'Ready to schedule a tour'
+          },
+          'classification_reason' => 'Lea AI handoff email detected'
+        }
+      }
+
+      let(:lea_email_data) {
+        {
+          headers: {
+            'From' => 'lea@example.com',
+            'To' => "property+#{lea_property.id}@cloudmailin.net",
+            'Subject' => 'Ready to hand off - Sarah Johnson',
+            'Date' => '2025-06-10 18:00:00 UTC'
+          },
+          plain: 'Guest Card Details: Sarah Johnson is ready for agent contact'
+        }
+      }
+
+      let(:lea_raw_email) { create(:cloudmailin_raw_email, raw_data: lea_email_data, property_code: lea_property.id.to_s) }
+
+      before do
+        lea_listing
+        allow(openai_client).to receive(:analyze_email).and_return(lea_handoff_response)
+
+        # Stub messaging methods to avoid message_type requirements in tests
+        allow_any_instance_of(Lead).to receive(:send_new_lead_messaging).and_return(true)
+        allow_any_instance_of(Lead).to receive(:broadcast_to_streams).and_return(true)
+      end
+
+      it "creates lead with Lea conversation URL" do
+        expect {
+          described_class.perform_now(lea_raw_email)
+        }.to change { Lead.count }.by(1)
+
+        lead = lea_raw_email.reload.lead
+        expect(lead.lea_conversation_url).to eq('https://lea.example.com/conversation/abc123')
+      end
+
+      it "leaves lead in open state without assigning to user" do
+        described_class.perform_now(lea_raw_email)
+
+        lead = lea_raw_email.reload.lead
+        expect(lead.state).to eq('open')
+        expect(lead.user).to be_nil
+      end
+
+      it "creates system note about Lea handoff" do
+        described_class.perform_now(lea_raw_email)
+
+        lead = lea_raw_email.reload.lead
+        notes = Note.where(notable: lead, classification: 'system')
+        handoff_note = notes.find { |n| n.content.include?('Lea AI Handoff detected') }
+
+        expect(handoff_note).to be_present
+        expect(handoff_note.content).to include('Email contains Guest Card Details and signature from Lea')
+        expect(handoff_note.content).to include('https://lea.example.com/conversation/abc123')
+      end
+
+      it "does not trigger auto-invalidation for handoff leads" do
+        # Create a potential duplicate lead first
+        create(:lead,
+          first_name: 'Sarah',
+          last_name: 'Johnson',
+          email: 'sarah.johnson@example.com',
+          property: lea_property,
+          state: 'prospect'
+        )
+
+        described_class.perform_now(lea_raw_email)
+
+        lead = lea_raw_email.reload.lead
+        expect(lead.state).to eq('open')
+        expect(lead.invalidated?).to be false
+      end
+
+      it "marks raw email as completed with parser OpenAI" do
+        described_class.perform_now(lea_raw_email)
+
+        lea_raw_email.reload
+        expect(lea_raw_email.status).to eq('completed')
+        expect(lea_raw_email.parser_used).to eq('OpenAI')
+      end
+
+      it "handles missing conversation URL gracefully" do
+        handoff_without_url = lea_handoff_response.merge('lea_conversation_url' => nil)
+        allow(openai_client).to receive(:analyze_email).and_return(handoff_without_url)
+
+        expect {
+          described_class.perform_now(lea_raw_email)
+        }.to change { Lead.count }.by(1)
+
+        lead = lea_raw_email.reload.lead
+        expect(lead.lea_conversation_url).to be_nil
+        expect(lead.state).to eq('open')
+        expect(lead.user).to be_nil
+
+        # Should still create handoff note even without URL
+        notes = Note.where(notable: lead, classification: 'system')
+        handoff_note = notes.find { |n| n.content.include?('Lea AI Handoff detected') }
+        expect(handoff_note).to be_present
+      end
+
+      it "does not interfere with normal lead processing on non-Lea-AI properties" do
+        # Use regular property without lea_ai_handling
+        normal_response = openai_lead_response.merge('lea_handoff' => true, 'lea_conversation_url' => 'https://lea.example.com/test')
+        allow(openai_client).to receive(:analyze_email).and_return(normal_response)
+
+        described_class.perform_now(raw_email)
+
+        lead = raw_email.reload.lead
+        # Even though OpenAI detected handoff, property doesn't have Lea enabled
+        # so it should still process as normal lead
+        expect(lead.lea_conversation_url).to eq('https://lea.example.com/test')
+        expect(lead.state).to eq('open')
+        expect(lead.user).to be_nil
+      end
+    end
+
+    context "with system user assignment for Lea AI properties" do
+      let(:lea_property) { create(:property, :with_lea_ai) }
+      let(:lea_listing) { create(:property_listing, property: lea_property, source: cloudmailin_source, code: lea_property.id) }
+      let(:system_user) { User.system }
+
+      let(:rental_inquiry_response) {
+        {
+          'is_lead' => true,
+          'lead_type' => 'rental_inquiry',
+          'lea_handoff' => false,
+          'confidence' => 0.95,
+          'source_match' => 'Zillow',
+          'lead_data' => {
+            'first_name' => 'Mike',
+            'last_name' => 'Davis',
+            'email' => 'mike.davis@example.com',
+            'phone1' => '555-777-6666',
+            'notes' => 'Looking for 2BR apartment'
+          },
+          'classification_reason' => 'Email contains rental inquiry'
+        }
+      }
+
+      let(:rental_email_data) {
+        {
+          headers: {
+            'From' => 'mike.davis@example.com',
+            'To' => "property+#{lea_property.id}@cloudmailin.net",
+            'Subject' => 'Looking for apartment',
+            'Date' => '2025-06-10 19:00:00 UTC'
+          },
+          plain: 'I am looking for a 2BR apartment'
+        }
+      }
+
+      let(:rental_raw_email) { create(:cloudmailin_raw_email, raw_data: rental_email_data, property_code: lea_property.id.to_s) }
+
+      before do
+        lea_listing
+        allow(openai_client).to receive(:analyze_email).and_return(rental_inquiry_response)
+
+        # Stub messaging methods to avoid message_type requirements in tests
+        allow_any_instance_of(Lead).to receive(:send_new_lead_messaging).and_return(true)
+        allow_any_instance_of(Lead).to receive(:broadcast_to_streams).and_return(true)
+      end
+
+      it "assigns rental inquiry to system user" do
+        described_class.perform_now(rental_raw_email)
+
+        lead = rental_raw_email.reload.lead
+        expect(lead.user).to eq(system_user)
+        expect(lead.user.system_user?).to be true
+      end
+
+      it "moves lead to prospect state after system user assignment" do
+        described_class.perform_now(rental_raw_email)
+
+        lead = rental_raw_email.reload.lead
+        expect(lead.state).to eq('prospect')
+      end
+
+      it "creates system note about Lea AI processing assignment" do
+        described_class.perform_now(rental_raw_email)
+
+        lead = rental_raw_email.reload.lead
+        notes = Note.where(notable: lead, classification: 'system')
+        assignment_note = notes.find { |n| n.content.include?('Lead assigned to system for Lea AI processing') }
+
+        expect(assignment_note).to be_present
+      end
+
+      it "does not assign system user for non-rental inquiries" do
+        non_rental_response = rental_inquiry_response.merge('lead_type' => 'vendor')
+        allow(openai_client).to receive(:analyze_email).and_return(non_rental_response)
+
+        described_class.perform_now(rental_raw_email)
+
+        lead = rental_raw_email.reload.lead
+        expect(lead.user).to be_nil
+        expect(lead.state).to eq('open')
+      end
+
+      it "does not assign system user on non-Lea-AI properties" do
+        # Use regular property without lea_ai_handling
+        allow(openai_client).to receive(:analyze_email).and_return(rental_inquiry_response)
+
+        described_class.perform_now(raw_email)
+
+        lead = raw_email.reload.lead
+        expect(lead.user).to be_nil
+        expect(lead.state).to eq('open')
+      end
+
+      it "does not trigger auto-invalidation for system user leads" do
+        # Create a potential duplicate lead first
+        create(:lead,
+          first_name: 'Mike',
+          last_name: 'Davis',
+          email: 'mike.davis@example.com',
+          property: lea_property,
+          state: 'prospect'
+        )
+
+        described_class.perform_now(rental_raw_email)
+
+        lead = rental_raw_email.reload.lead
+        expect(lead.user).to eq(system_user)
+        expect(lead.state).to eq('prospect')
+        expect(lead.invalidated?).to be false
+      end
+    end
+
+    context "with Lea AI edge cases" do
+      let(:lea_property) { create(:property, :with_lea_ai) }
+      let(:lea_listing) { create(:property_listing, property: lea_property, source: cloudmailin_source, code: lea_property.id) }
+      let(:system_user) { User.system }
+
+      before do
+        lea_listing
+        # Stub messaging methods to avoid message_type requirements in tests
+        allow_any_instance_of(Lead).to receive(:send_new_lead_messaging).and_return(true)
+        allow_any_instance_of(Lead).to receive(:broadcast_to_streams).and_return(true)
+      end
+
+      it "handles both lea_handoff flag and lea_conversation_url together" do
+        combined_response = {
+          'is_lead' => true,
+          'lead_type' => 'rental_inquiry',
+          'lea_handoff' => true,
+          'lea_conversation_url' => 'https://lea.example.com/conversation/xyz789',
+          'lea_handoff_reason' => 'Handoff requested',
+          'confidence' => 0.99,
+          'source_match' => 'Direct',
+          'lead_data' => {
+            'first_name' => 'Emma',
+            'last_name' => 'Wilson',
+            'email' => 'emma.wilson@example.com',
+            'phone1' => '555-444-3333',
+            'notes' => 'Ready for handoff'
+          },
+          'classification_reason' => 'Lea handoff detected'
+        }
+
+        email_data = {
+          headers: {
+            'From' => 'lea@example.com',
+            'To' => "property+#{lea_property.id}@cloudmailin.net",
+            'Subject' => 'Handoff - Emma Wilson',
+            'Date' => '2025-06-10 20:00:00 UTC'
+          },
+          plain: 'Guest Card Details: Emma Wilson ready for agent'
+        }
+
+        raw_email = create(:cloudmailin_raw_email, raw_data: email_data, property_code: lea_property.id.to_s)
+
+        openai_client = instance_double(OpenaiClient)
+        allow(OpenaiClient).to receive(:new).and_return(openai_client)
+        allow(openai_client).to receive(:analyze_email).and_return(combined_response)
+
+        described_class.perform_now(raw_email)
+
+        lead = raw_email.reload.lead
+        expect(lead.lea_conversation_url).to eq('https://lea.example.com/conversation/xyz789')
+        expect(lead.state).to eq('open')
+        expect(lead.user).to be_nil
+
+        # Should create handoff note, not system user assignment note
+        notes = Note.where(notable: lead, classification: 'system')
+        handoff_note = notes.find { |n| n.content.include?('Lea AI Handoff detected') }
+        assignment_note = notes.find { |n| n.content.include?('Lead assigned to system for Lea AI processing') }
+
+        expect(handoff_note).to be_present
+        expect(assignment_note).to be_nil
+      end
+
+      it "prioritizes handoff over system user assignment when both conditions met" do
+        # Edge case: OpenAI says it's a rental inquiry AND a handoff
+        # Handoff should take precedence
+        ambiguous_response = {
+          'is_lead' => true,
+          'lead_type' => 'rental_inquiry',  # Would normally trigger system user assignment
+          'lea_handoff' => true,            # But this should take precedence
+          'lea_conversation_url' => 'https://lea.example.com/conversation/abc',
+          'lea_handoff_reason' => 'Handoff requested',
+          'confidence' => 0.95,
+          'source_match' => 'Zillow',
+          'lead_data' => {
+            'first_name' => 'Test',
+            'last_name' => 'Case',
+            'email' => 'test@example.com',
+            'phone1' => '5551112222',
+            'notes' => 'Test case'
+          },
+          'classification_reason' => 'Ambiguous case'
+        }
+
+        email_data = {
+          headers: {
+            'From' => 'test@example.com',
+            'To' => "property+#{lea_property.id}@cloudmailin.net",
+            'Subject' => 'Test',
+            'Date' => '2025-06-10 20:30:00 UTC'
+          },
+          plain: 'Test email'
+        }
+
+        raw_email = create(:cloudmailin_raw_email, raw_data: email_data, property_code: lea_property.id.to_s)
+
+        openai_client = instance_double(OpenaiClient)
+        allow(OpenaiClient).to receive(:new).and_return(openai_client)
+        allow(openai_client).to receive(:analyze_email).and_return(ambiguous_response)
+
+        described_class.perform_now(raw_email)
+
+        lead = raw_email.reload.lead
+        # Should be treated as handoff (left unassigned in open state)
+        expect(lead.user).to be_nil
+        expect(lead.state).to eq('open')
+        expect(lead.lea_conversation_url).to eq('https://lea.example.com/conversation/abc')
+      end
+
+      it "handles system user assignment when lea_handoff is explicitly false" do
+        explicit_false_response = {
+          'is_lead' => true,
+          'lead_type' => 'rental_inquiry',
+          'lea_handoff' => false,  # Explicitly false
+          'confidence' => 0.96,
+          'source_match' => 'Apartments.com',
+          'lead_data' => {
+            'first_name' => 'Alex',
+            'last_name' => 'Brown',
+            'email' => 'alex.brown@example.com',
+            'phone1' => '555-222-1111',
+            'notes' => 'New rental inquiry'
+          },
+          'classification_reason' => 'Standard rental inquiry'
+        }
+
+        email_data = {
+          headers: {
+            'From' => 'alex.brown@example.com',
+            'To' => "property+#{lea_property.id}@cloudmailin.net",
+            'Subject' => 'Apartment inquiry',
+            'Date' => '2025-06-10 21:00:00 UTC'
+          },
+          plain: 'Looking for an apartment'
+        }
+
+        raw_email = create(:cloudmailin_raw_email, raw_data: email_data, property_code: lea_property.id.to_s)
+
+        openai_client = instance_double(OpenaiClient)
+        allow(OpenaiClient).to receive(:new).and_return(openai_client)
+        allow(openai_client).to receive(:analyze_email).and_return(explicit_false_response)
+
+        described_class.perform_now(raw_email)
+
+        lead = raw_email.reload.lead
+        # Should be assigned to system user
+        expect(lead.user).to eq(system_user)
+        expect(lead.state).to eq('prospect')
+        expect(lead.lea_conversation_url).to be_nil
+      end
+
+      it "handles missing lea_handoff field (backward compatibility)" do
+        legacy_response = {
+          'is_lead' => true,
+          'lead_type' => 'rental_inquiry',
+          # No lea_handoff field at all
+          'confidence' => 0.94,
+          'source_match' => 'Zillow',
+          'lead_data' => {
+            'first_name' => 'Legacy',
+            'last_name' => 'Lead',
+            'email' => 'legacy@example.com',
+            'phone1' => '555-999-8888',
+            'notes' => 'Legacy inquiry'
+          },
+          'classification_reason' => 'Rental inquiry'
+        }
+
+        email_data = {
+          headers: {
+            'From' => 'legacy@example.com',
+            'To' => "property+#{lea_property.id}@cloudmailin.net",
+            'Subject' => 'Inquiry',
+            'Date' => '2025-06-10 21:30:00 UTC'
+          },
+          plain: 'Interested in renting'
+        }
+
+        raw_email = create(:cloudmailin_raw_email, raw_data: email_data, property_code: lea_property.id.to_s)
+
+        openai_client = instance_double(OpenaiClient)
+        allow(OpenaiClient).to receive(:new).and_return(openai_client)
+        allow(openai_client).to receive(:analyze_email).and_return(legacy_response)
+
+        described_class.perform_now(raw_email)
+
+        lead = raw_email.reload.lead
+        # Should default to system user assignment for Lea AI properties
+        expect(lead.user).to eq(system_user)
+        expect(lead.state).to eq('prospect')
+        expect(lead.lea_conversation_url).to be_nil
+      end
+    end
   end
 end

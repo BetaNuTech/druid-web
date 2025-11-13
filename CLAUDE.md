@@ -76,6 +76,7 @@ Located in `lib/` directory with clear separation by domain:
 - **Cloudmailin** - Incoming email processing for leads and messages
 - **Mailgun** - Outbound email delivery
 - **AWS S3** - File storage via ActiveStorage
+- **Lea AI** - AI-powered leasing assistant integration (see `doc/lea_ai_integration.md`)
 
 ## Testing Strategy
 

@@ -112,6 +112,9 @@ class Lead < ApplicationRecord
       case_sensitive: false,
       message: "is not unique. Delete the remoteid of this record or in the duplicate record"
     }
+  validates :lea_conversation_url,
+    format: { with: URI::regexp(%w[http https]), message: "must be a valid URL" },
+    allow_blank: true
 
     ### Callbacks
     before_validation :format_phones

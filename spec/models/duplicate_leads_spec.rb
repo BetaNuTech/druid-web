@@ -404,4 +404,178 @@ RSpec.describe DuplicateLead do
     end
 
   end
+
+  describe "automatic duplicate invalidation with Lea AI" do
+    let(:system_user) { User.system }
+    let(:property) { create(:property) }
+    let(:regular_user) { create(:user) }
+
+    before(:each) do
+      property.assign_user(user: regular_user, role: 'agent')
+      test_strategy = Flipflop::FeatureSet.current.test!
+      test_strategy.switch!(:lead_automatic_dedupe, true)
+    end
+
+    context "when lead is assigned to system user" do
+      it "should not auto-invalidate leads assigned to system user" do
+        # Create existing lead first
+        existing_lead = create(:lead,
+          state: 'prospect',
+          first_name: 'John',
+          last_name: 'Doe',
+          email: "john.doe@example.com",
+          phone1: '555-123-4567',
+          property: property,
+          user: regular_user
+        )
+
+        # Create system user lead with duplicate info
+        system_lead = create(:lead,
+          state: 'prospect',
+          first_name: 'John',
+          last_name: 'Doe',
+          email: "john.doe@example.com",
+          phone1: '555-123-4567',
+          user: system_user,
+          property: property
+        )
+
+        system_lead.reload
+        expect(system_lead.state).to eq('prospect')
+        expect(system_lead.invalidated?).to be false
+      end
+    end
+
+    context "when lead has Lea conversation URL" do
+      it "should not auto-invalidate leads with Lea conversation URL" do
+        # Create existing lead
+        existing_lead = create(:lead,
+          state: 'prospect',
+          first_name: 'Jane',
+          last_name: 'Smith',
+          email: "jane.smith@example.com",
+          phone1: '555-987-6543',
+          property: property,
+          user: system_user
+        )
+
+        # Create Lea handoff lead with duplicate info
+        lea_lead = create(:lead,
+          state: 'open',
+          first_name: 'Jane',
+          last_name: 'Smith',
+          email: "jane.smith@example.com",
+          phone1: '555-987-6543',
+          lea_conversation_url: 'https://lea.example.com/conversation/abc123',
+          property: property
+        )
+
+        lea_lead.reload
+        expect(lea_lead.invalidated?).to be false
+      end
+    end
+
+    context "when both system user lead and handoff lead exist" do
+      it "should preserve both leads (neither auto-invalidated)" do
+        # Original system user lead
+        system_lead = create(:lead,
+          state: 'prospect',
+          first_name: 'Bob',
+          last_name: 'Johnson',
+          email: "bob.johnson@example.com",
+          phone1: '555-111-2222',
+          user: system_user,
+          property: property
+        )
+
+        # Lea handoff lead (duplicate)
+        handoff_lead = create(:lead,
+          state: 'open',
+          first_name: 'Bob',
+          last_name: 'Johnson',
+          email: "bob.johnson@example.com",
+          phone1: '555-111-2222',
+          lea_conversation_url: 'https://lea.example.com/conversation/xyz789',
+          property: property
+        )
+
+        system_lead.reload
+        handoff_lead.reload
+
+        expect(system_lead.invalidated?).to be false
+        expect(handoff_lead.invalidated?).to be false
+      end
+    end
+
+    context "when regular duplicate leads exist" do
+      it "should still auto-invalidate regular duplicate leads normally" do
+        # Create existing worked lead
+        existing_lead = create(:lead,
+          state: 'prospect',
+          first_name: 'Alice',
+          last_name: 'Williams',
+          email: "alice.williams@example.com",
+          phone1: '555-333-4444',
+          property: property,
+          user: regular_user
+        )
+
+        # Create new duplicate lead (not system user, no Lea URL)
+        duplicate_lead = create(:lead,
+          state: 'open',
+          first_name: 'Alice',
+          last_name: 'Williams',
+          email: "alice.williams@example.com",
+          phone1: '555-333-4444',
+          property: property
+        )
+
+        duplicate_lead.reload
+        expect(duplicate_lead.invalidated?).to be true
+        expect(duplicate_lead.classification).to eq('duplicate')
+      end
+    end
+
+    context "when feature flag is enabled" do
+      it "should respect feature flag for regular duplicates" do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:lead_automatic_dedupe, false)
+
+        existing_lead = create(:lead,
+          state: 'prospect',
+          email: "test@example.com",
+          property: property
+        )
+
+        duplicate_lead = create(:lead,
+          state: 'open',
+          first_name: existing_lead.first_name,
+          last_name: existing_lead.last_name,
+          email: "test@example.com",
+          property: property
+        )
+
+        duplicate_lead.reload
+        expect(duplicate_lead.invalidated?).to be false
+      end
+    end
+
+    context "when system user lead can be manually invalidated" do
+      it "should allow manual invalidation by authorized user" do
+        system_lead = create(:lead,
+          user: system_user,
+          property: property,
+          state: 'prospect'  # Must be in open or prospect state to invalidate
+        )
+
+        # Manually invalidate (this tests the code path, policy tests cover permissions)
+        system_lead.classification = :duplicate
+        system_lead.trigger_event(event_name: 'invalidate')
+        system_lead.save
+
+        system_lead.reload
+        expect(system_lead.invalidated?).to be true
+      end
+    end
+  end
 end

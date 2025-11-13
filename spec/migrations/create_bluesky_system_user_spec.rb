@@ -1,5 +1,5 @@
 require 'rails_helper'
-require_migration 'create_bluesky_system_user'
+require File.expand_path('../../db/migrate/20250725185348_create_bluesky_system_user.rb', __dir__)
 
 RSpec.describe CreateBlueskySystemUser do
   let(:migration) { described_class.new }
@@ -10,15 +10,15 @@ RSpec.describe CreateBlueskySystemUser do
       unless ActiveRecord::Base.connection.column_exists?(:users, :system_user)
         ActiveRecord::Base.connection.add_column :users, :system_user, :boolean, default: false
       end
-      
+
       # Ensure administrator role exists
       Role.find_or_create_by!(name: 'Administrator', slug: 'administrator')
+
+      # Clean up any existing system user from factory_bot before(:suite) hook
+      User.where(email: 'system@bluesky.internal').destroy_all
     end
 
     context 'when system user does not exist' do
-      before do
-        User.where(email: 'system@bluesky.internal').destroy_all
-      end
 
       it 'creates the system user' do
         expect { migration.up }.to change { User.count }.by(1)
@@ -74,13 +74,14 @@ RSpec.describe CreateBlueskySystemUser do
           role: Role.find_by(name: 'Administrator'),
           confirmed_at: 1.day.ago
         )
-        user.create_profile!(first_name: 'Old', last_name: 'Name')
+        # Profile is auto-created by callback, just update it
+        user.profile.update!(first_name: 'Old', last_name: 'Name')
         user
       end
 
       it 'updates the profile to Bluesky' do
         migration.up
-        
+
         existing_user.reload
         expect(existing_user.profile.first_name).to eq('Bluesky')
         expect(existing_user.profile.last_name).to be_nil

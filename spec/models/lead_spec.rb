@@ -1332,4 +1332,40 @@ RSpec.describe Lead, type: :model do
       end
     end
   end
+
+  describe "Lea conversation URL validation" do
+    let(:lead) { build(:lead) }
+
+    it "accepts valid https URL" do
+      lead.lea_conversation_url = 'https://lea.example.com/conversation/abc123'
+      expect(lead).to be_valid
+    end
+
+    it "accepts valid http URL" do
+      lead.lea_conversation_url = 'http://lea.example.com/conversation/abc123'
+      expect(lead).to be_valid
+    end
+
+    it "accepts nil lea_conversation_url" do
+      lead.lea_conversation_url = nil
+      expect(lead).to be_valid
+    end
+
+    it "accepts blank lea_conversation_url" do
+      lead.lea_conversation_url = ''
+      expect(lead).to be_valid
+    end
+
+    it "rejects invalid URL format" do
+      lead.lea_conversation_url = 'not-a-url'
+      expect(lead).not_to be_valid
+      expect(lead.errors[:lea_conversation_url]).to include('must be a valid URL')
+    end
+
+    it "rejects non-URL text" do
+      lead.lea_conversation_url = 'just some text'
+      expect(lead).not_to be_valid
+      expect(lead.errors[:lea_conversation_url]).to include('must be a valid URL')
+    end
+  end
 end

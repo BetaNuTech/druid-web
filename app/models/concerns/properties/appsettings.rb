@@ -6,6 +6,7 @@ module Properties
       lead_company_information
       lead_auto_welcome
       lead_auto_request_sms_opt_in
+      lea_ai_handling
     ].freeze
 
     included do
@@ -22,6 +23,10 @@ module Properties
 
       def lead_auto_request_sms_opt_in?
         setting_enabled?(:lead_auto_request_sms_opt_in)
+      end
+
+      def lea_ai_handling?
+        setting_enabled?(:lea_ai_handling)
       end
 
 

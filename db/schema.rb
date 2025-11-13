@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_11_11_180001) do
+ActiveRecord::Schema.define(version: 2025_11_12_162347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -312,10 +312,12 @@ ActiveRecord::Schema.define(version: 2025_11_11_180001) do
     t.string "company"
     t.string "company_title"
     t.boolean "vip", default: false
+    t.string "lea_conversation_url"
     t.index ["classification"], name: "index_leads_on_classification"
     t.index ["first_comm"], name: "index_leads_on_first_comm"
     t.index ["follow_up_at"], name: "index_leads_on_follow_up_at"
     t.index ["last_comm"], name: "index_leads_on_last_comm"
+    t.index ["lea_conversation_url"], name: "index_leads_on_lea_conversation_url", where: "(lea_conversation_url IS NOT NULL)"
     t.index ["lead_source_id"], name: "index_leads_on_lead_source_id"
     t.index ["phone1", "phone2", "first_name", "last_name", "email"], name: "lead_dedupe_idx"
     t.index ["priority"], name: "index_leads_on_priority"

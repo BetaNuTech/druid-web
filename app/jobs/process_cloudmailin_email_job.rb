@@ -116,13 +116,52 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     end
     
     lead_data = build_lead_data(analysis, raw_email, property)
-    
+
     lead = Lead.new(lead_data)
     lead.lead_source_id = cloudmailin_source.id
-    
+
+    # Handle Lea conversation URL if present
+    if analysis['lea_conversation_url'].present?
+      lead.lea_conversation_url = analysis['lea_conversation_url']
+    end
+
+    # Check for Lea handoff or Lea AI handling
+    is_lea_handoff = analysis['lea_handoff'] == true
+    property_uses_lea_ai = property.lea_ai_handling?
+
+    # Assign system user BEFORE saving if this is a Lea AI property with rental inquiry
+    # This ensures the duplicate detection logic sees the system user assignment
+    if property_uses_lea_ai && analysis['lead_type'] == 'rental_inquiry' && !is_lea_handoff
+      lead.user = User.system
+    end
+
     if lead.save
-      # Add note about AI classification
-      if analysis['lead_type'] != 'rental_inquiry'
+      # Handle Lea AI handoff
+      if is_lea_handoff
+        # Lea handoff: leave in open state, unassigned
+        # Add note about the handoff
+        handoff_reason = analysis['lea_handoff_reason'] || 'Unknown'
+        conversation_url = analysis['lea_conversation_url'] || 'Not provided'
+
+        Note.create!(
+          notable: lead,
+          classification: 'system',
+          content: "Lea AI Handoff detected. Reason: #{handoff_reason}\nConversation: #{conversation_url}"
+        )
+      elsif property_uses_lea_ai && analysis['lead_type'] == 'rental_inquiry'
+        # Property uses Lea AI and this is a regular lead (not handoff)
+        # User was already assigned before save, now move to prospect state
+        lead.trigger_event(event_name: 'work', user: User.system)
+
+        Note.create!(
+          notable: lead,
+          classification: 'system',
+          content: "Lead assigned to system for Lea AI processing"
+        )
+      end
+
+      # Add note about AI classification for non-rental inquiries
+      if analysis['lead_type'] != 'rental_inquiry' && is_lea_handoff != true
         Note.create!(
           notable: lead,
           classification: 'system',

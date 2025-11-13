@@ -28,7 +28,9 @@
         </h4>
         
         <div class="card__description">
-          <%= simple_format(note_content(comment)) %>
+          <%= sanitize(linkify_note_content(note_content(comment)),
+              tags: %w[p br a],
+              attributes: %w[href target rel]) %>
         </div>
         
         <% if comment.respond_to?(:messageable) && comment.messageable.present? %>

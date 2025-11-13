@@ -530,6 +530,13 @@ class LeadSearch
       agents = User.includes([:assignments, :profile]).
         where(property_users: {property_id: active_property_ids})
     end
+
+    # Include system user for Lea AI monitoring
+    system_user = User.system
+    if system_user && !agents.include?(system_user)
+      agents = agents.or(User.where(id: system_user.id))
+    end
+
     return agents.
       map{ |u| {label: u.name, value: u.id} }.
       sort_by{|x| ( x[:label] || '' ).split.last}

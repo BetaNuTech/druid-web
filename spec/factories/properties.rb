@@ -65,5 +65,11 @@ FactoryBot.define do
     after(:create) do |property|
       PropertyUser.create(user: create(:user), property: property, role: 'agent')
     end
+
+    trait :with_lea_ai do
+      after(:create) do |property|
+        property.switch_setting!(:lea_ai_handling, true)
+      end
+    end
   end
 end

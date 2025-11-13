@@ -258,6 +258,69 @@ RSpec.describe LeadSearch do
       end
     end
 
+    describe "system user agent filter" do
+      let(:property) { create(:property, active: true) }
+      let(:system_user) { User.system }
+      let(:regular_agent) { create(:user) }
+
+      before do
+        property.assign_user(user: regular_agent, role: 'agent')
+      end
+
+      it "includes system user in agent filter options" do
+        search = LeadSearch.new({property_ids: [property.id]})
+
+        # Access agent options through the public full_options API
+        agent_options = search.full_options.dig("Filters", "Agents", :options)
+        agent_ids = agent_options.map { |opt| opt[:value] }
+
+        expect(agent_ids).to include(system_user.id)
+        expect(agent_ids).to include(regular_agent.id)
+      end
+
+      it "allows filtering leads by system user" do
+        # Create leads with different users
+        system_lead = create(:lead, property: property, user: system_user, state: 'prospect')
+        agent_lead = create(:lead, property: property, user: regular_agent, state: 'prospect')
+
+        search = LeadSearch.new({property_ids: [property.id], user_ids: [system_user.id]})
+        results = search.collection
+
+        expect(results).to include(system_lead)
+        expect(results).not_to include(agent_lead)
+      end
+
+      it "returns system user leads when filtering by multiple agents including system" do
+        system_lead = create(:lead, property: property, user: system_user, state: 'prospect')
+        agent_lead = create(:lead, property: property, user: regular_agent, state: 'prospect')
+
+        search = LeadSearch.new({property_ids: [property.id], user_ids: [system_user.id, regular_agent.id]})
+        results = search.collection
+
+        expect(results).to include(system_lead)
+        expect(results).to include(agent_lead)
+      end
+
+      it "does not duplicate system user in agent list" do
+        # Call full_options multiple times to ensure no duplication
+        search = LeadSearch.new({property_ids: [property.id]})
+
+        agent_options_1 = search.full_options.dig("Filters", "Agents", :options)
+        agent_options_2 = search.full_options.dig("Filters", "Agents", :options)
+
+        system_user_count = agent_options_1.count { |opt| opt[:value] == system_user.id }
+        expect(system_user_count).to eq(1)
+      end
+
+      it "includes system user even when no properties selected" do
+        search = LeadSearch.new({})
+
+        agent_options = search.full_options.dig("Filters", "Agents", :options)
+        agent_ids = agent_options.map { |opt| opt[:value] }
+        expect(agent_ids).to include(system_user.id)
+      end
+    end
+
   end
 
 end

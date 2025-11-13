@@ -48,5 +48,19 @@ FactoryBot.define do
     preference_attributes { FactoryBot.attributes_for(:lead_preference)}
     priority { ["low", "medium", "high", "urgent"][rand(4)] }
     #property { create(:property)}
+
+    trait :with_system_user do
+      association :user, factory: :system_user
+    end
+
+    trait :with_lea_conversation_url do
+      lea_conversation_url { 'https://lea.example.com/conversation/abc123' }
+    end
+
+    trait :lea_handoff do
+      with_system_user
+      with_lea_conversation_url
+      state { 'open' }
+    end
   end
 end
