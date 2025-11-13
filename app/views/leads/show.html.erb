@@ -398,18 +398,12 @@
             </div>
             <div class="info-card__body">
               <div class="info-card__item">
-                <p>This lead was handed off from Lea AI. View the full conversation for context:</p>
-                <div class="mt-3">
-                  <%= link_to "View Lea Conversation", @lead.lea_conversation_url,
-                      target: "_blank",
-                      rel: "noopener noreferrer",
-                      class: "btn btn-primary" %>
-                </div>
-                <div class="mt-2">
-                  <small class="text-muted">
-                    <%= @lead.lea_conversation_url %>
-                  </small>
-                </div>
+                <p class="mb-3">This lead was handed off from Lea AI. View the full conversation for context.</p>
+                <%= link_to "View Lea Conversation", @lead.lea_conversation_url,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                    class: "btn btn-primary",
+                    style: "width: fit-content;" %>
               </div>
             </div>
           </div>
