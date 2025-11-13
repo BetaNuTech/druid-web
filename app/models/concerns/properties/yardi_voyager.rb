@@ -32,9 +32,9 @@ module Properties
 
       def leads_for_cancelling
         return leads.
-          where(state: ['future']).
-          where.not(remoteid: [nil, '']).
-          where.not(user_id: nil)
+          where(state: ['invalidated']).
+          where.not(remoteid: [nil, ''])
+          # Note: invalidated leads retain their user_id, so no user_id constraint needed
       end
 
       def voyager_property_code

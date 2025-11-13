@@ -30,4 +30,41 @@ RSpec.describe Yardi::Voyager::Data::GuestCard do
     refute(guestcard.property_id.nil?)
   end
 
+  describe ".lead_guestcard_type" do
+    it "maps early pipeline states to prospect" do
+      ['open', 'prospect', 'showing', 'application', 'approved'].each do |state|
+        lead = double('Lead', state: state)
+        expect(adapter.lead_guestcard_type(lead)).to eq('prospect')
+      end
+    end
+
+    it "maps denied state to canceled" do
+      lead = double('Lead', state: 'denied')
+      expect(adapter.lead_guestcard_type(lead)).to eq('canceled')
+    end
+
+    it "maps resident states to Yardi resident types" do
+      lead = double('Lead', state: 'resident')
+      expect(adapter.lead_guestcard_type(lead)).to eq('current_resident')
+
+      lead = double('Lead', state: 'exresident')
+      expect(adapter.lead_guestcard_type(lead)).to eq('former_resident')
+    end
+
+    it "maps future state to prospect (nurtured leads)" do
+      lead = double('Lead', state: 'future')
+      expect(adapter.lead_guestcard_type(lead)).to eq('prospect')
+    end
+
+    it "maps invalidated state to canceled (spam/fake leads)" do
+      lead = double('Lead', state: 'invalidated')
+      expect(adapter.lead_guestcard_type(lead)).to eq('canceled')
+    end
+
+    it "defaults unknown states to prospect" do
+      lead = double('Lead', state: 'unknown_state')
+      expect(adapter.lead_guestcard_type(lead)).to eq('prospect')
+    end
+  end
+
 end

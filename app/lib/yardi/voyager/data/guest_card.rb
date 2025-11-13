@@ -583,9 +583,9 @@ module Yardi
             when 'exresident'
               'former_resident'
             when 'future'
-              'canceled'
+              'prospect'  # future leads are real prospects being nurtured for later follow-up
             when 'invalidated'
-              'prospect'  # invalidated leads are spam/fake - map to prospect if syncing to Yardi
+              'canceled'  # invalidated leads are spam/fake/duplicates - cancel in Yardi
             else
               'prospect'
             end
