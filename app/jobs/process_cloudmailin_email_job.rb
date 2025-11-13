@@ -115,7 +115,10 @@ class ProcessCloudmailinEmailJob < ApplicationJob
       Rails.logger.info "Activated Cloudmailin listing for property #{property.id} due to incoming email"
     end
     
-    lead_data = build_lead_data(analysis, raw_email, property)
+    # Check for Lea handoff before building lead data
+    is_lea_handoff = analysis['lea_handoff'] == true
+
+    lead_data = build_lead_data(analysis, raw_email, property, is_lea_handoff)
 
     lead = Lead.new(lead_data)
     lead.lead_source_id = cloudmailin_source.id
@@ -125,8 +128,7 @@ class ProcessCloudmailinEmailJob < ApplicationJob
       lead.lea_conversation_url = analysis['lea_conversation_url']
     end
 
-    # Check for Lea handoff or Lea AI handling
-    is_lea_handoff = analysis['lea_handoff'] == true
+    # Check for Lea AI handling
     property_uses_lea_ai = property.lea_ai_handling?
 
     # Assign system user BEFORE saving if this is a Lea AI property with rental inquiry
@@ -226,7 +228,7 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     end
   end
   
-  def build_lead_data(analysis, raw_email, property)
+  def build_lead_data(analysis, raw_email, property, is_lea_handoff = false)
     lead_info = analysis['lead_data'] || {}
     
     # Handle uncertain/spam leads with descriptive names
@@ -268,7 +270,14 @@ class ProcessCloudmailinEmailJob < ApplicationJob
     notes_parts << lead_info['notes'] if lead_info['notes'].present?
     notes_parts << "Unit type requested: #{lead_info['unit_type']}" if lead_info['unit_type'].present?
     notes_parts << "Lead has consented to receiving text messages." if analysis['has_sms_consent'] == true
-    notes_parts << "Processed by AI"
+
+    # Add handoff or AI processing note
+    if is_lea_handoff
+      notes_parts << "Lea AI Handoff - Ready for agent contact"
+    else
+      notes_parts << "Processed by AI"
+    end
+
     preference_attrs[:notes] = notes_parts.join("\n\n")
     
     # Parse move-in date if provided
