@@ -189,7 +189,7 @@ class LeadSources extends React.Component {
       .data(d => keys.map(key => ( {id: d.id, key: key, value: this.props.selectY(d)[key], index: keys.indexOf(key)} )))
       .enter()
         .append("rect")
-          .attr("class", ".bar")
+          .attr("class", "bar")
           .attr("x", d => xScaleBar(d.key) )
           .attr("y", d => yScale(d.value) )
           .attr("width", xScaleBar.bandwidth())
@@ -200,24 +200,70 @@ class LeadSources extends React.Component {
           .on("mouseover", this.handleMouseOver)
           .on("mouseout", this.handleMouseOut)
 
-    chart.selectAll("g.bargroup--values").remove()
-    bargroups
+    // Create value label groups
+    const valueLabelGroups = chart.selectAll("g.bargroup--values")
       .data(this.props.data.series)
+
+    valueLabelGroups.exit().remove()
+
+    const valueLabelGroupsEnter = valueLabelGroups
       .enter()
         .append("g")
           .attr("class", "bargroup--values")
-          .attr("transform", d => `translate(${this.margin.left + xScaleGroup(this.props.selectX(d))},${this.margin.top})`)
-      .selectAll(".label--value")
-      .data(d => keys.map(key => ( {key: key, value: this.props.selectY(d)[key]} )))
+
+    const valueLabelGroupsMerged = valueLabelGroupsEnter.merge(valueLabelGroups)
+      .attr("transform", d => `translate(${this.margin.left + xScaleGroup(this.props.selectX(d))},${this.margin.top})`)
+
+    // Create value labels within each group
+    const valueLabels = valueLabelGroupsMerged.selectAll("text.label--value")
+      .data(d => {
+        const values = keys.map((key, index) => ({
+          key: key,
+          value: this.props.selectY(d)[key],
+          originalValue: this.props.selectY(d)[key],  // Keep original for display decision
+          index: index
+        }))
+
+        // Check if bars are too close and would cause label overlap
+        if (values.length === 2) {
+          const val0 = values[0].originalValue
+          const val1 = values[1].originalValue
+
+          // Don't show 0 values
+          if (val0 === 0) values[0].value = 0
+          if (val1 === 0) values[1].value = 0
+
+          // If both values are non-zero, check for overlap
+          if (val0 > 0 && val1 > 0) {
+            const y0 = yScale(val0)
+            const y1 = yScale(val1)
+
+            // If labels would be within 20 pixels of each other, only show the larger value
+            if (Math.abs(y0 - y1) < 20) {
+              if (val0 >= val1) {
+                values[1].value = 0  // Hide smaller value label
+              } else {
+                values[0].value = 0  // Hide smaller value label
+              }
+            }
+          }
+        }
+
+        return values
+      })
+
+    valueLabels.exit().remove()
+
+    valueLabels
       .enter()
         .append("text")
-          .merge(bargroups)
           .attr("class", "label--value")
+      .merge(valueLabels)
           .attr("font-size", "11")
           .attr('text-anchor', "middle")
           .attr("x", d => xScaleBar(d.key) + xScaleBar.bandwidth()/2 )
           .attr("y", d => yScale(d.value) - 5 )
-          .text(d => d.value)
+          .text(d => d.value > 0 ? d.value : '')  // Only show label if value > 0
 
 
     this.noDataAdvisory()

@@ -399,30 +399,31 @@ EOS
 
     sql=<<-EOS
       SELECT
-        total_counts.source_id as source_id,
+        (array_agg(total_counts.source_id))[1] as source_id,
         total_counts.source_name as source_name,
-        total_counts.total_count AS total_count,
-        converted_counts.converted_count AS converted_count
+        SUM(total_counts.total_count)::INTEGER AS total_count,
+        SUM(COALESCE(converted_counts.converted_count, 0))::INTEGER AS converted_count
       FROM (
         SELECT
-          lead_sources.id AS source_id,
+          (array_agg(lead_sources.id))[1] AS source_id,
           coalesce(leads.referral, lead_sources.name) AS source_name,
           count(*) AS total_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
-        #{ "WHERE #{_filter_sql}" if _filter_sql.present?}
-        GROUP BY ( lead_sources.name, lead_sources.id, leads.referral )
+        WHERE leads.state != 'invalidated'#{ " AND #{_filter_sql}" if _filter_sql.present?}
+        GROUP BY coalesce(leads.referral, lead_sources.name)
       ) total_counts
-      FULL OUTER JOIN (
+      LEFT JOIN (
         SELECT
           coalesce(leads.referral, lead_sources.name) AS source_name,
           count(*) AS converted_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
-        WHERE (#{converted_states_sql})#{ " AND #{_filter_sql}" if _filter_sql.present?}
-        GROUP BY ( lead_sources.name, leads.referral )
+        WHERE (#{converted_states_sql}) AND leads.state != 'invalidated'#{ " AND #{_filter_sql}" if _filter_sql.present?}
+        GROUP BY coalesce(leads.referral, lead_sources.name)
       ) converted_counts
-       ON total_counts.source_name = converted_counts.source_name;
+       ON total_counts.source_name = converted_counts.source_name
+      GROUP BY total_counts.source_name;
 EOS
 
     raw_result = ActiveRecord::Base.connection.execute(sql).to_a
