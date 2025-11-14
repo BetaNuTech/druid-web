@@ -432,6 +432,16 @@ module Leads
         adapter.debug = true if debug?
 
         return leads.map do |lead|
+          # Fix lead names before syncing to Yardi
+          # This handles cases like "LAST,FIRST" or missing last names
+          fix_result = Leads::NameParser.fix_and_save!(lead)
+
+          if fix_result[:changed]
+            Rails.logger.info "Fixed lead name before Yardi sync: Lead #{lead.id} - #{fix_result[:reason]}"
+            # Reload to get the updated name
+            lead.reload
+          end
+
           adapter.sendGuestCard(lead: lead, include_events: true)
         end
       end

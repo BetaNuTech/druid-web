@@ -57,6 +57,34 @@ module Yardi
             end
           end
 
+          # Ensure there's always a first contact event
+          # If no first contact event exists, create one using the lead's created_at date
+          has_first_contact = out.any? { |event| event.first_contact == true || event.first_contact == 'true' }
+
+          if !has_first_contact && lead.remoteid.blank?
+            # Create a first contact event from the lead's creation date
+            first_contact_event = GuestCardEvent.new
+            first_contact_event.remoteid = ''
+            first_contact_event.date = lead.created_at || DateTime.current
+            first_contact_event.event_type = 'Other'
+            first_contact_event.reasons = 'Emailed'
+            first_contact_event.first_contact = true
+            first_contact_event.comments = "Lead created in Bluesky originating from #{lead.referral || lead.source&.name || 'Unknown'}"
+            first_contact_event.transaction_source = 'Referral'
+
+            # Use the provided agent or fall back to the lead's creditable agent
+            if agent.present?
+              first_contact_event.agent = {
+                first_name: agent.profile&.first_name || agent.first_name || '',
+                last_name: agent.profile&.last_name || agent.last_name || ''
+              }
+            else
+              first_contact_event.agent = {}
+            end
+
+            out << first_contact_event
+          end
+
           out = out.sort_by{|event| event.date}
 
           return out
