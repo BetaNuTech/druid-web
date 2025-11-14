@@ -457,7 +457,7 @@ EOS
       FROM leads
       INNER JOIN properties
         ON leads.property_id = properties.id
-      #{ "WHERE #{_filter_sql}" if _filter_sql.present?}
+      WHERE leads.state != 'invalidated'#{ " AND #{_filter_sql}" if _filter_sql.present?}
       GROUP BY properties.name, properties.id
       ORDER BY properties.name
 EOS

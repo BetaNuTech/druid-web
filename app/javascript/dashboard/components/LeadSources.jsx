@@ -278,6 +278,15 @@ class LeadSources extends React.Component {
           </g>
           <g className="legend" fontSize="10">
           </g>
+          <text
+            x={this.props.width / 2}
+            y={this.props.height - 20}
+            textAnchor="middle"
+            fontSize="10"
+            fill="#666"
+            fontStyle="italic">
+            Note: Invalidated leads are excluded from this chart
+          </text>
         </svg>
       </div>
     )
