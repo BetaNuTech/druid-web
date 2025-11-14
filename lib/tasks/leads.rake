@@ -284,6 +284,88 @@ namespace :leads do
       end
     end
 
+    desc "Fix guest card types for future and invalidated leads"
+    task :fix_future_invalidated_types => :environment do |t, args|
+      dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
+
+      if dry_run
+        puts "=" * 80
+        puts "DRY RUN MODE - No changes will be made to Yardi"
+        puts "=" * 80
+      end
+
+      properties = property_codes = Leads::Adapters::YardiVoyager.property_codes
+
+      if ( env_properties = ENV.fetch('PROPERTY', nil) ).present?
+        env_properties = env_properties.split(',')
+        properties = properties.select{|p| env_properties.include?(p[:code])}
+        if properties.empty?
+          properties = property_codes
+        end
+      end
+
+      properties.each do |property|
+        # property => { name: 'Property Name', code: 'voyagerpropertyid', property: #<Property> }
+        msg = " * Processing #{property[:name]} [YARDI ID: #{property[:code]}]"
+        puts msg
+        Rails.logger.warn msg
+
+        # Find leads in 'future' or 'invalidated' states that already exist in Yardi
+        leads_to_update = property[:property].leads
+          .where(state: ['future', 'invalidated'])
+          .where.not(remoteid: [nil, ''])
+
+        leads_count = leads_to_update.count
+
+        if leads_count == 0
+          puts "   - No leads to update"
+          next
+        end
+
+        puts "   - Found #{leads_count} leads to update"
+
+        # Show breakdown by state
+        future_count = leads_to_update.where(state: 'future').count
+        invalidated_count = leads_to_update.where(state: 'invalidated').count
+        puts "     • Future leads (will be set to 'prospect'): #{future_count}"
+        puts "     • Invalidated leads (will be set to 'canceled'): #{invalidated_count}"
+
+        if dry_run
+          puts "   - DRY RUN: Skipping actual sync to Yardi"
+          next
+        end
+
+        # Use the adapter to send the leads (will use lead_guestcard_type for mapping)
+        adapter = Leads::Adapters::YardiVoyager.new(property[:property])
+        updated_leads = adapter.sendLeads(leads_to_update)
+
+        # Report results
+        leads_succeeded = updated_leads.select{|l| l.remoteid.present? }.size
+        leads_failures = updated_leads.select{|l| !l.errors.empty? || !l.remoteid.present? }.map do |record|
+          "FAIL: #{property[:name]}: #{record.name} [Lead ID: #{record.id}, State: #{record.state}]: #{record.errors.to_a.join(', ')}"
+        end
+
+        leads_msg=<<~EOS
+          - Updated #{leads_succeeded} guest cards successfully
+          - #{leads_failures.size} failed
+        EOS
+
+        if leads_failures.any?
+          leads_msg += "   Failures:\n"
+          leads_msg += leads_failures.map{|f| "     #{f}"}.join("\n")
+        end
+
+        puts leads_msg
+        Rails.logger.warn leads_msg
+      end
+
+      if dry_run
+        puts "=" * 80
+        puts "DRY RUN COMPLETE - No changes were made"
+        puts "=" * 80
+      end
+    end
+
     desc 'Voyager GuestCard CSV (rake leads:yardi:guestcard_csv["yardi_id1,yardi_id2, ...",days] ; default: all properties, 90 days)'
     task :guestcard_csv, [ :property_ids, :days ] => :environment do |t, args|
 
