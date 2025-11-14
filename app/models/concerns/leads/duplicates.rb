@@ -119,12 +119,6 @@ module Leads
                    AND remoteid = :remoteid
                    AND remoteid NOT IN (#{invalid_values_sql})
                  )
-              OR ( first_name IS NOT NULL
-                   AND first_name != ''
-                   AND first_name = :first_name
-                   AND last_name = :last_name
-                   AND first_name NOT IN (#{invalid_values_sql})
-                 )
               OR ( email IS NOT NULL
                    AND email != ''
                    AND email = :email
@@ -139,7 +133,6 @@ module Leads
         query_array = [
           sql_template,
           id: id,
-          first_name: first_name, last_name: last_name,
           phone1: phone1, phone2: phone2, email: email,
           remoteid: remoteid
         ]
