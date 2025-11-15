@@ -380,13 +380,6 @@
     </div>
   </section>
 
-  <!-- Source Email Full Width Row -->
-  <% if @lead.source_document.present? %>
-    <section class="section">
-      <%= render partial: 'source_document', locals: {lead: @lead} %>
-    </section>
-  <% end %>
-
   <!-- Lea AI Conversation Link -->
   <% if @lead.lea_conversation_url.present? %>
     <section class="section section--no-padding">
@@ -409,6 +402,13 @@
           </div>
         </div>
       </div>
+    </section>
+  <% end %>
+
+  <!-- Source Email Full Width Row -->
+  <% if @lead.source_document.present? %>
+    <section class="section">
+      <%= render partial: 'source_document', locals: {lead: @lead} %>
     </section>
   <% end %>
 
