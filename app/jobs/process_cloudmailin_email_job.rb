@@ -115,8 +115,9 @@ class ProcessCloudmailinEmailJob < ApplicationJob
       Rails.logger.info "Activated Cloudmailin listing for property #{property.id} due to incoming email"
     end
     
-    # Check for Lea handoff before building lead data
+    # Check for Lea handoff and tour booking before building lead data
     is_lea_handoff = analysis['lea_handoff'] == true
+    is_tour_booking = analysis['lead_type'] == 'tour_booking'
 
     lead_data = build_lead_data(analysis, raw_email, property, is_lea_handoff)
 
@@ -133,7 +134,8 @@ class ProcessCloudmailinEmailJob < ApplicationJob
 
     # Assign system user BEFORE saving if this is a Lea AI property with rental inquiry
     # This ensures the duplicate detection logic sees the system user assignment
-    if property_uses_lea_ai && analysis['lead_type'] == 'rental_inquiry' && !is_lea_handoff
+    # Exclude tour bookings and lea handoffs - they should remain open for agent pickup
+    if property_uses_lea_ai && analysis['lead_type'] == 'rental_inquiry' && !is_lea_handoff && !is_tour_booking
       lead.user = User.system
     end
 
@@ -150,8 +152,15 @@ class ProcessCloudmailinEmailJob < ApplicationJob
           classification: 'system',
           content: "Lea AI Handoff detected. Reason: #{handoff_reason}\nConversation: #{conversation_url}"
         )
+      elsif is_tour_booking
+        # Tour booking: leave in open state, unassigned for agent follow-up
+        Note.create!(
+          notable: lead,
+          classification: 'system',
+          content: "Tour Booking detected - Lead requires agent follow-up for scheduled tour"
+        )
       elsif property_uses_lea_ai && analysis['lead_type'] == 'rental_inquiry'
-        # Property uses Lea AI and this is a regular lead (not handoff)
+        # Property uses Lea AI and this is a regular lead (not handoff or tour booking)
         # User was already assigned before save, now move to prospect state
         lead.trigger_event(event_name: 'work', user: User.system)
 

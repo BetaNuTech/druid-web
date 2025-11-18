@@ -139,7 +139,7 @@ class OpenaiClient
       Return ONLY valid JSON with this exact structure:
       {
         "is_lead": true/false,
-        "lead_type": "rental_inquiry|resident|vendor|spam|unknown|lea_handoff",
+        "lead_type": "rental_inquiry|tour_booking|resident|vendor|spam|unknown|lea_handoff",
         "confidence": 0.0-1.0,
         "source_match": "source name or null",
         "has_sms_consent": true/false,
@@ -168,6 +168,39 @@ class OpenaiClient
       - If an email starts with any of these invalid prefixes (#{invalid_prefixes.join(', ')}), return null for the email field unless another valid email address is found in the email content
       - Only return null for email if no other valid email addresses are found
 
+      GENERAL PROCESSING RULES:
+      - For source_match: FIRST try to flexibly match against the Marketing Sources list provided for the property
+      - Marketing Sources are the property's configured attribution sources (e.g., "Zillow", "Apartments.com", "Property Website")
+      - Use flexible matching: "Zillow" matches "Zillow.com" or "Zillow Group", "Property Website" matches emails that appear to come from the property's website contact form, "Apartments.com" matches "Apartments.com" or "apartments.com", "Apartment List" matches "ApartmentList.com" or "apartmentlist.com"
+      - If a Marketing Source can be reasonably matched based on email content, domain, or patterns, return that Marketing Source name exactly as configured
+      - If no Marketing Source matches, return your best guess of the actual source based on email patterns, domains, from address, subject line, or content
+      - Always return a source_match value - either a matched Marketing Source or your best guess of the source
+      - Notes should add additional context from the lead data that would be helpful for the leasing agent to know
+      - Check if the email indicates the lead has consented to be contacted at their phone number
+      - Look for language patterns indicating consent to phone/SMS contact such as:
+        * "consent to be contacted at the phone number"
+        * "agree to receive text messages"
+        * "opted in to SMS/text"
+        * "consent to text"
+        * References to agreeing to terms that include phone/text communication
+      - This consent language typically appears in tour booking or registration confirmation emails
+      - Set has_sms_consent: true if such consent language is detected
+
+      TOUR BOOKING DETECTION:
+      - lead_type: "tour_booking" if the email is a tour confirmation or booking
+      - Detection criteria (ANY of these):
+        1. Email confirms a scheduled tour with date/time
+        2. Email contains "Tour" or "tour" with scheduled date/time information
+        3. Email subject contains "Tour scheduled", "Tour confirmation", "Tour booking", "In-Person Tour", "Virtual Tour"
+        4. Email body contains phrases like "tour is scheduled", "tour appointment", "showing scheduled", "property tour confirmed"
+        5. Email appears to be from tour scheduling systems (e.g., Calendly, AppFolio, RentSpree, ShowMojo)
+      - If detected as tour_booking:
+        * Still extract all lead contact details
+        * Set is_lead: true
+        * Set confidence based on how clearly it's a tour booking
+        * has_sms_consent may be true if consent language is present
+        * Notes should include the tour date/time if available
+
       LEA AI HANDOFF DETECTION:
       - lead_type: "lea_handoff" if the email is a handoff from Lea AI assistant
       - Detection criteria (ALL must be present):
@@ -180,22 +213,6 @@ class OpenaiClient
         * Extract the handoff reason (e.g., "Tour request") → lea_handoff_reason
         * Still extract all lead contact details from "Guest Card Details" section
         * Set is_lead: true and confidence: 0.95+
-      - For source_match: FIRST try to flexibly match against the Marketing Sources list provided for the property
-      - Marketing Sources are the property's configured attribution sources (e.g., "Zillow", "Apartments.com", "Property Website")
-      - Use flexible matching: "Zillow" matches "Zillow.com" or "Zillow Group", "Property Website" matches emails that appear to come from the property's website contact form, "Apartments.com" matches "Apartments.com" or "apartments.com", "Apartment List" matches "ApartmentList.com" or "apartmentlist.com"
-      - If a Marketing Source can be reasonably matched based on email content, domain, or patterns, return that Marketing Source name exactly as configured
-      - If no Marketing Source matches, return your best guess of the actual source based on email patterns, domains, from address, subject line, or content
-      - Always return a source_match value - either a matched Marketing Source or your best guess of the source
-      - Notes should add additional context from the lead data that would be helpful for the leasing agent to know.
-      - Check if the email indicates the lead has consented to be contacted at their phone number
-      - Look for language patterns indicating consent to phone/SMS contact such as:
-        - "consent to be contacted at the phone number"
-        - "agree to receive text messages" 
-        - "opted in to SMS/text"
-        - "consent to text"
-        - References to agreeing to terms that include phone/text communication
-      - This consent language typically appears in tour booking or registration confirmation emails
-      - Set has_sms_consent: true if such consent language is detected
     PROMPT
   end
   

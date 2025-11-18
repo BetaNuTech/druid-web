@@ -345,6 +345,121 @@ RSpec.describe OpenaiClient do
         expect(result).not_to have_key('has_sms_consent')
       end
     end
+
+    context "with tour booking detection" do
+      let(:tour_booking_email) {
+        {
+          headers: {
+            'From' => 'tours@showmojo.com',
+            'To' => 'property+ABC123@cloudmailin.net',
+            'Subject' => 'In-Person Tour (Darya Tarasevich)',
+            'Date' => '2025-11-23 13:00:00 UTC'
+          },
+          plain: 'In-Person Tour (Darya Tarasevich)\n\nSunday Nov 23, 2025 • 1pm – 1:45pm (Eastern Time - Detroit)\n\nLocation\n951 Corporate Center Dr, Raleigh, NC 27607, USA\n\nBooked by\nDarya Tarasevich\ndary.tarasevich@gmail.com\n+17344657765\n\nWe can\'t wait to show you around Vintage Raleigh West!'
+        }
+      }
+
+      let(:tour_booking_response) {
+        {
+          'choices' => [{
+            'message' => {
+              'content' => {
+                'is_lead' => true,
+                'lead_type' => 'tour_booking',
+                'confidence' => 0.95,
+                'source_match' => 'ShowMojo',
+                'has_sms_consent' => false,
+                'lead_data' => {
+                  'first_name' => 'Darya',
+                  'last_name' => 'Tarasevich',
+                  'email' => 'dary.tarasevich@gmail.com',
+                  'phone1' => '734-465-7765',
+                  'phone2' => nil,
+                  'notes' => 'In-Person Tour scheduled for Sunday Nov 23, 2025 • 1pm – 1:45pm (Eastern Time - Detroit) at 951 Corporate Center Dr, Raleigh, NC 27607',
+                  'preferred_move_in_date' => nil,
+                  'unit_type' => nil,
+                  'company' => nil
+                },
+                'classification_reason' => 'Tour booking confirmation from ShowMojo scheduling system'
+              }.to_json
+            }
+          }]
+        }
+      }
+
+      let(:regular_inquiry_response) {
+        {
+          'choices' => [{
+            'message' => {
+              'content' => {
+                'is_lead' => true,
+                'lead_type' => 'rental_inquiry',
+                'confidence' => 0.95,
+                'source_match' => 'Zillow',
+                'has_sms_consent' => false,
+                'lead_data' => {
+                  'first_name' => 'Jane',
+                  'last_name' => 'Smith',
+                  'email' => 'jane.smith@example.com',
+                  'phone1' => '555-987-6543',
+                  'phone2' => nil,
+                  'notes' => 'Interested in 2BR unit',
+                  'preferred_move_in_date' => nil,
+                  'unit_type' => '2BR',
+                  'company' => nil
+                },
+                'classification_reason' => 'Standard rental inquiry from Zillow'
+              }.to_json
+            }
+          }]
+        }
+      }
+
+      it "correctly identifies tour booking emails" do
+        allow(http).to receive(:request).and_return(
+          double('response', code: '200', body: tour_booking_response.to_json)
+        )
+
+        result = client.analyze_email(tour_booking_email, property, active_sources)
+
+        expect(result['lead_type']).to eq('tour_booking')
+        expect(result['is_lead']).to be true
+        expect(result['confidence']).to eq(0.95)
+        expect(result['lead_data']['first_name']).to eq('Darya')
+        expect(result['lead_data']['last_name']).to eq('Tarasevich')
+        expect(result['lead_data']['notes']).to include('In-Person Tour scheduled')
+      end
+
+      it "distinguishes tour bookings from regular rental inquiries" do
+        # First test with regular inquiry
+        allow(http).to receive(:request).and_return(
+          double('response', code: '200', body: regular_inquiry_response.to_json)
+        )
+
+        regular_result = client.analyze_email(email_content, property, active_sources)
+        expect(regular_result['lead_type']).to eq('rental_inquiry')
+
+        # Then test with tour booking
+        allow(http).to receive(:request).and_return(
+          double('response', code: '200', body: tour_booking_response.to_json)
+        )
+
+        tour_result = client.analyze_email(tour_booking_email, property, active_sources)
+        expect(tour_result['lead_type']).to eq('tour_booking')
+      end
+
+      it "extracts tour details in notes field" do
+        allow(http).to receive(:request).and_return(
+          double('response', code: '200', body: tour_booking_response.to_json)
+        )
+
+        result = client.analyze_email(tour_booking_email, property, active_sources)
+
+        expect(result['lead_data']['notes']).to include('Sunday Nov 23, 2025')
+        expect(result['lead_data']['notes']).to include('1pm – 1:45pm')
+        expect(result['lead_data']['notes']).to include('951 Corporate Center Dr')
+      end
+    end
   end
   
   describe "#system_prompt" do

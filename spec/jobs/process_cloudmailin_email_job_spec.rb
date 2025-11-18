@@ -888,6 +888,104 @@ RSpec.describe ProcessCloudmailinEmailJob, type: :job do
         expect(lead.state).to eq('prospect')
         expect(lead.invalidated?).to be false
       end
+
+      context "with tour booking lead type" do
+        let(:tour_booking_response) {
+          {
+            'is_lead' => true,
+            'lead_type' => 'tour_booking',
+            'lea_handoff' => false,
+            'confidence' => 0.95,
+            'source_match' => 'ShowMojo',
+            'has_sms_consent' => false,
+            'lead_data' => {
+              'first_name' => 'Sarah',
+              'last_name' => 'Johnson',
+              'email' => 'sarah.johnson@example.com',
+              'phone1' => '555-888-9999',
+              'notes' => 'In-Person Tour scheduled for Sunday Nov 23, 2025 • 1pm – 1:45pm at 951 Corporate Center Dr, Raleigh, NC'
+            },
+            'classification_reason' => 'Tour booking confirmation from ShowMojo'
+          }
+        }
+
+        let(:tour_email_data) {
+          {
+            headers: {
+              'From' => 'tours@showmojo.com',
+              'To' => "property+#{lea_property.id}@cloudmailin.net",
+              'Subject' => 'In-Person Tour (Sarah Johnson)',
+              'Date' => '2025-11-20 10:00:00 UTC'
+            },
+            plain: 'In-Person Tour scheduled for Sarah Johnson on Sunday Nov 23, 2025 at 1pm'
+          }
+        }
+
+        let(:tour_raw_email) { create(:cloudmailin_raw_email, raw_data: tour_email_data, property_code: lea_property.id.to_s) }
+
+        before do
+          allow(openai_client).to receive(:analyze_email).and_return(tour_booking_response)
+          allow_any_instance_of(Lead).to receive(:send_new_lead_messaging).and_return(true)
+          allow_any_instance_of(Lead).to receive(:broadcast_to_streams).and_return(true)
+        end
+
+        it "does not assign tour bookings to system user even with lea_ai_handling enabled" do
+          described_class.perform_now(tour_raw_email)
+
+          lead = tour_raw_email.reload.lead
+          expect(lead.user).to be_nil
+          expect(lead.state).to eq('open')
+        end
+
+        it "creates system note about tour booking detection" do
+          described_class.perform_now(tour_raw_email)
+
+          lead = tour_raw_email.reload.lead
+          notes = Note.where(notable: lead, classification: 'system')
+          tour_note = notes.find { |n| n.content.include?('Tour Booking detected') }
+
+          expect(tour_note).to be_present
+          expect(tour_note.content).to include('Lead requires agent follow-up for scheduled tour')
+        end
+
+        it "leaves tour booking leads in open state for agent pickup" do
+          described_class.perform_now(tour_raw_email)
+
+          lead = tour_raw_email.reload.lead
+          expect(lead.state).to eq('open')
+          expect(lead.user).to be_nil
+          expect(lead.lea_conversation_url).to be_nil
+        end
+
+        it "properly handles tour bookings with SMS consent" do
+          tour_with_consent_response = tour_booking_response.merge('has_sms_consent' => true)
+          allow(openai_client).to receive(:analyze_email).and_return(tour_with_consent_response)
+
+          described_class.perform_now(tour_raw_email)
+
+          lead = tour_raw_email.reload.lead
+          # Tour booking should still not be assigned to system user
+          expect(lead.user).to be_nil
+          expect(lead.state).to eq('open')
+          # SMS consent should still be set on preference
+          expect(lead.preference.optin_sms).to be true
+        end
+
+        it "distinguishes between tour bookings and regular rental inquiries" do
+          # First process a tour booking
+          described_class.perform_now(tour_raw_email)
+          tour_lead = tour_raw_email.reload.lead
+          expect(tour_lead.user).to be_nil
+          expect(tour_lead.state).to eq('open')
+
+          # Then process a regular rental inquiry
+          allow(openai_client).to receive(:analyze_email).and_return(rental_inquiry_response)
+          described_class.perform_now(rental_raw_email)
+          rental_lead = rental_raw_email.reload.lead
+          expect(rental_lead.user).to eq(system_user)
+          expect(rental_lead.state).to eq('prospect')
+        end
+      end
     end
 
     context "with Lea AI edge cases" do
