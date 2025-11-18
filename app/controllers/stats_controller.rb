@@ -9,7 +9,8 @@ class StatsController < ApplicationController
       user_ids: params[:user_ids],
       property_ids: params[:property_ids],
       team_ids: params[:team_ids],
-      date_range: params[:date_range]
+      date_range: params[:date_range],
+      timezone: params[:timezone]
     }
     @report = params[:report] || 'lead_sources'
     @stats = Stat.new(filters: @filters, url: stats_manager_path(format: :json))

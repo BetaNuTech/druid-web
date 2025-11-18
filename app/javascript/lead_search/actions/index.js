@@ -221,20 +221,44 @@ function paramsFromSearchNode(segment) {
   if (segment === undefined) {
     return []
   }
-  segment._index.forEach(function(key) {
-    let param = segment[key]["param"]
-    segment[key]["values"].forEach(function(val) {
-      let value = ''
-      if (val["value"] != undefined) {
-        value = val["value"]
-      } else {
-        value = val
-      }
-      if (value.length > 0) {
-        let safeVal = encodeURIComponent(value)
-        params.push(`${search_param}[${param}][]=${safeVal}`)
+
+  // Process filters from _index
+  if (segment._index) {
+    segment._index.forEach(function(key) {
+      if (segment[key] && segment[key]["param"]) {
+        let param = segment[key]["param"]
+        segment[key]["values"].forEach(function(val) {
+          let value = ''
+          if (val["value"] != undefined) {
+            value = val["value"]
+          } else {
+            value = val
+          }
+          if (value.length > 0) {
+            let safeVal = encodeURIComponent(value)
+            params.push(`${search_param}[${param}][]=${safeVal}`)
+          }
+        })
       }
     })
-  })
+  }
+
+  // Also include timezone if it exists but isn't in _index
+  if (segment.timezone && segment.timezone.values && segment.timezone.values.length > 0) {
+    let hasTimezone = false
+    if (segment._index) {
+      hasTimezone = segment._index.includes('timezone')
+    }
+    if (!hasTimezone) {
+      segment.timezone.values.forEach(function(val) {
+        let value = val.value || val
+        if (value.length > 0) {
+          let safeVal = encodeURIComponent(value)
+          params.push(`${search_param}[timezone][]=${safeVal}`)
+        }
+      })
+    }
+  }
+
   return params
 }

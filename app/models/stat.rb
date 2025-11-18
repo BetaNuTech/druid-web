@@ -39,6 +39,8 @@ class Stat
     @user_ids = get_user_ids(@filters.fetch(:user_ids, []))
     @property_ids = get_property_ids(@filters.fetch(:property_ids, []))
     @team_ids = get_team_ids(@filters.fetch(:team_ids,[]))
+    # Extract timezone from filters for timezone-aware date calculations
+    @timezone = Array(@filters.fetch(:timezone, [])).compact.first
     @date_range, @start_date, @end_date = get_date_range(@filters)
     @users = User.find(@user_ids)
     @properties = Property.find(@property_ids)
@@ -1090,6 +1092,23 @@ EOS
     Array(teams).map{|t| t.is_a?(Team) ? t.id : t }
   end
 
+  # Helper method to determine which timezone to use
+  def determine_timezone
+    if @timezone.present?
+      # Try to use the provided timezone (from browser)
+      zone = ActiveSupport::TimeZone[@timezone]
+      return zone if zone
+    end
+    # Fallback to server's configured timezone
+    Time.zone
+  end
+
+  # Helper method to get current time in the determined timezone
+  def timezone_current
+    tz = determine_timezone
+    tz ? Time.current.in_time_zone(tz) : DateTime.current
+  end
+
   def get_date_range(filters)
     date_range = Array(filters.fetch(:date_range, nil))
     if date_range.length >= 1
@@ -1097,55 +1116,118 @@ EOS
     else
       date_range = date_range.last
     end
-    end_date = DateTime.current
-    case date_range
-    when [], nil, 'all_time'
-      start_date = nil
-      end_date = nil
-      date_range = nil
-    when 'today'
-      start_date = DateTime.current.beginning_of_day
-    when 'week'
-      start_date = DateTime.current - 1.week
-    when 'last_week'
-      start_date = DateTime.current.beginning_of_week - 1.week
-      end_date = DateTime.current.end_of_week - 1.week
-    when '2weeks'
-      start_date = DateTime.current - 2.weeks
-    when 'month'
-      start_date = DateTime.current - 1.month
-    when 'last_month'
-      start_date = DateTime.current.beginning_of_month - 1.month
-      end_date = DateTime.current.end_of_month - 1.month
-    when '3months'
-      start_date = DateTime.current - 3.months
-    when 'last_quarter'
-      this_year = Date.current.year
-      case Date.current.month
-      when 1,2,3
-        start_date = DateTime.new(this_year,1,1)
-        end_date = DateTime.new(this_year,3,31)
-      when 4,5,6
-        start_date = DateTime.new(this_year,4,1)
-        end_date = DateTime.new(this_year,6,30)
-      when 7,8,9
-        start_date = DateTime.new(this_year,7,1)
-        end_date = DateTime.new(this_year,9,30)
-      when 10,11,12
-        start_date = DateTime.new(this_year,10,1)
-        end_date = DateTime.new(this_year,12,31)
+
+    # Use timezone-aware current time if timezone is provided
+    tz = determine_timezone
+
+    if tz
+      # Use timezone-aware calculations
+      Time.use_zone(tz) do
+        current_time = Time.current
+        end_date = current_time
+
+        case date_range
+        when [], nil, 'all_time'
+          start_date = nil
+          end_date = nil
+          date_range = nil
+        when 'today'
+          start_date = current_time.beginning_of_day
+        when 'week'
+          start_date = current_time - 1.week
+        when 'last_week'
+          start_date = current_time.beginning_of_week - 1.week
+          end_date = current_time.end_of_week - 1.week
+        when '2weeks'
+          start_date = current_time - 2.weeks
+        when 'month'
+          start_date = current_time - 1.month
+        when 'last_month'
+          start_date = current_time.beginning_of_month - 1.month
+          end_date = current_time.end_of_month - 1.month
+        when '3months'
+          start_date = current_time - 3.months
+        when 'last_quarter'
+          this_year = current_time.year
+          case current_time.month
+          when 1,2,3
+            start_date = tz.parse("#{this_year}-01-01").beginning_of_day
+            end_date = tz.parse("#{this_year}-03-31").end_of_day
+          when 4,5,6
+            start_date = tz.parse("#{this_year}-04-01").beginning_of_day
+            end_date = tz.parse("#{this_year}-06-30").end_of_day
+          when 7,8,9
+            start_date = tz.parse("#{this_year}-07-01").beginning_of_day
+            end_date = tz.parse("#{this_year}-09-30").end_of_day
+          when 10,11,12
+            start_date = tz.parse("#{this_year}-10-01").beginning_of_day
+            end_date = tz.parse("#{this_year}-12-31").end_of_day
+          end
+        when 'year'
+          start_date = current_time - 1.year
+        when 'last_year'
+          start_date = current_time.beginning_of_year - 1.year
+          end_date = current_time.end_of_year - 1.year
+        else
+          date_range = 'custom'
+          start_date = tz.parse(filters.fetch(:start_date, '')) rescue 99.years.ago
+          end_date = tz.parse(filters.fetch(:end_date, '')) rescue current_time
+        end
+
+        return [date_range, start_date, end_date]
       end
-    when 'year'
-      start_date = DateTime.current - 1.year
-    when 'last_year'
-      start_date = DateTime.current.beginning_of_year - 1.year
-      end_date = DateTime.current.end_of_year - 1.year
     else
-      date_range = 'custom'
-      start_date = Date.parse(filters.fetch(:start_date, '')) rescue 99.years.ago
-      end_date = Date.parse(filters.fetch(:end_date, '')) rescue DateTime.current
+      # Fallback to original behavior if no timezone
+      end_date = DateTime.current
+      case date_range
+      when [], nil, 'all_time'
+        start_date = nil
+        end_date = nil
+        date_range = nil
+      when 'today'
+        start_date = DateTime.current.beginning_of_day
+      when 'week'
+        start_date = DateTime.current - 1.week
+      when 'last_week'
+        start_date = DateTime.current.beginning_of_week - 1.week
+        end_date = DateTime.current.end_of_week - 1.week
+      when '2weeks'
+        start_date = DateTime.current - 2.weeks
+      when 'month'
+        start_date = DateTime.current - 1.month
+      when 'last_month'
+        start_date = DateTime.current.beginning_of_month - 1.month
+        end_date = DateTime.current.end_of_month - 1.month
+      when '3months'
+        start_date = DateTime.current - 3.months
+      when 'last_quarter'
+        this_year = Date.current.year
+        case Date.current.month
+        when 1,2,3
+          start_date = DateTime.new(this_year,1,1)
+          end_date = DateTime.new(this_year,3,31)
+        when 4,5,6
+          start_date = DateTime.new(this_year,4,1)
+          end_date = DateTime.new(this_year,6,30)
+        when 7,8,9
+          start_date = DateTime.new(this_year,7,1)
+          end_date = DateTime.new(this_year,9,30)
+        when 10,11,12
+          start_date = DateTime.new(this_year,10,1)
+          end_date = DateTime.new(this_year,12,31)
+        end
+      when 'year'
+        start_date = DateTime.current - 1.year
+      when 'last_year'
+        start_date = DateTime.current.beginning_of_year - 1.year
+        end_date = DateTime.current.end_of_year - 1.year
+      else
+        date_range = 'custom'
+        start_date = Date.parse(filters.fetch(:start_date, '')) rescue 99.years.ago
+        end_date = Date.parse(filters.fetch(:end_date, '')) rescue DateTime.current
+      end
+      return [date_range, start_date, end_date]
     end
-    return [date_range, start_date, end_date]
   end
 
 end

@@ -21,6 +21,66 @@ class LeadSearchFilter extends React.Component {
     }
   }
 
+  componentDidMount() {
+    // Detect browser timezone and include it in filters
+    this.ensureTimezoneInFilters()
+  }
+
+  componentDidUpdate(prevProps) {
+    // Ensure timezone is set when filters change or are loaded
+    if (prevProps.search !== this.props.search) {
+      this.ensureTimezoneInFilters()
+    }
+  }
+
+  getBrowserTimezone = () => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone
+    } catch (e) {
+      // Fallback if Intl API is not available
+      return null
+    }
+  }
+
+  ensureTimezoneInFilters = () => {
+    const timezone = this.getBrowserTimezone()
+    if (timezone && this.props.search && this.props.search.Filters) {
+      // Simply add the timezone using the existing filter mechanism
+      // The filter doesn't need to be in _index to be sent as a parameter
+      if (!this.props.search.Filters.timezone ||
+          !this.props.search.Filters.timezone.values ||
+          this.props.search.Filters.timezone.values.length === 0) {
+        // Use the existing updateFilter action which works correctly
+        this.props.onUpdateFilter(this.props.search)('timezone', [timezone])
+      }
+    }
+  }
+
+  getFriendlyTimezoneName = (timezone) => {
+    if (!timezone) return ''
+
+    // Map common IANA timezones to friendly names
+    const timezoneMap = {
+      'America/New_York': 'Eastern Time',
+      'America/Chicago': 'Central Time',
+      'America/Denver': 'Mountain Time',
+      'America/Phoenix': 'Arizona Time',
+      'America/Los_Angeles': 'Pacific Time',
+      'America/Anchorage': 'Alaska Time',
+      'Pacific/Honolulu': 'Hawaii Time',
+      'America/Toronto': 'Eastern Time (Toronto)',
+      'America/Vancouver': 'Pacific Time (Vancouver)',
+      'Europe/London': 'British Time',
+      'Europe/Paris': 'Central European Time',
+      'Asia/Tokyo': 'Japan Time',
+      'Australia/Sydney': 'Sydney Time',
+      'UTC': 'UTC'
+    }
+
+    // Return the friendly name if available, otherwise return the last part of the timezone
+    return timezoneMap[timezone] || timezone.split('/').pop().replace(/_/g, ' ')
+  }
+
   searchStringValue = () => {
     let value = ''
     if (this.props.search && this.props.search.Filters && this.props.search.Filters.Search) {
@@ -48,6 +108,8 @@ class LeadSearchFilter extends React.Component {
   }
 
   onSubmitSearch = () => {
+    // Ensure timezone is included before submitting
+    this.ensureTimezoneInFilters()
     this.props.onSubmitSearch(this.props.search)(this.props.search)
     this.setState({pending: false, advanced: false})
   }
@@ -85,12 +147,26 @@ class LeadSearchFilter extends React.Component {
         }
       })
       
+      // Get the current timezone for display
+      const timezone = this.getBrowserTimezone()
+      const friendlyTimezone = this.getFriendlyTimezoneName(timezone)
+
       return (
         <div className={Style.filtersContainer}>
           {dateFilters.length > 0 && (
-            <div className={Style.dateFilters}>
-              {dateFilters}
-            </div>
+            <>
+              <div className={Style.dateFilters}>
+                {dateFilters}
+              </div>
+              {timezone && (
+                <div className={Style.timezoneIndicator}>
+                  <span className="text-muted">
+                    <span className="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    {' '}Dates are interpreted in your browser's timezone: {friendlyTimezone}
+                  </span>
+                </div>
+              )}
+            </>
           )}
           <div className={Style.filterGrid}>
             {selectFilters}

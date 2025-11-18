@@ -25,6 +25,7 @@ class ManagerDashboard extends React.Component {
       api_root: container.dataset.api,
       initial_data: container.dataset.url,
       filters: {},
+      browserTimezone: null, // Store browser timezone
       data: { // Default empty data set
         filters: { options: { _index: [] } },
         open_leads: { data: { series: [] } },
@@ -43,7 +44,47 @@ class ManagerDashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.updateData(this.state.initial_data)
+    // Detect browser timezone
+    const timezone = this.getBrowserTimezone()
+    this.setState({ browserTimezone: timezone }, () => {
+      this.updateData(this.state.initial_data)
+    })
+  }
+
+  // Detect browser timezone using Intl API
+  getBrowserTimezone = () => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone
+    } catch (e) {
+      // Fallback if Intl API is not available
+      return null
+    }
+  }
+
+  // Convert IANA timezone to friendly name
+  getFriendlyTimezoneName = (timezone) => {
+    if (!timezone) return ''
+
+    // Map common IANA timezones to friendly names
+    const timezoneMap = {
+      'America/New_York': 'Eastern Time',
+      'America/Chicago': 'Central Time',
+      'America/Denver': 'Mountain Time',
+      'America/Phoenix': 'Arizona Time',
+      'America/Los_Angeles': 'Pacific Time',
+      'America/Anchorage': 'Alaska Time',
+      'Pacific/Honolulu': 'Hawaii Time',
+      'America/Toronto': 'Eastern Time (Toronto)',
+      'America/Vancouver': 'Pacific Time (Vancouver)',
+      'Europe/London': 'British Time',
+      'Europe/Paris': 'Central European Time',
+      'Asia/Tokyo': 'Japan Time',
+      'Australia/Sydney': 'Sydney Time',
+      'UTC': 'UTC'
+    }
+
+    // Return the friendly name if available, otherwise return the last part of the timezone
+    return timezoneMap[timezone] || timezone.split('/').pop().replace(/_/g, ' ')
   }
 
   urlFromFilters = () => {
@@ -52,6 +93,10 @@ class ManagerDashboard extends React.Component {
       for (var p of this.state.data.filters[filter]) {
         url = `${url}&${this.state.data.filters.options[filter].param}[]=${p.val}`
       }
+    }
+    // Always include timezone parameter if available
+    if (this.state.browserTimezone) {
+      url = url + "&timezone[]=" + encodeURIComponent(this.state.browserTimezone)
     }
     return(url)
   }
@@ -89,7 +134,12 @@ class ManagerDashboard extends React.Component {
   render() {
     return(
       <div className={ Style.ManagerDashboard }>
-        <Filters filters={this.state.data.filters} onFilter={this.updateFilter}/>
+        <Filters
+          filters={this.state.data.filters}
+          onFilter={this.updateFilter}
+          browserTimezone={this.state.browserTimezone}
+          getFriendlyTimezoneName={this.getFriendlyTimezoneName}
+        />
         <div className={Style.ChartContainer} >
           <LeadSources data={this.state.data.lead_sources.data}
             filters={this.state.data.filters}

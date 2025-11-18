@@ -1,5 +1,5 @@
 class LeadSearch
-  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date, :bedrooms, :vip, :has_move_in]
+  ALLOWED_PARAMS = [ :user_ids, :property_ids, :priorities, :states, :sources, :referrals, :last_name, :first_name, :id_number, :text, :page, :per_page, :sort_by, :sort_dir, :start_date, :end_date, :bedrooms, :vip, :has_move_in, :timezone]
   LEAD_TABLE = Lead.table_name
   DEFAULT_PER_PAGE = 10
   MAX_PER_PAGE = 100
@@ -253,28 +253,73 @@ class LeadSearch
     start_date ||= @options[:start_date]
     end_date ||= @options[:end_date]
     end_date = Array(end_date).compact.first
+
     if ( start_date || end_date ).present?
+      # Determine timezone with fallback chain:
+      # 1. Browser timezone from frontend
+      # 2. User's profile timezone
+      # 3. Application default (Central Time)
+      tz = determine_timezone_for_filter
+
       if start_date.present?
         start_date = Array(start_date).compact.first
-        if start_date.is_a?(String)
-          start_date = DateTime.parse(start_date).beginning_of_day rescue nil
-        else
-          start_date = start_date.beginning_of_day
-        end
+        start_date = parse_date_in_timezone(start_date, tz, :beginning_of_day)
       end
+
       if end_date.present?
-        if end_date.is_a?(String)
-          end_date = DateTime.parse(end_date).end_of_day rescue nil
-        else
-          end_date = end_date.end_of_day
-        end
+        end_date = parse_date_in_timezone(end_date, tz, :end_of_day)
       end
+
       @skope = @skope.
         where(first_comm: ( start_date || DEFAULT_START_DATE )..( end_date || DateTime.current ))
       @filter_applied = true
     end
     return self
   end
+
+  private
+
+  def determine_timezone_for_filter
+    # Get timezone from options (sent from frontend)
+    # Handle both string and symbol keys since Rails params come as strings
+    browser_tz = Array(@options['timezone'] || @options[:timezone]).compact.first
+
+    # Try to use browser timezone first
+    if browser_tz.present?
+      # ActiveSupport can handle IANA timezone names like "America/New_York"
+      zone = ActiveSupport::TimeZone[browser_tz]
+      return zone.name if zone
+    end
+
+    # Fall back to user's profile timezone
+    if @user&.timezone.present?
+      zone = ActiveSupport::TimeZone[@user.timezone]
+      return zone.name if zone
+    end
+
+    # Final fallback to application default (Central Time)
+    'Central Time (US & Canada)'
+  end
+
+  def parse_date_in_timezone(date, timezone, boundary_method)
+    begin
+      if date.is_a?(String)
+        # Parse the date string in the specified timezone
+        Time.use_zone(timezone) do
+          parsed_date = Time.zone.parse(date)
+          parsed_date.send(boundary_method)
+        end
+      else
+        # If it's already a Date/DateTime object, convert to timezone
+        date.in_time_zone(timezone).send(boundary_method)
+      end
+    rescue ArgumentError, TypeError
+      # If parsing fails, return nil (filter will be skipped)
+      nil
+    end
+  end
+
+  public
 
   def filter_by_state(states=nil)
     states ||= @options[:states]

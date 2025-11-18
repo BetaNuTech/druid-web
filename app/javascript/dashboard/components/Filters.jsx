@@ -88,18 +88,31 @@ class Filters extends React.Component {
   }
 
   render() {
+    // Check if date_range filter is present and has selections
+    const hasDateRange = this.state.filters.date_range && this.state.filters.date_range.length > 0
+    const showTimezone = hasDateRange && this.props.browserTimezone
+
     return(
-      <div className={Style.Filters}>
-        {this.filterIndex().map( i => {
-          return(
-            <FilterSection
-              key={i}
-              filterKey={i}
-              options={ this.state.filters.options[i] }
-              selected={ this.state.filters[i] }
-              onFilter={this.props.onFilter}
-            />)
-        })}
+      <div>
+        <div className={Style.Filters}>
+          {this.filterIndex().map( i => {
+            return(
+              <FilterSection
+                key={i}
+                filterKey={i}
+                options={ this.state.filters.options[i] }
+                selected={ this.state.filters[i] }
+                onFilter={this.props.onFilter}
+              />)
+          })}
+        </div>
+        {showTimezone && (
+          <div className={Style.timezoneIndicator}>
+            <span className="glyphicon glyphicon-time" aria-hidden="true"></span>
+            &nbsp;
+            Date ranges use your browser's timezone: {this.props.getFriendlyTimezoneName(this.props.browserTimezone)}
+          </div>
+        )}
       </div>
     )
   }
