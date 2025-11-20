@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Style from './Filters.scss'
+import CustomDateRange from './CustomDateRange'
 
 class FilterSection extends React.Component {
 
@@ -92,6 +93,10 @@ class Filters extends React.Component {
     const hasDateRange = this.state.filters.date_range && this.state.filters.date_range.length > 0
     const showTimezone = hasDateRange && this.props.browserTimezone
 
+    // Check if 'custom' is selected in date_range
+    const hasCustomDateRange = this.state.filters.date_range &&
+      this.state.filters.date_range.some(range => range.val === 'custom')
+
     return(
       <div>
         <div className={Style.Filters}>
@@ -106,6 +111,14 @@ class Filters extends React.Component {
               />)
           })}
         </div>
+        {hasCustomDateRange && (
+          <CustomDateRange
+            visible={true}
+            startDate={this.props.customStartDate}
+            endDate={this.props.customEndDate}
+            onChange={this.props.onCustomDateChange}
+          />
+        )}
         {showTimezone && (
           <div className={Style.timezoneIndicator}>
             <span className="glyphicon glyphicon-time" aria-hidden="true"></span>

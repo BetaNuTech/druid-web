@@ -29,7 +29,8 @@ class Stat
     '2weeks': '14 days until today',
     month: '30 Days until today',
     '3months': '3 Months until today',
-    year: '12 Months until today'
+    year: '12 Months until today',
+    custom: 'Custom Range'
   }
 
 
@@ -390,6 +391,9 @@ EOS
 
   def lead_sources
     skope = apply_skope(Lead)
+    if @start_date.present? && @end_date.present?
+      skope = skope.where(first_comm: @start_date..@end_date)
+    end
     skope.group(:lead_source_id).count
     return skope.joins("inner join lead_sources on leads.lead_source_id = lead_sources.id").group("concat(lead_sources.name, ' ' , leads.referral)").count
   end
@@ -476,6 +480,9 @@ EOS
 
   def open_leads
     skope = apply_skope(Lead)
+    if @start_date.present? && @end_date.present?
+      skope = skope.where(first_comm: @start_date..@end_date)
+    end
     skope.
       where(state: 'open').
       order(first_comm: "asc")
@@ -1168,6 +1175,14 @@ EOS
         when 'last_year'
           start_date = current_time.beginning_of_year - 1.year
           end_date = current_time.end_of_year - 1.year
+        when 'custom'
+          # Handle custom date range with user-provided start and end dates
+          # Handle both array and string formats for start_date and end_date
+          start_date_value = filters[:start_date].is_a?(Array) ? filters[:start_date].first : filters[:start_date]
+          end_date_value = filters[:end_date].is_a?(Array) ? filters[:end_date].first : filters[:end_date]
+
+          start_date = start_date_value.present? ? tz.parse(start_date_value).beginning_of_day : 99.years.ago
+          end_date = end_date_value.present? ? tz.parse(end_date_value).end_of_day : current_time
         else
           date_range = 'custom'
           start_date = tz.parse(filters.fetch(:start_date, '')) rescue 99.years.ago
@@ -1221,6 +1236,14 @@ EOS
       when 'last_year'
         start_date = DateTime.current.beginning_of_year - 1.year
         end_date = DateTime.current.end_of_year - 1.year
+      when 'custom'
+        # Handle custom date range with user-provided start and end dates
+        # Handle both array and string formats for start_date and end_date
+        start_date_value = filters[:start_date].is_a?(Array) ? filters[:start_date].first : filters[:start_date]
+        end_date_value = filters[:end_date].is_a?(Array) ? filters[:end_date].first : filters[:end_date]
+
+        start_date = start_date_value.present? ? Date.parse(start_date_value).beginning_of_day : 99.years.ago
+        end_date = end_date_value.present? ? Date.parse(end_date_value).end_of_day : DateTime.current
       else
         date_range = 'custom'
         start_date = Date.parse(filters.fetch(:start_date, '')) rescue 99.years.ago

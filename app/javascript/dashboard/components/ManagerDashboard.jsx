@@ -26,6 +26,8 @@ class ManagerDashboard extends React.Component {
       initial_data: container.dataset.url,
       filters: {},
       browserTimezone: null, // Store browser timezone
+      customStartDate: '', // Store custom start date
+      customEndDate: '', // Store custom end date
       data: { // Default empty data set
         filters: { options: { _index: [] } },
         open_leads: { data: { series: [] } },
@@ -94,6 +96,20 @@ class ManagerDashboard extends React.Component {
         url = `${url}&${this.state.data.filters.options[filter].param}[]=${p.val}`
       }
     }
+
+    // Add custom date parameters if custom date range is selected
+    const hasCustomDateRange = this.state.data.filters.date_range &&
+      this.state.data.filters.date_range.some(range => range.val === 'custom')
+
+    if (hasCustomDateRange) {
+      if (this.state.customStartDate) {
+        url = url + "&start_date[]=" + encodeURIComponent(this.state.customStartDate)
+      }
+      if (this.state.customEndDate) {
+        url = url + "&end_date[]=" + encodeURIComponent(this.state.customEndDate)
+      }
+    }
+
     // Always include timezone parameter if available
     if (this.state.browserTimezone) {
       url = url + "&timezone[]=" + encodeURIComponent(this.state.browserTimezone)
@@ -131,6 +147,21 @@ class ManagerDashboard extends React.Component {
     window.history.pushState("","Manager Dashboard", newurl)
   }
 
+  handleCustomDateChange = (startDate, endDate) => {
+    this.setState(
+      {
+        customStartDate: startDate,
+        customEndDate: endDate
+      },
+      () => {
+        // Update data when custom dates change
+        this.updateData(this.urlFromFilters())
+        const newurl = this.urlFromFilters().replace('.json', '')
+        window.history.pushState("", "Manager Dashboard", newurl)
+      }
+    )
+  }
+
   render() {
     return(
       <div className={ Style.ManagerDashboard }>
@@ -139,6 +170,9 @@ class ManagerDashboard extends React.Component {
           onFilter={this.updateFilter}
           browserTimezone={this.state.browserTimezone}
           getFriendlyTimezoneName={this.getFriendlyTimezoneName}
+          customStartDate={this.state.customStartDate}
+          customEndDate={this.state.customEndDate}
+          onCustomDateChange={this.handleCustomDateChange}
         />
         <div className={Style.ChartContainer} >
           <LeadSources data={this.state.data.lead_sources.data}

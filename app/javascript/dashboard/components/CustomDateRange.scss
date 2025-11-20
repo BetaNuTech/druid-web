@@ -1,0 +1,99 @@
+.custom-date-range {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+
+  .date-input-group {
+    display: flex;
+    gap: 15px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .date-input-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #495057;
+      margin: 0;
+    }
+
+    input[type="date"],
+    input[type="text"].date-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      transition: all 0.2s ease;
+      line-height: 1.2;
+
+      &:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        outline: none;
+      }
+
+      &::placeholder {
+        color: #6c757d;
+        opacity: 1;
+      }
+    }
+
+    // Date input specific fixes for vertical alignment
+    input[type="date"] {
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+      // Chrome/Safari specific fixes
+      &::-webkit-datetime-edit,
+      &::-webkit-datetime-edit-fields-wrapper,
+      &::-webkit-datetime-edit-text,
+      &::-webkit-datetime-edit-month-field,
+      &::-webkit-datetime-edit-day-field,
+      &::-webkit-datetime-edit-year-field {
+        padding: 0;
+        line-height: 1;
+      }
+
+      // Firefox specific
+      &::-moz-focus-inner {
+        padding: 0;
+        border: 0;
+      }
+    }
+
+    // iOS-specific date input fixes
+    @supports (-webkit-touch-callout: none) {
+      input[type="date"] {
+        // Reset iOS default styling
+        -webkit-appearance: none;
+        // Adjust padding for proper vertical centering on iOS
+        padding: 12px;
+        // Ensure text is vertically centered
+        line-height: normal;
+        vertical-align: middle;
+        // Consistent height to prevent shifting
+        height: 42px;
+
+        // Override webkit datetime edit styles for iOS
+        &::-webkit-datetime-edit,
+        &::-webkit-datetime-edit-fields-wrapper {
+          display: flex;
+          align-items: center;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
