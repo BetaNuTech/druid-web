@@ -18,6 +18,11 @@ class LeadSearchLead extends React.Component {
     return thedate.format(formatter)
   }
 
+  isPhoneLead = () => {
+    const phoneSources = ['Arrowtel', 'Nextiva', 'CallCenter']
+    return this.props.data.source && phoneSources.includes(this.props.data.source.slug)
+  }
+
   render() {
     return(
       <a href={this.props.data.web_url} className={Style.LeadSearchLeadLink}>
@@ -32,6 +37,14 @@ class LeadSearchLead extends React.Component {
               <strong>State:</strong>
               <span className={`state-${this.props.data.state}`}>{this.props.data.state}</span>
             </li>
+            {this.isPhoneLead() && (
+              <li>
+                <span className="badge badge-info phone-lead-badge" style={{fontWeight: 'bold', fontSize: '0.75rem'}}>
+                  <span className="glyphicon glyphicon-earphone" style={{marginRight: '3px'}}></span>
+                  PHONE LEAD
+                </span>
+              </li>
+            )}
             <li>
               <strong>Agent:</strong>
               <span>{this.props.data.user ? this.props.data.user.name : 'None'}</span>

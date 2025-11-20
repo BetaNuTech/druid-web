@@ -95,9 +95,21 @@ module LeadsHelper
     else
       'badge'
     end
-    
+
     tag.span(class: badge_class) do
       lead.state.try(:titlecase)
+    end
+  end
+
+  def phone_lead_badge(lead, size: :normal)
+    return nil unless lead.source&.phone_source?
+
+    font_size = size == :small ? '0.75rem' : '0.9rem'
+    icon_margin = size == :small ? '3px' : '4px'
+
+    tag.span(class: 'badge badge-info phone-lead-badge', style: "font-weight: bold; font-size: #{font_size};") do
+      concat(tag.span(class: 'glyphicon glyphicon-earphone', style: "margin-right: #{icon_margin};"))
+      concat('PHONE LEAD')
     end
   end
 

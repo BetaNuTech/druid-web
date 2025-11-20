@@ -12,6 +12,11 @@
             <% end %>
             <%= @lead.name %>
           </h1>
+          <% if @lead.source&.phone_source? %>
+            <div style="margin-top: 8px;">
+              <%= phone_lead_badge(@lead) %>
+            </div>
+          <% end %>
           <% unless @lead.is_lead? %>
             <span class="lead-hero__classification">Not a Lead: <%= @lead.classification&.capitalize %></span>
           <% end %>

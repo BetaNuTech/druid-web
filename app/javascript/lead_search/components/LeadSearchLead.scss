@@ -221,6 +221,24 @@
         &::before { background: #198754; }
       }
     }
+
+    // Phone lead badge styling
+    .phone-lead-badge {
+      background: #0dcaf0;
+      color: #fff;
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+
+      .glyphicon {
+        font-size: 9px;
+      }
+    }
   }
   
   @media (max-width: 768px) {
