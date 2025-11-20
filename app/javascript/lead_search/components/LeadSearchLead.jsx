@@ -50,6 +50,10 @@ class LeadSearchLead extends React.Component {
               <span>{this.props.data.user ? this.props.data.user.name : 'None'}</span>
             </li>
             <li>
+              <strong>Created:</strong>
+              <span>{this.props.data.created_at != undefined ? this.formatDateTime(this.props.data.created_at) : '-'}</span>
+            </li>
+            <li>
               <strong>First Contact:</strong>
               <span>{this.props.data.first_comm != undefined ? this.formatDateTime(this.props.data.first_comm) : '-'}</span>
             </li>

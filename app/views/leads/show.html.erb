@@ -62,7 +62,15 @@
             <span class="lead-stats__value"><%= @lead.user ? @lead.user.name : "None" %></span>
           </div>
         </div>
-        
+
+        <div class="lead-stats__item">
+          <span class="lead-stats__icon"><%= glyph(:log_in) %></span>
+          <div class="lead-stats__content">
+            <span class="lead-stats__label">Created</span>
+            <span class="lead-stats__value"><%= short_datetime(@lead.created_at) %></span>
+          </div>
+        </div>
+
         <div class="lead-stats__item">
           <span class="lead-stats__icon"><%= glyph(:calendar) %></span>
           <div class="lead-stats__content">
@@ -70,7 +78,7 @@
             <span class="lead-stats__value"><%= short_datetime(@lead.first_comm) || "—" %></span>
           </div>
         </div>
-        
+
         <div class="lead-stats__item">
           <span class="lead-stats__icon"><%= glyph(:time) %></span>
           <div class="lead-stats__content">

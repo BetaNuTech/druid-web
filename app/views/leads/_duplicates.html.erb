@@ -66,7 +66,7 @@
             </span>
           </td>
           <td><%= lead.state.humanize %></td>
-          <td><%= short_date(lead.created_at) %></td>
+          <td><%= datetime_relative_to_lead(lead.created_at, @lead) %></td>
           <td>
             <%= link_to(trigger_state_event_lead_path(id: lead.id, eventid: 'invalidate', classification: 'duplicate', format: :js),
                         { method: :post,

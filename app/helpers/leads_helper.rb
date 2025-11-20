@@ -1,4 +1,5 @@
 module LeadsHelper
+  include ActionView::Helpers::DateHelper
 
   def unit_types_for_select(property:, value:)
     return [] unless property.present?
@@ -334,6 +335,29 @@ module LeadsHelper
     # Then apply simple_format for newlines/paragraphs
     # Disable sanitization since we've already created safe HTML links
     simple_format(text, {}, sanitize: false)
+  end
+
+  # Display datetime with relative time compared to a reference lead
+  # Used in duplicates section to show temporal relationship
+  def datetime_relative_to_lead(datetime, reference_lead)
+    formatted_date = short_datetime(datetime)
+    return formatted_date if reference_lead.nil?
+
+    # Check if this is the current lead (same created_at timestamp)
+    if reference_lead.created_at == datetime
+      # This is the current lead, no relative time needed
+      formatted_date
+    else
+      # Calculate time difference
+      time_diff = distance_of_time_in_words(datetime, reference_lead.created_at)
+
+      # Determine if before or after
+      if datetime < reference_lead.created_at
+        "#{formatted_date} • #{time_diff} before this lead"
+      else
+        "#{formatted_date} • #{time_diff} after this lead"
+      end
+    end
   end
 
 end

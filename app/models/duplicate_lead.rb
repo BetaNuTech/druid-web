@@ -84,8 +84,8 @@ class DuplicateLead < ApplicationRecord
 
         g.
           compact.
-          # Sort Leads within group by created_at DESC
-          sort_by{|r| r.created_at}.reverse.
+          # Sort Leads within group by created_at ASC (oldest first)
+          sort_by{|r| r.created_at}.
           map do |lead|
             other_records = group_indexes.dup
             other_records.delete_if{|l| l[:id] == lead.id}

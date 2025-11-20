@@ -43,7 +43,7 @@
                         <%= glyph(:record) %> <%= lead.state.humanize %>
                       </span>
                       <span class="lead-created">
-                        <%= glyph(:calendar) %> <%= short_date(lead.created_at) %>
+                        <%= glyph(:calendar) %> <%= datetime_relative_to_lead(lead.created_at, @lead) %>
                       </span>
                     </div>
                   </div>
