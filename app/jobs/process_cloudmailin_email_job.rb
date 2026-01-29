@@ -121,6 +121,47 @@ class ProcessCloudmailinEmailJob < ApplicationJob
 
     lead_data = build_lead_data(analysis, raw_email, property, is_lea_handoff)
 
+    # Check if lead contact info matches property (self-referral prevention)
+    property_validator = Leads::PropertyContactValidator.new(
+      property: property,
+      lead_data: {
+        phone1: lead_data[:phone1],
+        phone2: lead_data[:phone2],
+        email: lead_data[:email]
+      }
+    )
+
+    property_validator.validate
+
+    if property_validator.should_reject?
+      error_message = "Lead rejected: #{property_validator.rejection_reason}"
+      Leads::Creator.create_event_note(
+        message: "ProcessCloudmailinEmailJob blocked self-referential lead - #{error_message}",
+        notable: property, error: true
+      )
+      raw_email.mark_failed!(error_message)
+      return
+    elsif property_validator.should_modify?
+      mods = property_validator.modifications
+      if mods[:email] == nil && lead_data[:email].present?
+        original = lead_data[:email]
+        lead_data[:email] = nil
+        Leads::Creator.create_event_note(
+          message: "Lead email (#{original}) cleared - #{mods[:reason]}",
+          notable: property, error: false
+        )
+      end
+      if mods[:phone1] == nil && (lead_data[:phone1].present? || lead_data[:phone2].present?)
+        original = [lead_data[:phone1], lead_data[:phone2]].compact.join(', ')
+        lead_data[:phone1] = nil
+        lead_data[:phone2] = nil
+        Leads::Creator.create_event_note(
+          message: "Lead phones (#{original}) cleared - #{mods[:reason]}",
+          notable: property, error: false
+        )
+      end
+    end
+
     lead = Lead.new(lead_data)
     lead.lead_source_id = cloudmailin_source.id
 

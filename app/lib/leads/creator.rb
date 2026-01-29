@@ -151,6 +151,46 @@ module Leads
         end
       end
 
+      ### Check if lead contact info matches property (self-referral prevention)
+      if @lead.property.present?
+        property_validator = Leads::PropertyContactValidator.new(
+          property: @lead.property,
+          lead_data: { phone1: @lead.phone1, phone2: @lead.phone2, email: @lead.email }
+        )
+
+        property_validator.validate
+
+        if property_validator.should_reject?
+          error_message = "Lead rejected: #{property_validator.rejection_reason}"
+          @lead.errors.add(:base, error_message)
+          @errors = @lead.errors
+          Leads::Creator.create_event_note(
+            message: "Leads::Creator blocked self-referential lead - #{error_message}",
+            notable: @lead.property, error: true
+          )
+          return @lead
+        elsif property_validator.should_modify?
+          mods = property_validator.modifications
+          if mods[:email] == nil && @lead.email.present?
+            original = @lead.email
+            @lead.email = nil
+            Leads::Creator.create_event_note(
+              message: "Lead email (#{original}) cleared - #{mods[:reason]}",
+              notable: @lead.property, error: false
+            )
+          end
+          if mods[:phone1] == nil && (@lead.phone1.present? || @lead.phone2.present?)
+            original = [@lead.phone1, @lead.phone2].compact.join(', ')
+            @lead.phone1 = nil
+            @lead.phone2 = nil
+            Leads::Creator.create_event_note(
+              message: "Lead phones (#{original}) cleared - #{mods[:reason]}",
+              notable: @lead.property, error: false
+            )
+          end
+        end
+      end
+
       ### Additional check for duplicate leads by phone (kept for backwards compatibility)
       if @source.phone_source? && @lead.phone1.present? && Lead.where(phone1: @lead.phone1).any?
         @lead.errors.add(:phone1, "This lead matches the phone number of an existing recent lead [#{@lead.phone1}]")

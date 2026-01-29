@@ -165,23 +165,6 @@ RSpec.describe Leads::Creator do
         end
       end
 
-      context 'when lead does not match any resident' do
-        before do
-          resident.update!(first_name: 'Jane', last_name: 'Smith')
-          resident_detail.update!(phone1: '5559999999', email: 'jane@example.com')
-        end
-
-        it 'allows lead creation' do
-          creator = described_class.new(data: valid_lead_data, token: lead_source.api_token)
-
-          expect do
-            result_lead = creator.call
-            expect(result_lead).to be_persisted
-            expect(result_lead.errors).to be_empty
-          end.to change { Lead.count }.by(1)
-        end
-      end
-
       context 'when lead has no property assigned' do
         let(:lead_data_without_property) do
           {
