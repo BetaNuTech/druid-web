@@ -171,7 +171,7 @@ class Stat
         ON user_profiles.user_id = users.id
       INNER JOIN lead_transitions
         ON lead_transitions.lead_id = leads.id
-          AND lead_transitions.current_state IN ('invalidated', 'future')
+          AND (lead_transitions.current_state = 'future' OR (lead_transitions.current_state = 'invalidated' AND leads.classification = 2))
       #{ "WHERE #{_lead_filter_sql}" if _lead_filter_sql.present?}
       GROUP BY users.id, user_name
     ) invalidated_counts
@@ -416,7 +416,7 @@ EOS
           count(*) AS total_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
-        WHERE leads.state != 'invalidated'#{ " AND #{_filter_sql}" if _filter_sql.present?}
+        WHERE NOT (leads.state = 'invalidated' AND leads.classification = 2)#{ " AND #{_filter_sql}" if _filter_sql.present?}
         GROUP BY coalesce(leads.referral, lead_sources.name)
       ) total_counts
       LEFT JOIN (
@@ -425,7 +425,7 @@ EOS
           count(*) AS converted_count
         FROM leads
           JOIN lead_sources ON leads.lead_source_id = lead_sources.id
-        WHERE (#{converted_states_sql}) AND leads.state != 'invalidated'#{ " AND #{_filter_sql}" if _filter_sql.present?}
+        WHERE (#{converted_states_sql}) AND NOT (leads.state = 'invalidated' AND leads.classification = 2)#{ " AND #{_filter_sql}" if _filter_sql.present?}
         GROUP BY coalesce(leads.referral, lead_sources.name)
       ) converted_counts
        ON total_counts.source_name = converted_counts.source_name
@@ -463,7 +463,7 @@ EOS
       FROM leads
       INNER JOIN properties
         ON leads.property_id = properties.id
-      WHERE leads.state != 'invalidated'#{ " AND #{_filter_sql}" if _filter_sql.present?}
+      WHERE NOT (leads.state = 'invalidated' AND leads.classification = 2)#{ " AND #{_filter_sql}" if _filter_sql.present?}
       GROUP BY properties.name, properties.id
       ORDER BY properties.name
 EOS

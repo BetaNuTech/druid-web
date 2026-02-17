@@ -199,7 +199,7 @@ class PropertyLeads extends React.Component {
             fontSize="10"
             fill="#666"
             fontStyle="italic">
-            Note: Invalidated leads are excluded from this chart
+            Note: Leads invalidated as residents are excluded from this chart
           </text>
         </svg>
       </div>
