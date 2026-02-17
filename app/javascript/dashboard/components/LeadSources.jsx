@@ -162,7 +162,12 @@ class LeadSources extends React.Component {
         .attr("x", this.margin.left + 30)
         .attr("y", (d,i) => i * 20 + 10 )
         .attr("dy", "0.1em")
-        .text(d => d)
+        .text(d => {
+          const total = this.props.data.series.reduce(
+            (sum, item) => sum + (this.props.selectY(item)[d] || 0), 0
+          );
+          return `${d} (${total})`;
+        })
   }
 
   updateBarChart = () => {
@@ -285,7 +290,7 @@ class LeadSources extends React.Component {
             fontSize="10"
             fill="#666"
             fontStyle="italic">
-            Note: Invalidated leads are excluded from this chart
+            Note: Leads invalidated as residents are excluded from this chart
           </text>
         </svg>
       </div>
