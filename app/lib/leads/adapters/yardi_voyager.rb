@@ -140,7 +140,8 @@ module Leads
       end
 
       def createGuestCards(start_date: 1.day.ago)
-        return sendLeads(@property.new_leads_for_sync.where(created_at: start_date..DateTime.current))
+        time_range = start_date..DateTime.current
+        return sendLeads(@property.new_leads_for_sync.where("leads.created_at BETWEEN ? AND ? OR leads.updated_at BETWEEN ? AND ?", time_range.first, time_range.last, time_range.first, time_range.last))
       end
 
       def updateGuestCards(start_date: 1.day.ago)
