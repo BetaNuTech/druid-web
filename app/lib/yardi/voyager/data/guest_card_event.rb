@@ -70,7 +70,7 @@ module Yardi
             first_contact_event.reasons = 'Emailed'
             first_contact_event.first_contact = true
             first_contact_event.comments = "Lead created in Bluesky originating from #{lead.referral || lead.source&.name || 'Unknown'}"
-            first_contact_event.transaction_source = 'Referral'
+            first_contact_event.transaction_source = 'Bluesky'
 
             # Use the provided agent or fall back to the lead's creditable agent
             if agent.present?
@@ -102,7 +102,7 @@ module Yardi
 
           if (lead_transition.last_state == 'none' && lead_transition.current_state == 'open')
             event.comments = "Lead created in Bluesky originating from #{lead_transition.lead.referral || 'Unknown'}"
-            event.transaction_source = 'Referral'
+            event.transaction_source = 'Bluesky'
             event.first_contact = true
 
             # TODO: assign better reason and event type
