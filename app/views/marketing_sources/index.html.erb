@@ -36,11 +36,20 @@
   </div>
 <% end %>
 
-<% @marketing_sources.group_by{|s| s.property.name }.each do |property_name, marketing_sources| %>
-  <% property = Property.where(name: property_name).first %>
+<% @marketing_sources.group_by{|s| s.property }.each do |property, marketing_sources| %>
+  <%
+    prop_total_spend = MarketingSource.total_spend(property)
+    prop_total_spend_ytd = MarketingSource.total_spend_ytd(property)
+    prop_total_leads = MarketingSource.total_leads(property)
+    prop_total_leads_ytd = MarketingSource.total_leads_ytd(property)
+    prop_total_conversions = MarketingSource.total_conversions(property)
+    prop_total_conversions_ytd = MarketingSource.total_conversions_ytd(property)
+    prop_spend_per_lead = prop_total_spend / [prop_total_leads, 1].max.to_d
+    prop_spend_per_conversion = prop_total_spend / [prop_total_conversions, 1].max.to_d
+  %>
   <div class="row">
     <div class="col-xs-12 col-md-3">
-      <h2><%= property_name %></h2>
+      <h2><%= property.name %></h2>
       <% if policy(MarketingSource).new? %>
         <%= link_to 'Add a Marketing Source', new_marketing_source_path(property_id: marketing_sources.first&.property_id), class: "btn btn--small btn--primary"  %>
       <% end %>
@@ -51,35 +60,35 @@
             <tbody>
               <tr>
                 <td>Total Spend:</td>
-                <td> <%= number_to_currency(MarketingSource.total_spend(property)) %></td>
+                <td> <%= number_to_currency(prop_total_spend) %></td>
               </tr>
               <tr>
                 <td>Spend YTD:</td>
-               <td><%= number_to_currency(MarketingSource.total_spend_ytd(property)) %></td>
+               <td><%= number_to_currency(prop_total_spend_ytd) %></td>
               </tr>
               <tr>
                 <td>Per Lead:</td>
-                <td><%= number_to_currency(MarketingSource.spend_per_lead(property)) %></td>
+                <td><%= number_to_currency(prop_spend_per_lead) %></td>
               </tr>
               <tr>
                 <td>Per Conversion:</td>
-               <td><%= number_to_currency(MarketingSource.spend_per_conversion(property)) %></td>
+               <td><%= number_to_currency(prop_spend_per_conversion) %></td>
               </tr>
               <tr>
                 <td>Total Leads:</td>
-                <td><%= MarketingSource.total_leads(property) %></td>
+                <td><%= prop_total_leads %></td>
               </tr>
               <tr>
                 <td>Leads YTD:</td>
-               <td><%= MarketingSource.total_leads_ytd(property) %></td>
+               <td><%= prop_total_leads_ytd %></td>
               </tr>
               <tr>
                 <td>Conversions:</td>
-                <td><%= MarketingSource.total_conversions(property) %></td>
+                <td><%= prop_total_conversions %></td>
               </tr>
               <tr>
                 <td>Conversions YTD:</td>
-                <td><%= MarketingSource.total_conversions_ytd(property) %></td>
+                <td><%= prop_total_conversions_ytd %></td>
               </tr>
             </tbody>
           </table>

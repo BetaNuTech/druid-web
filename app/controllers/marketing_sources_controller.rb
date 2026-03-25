@@ -6,7 +6,7 @@ class MarketingSourcesController < ApplicationController
   def index
     authorize MarketingSource
     set_property_id
-    @marketing_sources = marketing_source_scope.includes(:property).
+    @marketing_sources = marketing_source_scope.includes(:property, :marketing_expenses).
       where(property_id: @property_id).
       order('properties.name ASC, marketing_sources.name ASC')
   end

@@ -79,41 +79,23 @@ class MarketingSource < ApplicationRecord
     end
   end
 
-  # Attributable Leads using flexible matching
+  # SQL expression to normalize a name for flexible matching:
+  # strips whitespace, lowercases, removes 'www.' prefix and '.com/.net/.org' suffix
+  NORMALIZE_SQL = "LOWER(REGEXP_REPLACE(REGEXP_REPLACE(TRIM(%s), '^www\\.', ''), '\\.(com|net|org)$', ''))".freeze
+
+  # Attributable Leads using flexible matching (SQL-based)
   def self.all_leads(property=nil)
     skope = Lead
     skope = Lead.where(property: property) if property
-    
-    # Get all marketing source names and their normalized versions
+
     marketing_sources = property ? MarketingSource.where(property: property) : MarketingSource.all
-    exact_names = marketing_sources.pluck(:name)
-    
-    # For flexible matching, we need to check both exact names and normalized matches
-    normalized_mapping = {}
-    marketing_sources.each do |ms|
-      normalized_mapping[normalize_name(ms.name)] = ms.name
-    end
-    
-    # Build condition for exact matches and flexible matches
-    leads_query = skope.where(referral: exact_names)
-    
-    # Add leads that match normalized names but not exact names
-    if normalized_mapping.any?
-      # This is a bit complex in SQL, so we'll do post-processing for now
-      # In production, you might want to add a normalized_referral column for performance
-      all_leads = skope.all
-      flexible_matches = all_leads.select do |lead|
-        next false if lead.referral.blank? || exact_names.include?(lead.referral)
-        normalized_mapping.key?(normalize_name(lead.referral))
-      end
-      
-      flexible_lead_ids = flexible_matches.map(&:id)
-      if flexible_lead_ids.any?
-        leads_query = leads_query.or(skope.where(id: flexible_lead_ids))
-      end
-    end
-    
-    leads_query
+    normalized_names = marketing_sources.pluck(:name).map { |n| normalize_name(n) }.uniq
+
+    return skope.none if normalized_names.empty?
+
+    skope.where(
+      "#{NORMALIZE_SQL % 'referral'} IN (?)", normalized_names
+    ).where.not(referral: [nil, ''])
   end
 
   # Attributable Lead Conversions
@@ -152,18 +134,11 @@ class MarketingSource < ApplicationRecord
   # Matches "Zillow" to "Zillow.com", "Apartments.com" to "Apartments", etc.
   def self.find_by_flexible_referral(property, referral_name)
     return nil if referral_name.blank?
-    
-    # Try exact match first
-    exact_match = where(property: property, name: referral_name).first
-    return exact_match if exact_match
-    
-    # Try fuzzy matching - normalize both names for comparison
+
     normalized_referral = normalize_name(referral_name)
-    
-    where(property: property).find do |marketing_source|
-      normalized_source_name = normalize_name(marketing_source.name)
-      normalized_referral == normalized_source_name
-    end
+    where(property: property)
+      .where("#{NORMALIZE_SQL % 'name'} = ?", normalized_referral)
+      .first
   end
   
   # Normalize name for flexible matching
@@ -181,25 +156,10 @@ class MarketingSource < ApplicationRecord
   ### Public methods
 
   def leads
-    # Start with exact match
-    exact_leads = property.leads.where(referral: name)
-    
-    # For flexible matching, find leads where normalized referral matches normalized name
     normalized_name = self.class.normalize_name(name)
-    
-    # Get all leads with referrals that could potentially match
-    potential_leads = property.leads.where.not(referral: [nil, '', name])
-    flexible_matches = potential_leads.select do |lead|
-      self.class.normalize_name(lead.referral) == normalized_name
-    end
-    
-    # Combine exact and flexible matches
-    if flexible_matches.any?
-      flexible_ids = flexible_matches.map(&:id)
-      Lead.where(id: [exact_leads.pluck(:id) + flexible_ids].flatten.uniq)
-    else
-      exact_leads
-    end
+    property.leads
+      .where("#{NORMALIZE_SQL % 'referral'} = ?", normalized_name)
+      .where.not(referral: [nil, ''])
   end
 
   def conversions

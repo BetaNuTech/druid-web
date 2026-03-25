@@ -4,13 +4,20 @@ module MarketingSources
 
     included do
       def total_spend
-        marketing_expenses.sum(:fee_total)
+        if marketing_expenses.loaded?
+          marketing_expenses.sum(&:fee_total)
+        else
+          marketing_expenses.sum(:fee_total)
+        end
       end
 
       def total_spend_ytd
-        marketing_expenses.
-          where(start_date: DateTime.current.beginning_of_year..DateTime.current.end_of_year).
-          sum(:fee_total)
+        year_range = DateTime.current.beginning_of_year..DateTime.current.end_of_year
+        if marketing_expenses.loaded?
+          marketing_expenses.select { |e| year_range.cover?(e.start_date) }.sum(&:fee_total)
+        else
+          marketing_expenses.where(start_date: year_range).sum(:fee_total)
+        end
       end
 
       def spend_per_lead
