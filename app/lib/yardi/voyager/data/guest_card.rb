@@ -567,7 +567,7 @@ module Yardi
                         xml.EventReasons 'Spoke to'
                         xml.FirstContact 'true'
                         xml.Comments("%s (Bluesky Lead from %s/%s)" % [lead.preference.notes, lead.source.try(:name), lead.referral])
-                        xml.TransactionSource 'Bluesky'
+                        xml.TransactionSource(lead.referral.presence || 'Bluesky')
                       }
                     }
                   end

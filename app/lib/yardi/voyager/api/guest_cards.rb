@@ -133,6 +133,34 @@ module Yardi
               create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: msg, error: true)
             end
           rescue => e
+            # If the error is a rejected source name, notify and retry with 'Bluesky' fallback
+            if e.message.include?('Source Name not found in Voyager') && !@source_fallback_attempted
+              @source_fallback_attempted = true
+              source_msg = "Yardi rejected TransactionSource '#{lead.referral}' for Lead[#{lead.id}]. Retrying with 'Bluesky'."
+              Rails.logger.warn source_msg
+              ErrorNotification.send(StandardError.new(source_msg), {lead_id: lead.id, referral: lead.referral, propertyid: propertyid})
+              create_event_note(propertyid: propertyid, notable: lead, incoming: false, message: source_msg, error: true)
+
+              # Rebuild payload with 'Bluesky' as fallback TransactionSource
+              original_referral = lead.referral
+              lead.referral = 'Bluesky'
+              begin
+                case version
+                when 2
+                  payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
+                when 1
+                  payload = Yardi::Voyager::Data::GuestCard.to_xml_1(lead: lead)
+                else
+                  payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
+                end
+                request_options[:xml] = payload
+                retry
+              ensure
+                lead.referral = original_referral
+                @source_fallback_attempted = false
+              end
+            end
+
             msg =  "#{format_request_id} Yardi::Voyager::Api::Guestcards.sendGuestCard encountered an error fetching data. #{e}"
             full_msg = msg + " -- #{e.backtrace}"
             Rails.logger.error msg
