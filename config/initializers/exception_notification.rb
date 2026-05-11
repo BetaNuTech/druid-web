@@ -11,6 +11,9 @@ if exception_recipients.empty?
 	puts msg
 elsif ErrorNotification.enabled?
 	Rails.application.config.middleware.use ExceptionNotification::Rack,
+		ignore_exceptions: ExceptionNotifier.ignored_exceptions + %w[
+			ActionController::InvalidAuthenticityToken
+		],
 		:email => {
 		:email_prefix => "Exception raised on #{exception_host} ",
 		:sender_address => %{"BlueSky Errors (#{exception_host})" <no-reply@#{ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')}>},
