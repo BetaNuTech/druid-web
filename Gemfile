@@ -9,7 +9,7 @@ end
 gem 'rails', '6.1.7.10'
 gem 'pg', "~> 1.2"
 gem 'mysql2', "~> 0.5"
-gem 'puma', "~> 5.5"
+gem 'puma', "~> 7.2", ">= 7.2.1"
 gem 'sass-rails', "~> 6.0"
 gem 'uglifier', "~> 4.2"
 gem 'secure_headers', "~> 6.3"
@@ -36,7 +36,7 @@ gem 'httparty', "~> 0.18"
 gem 'nokogiri'
 gem 'rexml'
 gem 'liquid', "~> 5.0"
-gem 'twilio-ruby', "~> 5.56"
+gem 'twilio-ruby', "~> 7.10"
 gem 'kaminari', "~> 1.2"
 gem 'ckeditor', "~> 4.3"
 gem 'exception_notification', "~> 4.4"
