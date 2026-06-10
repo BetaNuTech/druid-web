@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.1.7'
+ruby '3.4.9'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -36,6 +36,14 @@ gem 'httparty', "~> 0.24"
 gem 'csv', "~> 3.3"
 gem 'nokogiri'
 gem 'rexml'
+# Former Ruby default gems, now bundled gems (Ruby 3.4+).
+# Rails 6.1 requires mutex_m/benchmark/base64/bigdecimal at boot;
+# app code uses OpenStruct (message templates, working hours, forms).
+gem 'base64'
+gem 'benchmark'
+gem 'bigdecimal'
+gem 'mutex_m'
+gem 'ostruct'
 gem 'liquid', "~> 5.0"
 gem 'twilio-ruby', "~> 7.10"
 gem 'kaminari', "~> 1.2"
@@ -72,6 +80,10 @@ group :development, :test do
   gem 'byebug'
   gem 'bundler-audit'
   gem 'factory_bot_rails'
+  # Former Ruby default gems (Ruby 3.4+): drb for rails/test_help
+  # parallelization, observer for factory_bot 6.2
+  gem 'drb'
+  gem 'observer'
 end
 
 group :test do

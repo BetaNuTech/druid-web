@@ -9,7 +9,7 @@ This code is proprietary and distribution is strictly prohibited.
 
 # Dependencies
 
-* Ruby version: 3.2.8 (in Gemfile)
+* Ruby version: 3.4.9 (in Gemfile)
 * System dependencies
   * Typical Rails 6 dependencies
   * Node.js 20.x
