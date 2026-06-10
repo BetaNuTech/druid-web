@@ -32,7 +32,8 @@ gem 'attr_encrypted', "~> 3.1"
 gem 'ice_cube', "~> 0.16"
 gem 'schedulable', "~> 0.0"
 gem 'simple_calendar', "~> 2.4"
-gem 'httparty', "~> 0.18"
+gem 'httparty', "~> 0.24"
+gem 'csv', "~> 3.3"
 gem 'nokogiri'
 gem 'rexml'
 gem 'liquid', "~> 5.0"
