@@ -50,7 +50,6 @@ gem 'reline'
 gem 'liquid', "~> 5.0"
 gem 'twilio-ruby', "~> 7.10"
 gem 'kaminari', "~> 1.2"
-gem 'ckeditor', "~> 4.3"
 gem 'exception_notification', "~> 4.4"
 gem 'aws-sdk-s3', "~> 1.96"
 gem 'nested_form_fields', "~> 0.8"

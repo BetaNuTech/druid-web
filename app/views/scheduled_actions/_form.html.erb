@@ -97,7 +97,7 @@
     <div class="row">
       <div class="form__group col-md-8">
         <%= form.label :notification_message, "Message", class: 'form__label' %>
-        <%= form.text_area :notification_message, id: :scheduled_action_notification_message, class: 'form__control', rows: 20 %>
+        <%= form.text_area :notification_message, id: 'html_editor_v2', class: 'form__control', rows: 20 %>
       </div>
     </div>
   </fieldset>
@@ -111,3 +111,4 @@
     </p>
   <% end %>
 <% end %>
+<%= render partial: 'shared/editor_init' %>

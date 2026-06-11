@@ -6,35 +6,6 @@ $(document).on('turbolinks:load', function() {
     console.log("Form submission detected:", this.id, this.action);
   });
   
-  // Handle form submission to ensure CKEDITOR data is synchronized
-  $('#scheduled_action_form').on('submit', function(e) {
-    console.log("Form submission triggered");
-    
-    // Check if form is valid
-    var form = this;
-    if (!form.checkValidity || !form.checkValidity()) {
-      console.log("Form validation failed");
-      return true; // Let browser handle validation
-    }
-    
-    if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances["scheduled_action_notification_message"]) {
-      try {
-        // Update the textarea with CKEDITOR content before submission
-        CKEDITOR.instances["scheduled_action_notification_message"].updateElement();
-        console.log("CKEDITOR content updated");
-      } catch(error) {
-        console.error("Error updating CKEDITOR content:", error);
-      }
-    }
-    
-    console.log("Form data:", $(this).serialize());
-    console.log("Form action:", $(this).attr('action'));
-    console.log("Form method:", $(this).attr('method'));
-    
-    // Allow form submission to continue
-    return true;
-  });
-  
   // Debug button click
   $('button[type="submit"]').on('click', function(e) {
     console.log("Submit button clicked");
@@ -136,15 +107,6 @@ $(document).on('turbolinks:load', function() {
       success: ''
     });
   })
-
-  // Check if CKEDITOR is available before trying to use it
-  if (typeof CKEDITOR !== 'undefined') {
-    var editor = CKEDITOR.instances["scheduled_action_notification_message"];
-    if (editor != undefined) {
-      editor.destroy()
-      CKEDITOR.replace("scheduled_action_notification_message");
-    }
-  }
 
   // Convert schedule hour select options from 24h to 12h
   var schedule_hour_select = $('#scheduled_action_schedule_attributes_time_4i')[0];
