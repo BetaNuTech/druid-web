@@ -464,7 +464,7 @@ RSpec.describe OpenaiClient do
   
   describe "#system_prompt" do
     it "includes invalid email prefixes from environment" do
-      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com').and_return('bluecrestresidential.com')
+      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecoreresidential.com').and_return('bluecoreresidential.com')
       allow(ENV).to receive(:fetch).with('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').and_return('blueskyleads,leasing')
       
       prompt = client.send(:system_prompt, property)
@@ -475,7 +475,7 @@ RSpec.describe OpenaiClient do
     end
     
     it "handles custom invalid email prefixes" do
-      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com').and_return('bluecrestresidential.com')
+      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecoreresidential.com').and_return('bluecoreresidential.com')
       allow(ENV).to receive(:fetch).with('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').and_return('test1,test2,test3')
       
       prompt = client.send(:system_prompt, property)
@@ -484,7 +484,7 @@ RSpec.describe OpenaiClient do
     end
     
     it "includes SMS consent detection instructions" do
-      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com').and_return('bluecrestresidential.com')
+      allow(ENV).to receive(:fetch).with('COMPANY_EMAIL_DOMAIN', 'bluecoreresidential.com').and_return('bluecoreresidential.com')
       allow(ENV).to receive(:fetch).with('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').and_return('blueskyleads,leasing')
       
       prompt = client.send(:system_prompt, property)

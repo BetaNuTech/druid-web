@@ -126,7 +126,7 @@ class OpenaiClient
   end
   
   def system_prompt(property)
-    company_domain = ENV.fetch('COMPANY_EMAIL_DOMAIN', 'bluecrestresidential.com')
+    company_domain = ENV.fetch('COMPANY_EMAIL_DOMAIN', 'bluecoreresidential.com')
     invalid_prefixes = ENV.fetch('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').split(',').map(&:strip)
     
     <<~PROMPT
