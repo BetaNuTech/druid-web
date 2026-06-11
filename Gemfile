@@ -44,6 +44,9 @@ gem 'benchmark'
 gem 'bigdecimal'
 gem 'mutex_m'
 gem 'ostruct'
+# irb/reline leave the default gems in Ruby 4.0 (rails console needs them)
+gem 'irb'
+gem 'reline'
 gem 'liquid', "~> 5.0"
 gem 'twilio-ruby', "~> 7.10"
 gem 'kaminari', "~> 1.2"
