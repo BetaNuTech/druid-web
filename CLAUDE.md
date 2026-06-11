@@ -124,10 +124,10 @@ Located in `lib/` directory with clear separation by domain:
 - Foreign key constraints via Immigrant gem
 
 ### JavaScript Dependencies
-- npm (package-lock.json) is used for local development; Heroku's webpacker
-  build step uses yarn (yarn.lock) because webpacker 5 hardcodes yarn
-- When changing package.json, regenerate BOTH lockfiles: `npm install` and
-  `yarn install` (yarn enforces the Node 22.x engines requirement)
+- npm (package-lock.json) is the package manager; do NOT commit a yarn.lock —
+  the heroku/nodejs buildpack rejects builds when multiple lockfiles exist
+- Heroku's webpacker step (ruby buildpack) runs its own unpinned yarn install;
+  this re-resolves dependencies fresh on each deploy and emits many warnings
 
 ## Deployment
 
