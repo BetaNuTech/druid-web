@@ -123,6 +123,12 @@ Located in `lib/` directory with clear separation by domain:
 - Audited gem for model change tracking
 - Foreign key constraints via Immigrant gem
 
+### JavaScript Dependencies
+- npm (package-lock.json) is used for local development; Heroku's webpacker
+  build step uses yarn (yarn.lock) because webpacker 5 hardcodes yarn
+- When changing package.json, regenerate BOTH lockfiles: `npm install` and
+  `yarn install` (yarn enforces the Node 22.x engines requirement)
+
 ## Deployment
 
 - **Heroku** hosting with staging and production environments
