@@ -1,5 +1,23 @@
 namespace :marketing_sources do
 
+  desc 'Audit phone-tracked Marketing Sources against Yardi Voyager marketing sources (run daily via Heroku Scheduler)'
+  task yardi_source_audit: :environment do
+    puts '== Yardi Marketing Source Audit =='
+    results = MarketingSources::YardiSourceAudit.new.call
+    results.each do |result|
+      if result[:error]
+        puts "! #{result[:property]}: ERROR after #{result[:attempts]} attempts: #{result[:error]}"
+      elsif result[:skipped]
+        puts "- #{result[:property]}: skipped (#{result[:skipped]})"
+      elsif result[:missing].any?
+        puts "! #{result[:property]}: NOT FOUND in Yardi: #{result[:missing].join(', ')}"
+      else
+        puts "* #{result[:property]}: OK (#{result[:checked]} Yardi sources)"
+      end
+    end
+    puts 'DONE.'
+  end
+
   desc 'Trim whitespace'
   task :trim_whitespace => :environment do
     MarketingSource.all.map(&:touch)

@@ -5,6 +5,17 @@
     </p>
   <% end %>
 
+  <% if marketing_source.yardi_source_missing? %>
+    <p class="bg-danger">
+      <%= glyph('warning-sign') %>
+      <b>Yardi source mismatch:</b>
+      a tracking number is set, but Yardi has no marketing source named exactly
+      &ldquo;<%= marketing_source.name %>&rdquo; for this property.
+      Phone leads will fall back to the &ldquo;Bluesky&rdquo; source in Voyager.
+      <small>(checked <%= marketing_source.yardi_source_checked_at&.strftime('%m/%d/%Y %l:%M%P') %>)</small>
+    </p>
+  <% end %>
+
   <div class="row">
     <div class="col-md-12">
       <h3>

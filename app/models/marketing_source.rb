@@ -20,6 +20,8 @@
 #  updated_at           :datetime         not null
 #  phone_lead_source_id :uuid
 #  email_lead_source_id :uuid
+#  yardi_source_missing :boolean          default(FALSE), not null
+#  yardi_source_checked_at :datetime
 #
 
 
@@ -64,6 +66,7 @@ class MarketingSource < ApplicationRecord
   before_validation :format_phone_numbers
   before_save :strip_spaces_from_name
   before_save :clear_tracking_without_source
+  after_commit :trigger_yardi_source_audit, on: [:create, :update]
 
   ### Scopes
   scope :periodic, -> { where(fee_type: [MONTHLY_FEE, QUARTERLY_FEE, YEARLY_FEE]) }
@@ -169,6 +172,15 @@ class MarketingSource < ApplicationRecord
 
   private
 
+  # Verify against Yardi whenever a source with call tracking is saved
+  # (or call tracking was just removed, to clear a stale warning flag).
+  # The audit service updates flags via update_columns, which does not
+  # trigger callbacks, so this cannot loop.
+  def trigger_yardi_source_audit
+    return unless tracking_number.present? || saved_change_to_tracking_number?
+    YardiSourceAuditJob.perform_later(property_id)
+  end
+
   def strip_spaces_from_name
     self.name = self.name.strip if self.name.present?
     self.name
@@ -187,7 +199,7 @@ class MarketingSource < ApplicationRecord
       end
     end
     if self.destination_number.present?
-      if detected_prefix = self.tracking_number.match(/^\+(\d)/)
+      if detected_prefix = self.destination_number.match(/^\+(\d)/)
         self.destination_number = self.class.format_phone(self.destination_number, prefixed: false)
       else
         self.destination_number = self.class.format_phone(self.destination_number)

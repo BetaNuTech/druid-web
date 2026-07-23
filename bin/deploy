@@ -19,6 +19,8 @@ staging)
   git push $staging_remote $tag:master
   echo "  - Running Migrations"
   heroku run rake db:migrate --app $staging_app
+  echo "  - Auditing Yardi Marketing Sources"
+  heroku run rake marketing_sources:yardi_source_audit --app $staging_app
   git tag -f staging-current
   git push origin --tags -f
   echo " - Deploy Complete"
@@ -36,6 +38,8 @@ prod)
   git push $prod_remote $tag:master
   echo "  - Running Migrations"
   heroku run rake db:migrate --app $production_app
+  echo "  - Auditing Yardi Marketing Sources"
+  heroku run rake marketing_sources:yardi_source_audit --app $production_app
   git tag -f prod-current
   git push origin --tags -f
   echo " - Deploy Complete"

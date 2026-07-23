@@ -93,6 +93,29 @@ module Yardi
           return guestcards
         end
 
+        # Return the marketing source names configured in Voyager for the
+        # given property. These are the only values Voyager accepts as a
+        # GuestCard TransactionSource.
+        #
+        # Raises on communication/parse errors so that callers can retry.
+        def getMarketingSources(propertyid)
+          request_options = {
+            service: 'ItfILSGuestCard',
+            method: 'GetYardiAgentsSourcesResults_Login',
+            resource: 'ItfILSGuestCard.asmx',
+            propertyid: propertyid
+          }
+          response = getData(request_options)
+          doc = Nokogiri::XML(response.body.to_s)
+          doc.remove_namespaces!
+          sources = doc.xpath('//Sources/SourceName').map(&:text)
+          if doc.xpath('//Sources').empty?
+            error_messages = doc.xpath('//Messages/Message').map(&:text).join('; ')
+            raise "Voyager returned no marketing sources for property '#{propertyid}': #{error_messages.presence || response.body.to_s.truncate(500)}"
+          end
+          sources
+        end
+
         def sendGuestCard(lead:, dry_run: false, include_events: false, version: 2)
           propertyid = lead.property.voyager_property_code
           case version
@@ -254,6 +277,9 @@ module Yardi
             template_GetYardiGuestActivity_Search
           when 'ImportYardiGuest_Login'
             template_ImportYardiGuest_Login
+          when 'GetYardiAgentsSourcesResults_Login'
+            # Same request shape as GetYardiGuestActivity_Login
+            template_GetYardiGuestActivity_Login
           else
             template_GetYardiGuestActivity_Login
           end
