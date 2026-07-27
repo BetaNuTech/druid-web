@@ -406,6 +406,7 @@ Several scheduled jobs import/export information from Yardi Voyager:
 | Frequency | Task                                    | Description                                                 |
 |-----------+-----------------------------------------+-------------------------------------------------------------|
 | 10m       | rake leads:yardi:send_guestcards        | Send claimed Leads to Yardi Voyager                         |
+| 10m       | rake leads:push_tour_guestcards         | (temporary) Push self-booked tour leads to Yardi; flag-gated |
 | Hourly    | rake leads:yardi:import_guestcards[30]  | Fetch New (<30m) Yardi Voyager Guestcards as Leads          |
 | Hourly    | rake unit_types:yardi:import_floorplans | Import/Update Voyager Floorplans                            |
 | Hourly    | rake units:yardi:import_units           | Import/Update Voyager Units                                 |
@@ -528,6 +529,7 @@ The Heroku Scheduler should be configured to run the following tasks
 |-----------+-----------------------------------------+-------------------------------------------------------------|
 | 10m       | rake leads:calls:generate_leads[60]     | Generate leads from incoming calls in the past 60 minutes   |
 | 10m       | rake leads:yardi:send_guestcards        | Send claimed Leads to Yardi Voyager                         |
+| 10m       | rake leads:push_tour_guestcards         | (temporary) Push self-booked tour leads to Yardi; flag-gated |
 | Hourly    | rake cache:warm:all                     | Warm cache for Prospect Stats                               |
 | Hourly    | rake leads:calls:db_check               | Check CDR database for replication issues                   |
 | Hourly    | rake leads:process_followups            | Convert scheduled Follow-ups to Leads                       |

@@ -1,5 +1,27 @@
 namespace :leads do
 
+  desc 'Push self-booked tour leads to Yardi as guestcards (temporary; every 10m via Heroku Scheduler; requires TOUR_GUESTCARD_PUSH_ENABLED=true; supports DRY_RUN=true)'
+  task push_tour_guestcards: :environment do
+    unless ENV.fetch('TOUR_GUESTCARD_PUSH_ENABLED', 'false') == 'true'
+      puts '- Skipped: TOUR_GUESTCARD_PUSH_ENABLED is not true'
+      next
+    end
+
+    dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
+    puts "== Self-Booked Tour Lead Guestcard Push #{'(DRY RUN)' if dry_run} =="
+    results = Leads::TourGuestcardPusher.new(dry_run: dry_run).call
+    results.each do |result|
+      if result[:error]
+        puts "! #{result[:property]}: ERROR #{result[:error]} (#{result[:pending]} leads pending)"
+      elsif result[:skipped]
+        puts "- #{result[:property]}: skipped (#{result[:skipped]})"
+      else
+        puts "* #{result[:property]}: linked=#{result[:linked]} created=#{result[:created]} skipped=#{result[:skipped_leads]} errors=#{result[:errors]}"
+      end
+    end
+    puts 'DONE.'
+  end
+
   desc 'Reassign leads (USAGE: rake leads:reassign[from@example.com,to@example.com])'
   task :reassign, [:from, :to] => :environment do |t, args|
     from_user = User.find_by_email(args[:from]) rescue nil

@@ -116,15 +116,36 @@ module Yardi
           sources
         end
 
-        def sendGuestCard(lead:, dry_run: false, include_events: false, version: 2)
+        # Return the active agent names configured in Voyager for the given
+        # property (agents without an InactiveDate attribute).
+        #
+        # Raises on communication/parse errors so that callers can retry.
+        def getAgents(propertyid)
+          request_options = {
+            service: 'ItfILSGuestCard',
+            method: 'GetYardiAgentsSourcesResults_Login',
+            resource: 'ItfILSGuestCard.asmx',
+            propertyid: propertyid
+          }
+          response = getData(request_options)
+          doc = Nokogiri::XML(response.body.to_s)
+          doc.remove_namespaces!
+          if doc.xpath('//Agents').empty?
+            error_messages = doc.xpath('//Messages/Message').map(&:text).join('; ')
+            raise "Voyager returned no agents for property '#{propertyid}': #{error_messages.presence || response.body.to_s.truncate(500)}"
+          end
+          doc.xpath('//Agents/AgentName').reject { |a| a.attribute('InactiveDate') }.map(&:text)
+        end
+
+        def sendGuestCard(lead:, dry_run: false, include_events: false, version: 2, agent: nil, first_contact_comment: nil)
           propertyid = lead.property.voyager_property_code
           case version
           when 2
-            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events, agent: agent, first_contact_comment: first_contact_comment)
           when 1
             payload = Yardi::Voyager::Data::GuestCard.to_xml_1(lead: lead)
           else
-            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
+            payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events, agent: agent, first_contact_comment: first_contact_comment)
           end
 
           request_options = {
@@ -170,11 +191,11 @@ module Yardi
               begin
                 case version
                 when 2
-                  payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
+                  payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events, agent: agent, first_contact_comment: first_contact_comment)
                 when 1
                   payload = Yardi::Voyager::Data::GuestCard.to_xml_1(lead: lead)
                 else
-                  payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events)
+                  payload = Yardi::Voyager::Data::GuestCard.to_xml_2(lead: lead, include_events: include_events, agent: agent, first_contact_comment: first_contact_comment)
                 end
                 request_options[:xml] = payload
                 retry

@@ -82,6 +82,7 @@ The following rake tasks are run at specified times.
 * `rake leads:resident_auto_transition` 	Daily at 11:00 AM UTC
 * `rake leads:waitlist:process` 	Daily at 6:00 AM UTC
 * `rake leads:yardi:send_guestcards[20]` 	Every 10 minutes
+* `rake leads:push_tour_guestcards` 	Every 10 minutes (temporary; gated by TOUR_GUESTCARD_PUSH_ENABLED, see doc/self_booked_tour_guestcard_push.md)
 * `rake marketing_expenses:create_pending` 	Daily at 3:00 PM UTC
 * `rake messages:fix_notifications` 	Every 10 minutes
 * `rake messages:retry[1440]` 	Hourly at :40

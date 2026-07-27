@@ -23,7 +23,7 @@ module Yardi
 
         attr_accessor *ATTRIBUTES
 
-        def self.from_lead_events(lead, agent: nil)
+        def self.from_lead_events(lead, agent: nil, first_contact_comment: nil)
           out = []
 
           ### Lead state transitions as events
@@ -83,6 +83,16 @@ module Yardi
             end
 
             out << first_contact_event
+          end
+
+          # Override the FirstContact event comment if provided
+          # (e.g. self-booked tour details)
+          if first_contact_comment.present?
+            out.each do |event|
+              if event.first_contact == true || event.first_contact == 'true'
+                event.comments = first_contact_comment
+              end
+            end
           end
 
           out = out.sort_by{|event| event.date}
