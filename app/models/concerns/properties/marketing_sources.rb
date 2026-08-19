@@ -47,6 +47,22 @@ module Properties
       def referral_name_for_incoming_number(number)
         marketing_sources.where(tracking_number: number).first&.name
       end
+
+      # The main line (Property#phone) is what call routing resolves an
+      # incoming call to, and it is the fallback destination whenever the
+      # leasing or maintenance number is blank (see
+      # property_info_for_incoming_number). Without it, calls placed to a
+      # marketing tracking number have no number to forward to and the
+      # resulting phone lead cannot be attributed to this property.
+      def main_line_missing?
+        phone.blank?
+      end
+
+      # True when marketing tracking numbers are in use but the main line
+      # they depend on has not been set.
+      def marketing_tracking_numbers_without_main_line?
+        main_line_missing? && marketing_sources.where.not(tracking_number: [nil, '']).exists?
+      end
     end
   end
 end

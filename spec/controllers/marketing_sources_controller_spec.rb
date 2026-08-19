@@ -307,6 +307,42 @@ RSpec.describe MarketingSourcesController, type: :controller do
     end
   end
 
+  describe "property main line warnings" do
+    let(:phone_source) { create(:lead_source, slug: 'CallCenter', name: 'CallCenter2') }
+    let!(:tracked_source) {
+      create(:marketing_source, property_id: property.id, name: 'Zillow',
+        phone_lead_source: phone_source, tracking_number: '5555550001')
+    }
+
+    before(:each) do
+      property.update_columns(phone: nil)
+      sign_in corporate
+    end
+
+    it "warns on the index when a tracking number has no property main line" do
+      get :index, params: {property_id: property.id}
+      expect(response).to be_successful
+      expect(response.body).to match(/Property main line missing/)
+    end
+
+    it "warns on the form when the property has no main line" do
+      get :edit, params: {id: tracked_source.id}
+      expect(response).to be_successful
+      expect(response.body).to match(/Set the property main line first/)
+    end
+
+    it "flashes an alert when saving a tracking number without a main line" do
+      put :update, params: {id: tracked_source.id, marketing_source: {tracking_number: '5555550002'}}
+      expect(flash[:alert]).to match(/no main line phone number/)
+    end
+
+    it "does not flash an alert when the property has a main line" do
+      property.update_columns(phone: '5555551000')
+      put :update, params: {id: tracked_source.id, marketing_source: {tracking_number: '5555550002'}}
+      expect(flash[:alert]).to be_blank
+    end
+  end
+
   describe "GET #form_suggest_tracking_details" do
     it "should succeed" do
       sign_in corporate

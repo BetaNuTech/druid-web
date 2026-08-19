@@ -170,6 +170,15 @@ class MarketingSource < ApplicationRecord
       where(lead_transitions: { last_state: 'prospect', current_state: 'showing'})
   end
 
+  # True when call tracking is configured here but the property has no main
+  # line set. Calls to a tracking number are routed using the property main
+  # line (Property#phone) as the fallback destination, so without it the
+  # call cannot be forwarded or attributed. This is a warning rather than a
+  # validation so an incomplete property does not block source setup.
+  def property_main_line_missing?
+    tracking_number.present? && property&.main_line_missing?
+  end
+
   private
 
   # Verify against Yardi whenever a source with call tracking is saved

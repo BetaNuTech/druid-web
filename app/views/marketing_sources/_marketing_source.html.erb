@@ -5,6 +5,21 @@
     </p>
   <% end %>
 
+  <% if marketing_source.property_main_line_missing? %>
+    <p class="bg-danger">
+      <%= glyph('warning-sign') %>
+      <b>Property main line missing:</b>
+      a tracking number is set, but
+      <%= marketing_source.property&.name %> has no main line phone number.
+      Calls to this tracking number are routed using the property main line as
+      the fallback destination, so they cannot be forwarded or attributed
+      until it is set.
+      <% if policy(marketing_source.property).edit? %>
+        <%= link_to('Set the main line', edit_property_path(marketing_source.property)) %>.
+      <% end %>
+    </p>
+  <% end %>
+
   <% if marketing_source.yardi_source_missing? %>
     <p class="bg-danger">
       <%= glyph('warning-sign') %>

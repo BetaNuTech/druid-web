@@ -134,6 +134,21 @@
         <div class="row tracking_number_entry_container hidden">
           <div class="col-md-12">
             <h4>Phone Tracking</h4>
+            <% if marketing_source.property&.main_line_missing? %>
+              <p class="bg-danger">
+                <%= glyph('warning-sign') %>
+                <b>Set the property main line first.</b>
+                <%= marketing_source.property.name %> has no main line phone
+                number. Calls to a tracking number are routed using the
+                property main line as the fallback destination, so a tracking
+                number saved now cannot forward calls or attribute phone leads
+                to this property.
+                <% if policy(marketing_source.property).edit? %>
+                  <%= link_to('Edit the property', edit_property_path(marketing_source.property)) %>
+                  to set it.
+                <% end %>
+              </p>
+            <% end %>
             <div class="row">
               <div class="col-md-12 form__group">
                 <% integration_options = MarketingSources::IncomingIntegrationHelper.new( property: marketing_source.property, integration: marketing_source.phone_lead_source).options_for_integration %>

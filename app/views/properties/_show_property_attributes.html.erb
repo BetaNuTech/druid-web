@@ -74,8 +74,16 @@
   <div class="row">
     <div class="col-md-3">
       <p>
-        <strong>Phone:</strong><br/>
-        <%= number_to_phone(@property.phone) if @property.phone.present? %>
+        <strong>Phone (Main Line):</strong><br/>
+        <% if @property.main_line_missing? %>
+          <span class="text-danger">
+            <%= glyph('warning-sign') %>
+            Not set &mdash; incoming calls cannot be resolved to this property
+            and marketing tracking numbers cannot attribute phone leads.
+          </span>
+        <% else %>
+          <%= number_to_phone(@property.phone) %>
+        <% end %>
       </p>
     </div>
     <div class="col-md-3">

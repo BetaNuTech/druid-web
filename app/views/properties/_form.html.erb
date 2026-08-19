@@ -11,6 +11,24 @@
     </div>
   <% end %>
 
+  <% if property.persisted? && property.main_line_missing? %>
+    <div class="alert alert--danger" role="alert">
+      <%= glyph('warning-sign') %>
+      <b>Main line phone number is not set.</b>
+      The main line (the <i>Phone</i> field under Contact Information) is how
+      incoming calls are resolved to this property, and it is the fallback
+      destination whenever the leasing or maintenance number is blank.
+      <% if property.marketing_tracking_numbers_without_main_line? %>
+        This property already has marketing tracking numbers, so calls to them
+        cannot be forwarded and phone leads cannot be attributed until the main
+        line is set.
+      <% else %>
+        Marketing tracking numbers added for this property will not be able to
+        forward calls or attribute phone leads until it is set.
+      <% end %>
+    </div>
+  <% end %>
+
   <%= render partial: 'form_general', locals: {form: form, property: property} %>
   <%= render partial: 'form_office_hours', locals: {form: form, property: property} %>
   <%= render partial: 'form_contact', locals: {form: form, property: property} %>

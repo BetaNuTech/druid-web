@@ -73,6 +73,16 @@ RSpec.describe PropertiesController, type: :controller do
         expect(response).to be_successful
       end
     end
+
+    describe "when the main line is not set" do
+      it "flags the missing main line" do
+        property.update_columns(phone: nil)
+        sign_in corporate
+        get :show, params: {id: property.to_param}
+        expect(response).to be_successful
+        expect(response.body).to match(/incoming calls cannot be resolved to this property/)
+      end
+    end
   end
 
   describe "GET #new" do
@@ -94,6 +104,27 @@ RSpec.describe PropertiesController, type: :controller do
   end
 
   describe "GET #edit" do
+    describe "when the main line is not set" do
+      it "warns that the main line is required for call routing" do
+        property.update_columns(phone: nil)
+        sign_in administrator
+        get :edit, params: {id: property.to_param}
+        expect(response).to be_successful
+        expect(response.body).to match(/Main line phone number is not set/)
+        expect(response.body).to match(/Required for call routing/)
+      end
+
+      it "notes that existing tracking numbers are affected" do
+        property.update_columns(phone: nil)
+        create(:marketing_source, property: property, name: 'Zillow',
+          phone_lead_source: create(:lead_source, slug: 'CallCenter', name: 'CallCenter2'),
+          tracking_number: '5555550001')
+        sign_in administrator
+        get :edit, params: {id: property.to_param}
+        expect(response.body).to match(/already has marketing tracking numbers/)
+      end
+    end
+
     describe "as an administrator" do
       it "returns a success response" do
         sign_in administrator

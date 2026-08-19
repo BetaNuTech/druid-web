@@ -359,4 +359,45 @@ RSpec.describe Property, type: :model do
       expect(property.lea_ai_handling?).to be true
     end
   end
+
+  describe "main line" do
+    let(:phone_source) { create(:lead_source, slug: 'CallCenter', name: 'CallCenter2') }
+    let(:property) { create(:property, phone: nil) }
+
+    describe "#main_line_missing?" do
+      it "is true without a phone number" do
+        expect(property.main_line_missing?).to be true
+      end
+
+      it "is false with a phone number" do
+        expect(create(:property, phone: '5555551000').main_line_missing?).to be false
+      end
+    end
+
+    describe "#marketing_tracking_numbers_without_main_line?" do
+      it "is true when a tracking number is set and the main line is not" do
+        create(:marketing_source, property: property, phone_lead_source: phone_source,
+          tracking_number: '5555550001')
+
+        expect(property.marketing_tracking_numbers_without_main_line?).to be true
+      end
+
+      it "is false when no marketing source has a tracking number" do
+        create(:marketing_source, property: property,
+          lead_source: nil, phone_lead_source: nil, email_lead_source: nil,
+          tracking_number: nil, tracking_email: nil, tracking_code: nil,
+          destination_number: nil)
+
+        expect(property.marketing_tracking_numbers_without_main_line?).to be false
+      end
+
+      it "is false when the main line is set" do
+        property_with_phone = create(:property, phone: '5555551000')
+        create(:marketing_source, property: property_with_phone,
+          phone_lead_source: phone_source, tracking_number: '5555550002')
+
+        expect(property_with_phone.marketing_tracking_numbers_without_main_line?).to be false
+      end
+    end
+  end
 end

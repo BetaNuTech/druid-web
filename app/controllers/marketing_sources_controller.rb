@@ -23,7 +23,7 @@ class MarketingSourcesController < ApplicationController
     authorize @marketing_source
     respond_to do |format|
       if @marketing_source.save
-        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was created.' }
+        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was created.', alert: main_line_alert }
       else
         format.html { render :new }
       end
@@ -38,7 +38,7 @@ class MarketingSourcesController < ApplicationController
     authorize @marketing_source
     respond_to do |format|
       if @marketing_source.update(marketing_source_params)
-        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was updated.' }
+        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was updated.', alert: main_line_alert }
       else
         format.html { render :edit }
       end
@@ -81,6 +81,19 @@ class MarketingSourcesController < ApplicationController
   end
 
   private
+
+  # Warn (without blocking the save) when a tracking number was saved for a
+  # property that has no main line. Call routing uses the property main line
+  # as the fallback destination for tracking numbers, so phone leads cannot
+  # be forwarded or attributed until it is set.
+  def main_line_alert
+    return nil unless @marketing_source.property_main_line_missing?
+
+    property = @marketing_source.property
+    "A tracking number is set, but #{property.name} has no main line phone " \
+      'number. Calls to this tracking number cannot be forwarded or ' \
+      'attributed until the property main line is set.'
+  end
 
   def marketing_source_scope(skope=MarketingSource)
     policy_scope(skope)

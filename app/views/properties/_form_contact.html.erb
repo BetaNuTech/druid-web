@@ -56,8 +56,17 @@
 
     <div class="row">
       <div class="col-md-3 form__group">
-        <%= form.label :phone, class: 'form__label' %>
+        <%= form.label :phone, 'Phone (Main Line)', class: 'form__label' %>
         <%= form.text_field :phone, id: :property_phone, class: "form__control", type: :phone %>
+        <span id="property_phone_helpBlock" class="help-block">
+          <% if property.main_line_missing? %>
+            <b class="text-danger"><%= glyph('warning-sign') %> Required for call routing.</b>
+          <% end %>
+          Incoming calls are resolved to this property by its main line, and it
+          is the fallback destination when the leasing or maintenance number is
+          blank. Marketing tracking numbers cannot forward calls or attribute
+          phone leads without it.
+        </span>
       </div>
 
       <div class="col-md-3 form__group">
