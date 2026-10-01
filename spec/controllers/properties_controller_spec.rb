@@ -104,24 +104,34 @@ RSpec.describe PropertiesController, type: :controller do
   end
 
   describe "GET #edit" do
-    describe "when the main line is not set" do
+    describe "call routing readiness" do
       it "warns that the main line is required for call routing" do
         property.update_columns(phone: nil)
         sign_in administrator
         get :edit, params: {id: property.to_param}
         expect(response).to be_successful
-        expect(response.body).to match(/Main line phone number is not set/)
+        expect(response.body).to match(/main line phone number is not set/i)
         expect(response.body).to match(/Required for call routing/)
       end
 
-      it "notes that existing tracking numbers are affected" do
+      it "calls out existing tracking numbers" do
         property.update_columns(phone: nil)
         create(:marketing_source, property: property, name: 'Zillow',
           phone_lead_source: create(:lead_source, slug: 'CallCenter', name: 'CallCenter2'),
           tracking_number: '5555550001')
         sign_in administrator
         get :edit, params: {id: property.to_param}
-        expect(response.body).to match(/already has marketing tracking numbers/)
+        expect(response.body).to match(/has marketing tracking numbers/)
+      end
+
+      it "warns about missing office hours, listing codes and the UTC default" do
+        property.update_columns(working_hours: nil, timezone: 'UTC')
+        sign_in administrator
+        get :edit, params: {id: property.to_param}
+        expect(response.body).to match(/Office hours have not been set/)
+        expect(response.body).to match(/no active CallCenter property listing code/)
+        expect(response.body).to match(/timezone is still the UTC default/)
+        expect(response.body).to match(/no active YardiVoyager property listing code/)
       end
     end
 

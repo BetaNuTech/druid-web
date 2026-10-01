@@ -360,6 +360,79 @@ RSpec.describe Property, type: :model do
     end
   end
 
+  describe "call routing readiness" do
+    let!(:call_center_source) { create(:lead_source, slug: 'CallCenter', name: 'CallCenter2') }
+    let(:property) { create(:property) }
+
+    describe "#office_hours_today" do
+      it "falls back to defaults instead of raising when hours are unset" do
+        property.update_columns(working_hours: nil)
+        expect { property.office_hours_today }.not_to raise_error
+        expect(property.office_hours_today).to be_present
+      end
+
+      it "reports Closed when today has no configured hours" do
+        today = Date.current.strftime('%A').downcase
+        hours = Property::DEFAULT_WORKING_HOURS.deep_dup
+        hours[today] = {
+          'morning' => {'open' => nil, 'close' => nil},
+          'afternoon' => {'open' => nil, 'close' => nil}
+        }
+        property.update_columns(working_hours: hours)
+        expect(property.office_hours_today).to eq('Closed')
+      end
+
+      it "does not break the call routing payload for a property with no hours" do
+        property.update_columns(phone: '5555551000', working_hours: nil)
+        expect { Property.property_info_for_incoming_number('5555551000') }.not_to raise_error
+      end
+    end
+
+    describe "#call_routing_issues" do
+      it "flags a missing main line as blocking" do
+        property.update_columns(phone: nil)
+        issue = property.call_routing_issues.detect { |i| i[:key] == :main_line }
+        expect(issue).to be_present
+        expect(issue[:severity]).to eq(:blocking)
+      end
+
+      it "flags a missing CallCenter listing code as blocking" do
+        issue = property.call_routing_issues.detect { |i| i[:key] == :call_center_listing }
+        expect(issue[:severity]).to eq(:blocking)
+      end
+
+      it "does not flag the CallCenter listing when an active listing exists" do
+        create(:property_listing, property: property, source: call_center_source,
+          code: 'testcode', active: true)
+        expect(property.call_routing_issues.map { |i| i[:key] }).not_to include(:call_center_listing)
+      end
+
+      it "flags an inactive CallCenter listing, which Leads::Creator cannot resolve" do
+        create(:property_listing, property: property, source: call_center_source,
+          code: 'testcode', active: false)
+        expect(property.call_routing_issues.map { |i| i[:key] }).to include(:call_center_listing)
+      end
+
+      it "flags office hours and the UTC timezone as warnings only" do
+        property.update_columns(working_hours: nil, timezone: 'UTC')
+        keys = property.call_routing_issues.select { |i| i[:severity] == :warning }.map { |i| i[:key] }
+        expect(keys).to include(:office_hours, :timezone)
+      end
+
+      it "does not flag blank leasing or maintenance numbers" do
+        property.update_columns(leasing_phone: nil, maintenance_phone: nil)
+        messages = property.call_routing_issues.map { |i| i[:message] }.join(' ')
+        expect(messages).not_to match(/leasing|maintenance/i)
+      end
+
+      it "reports only blocking issues via call_routing_blocking_issues" do
+        property.update_columns(phone: nil, working_hours: nil, timezone: 'UTC')
+        expect(property.call_routing_blocking_issues.map { |i| i[:key] }).
+          to contain_exactly(:main_line, :call_center_listing)
+      end
+    end
+  end
+
   describe "main line" do
     let(:phone_source) { create(:lead_source, slug: 'CallCenter', name: 'CallCenter2') }
     let(:property) { create(:property, phone: nil) }

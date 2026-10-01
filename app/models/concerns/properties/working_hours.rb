@@ -60,20 +60,37 @@ module Properties
         office_observed.sort.uniq
       end
 
+      # True when office hours have never been configured. Call routing
+      # reports today's hours to the call center, so an unconfigured property
+      # cannot answer that question. See Properties::CallRouting.
+      def office_hours_missing?
+        working_hours.blank?
+      end
+
+      # Human readable hours for today, used in the call routing payload
+      # (Property.property_info_for_incoming_number). Falls back to the
+      # defaults rather than raising when hours are unset or a day entry is
+      # missing: an incomplete property must not break call routing.
       def office_hours_today
-        info = self.working_hours[Date.current.strftime("%A").downcase]
-        if info['morning']['close'] == info['afternoon']['open']
-          "%s to %s" % [
-            info['morning']['open'],
-            info['afternoon']['close'],
-          ]
+        hours = working_hours.presence || DEFAULT_WORKING_HOURS
+        info = hours[Date.current.strftime('%A').downcase]
+        return 'Closed' if info.blank?
+
+        morning = info['morning'] || {}
+        afternoon = info['afternoon'] || {}
+        open_time = morning['open'] || afternoon['open']
+        close_time = afternoon['close'] || morning['close']
+        return 'Closed' if open_time.blank? || close_time.blank?
+
+        # One continuous block unless the morning closes before the afternoon
+        # opens (a split schedule with a midday closure).
+        split = morning['close'].present? && afternoon['open'].present? &&
+                morning['close'] != afternoon['open']
+        if split
+          format('%s to %s and %s to %s',
+            morning['open'], morning['close'], afternoon['open'], afternoon['close'])
         else
-          "%s to %s and %s to %s" % [
-            info['morning']['open'],
-            info['morning']['close'],
-            info['afternoon']['open'],
-            info['afternoon']['close'],
-          ]
+          format('%s to %s', open_time, close_time)
         end
       end
 

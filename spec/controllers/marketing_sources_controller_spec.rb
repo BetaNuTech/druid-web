@@ -307,7 +307,7 @@ RSpec.describe MarketingSourcesController, type: :controller do
     end
   end
 
-  describe "property main line warnings" do
+  describe "call routing warnings" do
     let(:phone_source) { create(:lead_source, slug: 'CallCenter', name: 'CallCenter2') }
     let!(:tracked_source) {
       create(:marketing_source, property_id: property.id, name: 'Zillow',
@@ -319,26 +319,35 @@ RSpec.describe MarketingSourcesController, type: :controller do
       sign_in corporate
     end
 
-    it "warns on the index when a tracking number has no property main line" do
+    it "warns on the index when a tracked property is not ready" do
       get :index, params: {property_id: property.id}
       expect(response).to be_successful
-      expect(response.body).to match(/Property main line missing/)
+      expect(response.body).to match(/main line phone number is not set/i)
     end
 
-    it "warns on the form when the property has no main line" do
+    it "warns on the form when the property is not ready" do
       get :edit, params: {id: tracked_source.id}
       expect(response).to be_successful
-      expect(response.body).to match(/Set the property main line first/)
+      expect(response.body).to match(/will not route or attribute calls correctly/)
     end
 
-    it "flashes an alert when saving a tracking number without a main line" do
+    it "flashes an alert when saving a tracking number for an unready property" do
       put :update, params: {id: tracked_source.id, marketing_source: {tracking_number: '5555550002'}}
-      expect(flash[:alert]).to match(/no main line phone number/)
+      expect(flash[:alert]).to match(/main line phone number is not set/i)
     end
 
-    it "does not flash an alert when the property has a main line" do
-      property.update_columns(phone: '5555551000')
+    it "does not flash an alert when the property is ready" do
+      property.update_columns(phone: '5555551000', timezone: 'Central Time (US & Canada)')
+      allow_any_instance_of(Property).to receive(:call_routing_blocking_issues).and_return([])
       put :update, params: {id: tracked_source.id, marketing_source: {tracking_number: '5555550002'}}
+      expect(flash[:alert]).to be_blank
+    end
+
+    it "does not flash an alert when there is no tracking number" do
+      untracked = create(:marketing_source, property_id: property.id, name: 'Word of Mouth',
+        lead_source: nil, phone_lead_source: nil, email_lead_source: nil,
+        tracking_number: nil, tracking_email: nil, tracking_code: nil, destination_number: nil)
+      put :update, params: {id: untracked.id, marketing_source: {description: 'updated'}}
       expect(flash[:alert]).to be_blank
     end
   end

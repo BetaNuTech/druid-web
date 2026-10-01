@@ -47,6 +47,17 @@
     prop_spend_per_lead = prop_total_spend / [prop_total_leads, 1].max.to_d
     prop_spend_per_conversion = prop_total_spend / [prop_total_conversions, 1].max.to_d
   %>
+  <% if property.marketing_tracking_numbers? %>
+    <div class="row">
+      <div class="col-xs-12 col-md-12">
+        <%= render partial: 'shared/call_routing_issues', locals: {
+          property: property,
+          link: true,
+          intro: "Tracking numbers for #{property.name} will not route or attribute calls correctly:" } %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="row">
     <div class="col-xs-12 col-md-3">
       <h2><%= property.name %></h2>

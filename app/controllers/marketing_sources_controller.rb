@@ -23,7 +23,7 @@ class MarketingSourcesController < ApplicationController
     authorize @marketing_source
     respond_to do |format|
       if @marketing_source.save
-        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was created.', alert: main_line_alert }
+        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was created.', alert: call_routing_alert }
       else
         format.html { render :new }
       end
@@ -38,7 +38,7 @@ class MarketingSourcesController < ApplicationController
     authorize @marketing_source
     respond_to do |format|
       if @marketing_source.update(marketing_source_params)
-        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was updated.', alert: main_line_alert }
+        format.html  { redirect_to marketing_sources_path + "##{@marketing_source.id}", notice: 'Marketing Source was updated.', alert: call_routing_alert }
       else
         format.html { render :edit }
       end
@@ -83,16 +83,21 @@ class MarketingSourcesController < ApplicationController
   private
 
   # Warn (without blocking the save) when a tracking number was saved for a
-  # property that has no main line. Call routing uses the property main line
-  # as the fallback destination for tracking numbers, so phone leads cannot
-  # be forwarded or attributed until it is set.
-  def main_line_alert
-    return nil unless @marketing_source.property_main_line_missing?
+  # property that is not set up to route and attribute the resulting calls.
+  # Only :blocking issues are flashed here - the main line, which is the
+  # fallback destination for the tracking number, and the CallCenter listing
+  # code, without which the phone lead gets no property at all. Warnings such
+  # as office hours and timezone are left to the page. See
+  # Properties::CallRouting.
+  def call_routing_alert
+    return nil if @marketing_source.tracking_number.blank?
 
     property = @marketing_source.property
-    "A tracking number is set, but #{property.name} has no main line phone " \
-      'number. Calls to this tracking number cannot be forwarded or ' \
-      'attributed until the property main line is set.'
+    issues = property&.call_routing_blocking_issues || []
+    return nil if issues.empty?
+
+    "A tracking number is set, but #{property.name} is not ready to handle the " \
+      "calls: #{issues.map { |issue| issue[:message] }.join(' ')}"
   end
 
   def marketing_source_scope(skope=MarketingSource)

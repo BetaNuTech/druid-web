@@ -42,6 +42,7 @@ class Property < ApplicationRecord
   include Properties::Users
   include Properties::PhoneNumbers
   include Properties::MarketingSources
+  include Properties::CallRouting
   include Properties::Logo
   include Properties::WorkingHours
   include Properties::Scheduling

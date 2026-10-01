@@ -1,0 +1,27 @@
+<%#
+  Call routing / phone lead attribution readiness warnings for a Property.
+  Locals:
+    property - the Property to check (required)
+    intro    - leading sentence, tailored to where this is rendered (required)
+    link     - show a link to the property edit form (default false)
+%>
+<% issues = property&.call_routing_issues || [] %>
+<% if issues.any? %>
+  <% blocking = issues.any? { |issue| issue[:severity] == :blocking } %>
+  <div class="alert <%= blocking ? 'alert--danger' : 'alert--warning' %>" role="alert">
+    <%= glyph('warning-sign') %>
+    <b><%= intro %></b>
+    <ul>
+      <% issues.each do |issue| %>
+        <li>
+          <% unless issue[:severity] == :blocking %><i>(warning)</i> <% end %>
+          <%= issue[:message] %>
+        </li>
+      <% end %>
+    </ul>
+    <% if local_assigns[:link] && policy(property).edit? %>
+      <%= link_to('Edit this property', edit_property_path(property)) %>
+      to fix.
+    <% end %>
+  </div>
+<% end %>
