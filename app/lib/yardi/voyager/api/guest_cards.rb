@@ -214,6 +214,32 @@ module Yardi
           return updated_lead
         end
 
+        # Correct the marketing source on an existing guest card (one Bluesky
+        # did not create, e.g. Lea AI's card for a call). Sends only the card's
+        # own identity plus one first-contact event carrying the source, so
+        # nothing else on the card changes. `prospect` is a
+        # Yardi::Backup::Database::Prospect. Returns the CustomerID Voyager
+        # reports (raises on a Voyager error).
+        def sendSourceCorrection(propertyid:, prospect:, source:, event_date:, comment:, dry_run: false)
+          payload = Yardi::Voyager::Data::GuestCard.source_correction_xml(
+            propertyid: propertyid, prospect: prospect, source: source, event_date: event_date, comment: comment
+          )
+          request_options = {
+            service: 'ItfILSGuestCard',
+            method: 'ImportYardiGuest_Login',
+            resource: 'ItfILSGuestCard.asmx',
+            propertyid: propertyid,
+            xml: payload
+          }
+          response = getData(request_options, dry_run: dry_run)
+          return nil if dry_run
+
+          result = Yardi::Voyager::Data::GuestCard.from_ImportYardiGuest(
+            response: response.parsed_response, lead: Struct.new(:remoteid).new
+          )
+          result.remoteid
+        end
+
         def updateLeadEvents(propertyid:, lead:)
           # Do not update associated events if there are issues with the lead
           unless lead.valid?

@@ -393,6 +393,9 @@ module Leads
           return true
         end
 
+        # Call leads handed to the Yardi guest card push get no automated outreach
+        return false if automated_outreach_suppressed?
+
         # Lead preference already set, don't send a duplicate authorization request
         return true if preference.optin_sms || preference.optin_sms_date.present?
 
@@ -446,6 +449,12 @@ module Leads
 
       # Messaging tasks after a lead is created
       def send_new_lead_messaging
+
+        # Call leads handed to the Yardi guest card push get no automated outreach
+        if automated_outreach_suppressed?
+          Rails.logger.info "*** Lead[#{id}] new lead messaging skipped: call lead handled in Yardi (#{Leads::CallGuestcardPusher::ENABLED_ENV})"
+          return false
+        end
 
         # Don't send if stale
         stale_hours = STALE_AGE

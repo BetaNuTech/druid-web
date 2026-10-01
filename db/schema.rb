@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_10_01_120000) do
+ActiveRecord::Schema.define(version: 2026_10_01_200000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -83,6 +83,25 @@ ActiveRecord::Schema.define(version: 2026_10_01_120000) do
     t.index ["auditable_id", "auditable_type"], name: "auditable_index"
     t.index ["created_at"], name: "index_audits_on_created_at"
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
+  end
+
+  create_table "call_guestcard_pushes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id", null: false
+    t.uuid "property_id", null: false
+    t.string "phone"
+    t.string "referral"
+    t.string "status", default: "pending", null: false
+    t.string "yardi_prospect_id"
+    t.string "yardi_source"
+    t.string "source_fix_status"
+    t.integer "attempts", default: 0, null: false
+    t.text "last_error"
+    t.datetime "resolved_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["lead_id"], name: "index_call_guestcard_pushes_on_lead_id", unique: true
+    t.index ["property_id", "phone"], name: "index_call_guestcard_pushes_on_property_id_and_phone"
+    t.index ["status"], name: "index_call_guestcard_pushes_on_status"
   end
 
   create_table "cloudmailin_raw_emails", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -826,6 +845,8 @@ ActiveRecord::Schema.define(version: 2026_10_01_120000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "call_guestcard_pushes", "leads", on_delete: :cascade
+  add_foreign_key "call_guestcard_pushes", "properties", on_delete: :cascade
   add_foreign_key "duplicate_leads", "leads", column: "reference_id", name: "duplicate_leads_reference_id_fk"
   add_foreign_key "duplicate_leads", "leads", name: "duplicate_leads_lead_id_fk"
   add_foreign_key "engagement_policies", "properties", name: "engagement_policies_property_id_fk"

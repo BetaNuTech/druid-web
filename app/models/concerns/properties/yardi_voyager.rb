@@ -14,7 +14,7 @@ module Properties
         # Include leads in early pipeline with assigned user
         # AND leads in 'future' state without remoteid (even if user_id is nil,
         # since nurture event clears user_id but we can find last assigned user from transitions)
-        return leads.
+        return leads_not_owned_by_call_push.
           where(remoteid: [ nil, '' ]).
           where(
             "(state IN (?) AND user_id IS NOT NULL) OR state = ?",
@@ -24,17 +24,24 @@ module Properties
       end
 
       def leads_for_sync
-        return leads.
+        return leads_not_owned_by_call_push.
           where(state: Lead::IN_PROGRESS_STATES).
           where.not(remoteid: [nil, '']).
           where.not(user_id: nil)
       end
 
       def leads_for_cancelling
-        return leads.
+        return leads_not_owned_by_call_push.
           where(state: ['invalidated']).
           where.not(remoteid: [nil, ''])
           # Note: invalidated leads retain their user_id, so no user_id constraint needed
+      end
+
+      # Call leads resolved by Leads::CallGuestcardPusher are linked to guest
+      # cards that Lea AI or leasing own in Yardi; the sync must never create
+      # a second card for them, overwrite their agent, or cancel them.
+      def leads_not_owned_by_call_push
+        leads.where.not(id: CallGuestcardPush.yardi_owned.select(:lead_id))
       end
 
       def voyager_property_code

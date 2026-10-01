@@ -22,6 +22,38 @@ namespace :leads do
     puts 'DONE.'
   end
 
+  desc 'Resolve queued BlueConnect call leads against Yardi guest cards (requires CALL_LEAD_GUESTCARD_PUSH_ENABLED=true; supports DRY_RUN=true; also runs at the end of leads:yardi:send_guestcards)'
+  task push_call_guestcards: :environment do
+    unless Leads::CallGuestcardPusher.enabled?
+      puts "- Skipped: #{Leads::CallGuestcardPusher::ENABLED_ENV} is not true"
+      next
+    end
+
+    dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
+    puts "== Call Lead Guest Card Push #{'(DRY RUN)' if dry_run} =="
+    summary = Leads::CallGuestcardPusher.new(dry_run: dry_run).call
+    if summary[:skipped]
+      puts "- Skipped: #{summary[:skipped]}"
+    else
+      as_of = summary[:backup_as_of] ? summary[:backup_as_of].utc.iso8601 : 'n/a'
+      puts "* queued=#{summary[:queued]} waiting_for_backup=#{summary[:waiting]} backup_as_of=#{as_of}"
+      summary[:outcomes].each { |outcome, count| puts "  - #{outcome}: #{count}" }
+      puts "! ERROR: #{summary[:error]}" if summary[:error]
+    end
+    puts 'DONE.'
+  end
+
+  namespace :call_guestcards do
+    desc 'Correct the Yardi marketing source for ONE call lead linked to a card made for its call (USAGE: rake leads:call_guestcards:fix_source[LEAD_ID]; supports DRY_RUN=true)'
+    task :fix_source, [:lead_id] => :environment do |_t, args|
+      push = CallGuestcardPush.find_by!(lead_id: args[:lead_id])
+      dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
+      status = Leads::CallGuestcardPusher.new(dry_run: dry_run).fix_source_for(push)
+      puts "#{push.yardi_prospect_id}: source #{push.yardi_source.inspect} -> #{push.referral.inspect}: #{status.inspect}#{' (DRY RUN)' if dry_run}"
+      puts 'Verify after the next Yardi backup restore (every 30 minutes) that PROSPECT.sSource changed.'
+    end
+  end
+
   desc 'Reassign leads (USAGE: rake leads:reassign[from@example.com,to@example.com])'
   task :reassign, [:from, :to] => :environment do |t, args|
     from_user = User.find_by_email(args[:from]) rescue nil
@@ -304,6 +336,17 @@ namespace :leads do
         leads = adapter.cancelGuestCards(start_date: start_date)
         reporter.call(leads, 'to cancel')
       end
+
+      # Call leads are resolved by Leads::CallGuestcardPusher while it is on;
+      # running it here keeps it on this task's 10-minute Heroku schedule.
+      if Leads::CallGuestcardPusher.enabled?
+        begin
+          Rake::Task['leads:push_call_guestcards'].invoke
+        rescue StandardError => e
+          Rails.logger.error("leads:push_call_guestcards failed: #{e.message}")
+          ErrorNotification.send(e)
+        end
+      end
     end
 
     desc "Fix guest card types for future and invalidated leads"
@@ -333,7 +376,7 @@ namespace :leads do
         Rails.logger.warn msg
 
         # Find leads in 'future' or 'invalidated' states that already exist in Yardi
-        leads_to_update = property[:property].leads
+        leads_to_update = property[:property].leads_not_owned_by_call_push
           .where(state: ['future', 'invalidated'])
           .where.not(remoteid: [nil, ''])
 

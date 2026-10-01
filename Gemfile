@@ -70,6 +70,10 @@ gem 'migration_data', "~> 0.6"
 gem 'holidays', "~> 8.4"
 # Slack Web API client: the Yoda Bot posts errors to #bluesky-errors
 gem 'slack-ruby-client', '~> 2.5'
+# SQL Server client for read-only queries against the Yardi backup database
+# (see Yardi::Backup::Database). Heroku installs the precompiled x86_64-linux
+# gem, which bundles FreeTDS; local macOS builds need `brew install freetds`.
+gem 'tiny_tds', '~> 3.4', require: false
 gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false

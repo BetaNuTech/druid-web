@@ -301,6 +301,46 @@ module Yardi
           return prospects
         end
 
+        # Minimal ImportYardiGuest payload that only re-states an existing
+        # Prospect-status card's identity and adds a first-contact event with
+        # the corrected TransactionSource (Api::GuestCards#sendSourceCorrection).
+        def self.source_correction_xml(propertyid:, prospect:, source:, event_date:, comment:)
+          agent_first, agent_last = prospect.agent.to_s.split(' ', 2)
+          builder = Nokogiri::XML::Builder.new do |xml|
+            xml.LeadManagement('xmlns' => '') {
+              xml.Prospects {
+                xml.Prospect {
+                  xml.Customers {
+                    xml.Customer('Type' => 'prospect') {
+                      xml.Identification('IDType' => 'ProspectID', 'IDValue' => prospect.prospect_id)
+                      xml.Identification('IDType' => 'PropertyID', 'IDValue' => propertyid, 'OrganizationName' => 'Yardi')
+                      xml.Name {
+                        xml.FirstName prospect.first_name.presence || ' '
+                        xml.LastName prospect.last_name.presence || ' '
+                      }
+                    }
+                  }
+                  xml.Events {
+                    xml.Event('EventType' => 'Other', 'EventDate' => event_date.strftime(REMOTE_DATE_FORMAT)) {
+                      xml.EventID('IDValue' => "#{prospect.prospect_id}-source")
+                      xml.Agent {
+                        xml.AgentName {
+                          xml.FirstName agent_first.to_s
+                          xml.LastName agent_last.to_s
+                        }
+                      }
+                      xml.FirstContact 'true'
+                      xml.Comments comment
+                      xml.TransactionSource source
+                    }
+                  }
+                }
+              }
+            }
+          end
+          builder.doc.root.serialize(save_with: 0)
+        end
+
         def self.to_xml_2(lead:, include_events: false, agent: nil, first_contact_comment: nil)
           organization = Yardi::Voyager::Api::Configuration.new.vendorname
 

@@ -102,3 +102,7 @@ mismatch, stay on the individual marketing source card.
 - The tracking-number lookup in `property_info_for_incoming_number` applies no
   `active`/`current` scope to either the marketing source or the property,
   while the main-line lookup requires `Property.active`.
+
+## Related
+
+What happens to call leads after routing (Yardi guest cards for Lea AI): [call_lead_guestcard_push.md](call_lead_guestcard_push.md).
