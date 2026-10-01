@@ -68,7 +68,8 @@ gem 'descriptive_statistics', "~> 2.5", require: 'descriptive_statistics/safe'
 gem 'working_hours', "~> 1.4"
 gem 'migration_data', "~> 0.6"
 gem 'holidays', "~> 8.4"
-gem 'slack-notifier', "~> 2.4"
+# Slack Web API client: the Yoda Bot posts errors to #bluesky-errors
+gem 'slack-ruby-client', '~> 2.5'
 gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
