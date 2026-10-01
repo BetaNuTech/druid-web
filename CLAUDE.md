@@ -133,8 +133,27 @@ Located in `lib/` directory with clear separation by domain:
 
 - **Heroku** hosting with staging and production environments
 - **Git remotes:** `heroku-staging`, `heroku-prod`
-- **Deploy script:** `bin/deploy staging|prod` (tags, deploys, runs migrations)
+- **Deploy script:** `bin/deploy staging|prod` (tags the current HEAD, deploys, runs migrations)
 - **Scheduled tasks** run via Heroku Scheduler for Yardi sync, lead processing, etc.
+
+### Deploy flow
+
+Work always lands on `master` first. The `staging` and `production` branches
+track what is deployed to each environment and only ever fast-forward from
+`master` — never commit directly on them.
+
+1. Commit on `master` and `git push origin master`.
+2. Fast-forward the deploy branch from `master`, push it, and deploy from it:
+   - **Staging:** `git checkout staging && git merge --ff-only master && git push origin staging && bin/deploy staging`
+   - **Production:** `git checkout production && git merge --ff-only master && git push origin production && bin/deploy prod`
+
+   If `--ff-only` refuses, the branch has diverged from `master` — stop and
+   sort that out rather than creating a merge commit.
+3. Verify with `heroku releases -a druid-staging` / `heroku releases -a druid-prod`
+   that the new release is the expected commit. `bin/deploy` has no error
+   handling: a rejected push still runs migrations and moves the
+   `staging-current` / `prod-current` tag to the undeployed commit.
+4. **Always `git checkout master` when done.**
 
 ## Configuration
 
