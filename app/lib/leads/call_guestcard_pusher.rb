@@ -37,6 +37,10 @@ module Leads
     # Lea AI creates its card while the call is in progress, which can be
     # before Bluesky's lead exists: a card this close to the lead is the call's own.
     SAME_CALL_WINDOW = 30.minutes
+    # A card created later than this after the call came from something else
+    # (an online application, an agent). Live calls are decided within ~75
+    # minutes; this matters for backfilled calls (Leads::CallGuestcardBackfill).
+    SAME_CALL_LOOKAHEAD = 2.hours
     # Mirrors Leads::Duplicates RECENT
     REPEAT_CALL_WINDOW = 48.hours
     MAX_ATTEMPTS = 5
@@ -73,7 +77,9 @@ module Leads
       return [:resident, nil] if resident
       return [:create, nil] if cards.empty?
 
-      same_call = cards.select { |card| card.created_at && card.created_at >= called_at - SAME_CALL_WINDOW }
+      same_call = cards.select do |card|
+        card.created_at && card.created_at.between?(called_at - SAME_CALL_WINDOW, called_at + SAME_CALL_LOOKAHEAD)
+      end
       if same_call.any?
         [:link_new_card, same_call.min_by { |card| [card.primary? ? 0 : 1, card.created_at] }]
       else

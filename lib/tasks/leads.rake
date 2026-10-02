@@ -44,6 +44,31 @@ namespace :leads do
   end
 
   namespace :call_guestcards do
+    desc 'Queue open BlueConnect call leads from the last DAYS days (default 30) that predate the call lead push (DRY_RUN=true simulates and changes nothing)'
+    task backfill: :environment do
+      days = Integer(ENV.fetch('DAYS', Leads::CallGuestcardBackfill::DEFAULT_DAYS))
+      dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
+      if !dry_run && !Leads::CallGuestcardPusher.enabled?
+        abort "! #{Leads::CallGuestcardPusher::ENABLED_ENV} is not true: queued leads would never be processed"
+      end
+
+      puts "== Call Lead Guest Card Backfill, last #{days} days #{'(DRY RUN)' if dry_run} =="
+      report = Leads::CallGuestcardBackfill.new(days: days, dry_run: dry_run).call
+      if dry_run
+        as_of = report[:backup_as_of] ? report[:backup_as_of].utc.iso8601 : 'n/a'
+        puts "* open call leads to queue: #{report[:candidates]} (Yardi backup as of #{as_of})"
+        report[:decisions].sort_by { |_outcome, count| -count }.each { |outcome, count| puts "  - #{outcome}: #{count}" }
+        report[:by_property].each do |property, outcomes|
+          puts "  #{property}: " + outcomes.sort_by { |_outcome, count| -count }.map { |outcome, count| "#{outcome}=#{count}" }.join(' ')
+        end
+        puts "  new cards by call age: " + report[:new_cards_by_age].map { |bucket, count| "#{bucket}=#{count}" }.join(' ')
+        puts "  Lea cards with a correctable source: #{report[:source_fixable]}"
+      else
+        puts "* queued #{report[:queued]} call leads; rake leads:push_call_guestcards resolves them (100 per run)"
+      end
+      puts 'DONE.'
+    end
+
     desc 'Correct the Yardi marketing source for ONE call lead linked to a card made for its call (USAGE: rake leads:call_guestcards:fix_source[LEAD_ID]; supports DRY_RUN=true)'
     task :fix_source, [:lead_id] => :environment do |_t, args|
       push = CallGuestcardPush.find_by!(lead_id: args[:lead_id])

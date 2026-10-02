@@ -84,6 +84,11 @@ RSpec.describe Leads::CallGuestcardPusher do
       expect(described_class.decide(called_at: called_at, cards: [older, lea_card], resident: false)).to eq([:link_new_card, lea_card])
     end
 
+    it 'does not count a card created more than two hours after the call as the call’s own' do
+      later = card('p3', created_at: called_at + 3.hours)
+      expect(described_class.decide(called_at: called_at, cards: [later], resident: false)).to eq([:link_existing_card, later])
+    end
+
     it 'links the newest primary card when the caller already had one' do
       oldest = card('p1', created_at: called_at - 90.days)
       newest = card('p2', created_at: called_at - 10.days)

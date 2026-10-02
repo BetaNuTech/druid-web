@@ -123,13 +123,28 @@ CallGuestcardPush.where(status: 'failed').pluck(:lead_id, :last_error)
 
 ## Not done yet
 
-- **Backfill**: calls from before the switch was turned on are not queued.
-  Pushing the missing cards for the previous 30 days is a separate, approved
-  follow-up (it can queue `CallGuestcardPush` rows for those leads and run the
-  pusher with `DRY_RUN=true` first).
+- Calls from before the switch was turned on are not queued automatically.
+  Use the backfill (below).
 - Calls to numbers Bluesky does not know about (see
   [property_call_routing.md](property_call_routing.md)) arrive without a
   property and are not queued.
+
+## Backfill
+
+`Leads::CallGuestcardBackfill` queues open call leads from before go-live so
+the pusher resolves them like new calls. It only takes open leads with no
+queue entry, so it is safe to run twice.
+
+```bash
+heroku run -a druid-prod rake leads:call_guestcards:backfill DAYS=30 DRY_RUN=true
+```
+
+The dry run simulates every decision against the Yardi backup, including
+repeat-call chains, and changes nothing. Without `DRY_RUN` it queues the
+leads, and the pusher works through them 100 per run. For old calls, a card
+created more than 2 hours after the call counts as an existing card rather
+than the call's own (`SAME_CALL_LOOKAHEAD`): it came from something else,
+such as an online application.
 
 ## Technical notes
 
