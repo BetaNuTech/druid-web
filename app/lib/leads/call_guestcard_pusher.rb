@@ -80,7 +80,7 @@ module Leads
       return [:create, nil] if cards.empty?
 
       same_call = cards.select do |card|
-        card.created_at && card.created_at.between?(called_at - SAME_CALL_WINDOW, called_at + SAME_CALL_LOOKAHEAD)
+        card.created_at&.between?(called_at - SAME_CALL_WINDOW, called_at + SAME_CALL_LOOKAHEAD)
       end
       if same_call.any?
         [:link_new_card, same_call.min_by { |card| [card.primary? ? 0 : 1, card.created_at] }]
@@ -297,17 +297,18 @@ module Leads
       return 'skipped_status' unless card.status.to_s.strip.casecmp?('Prospect')
       # An update could land on the other card that shares the ID
       return 'skipped_shared_id' if db.prospect_id_shared?(card.prospect_id)
+
+      # The source is changed by re-stating the card's one first-contact event
+      code = push.property.voyager_property_code
+      events = db.first_contact_events(code, card.prospect_id)
+      return 'skipped_no_first_contact' unless events.size == 1
       return 'would_send' if @dry_run
 
-      returned = api.sendSourceCorrection(
-        propertyid: push.property.voyager_property_code, prospect: card, source: referral,
-        event_date: push.lead.created_at,
-        comment: "Inbound call via the #{referral} tracking number; source corrected by Bluesky " \
-                 "(was #{card.source.presence || 'blank'})"
-      )
+      returned = api.sendSourceCorrection(propertyid: code, prospect: card, event: events.first, source: referral)
       Note.create!(notable: push.lead, classification: 'system',
                    content: "Call lead push: asked Yardi to change guest card #{card.prospect_id}'s source " \
-                            "from #{card.source.inspect} to #{referral.inspect}")
+                            "from #{card.source.inspect} to #{referral.inspect} (first-contact event " \
+                            "#{events.first.event_id.to_i}; agent left as #{card.agent.inspect})")
       returned == card.prospect_id ? 'sent' : "unexpected_response:#{returned}"
     rescue StandardError => e
       Rails.logger.error("Leads::CallGuestcardPusher: source correction for #{card.prospect_id} failed: #{e.message}")

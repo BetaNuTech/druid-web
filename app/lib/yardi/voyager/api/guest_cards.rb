@@ -215,14 +215,14 @@ module Yardi
         end
 
         # Correct the marketing source on an existing guest card (one Bluesky
-        # did not create, e.g. Lea AI's card for a call). Sends only the card's
-        # own identity plus one first-contact event carrying the source, so
-        # nothing else on the card changes. `prospect` is a
-        # Yardi::Backup::Database::Prospect. Returns the CustomerID Voyager
-        # reports (raises on a Voyager error).
-        def sendSourceCorrection(propertyid:, prospect:, source:, event_date:, comment:, dry_run: false)
+        # did not create, e.g. Lea AI's card for a call) by re-stating its
+        # first-contact event with a new TransactionSource (see
+        # Yardi::Voyager::Data::GuestCard.source_correction_xml). `prospect` and
+        # `event` come from Yardi::Backup::Database. Returns the CustomerID
+        # Voyager reports (raises on a Voyager error).
+        def sendSourceCorrection(propertyid:, prospect:, event:, source:, dry_run: false)
           payload = Yardi::Voyager::Data::GuestCard.source_correction_xml(
-            propertyid: propertyid, prospect: prospect, source: source, event_date: event_date, comment: comment
+            propertyid: propertyid, prospect: prospect, event: event, source: source
           )
           request_options = {
             service: 'ItfILSGuestCard',

@@ -30,7 +30,7 @@ Code: `Leads::CallGuestcardPusher` (`app/lib/leads/call_guestcard_pusher.rb`),
 | `YARDI_BACKUP_DB_HOST`, `_PORT` (1433), `_NAME`, `_USER`, `_PASS` | – | Yardi backup database. Same names and values as Cobalt2. |
 | `YARDI_SOCKS_PROXY` (or the Fixie add-on's `FIXIE_SOCKS_HOST`) | – | SOCKS5 proxy whose static IPs the backup server's firewall allows. Same as Cobalt2. |
 | `CALL_LEAD_GUESTCARD_HOLD_MINUTES` | 15 | How long after a call before Bluesky decides (see Timing). |
-| `CALL_LEAD_GUESTCARD_FIX_SOURCE_ENABLED` | off | Correct the source on Lea AI's card for a call. Unverified; see below. |
+| `CALL_LEAD_GUESTCARD_FIX_SOURCE_ENABLED` | off | Correct the source on Lea AI's card for a call (verified 2026-10-02; see below). |
 | `YARDI_BACKUP_SOURCE_TIME_ZONE` | America/New_York | Time zone of Yardi's backup history timestamps. |
 
 No extra Heroku Scheduler entry is needed: the pusher runs at the end of
@@ -99,26 +99,50 @@ overwrites the agent on a card Lea AI or an agent owns, or cancels it. This
 holds even after the switch is turned off. Leads that were never resolved
 (pending, failed or skipped) sync normally.
 
-## Attribution correction (off until verified)
+## Attribution correction (`CALL_LEAD_GUESTCARD_FIX_SOURCE_ENABLED`, off)
 
-Lea AI records every call card's source as "Property Website". With
-`CALL_LEAD_GUESTCARD_FIX_SOURCE_ENABLED=true`, a `linked_new_card` card that is
-still in Prospect status and has a different source gets a minimal
-`ImportYardiGuest` update. It carries only the card's own identity plus one
-first-contact event with the call's source
-(`Yardi::Voyager::Api::GuestCards#sendSourceCorrection`). Canceled cards are
-skipped, because re-stating them could reopen them.
+Lea AI records every call card's source as "Property Website". With the
+switch on, a `linked_new_card` card that is still a Prospect, has a ProspectID
+no other card shares, and shows a different source than the call's tracking
+number gets its source corrected
+(`Yardi::Voyager::Api::GuestCards#sendSourceCorrection`).
 
-Whether Voyager actually changes `PROSPECT.sSource` this way is **not yet
-verified**. Test it on one lead first:
+**How it works (verified against Voyager on 2026-10-02):** Voyager only
+updates a first-contact event when the import quotes that event's own ID. It
+otherwise answers "First contact event ... requires an event ID to update" or
+"Exception error importing prospect". The ID is `PROSPECT_HISTORY.hMy`, read
+from the backup. The correction re-states the card's one first-contact event
+exactly as stored (type, date and time, notes) with only its
+`TransactionSource` changed, and Voyager then updates `PROSPECT.sSource`.
+Cards with zero or several first-contact events are skipped
+(`skipped_no_first_contact`).
+
+**Agent side effect:** Voyager sets *both* the card's agent and the
+first-contact event's agent from the agent the re-stated event names. The
+correction names the card's *current* agent, so the card's assignment never
+changes. Naming the event's original agent (often Admin) would hand a card an
+agent is working back to Lea AI. The cost is that the first-contact event is
+then credited to the card's current agent. On Lea AI's own call cards, both
+are normally Admin at correction time, so nothing changes.
+
+**The test:** guest card p0519843 at Vintage Edge, a Lea AI card from April
+2026 assigned to Nichole Powell. An import quoting first-contact event 1931457
+changed the card's source from Property Website to Google Business Profile,
+with the same status, contact details and events. Because it named the
+event's original agent, it also reassigned the card to Admin. A second import
+naming Nichole Powell restored the source and the assignment. The one lasting
+change is that event 1931457 is now credited to Nichole Powell rather than
+Admin. A first attempt that invented an event ID was rejected and left no
+trace.
+
+To correct one call's card by hand, regardless of the switch:
 
 ```bash
 heroku run -a druid-prod rake "leads:call_guestcards:fix_source[LEAD_ID]"
 ```
 
-After the next backup restore, confirm that card's `sSource` changed, then turn
-on the setting. Every `linked_new_card` push records the card's original source
-in `yardi_source`, so earlier calls can be corrected later.
+Every `linked_new_card` push records the card's original source in
+`yardi_source`, so earlier calls can be corrected later.
 
 ## Running and monitoring
 

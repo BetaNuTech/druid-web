@@ -33,6 +33,16 @@ module Yardi
         end
       end
 
+      # A guest card event (PROSPECT_HISTORY). event_id (hMy) is the EventID
+      # Voyager's guest card interface uses.
+      Event = Struct.new(:event_id, :event_type, :date, :time, :agent, :notes, keyword_init: true) do
+        # The event's wall-clock date and time, as Voyager shows it
+        def occurred_at
+          clock = time.present? ? Time.strptime(time, '%I:%M %p') : date
+          Time.utc(date.year, date.month, date.day, clock.hour, clock.min)
+        end
+      end
+
       def self.configured?(env = ENV)
         REQUIRED_ENV.all? { |name| env[name].present? }
       end
@@ -135,6 +145,19 @@ module Yardi
           WHERE RTRIM(p.SCODE) = '#{escape(property_code)}' AND RTRIM(pr.sCode) = '#{escape(prospect_id)}'
         SQL
         row && Prospect.new(row.symbolize_keys)
+      end
+
+      # The first-contact events on a guest card (normally exactly one).
+      def first_contact_events(property_code, prospect_id)
+        select_rows(<<~SQL).map { |row| Event.new(row.symbolize_keys) }
+          SELECT ph.hMy AS event_id, RTRIM(ph.sType) AS event_type, ph.dtDate AS date, RTRIM(ph.sTime) AS time,
+                 RTRIM(ph.sAgent) AS agent, CAST(ph.sNotes AS varchar(max)) AS notes
+          FROM PROSPECT_HISTORY ph
+          JOIN PROSPECT pr ON pr.HMY = ph.HPROSPECT
+          JOIN PROPERTY p ON p.HMY = pr.HPROPERTY
+          WHERE RTRIM(p.SCODE) = '#{escape(property_code)}' AND RTRIM(pr.sCode) = '#{escape(prospect_id)}'
+            AND ph.bFirstContact <> 0
+        SQL
       end
 
       # Yardi ProspectIDs are not unique: an August 2026 import at The Yancey

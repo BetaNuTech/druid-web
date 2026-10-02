@@ -86,6 +86,21 @@ RSpec.describe Yardi::Backup::Database do
     end
   end
 
+  describe '#first_contact_events' do
+    it "returns the card's first-contact events with their Voyager event IDs" do
+      stub_queries(/FROM PROSPECT_HISTORY ph/ => [{ 'event_id' => BigDecimal('1931457'), 'event_type' => 'Email',
+                                                    'date' => Time.utc(2026, 4, 4), 'time' => '10:31 AM',
+                                                    'agent' => 'Admin', 'notes' => 'Original note' }])
+
+      events = database.first_contact_events('1002edge', 'p0519843')
+
+      expect(events.size).to eq(1)
+      expect(events.first.event_id.to_i).to eq(1931457)
+      expect(events.first.occurred_at).to eq(Time.utc(2026, 4, 4, 10, 31))
+      expect(executed.last).to include("RTRIM(pr.sCode) = 'p0519843'", 'ph.bFirstContact <> 0')
+    end
+  end
+
   describe '#resident_phones' do
     it 'returns the callers who are current residents of the property' do
       stub_queries(/FROM TENANT t/ => [{ 'SPHONENUM0' => '6155550123', 'SPHONENUM3' => '(615) 555-0999' }])

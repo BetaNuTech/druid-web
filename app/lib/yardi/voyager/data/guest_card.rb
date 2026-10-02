@@ -301,10 +301,17 @@ module Yardi
           return prospects
         end
 
-        # Minimal ImportYardiGuest payload that only re-states an existing
-        # Prospect-status card's identity and adds a first-contact event with
-        # the corrected TransactionSource (Api::GuestCards#sendSourceCorrection).
-        def self.source_correction_xml(propertyid:, prospect:, source:, event_date:, comment:)
+        # ImportYardiGuest payload that corrects the marketing source of an
+        # existing guest card. Voyager only updates a first-contact event when
+        # the import carries that event's own ID, so this re-states the card's
+        # existing first-contact event exactly as stored (type, date and time,
+        # notes) with only its TransactionSource changed; Voyager then updates
+        # the card's source. Voyager also assigns the card to the agent named on
+        # the event, so the card's current agent is named, leaving it unchanged.
+        # Verified against Voyager on 2026-10-02 (doc/call_lead_guestcard_push.md).
+        # `prospect` is a Yardi::Backup::Database::Prospect and `event` its
+        # first-contact Yardi::Backup::Database::Event.
+        def self.source_correction_xml(propertyid:, prospect:, event:, source:)
           agent_first, agent_last = prospect.agent.to_s.split(' ', 2)
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.LeadManagement('xmlns' => '') {
@@ -321,8 +328,8 @@ module Yardi
                     }
                   }
                   xml.Events {
-                    xml.Event('EventType' => 'Other', 'EventDate' => event_date.strftime(REMOTE_DATE_FORMAT)) {
-                      xml.EventID('IDValue' => "#{prospect.prospect_id}-source")
+                    xml.Event('EventType' => event.event_type, 'EventDate' => event.occurred_at.strftime(REMOTE_DATE_FORMAT)) {
+                      xml.EventID('IDValue' => event.event_id.to_i.to_s)
                       xml.Agent {
                         xml.AgentName {
                           xml.FirstName agent_first.to_s
@@ -330,7 +337,7 @@ module Yardi
                         }
                       }
                       xml.FirstContact 'true'
-                      xml.Comments comment
+                      xml.Comments event.notes.to_s
                       xml.TransactionSource source
                     }
                   }

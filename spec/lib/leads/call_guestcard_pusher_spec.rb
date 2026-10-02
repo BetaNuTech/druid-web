@@ -10,13 +10,15 @@ RSpec.describe Leads::CallGuestcardPusher do
   # Stands in for Yardi::Backup::Database
   let(:backup) do
     Class.new do
-      attr_accessor :as_of, :cards, :residents, :by_id, :shared_ids
+      attr_accessor :as_of, :cards, :residents, :by_id, :shared_ids, :first_contact
 
       def initialize
         @cards = {}
         @residents = Set.new
         @by_id = {}
         @shared_ids = Set.new
+        @first_contact = [Yardi::Backup::Database::Event.new(event_id: 1931457, event_type: 'Email', date: Time.utc(2026, 9, 28),
+                                                             time: '3:02 PM', agent: 'Admin', notes: 'Lea call')]
       end
 
       def open
@@ -28,6 +30,7 @@ RSpec.describe Leads::CallGuestcardPusher do
       def resident_phones(_code, _phones) = residents
       def prospect(_code, prospect_id) = by_id[prospect_id]
       def prospect_id_shared?(prospect_id) = shared_ids.include?(prospect_id)
+      def first_contact_events(_code, _prospect_id) = first_contact
     end.new.tap { |db| db.as_of = 10.minutes.ago }
   end
 
@@ -181,8 +184,20 @@ RSpec.describe Leads::CallGuestcardPusher do
 
         described_class.new(database: backup, api: api).call
 
-        expect(api).to have_received(:sendSourceCorrection).with(hash_including(source: 'Google Business Profile', propertyid: '1002edge'))
+        expect(api).to have_received(:sendSourceCorrection)
+          .with(hash_including(source: 'Google Business Profile', propertyid: '1002edge', event: backup.first_contact.first))
         expect(lead.call_guestcard_push.reload.source_fix_status).to eq('sent')
+      end
+
+      it 'skips a card without exactly one first-contact event' do
+        lead = call_lead
+        backup.cards = { phone => [card('p0523371', created_at: lead.created_at + 2.minutes)] }
+        backup.first_contact = []
+
+        described_class.new(database: backup, api: api).call
+
+        expect(api).not_to have_received(:sendSourceCorrection)
+        expect(lead.call_guestcard_push.reload.source_fix_status).to eq('skipped_no_first_contact')
       end
 
       it 'never updates a card whose ProspectID another card shares' do
