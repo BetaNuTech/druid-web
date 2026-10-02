@@ -53,12 +53,23 @@ No extra Heroku Scheduler entry is needed: the pusher runs at the end of
 | `linked_new_card` | a card was made for this call (Lea AI's, created up to 30 min before the lead) | system user, prospect, linked | source corrected if enabled; otherwise untouched |
 | `linked_existing_card` | the caller already had a card | system user, prospect, linked | untouched (first-touch source kept) |
 | `repeat_call` | the same caller was resolved here within 48h | invalidated as duplicate | nothing |
+| `duplicate_lead` | another lead at the property already links the caller's card (they called again later) | invalidated as duplicate | nothing |
 | `resident` | phone matches a current, future, notice or eviction tenant | invalidated as resident | nothing |
 | `skipped_not_open` | Bluesky had already closed the lead (its own dedupe) | unchanged | nothing |
 | `failed` | 5 failed attempts | open, error note | – |
 
 Matching is by phone (all four PROSPECT phone fields, any format) at the same
-property. A canceled card still counts as existing: the call is linked, not
+property.
+
+**Yardi ProspectIDs are not unique.** An August 2026 bulk import at The Yancey
+(created by clytell@bluecoreresidential.com) reused codes that Voyager later
+issued at other properties. As of October 2026, 573 IDs are shared across
+properties and 223 are repeated within one property. Bluesky's Lead
+`remoteid` is unique per property, so reuse across properties is harmless.
+When a new card's ID is already on another lead at the same property, the ID
+is kept on the queue entry (`yardi_prospect_id`) and not on the lead. The
+attribution fix never sends an update for a shared ID (`skipped_shared_id`),
+because Voyager might apply it to the other card. A canceled card still counts as existing: the call is linked, not
 re-created, and the card is not reopened.
 
 ## Timing

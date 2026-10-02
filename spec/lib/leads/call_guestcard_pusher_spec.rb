@@ -10,12 +10,13 @@ RSpec.describe Leads::CallGuestcardPusher do
   # Stands in for Yardi::Backup::Database
   let(:backup) do
     Class.new do
-      attr_accessor :as_of, :cards, :residents, :by_id
+      attr_accessor :as_of, :cards, :residents, :by_id, :shared_ids
 
       def initialize
         @cards = {}
         @residents = Set.new
         @by_id = {}
+        @shared_ids = Set.new
       end
 
       def open
@@ -26,6 +27,7 @@ RSpec.describe Leads::CallGuestcardPusher do
       def prospects_by_phone(_code, _phones) = cards
       def resident_phones(_code, _phones) = residents
       def prospect(_code, prospect_id) = by_id[prospect_id]
+      def prospect_id_shared?(prospect_id) = shared_ids.include?(prospect_id)
     end.new.tap { |db| db.as_of = 10.minutes.ago }
   end
 
@@ -183,6 +185,17 @@ RSpec.describe Leads::CallGuestcardPusher do
         expect(lead.call_guestcard_push.reload.source_fix_status).to eq('sent')
       end
 
+      it 'never updates a card whose ProspectID another card shares' do
+        lead = call_lead
+        backup.cards = { phone => [card('p0522900', created_at: lead.created_at + 2.minutes)] }
+        backup.shared_ids << 'p0522900'
+
+        described_class.new(database: backup, api: api).call
+
+        expect(api).not_to have_received(:sendSourceCorrection)
+        expect(lead.call_guestcard_push.reload.source_fix_status).to eq('skipped_shared_id')
+      end
+
       it 'leaves a card Lea has already canceled alone' do
         lead = call_lead
         backup.cards = { phone => [card('p0523371', created_at: lead.created_at + 2.minutes, status: 'Canceled Guest')] }
@@ -208,6 +221,37 @@ RSpec.describe Leads::CallGuestcardPusher do
       expect(first.reload.state).to eq('prospect')
       expect(second.reload).to have_attributes(state: 'invalidated', classification: 'duplicate')
       expect(second.call_guestcard_push).to have_attributes(status: 'repeat_call', yardi_prospect_id: 'p0999001')
+    end
+
+    it 'closes a later call as a duplicate when another lead here already links the card' do
+      earlier = create(:lead, property: property, source: create(:lead_source, slug: 'Zillow'), state: 'open')
+      earlier.update_columns(remoteid: 'p0500001', state: 'prospect')
+      lead = call_lead
+      backup.cards = { phone => [card('p0500001', created_at: 40.days.ago)] }
+
+      expect(pusher.call[:outcomes]).to eq('duplicate_lead' => 1)
+      expect(lead.reload).to have_attributes(state: 'invalidated', classification: 'duplicate', remoteid: nil)
+      expect(lead.call_guestcard_push.yardi_prospect_id).to eq('p0500001')
+    end
+
+    it 'links normally when only a lead at another property has the same Yardi ID' do
+      other = create(:lead, property: create(:property), source: create(:lead_source, slug: 'Zillow'), state: 'open')
+      other.update_columns(remoteid: 'p0500001') # Yardi reuses ProspectIDs across properties
+      lead = call_lead
+      backup.cards = { phone => [card('p0500001', created_at: 40.days.ago)] }
+
+      expect(pusher.call[:outcomes]).to eq('linked_existing_card' => 1)
+      expect(lead.reload).to have_attributes(state: 'prospect', user: User.system, remoteid: 'p0500001')
+    end
+
+    it 'keeps a new card whose ID Yardi reused at this property on the queue entry only' do
+      other = create(:lead, property: property, source: create(:lead_source, slug: 'Zillow'), state: 'open')
+      other.update_columns(remoteid: 'p0999001', state: 'invalidated') # the ID the fake API hands back
+      lead = call_lead
+
+      expect(pusher.call[:outcomes]).to eq('created' => 1)
+      expect(lead.reload).to have_attributes(state: 'prospect', remoteid: nil)
+      expect(lead.call_guestcard_push.yardi_prospect_id).to eq('p0999001')
     end
 
     it 'invalidates a call from a current resident' do

@@ -137,6 +137,15 @@ module Yardi
         row && Prospect.new(row.symbolize_keys)
       end
 
+      # Yardi ProspectIDs are not unique: an August 2026 import at The Yancey
+      # reused codes that Voyager later issued at other properties. True when
+      # more than one guest card carries this ID.
+      def prospect_id_shared?(prospect_id)
+        select_rows(<<~SQL).first['n'].to_i > 1
+          SELECT COUNT(*) AS n FROM PROSPECT WHERE RTRIM(sCode) = '#{escape(prospect_id)}'
+        SQL
+      end
+
       # The subset of `phones` belonging to current (or future/notice)
       # residents of the property.
       def resident_phones(property_code, phones)

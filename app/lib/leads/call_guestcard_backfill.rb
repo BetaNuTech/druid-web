@@ -62,6 +62,7 @@ module Leads
       return report if leads.empty?
 
       resolved = {} # "property|phone" => [called_at, prospect id] of the latest call resolved to a card
+      linked = {}   # "property|prospect id" => true for cards linked earlier in the simulation
       @database.open do |db|
         report[:backup_as_of] = db.data_as_of
         leads.group_by(&:property).each do |property, group|
@@ -75,7 +76,7 @@ module Leads
           end
 
           group.each do |lead|
-            outcome = simulate_lead(lead, cards: cards, residents: residents, resolved: resolved, report: report)
+            outcome = simulate_lead(lead, cards: cards, residents: residents, resolved: resolved, linked: linked, report: report)
             report[:decisions][outcome] += 1
             report[:by_property][property.name][outcome] += 1
           end
@@ -85,7 +86,7 @@ module Leads
     end
 
     # Mirrors CallGuestcardPusher#resolve, tracking resolutions in memory
-    def simulate_lead(lead, cards:, residents:, resolved:, report:)
+    def simulate_lead(lead, cards:, residents:, resolved:, linked:, report:)
       phone = phone_of(lead)
       return CallGuestcardPush::SKIPPED_NO_PHONE if phone.nil?
 
@@ -96,6 +97,13 @@ module Leads
                                                   resident: residents.include?(phone), prior_prospect_id: prior_prospect_id)
       unless decision == :resident
         resolved[key] = [lead.created_at, card&.prospect_id || prior_prospect_id || "new card for Lead #{lead.id}"]
+      end
+
+      if %i[link_new_card link_existing_card].include?(decision)
+        card_key = "#{lead.property_id}|#{card.prospect_id}"
+        held = linked[card_key] || Lead.where(remoteid: card.prospect_id, property_id: lead.property_id).exists?
+        linked[card_key] = true
+        return CallGuestcardPush::DUPLICATE_LEAD if held
       end
 
       if decision == :create

@@ -26,18 +26,19 @@ class CallGuestcardPush < ApplicationRecord
   LINKED_NEW_CARD = 'linked_new_card'.freeze           # card made for this call (usually Lea AI)
   LINKED_EXISTING_CARD = 'linked_existing_card'.freeze # caller already had a card
   REPEAT_CALL = 'repeat_call'.freeze                   # same caller resolved within 48h
+  DUPLICATE_LEAD = 'duplicate_lead'.freeze             # another lead here already links the caller's card
   RESIDENT = 'resident'.freeze                         # caller is a current Yardi resident
   SKIPPED_NOT_OPEN = 'skipped_not_open'.freeze         # Bluesky already closed the lead
   SKIPPED_NO_PHONE = 'skipped_no_phone'.freeze
   FAILED = 'failed'.freeze
 
-  STATUSES = [PENDING, CREATED, LINKED_NEW_CARD, LINKED_EXISTING_CARD, REPEAT_CALL,
+  STATUSES = [PENDING, CREATED, LINKED_NEW_CARD, LINKED_EXISTING_CARD, REPEAT_CALL, DUPLICATE_LEAD,
               RESIDENT, SKIPPED_NOT_OPEN, SKIPPED_NO_PHONE, FAILED].freeze
 
   # The pusher owns the Yardi guest card for leads in these statuses, so the
   # legacy Yardi sync (Properties::YardiVoyager) never creates, updates or
   # cancels a card for them - even after the switch is turned off.
-  YARDI_OWNED_STATUSES = [CREATED, LINKED_NEW_CARD, LINKED_EXISTING_CARD, REPEAT_CALL, RESIDENT].freeze
+  YARDI_OWNED_STATUSES = [CREATED, LINKED_NEW_CARD, LINKED_EXISTING_CARD, REPEAT_CALL, DUPLICATE_LEAD, RESIDENT].freeze
 
   belongs_to :lead
   belongs_to :property

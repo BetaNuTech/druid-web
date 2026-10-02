@@ -71,6 +71,17 @@ RSpec.describe Leads::CallGuestcardBackfill do
       expect([first, repeat, linked, resident].map { |lead| lead.reload.state }.uniq).to eq(['open'])
     end
 
+    it 'counts a call whose card another lead here already links as a duplicate' do
+      earlier = old_call(phone: '6155550401', called: 9.days.ago)
+      earlier.update_columns(remoteid: 'p0500001', state: 'prospect')
+      old_call(phone: '6155550401', called: 3.days.ago)
+      backup.cards['6155550401'] = [card('p0500001', created_at: 60.days.ago)]
+
+      report = described_class.new(days: 30, dry_run: true, database: backup).call
+
+      expect(report[:decisions]).to eq('duplicate_lead' => 1)
+    end
+
     it 'treats a card created days after the call as an existing card, not the call’s own' do
       lead = old_call(phone: '6155550301', called: 6.days.ago)
       backup.cards['6155550301'] = [card('p0599999', created_at: lead.created_at + 3.days)]

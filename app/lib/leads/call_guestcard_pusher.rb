@@ -14,6 +14,8 @@ module Leads
   #                        source is corrected if CALL_LEAD_GUESTCARD_FIX_SOURCE_ENABLED
   #   linked_existing_card the caller already had a card; left untouched
   #   repeat_call          same caller resolved here within 48h: invalidated as a duplicate
+  #   duplicate_lead       another lead at the property already links the caller's
+  #                        card: invalidated as a duplicate
   #   resident             caller is a current Yardi resident: invalidated as a resident
   # Created and linked leads are assigned to the system user and moved to
   # prospect, as Lea AI email leads are.
@@ -116,7 +118,7 @@ module Leads
         card = db.prospect(push.property.voyager_property_code, push.yardi_prospect_id)
         raise Error, "Guest card #{push.yardi_prospect_id} not found in the Yardi backup" if card.nil?
 
-        status = correct_source(push, card, force: true)
+        status = correct_source(push, card, db: db, force: true)
         push.update!(source_fix_status: status, yardi_source: card.source) unless @dry_run
         status
       end
@@ -151,7 +153,7 @@ module Leads
           cards = db.prospects_by_phone(code, phones)
           residents = db.resident_phones(code, phones)
           pushes.each do |push|
-            outcome = resolve(push, cards: cards.fetch(push.phone, []), resident: residents.include?(push.phone))
+            outcome = resolve(push, cards: cards.fetch(push.phone, []), resident: residents.include?(push.phone), db: db)
             summary[:outcomes][outcome] += 1
           end
         end
@@ -170,7 +172,7 @@ module Leads
       push.lead.created_at + @hold <= as_of && (push.attempts.zero? || push.updated_at <= as_of)
     end
 
-    def resolve(push, cards:, resident:)
+    def resolve(push, cards:, resident:, db:)
       lead = push.lead
       return finish(push, CallGuestcardPush::SKIPPED_NOT_OPEN) unless lead.open?
       return finish(push, CallGuestcardPush::SKIPPED_NO_PHONE) if push.phone.blank?
@@ -192,7 +194,7 @@ module Leads
         invalidate(lead, :resident, 'Caller is a current resident in Yardi')
         finish(push, CallGuestcardPush::RESIDENT)
       when :link_new_card, :link_existing_card
-        link(push, card, decision == :link_new_card ? CallGuestcardPush::LINKED_NEW_CARD : CallGuestcardPush::LINKED_EXISTING_CARD)
+        link(push, card, decision == :link_new_card ? CallGuestcardPush::LINKED_NEW_CARD : CallGuestcardPush::LINKED_EXISTING_CARD, db)
       else
         create_card(push)
       end
@@ -212,12 +214,26 @@ module Leads
                        .order('leads.created_at').pick(:yardi_prospect_id)
     end
 
-    def link(push, card, status)
+    def link(push, card, status, db)
+      holder = remoteid_holder(push.lead, card.prospect_id)
+      if holder&.property_id == push.property_id
+        # The caller called again: another lead here already links their card
+        invalidate(push.lead, :duplicate, "Duplicate of Lead #{holder.id}, already linked to Yardi guest card #{card.prospect_id}")
+        return finish(push, CallGuestcardPush::DUPLICATE_LEAD, yardi_prospect_id: card.prospect_id, yardi_source: card.source)
+      end
+
       adopt(push.lead, card.prospect_id,
             "Matched to existing Yardi guest card #{card.prospect_id} (created by #{card.created_by.presence || 'unknown'}, " \
-            "agent #{card.agent.presence || 'none'}); not re-created")
-      source_fix = status == CallGuestcardPush::LINKED_NEW_CARD ? correct_source(push, card) : nil
+            "agent #{card.agent.presence || 'none'}); not re-created",
+            store_remoteid: holder.nil?)
+      source_fix = status == CallGuestcardPush::LINKED_NEW_CARD ? correct_source(push, card, db: db) : nil
       finish(push, status, yardi_prospect_id: card.prospect_id, yardi_source: card.source, source_fix_status: source_fix)
+    end
+
+    # Another lead at the same property already carrying this Yardi ID, if
+    # any (Lead remoteids are unique per property).
+    def remoteid_holder(lead, prospect_id)
+      Lead.where(remoteid: prospect_id, property_id: lead.property_id).where.not(id: lead.id).first
     end
 
     def create_card(push)
@@ -240,14 +256,21 @@ module Leads
     def adopt_created(push, prospect_id)
       adopt(push.lead, prospect_id,
             "Pushed to Yardi as guest card #{prospect_id} (agent #{ADMIN_AGENT_NAME} for Lea AI, " \
-            "source #{push.lead.referral.presence || 'Bluesky'})")
+            "source #{push.lead.referral.presence || 'Bluesky'})",
+            store_remoteid: remoteid_holder(push.lead, prospect_id).nil?)
       finish(push, CallGuestcardPush::CREATED, yardi_prospect_id: prospect_id)
     end
 
     # Link the lead to its card and hand it to the system user as a prospect,
     # the same as Lea AI email leads (Leads::Messaging is gated, so no texts).
-    def adopt(lead, prospect_id, note)
-      lead.remoteid = prospect_id
+    def adopt(lead, prospect_id, note, store_remoteid: true)
+      if store_remoteid
+        lead.remoteid = prospect_id
+      else
+        # sendGuestCard set it in memory; another lead here already has it
+        lead.remoteid = lead.remoteid_in_database
+        note += ". Yardi reuses #{prospect_id} for another guest card at this property, so it is kept on the queue entry, not the lead"
+      end
       unless lead.trigger_event(event_name: 'work', user: User.system)
         raise Error, "could not move Lead[#{lead.id}] to prospect: #{lead.errors.full_messages.to_sentence.presence || lead.state}"
       end
@@ -266,12 +289,14 @@ module Leads
     # Ask Yardi to replace the source on a card made for this call (Lea AI
     # records every call as 'Property Website'). Returns the source_fix_status,
     # or nil when correction is switched off.
-    def correct_source(push, card, force: false)
+    def correct_source(push, card, db:, force: false)
       referral = push.referral.to_s.strip
       return 'not_needed' if referral.blank? || card.source.to_s.strip.casecmp?(referral)
       return nil unless @fix_source || force
       # Re-stating anything but an active prospect could reopen a canceled card
       return 'skipped_status' unless card.status.to_s.strip.casecmp?('Prospect')
+      # An update could land on the other card that shares the ID
+      return 'skipped_shared_id' if db.prospect_id_shared?(card.prospect_id)
       return 'would_send' if @dry_run
 
       returned = api.sendSourceCorrection(
