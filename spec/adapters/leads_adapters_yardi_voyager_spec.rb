@@ -58,6 +58,117 @@ RSpec.describe Leads::Adapters::YardiVoyager do
     end
   end
 
+  describe "#createGuestCards" do
+    let(:agent) { create(:user) }
+    let(:guestcards_api) { double('Yardi::Voyager::Api::GuestCards', :debug= => nil) }
+    let(:backup) do
+      Class.new do
+        attr_accessor :residents, :failure
+
+        def initialize
+          @residents = {}
+        end
+
+        def configured? = true
+        def close; end
+
+        def connect_with_retries(**)
+          raise failure if failure
+
+          self
+        end
+
+        def residents_by_contact(_code, phones:, emails: [])
+          residents.slice(*(phones + emails))
+        end
+      end.new
+    end
+    let(:gate) { Leads::YardiResidentGate.new(database: backup) }
+    let(:zoe) do
+      Yardi::Backup::Database::Resident.new(tenant_code: 't0225446', prospect_code: 'p0518217', first_name: 'Zoe', last_name: 'Ellis',
+                                            unit: '0406', status: 'notice', relationship: 'Tenant', phones: ['2562636836'])
+    end
+
+    def new_lead(phone1:, state: 'prospect')
+      lead = create(:lead, property: property, state: 'open', user: nil, remoteid: nil, classification: nil, phone1: phone1,
+                           first_name: 'Pat', last_name: 'Caller')
+      lead.update_columns(state: state, user_id: agent.id)
+      lead
+    end
+
+    before do
+      manager
+      allow(Yardi::Voyager::Api::GuestCards).to receive(:new).and_return(guestcards_api)
+      allow(guestcards_api).to receive(:sendGuestCard) { |lead:, **| lead.remoteid = 'p0007777'; lead }
+      Rails.cache.clear
+    end
+
+    it 'closes out residents and sends only the other leads' do
+      resident_lead = new_lead(phone1: '2562636836')
+      other = new_lead(phone1: '6155550123')
+      backup.residents = { '2562636836' => [zoe] }
+
+      sent = adapter.createGuestCards(start_date: 1.hour.ago, gate: gate)
+
+      expect(sent).to eq([other])
+      expect(other.reload.remoteid).to eq('p0007777')
+      expect(resident_lead.reload).to have_attributes(state: 'invalidated', classification: 'resident', remoteid: nil)
+      expect(adapter.last_screen[:residents].map(&:first)).to eq([resident_lead])
+      expect(guestcards_api).to have_received(:sendGuestCard).once
+    end
+
+    it 'holds a matched lead the state machine cannot invalidate, with one note' do
+      showing = new_lead(phone1: '2562636836', state: 'showing')
+      backup.residents = { '2562636836' => [zoe] }
+
+      expect(adapter.createGuestCards(start_date: 1.hour.ago, gate: gate)).to eq([])
+      expect(showing.reload).to have_attributes(state: 'showing', remoteid: nil)
+      expect(Note.where(notable: showing).where('content LIKE ?', 'Yardi sync: not sent to Yardi%').count).to eq(1)
+      expect(guestcards_api).not_to have_received(:sendGuestCard)
+    end
+
+    it 'holds the creates while the backup is unavailable and widens the window until a run succeeds' do
+      lead = new_lead(phone1: '6155550123')
+      lead.update_columns(created_at: 2.hours.ago, updated_at: 2.hours.ago)
+      backup.failure = Yardi::Backup::Database::Unavailable.new('restoring')
+      allow(ErrorNotification).to receive(:send)
+
+      expect(adapter.createGuestCards(start_date: 3.hours.ago, gate: gate)).to eq([])
+      expect(adapter.last_screen).to include(held: 1)
+      expect(lead.reload.remoteid).to be_nil
+      expect(ErrorNotification).not_to have_received(:send)
+
+      # The next run's window would miss the lead, but the hold widens it
+      backup.failure = nil
+      next_run_gate = Leads::YardiResidentGate.new(database: backup)
+      expect(adapter.createGuestCards(start_date: 20.minutes.ago, gate: next_run_gate)).to eq([lead])
+      expect(lead.reload.remoteid).to eq('p0007777')
+      expect(Rails.cache.read(format(described_class::CREATE_HOLD_CACHE_KEY, property.id))).to be_nil
+    end
+
+    it 'screens but writes nothing when commit is off' do
+      resident_lead = new_lead(phone1: '2562636836')
+      backup.residents = { '2562636836' => [zoe] }
+      allow(Leads::YardiResidentGate).to receive(:new).and_wrap_original { |original, **options| original.call(**options.merge(database: backup)) }
+      adapter.commit = false
+
+      adapter.createGuestCards(start_date: 1.hour.ago)
+
+      expect(Leads::YardiResidentGate).to have_received(:new).with(dry_run: true)
+      expect(adapter.last_screen[:residents].map(&:first)).to eq([resident_lead])
+      expect(resident_lead.reload.state).to eq('prospect')
+      expect(guestcards_api).not_to have_received(:sendGuestCard)
+    end
+
+    it 'does not re-select a lead already classified as a resident' do
+      lead = new_lead(phone1: '6155550123')
+      lead.update_columns(classification: Lead.classifications[:resident])
+
+      expect(adapter.createGuestCards(start_date: 1.hour.ago, gate: gate)).to eq([])
+      expect(guestcards_api).not_to have_received(:sendGuestCard)
+    end
+  end
+
   describe "lead data import" do
     before do
       manager

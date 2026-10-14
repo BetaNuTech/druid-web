@@ -8,6 +8,10 @@ module Leads
   # This service runs on a schedule (see lib/tasks/leads.rake
   # leads:push_tour_guestcards) while self-booked tours continue to arrive.
   #
+  # Per property, the candidates are first screened against Yardi's residents
+  # (Leads::YardiResidentGate): residents are closed out, never pushed. If
+  # the Yardi backup cannot be read the property waits for the next run.
+  #
   # Per lead:
   # - Dedup against Yardi by email/phone; link remoteid if a guestcard exists
   # - Force referral/TransactionSource to 'Property Website'
@@ -30,8 +34,9 @@ module Leads
     COMMENT_LIMIT = 400
     ADVISORY_LOCK_KEY = 'leads_tour_guestcard_pusher'.freeze
 
-    def initialize(dry_run: false)
+    def initialize(dry_run: false, gate: nil)
       @dry_run = dry_run
+      @gate = gate
     end
 
     # Audit and push for all active properties with a Voyager code.
@@ -46,6 +51,8 @@ module Leads
         results = Property.active.order(:name).map { |property| push_property(property) }
       end
       results
+    ensure
+      gate.close
     end
 
     def push_property(property)
@@ -53,7 +60,23 @@ module Leads
       return { property: property.name, skipped: 'No Voyager property code' } if code.blank?
 
       leads = candidate_leads(property)
-      return { property: property.name, linked: 0, created: 0, skipped_leads: 0, errors: 0 } if leads.empty?
+      nothing = { property: property.name, linked: 0, created: 0, skipped_leads: 0, errors: 0, residents: 0, held: 0 }
+      return nothing if leads.empty?
+
+      begin
+        screened = gate.screen(property, leads)
+      rescue Yardi::Backup::Database::Error => e
+        msg = "Leads::TourGuestcardPusher: #{leads.size} tour lead(s) at #{property.name} wait, the Yardi backup " \
+              "could not be read: #{e.message}"
+        Rails.logger.warn(msg)
+        ErrorNotification.send(e, { property: property.name }) unless e.is_a?(Yardi::Backup::Database::Unavailable)
+        return { property: property.name, error: "Yardi backup unavailable: #{e.message}", pending: leads.size }
+      end
+      screened[:residents].each { |lead, resident| gate.close_out(lead, resident, note_prefix: 'Self-booked tour push') }
+      screened[:review].each { |lead, resident| gate.hold(lead, resident, note_prefix: 'Self-booked tour push') }
+      resident_counts = { residents: screened[:residents].size, held: screened[:review].size }
+      leads = screened[:clear]
+      return nothing.merge(resident_counts) if leads.empty?
 
       agent_names = fetch_active_agents(property, code)
       if agent_names.nil?
@@ -68,7 +91,7 @@ module Leads
       end
 
       adapter = Leads::Adapters::YardiVoyager.new(property)
-      counts = { linked: 0, created: 0, skipped_leads: 0, errors: 0 }
+      counts = { linked: 0, created: 0, skipped_leads: 0, errors: 0 }.merge(resident_counts)
       rr = rand(agent_names.size) # rotate starting agent across runs
 
       leads.each do |lead|
@@ -88,12 +111,17 @@ module Leads
 
     private
 
+    def gate
+      @gate ||= Leads::YardiResidentGate.new(dry_run: @dry_run)
+    end
+
     def candidate_leads(property)
       tour_lead_ids = Note.where(notable_type: 'Lead')
                           .where('content LIKE ?', "#{TOUR_NOTE_PREFIX}%")
                           .pluck(:notable_id)
       Lead.where(id: tour_lead_ids, property_id: property.id, state: 'open')
           .where(remoteid: [nil, ''])
+          .where('leads.classification IS NULL OR leads.classification <> ?', Lead.classifications[:resident])
           .order(:created_at)
           .to_a
     end

@@ -13,6 +13,10 @@ module Yardi
     class Database
       class Error < StandardError; end
       class ConfigurationError < Error; end
+      # The backup is briefly unreadable while a log backup is restored (every
+      # 30 minutes, at about :29 and :59 UTC) or when the connection drops.
+      # Callers wait for the next run rather than treating this as a failure.
+      class Unavailable < Error; end
 
       REQUIRED_ENV = %w[YARDI_BACKUP_DB_HOST YARDI_BACKUP_DB_NAME YARDI_BACKUP_DB_USER YARDI_BACKUP_DB_PASS].freeze
       DEFAULT_PORT = 1433
@@ -20,16 +24,59 @@ module Yardi
       SOURCE_TIME_ZONE_ENV = 'YARDI_BACKUP_SOURCE_TIME_ZONE'.freeze
       DEFAULT_SOURCE_TIME_ZONE = 'America/New_York'.freeze
       CLOCK_SKEW = 2.minutes
+      # How long .open keeps trying while a restore is in progress
+      RESTORE_RETRIES = 3
+      RESTORE_WAIT = 20 # seconds
+      RESTORING_ERROR = Regexp.union(
+        ['middle of a restore', 'in transition', 'not accessible', 'DBPROCESS is dead', 'Read from the server failed',
+         'connection is closed', 'Adaptive Server connection', 'Unable to connect', 'timed out']
+          .map { |text| /#{Regexp.escape(text)}/i }
+      )
       PROSPECT_PHONE_COLUMNS = %w[sTelCell sTelHome sTelOffice sTelAlt].freeze
       TENANT_PHONE_COLUMNS = (0..9).map { |i| "SPHONENUM#{i}" }.freeze
       # TENANT.ISTATUS: current, future, eviction, notice. Past tenants calling
       # again are treated as prospects.
       RESIDENT_STATUSES = [0, 2, 3, 4].freeze
+      ISTATUS_WORDS = { 0 => 'current', 1 => 'past', 2 => 'future', 3 => 'eviction', 4 => 'notice' }.freeze
+      # Everyone the residents import keeps: resident statuses plus past tenants
+      IMPORT_STATUSES = ISTATUS_WORDS.keys.freeze
+      # A household's people: the primary tenant (TENANT, plus its own PROSPECT
+      # row at TENANT.hProspect) and the members (PROSPECT rows whose hParent is
+      # that PROSPECT): roommates, spouses, guarantors, occupants, children.
+      # Phones in the order they are trusted: the person's own card first.
+      HOUSEHOLD_PHONE_COLUMNS = (%w[tel_cell tel_home tel_alt tel_office] + (0..9).map { |i| "tel_#{i}" }).freeze
+      HOUSEHOLD_EMAIL_COLUMNS = %w[email_1 email_2].freeze
+      PRIMARY_RELATIONSHIP = 'Tenant'.freeze
+      MEMBER_DEFAULT_RELATIONSHIP = 'Occupant'.freeze
 
       Prospect = Struct.new(:prospect_id, :created_at, :source, :agent, :created_by, :status,
                             :first_name, :last_name, :relationship, keyword_init: true) do
         def primary?
           relationship.blank?
+        end
+      end
+
+      # A resident household person: a primary tenant or one of its members.
+      # status is an ISTATUS_WORDS value; phones are 10-digit, own card first.
+      Resident = Struct.new(:tenant_code, :prospect_code, :prospect_hmy, :first_name, :last_name, :unit,
+                            :status, :relationship, :phones, :email, :move_in, :move_out, keyword_init: true) do
+        def primary?
+          relationship == PRIMARY_RELATIONSHIP
+        end
+
+        def guarantor?
+          relationship.to_s.casecmp?('Guarantor')
+        end
+
+        def name
+          [first_name, last_name].map(&:presence).compact.join(' ')
+        end
+
+        # e.g. "Zoe Ellis, unit 0406, notice (Tenant t0225446)" or
+        # "Hunter Brown, unit 0406, current (Roommate of t0225272, p0523236)"
+        def description
+          who = primary? ? "#{relationship} #{tenant_code}" : "#{relationship} of #{tenant_code}, #{prospect_code}"
+          "#{name.presence || 'unnamed'}, unit #{unit.presence || '?'}, #{status} (#{who})"
         end
       end
 
@@ -47,13 +94,35 @@ module Yardi
         REQUIRED_ENV.all? { |name| env[name].present? }
       end
 
-      # Yields a connected Database and always closes it (and its tunnel).
-      def self.open(env: ENV)
-        database = new(env: env)
-        database.connect
+      # Yields a connected, readable Database and always closes it (and its
+      # tunnel). Connecting and the readiness probe (#data_as_of) are retried
+      # across a log restore; after that the last error is raised, so a
+      # restore that takes longer surfaces as Unavailable.
+      def self.open(env: ENV, retries: RESTORE_RETRIES, wait: RESTORE_WAIT)
+        database = connect_with_retries(env: env, retries: retries, wait: wait)
         yield database
       ensure
         database&.close
+      end
+
+      # A connected Database the caller closes itself (Leads::YardiResidentGate
+      # keeps one open across several properties).
+      def self.connect_with_retries(env: ENV, retries: RESTORE_RETRIES, wait: RESTORE_WAIT)
+        attempts = 0
+        begin
+          attempts += 1
+          database = new(env: env).connect
+          database.data_as_of
+          database
+        rescue Error => e
+          database&.close
+          raise if e.is_a?(ConfigurationError) || attempts > retries
+
+          Rails.logger.info("Yardi::Backup::Database: #{e.message}; retrying in #{wait}s " \
+                            "(attempt #{attempts} of #{retries + 1})")
+          sleep(wait)
+          retry
+        end
       end
 
       def initialize(env: ENV)
@@ -96,15 +165,23 @@ module Yardi
       # The point in time (UTC) the restored data reflects. Uses the latest
       # restored log backup; falls back to the newest guest card activity
       # (always a safe lower bound) when backup history is unreadable or
-      # inconsistent.
+      # inconsistent. Raises Unavailable when the data cannot be read at all
+      # (no row or NULL: seen while a log restore is in progress).
       def data_as_of
-        newest_activity = select_rows('SELECT MAX(dtCreatedUTC) AS newest FROM PROSPECT_HISTORY').first&.fetch('newest')
-        restore = latest_restore
-        backup_time = restore && source_time(restore['backup_finish_date'])
-        consistent = backup_time && newest_activity &&
-                     backup_time >= newest_activity - CLOCK_SKEW &&
-                     backup_time <= restore['restore_date'] + CLOCK_SKEW
-        consistent ? backup_time : newest_activity
+        @data_as_of ||= begin
+          newest_activity = select_rows('SELECT MAX(dtCreatedUTC) AS newest FROM PROSPECT_HISTORY').first
+                            &.fetch('newest', nil)
+          if newest_activity.nil?
+            raise Unavailable, 'Yardi backup database reported no data time (a log restore may be in progress)'
+          end
+
+          restore = latest_restore
+          backup_time = restore && source_time(restore['backup_finish_date'])
+          consistent = backup_time &&
+                       backup_time >= newest_activity - CLOCK_SKEW &&
+                       backup_time <= restore['restore_date'] + CLOCK_SKEW
+          consistent ? backup_time : newest_activity
+        end
       end
 
       # Guest cards at the property with a phone matching one of `phones`
@@ -169,24 +246,97 @@ module Yardi
         SQL
       end
 
-      # The subset of `phones` belonging to current (or future/notice)
-      # residents of the property.
-      def resident_phones(property_code, phones)
+      # The current (or future/notice/eviction) residents of the property
+      # reachable at one of `phones` or `emails`: primary tenants and their
+      # household members alike. Returns { phone_or_email => [Resident] },
+      # keyed by the 10-digit phone or lower-cased email that matched.
+      def residents_by_contact(property_code, phones:, emails: [])
         phones = normalize_phones(phones)
-        return Set.new if phones.empty?
+        emails = normalize_emails(emails)
+        return {} if phones.empty? && emails.empty?
 
+        filters = []
+        filters << suffix_filter('h', HOUSEHOLD_PHONE_COLUMNS, phones) if phones.any?
+        if emails.any?
+          email_list = emails.map { |email| "'#{escape(email)}'" }.join(', ')
+          filters << HOUSEHOLD_EMAIL_COLUMNS.map { |column| "LOWER(RTRIM(h.#{column})) IN (#{email_list})" }
+                                            .join(' OR ')
+        end
         rows = select_rows(<<~SQL)
-          SELECT #{TENANT_PHONE_COLUMNS.map { |column| "t.#{column}" }.join(', ')}
-          FROM TENANT t
-          JOIN PROPERTY p ON p.HMY = t.HPROPERTY
-          WHERE RTRIM(p.SCODE) = '#{escape(property_code)}'
-            AND t.ISTATUS IN (#{RESIDENT_STATUSES.join(', ')})
-            AND (#{suffix_filter('t', TENANT_PHONE_COLUMNS, phones)})
+          SELECT h.* FROM (#{household_sql(property_code, RESIDENT_STATUSES)}) h
+          WHERE #{filters.join(' OR ')}
+          ORDER BY h.tenant_code, h.kind DESC, h.prospect_hmy
         SQL
-        rows.flat_map { |row| row_phones(row, TENANT_PHONE_COLUMNS) }.to_set & phones
+
+        rows.each_with_object(Hash.new { |hash, key| hash[key] = [] }) do |row, index|
+          resident = resident_from_row(row)
+          (resident.phones & phones).each { |phone| index[phone] << resident }
+          index[resident.email] << resident if resident.email && emails.include?(resident.email)
+        end
+      end
+
+      # Everyone the residents import keeps for the property: current, future,
+      # notice, eviction and past tenants with their household members.
+      def residents(property_code)
+        select_rows(<<~SQL).map { |row| resident_from_row(row) }
+          SELECT h.* FROM (#{household_sql(property_code, IMPORT_STATUSES)}) h
+          ORDER BY h.tenant_code, h.kind DESC, h.prospect_hmy
+        SQL
       end
 
       private
+
+      # Primary tenants and household members at the property as one row
+      # shape: kind ('tenant' or 'member'), identity, unit, ISTATUS, the
+      # relationship, every phone column and two email columns. Joins on
+      # hProspect/hParent carry > 0 on both sides: those columns are 0 when
+      # unset, and an unguarded join multiplies every past tenant by every
+      # unparented prospect.
+      def household_sql(property_code, statuses)
+        code = escape(property_code)
+        status_list = statuses.join(', ')
+        tenant_phones = TENANT_PHONE_COLUMNS.each_with_index.map { |column, i| "t.#{column} AS tel_#{i}" }.join(', ')
+        no_tenant_phones = (0..9).map { |i| "NULL AS tel_#{i}" }.join(', ')
+        <<~SQL
+          SELECT 'tenant' AS kind, RTRIM(t.SCODE) AS tenant_code, RTRIM(pr.sCode) AS prospect_code, pr.hMy AS prospect_hmy,
+                 RTRIM(t.SFIRSTNAME) AS first_name, RTRIM(t.SLASTNAME) AS last_name,
+                 RTRIM(ISNULL(u.SCODE, t.SUNITCODE)) AS unit, t.ISTATUS AS istatus, '#{PRIMARY_RELATIONSHIP}' AS relationship,
+                 pr.sTelCell AS tel_cell, pr.sTelHome AS tel_home, pr.sTelAlt AS tel_alt, pr.sTelOffice AS tel_office,
+                 #{tenant_phones}, t.SEMAIL AS email_1, pr.sEmail AS email_2,
+                 t.DTMOVEIN AS move_in, t.DTMOVEOUT AS move_out
+          FROM TENANT t
+          JOIN PROPERTY p ON p.HMY = t.HPROPERTY
+          LEFT JOIN UNIT u ON u.HMY = t.HUNIT
+          LEFT JOIN PROSPECT pr ON pr.hMy = t.hProspect AND t.hProspect > 0
+          WHERE RTRIM(p.SCODE) = '#{code}' AND t.ISTATUS IN (#{status_list})
+          UNION ALL
+          SELECT 'member' AS kind, RTRIM(t.SCODE) AS tenant_code, RTRIM(c.sCode) AS prospect_code, c.hMy AS prospect_hmy,
+                 RTRIM(c.sFirstName) AS first_name, RTRIM(c.sLastName) AS last_name,
+                 RTRIM(ISNULL(u.SCODE, t.SUNITCODE)) AS unit, t.ISTATUS AS istatus,
+                 CASE WHEN RTRIM(ISNULL(c.sRelationship, '')) = '' THEN '#{MEMBER_DEFAULT_RELATIONSHIP}' ELSE RTRIM(c.sRelationship) END AS relationship,
+                 c.sTelCell AS tel_cell, c.sTelHome AS tel_home, c.sTelAlt AS tel_alt, c.sTelOffice AS tel_office,
+                 #{no_tenant_phones}, c.sEmail AS email_1, NULL AS email_2,
+                 t.DTMOVEIN AS move_in, t.DTMOVEOUT AS move_out
+          FROM TENANT t
+          JOIN PROPERTY p ON p.HMY = t.HPROPERTY
+          LEFT JOIN UNIT u ON u.HMY = t.HUNIT
+          JOIN PROSPECT c ON c.hParent = t.hProspect AND t.hProspect > 0 AND c.hParent > 0
+          WHERE RTRIM(p.SCODE) = '#{code}' AND t.ISTATUS IN (#{status_list})
+            AND (c.sStatus IS NULL OR RTRIM(c.sStatus) NOT LIKE 'Cancel%')
+        SQL
+      end
+
+      def resident_from_row(row)
+        Resident.new(
+          tenant_code: row['tenant_code'], prospect_code: row['prospect_code'].presence,
+          prospect_hmy: row['prospect_hmy']&.to_i,
+          first_name: row['first_name'].presence, last_name: row['last_name'].presence, unit: row['unit'].presence,
+          status: ISTATUS_WORDS.fetch(row['istatus'].to_i, 'unknown'), relationship: row['relationship'].presence,
+          phones: row_phones(row, HOUSEHOLD_PHONE_COLUMNS),
+          email: HOUSEHOLD_EMAIL_COLUMNS.filter_map { |column| normalize_emails([row[column]]).first }.first,
+          move_in: row['move_in'], move_out: row['move_out']
+        )
+      end
 
       def latest_restore
         select_rows(<<~SQL).first
@@ -214,6 +364,10 @@ module Yardi
         raise Error, 'Yardi backup database is not connected' unless @client
 
         @client.execute(sql).each(as: :hash, timezone: :utc)
+      rescue TinyTds::Error => e
+        raise Unavailable, "Yardi backup database is unavailable: #{e.message}" if e.message.match?(RESTORING_ERROR)
+
+        raise
       end
 
       def escape(value)
@@ -228,11 +382,22 @@ module Yardi
       end
 
       def row_phones(row, columns)
-        columns.map { |column| PhoneNumber.format_phone(row[column]) }.select { |phone| phone.length == 10 }.uniq
+        normalize_phones(columns.map { |column| row[column] })
       end
 
+      # 10-digit numbers only, minus placeholders such as 0000000000
       def normalize_phones(phones)
-        Array(phones).map { |phone| PhoneNumber.format_phone(phone) }.grep(/\A\d{10}\z/).uniq
+        Array(phones).map { |phone| PhoneNumber.format_phone(phone) }.grep(/\A\d{10}\z/)
+                     .reject { |phone| ignored_value?(phone) }.uniq
+      end
+
+      def normalize_emails(emails)
+        Array(emails).map { |email| email.to_s.strip.downcase }.select { |email| email.include?('@') }
+                     .reject { |email| ignored_value?(email) }.uniq
+      end
+
+      def ignored_value?(value)
+        Lead::DUPLICATE_IGNORED_VALUES.any? { |ignored| ignored.to_s.casecmp?(value) }
       end
     end
   end

@@ -195,6 +195,22 @@ RSpec.describe DuplicateLead do
       expect(matching_lead.classification).to eq('resident')
     end
 
+    it 'matches a lead phone against either resident phone column' do
+      create(:resident, property: property, detail: build(:resident_detail, phone1: '5550000000', phone2: '6155550777'))
+      lead = create(:lead, property: property, phone1: '6155550777', state: 'open')
+      lead.reload
+      expect(lead.state).to eq('invalidated')
+      expect(lead.classification).to eq('resident')
+    end
+
+    it 'does not invalidate a lead that only shares contact details with a guarantor' do
+      create(:resident, property: property, relationship: 'Guarantor', last_name: 'Parent',
+                        detail: build(:resident_detail, phone1: '6155550778'))
+      lead = create(:lead, property: property, phone1: '6155550778', last_name: 'Student', state: 'open')
+      lead.reload
+      expect(lead.state).to eq('open')
+    end
+
   end
 
   describe "automatic duplicate invalidation" do

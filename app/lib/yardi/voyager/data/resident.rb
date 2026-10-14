@@ -64,7 +64,7 @@ module Yardi
           unit_name = record.dig('Lease','Identification','IDValue')
 
           mobile_number = record.dig('Phone','MobileNumber')
-          home_number = record.dig('Phone','HomeNumber'),
+          home_number = record.dig('Phone','HomeNumber')
           office_number = record.dig('Phone','OfficeNumber')
           phones = [mobile_number, home_number, office_number].flatten.compact.uniq
           phone1 = nil

@@ -9,7 +9,7 @@
       <% @property.residents.includes(:unit).order("units.unit ASC, residents.last_name ASC, residents.first_name ASC").limit(10).each do |resident| %>
         <li>
           <%= link_to(resident.name, property_resident_path(@property, resident)) %>
-          (<%= link_to(resident.unit.unit, property_unit_path(@property, resident.unit)) %>)
+          (<%= resident.unit ? link_to(resident.unit.unit, property_unit_path(@property, resident.unit)) : '-' %>)
         </li>
       <% end %>
     </ul>

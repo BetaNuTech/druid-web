@@ -1,3 +1,15 @@
+# Prints a Leads::CallGuestcardPusher summary
+def report_call_guestcard_push(summary)
+  if summary[:skipped]
+    puts "- Skipped: #{summary[:skipped]}"
+  else
+    as_of = summary[:backup_as_of] ? summary[:backup_as_of].utc.iso8601 : 'n/a'
+    puts "* queued=#{summary[:queued]} waiting_for_backup=#{summary[:waiting]} backup_as_of=#{as_of}"
+    summary[:outcomes].each { |outcome, count| puts "  - #{outcome}: #{count}" }
+    puts "! ERROR: #{summary[:error]}" if summary[:error]
+  end
+end
+
 namespace :leads do
 
   desc 'Push self-booked tour leads to Yardi as guestcards (temporary; every 10m via Heroku Scheduler; requires TOUR_GUESTCARD_PUSH_ENABLED=true; supports DRY_RUN=true)'
@@ -16,7 +28,8 @@ namespace :leads do
       elsif result[:skipped]
         puts "- #{result[:property]}: skipped (#{result[:skipped]})"
       else
-        puts "* #{result[:property]}: linked=#{result[:linked]} created=#{result[:created]} skipped=#{result[:skipped_leads]} errors=#{result[:errors]}"
+        puts "* #{result[:property]}: linked=#{result[:linked]} created=#{result[:created]} skipped=#{result[:skipped_leads]} " \
+             "errors=#{result[:errors]} residents=#{result[:residents]} held=#{result[:held]}"
       end
     end
     puts 'DONE.'
@@ -31,15 +44,7 @@ namespace :leads do
 
     dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
     puts "== Call Lead Guest Card Push #{'(DRY RUN)' if dry_run} =="
-    summary = Leads::CallGuestcardPusher.new(dry_run: dry_run).call
-    if summary[:skipped]
-      puts "- Skipped: #{summary[:skipped]}"
-    else
-      as_of = summary[:backup_as_of] ? summary[:backup_as_of].utc.iso8601 : 'n/a'
-      puts "* queued=#{summary[:queued]} waiting_for_backup=#{summary[:waiting]} backup_as_of=#{as_of}"
-      summary[:outcomes].each { |outcome, count| puts "  - #{outcome}: #{count}" }
-      puts "! ERROR: #{summary[:error]}" if summary[:error]
-    end
+    report_call_guestcard_push(Leads::CallGuestcardPusher.new(dry_run: dry_run).call)
     puts 'DONE.'
   end
 
@@ -53,7 +58,11 @@ namespace :leads do
       end
 
       puts "== Call Lead Guest Card Backfill, last #{days} days #{'(DRY RUN)' if dry_run} =="
-      report = Leads::CallGuestcardBackfill.new(days: days, dry_run: dry_run).call
+      begin
+        report = Leads::CallGuestcardBackfill.new(days: days, dry_run: dry_run).call
+      rescue Yardi::Backup::Database::Unavailable => e
+        abort "! Yardi backup is restoring (#{e.message}); try again in a few minutes"
+      end
       if dry_run
         as_of = report[:backup_as_of] ? report[:backup_as_of].utc.iso8601 : 'n/a'
         puts "* open call leads to queue: #{report[:candidates]} (Yardi backup as of #{as_of})"
@@ -73,7 +82,11 @@ namespace :leads do
     task :fix_source, [:lead_id] => :environment do |_t, args|
       push = CallGuestcardPush.find_by!(lead_id: args[:lead_id])
       dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
-      status = Leads::CallGuestcardPusher.new(dry_run: dry_run).fix_source_for(push)
+      begin
+        status = Leads::CallGuestcardPusher.new(dry_run: dry_run).fix_source_for(push)
+      rescue Yardi::Backup::Database::Unavailable => e
+        abort "! Yardi backup is restoring (#{e.message}); try again in a few minutes"
+      end
       puts "#{push.yardi_prospect_id}: source #{push.yardi_source.inspect} -> #{push.referral.inspect}: #{status.inspect}#{' (DRY RUN)' if dry_run}"
       puts 'Verify after the next Yardi backup restore (every 30 minutes) that PROSPECT.sSource changed.'
     end
@@ -307,7 +320,7 @@ namespace :leads do
       end
     end
 
-    desc "Send GuestCards"
+    desc "Send GuestCards (supports DRY_RUN=true: screens and reports, sends and saves nothing)"
     task :send_guestcards, [:minutes_ago] => :environment do |t, args|
 
       if (minutes_ago = args[:minutes_ago]).present?
@@ -315,6 +328,11 @@ namespace :leads do
       else
         start_date = 1.day.ago
       end
+      dry_run = ENV.fetch('DRY_RUN', 'false') == 'true'
+      puts '== DRY RUN: nothing is sent or saved ==' if dry_run
+      # One Yardi backup connection for the whole run (resident screening and
+      # the call lead push), opened only when there is something to check
+      gate = Leads::YardiResidentGate.new(dry_run: dry_run)
 
       properties = property_codes = Leads::Adapters::YardiVoyager.property_codes
 
@@ -332,6 +350,7 @@ namespace :leads do
         puts msg
         Rails.logger.warn msg
         adapter = Leads::Adapters::YardiVoyager.new(property[:property])
+        adapter.commit = !dry_run
 
         reporter = -> (leads, desc) {
           leads_count = leads.size
@@ -349,9 +368,27 @@ namespace :leads do
           Rails.logger.warn leads_msg
         }
 
-        # Send only assigned leads without a remoteid (new to Yardi Voyager) added recently
-        leads = adapter.createGuestCards(start_date: start_date)
-        reporter.call(leads, 'for creation')
+        # Send only assigned leads without a remoteid (new to Yardi Voyager) added recently,
+        # minus Yardi residents (Leads::YardiResidentGate)
+        leads = adapter.createGuestCards(start_date: start_date, gate: gate)
+        if dry_run
+          puts "  - would create #{leads.size} guest card(s)"
+        else
+          reporter.call(leads, 'for creation')
+        end
+        if (screen = adapter.last_screen)
+          if screen[:error]
+            puts "  ! #{screen[:held]} lead(s) held for creation: #{screen[:error]}"
+          elsif screen[:residents].any? || screen[:review].any?
+            puts "  - #{screen[:residents].size} resident lead(s) closed, #{screen[:review].size} held for review (not sent)"
+            (screen[:residents] + screen[:review]).each do |lead, resident|
+              puts "    #{lead.name} [Lead ID: #{lead.id}] #{Leads::YardiResidentGate.describe(resident)}"
+            end
+          end
+        end
+
+        # Updates and cancels talk to Yardi even without commit: skipped in a dry run
+        next if dry_run
 
         # Update Guestcards for active leads modified recently
         leads = adapter.updateGuestCards(start_date: start_date)
@@ -366,12 +403,15 @@ namespace :leads do
       # running it here keeps it on this task's 10-minute Heroku schedule.
       if Leads::CallGuestcardPusher.enabled?
         begin
-          Rake::Task['leads:push_call_guestcards'].invoke
+          puts "== Call Lead Guest Card Push #{'(DRY RUN)' if dry_run} =="
+          report_call_guestcard_push(Leads::CallGuestcardPusher.new(dry_run: dry_run, database: gate.shared_database).call)
         rescue StandardError => e
           Rails.logger.error("leads:push_call_guestcards failed: #{e.message}")
           ErrorNotification.send(e)
         end
       end
+    ensure
+      gate&.close
     end
 
     desc "Fix guest card types for future and invalidated leads"

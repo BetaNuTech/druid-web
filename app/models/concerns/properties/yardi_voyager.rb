@@ -14,8 +14,11 @@ module Properties
         # Include leads in early pipeline with assigned user
         # AND leads in 'future' state without remoteid (even if user_id is nil,
         # since nurture event clears user_id but we can find last assigned user from transitions)
+        # Leads classified as residents never get a guest card (Leads::YardiResidentGate).
+        # Most leads have a NULL classification, so the exclusion must keep NULLs.
         return leads_not_owned_by_call_push.
           where(remoteid: [ nil, '' ]).
+          where('leads.classification IS NULL OR leads.classification <> ?', Lead.classifications[:resident]).
           where(
             "(state IN (?) AND user_id IS NOT NULL) OR state = ?",
             Lead::EARLY_PIPELINE_STATES,

@@ -130,14 +130,16 @@ module Leads
           error_message = 'This lead matches an existing resident'
           error_details = []
 
-          # Build specific error details based on what matched
-          if matching_resident['phone1'] == @lead.phone1 && @lead.phone1.present?
-            error_details << "phone: #{@lead.phone1}"
-          elsif matching_resident['phone2'] == @lead.phone2 && @lead.phone2.present?
-            error_details << "phone: #{@lead.phone2}"
-          elsif matching_resident['email'] == @lead.email && @lead.email.present?
+          # Build specific error details based on what matched (either lead
+          # phone may have matched either resident phone)
+          resident_phones = [matching_resident['phone1'], matching_resident['phone2']].compact
+          [@lead.phone1, @lead.phone2].each do |phone|
+            error_details << "phone: #{phone}" if phone.present? && resident_phones.include?(phone)
+          end
+          if @lead.email.present? && matching_resident['email'].to_s.strip.casecmp?(@lead.email.strip)
             error_details << "email: #{@lead.email}"
           end
+          error_details.uniq!
 
           full_error = "#{error_message} [#{error_details.join(', ')}]"
           @lead.errors.add(:base, full_error)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_10_01_200000) do
+ActiveRecord::Schema.define(version: 2026_10_14_170000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -626,6 +626,8 @@ ActiveRecord::Schema.define(version: 2026_10_01_200000) do
     t.string "country"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "relationship"
+    t.string "yardi_status"
     t.index ["first_name", "last_name"], name: "residents_name"
     t.index ["property_id", "status", "unit_id"], name: "index_residents_on_property_id_and_status_and_unit_id"
     t.index ["property_id", "status"], name: "index_residents_on_property_id_and_status"

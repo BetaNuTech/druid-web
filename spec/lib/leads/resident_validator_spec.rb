@@ -56,6 +56,37 @@ RSpec.describe Leads::ResidentValidator do
       it 'returns true' do
         expect(subject.resident_match?).to be true
       end
+
+      it 'ignores case' do
+        resident_detail.update!(email: 'John.Doe@Example.com')
+        expect(subject.resident_match?).to be true
+      end
+    end
+
+    context 'when the lead phone is on the other resident phone column' do
+      before do
+        resident_detail.update!(phone1: '5550000000', phone2: '5551234567')
+      end
+
+      it 'still matches' do
+        expect(subject.resident_match?).to be true
+      end
+    end
+
+    context 'when the matching resident is a guarantor' do
+      before do
+        resident.update!(relationship: 'Guarantor', last_name: 'Guarantor')
+        resident_detail.update!(phone1: '5551234567')
+      end
+
+      it 'does not match on contact details alone' do
+        expect(subject.resident_match?).to be false
+      end
+
+      it 'matches when the last name matches too' do
+        resident.update!(last_name: 'doe')
+        expect(subject.resident_match?).to be true
+      end
     end
 
     context 'when matching by first and last name only' do

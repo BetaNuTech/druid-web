@@ -17,8 +17,14 @@ tours will continue to arrive this way for roughly 30 more days, so
 
 ## What it does
 
-For every active property with a Voyager code, for each open lead with a
-blank `remoteid` and a "Tour Booking detected" system note:
+For every active property with a Voyager code, the open leads with a blank
+`remoteid` and a "Tour Booking detected" system note are first screened
+against Yardi's residents (`Leads::YardiResidentGate`, see
+[yardi_resident_check.md](yardi_resident_check.md)): a lead from a current
+tenant or household member is invalidated as a resident and never pushed
+(`residents` in the run output). If the Yardi backup cannot be read the
+property reports an error and its leads wait for the next run. Then, for each
+remaining lead:
 
 1. **Dedup:** searches Yardi by email/phone (`findLeadGuestCard`). If a
    guestcard exists, links its prospect ID to `lead.remoteid` (no create).

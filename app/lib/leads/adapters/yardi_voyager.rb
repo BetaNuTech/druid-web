@@ -5,7 +5,16 @@ module Leads
       DEFAULT_RENTAL_TYPE = 'Residential'
 
       attr_reader :property, :property_code, :lead_source, :data, :params
+      # What the last createGuestCards decided (Leads::YardiResidentGate#screen
+      # plus :held/:error when the backup could not be read)
+      attr_reader :last_screen
       attr_accessor :commit
+
+      # Leads whose guest card creation was held because the Yardi backup was
+      # unreadable are re-selected from this time on the next runs, however
+      # narrow the scheduler's window is
+      CREATE_HOLD_CACHE_KEY = 'leads:yardi:create_hold_since:%s'.freeze
+      CREATE_HOLD_TTL = 7.days
 
       # Returns all active Property ID's defined as PropertyListings in the database
       #
@@ -139,9 +148,50 @@ module Leads
         return adapter.getGuestCard(@property_code, params: params)&.first
       end
 
-      def createGuestCards(start_date: 1.day.ago)
+      # Create guest cards for new leads, after screening them against Yardi's
+      # residents (Leads::YardiResidentGate). Residents never get a card:
+      # open/prospect ones are invalidated, others are held with a note. If
+      # the backup cannot be read the creates are held for the next run and
+      # the window is widened back to this run's start until a run succeeds.
+      # Pass `gate:` to share one backup connection across properties.
+      def createGuestCards(start_date: 1.day.ago, gate: nil)
+        own_gate = gate.nil?
+        gate ||= Leads::YardiResidentGate.new(dry_run: !commit)
+        hold_key = format(CREATE_HOLD_CACHE_KEY, @property.id)
+        held_since = Rails.cache.read(hold_key)
+        start_date = [start_date, held_since].compact.min
         time_range = start_date..DateTime.current
-        return sendLeads(@property.new_leads_for_sync.where("leads.created_at BETWEEN ? AND ? OR leads.updated_at BETWEEN ? AND ?", time_range.first, time_range.last, time_range.first, time_range.last))
+        leads = @property.new_leads_for_sync.where("leads.created_at BETWEEN ? AND ? OR leads.updated_at BETWEEN ? AND ?", time_range.first, time_range.last, time_range.first, time_range.last).to_a
+        @last_screen = { clear: [], residents: [], review: [] }
+        if leads.empty?
+          Rails.cache.delete(hold_key)
+          return []
+        end
+
+        begin
+          screened = gate.screen(@property, leads)
+        rescue Yardi::Backup::Database::Error => e
+          Rails.cache.write(hold_key, start_date, expires_in: CREATE_HOLD_TTL) if held_since.nil?
+          msg = "Leads::Adapters::YardiVoyager: guest card creation for #{leads.size} lead(s) at #{@property.name} held, " \
+                "the Yardi backup could not be read: #{e.message}"
+          Rails.logger.warn(msg)
+          ErrorNotification.send(e, { property: @property.name }) unless e.is_a?(Yardi::Backup::Database::Unavailable)
+          @last_screen = @last_screen.merge(held: leads.size, error: e.message)
+          return []
+        end
+
+        screened[:residents].each { |lead, resident| gate.close_out(lead, resident, note_prefix: 'Yardi sync') }
+        screened[:review].each { |lead, resident| gate.hold(lead, resident, note_prefix: 'Yardi sync') }
+        @last_screen = screened
+        # With commit off nothing is sent either: a card whose id is not saved
+        # would be created again on the next run
+        return screened[:clear] unless commit
+
+        sent = sendLeads(screened[:clear])
+        Rails.cache.delete(hold_key)
+        sent
+      ensure
+        gate.close if own_gate && gate
       end
 
       def updateGuestCards(start_date: 1.day.ago)

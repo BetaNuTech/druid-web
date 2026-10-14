@@ -12,7 +12,7 @@ RSpec.describe Leads::CallGuestcardBackfill do
 
       def initialize
         @cards = {}
-        @residents = Set.new
+        @residents = {} # phone => [Yardi::Backup::Database::Resident]
       end
 
       def open
@@ -21,7 +21,7 @@ RSpec.describe Leads::CallGuestcardBackfill do
 
       def data_as_of = 30.minutes.ago
       def prospects_by_phone(_code, phones) = cards.slice(*phones)
-      def resident_phones(_code, phones) = residents & phones
+      def residents_by_contact(_code, phones:, emails: []) = residents.slice(*phones)
     end.new
   end
 
@@ -59,7 +59,9 @@ RSpec.describe Leads::CallGuestcardBackfill do
       linked = old_call(phone: '6155550202', called: 10.days.ago)
       resident = old_call(phone: '6155550203', called: 20.days.ago)
       backup.cards['6155550202'] = [card('p0523371', created_at: linked.created_at + 2.minutes)]
-      backup.residents << '6155550203'
+      backup.residents['6155550203'] = [Yardi::Backup::Database::Resident.new(tenant_code: 't0000001', first_name: 'Res', last_name: 'Ident',
+                                                                                unit: '0101', status: 'current', relationship: 'Tenant',
+                                                                                phones: ['6155550203'])]
 
       report = described_class.new(days: 30, dry_run: true, database: backup).call
 

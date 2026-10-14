@@ -30,7 +30,7 @@
             <td><%= resident.status.try(:capitalize) %></td>
             <td><%= link_to(resident.name, property_resident_path(resident.property, resident)) %></td>
             <td><%= link_to(resident.property.name, property_path(resident.property)) %></td>
-            <td><%= link_to(resident.unit.unit, property_unit_path(resident.property, resident.unit)) %></td>
+            <td><%= resident.unit ? link_to(resident.unit.unit, property_unit_path(resident.property, resident.unit)) : '-' %></td>
             <td>
               <p>
                 <% if resident.detail.phone1.present? %>

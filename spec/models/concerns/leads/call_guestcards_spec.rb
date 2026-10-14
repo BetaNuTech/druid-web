@@ -86,5 +86,15 @@ RSpec.describe Leads::CallGuestcards do
 
       expect(property.new_leads_for_sync).to include(pending_lead)
     end
+
+    it 'never creates a card for a lead classified as a resident, but keeps unclassified leads' do
+      unclassified = create(:lead, property: property, source: create(:lead_source, slug: 'Zillow'), state: 'open', classification: nil)
+      unclassified.update_columns(state: 'prospect', user_id: agent.id)
+      resident = create(:lead, property: property, source: unclassified.source, state: 'open', phone1: '6155550199')
+      resident.update_columns(state: 'showing', user_id: agent.id, classification: Lead.classifications[:resident])
+
+      expect(property.new_leads_for_sync).to include(unclassified)
+      expect(property.new_leads_for_sync).not_to include(resident)
+    end
   end
 end

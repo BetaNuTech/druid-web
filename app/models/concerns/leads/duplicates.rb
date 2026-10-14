@@ -457,7 +457,8 @@ module Leads
               residents.last_name as resident_last_name,
               resident_details.phone1 AS resident_phone1,
               resident_details.phone2 AS resident_phone2,
-              resident_details.email AS resident_email
+              resident_details.email AS resident_email,
+              residents.relationship AS resident_relationship
             FROM residents
             INNER JOIN resident_details
               ON resident_details.resident_id = residents.id
@@ -468,17 +469,17 @@ module Leads
             ON (
               (
                 leads.phone1 != '' AND
-                leads.phone1 = resident_info.resident_phone1 AND
+                leads.phone1 IN (resident_info.resident_phone1, resident_info.resident_phone2) AND
                 leads.phone1 NOT IN (#{invalid_values_sql})
               ) OR
               (
                 leads.phone2 != '' AND
-                leads.phone2 = resident_info.resident_phone2 AND
+                leads.phone2 IN (resident_info.resident_phone1, resident_info.resident_phone2) AND
                 leads.phone2 NOT IN (#{invalid_values_sql})
               ) OR
               (
                 leads.email != '' AND
-                leads.email = resident_info.resident_email AND
+                LOWER(leads.email) = LOWER(resident_info.resident_email) AND
                 leads.email NOT IN (#{invalid_values_sql})
               ) OR
               (
@@ -487,6 +488,11 @@ module Leads
                 leads.first_name NOT IN (#{invalid_values_sql}) AND
                 leads.last_name NOT IN (#{invalid_values_sql})
               )
+            ) AND (
+              -- guarantors only count with a matching last name (see Leads::ResidentValidator)
+              resident_info.resident_relationship IS NULL OR
+              resident_info.resident_relationship NOT IN (#{Resident::CONTACT_ONLY_EXEMPT_RELATIONSHIPS.map { |rel| "'#{rel}'" }.join(', ')}) OR
+              LOWER(leads.last_name) = LOWER(resident_info.resident_last_name)
             )
           WHERE
             leads.state = 'open' AND

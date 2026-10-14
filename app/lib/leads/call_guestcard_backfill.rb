@@ -69,10 +69,10 @@ module Leads
           code = property.voyager_property_code
           phones = group.filter_map { |lead| phone_of(lead) }.uniq
           cards = {}
-          residents = Set.new
+          residents = {}
           phones.each_slice(PHONE_BATCH) do |batch|
             cards.merge!(db.prospects_by_phone(code, batch))
-            residents.merge(db.resident_phones(code, batch))
+            residents.merge!(db.residents_by_contact(code, phones: batch))
           end
 
           group.each do |lead|
@@ -93,8 +93,9 @@ module Leads
       key = "#{lead.property_id}|#{phone}"
       prior = resolved[key]
       prior_prospect_id = prior[1] if prior && prior[0] >= lead.created_at - CallGuestcardPusher::REPEAT_CALL_WINDOW
+      resident = Leads::YardiResidentGate.matching_resident(lead, residents.fetch(phone, []))
       decision, card = CallGuestcardPusher.decide(called_at: lead.created_at, cards: cards.fetch(phone, []),
-                                                  resident: residents.include?(phone), prior_prospect_id: prior_prospect_id)
+                                                  resident: resident, prior_prospect_id: prior_prospect_id)
       unless decision == :resident
         resolved[key] = [lead.created_at, card&.prospect_id || prior_prospect_id || "new card for Lead #{lead.id}"]
       end

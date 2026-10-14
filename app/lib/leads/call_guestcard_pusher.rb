@@ -16,7 +16,8 @@ module Leads
   #   repeat_call          same caller resolved here within 48h: invalidated as a duplicate
   #   duplicate_lead       another lead at the property already links the caller's
   #                        card: invalidated as a duplicate
-  #   resident             caller is a current Yardi resident: invalidated as a resident
+  #   resident             caller is a current Yardi resident (tenant or household
+  #                        member, Leads::YardiResidentGate): invalidated as a resident
   # Created and linked leads are assigned to the system user and moved to
   # prospect, as Lea AI email leads are.
   #
@@ -25,7 +26,10 @@ module Leads
   # by 30-60 minutes, so a lead is only resolved once the backup is newer than
   # the call plus the hold time - any card Lea AI made while answering the
   # call is visible by then. Cards this service made are matched from
-  # Bluesky's own records until the backup catches up.
+  # Bluesky's own records until the backup catches up. While the backup is
+  # restoring a log (Yardi::Backup::Database::Unavailable) the run is skipped
+  # quietly; it only reports an error once queued calls have waited
+  # STALE_BACKUP_AFTER.
   #
   # See doc/call_lead_guestcard_push.md.
   class CallGuestcardPusher
@@ -71,9 +75,10 @@ module Leads
     end
 
     # How a queued call resolves, given what Yardi and Bluesky know. `cards`
-    # are Yardi::Backup::Database::Prospect rows matching the caller's phone.
-    # Returns [decision, card]: decision is :repeat_call, :resident,
-    # :link_new_card, :link_existing_card or :create.
+    # are Yardi::Backup::Database::Prospect rows matching the caller's phone;
+    # `resident` is the Yardi::Backup::Database::Resident the caller is (or
+    # anything truthy), if any. Returns [decision, card]: decision is
+    # :repeat_call, :resident, :link_new_card, :link_existing_card or :create.
     def self.decide(called_at:, cards:, resident:, prior_prospect_id: nil)
       return [:repeat_call, nil] if prior_prospect_id.present?
       return [:resident, nil] if resident
@@ -135,8 +140,6 @@ module Leads
 
       @database.open do |db|
         as_of = db.data_as_of
-        raise Error, 'Yardi backup database reported no data time' if as_of.nil?
-
         summary[:backup_as_of] = as_of
         check_backup_freshness(as_of)
         ready, waiting = queue.partition { |push| covered?(push, as_of) }
@@ -151,14 +154,20 @@ module Leads
 
           phones = pushes.filter_map(&:phone).uniq
           cards = db.prospects_by_phone(code, phones)
-          residents = db.resident_phones(code, phones)
+          residents = db.residents_by_contact(code, phones: phones)
           pushes.each do |push|
-            outcome = resolve(push, cards: cards.fetch(push.phone, []), resident: residents.include?(push.phone), db: db)
+            resident = Leads::YardiResidentGate.matching_resident(push.lead, residents.fetch(push.phone, []))
+            outcome = resolve(push, cards: cards.fetch(push.phone, []), resident: resident, db: db)
             summary[:outcomes][outcome] += 1
           end
         end
       end
       summary
+    rescue Yardi::Backup::Database::Unavailable => e
+      # A log restore is in progress (every 30 minutes): the next run will do
+      Rails.logger.info("Leads::CallGuestcardPusher: #{e.message}; queued call leads stay pending until the next run")
+      report_stale_queue(e)
+      (summary || {}).merge(skipped: "Yardi backup unavailable (#{e.message}); queued call leads stay pending")
     rescue Yardi::Backup::Database::Error, Error => e
       Rails.logger.error("Leads::CallGuestcardPusher: #{e.message}; queued call leads stay pending")
       ErrorNotification.send(e)
@@ -191,7 +200,7 @@ module Leads
         invalidate(lead, :duplicate, "Repeat call: the caller is already in Yardi as guest card #{prior_prospect_id}")
         finish(push, CallGuestcardPush::REPEAT_CALL, yardi_prospect_id: prior_prospect_id)
       when :resident
-        invalidate(lead, :resident, 'Caller is a current resident in Yardi')
+        invalidate(lead, :resident, resident.respond_to?(:description) ? Leads::YardiResidentGate.describe(resident) : 'Caller is a current resident in Yardi')
         finish(push, CallGuestcardPush::RESIDENT)
       when :link_new_card, :link_existing_card
         link(push, card, decision == :link_new_card ? CallGuestcardPush::LINKED_NEW_CARD : CallGuestcardPush::LINKED_EXISTING_CARD, db)
@@ -332,6 +341,17 @@ module Leads
                     content: "Call lead push gave up after #{attempts} attempts: #{error.message.truncate(300)}")
       end
       status == CallGuestcardPush::FAILED ? CallGuestcardPush::FAILED : 'retry'
+    end
+
+    # Only escalate a restore window once calls have waited an unreasonable time
+    def report_stale_queue(error)
+      oldest = CallGuestcardPush.pending.joins(:lead).minimum('leads.created_at')
+      return if oldest.nil? || @now - oldest <= STALE_BACKUP_AFTER
+
+      msg = "Yardi backup database unavailable (#{error.message}); the oldest queued call lead has waited " \
+            "#{((@now - oldest) / 1.hour).round(1)}h"
+      Rails.logger.error("Leads::CallGuestcardPusher: #{msg}")
+      ErrorNotification.send(StandardError.new(msg), { oldest_call: oldest.utc.iso8601 })
     end
 
     def check_backup_freshness(as_of)

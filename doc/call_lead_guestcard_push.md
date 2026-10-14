@@ -34,7 +34,8 @@ Code: `Leads::CallGuestcardPusher` (`app/lib/leads/call_guestcard_pusher.rb`),
 | `YARDI_BACKUP_SOURCE_TIME_ZONE` | America/New_York | Time zone of Yardi's backup history timestamps. |
 
 No extra Heroku Scheduler entry is needed: the pusher runs at the end of
-`leads:yardi:send_guestcards`, which is already scheduled every 10 minutes.
+`leads:yardi:send_guestcards`, which is already scheduled every 10 minutes,
+sharing that run's backup connection (`Leads::YardiResidentGate`).
 
 ## What happens while it is on
 
@@ -54,7 +55,7 @@ No extra Heroku Scheduler entry is needed: the pusher runs at the end of
 | `linked_existing_card` | the caller already had a card | system user, prospect, linked | untouched (first-touch source kept) |
 | `repeat_call` | the same caller was resolved here within 48h | invalidated as duplicate | nothing |
 | `duplicate_lead` | another lead at the property already links the caller's card (they called again later) | invalidated as duplicate | nothing |
-| `resident` | phone matches a current, future, notice or eviction tenant | invalidated as resident | nothing |
+| `resident` | phone matches a current, future, notice or eviction tenant or one of their household members (roommate, spouse, occupant; guarantors only with a matching last name; see [yardi_resident_check.md](yardi_resident_check.md)) | invalidated as resident, memo names the Yardi resident | nothing |
 | `skipped_not_open` | Bluesky had already closed the lead (its own dedupe) | unchanged | nothing |
 | `failed` | 5 failed attempts | open, error note | – |
 
@@ -88,6 +89,12 @@ attempt, in case Yardi created the card but the response was lost.
 
 If the backup falls more than 3 hours behind (log shipping stopped), queued
 leads wait and an error posts to #bluesky-errors.
+
+The backup is briefly unreadable while each log is restored (at about :29 and
+:59 UTC). `Yardi::Backup::Database.open` retries three times 20 seconds apart;
+if the backup is still unavailable the run is skipped quietly (`skipped` in the
+summary) and the next run picks the queue up. An error only posts once the
+oldest queued call has waited more than 3 hours.
 
 ## Bluesky's other Yardi sync
 

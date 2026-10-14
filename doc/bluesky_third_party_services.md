@@ -81,12 +81,12 @@ The following rake tasks are run at specified times.
 * `rake leads:process_followups` 	Daily at 4:30 PM UTC
 * `rake leads:resident_auto_transition` 	Daily at 11:00 AM UTC
 * `rake leads:waitlist:process` 	Daily at 6:00 AM UTC
-* `rake leads:yardi:send_guestcards[20]` 	Every 10 minutes
+* `rake leads:yardi:send_guestcards[20]` 	Every 10 minutes (screens leads against Yardi residents first; also runs the call lead push)
 * `rake leads:push_tour_guestcards` 	Every 10 minutes (temporary; gated by TOUR_GUESTCARD_PUSH_ENABLED, see doc/self_booked_tour_guestcard_push.md)
 * `rake marketing_expenses:create_pending` 	Daily at 3:00 PM UTC
 * `rake messages:fix_notifications` 	Every 10 minutes
 * `rake messages:retry[1440]` 	Hourly at :40
-* `rake residents:yardi:import` 	Daily at 11:00 PM UTC
+* `rake residents:yardi:import` 	Hourly at :10 (from the Yardi backup database; was daily at 11:00 PM UTC via SOAP. Keep it away from :29/:59, when the backup restores; see doc/yardi_resident_check.md)
 * `rake statistics:generate statistics:rollup` 	Hourly at :40
 * `rake unit_types:yardi:import_floorplans units:yardi:import_units`  Hourly at :20
 * `rake users:task_reminders` 	Daily at 11:00 PM UTC

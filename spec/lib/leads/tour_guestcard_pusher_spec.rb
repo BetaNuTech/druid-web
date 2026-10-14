@@ -145,6 +145,76 @@ RSpec.describe Leads::TourGuestcardPusher do
     end
   end
 
+  describe 'resident screening' do
+    # Stands in for Yardi::Backup::Database behind the gate
+    let(:backup) do
+      Class.new do
+        attr_accessor :residents, :failure
+
+        def initialize
+          @residents = {}
+        end
+
+        def configured? = true
+        def close; end
+
+        def connect_with_retries(**)
+          raise failure if failure
+
+          self
+        end
+
+        def residents_by_contact(_code, phones:, emails: [])
+          residents.slice(*(phones + emails))
+        end
+      end.new
+    end
+    let(:gate) { Leads::YardiResidentGate.new(database: backup) }
+    let(:pusher) { described_class.new(gate: gate) }
+    let(:zoe) do
+      Yardi::Backup::Database::Resident.new(tenant_code: 't0225446', prospect_code: 'p0518217', first_name: 'Zoe', last_name: 'Ellis',
+                                            unit: '0406', status: 'notice', relationship: 'Tenant', phones: ['2562636836'])
+    end
+
+    it 'closes out a tour lead from a current resident instead of pushing it' do
+      resident_lead = create_tour_lead(phone1: '2562636836')
+      other = create_tour_lead(phone1: '6155550123')
+      backup.residents = { '2562636836' => [zoe] }
+      allow(adapter).to receive(:findLeadGuestCard).and_return(nil)
+      allow(api).to receive(:sendGuestCard) do |args|
+        args[:lead].remoteid = 'p0005555'
+        args[:lead]
+      end
+
+      result = pusher.push_property(property)
+
+      expect(result).to include(residents: 1, held: 0, created: 1)
+      expect(resident_lead.reload).to have_attributes(state: 'invalidated', classification: 'resident', remoteid: nil)
+      expect(resident_lead.lead_transitions.last.memo).to include('Self-booked tour push: matches Yardi resident Zoe Ellis')
+      expect(other.reload.remoteid).to eq('p0005555')
+    end
+
+    it 'waits for the next run when the Yardi backup is unavailable' do
+      lead = create_tour_lead(phone1: '2562636836')
+      backup.failure = Yardi::Backup::Database::Unavailable.new('restoring')
+      allow(ErrorNotification).to receive(:send)
+
+      result = pusher.push_property(property)
+
+      expect(result[:error]).to include('Yardi backup unavailable')
+      expect(result[:pending]).to eq(1)
+      expect(lead.reload).to have_attributes(state: 'open', remoteid: nil)
+      expect(api).not_to have_received(:getAgents)
+      expect(ErrorNotification).not_to have_received(:send)
+    end
+
+    it 'never re-selects a lead already classified as a resident' do
+      create_tour_lead(classification: 'resident')
+
+      expect(pusher.push_property(property)).to include(linked: 0, created: 0, residents: 0)
+    end
+  end
+
   describe 'dry run' do
     it 'previews actions without writing anything' do
       linked_lead = create_tour_lead

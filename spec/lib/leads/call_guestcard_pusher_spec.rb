@@ -14,7 +14,7 @@ RSpec.describe Leads::CallGuestcardPusher do
 
       def initialize
         @cards = {}
-        @residents = Set.new
+        @residents = {} # phone => [Yardi::Backup::Database::Resident]
         @by_id = {}
         @shared_ids = Set.new
         @first_contact = [Yardi::Backup::Database::Event.new(event_id: 1931457, event_type: 'Email', date: Time.utc(2026, 9, 28),
@@ -25,9 +25,14 @@ RSpec.describe Leads::CallGuestcardPusher do
         yield self
       end
 
-      def data_as_of = as_of
+      def data_as_of
+        raise Yardi::Backup::Database::Unavailable, 'Yardi backup database reported no data time' if as_of == :restoring
+
+        as_of
+      end
+
       def prospects_by_phone(_code, _phones) = cards
-      def resident_phones(_code, _phones) = residents
+      def residents_by_contact(_code, phones:, emails: []) = residents.slice(*phones)
       def prospect(_code, prospect_id) = by_id[prospect_id]
       def prospect_id_shared?(prospect_id) = shared_ids.include?(prospect_id)
       def first_contact_events(_code, _prospect_id) = first_contact
@@ -59,6 +64,12 @@ RSpec.describe Leads::CallGuestcardPusher do
                          phone1: phone, phone2: nil, referral: referral, first_name: 'Pat', last_name: 'Caller')
     lead.update_columns(created_at: called)
     lead.reload
+  end
+
+  def resident(first_name: 'Zoe', last_name: 'Ellis', relationship: 'Tenant', status: 'notice')
+    Yardi::Backup::Database::Resident.new(tenant_code: 't0225446', prospect_code: 'p0518217', prospect_hmy: 519_322,
+                                          first_name: first_name, last_name: last_name, unit: '0406', status: status,
+                                          relationship: relationship, phones: [phone], email: nil)
   end
 
   def card(prospect_id, created_at:, source: 'Property Website', status: 'Prospect', created_by: 'leapro')
@@ -269,13 +280,52 @@ RSpec.describe Leads::CallGuestcardPusher do
       expect(lead.call_guestcard_push.yardi_prospect_id).to eq('p0999001')
     end
 
-    it 'invalidates a call from a current resident' do
+    it 'invalidates a call from a current resident, naming the Yardi tenant' do
       lead = call_lead
-      backup.residents = Set[phone]
+      backup.residents = { phone => [resident] }
 
       expect(pusher.call[:outcomes]).to eq('resident' => 1)
       expect(lead.reload).to have_attributes(state: 'invalidated', classification: 'resident')
+      expect(lead.lead_transitions.last.memo).to include('matches Yardi resident Zoe Ellis, unit 0406, notice (Tenant t0225446)')
       expect(api).not_to have_received(:sendGuestCard)
+    end
+
+    it 'invalidates a call from a household member (roommate) too' do
+      lead = call_lead
+      backup.residents = { phone => [resident(first_name: 'Hunter', last_name: 'Brown', relationship: 'Roommate', status: 'current')] }
+
+      expect(pusher.call[:outcomes]).to eq('resident' => 1)
+      expect(lead.reload.lead_transitions.last.memo).to include('Hunter Brown, unit 0406, current (Roommate of t0225446, p0518217)')
+    end
+
+    it 'does not treat a guarantor with another last name as a resident' do
+      lead = call_lead
+      backup.residents = { phone => [resident(first_name: 'Pat', last_name: 'Parent', relationship: 'Guarantor', status: 'current')] }
+
+      expect(pusher.call[:outcomes]).to eq('created' => 1)
+      expect(api).to have_received(:sendGuestCard)
+    end
+
+    it 'skips the run quietly while the backup is restoring a log' do
+      lead = call_lead
+      backup.as_of = :restoring
+      allow(ErrorNotification).to receive(:send)
+
+      summary = pusher.call
+
+      expect(summary[:skipped]).to include('Yardi backup unavailable')
+      expect(lead.call_guestcard_push.reload.status).to eq('pending')
+      expect(ErrorNotification).not_to have_received(:send)
+    end
+
+    it 'reports a restore outage once queued calls have waited too long' do
+      call_lead(called: (described_class::STALE_BACKUP_AFTER + 1.hour).ago)
+      backup.as_of = :restoring
+      allow(ErrorNotification).to receive(:send)
+
+      pusher.call
+
+      expect(ErrorNotification).to have_received(:send).with(an_object_having_attributes(message: /oldest queued call lead has waited/), anything)
     end
 
     it 'skips a lead Bluesky already closed' do
