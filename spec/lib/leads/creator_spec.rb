@@ -128,6 +128,8 @@ RSpec.describe Leads::Creator do
           error_note = Note.where(classification: 'error').last
           expect(error_note.content).to include('Leads::Creator blocked lead creation')
           expect(error_note.content).to include("matched resident ID: #{resident.id}")
+          block = Note.where(notable: property).where('content LIKE ?', 'Resident block:%').last
+          expect(block.content).to include('rejected on arrival', "matches resident #{resident.name}")
         end
       end
 

@@ -83,7 +83,10 @@ module Leads
 
       lead.classification = :resident
       lead.transition_memo = "#{note_prefix}: #{self.class.describe(resident)}"
-      return true if lead.trigger_event(event_name: 'invalidate', user: User.system)
+      if lead.trigger_event(event_name: 'invalidate', user: User.system)
+        log_block(lead, resident, 'closed before the Yardi push')
+        return true
+      end
 
       Rails.logger.error("Leads::YardiResidentGate: could not invalidate Lead[#{lead.id}]: " \
                          "#{lead.errors.full_messages.to_sentence.presence || lead.state}")
@@ -99,6 +102,12 @@ module Leads
       return if Note.where(notable: lead, content: content).exists?
 
       Note.create!(notable: lead, classification: 'system', content: content)
+      log_block(lead, resident, "held before the Yardi push (#{lead.state})")
+    end
+
+    def log_block(lead, resident, stage)
+      Leads::ResidentBlockLog.record(property: lead.property, stage: stage, resident: resident, lead: lead,
+                                     contact: [lead.phone1, lead.phone2, lead.email].find(&:present?), source: lead.source&.name)
     end
 
     # Stands in for Yardi::Backup::Database (responds to .open) for services

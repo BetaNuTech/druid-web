@@ -109,6 +109,24 @@ import (`Residents::Adapters::YardiVoyager`).
 heroku run -a druid-prod rake residents:yardi:import PROPERTY=1002edge DRY_RUN=true
 ```
 
+## The block log
+
+Every refusal is recorded by `Leads::ResidentBlockLog` in two places:
+
+- a system note on the property, shown under **Resident Blocks** on the
+  property page (latest 20), and
+- one line in Slack, posted as Yoda Bot to the channel named by
+  `RESIDENT_BLOCK_SLACK_CHANNEL` (`#bluesky-resident-blocks` on production;
+  unset means no Slack line). `YodaBotMessageJob` posts it from the
+  `low_priority` queue with no link names, so caller data can never ping anyone.
+
+Each line reads like `Vintage Edge: BlueConnect call from (256) 263-6836
+rejected on arrival, matches resident Zoe Ellis, unit 0406, notice (Tenant
+t0225446)`. The stages are `rejected on arrival` (no lead was created),
+`closed after creation` (the automatic check invalidated a lead seconds after
+it was saved), `closed before the Yardi push` (the gate or the call push
+invalidated it) and `held before the Yardi push` (left to its agent, not sent).
+
 ## Checking a phone by hand
 
 ```ruby

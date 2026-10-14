@@ -127,6 +127,8 @@ RSpec.describe Leads::YardiResidentGate do
       expect(open_lead.reload).to have_attributes(state: 'invalidated', classification: 'resident')
       expect(open_lead.lead_transitions.last.memo)
         .to eq('Yardi sync: matches Yardi resident Zoe Ellis, unit 0406, notice (Tenant t0225446)')
+      expect(Note.where(notable: property).last.content)
+        .to include('Resident block:', "(Lead #{open_lead.id}) closed before the Yardi push, matches resident Zoe Ellis")
     end
 
     it 'leaves a lead in showing alone apart from one note' do
@@ -138,6 +140,7 @@ RSpec.describe Leads::YardiResidentGate do
       notes = Note.where(notable: showing).where('content LIKE ?', 'Yardi sync: not sent to Yardi%')
       expect(notes.count).to eq(1)
       expect(notes.first.content).to include('Zoe Ellis, unit 0406')
+      expect(Note.where(notable: property).where('content LIKE ?', 'Resident block:%').count).to eq(1)
     end
 
     it 'writes nothing in a dry run' do

@@ -148,6 +148,10 @@ module Leads
           # Log the rejection
           note_message = "Leads::Creator blocked lead creation - matched resident ID: #{matching_resident['resident_id']} - #{full_error}"
           Leads::Creator.create_event_note(message: note_message, notable: @lead.property, error: true)
+          Leads::ResidentBlockLog.record(property: @lead.property, stage: 'rejected on arrival',
+                                         resident: ::Resident.find_by(id: matching_resident['resident_id']) || "##{matching_resident['resident_id']}",
+                                         contact: error_details.first.to_s.sub(/\A\w+: /, '').presence || @lead.phone1,
+                                         source: @source&.name)
 
           return @lead
         end

@@ -223,13 +223,19 @@ module Leads
       # Invalidate this lead if it is likely a resident
       # returns true only if invalidated
       def invalidate_if_resident
-        return false unless property.present? && Lead.open_possible_residents(property).map{|opr| opr['id'] }.include?(id)
+        return false unless property.present?
+
+        match = Lead.open_possible_residents(property).find { |opr| opr['id'] == id }
+        return false if match.nil?
 
         self.classification = :resident
         self.transition_memo = 'Automatically invalidated as a Resident'
         trigger_event(event_name: 'invalidate')
         save
         reload
+        Leads::ResidentBlockLog.record(property: property, stage: 'closed after creation', lead: self,
+                                       resident: ::Resident.find_by(id: match['resident_id']) || "##{match['resident_id']}",
+                                       contact: [phone1, phone2, email].find(&:present?), source: source&.name)
         true
       end
 

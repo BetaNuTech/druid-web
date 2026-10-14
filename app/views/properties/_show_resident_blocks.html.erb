@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Resident Blocks</h2>
+    <p class="text-muted">Contacts refused as prospects because they belong to a current Yardi resident (latest 20).</p>
+    <% blocks = @property.comments.where('content LIKE ?', "#{Leads::ResidentBlockLog::NOTE_PREFIX}%").order(created_at: :desc).limit(20) %>
+    <% if blocks.empty? %>
+      <p>None</p>
+    <% else %>
+      <ul>
+        <% blocks.each do |note| %>
+          <li><%= long_datetime(note.created_at) %>: <%= note.content.delete_prefix(Leads::ResidentBlockLog::NOTE_PREFIX).strip %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>
