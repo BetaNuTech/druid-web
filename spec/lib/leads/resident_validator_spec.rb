@@ -63,6 +63,18 @@ RSpec.describe Leads::ResidentValidator do
       end
     end
 
+    context 'when the incoming phone carries a country code and punctuation (BlueConnect)' do
+      let(:lead_data) { super().merge(phone1: '+1 (555) 123-4567', phone2: nil) }
+
+      before do
+        resident_detail.update!(phone1: '5551234567')
+      end
+
+      it 'still matches' do
+        expect(subject.resident_match?).to be true
+      end
+    end
+
     context 'when the lead phone is on the other resident phone column' do
       before do
         resident_detail.update!(phone1: '5550000000', phone2: '5551234567')

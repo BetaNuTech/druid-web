@@ -32,9 +32,14 @@ module Leads
       conditions = []
       invalid_values = Lead::DUPLICATE_IGNORED_VALUES
 
-      # Phone matching conditions: either lead phone against either resident phone
-      [lead_data[:phone1], lead_data[:phone2]].each do |phone|
-        next unless phone.present? && !invalid_values.include?(phone)
+      # Phone matching conditions: either lead phone against either resident
+      # phone. Incoming data is raw (BlueConnect sends +1 and punctuation);
+      # resident phones are stored as 10 digits, so normalize before comparing.
+      [lead_data[:phone1], lead_data[:phone2]].each do |raw|
+        next if raw.blank? || invalid_values.include?(raw)
+
+        phone = PhoneNumber.format_phone(raw)
+        next unless phone.match?(/\A\d{10}\z/) && !invalid_values.include?(phone)
 
         quoted = ActiveRecord::Base.connection.quote(phone)
         conditions << "(resident_details.phone1 = #{quoted} OR resident_details.phone2 = #{quoted})"
