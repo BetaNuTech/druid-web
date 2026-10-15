@@ -17,6 +17,10 @@ Rails.application.routes.draw do
 
   root to: redirect('/users/sign_in')
 
+  # Public privacy policy. Must stay reachable without signing in: Google's
+  # OAuth consent screen requires it. See PrivacyController.
+  get 'privacy', to: 'privacy#show'
+
   get 'v2', to: 'home#design2'
 
   get '/home', to: 'home#dashboard'

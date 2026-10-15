@@ -6,6 +6,10 @@
         Bluesky Lead Management &copy; 2018-<%= Date.current.year %> Bluecrest Residential
         (<span id="bluesky_version">v.<%= BlueskyWeb::VERSION %></span>)
       </span>
+      <%# The only privacy link on any page, including the sign-in page -- which
+          is the homepage for anyone not signed in, where Google expects to find
+          it. Don't add a second one to a view this layout wraps. %>
+      &middot; <%= link_to 'Privacy', privacy_path, id: 'privacy_link' %>
     </p>
    </div>
 </footer>

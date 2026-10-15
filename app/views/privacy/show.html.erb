@@ -1,0 +1,363 @@
+<%#
+  Public privacy policy. Self-contained on purpose (no layout, inline styles,
+  no external assets) so it renders identically whether served at /privacy or
+  saved out as a single static .html file -- and so the page itself loads none
+  of the analytics, fonts or monitoring scripts it describes.
+
+  Every statement here must stay true to the code:
+    * The Google section matches Users::OmniauthCallbacksController and the
+      AddGoogleSignInToUsers migration (scopes, stored columns, no tokens kept).
+    * The cookie section matches Devise :rememberable (Devise.remember_for),
+      config/initializers/warden_hooks.rb, shared/_tracking (Google Analytics)
+      and New Relic browser monitoring.
+  If any of those change, change this page in the same commit.
+  spec/requests/privacy_spec.rb ties several of these together.
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Privacy Policy &middot; BlueSky &middot; Bluecore Residential</title>
+<style>
+  /* Light-only on purpose: a dark-themed browser must not render this page
+     black-on-black. color-scheme also keeps form controls and scrollbars light. */
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0 16px 72px;
+    background-color: #ffffff;
+    color: #212529;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header.masthead {
+    margin: 0 -16px 40px;
+    padding: 26px 16px;
+    background-color: #005089;
+    color: #ffffff;
+  }
+  header.masthead .inner { max-width: 760px; margin: 0 auto; }
+  header.masthead .product { font-size: 22px; font-weight: 700; letter-spacing: .06em; }
+  header.masthead .org { font-size: 13px; opacity: .85; margin-top: 2px; }
+  h1 { font-size: 28px; line-height: 1.25; margin: 0 0 6px; }
+  h2 {
+    font-size: 19px;
+    margin: 40px 0 10px;
+    padding-top: 18px;
+    border-top: 1px solid #e3e6ea;
+  }
+  h3 { font-size: 16px; margin: 24px 0 6px; }
+  p, li { margin: 0 0 12px; }
+  ul { padding-left: 22px; }
+  .effective { color: #6c757d; font-size: 14px; margin-bottom: 28px; }
+  a { color: #005089; }
+  .table-scroll { overflow-x: auto; margin: 12px 0 20px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border: 1px solid #dfe3e8; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background-color: #f4f6f8; font-weight: 600; }
+  .callout {
+    background-color: #f2f7fb;
+    border-left: 4px solid #005089;
+    padding: 14px 16px;
+    margin: 20px 0;
+  }
+  .no-store { background-color: #f3faf5; border-left: 4px solid #1e7c43; padding: 14px 16px; margin: 20px 0; }
+  .callout p:last-child, .no-store p:last-child { margin-bottom: 0; }
+  footer.pagefoot { margin-top: 48px; padding-top: 18px; border-top: 1px solid #e3e6ea; color: #6c757d; font-size: 14px; }
+  code { background-color: #f4f6f8; padding: 1px 5px; border-radius: 3px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="inner">
+    <div class="product">BLUESKY</div>
+    <div class="org">Bluecore Residential</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <h1>Privacy Policy</h1>
+  <p class="effective">Effective 14 October 2026. Applies to the BlueSky web application at www.blue-sky.app.</p>
+
+  <p>
+    BlueSky is a private, internal lead-management and leasing application operated by Bluecore
+    Residential. It is not a consumer product and is not open to public sign-up. Every BlueSky
+    account is created by a BlueSky administrator.
+  </p>
+
+  <p>
+    This policy explains what personal information BlueSky collects about the people who use it
+    &mdash; Bluecore Residential staff, and anyone else an administrator has given an account &mdash;
+    why, and what we do with it.
+  </p>
+
+  <p>
+    BlueSky is also used to manage enquiries from prospective and current residents. Information
+    about those people is processed on Bluecore Residential's behalf and is not described by this
+    policy; questions about it should be directed to Bluecore Residential.
+  </p>
+
+  <h2>Signing in with Google</h2>
+
+  <p>
+    BlueSky offers &ldquo;Sign in with Google&rdquo; as its main way to sign in. Using it is not
+    required: signing in with an email address and password remains available.
+  </p>
+
+  <h3>What we ask Google for</h3>
+  <p>
+    We request two standard, non-sensitive permissions: your <strong>email address</strong> and your
+    <strong>basic profile</strong> (<code>email</code> and <code>profile</code>). We do not request
+    access to Gmail, Drive, Calendar, Contacts, photos, or any other Google service, and we cannot
+    read them. We ask Google for access only while you are signing in, not for ongoing access.
+  </p>
+
+  <h3>What Google sends us, and what we keep</h3>
+  <p>When you sign in, Google sends BlueSky a small profile record. We keep only part of it:</p>
+
+  <div class="table-scroll">
+  <table>
+    <thead>
+      <tr><th>Sent by Google</th><th>Do we store it?</th><th>What it is used for</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Email address</td>
+        <td><strong>Yes</strong></td>
+        <td>Matching you to your existing BlueSky account.</td>
+      </tr>
+      <tr>
+        <td>Whether that email address is verified</td>
+        <td>No &mdash; checked, not stored</td>
+        <td>We refuse the sign-in unless Google confirms the address is verified.</td>
+      </tr>
+      <tr>
+        <td>Google account identifier</td>
+        <td><strong>Yes</strong></td>
+        <td>Tying your BlueSky account to one specific Google account, so a different Google account cannot later claim your email address.</td>
+      </tr>
+      <tr>
+        <td>First and last name</td>
+        <td><strong>Yes</strong></td>
+        <td>Keeping the name shown in BlueSky current.</td>
+      </tr>
+      <tr>
+        <td>Profile picture</td>
+        <td>No</td>
+        <td>Not used. Profile pictures in BlueSky are uploaded separately.</td>
+      </tr>
+      <tr>
+        <td>Language and organisation details</td>
+        <td>No</td>
+        <td>Not used.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>
+    Because Google has verified that you control your email address, a successful Google sign-in
+    also completes your account's email confirmation if it was still pending, and lifts a temporary
+    lock caused by repeated incorrect passwords.
+  </p>
+
+  <div class="no-store">
+    <p>
+      <strong>We do not store Google access tokens or refresh tokens.</strong> They are used once,
+      during sign-in, and then discarded. BlueSky therefore has no standing access to your Google
+      account and cannot read anything from it between sign-ins.
+    </p>
+  </div>
+
+  <p>
+    BlueSky's use of information received from Google APIs adheres to the
+    <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services
+    User Data Policy</a>, including its Limited Use requirements.
+  </p>
+
+  <div class="callout">
+    <p>
+      <strong>Signing in with Google never creates an account.</strong> If the Google address you use
+      does not already match a BlueSky account, you are refused and told to contact an administrator.
+      Google sign-in is a way to open a door you already have a key to &mdash; it is not a way in.
+    </p>
+  </div>
+
+  <h3>Disconnecting Google</h3>
+  <p>
+    To remove the link between your BlueSky account and your Google account, ask a BlueSky
+    administrator to unlink it. The stored Google account identifier, the Google email address, and
+    our record of the name Google last sent are deleted at that point; the name shown on your BlueSky
+    profile stays as it is. You can also revoke BlueSky's access from your Google account directly at
+    <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.
+  </p>
+
+  <h2>Other information BlueSky holds about you</h2>
+
+  <p>Whether or not you use Google sign-in, BlueSky stores:</p>
+  <ul>
+    <li>
+      <strong>Account details</strong> entered by you or an administrator &mdash; name, email address,
+      role, time zone, the properties and teams you are assigned to, and optionally phone numbers, an
+      email signature, a Slack handle, notes, a profile picture, and your notification preferences.
+    </li>
+    <li>
+      <strong>Sign-in records</strong> &mdash; the number of times you have signed in, the dates and
+      times of your current and previous sign-in, the <strong>IP addresses</strong> used, and failed
+      password attempts. We keep these to protect accounts and investigate misuse.
+    </li>
+    <li>
+      <strong>Your work in BlueSky</strong> &mdash; the leads assigned to you, the notes, tasks and
+      messages you create, and a change history recording who changed a record, when, and from which
+      IP address. These are attributed to you and visible to other BlueSky users according to their
+      permissions.
+    </li>
+    <li>
+      <strong>Pages you visit in BlueSky.</strong> While you are signed in, BlueSky records which of
+      its pages you open and the page you came from, against your account, so we can see how the
+      application is used.
+    </li>
+    <li>
+      <strong>A password</strong>, stored only as a salted cryptographic hash, if you use password
+      sign-in. We cannot recover or read your password.
+    </li>
+  </ul>
+
+  <h3>Cookies and similar technologies</h3>
+  <p>BlueSky uses these cookies and browser storage:</p>
+  <ul>
+    <li>
+      <strong>A session cookie</strong>, set whenever you use BlueSky. It is strictly necessary for the
+      application to work, and it is deleted when you close your browser.
+    </li>
+    <li>
+      <strong>Two sign-in cookies</strong>, set when you sign in, holding an encrypted copy of your
+      account identifier and a timestamp. They are cleared when you sign out and deleted when you
+      close your browser.
+    </li>
+    <li>
+      <strong>A &ldquo;Remember me&rdquo; cookie</strong>, set only if you tick &ldquo;Remember
+      me&rdquo; when signing in with a password. It keeps you signed in across browser restarts for up
+      to two weeks, and signing out invalidates it.
+    </li>
+    <li>
+      <strong>Google Analytics cookies</strong> (<code>_ga</code> and <code>_ga_&hellip;</code>), set
+      by Google Analytics on BlueSky's pages, including the sign-in page, to count visits and
+      understand how the application is used. They last up to two years unless you clear them.
+    </li>
+    <li>
+      <strong>Performance-monitoring storage</strong>: our application-monitoring service stores a
+      session identifier in your browser's local storage to measure page load times and catch errors.
+    </li>
+  </ul>
+  <p>
+    The first three are set by BlueSky itself and exist only to keep you signed in. There are no
+    advertising cookies.
+  </p>
+
+  <h3>Analytics and other scripts on BlueSky's pages</h3>
+  <p>
+    BlueSky's pages load Google Analytics, which receives the pages you view, your browser and device
+    details, your IP address (from which Google derives an approximate location), and the name of the
+    property you have selected in BlueSky. They also load an application-monitoring script that
+    reports page performance and errors, web fonts from Google's font service, and a
+    browser-compatibility notice from browser-update.org; each of these receives your IP address and
+    browser details when your browser fetches it. This privacy page loads none of them.
+  </p>
+
+  <h2>How we use this information</h2>
+  <ul>
+    <li>To authenticate you and keep you signed in.</li>
+    <li>To decide what you are allowed to see and do, based on your role and property assignments.</li>
+    <li>To attribute your work and changes within the application.</li>
+    <li>To send you account email &mdash; account confirmation, password resets, unlock instructions &mdash; and task notifications.</li>
+    <li>To keep the application secure, investigate misuse, and diagnose faults.</li>
+    <li>To understand how the application is used, so we can improve it.</li>
+  </ul>
+  <p>
+    We do not use this information for advertising, we do not sell it, and we do not use it to build
+    profiles for any purpose beyond operating BlueSky.
+  </p>
+
+  <h2>Who else sees it</h2>
+  <p>
+    Other BlueSky users at Bluecore Residential can see your name, contact details, role and property
+    assignments, and your work in the application, subject to their own permissions.
+  </p>
+  <p>
+    Beyond that, we share personal information only with the service providers that run BlueSky on
+    our behalf, and only to the extent needed to run it: our cloud hosting provider and its database,
+    caching and log-management services; our file-storage provider (for uploaded profile pictures);
+    the services that deliver BlueSky's email and text messages, including messages you send to
+    prospects through BlueSky; our application-monitoring and error-alerting services, including the
+    workplace messaging service that error alerts are posted to; and Google, for sign-in, analytics
+    and web fonts. We do not sell personal information or disclose it for anyone else's marketing. We
+    may also disclose information where the law requires it.
+  </p>
+
+  <h2>How long we keep it</h2>
+  <p>
+    We keep your account and its associated records for as long as your account exists. When someone
+    leaves, their account is normally deactivated rather than deleted, so that historical records stay
+    attributable and reports remain accurate. Google Analytics keeps the data it collects for the
+    retention period set in our Google Analytics account. To request deletion, use the contact below.
+  </p>
+
+  <h2>Security</h2>
+  <p>
+    BlueSky is served over HTTPS and requires an account to access. Passwords are stored only as
+    salted hashes, and an account is temporarily locked after repeated incorrect passwords. Access is
+    limited by role and by property assignment, and administrators can deactivate an account
+    immediately.
+  </p>
+
+  <h2>Your choices</h2>
+  <ul>
+    <li>
+      <strong>Sign in with a password instead of Google.</strong> Use &ldquo;Sign in with an email
+      address and password instead&rdquo; on the sign-in page. If you have never set a password, use
+      &ldquo;Forgot your password?&rdquo; there to set one.
+    </li>
+    <li>
+      <strong>Revoke access at Google.</strong> You can remove BlueSky's access at any time from your
+      <a href="https://myaccount.google.com/permissions">Google Account permissions</a> page. Because
+      we hold no Google tokens, this takes effect immediately.
+    </li>
+    <li>
+      <strong>Access, correct, or delete your information.</strong> Contact your BlueSky administrator.
+      Some records must be kept for security or legal reasons.
+    </li>
+  </ul>
+
+  <h2>Changes to this policy</h2>
+  <p>
+    If we change what we collect or how we use it, we will update this page and the date at the top
+    of it.
+  </p>
+
+  <h2>Contact</h2>
+  <p>BlueSky is operated by Bluecore Residential.</p>
+  <p>
+    Because every account is created by an administrator, questions about this policy or about your
+    information are best raised with your BlueSky administrator, who can also unlink your Google
+    account or deactivate your access on request.
+  </p>
+
+  <p style="margin-top: 32px;">
+    <a href="/users/sign_in">&larr; Back to sign in</a>
+  </p>
+
+  <footer class="pagefoot">
+    BlueSky is an internal application of Bluecore Residential and is not available to the general public.
+  </footer>
+
+</div>
+</body>
+</html>
