@@ -5,7 +5,13 @@ class BlueskyDeviseMailer < Devise::Mailer
   default from: "no-reply@#{ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')}"
 
   def confirmation_instructions(record, token, opts={})
-    opts[:subject] = "Welcome to Bluesky! Please confirm your account."
+    # Devise sends this for a new account AND for an email address change
+    # (reconfirmable); the template branches the same way.
+    opts[:subject] = if record.pending_reconfirmation?
+                       "Please confirm your new Bluesky email address."
+                     else
+                       "Welcome to Bluesky! Please confirm your account."
+                     end
     @name = record.name
     super
   end

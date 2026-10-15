@@ -1,16 +1,78 @@
-<p>
-  Hello <%= @name %>,
-</p>
+<%#
+  Devise sends this template for two different things:
 
-<p>
-  Welcome to Bluesky, our lead management platform. Your login details are as follows:
-</p>
+  1. A NEW account (no pending reconfirmation). This email is the de facto
+     invitation: Users::Creator creates users without a password and
+     unconfirmed. When Google sign-in is on, Google is the primary action and
+     "confirm and set a password" the secondary one.
 
-<p>
-  Username: <tt><%= @email %></tt>
-</p>
+     IMPORTANT -- the Google button links to the SIGN-IN PAGE, never straight to
+     /users/auth/google_oauth2. OmniAuth 2.x refuses GET request-phase
+     initiation, and an email link can only ever be a GET; the real POST button
+     lives on the sign-in page. A new user who signs in with Google never needs
+     the confirmation link: Users::OmniauthCallbacksController confirms them, and
+     clears the token so this link stops working.
 
-<p>
-  Please click on the following link to complete setting up your account:<br/ >
-  <%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %>
-</p>
+  2. An EMAIL ADDRESS CHANGE on an existing account (reconfirmable): the new
+     address only takes effect once this link is clicked. No Google button --
+     the point is to confirm the new address -- and wording that says so,
+     rather than the "Welcome" copy, which made these look like they never
+     arrived.
+
+  Styles are inline because email clients do not load the asset pipeline.
+%>
+<% if @resource.pending_reconfirmation? %>
+  <p>
+    Hello <%= @name %>,
+  </p>
+
+  <p>
+    Your BlueSky sign-in email address is being changed to <tt><%= @email %></tt>.
+  </p>
+
+  <p>
+    Please click on the following link to confirm this new address. Until you do, you keep signing in with your current address:<br/>
+    <%= link_to 'Confirm my new email address', confirmation_url(@resource, confirmation_token: @token) %>
+  </p>
+
+  <p>
+    If you didn't expect this change, you can ignore this email, but please let a BlueSky administrator know.
+  </p>
+<% else %>
+  <p>
+    Hello <%= @name %>,
+  </p>
+
+  <p>
+    Welcome to Bluesky, our lead management platform. Your login details are as follows:
+  </p>
+
+  <p>
+    Username: <tt><%= @email %></tt>
+  </p>
+
+  <% if GoogleSignIn.enabled? %>
+    <p style="margin: 28px 0 8px;">
+      <a href="<%= new_user_session_url %>"
+         style="display: inline-block; padding: 14px 28px; background-color: #005089; color: #ffffff;
+                font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold;
+                text-decoration: none; border-radius: 4px;">
+        Sign in with Google
+      </a>
+    </p>
+
+    <p style="margin: 0 0 24px; font-family: Helvetica, Arial, sans-serif; font-size: 13px; color: #6c757d;">
+      Use the Google account for <strong><%= @email %></strong>. No password needed.
+    </p>
+
+    <p style="font-family: Helvetica, Arial, sans-serif; font-size: 13px;">
+      Prefer a password?
+      <%= link_to 'Confirm my account and set a password', confirmation_url(@resource, confirmation_token: @token), style: 'color: #005089;' %>
+    </p>
+  <% else %>
+    <p>
+      Please click on the following link to complete setting up your account:<br/ >
+      <%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %>
+    </p>
+  <% end %>
+<% end %>
