@@ -9,7 +9,8 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { sessions: 'users/sessions',
                                     confirmations: 'users/confirmations',
                                     unlocks: 'users/unlocks',
-                                    passwords: 'users/passwords' }
+                                    passwords: 'users/passwords',
+                                    omniauth_callbacks: 'users/omniauth_callbacks' }
 
   authenticated do
     root to: "home#dashboard", as: :authenticated_root

@@ -253,6 +253,39 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
 
+  # "Sign in with Google". Registered only when GoogleSignIn.enabled? -- layer 1
+  # of 3 in the fail-closed gate (see config/initializers/001_google_sign_in.rb).
+  # With the strategy unregistered there is no OmniAuth middleware behind
+  # /users/auth/google_oauth2, so it simply 404s. The strategy registers at boot,
+  # so flipping GOOGLE_SIGN_IN_ENABLED needs a restart (a Heroku config:set does
+  # one) but no deploy.
+  #
+  # NOTE: `skip_jwt` is deliberately left at its default of false. With it false
+  # the strategy verifies the ID token's `aud` against our client_id (plus `iss`
+  # and `exp`) before handing us an auth hash -- without which an ID token minted
+  # for any other Google OAuth client would be accepted. Do not set it to true.
+  #
+  # No `hd` option, on purpose -- see the note in 001_google_sign_in.rb.
+  if GoogleSignIn.enabled?
+    config.omniauth :google_oauth2,
+                    GoogleSignIn.client_id,
+                    GoogleSignIn.client_secret,
+                    scope: GoogleSignIn::SCOPE,
+                    # The gem defaults to access_type=offline, which asks Google
+                    # for a REFRESH token -- standing, long-lived access we have
+                    # no use for, since sign-in is the only thing we do with
+                    # Google and we discard the token immediately. Asking for
+                    # less is both safer and what /privacy states.
+                    access_type: 'online',
+                    prompt: 'select_account',
+                    # By default the gem lets query parameters on the request
+                    # phase override access_type, scope, prompt, hd and more in
+                    # the URL sent to Google. Only the requester's own sign-in is
+                    # affected, but it would make "online access, email and
+                    # profile only" untrue for a crafted request. Allow none.
+                    overridable_authorize_options: []
+  end
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

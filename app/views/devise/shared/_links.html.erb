@@ -18,8 +18,6 @@
   <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
 <% end -%>
 
-<%- if devise_mapping.omniauthable? %>
-  <%- resource_class.omniauth_providers.each do |provider| %>
-    <%= link_to "Sign in with #{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider) %><br />
-  <% end -%>
-<% end -%>
+<%# Devise's stock per-provider "Sign in with ..." loop was removed on purpose: it
+    rendered a link_to (a GET), which OmniAuth 2.x refuses, as a second, broken
+    Google control. The real one is the POST button in users/sessions/new. %>

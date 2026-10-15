@@ -4,7 +4,9 @@
       <% if notice.present? %>
         <p class="notice bg-warning"><%= notice %></p>
       <% end %>
-      <% if alert.present? %>
+      <%# A view that shows the alert itself, beside the control it is about,
+          sets content_for :flash_alert_rendered so it isn't shown twice. %>
+      <% if alert.present? && !content_for?(:flash_alert_rendered) %>
         <p class="alert bg-danger"><%= alert %></p>
       <% end %>
     </div>

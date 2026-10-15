@@ -25,6 +25,12 @@
 #  role_id                :uuid
 #  timezone               :string           default("UTC")
 #  deactivated            :boolean          default(FALSE)
+#  provider               :string
+#  uid                    :string
+#  google_email           :string
+#  google_linked_at       :datetime
+#  google_given_name      :string
+#  google_family_name     :string
 #
 
 class User < ApplicationRecord
@@ -186,6 +192,14 @@ class User < ApplicationRecord
   def system?
     return false unless self.class.column_names.include?('system_user')
     system_user
+  end
+
+  # True once a Google identity has been pinned to this account. The pin is
+  # trust-on-first-use: the first successful Google sign-in binds `uid` (Google's
+  # `sub`), and a later sign-in for the same email with a DIFFERENT uid is
+  # refused rather than re-bound. See Users::OmniauthCallbacksController.
+  def google_linked?
+    provider.present? && uid.present?
   end
 
   handle_asynchronously :deactivation_cleanup, queue: :low_priority

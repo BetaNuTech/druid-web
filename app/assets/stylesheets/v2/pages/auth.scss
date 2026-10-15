@@ -172,6 +172,79 @@
   }
 }
 
+// "Sign in with Google" -- the primary action when it is enabled. A white
+// button with the multicolour mark, per Google's sign-in branding guidelines.
+// The password form is demoted to the disclosure below it, never removed.
+.auth__google {
+  margin-bottom: $spacing-lg;
+}
+
+// button_to wraps the button in its own form; keep that form layout-neutral.
+.auth__google-form {
+  margin: 0;
+}
+
+.auth-container .btn--google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-md;
+  width: 100%;
+  color: #1f1f1f;
+  background-color: $white;
+  border: 1px solid #747775;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f8faff;
+    box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+  }
+}
+
+.btn--google__mark {
+  display: inline-flex;
+  align-items: center;
+}
+
+.auth__hint {
+  margin: $spacing-sm 0 0;
+  font-size: $font-size-sm;
+  color: $gray-600;
+}
+
+// The collapsed "email address and password" disclosure.
+.auth__disclosure {
+  padding-top: $spacing-lg;
+  border-top: 1px solid $gray-200;
+}
+
+.auth__disclosure-summary {
+  cursor: pointer;
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $primary;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+  }
+}
+
+.auth__disclosure-body {
+  margin-top: $spacing-lg;
+}
+
 // Alert styling for auth pages
 .auth-container {
   .alert {
