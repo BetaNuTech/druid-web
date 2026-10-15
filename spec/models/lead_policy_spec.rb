@@ -124,4 +124,45 @@ RSpec.describe LeadPolicy do
       end
     end
   end
+
+  # Leads at inactive properties (sold or no longer managed) are most of the
+  # table; lists, searches and queues should show only properties still operated.
+  describe "Scope" do
+    let(:active_property) { create(:property, active: true) }
+    let(:inactive_property) { create(:property, active: false) }
+    let!(:active_lead) { create(:lead, property: active_property) }
+    let!(:inactive_lead) { create(:lead, property: inactive_property) }
+    let!(:unassigned_lead) { create(:lead, property: nil) }
+
+    def resolve(user)
+      LeadPolicy::Scope.new(user, Lead.where(id: [active_lead.id, inactive_lead.id, unassigned_lead.id])).resolve
+    end
+
+    context "for administrators" do
+      it "shows leads at active properties and leads with no property yet" do
+        expect(resolve(administrator)).to contain_exactly(active_lead, unassigned_lead)
+      end
+
+      it "still opens a lead at an inactive property directly" do
+        expect(LeadPolicy.new(administrator, inactive_lead).show?).to be true
+      end
+    end
+
+    context "for corporate users" do
+      it "shows only leads at active properties" do
+        expect(resolve(corporate)).to contain_exactly(active_lead)
+      end
+    end
+
+    # Callers use the resolved scope as an id subquery. With includes + a
+    # condition on properties, Rails eager-loads and ignores .select, and
+    # Postgres rejects the subquery ("subquery has too many columns") -- this
+    # broke the property duplicates page for corporate users.
+    it "stays usable as an id subquery for administrators and corporate users" do
+      [administrator, corporate].each do |user|
+        expect(LeadPolicy::Scope.new(user, Lead).resolve.select(:id).to_sql).to match(/\ASELECT "leads"."id" FROM/)
+        expect { DuplicateLead.for_property_accessible_by_user(active_property, user).to_a }.not_to raise_error
+      end
+    end
+  end
 end

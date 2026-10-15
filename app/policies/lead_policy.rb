@@ -6,9 +6,20 @@ class LeadPolicy < ApplicationPolicy
       skope = scope
       return case user
         when ->(u) { u.administrator? }
-          skope
+          # Only properties we still operate. Leads at inactive properties --
+          # sold or no longer managed, 96% of all leads as of Oct 2026 -- stay out
+          # of administrators' lists, searches and queues; a lead's own page
+          # still opens for them (see #show?). Unlike corporate users below,
+          # leads with no property yet stay visible: someone has to assign them.
+          #
+          # Plain joins, not includes: includes + a condition on properties makes
+          # Rails eager-load, which ignores .select -- so callers that use this
+          # scope as a subquery (DuplicateLead.for_property_accessible_by_user,
+          # LeadSearch#property_options) got "subquery has too many columns".
+          # Callers that display the property eager-load it themselves (LeadSearch).
+          skope.left_outer_joins(:property).where(properties: { active: [true, nil] })
         when ->(u) { u.corporate? }
-          skope.includes(:property).where(property: {active: true})
+          skope.joins(:property).where(properties: { active: true })
         when -> (u) { u.team_lead?}
           #skope.
             #includes(:property).

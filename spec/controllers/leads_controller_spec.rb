@@ -52,11 +52,17 @@ RSpec.describe LeadsController, type: :controller do
       let(:lead1) { create(:lead, property: active_prop, state: 'open') }
       let(:lead2) { create(:lead, property: inactive_prop, state: 'open') }
 
+      # Administrators used to see every property's leads. Since Oct 2026 they
+      # see only properties still operated, like corporate users: inactive
+      # properties held 96% of all leads. See LeadPolicy::Scope.
       describe "as an admin" do
-        it "should display all leads" do
+        it "should display leads from active properties" do
           Lead.destroy_all; lead1; lead2
           assert(Lead.count == 2)
           sign_in administrator
+          get :index, params: {lead_search: {states: ['open']}}
+          expect(assigns[:leads].count).to eq(1)
+          lead2.property.update(active: true)
           get :index, params: {lead_search: {states: ['open']}}
           expect(assigns[:leads].count).to eq(2)
         end
