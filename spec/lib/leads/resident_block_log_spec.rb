@@ -41,7 +41,7 @@ RSpec.describe Leads::ResidentBlockLog do
     text = described_class.record(property: property, stage: 'closed after creation', resident: resident, contact: lead.email,
                                   lead: lead, source: 'Zillow', referral: 'Zillow')
 
-    expect(text).to eq("Zillow contact, to Zillow, from #{lead.email} (Lead #{lead.id}), closed after creation, matches resident " \
+    expect(text).to eq("Zillow contact to Zillow, from #{lead.email} (Lead #{lead.id}), closed after creation, matches resident " \
                        "#{resident.name}, unit #{resident.unit.unit}, current (Roommate t0225115-p0514945)")
   end
 

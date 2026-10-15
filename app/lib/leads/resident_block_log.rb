@@ -39,8 +39,9 @@ module Leads
 
     # e.g. "BlueConnect call to (615) 555-0100 (Google Business Profile), from (256) 263-6836, rejected on arrival, matches resident ..."
     def self.line(stage:, resident:, contact: nil, source: nil, lead: nil, marketing: nil)
-      parts = [source_label(source)]
-      parts << "to #{marketing}" if marketing.present?
+      head = source_label(source)
+      head += " to #{marketing}" if marketing.present?
+      parts = [head]
       parts << "from #{format_contact(contact)}#{lead&.id ? " (Lead #{lead.id})" : ''}" if contact.present?
       "#{parts.join(', ')}, #{stage}, matches resident #{describe(resident)}"
     end
