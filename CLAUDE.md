@@ -159,6 +159,28 @@ track what is deployed to each environment and only ever fast-forward from
 
 Development configuration uses `.env` file (copy from `env.example`). Key environment variables include Yardi credentials, Twilio settings, AWS keys, and database URLs.
 
+## Google Sign-In
+
+"Sign in with Google" is the primary sign-in; email/password stays permanently,
+collapsed under a disclosure. Full design, decisions and rollout:
+`doc/google_sign_in.md`. The points that are easy to break:
+
+- **Switch:** `GOOGLE_SIGN_IN_ENABLED` + `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`,
+  read by `GoogleSignIn.enabled?` (`config/initializers/001_google_sign_in.rb`).
+  Fails closed; checked at strategy registration, button render, and a callback
+  `before_action`. Kill switch: `heroku config:set GOOGLE_SIGN_IN_ENABLED=false -a druid-prod`.
+- **Never auto-provision.** The only membership gate is that the verified Google
+  email matches an existing user. No `User.create` in the callback path. No `hd`
+  check, on purpose (every account is admin-created).
+- **`email_verified == true` strictly**, from `extra.raw_info` -- the gem's
+  `verified_email` is truthy. Keep `skip_jwt` false (it checks `aud`).
+- **`uid` is pinned on first use**, never re-bound; admin "Unlink Google" recovers.
+- **Order in the callback is load-bearing:** system user refused first, then uid,
+  deactivated, active property, then confirm (and clear the confirmation token),
+  unlock, link, sync names against the `google_*_name` shadow columns.
+- **`/privacy` must stay public** (Google's consent screen requires it) and
+  must match what the code collects; update it in the same commit.
+
 ## Production Console Commands
 
 - When running rails console on production, use heroku and rails runner and pass in commands
