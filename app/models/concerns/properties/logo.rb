@@ -46,7 +46,7 @@ module Properties
           )
         else
           # Fallback to default
-          "%s://%s/bluecrest_logo_small.png" % [
+          "%s://%s/bluecore_logo_small.png" % [
             ENV.fetch('APPLICATION_PROTOCOL', 'https'),
             ENV.fetch('APPLICATION_HOST', 'localhost:3000')
           ]

@@ -305,7 +305,7 @@ class Message < ApplicationRecord
       end
 
       verified_sender = "#{email_prefix}@#{ENV.fetch('SMTP_DOMAIN', 'mail.blue-sky.app')}"
-      property_name = messageable.try(:property).try(:name) || 'Bluecrest Residential'
+      property_name = messageable.try(:property).try(:name) || 'Bluecore Residential'
 
       return "\"#{property_name}#{display_suffix}\" <#{verified_sender}>"
     else

@@ -182,7 +182,7 @@ class MessageTemplate < ApplicationRecord
         ENV.fetch('APPLICATION_PROTOCOL', 'https'),
         ENV.fetch('APPLICATION_HOST', 'localhost:3000')
       ],
-      'email_business_logo' => property&.email_footer_logo_url || "%s://%s/bluecrest_logo_small.png" % [
+      'email_business_logo' => property&.email_footer_logo_url || "%s://%s/bluecore_logo_small.png" % [
         ENV.fetch('APPLICATION_PROTOCOL', 'https'),
         ENV.fetch('APPLICATION_HOST', 'localhost:3000')
       ],

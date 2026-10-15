@@ -112,4 +112,14 @@ RSpec.describe 'Privacy policy', type: :request do
     expect(response).to have_http_status(:ok)
     assert_select 'a[href=?]', privacy_path, count: 1
   end
+
+  # The operator named on the homepage should match the policy and the consent
+  # screen. (Logos and prospect-facing copy elsewhere are a separate rebrand.)
+  it 'matches the operator named on the sign-in page footer and description' do
+    get new_user_session_path
+
+    assert_select '#copyright_notice', text: /Bluecore Residential/
+    assert_select 'meta[name=description][content*=?]', 'Bluecore Residential'
+    expect(response.body).not_to match(/Bluecrest Residential/)
+  end
 end

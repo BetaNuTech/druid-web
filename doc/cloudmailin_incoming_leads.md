@@ -39,7 +39,7 @@ Emails are rejected if they contain specific patterns defined in `ContentExcepti
 - Automated system emails
 
 ### Company Email Domain Filtering
-- Environment variable: `COMPANY_EMAIL_DOMAIN` (default: 'bluecrestresidential.com')
+- Environment variable: `COMPANY_EMAIL_DOMAIN` (default: 'bluecoreresidential.com')
 - OpenAI is instructed that emails from this domain are from employees, not leads
 - These emails still create lead records but are handled based on OpenAI's analysis:
   - If OpenAI returns `is_lead: false` OR `lead_type` is not 'rental_inquiry':
@@ -176,7 +176,7 @@ CloudmailinRawEmail.failed.order(created_at: :desc).each do |e|
 end; nil
 
 # Check emails from company domain
-CloudmailinRawEmail.where("raw_data::text ILIKE '%bluecrestresidential.com%'").each do |e|
+CloudmailinRawEmail.where("raw_data::text ILIKE '%bluecoreresidential.com%'").each do |e|
   puts "#{e.created_at} | Status: #{e.status} | Lead: #{e.lead_id || 'None'}"
 end; nil
 
@@ -247,7 +247,7 @@ OPENAI_ORG=your-org-id  # Optional
 OPENAI_MODEL=gpt-4o-mini  # Default
 
 # Company email domain
-COMPANY_EMAIL_DOMAIN=bluecrestresidential.com
+COMPANY_EMAIL_DOMAIN=bluecoreresidential.com
 
 # CloudMailin debugging
 DEBUG_MESSAGE_API=true

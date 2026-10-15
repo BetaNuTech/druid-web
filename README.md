@@ -1,10 +1,10 @@
 # README
 
-This is the BlueSky Web Application created by and for BlueStone Properties.
+This is the BlueSky Web Application created by and for Bluecore Residential (formerly BlueStone Properties).
 
 # License
 
-Copyright 2017-2025 BlueStone Properties
+Copyright 2017-2026 Bluecore Residential
 This code is proprietary and distribution is strictly prohibited.
 
 # Dependencies
