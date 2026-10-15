@@ -20,10 +20,14 @@ module Leads
 
     # resident: a Yardi::Backup::Database::Resident, a ::Resident, or a
     # String already describing the match. contact: the phone/email matched.
-    def self.record(property:, stage:, resident:, contact: nil, source: nil, lead: nil)
+    # source: the LeadSource (or its name). referral: the lead's referral,
+    # i.e. the marketing source name; a call's tracking number is looked up
+    # from it ("to (615) 555-0100 (Google Business Profile)").
+    def self.record(property:, stage:, resident:, contact: nil, source: nil, referral: nil, lead: nil)
       return if property.nil?
 
-      text = line(stage: stage, resident: resident, contact: contact, source: source, lead: lead)
+      text = line(stage: stage, resident: resident, contact: contact, source: source, lead: lead,
+                  marketing: marketing_label(property, referral))
       Note.create(notable: property, classification: 'system', content: "#{NOTE_PREFIX} #{text}")
       YodaBotMessageJob.perform_later(channel: channel, text: "#{property.name}: #{text}") if channel
       text
@@ -33,11 +37,29 @@ module Leads
       nil
     end
 
-    def self.line(stage:, resident:, contact: nil, source: nil, lead: nil)
-      what = [source.presence, 'contact'].compact.join(' ')
-      what = "#{what} from #{format_contact(contact)}" if contact.present?
-      what += " (Lead #{lead.id})" if lead&.id
-      "#{what} #{stage}, matches resident #{describe(resident)}"
+    # e.g. "BlueConnect call to (615) 555-0100 (Google Business Profile), from (256) 263-6836, rejected on arrival, matches resident ..."
+    def self.line(stage:, resident:, contact: nil, source: nil, lead: nil, marketing: nil)
+      parts = [source_label(source)]
+      parts << "to #{marketing}" if marketing.present?
+      parts << "from #{format_contact(contact)}#{lead&.id ? " (Lead #{lead.id})" : ''}" if contact.present?
+      "#{parts.join(', ')}, #{stage}, matches resident #{describe(resident)}"
+    end
+
+    def self.source_label(source)
+      name = source.respond_to?(:name) ? source.name : source.to_s
+      slug = source.respond_to?(:slug) ? source.slug : nil
+      return 'BlueConnect call' if slug == Leads::CallGuestcards::CALL_CENTER_SOURCE_SLUG || name == Leads::CallGuestcards::CALL_CENTER_SOURCE_SLUG
+
+      name.present? ? "#{name} contact" : 'contact'
+    end
+
+    # "(615) 555-0100 (Google Business Profile)" when the referral names a
+    # marketing source with a tracking number; otherwise just the referral
+    def self.marketing_label(property, referral)
+      return nil if referral.blank?
+
+      number = property.marketing_sources.find_by(name: referral)&.tracking_number
+      number.present? ? "#{format_contact(number)} (#{referral})" : referral
     end
 
     def self.describe(resident)

@@ -128,7 +128,7 @@ RSpec.describe Leads::YardiResidentGate do
       expect(open_lead.lead_transitions.last.memo)
         .to eq('Yardi sync: matches Yardi resident Zoe Ellis, unit 0406, notice (Tenant t0225446)')
       expect(Note.where(notable: property).last.content)
-        .to include('Resident block:', "(Lead #{open_lead.id}) closed before the Yardi push, matches resident Zoe Ellis")
+        .to include('Resident block:', "(Lead #{open_lead.id}), closed before the Yardi push, matches resident Zoe Ellis")
     end
 
     it 'leaves a lead in showing alone apart from one note' do

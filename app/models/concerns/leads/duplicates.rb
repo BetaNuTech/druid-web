@@ -235,7 +235,7 @@ module Leads
         reload
         Leads::ResidentBlockLog.record(property: property, stage: 'closed after creation', lead: self,
                                        resident: ::Resident.find_by(id: match['resident_id']) || "##{match['resident_id']}",
-                                       contact: [phone1, phone2, email].find(&:present?), source: source&.name)
+                                       contact: [phone1, phone2, email].find(&:present?), source: source, referral: referral)
         true
       end
 

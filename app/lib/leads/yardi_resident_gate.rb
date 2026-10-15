@@ -107,7 +107,8 @@ module Leads
 
     def log_block(lead, resident, stage)
       Leads::ResidentBlockLog.record(property: lead.property, stage: stage, resident: resident, lead: lead,
-                                     contact: [lead.phone1, lead.phone2, lead.email].find(&:present?), source: lead.source&.name)
+                                     contact: [lead.phone1, lead.phone2, lead.email].find(&:present?),
+                                     source: lead.source, referral: lead.referral)
     end
 
     # Stands in for Yardi::Backup::Database (responds to .open) for services

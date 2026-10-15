@@ -151,7 +151,7 @@ module Leads
           Leads::ResidentBlockLog.record(property: @lead.property, stage: 'rejected on arrival',
                                          resident: ::Resident.find_by(id: matching_resident['resident_id']) || "##{matching_resident['resident_id']}",
                                          contact: error_details.first.to_s.sub(/\A\w+: /, '').presence || @lead.phone1,
-                                         source: @source&.name)
+                                         source: @source, referral: @lead.referral)
 
           return @lead
         end

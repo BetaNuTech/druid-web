@@ -203,7 +203,7 @@ module Leads
         invalidate(lead, :resident, resident.respond_to?(:description) ? Leads::YardiResidentGate.describe(resident) : 'Caller is a current resident in Yardi')
         Leads::ResidentBlockLog.record(property: push.property, stage: 'closed before the Yardi push', lead: lead,
                                        resident: resident.respond_to?(:description) ? resident : 'a current resident in Yardi',
-                                       contact: push.phone, source: 'BlueConnect call')
+                                       contact: push.phone, source: lead.source, referral: push.referral)
         finish(push, CallGuestcardPush::RESIDENT)
       when :link_new_card, :link_existing_card
         link(push, card, decision == :link_new_card ? CallGuestcardPush::LINKED_NEW_CARD : CallGuestcardPush::LINKED_EXISTING_CARD, db)

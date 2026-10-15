@@ -120,9 +120,11 @@ Every refusal is recorded by `Leads::ResidentBlockLog` in two places:
   unset means no Slack line). `YodaBotMessageJob` posts it from the
   `low_priority` queue with no link names, so caller data can never ping anyone.
 
-Each line reads like `Vintage Edge: BlueConnect call from (256) 263-6836
-rejected on arrival, matches resident Zoe Ellis, unit 0406, notice (Tenant
-t0225446)`. The stages are `rejected on arrival` (no lead was created),
+Each line reads like `Vintage Edge: BlueConnect call to (615) 555-0100
+(Google Business Profile), from (256) 263-6836, rejected on arrival, matches
+resident Zoe Ellis, unit 0406, notice (Tenant t0225446)`. The "to" part is the
+marketing source the lead's referral names, with its tracking number when the
+source has one. The stages are `rejected on arrival` (no lead was created),
 `closed after creation` (the automatic check invalidated a lead seconds after
 it was saved), `closed before the Yardi push` (the gate or the call push
 invalidated it) and `held before the Yardi push` (left to its agent, not sent).
