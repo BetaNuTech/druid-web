@@ -96,6 +96,10 @@
   &__col {
     position: relative;
     width: 100%;
+    // Columns are flex items, and a flex item won't shrink below its content's
+    // min width by default -- so one wide table made its column (and the page)
+    // wider than the screen, and .table-responsive inside never got to scroll.
+    min-width: 0;
     padding-right: $spacing-sm;
     padding-left: $spacing-sm;
     
@@ -208,6 +212,27 @@ $grid-columns: 12;
 
 .row {
   @extend .grid__row;
+}
+
+// A row's negative side margins only cancel out inside a padded container.
+// These rows sit straight in the layout's own regions, which have none, so on
+// phones they pushed every page a few pixels past the screen edge (a sideways
+// scroll). The flash bar (shared/_notifications) and the admin feature strip in
+// the footer (shared/_enabled_features) are centred text, so this is safe at
+// every width; rows placed directly in the content area (e.g. properties#index)
+// are only adjusted below the desktop breakpoint (phones and tablets), leaving
+// the desktop layout exactly as it was.
+#notifications > .row,
+#footer > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (max-width: 991px) {
+  #viewcontent > .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 // Column mappings

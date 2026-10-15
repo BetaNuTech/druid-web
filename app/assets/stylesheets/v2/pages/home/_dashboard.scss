@@ -23,7 +23,9 @@
   // Main grid layout
   &__grid {
     display: grid;
-    grid-template-columns: 1fr;
+    // minmax(0, 1fr), not 1fr: a bare 1fr column can't shrink below its
+    // content's min width, so on phones it grew past the screen edge.
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
     width: 100%;
     

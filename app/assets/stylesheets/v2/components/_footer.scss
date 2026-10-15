@@ -89,7 +89,15 @@
   
   .container {
     @extend .footer__container;
-    
+
+    // Beside the sidebar the container is pushed 250px right; with the grid
+    // container's width: 100% it then ran 250px past the screen edge on any
+    // window narrower than ~1450px (a sideways scroll on every signed-in page).
+    // width: auto fills only the space next to the sidebar; max-width still caps it.
+    @media (min-width: $screen-md-min) {
+      width: auto;
+    }
+
     // Override margin when no sidebar
     @media (min-width: $screen-md-min) {
       body.no-sidebar ~ #footer & {

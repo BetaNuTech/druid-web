@@ -55,6 +55,9 @@
 <div class="row" style="padding-top: 0;">
   <div class="col-md-12">
     <% events = @scheduled_actions.sorted_by_due_asc %>
+    <%# The month grid is a seven-column table; on a phone it scrolls inside
+        this box rather than being cut off by the section. %>
+    <div class="table-responsive">
     <%= month_calendar events: events, start_date_param: :start_date, attribute: :start_time, start_date: @start_date do |date, scheduled_actions| %>
       <% # Sorts events by Object.start_time %>
       <div class="scheduled_action_calendar_day">
@@ -79,6 +82,7 @@
         <% end # each lead_action_name %>
       </div>
     <% end # month_calendar %>
+    </div>
   </div>
 </div>
 </section>
