@@ -62,6 +62,8 @@ Rails.application.routes.draw do
   resources :users do
     member do
       post 'switch_setting', to: 'users#switch_setting'
+      # Admin recovery for a pinned Google identity -- see UsersController#unlink_google.
+      patch 'unlink_google', to: 'users#unlink_google'
     end
   end
   resources :residents

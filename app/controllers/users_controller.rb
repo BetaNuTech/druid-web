@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, only: [:show, :destroy, :switch_setting]
+  before_action :set_user, only: [:show, :destroy, :switch_setting, :unlink_google]
   after_action :verify_authorized
 
   # GET /users
@@ -98,6 +98,26 @@ class UsersController < ApplicationController
     else
       render status: :unprocessable_entity
     end
+  end
+
+  # PATCH /users/1/unlink_google
+  #
+  # Admin recovery for a pinned Google identity. A Google sign-in whose `sub`
+  # differs from the one already pinned to this account is refused and never
+  # silently re-bound, so unlinking is the only way back in via Google.
+  # Legitimate reasons to need it: the person's Google account was recreated, or
+  # their address was recycled to a new Workspace user. An illegitimate one --
+  # somebody else now controls that Google address -- looks identical from
+  # here, which is exactly why it takes an admin.
+  def unlink_google
+    authorize @user
+    @user.unlink_google!
+    Rails.logger.warn(
+      "[google_sign_in] unlinked user_id=#{@user.id} by=#{(true_current_user || current_user).id} as=#{current_user.id}"
+    )
+    redirect_to edit_user_path(@user), notice: 'Google account unlinked. The next Google sign-in will link it again.'
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to edit_user_path(@user), alert: "Google account could not be unlinked: #{e.record.errors.full_messages.to_sentence}"
   end
 
   private

@@ -71,6 +71,16 @@ class UserPolicy < ApplicationPolicy
       edit?
   end
 
+  # Clearing a pinned Google identity is how a refused "different Google account"
+  # sign-in is recovered -- and also what an attacker who took over the address
+  # would need -- so it is limited to administrators and corporate users who may
+  # edit this user.
+  def unlink_google?
+    return false if record.respond_to?(:system?) && record.system?
+
+    user.admin? && edit?
+  end
+
   def impersonate?
     return false if record.respond_to?(:system?) && record.system?
     

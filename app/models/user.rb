@@ -202,6 +202,22 @@ class User < ApplicationRecord
     provider.present? && uid.present?
   end
 
+  # Admin recovery for a pinned identity: clears the binding so the next Google
+  # sign-in pins afresh. Also clears the name shadow columns, so that sign-in
+  # treats Google's names as new rather than diffing them against what a
+  # previous, now-unlinked identity said. update! (not update_columns) so the
+  # change goes through `audited` -- who unlinked whom, and when, is recorded.
+  def unlink_google!
+    update!(
+      provider: nil,
+      uid: nil,
+      google_email: nil,
+      google_linked_at: nil,
+      google_given_name: nil,
+      google_family_name: nil
+    )
+  end
+
   handle_asynchronously :deactivation_cleanup, queue: :low_priority
 
   def reassign_leads(user:)

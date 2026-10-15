@@ -41,6 +41,33 @@
             <%= form.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Pacific Time (US & Canada)" }, {class: "form__control"} %>
           </div>
         </div>
+        <% if user.persisted? && (user.google_linked? || GoogleSignIn.enabled?) %>
+          <div class="row">
+            <div class="col-md-8 form__group" id="google_sign_in">
+              <span class="form__label">Google sign-in</span>
+              <% if user.google_linked? %>
+                <p class="form__text">
+                  Linked to <%= user.google_email.presence || 'a Google account' %><%= " on #{l(user.google_linked_at.to_date, format: :long)}" if user.google_linked_at %>.
+                </p>
+                <% if policy(user).unlink_google? %>
+                  <%#
+                    The recovery path when this user's Google sign-in is refused
+                    for "already linked to a different Google account" -- the pin
+                    is never re-bound automatically. A link (rails-ujs builds the
+                    PATCH form), not button_to, because this sits inside the user
+                    form and forms cannot nest.
+                  %>
+                  <%= link_to 'Unlink Google', unlink_google_user_path(user),
+                              method: :patch,
+                              class: 'btn btn--xs btn--danger',
+                              data: { confirm: "Unlink this Google account? The next Google sign-in for #{user.email} will link whichever Google account is used." } %>
+                <% end %>
+              <% else %>
+                <p class="form__text">Not linked yet. The first Google sign-in links it.</p>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
         <% unless user.new_record? %>
           <div class="row">
             <div class="col-md-6 form__group">
