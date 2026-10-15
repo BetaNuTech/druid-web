@@ -23,6 +23,13 @@ gem 'amazing_print', "~> 1.3"
 gem 'pry-rails', "~> 0.3"
 gem 'webpacker', "~> 5.4"
 gem 'devise', "~> 4.8"
+# "Sign in with Google" via Devise :omniauthable. See doc/google_sign_in.md.
+# omniauth-rails_csrf_protection is REQUIRED, not optional: OmniAuth 2.x refuses
+# GET request-phase initiation, so the sign-in control must be a POST form and
+# that POST needs Rails' authenticity token. Without this gem every attempt
+# raises OmniAuth::AuthenticityError.
+gem 'omniauth-google-oauth2', '~> 1.2'
+gem 'omniauth-rails_csrf_protection', '~> 2.0'
 gem 'colorize', "~> 0.8"
 gem 'pundit', "~> 2.1"
 gem 'audited', '~> 5.3'
