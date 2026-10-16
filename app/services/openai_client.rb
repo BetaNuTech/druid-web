@@ -9,13 +9,17 @@ class OpenaiClient
   OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
   MAX_RETRIES = 3
   RETRY_DELAY = 1 # seconds
+  DEFAULT_MODEL = 'gpt-6-luna'.freeze
+  MAX_OUTPUT_TOKENS = 1000
+  # Tokens to budget for hidden reasoning when a reasoning effort other than 'none' is used.
+  REASONING_TOKEN_BUDGET = 8000
   
   attr_reader :api_key, :organization, :model
   
   def initialize
     @api_key = ENV.fetch('OPENAI_API_TOKEN') { raise 'OPENAI_API_TOKEN not set' }
     @organization = ENV.fetch('OPENAI_ORG', nil)
-    @model = ENV.fetch('OPENAI_MODEL', 'gpt-4o-mini')
+    @model = ENV.fetch('OPENAI_MODEL', nil).presence || DEFAULT_MODEL
     @circuit_open = false
     @last_failure_time = nil
   end
@@ -40,19 +44,39 @@ class OpenaiClient
           role: "user",
           content: prompt
         }
-      ],
-      temperature: 0.3,
-      max_tokens: 1000
-    }
+      ]
+    }.merge(model_params)
     
     response = make_request_with_retries(request_body)
-    parse_response(response)
+    sanitize_analysis(parse_response(response))
   rescue => e
     Rails.logger.error "OpenAI Client Error: #{e.message}"
     handle_circuit_breaker(e)
     raise
   end
   
+  # Request parameters differ by model family (verified against the API, Oct 2026):
+  # - GPT-4.x / 3.5 (GPT-4o and GPT-4.1 retire 14 Jan 2027): max_tokens + temperature.
+  # - gpt-5*, gpt-6*, o-series reject max_tokens and take max_completion_tokens,
+  #   which counts reasoning tokens as well as the answer.
+  # - gpt-6 Sol / Luna accept reasoning_effort 'none' (no reasoning: the GPT-4.x
+  #   drop-in, and still takes temperature). Other gpt-6 models have no 'none', so
+  #   they default to 'low'. OPENAI_REASONING_EFFORT overrides the default.
+  def model_params
+    return { temperature: 0.3, max_tokens: MAX_OUTPUT_TOKENS } if model.match?(/\Agpt-(4|3\.5)/)
+
+    default_effort = if model.match?(/\Agpt-6-(sol|luna)/) then 'none'
+                     elsif model.start_with?('gpt-6') then 'low'
+                     end
+    effort = ENV.fetch('OPENAI_REASONING_EFFORT', nil).presence || default_effort
+
+    if effort == 'none'
+      { temperature: 0.3, max_completion_tokens: MAX_OUTPUT_TOKENS, reasoning_effort: 'none' }
+    else
+      { max_completion_tokens: MAX_OUTPUT_TOKENS + REASONING_TOKEN_BUDGET, reasoning_effort: effort }.compact
+    end
+  end
+
   private
   
   def circuit_open?
@@ -125,9 +149,51 @@ class OpenaiClient
     nil
   end
   
+  # Deterministic clean-up of the model's answer, so downstream code never sees
+  # the string "null" as a value or one of our own mailboxes as the lead's email
+  # (the prompt asks for both, but models don't always comply).
+  def sanitize_analysis(analysis)
+    return analysis unless analysis.is_a?(Hash)
+
+    analysis = nullify_null_strings(analysis)
+    lead_data = analysis['lead_data']
+    if lead_data.is_a?(Hash) && own_email_address?(lead_data['email'])
+      Rails.logger.info "OpenAI returned our own address as lead email (#{lead_data['email']}); dropping it"
+      lead_data['email'] = nil
+    end
+    analysis
+  end
+
+  def nullify_null_strings(value)
+    case value
+    when Hash then value.transform_values { |v| nullify_null_strings(v) }
+    when Array then value.map { |v| nullify_null_strings(v) }
+    when String then value.strip.match?(/\A(null|nil)?\z/i) ? nil : value
+    else value
+    end
+  end
+
+  def own_email_address?(email)
+    local, domain = email.to_s.strip.downcase.split('@', 2)
+    return false if local.blank? || domain.blank?
+
+    domain == company_domain.downcase ||
+      domain.end_with?('cloudmailin.net') ||
+      invalid_email_prefixes.any? do |prefix|
+        local == prefix || local.start_with?("#{prefix}+", "#{prefix}.", "#{prefix}-", "#{prefix}_")
+      end
+  end
+
+  def company_domain
+    ENV.fetch('COMPANY_EMAIL_DOMAIN', 'bluecoreresidential.com')
+  end
+
+  def invalid_email_prefixes
+    ENV.fetch('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').split(',').map { |p| p.strip.downcase }.reject(&:blank?)
+  end
+
   def system_prompt(property)
-    company_domain = ENV.fetch('COMPANY_EMAIL_DOMAIN', 'bluecoreresidential.com')
-    invalid_prefixes = ENV.fetch('INVALID_EMAIL_PREFIXES', 'blueskyleads,leasing').split(',').map(&:strip)
+    invalid_prefixes = invalid_email_prefixes
     
     <<~PROMPT
       You are a lead classification system for #{property.name}. You are analyzing emails received by the leasing agents at #{property.name}. Anyone who has an email with domain #{company_domain} works for the property and is not a lead. Analyze incoming emails and:

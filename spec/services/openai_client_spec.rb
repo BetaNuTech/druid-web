@@ -77,7 +77,7 @@ RSpec.describe OpenaiClient do
     allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with('OPENAI_API_TOKEN').and_return('test-api-key')
     allow(ENV).to receive(:fetch).with('OPENAI_ORG', nil).and_return('test-org')
-    allow(ENV).to receive(:fetch).with('OPENAI_MODEL', 'gpt-4o-mini').and_return('gpt-4o-mini')
+    allow(ENV).to receive(:fetch).with('OPENAI_MODEL', nil).and_return('gpt-6-luna')
     property_listing # ensure it exists
   end
   
@@ -85,9 +85,16 @@ RSpec.describe OpenaiClient do
     it "loads configuration from environment variables" do
       expect(client.api_key).to eq('test-api-key')
       expect(client.organization).to eq('test-org')
-      expect(client.model).to eq('gpt-4o-mini')
+      expect(client.model).to eq('gpt-6-luna')
     end
     
+    it "falls back to the default model when OPENAI_MODEL is unset or blank" do
+      [nil, '', '  '].each do |value|
+        allow(ENV).to receive(:fetch).with('OPENAI_MODEL', nil).and_return(value)
+        expect(described_class.new.model).to eq(OpenaiClient::DEFAULT_MODEL)
+      end
+    end
+
     it "raises error when API token is not set" do
       allow(ENV).to receive(:fetch).and_call_original
       allow(ENV).to receive(:fetch).with('OPENAI_API_TOKEN').and_raise(KeyError, 'OPENAI_API_TOKEN not set')
@@ -96,6 +103,39 @@ RSpec.describe OpenaiClient do
     end
   end
   
+  describe "#model_params" do
+    def params_for(model, effort: nil)
+      allow(ENV).to receive(:fetch).with('OPENAI_MODEL', nil).and_return(model)
+      allow(ENV).to receive(:fetch).with('OPENAI_REASONING_EFFORT', nil).and_return(effort)
+      described_class.new.model_params
+    end
+
+    it "sends gpt-6 Luna and Sol no reasoning, max_completion_tokens and temperature" do
+      %w[gpt-6-luna gpt-6-sol].each do |model|
+        expect(params_for(model)).to eq(temperature: 0.3, max_completion_tokens: 1000, reasoning_effort: 'none')
+      end
+    end
+
+    it "keeps the classic max_tokens params for GPT-4.x models" do
+      expect(params_for('gpt-4o-mini')).to eq(temperature: 0.3, max_tokens: 1000)
+      expect(params_for('gpt-4.1-mini')).to eq(temperature: 0.3, max_tokens: 1000)
+    end
+
+    it "defaults other gpt-6 models to low effort with a reasoning budget and no temperature" do
+      expect(params_for('gpt-6.1-sol')).to eq(max_completion_tokens: 9000, reasoning_effort: 'low')
+    end
+
+    it "honours OPENAI_REASONING_EFFORT" do
+      expect(params_for('gpt-6-luna', effort: 'low')).to eq(max_completion_tokens: 9000, reasoning_effort: 'low')
+    end
+
+    it "never sends max_tokens to newer model families" do
+      %w[gpt-6-luna gpt-6.1-sol gpt-5.6-luna gpt-5-mini].each do |model|
+        expect(params_for(model)).not_to have_key(:max_tokens)
+      end
+    end
+  end
+
   describe "#analyze_email" do
     let(:http_response) { double('response', code: '200', body: successful_response.to_json) }
     let(:http) { double('http', request: http_response) }
@@ -240,6 +280,60 @@ RSpec.describe OpenaiClient do
       end
     end
     
+    context "with the request body" do
+      it "sends the model and its family's params" do
+        sent = nil
+        allow(http).to receive(:request) do |req|
+          sent = JSON.parse(req.body)
+          http_response
+        end
+
+        client.analyze_email(email_content, property, active_sources)
+
+        expect(sent).to include('model' => 'gpt-6-luna', 'max_completion_tokens' => 1000, 'reasoning_effort' => 'none')
+        expect(sent).not_to have_key('max_tokens')
+      end
+    end
+
+    context "with response guards" do
+      def respond_with(analysis)
+        body = { 'choices' => [{ 'message' => { 'content' => analysis.to_json } }] }
+        allow(http).to receive(:request).and_return(double('response', code: '200', body: body.to_json))
+        client.analyze_email(email_content, property, active_sources)
+      end
+
+      let(:analysis) { JSON.parse(successful_response.dig('choices', 0, 'message', 'content')) }
+
+      it "turns the string \"null\" and empty strings into real nulls, at any depth" do
+        analysis['source_match'] = 'null'
+        analysis['lead_data'].merge!('phone2' => 'NULL', 'company' => '', 'unit_type' => ' null ')
+
+        result = respond_with(analysis)
+
+        expect(result['source_match']).to be_nil
+        expect(result['lead_data'].values_at('phone2', 'company', 'unit_type')).to all(be_nil)
+        expect(result['lead_data']['first_name']).to eq('John')
+      end
+
+      {
+        'leasing@vintage-edge.com' => 'an invalid prefix mailbox',
+        'BlueskyLeads@vintage-edge.com' => 'an invalid prefix mailbox in any case',
+        'leasing+raleigh@example.com' => 'an invalid prefix with a tag',
+        '47064e037e5740bbedad+1001rawe@cloudmailin.net' => 'the CloudMailin inbox',
+        'agent@bluecoreresidential.com' => 'a staff address'
+      }.each do |email, desc|
+        it "drops #{desc} as the lead's email" do
+          analysis['lead_data']['email'] = email
+          expect(respond_with(analysis)['lead_data']).to include('email' => nil)
+        end
+      end
+
+      it "keeps prospect addresses that merely start with a prefix's letters" do
+        analysis['lead_data']['email'] = 'leasingfan@gmail.com'
+        expect(respond_with(analysis)['lead_data']['email']).to eq('leasingfan@gmail.com')
+      end
+    end
+
     context "with SMS consent detection" do
       let(:tour_confirmation_email) {
         {
