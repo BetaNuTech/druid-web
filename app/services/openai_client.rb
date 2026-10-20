@@ -9,7 +9,7 @@ class OpenaiClient
   OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
   MAX_RETRIES = 3
   RETRY_DELAY = 1 # seconds
-  DEFAULT_MODEL = 'gpt-6-luna'.freeze
+  DEFAULT_MODEL = 'gpt-6-sol'.freeze
   MAX_OUTPUT_TOKENS = 1000
   # Tokens to budget for hidden reasoning when a reasoning effort other than 'none' is used.
   REASONING_TOKEN_BUDGET = 8000

@@ -77,7 +77,7 @@ RSpec.describe OpenaiClient do
     allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with('OPENAI_API_TOKEN').and_return('test-api-key')
     allow(ENV).to receive(:fetch).with('OPENAI_ORG', nil).and_return('test-org')
-    allow(ENV).to receive(:fetch).with('OPENAI_MODEL', nil).and_return('gpt-6-luna')
+    allow(ENV).to receive(:fetch).with('OPENAI_MODEL', nil).and_return('gpt-6-sol')
     property_listing # ensure it exists
   end
   
@@ -85,7 +85,7 @@ RSpec.describe OpenaiClient do
     it "loads configuration from environment variables" do
       expect(client.api_key).to eq('test-api-key')
       expect(client.organization).to eq('test-org')
-      expect(client.model).to eq('gpt-6-luna')
+      expect(client.model).to eq('gpt-6-sol')
     end
     
     it "falls back to the default model when OPENAI_MODEL is unset or blank" do
@@ -290,7 +290,7 @@ RSpec.describe OpenaiClient do
 
         client.analyze_email(email_content, property, active_sources)
 
-        expect(sent).to include('model' => 'gpt-6-luna', 'max_completion_tokens' => 1000, 'reasoning_effort' => 'none')
+        expect(sent).to include('model' => 'gpt-6-sol', 'max_completion_tokens' => 1000, 'reasoning_effort' => 'none')
         expect(sent).not_to have_key('max_tokens')
       end
     end

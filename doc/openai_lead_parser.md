@@ -39,14 +39,14 @@ ENABLE_OPENAI_PARSER=true
 # OpenAI API credentials
 OPENAI_API_TOKEN=your-api-key
 OPENAI_ORG=your-organization-id # Optional
-OPENAI_MODEL=gpt-6-luna # Default: gpt-6-luna
+OPENAI_MODEL=gpt-6-sol # Default: gpt-6-sol
 OPENAI_REASONING_EFFORT=none # Optional override (none|minimal|low|medium|high)
 ```
 
 `OpenaiClient#model_params` sends each model family the parameters it accepts:
 GPT-4.x gets `max_tokens` + `temperature`; gpt-5/gpt-6 get `max_completion_tokens`
 and `reasoning_effort` (`none` by default for gpt-6 Luna/Sol). The model was moved
-off gpt-4o-mini ahead of its 14 Jan 2027 retirement; see
+off gpt-4o ahead of its 14 Jan 2027 retirement; see
 `doc/openai_model_migration.md` for the evaluation behind the choice.
 
 The client also cleans up the model's answer before anything uses it: string

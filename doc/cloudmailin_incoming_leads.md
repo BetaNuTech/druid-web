@@ -244,7 +244,7 @@ ENABLE_OPENAI_PARSER=true
 # OpenAI configuration
 OPENAI_API_TOKEN=your-api-key
 OPENAI_ORG=your-org-id  # Optional
-OPENAI_MODEL=gpt-6-luna  # Default (see doc/openai_model_migration.md)
+OPENAI_MODEL=gpt-6-sol  # Default (see doc/openai_model_migration.md)
 
 # Company email domain
 COMPANY_EMAIL_DOMAIN=bluecoreresidential.com
