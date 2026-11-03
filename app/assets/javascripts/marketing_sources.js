@@ -36,24 +36,21 @@ $(document).on('turbolinks:load', function() {
     if ( status !== 'success' ) return(false);
     $('#lead_source_helpBlock').html(data['description']);
 
-    ['tracking_number', 'destination_number', 'tracking_email', 'tracking_code'].forEach(function(e){
-      var tracking_container = $('.' + e + '_entry_container');
-      var entry_input_container = $('.' + e + '_entry');
-      var entry_input = entry_input_container.find('input');
-
-      if (data[e + '_enabled'] != false) {
-        tracking_container.removeClass('hidden');
-        if (data[e] !== false) {
-          entry_input_container.removeClass('hidden');
-          if ( entry_input.val() == '') entry_input.val(data[e]);
-        } else {
-          entry_input_container.addClass('hidden')
-        }
-      } else {
-        tracking_container.addClass('hidden');
-        entry_input_container.addClass('hidden')
-      }
+    // Only show/hide the phone and email sections here: the entries inside
+    // them belong to the Phone/Email Integration selectors below, and
+    // touching them here races those selectors' responses on page load.
+    ['tracking_number', 'tracking_email', 'tracking_code'].forEach(function(e){
+      $('.' + e + '_entry_container').toggleClass('hidden', data[e + '_enabled'] == false);
     })
+
+    var code_entry_container = $('.tracking_code_entry');
+    var code_entry_input = code_entry_container.find('input');
+    if (data['tracking_code'] !== false) {
+      code_entry_container.removeClass('hidden');
+      if ( code_entry_input.val() == '') code_entry_input.val(data['tracking_code']);
+    } else {
+      code_entry_container.addClass('hidden')
+    }
   }
   function onSelectMarketingSourceLeadSource() {
     var leadsourceSelector = $('#marketing_source--lead_source--selector')[0];
@@ -129,7 +126,8 @@ $(document).on('turbolinks:load', function() {
       tracking_entry_container.removeClass('hidden');
       destination_entry_container.removeClass('hidden');
       if (data['tracking_number'] != '') { tracking_entry_input.val(data['tracking_number']) }
-      destination_entry_input.val(data['destination_number']);
+      // Suggest the property's main line, but never replace a saved number
+      if (destination_entry_input.val() == '') destination_entry_input.val(data['destination_number']);
     } else {
       tracking_entry_container.addClass('hidden');
       destination_entry_container.addClass('hidden');
