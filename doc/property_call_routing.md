@@ -10,7 +10,10 @@ the resulting phone lead to be attributed. Implemented in
 2. The call center asks `api/v1/leads#property_info`, which returns
    `Property.property_info_for_incoming_number`
    (`app/models/concerns/properties/marketing_sources.rb`).
-3. It forwards the call using the numbers in that response.
+3. It forwards the call using the numbers in that response. The call goes to
+   `main_number`: the `getBlueskyPropertyInfo` Lambda (`external/lambda/`) only
+   prefixes `main_number` and `maintenance_number` with `+1`. The transfer
+   itself is configured in the Connect contact flow, in AWS, not in this repo.
 4. If the caller becomes a lead, the call center posts it back with the
    `property_id` and `referrer` from that same response.
 5. `Leads::Creator` resolves the property from that code and matches
@@ -29,7 +32,7 @@ The *Phone (Main Line)* field under Contact Information.
 - `main_number`, `leasing_number`, and `maintenance_number` in the response
   all fall back to `property.phone` when the leasing/maintenance numbers are
   blank. So a blank main line blanks all three at once, and a call to a
-  tracking number has nowhere to forward.
+  tracking number with no destination of its own has nowhere to forward.
 
 Blank leasing and maintenance numbers are **fine and not flagged** — falling
 back to the main line is the designed behavior. That fallback is precisely
@@ -37,6 +40,17 @@ why the main line itself is critical.
 
 `MarketingSources::IncomingIntegrationHelper` also suggests `property.phone`
 as the `destination_number` when setting up a tracking number.
+
+### Tracking number destination (`MarketingSource#destination_number`)
+
+For a call to a tracking number, `main_number` in the response is the marketing
+source's `destination_number`, or `property.phone` when that is blank. A call to
+the main line itself, and `maintenance_number` and `leasing_number` on any call,
+are not affected.
+
+Changing `property.phone` moves every destination that was on the old main line
+(`Properties::MarketingSources#move_tracking_destinations_with_main_line`). A
+destination set to some other number is a deliberate override and stays put.
 
 ### CallCenter property listing code
 
@@ -91,9 +105,6 @@ mismatch, stay on the individual marketing source card.
 
 ## Things that look load-bearing but are not
 
-- `MarketingSource#destination_number` is stored and defaults to
-  `property.phone` in the form, but is never sent anywhere. The actual
-  forwarding targets are the property's main/leasing/maintenance numbers.
 - `Property#call_lead_generation` ("Generate Leads from Incoming Calls" on the
   preferences form) — its scope `supporting_call_lead_generation` has no
   callers anywhere in the app.

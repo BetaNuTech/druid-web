@@ -473,4 +473,58 @@ RSpec.describe Property, type: :model do
       end
     end
   end
+
+  describe "marketing source destination numbers" do
+    let(:phone_source) { create(:lead_source, slug: 'CallCenter', name: 'CallCenter2') }
+    let(:property) { create(:property, phone: '5555551000', maintenance_phone: '5555551001') }
+
+    def create_source(tracking_number, destination_number)
+      create(:marketing_source, property: property, phone_lead_source: phone_source,
+        tracking_number: tracking_number, destination_number: destination_number)
+    end
+
+    describe ".property_info_for_incoming_number" do
+      let(:info) { Property.property_info_for_incoming_number('+15555550001') }
+
+      it "forwards a tracking number to its marketing source's destination number" do
+        create_source('5555550001', '5555552000')
+        expect(info[:main_number]).to eq('5555552000')
+      end
+
+      it "falls back to the main line when the marketing source has no destination number" do
+        create_source('5555550001', nil)
+        expect(info[:main_number]).to eq('5555551000')
+      end
+
+      it "leaves the maintenance number with the property" do
+        create_source('5555550001', '5555552000')
+        expect(info[:maintenance_number]).to eq('5555551001')
+      end
+
+      it "forwards a call to the main line itself to the main line" do
+        create_source('5555550001', '5555552000')
+        expect(Property.property_info_for_incoming_number('5555551000')[:main_number]).to eq('5555551000')
+      end
+    end
+
+    describe "changing the main line" do
+      it "moves the destinations that were on the old main line" do
+        source = create_source('5555550001', '5555551000')
+        property.update!(phone: '5555553000')
+        expect(source.reload.destination_number).to eq('5555553000')
+      end
+
+      it "leaves a destination set to some other number" do
+        source = create_source('5555550001', '5555552000')
+        property.update!(phone: '5555553000')
+        expect(source.reload.destination_number).to eq('5555552000')
+      end
+
+      it "clears destinations rather than leaving them on a removed main line" do
+        source = create_source('5555550001', '5555551000')
+        property.update!(phone: nil)
+        expect(source.reload.destination_number).to be_nil
+      end
+    end
+  end
 end
