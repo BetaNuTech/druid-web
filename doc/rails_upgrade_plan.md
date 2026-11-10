@@ -196,6 +196,14 @@ Target 7.2.4 (anything >= 7.2.3.2 closes the alerts).
   configures `:delayed_job`). `resident_block_log_spec.rb` passed only when an
   earlier spec had leaked `queue_adapter = :test`; it now asks for the test
   adapter itself.
+- Found only by deploying: the first staging push of 7.2 was rejected at
+  `assets:precompile` with an empty `Uglifier::Error`. `rails/all` loads
+  Action Text (unused here), whose engine queues `trix.js` for precompilation,
+  and the Trix 2 bundled since 7.1 is syntax Uglifier cannot parse. An
+  initializer in `config/application.rb`, ordered after `action_text.asset`,
+  takes the Action Text and Trix assets back out of the build. The spec suite
+  cannot see this; before a deploy, run
+  `RAILS_ENV=production SECRET_KEY_BASE=dummy rake assets:precompile` locally.
 - Left alone: `delayed_job` 4.1.11 prints one `ActiveSupport::ProxyObject`
   deprecation at boot (removed in Rails 8.0). Bumping the job runner is not
   needed for 7.2.

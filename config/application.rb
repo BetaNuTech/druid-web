@@ -15,6 +15,14 @@ module BlueskyWeb
     # defined in ApplicationController to implement access control.
     config.flipflop.dashboard_access_filter = -> { head :forbidden }
 
+    # Action Text is not used, but `require 'rails/all'` loads it and its engine
+    # queues the Trix editor for precompilation. Trix 2 (bundled since Rails 7.1)
+    # is written in syntax Uglifier cannot parse, which fails assets:precompile
+    # and with it the deploy. Take those assets back out of the build.
+    initializer 'bluesky.skip_action_text_assets', after: 'action_text.asset' do |app|
+      app.config.assets.precompile -= %w[actiontext.js actiontext.esm.js trix.js trix.css]
+    end
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
