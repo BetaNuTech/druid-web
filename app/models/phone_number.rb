@@ -21,8 +21,8 @@ class PhoneNumber < ApplicationRecord
   ALLOWED_PARAMS = [:id, :name, :number, :prefix, :category, :availability, :_destroy]
 
   ### Enums
-  enum category: {cell: 0, home: 1, work: 2, fax: 3}
-  enum availability: {any: 0, morning: 1, afternoon: 2, evening: 3}
+  enum :category, {cell: 0, home: 1, work: 2, fax: 3}
+  enum :availability, {any: 0, morning: 1, afternoon: 2, evening: 3}
 
   ### Attributes
   #

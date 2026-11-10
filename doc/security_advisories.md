@@ -54,6 +54,11 @@ apply.
 
 GitHub keeps both alerts open for as long as `Gemfile.lock` has
 `activestorage < 7.2.3.2`. They close by upgrading Rails or by dismissing them
-on GitHub with this document as the justification. The upgrade is planned in
-`doc/rails_upgrade_plan.md`; its 7.2 step says what happens to the initializer
-and to the libvips example in the guard spec.
+on GitHub with this document as the justification. The upgrade is in `doc/rails_upgrade_plan.md`.
+
+Once Rails 7.2.4 is deployed both fixes come from Rails itself. The
+initializer stays as a second layer: it still pins `:mini_magick` (which
+`load_defaults 7.0` would otherwise change to vips), and its allow-list edit
+becomes a no-op. The guard spec's libvips example changed with 7.2, because
+Active Storage 7.2 loads `ruby-vips` itself when the gem is installed; it now
+checks that variants are processed by ImageMagick and never by libvips.

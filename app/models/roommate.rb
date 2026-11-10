@@ -26,8 +26,8 @@ class Roommate < ApplicationRecord
   ALLOWED_PARAMS = [:first_name, :last_name, :occupancy, :relationship, :phone, :email, :responsible, :minor, :sms_allowed, :email_allowed, :notes]
 
   ### Enums
-  enum occupancy: { resident: 0, guarantor: 1, child: 2}
-  enum relationship: { other: 0, spouse: 1, dependent: 2}
+  enum :occupancy, { resident: 0, guarantor: 1, child: 2}
+  enum :relationship, { other: 0, spouse: 1, dependent: 2}
 
   ### Associations
   belongs_to :lead

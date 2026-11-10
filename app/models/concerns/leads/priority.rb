@@ -4,7 +4,7 @@ module Leads
 
     included do
 
-      enum priority: { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, _prefix: :priority
+      enum :priority, { zero: 0, low: 1, medium: 2, high: 3, urgent: 4 }, prefix: :priority
 
       def self.set_priorities
         errors = []

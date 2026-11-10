@@ -26,7 +26,7 @@ class Note < ApplicationRecord
   ]
 
   ### Enums
-  enum classification: {comment: 0, system: 1, external: 2, error: 3 } # DEFAULT: 0
+  enum :classification, {comment: 0, system: 1, external: 2, error: 3 } # DEFAULT: 0
 
   ### Validations
   #validates :notable_id, :notable_type,

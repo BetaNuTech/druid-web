@@ -2,8 +2,9 @@
 
 require 'rails_helper'
 
-# Guards for the Active Storage advisories that are only patched in Rails 7.1+
-# (see doc/security_advisories.md):
+# Guards for two Active Storage advisories (see doc/security_advisories.md).
+# Rails 7.2.3.2+ contains both fixes; these keep the app from drifting back
+# into the conditions that made them exploitable:
 #
 #   CVE-2025-24293 / GHSA-r4mg-4433-c7g3 -- unsafe default transformation methods
 #   CVE-2026-66066 / GHSA-xr9x-r78c-5hrm -- libvips "unfuzzed" loaders
@@ -80,9 +81,25 @@ RSpec.describe 'Active Storage hardening' do
       expect(ActiveStorage.variant_processor).to eq(:mini_magick)
     end
 
-    it 'never loads libvips while processing a variant' do
+    # Active Storage 7.2 requires ruby-vips itself whenever the gem is
+    # installed (active_storage/vips.rb), so "libvips is never loaded" no
+    # longer holds. What matters is that it never processes an upload.
+    it 'never hands a variant to libvips' do
+      vips_usable = begin
+        require 'image_processing/vips'
+        true
+      rescue LoadError
+        false
+      end
+
+      expect(ImageProcessing::Vips).not_to receive(:source) if vips_usable
+      expect(ImageProcessing::MiniMagick).to receive(:source).and_call_original
+
       blob.variant(resize: 'x30').processed
-      expect(defined?(Vips)).to be_nil
+    end
+
+    it 'runs a Rails release that contains the libvips fix' do
+      expect(Gem::Version.new(ActiveStorage.version.to_s)).to be >= Gem::Version.new('7.2.3.2')
     end
 
     it 'blocks untrusted libvips operations should libvips ever be loaded' do

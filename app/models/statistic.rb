@@ -22,7 +22,7 @@ class Statistic < ApplicationRecord
   TENACITY_FACT = :tenacity
 
   ### Enums
-  enum fact: { leadspeed: 0, tenacity: 1 }
+  enum :fact, { leadspeed: 0, tenacity: 1 }
 
   ### Associations
   belongs_to :quantifiable, polymorphic: true

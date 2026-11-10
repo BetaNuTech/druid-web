@@ -45,7 +45,7 @@ class MarketingSource < ApplicationRecord
   LEASE_FEE = 'lease'
 
   ### Enums
-  enum fee_type: { FREE_FEE => 0, ONETIME_FEE => 1, LEAD_FEE => 2, MONTHLY_FEE => 3, QUARTERLY_FEE => 4, YEARLY_FEE => 5, LEASE_FEE => 6 }
+  enum :fee_type, { FREE_FEE => 0, ONETIME_FEE => 1, LEAD_FEE => 2, MONTHLY_FEE => 3, QUARTERLY_FEE => 4, YEARLY_FEE => 5, LEASE_FEE => 6 }
 
   ### Associations
   belongs_to :property

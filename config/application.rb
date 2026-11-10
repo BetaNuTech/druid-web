@@ -29,9 +29,9 @@ module BlueskyWeb
     config.active_job.queue_adapter = :delayed_job
     config.action_view.sanitized_allowed_attributes = ['href', 'title', 'style']
     config.active_record.use_yaml_unsafe_load = true
-    # Rails 7.1 deprecates the 6.1 cache format that load_defaults 5.1 implies
-    # and 7.2 removes it. Entries in format 7.0 are still readable by Rails 7.0.
-    config.active_support.cache_format_version = 7.0
+    # load_defaults 5.1 implies the 6.1 cache format, which Rails 7.2 removed.
+    # Rails 7.1 reads and writes format 7.1 too, so a rollback keeps the cache.
+    config.active_support.cache_format_version = 7.1
     # load_defaults 5.1 asks for non-URL-safe CSRF tokens, which Rails 7.0
     # deprecates and 7.1 removes. Dropping the override gives URL-safe tokens;
     # tokens already in sessions and open forms still verify.

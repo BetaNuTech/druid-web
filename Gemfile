@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '7.1.6'
+gem 'rails', '7.2.4'
 gem 'pg', "~> 1.2"
 gem 'mysql2', "~> 0.5"
 gem 'puma', "~> 7.2", ">= 7.2.1"
@@ -15,7 +15,7 @@ gem 'uglifier', "~> 4.2"
 gem 'secure_headers', "~> 6.3"
 gem 'bundler'
 gem 'turbolinks', "~> 5.2"
-gem 'jbuilder', "~> 2.11"
+gem 'jbuilder', "~> 2.13"
 gem 'dotenv', "~> 2.7"
 gem 'foreman', "~> 0.87"
 gem 'delayed_job_active_record'
@@ -37,7 +37,9 @@ gem 'aasm', "~> 5.2"
 gem 'pg_search', "~> 2.3"
 gem 'attr_encrypted', "~> 4.2"
 gem 'ice_cube', "~> 0.16"
-gem 'schedulable', "~> 0.0"
+# schedulable 0.0.10 is the last release and calls `serialize :x, Hash`, which
+# Rails 7.2 removed. Vendored with that one line changed.
+gem 'schedulable', path: 'vendor/gems/schedulable'
 gem 'simple_calendar', "~> 2.4"
 gem 'httparty', "~> 0.24"
 gem 'csv', "~> 3.3"
@@ -107,7 +109,7 @@ group :test do
   gem 'guard-rspec', "~> 4.7"
   gem 'guard-rake', "~> 1.0"
   gem 'rails-controller-testing', "~> 1.0"
-  gem 'rspec-rails', "~> 6.1"
+  gem 'rspec-rails', "~> 7.1"
   gem 'simplecov', "~> 0.21"
   gem 'rspec_junit_formatter', "~> 0.4"
 end

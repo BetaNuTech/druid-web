@@ -25,7 +25,7 @@ class PropertyUser < ApplicationRecord
   MANAGER_ROLE = 'manager'
 
   ### Enums
-  enum role: { AGENT_ROLE => 0, MANAGER_ROLE => 1}
+  enum :role, { AGENT_ROLE => 0, MANAGER_ROLE => 1}
 
   ### Validations
   validates :role, presence: true

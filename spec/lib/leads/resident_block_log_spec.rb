@@ -3,6 +3,12 @@ require 'rails_helper'
 RSpec.describe Leads::ResidentBlockLog do
   include ActiveJob::TestHelper
 
+  # Rails 7.2 only swaps in the test adapter by itself when the app has not
+  # configured one; this app configures :delayed_job.
+  def queue_adapter_for_test
+    ActiveJob::QueueAdapters::TestAdapter.new
+  end
+
   let(:property) { create(:property, name: 'Vintage Edge') }
   let(:yardi_resident) do
     Yardi::Backup::Database::Resident.new(tenant_code: 't0225446', prospect_code: 'p0518217', first_name: 'Zoe', last_name: 'Ellis',

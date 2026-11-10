@@ -8,14 +8,18 @@ until `Gemfile.lock` has `activestorage >= 7.2.3.2`.
 
 ## Summary
 
-| Hop | Status | Recommendation | Effort left |
-| --- | --- | --- | --- |
-| Preparation (Zeitwerk, gems that cap Rails) | Done on the upgrade branch | Go | none |
-| 6.1.7.10 to 7.0.10 | Done on the upgrade branch, suite matches master | Go, after a staging soak | 0.5 day (staging checks below) |
-| 7.0 to 7.1.6 | Spiked: one known code change, suite at baseline | Go | 1.5 to 2 days |
-| 7.1 to 7.2.4 | Spiked: one gem to patch, one guard spec to revise | Go | 2 to 3 days |
-| Webpacker 5 to esbuild | Not started; independent of the Rails hops | Go, as its own project | 3 to 4 days |
-| Raise `load_defaults` from 5.1 | Not started; not needed to close the alerts | Defer until after 7.2 | 2 to 3 days |
+| Hop | Status | Deployed |
+| --- | --- | --- |
+| Preparation (Zeitwerk, gems that cap Rails) | Done, on `master` | staging v704 (2026-11-10) |
+| 6.1.7.10 to 7.0.10 | Done, on `master`; suite matches the 6.1 baseline | staging v704 (2026-11-10) |
+| 7.0 to 7.1.6 | Done, on branch `rails-7-1`; suite matches 7.0 | no |
+| 7.1 to 7.2.4 | Done, on branch `rails-7-2` (built on `rails-7-1`); suite matches 7.1 | no |
+| Webpacker 5 to esbuild | Not started; independent of the Rails hops; 3 to 4 days | |
+| Raise `load_defaults` from 5.1 | Not started; not needed to close the alerts; 2 to 3 days | |
+
+The sections below were written before the 7.1 and 7.2 hops were carried out
+and are kept as the record of what each needed. Where the work differed from
+the plan, "What was done" under that hop says so.
 
 Rails 7.0 and 7.1 are themselves end-of-life, so neither is a place to stop.
 Each hop should still be deployed and left to run for a few days before the
@@ -129,6 +133,20 @@ Code changes found by the spike:
   is readable by Rails 7.0, so a rollback still works.
 - `Rails.application.secrets` is deprecated: see 7.2.
 
+### What was done (branch `rails-7-1`)
+
+As planned, with one decision: the three parsers' `Date::DATE_FORMATS[:default]`
+assignments were deleted rather than replaced. None of those parsers formats a
+date (two never set `move_in`, the third parses it with `strptime`), so the
+global only ever changed other code's output. `Date#to_s` is now ISO 8601
+everywhere, which is also what the SQL in `MarketingSources::Report` and the
+`ProspectStats` cache keys were written for. The coder is `YamlInJsonbCoder`.
+`config/secrets.yml` was left for the 7.2 hop.
+
+Suite: identical to 7.0 at seeds 4242 and 777 apart from
+`scheduled_action_policy_spec.rb:113`, which flips in opposite directions at
+the two seeds and is order-dependent on `master`.
+
 ## 7.1 to 7.2
 
 Target 7.2.4 (anything >= 7.2.3.2 closes the alerts).
@@ -158,6 +176,34 @@ Target 7.2.4 (anything >= 7.2.3.2 closes the alerts).
   support it); `jbuilder` 2.11 to 2.12+ (uses a class 7.2 deprecates).
 - 13 `enum name: {...}` declarations are deprecated in 7.2 and removed in
   8.0. Mechanical; do it here or leave it for the 8.0 work.
+
+### What was done (branch `rails-7-2`)
+
+- `schedulable` is vendored in `vendor/gems/schedulable` with the one-line fix.
+- `ruby-vips` 2.1.4 to 2.3.0. Not in the original plan: Active Storage 7.2.4
+  raises while loading its vips support if libvips is present and `ruby-vips`
+  is older than 2.2.1. Locally libvips is absent so nothing raised, but
+  whether Heroku's stack image has it was not something to leave to chance.
+- The libvips guard now asserts that a variant is handed to
+  `ImageProcessing::MiniMagick` and never to `ImageProcessing::Vips`, and that
+  Active Storage is >= 7.2.3.2.
+- `config/secrets.yml` and `read_encrypted_secrets` removed. `SECRET_KEY_BASE`
+  is set on both Heroku apps (checked 2026-11-10).
+- `cache_format_version = 7.1`, `rspec-rails` 7.1, `jbuilder` 2.15, and the
+  13 enums moved to the positional form.
+- One spec change the spike did not show: Active Job 7.2's test helper no
+  longer swaps in the test adapter when the app configures one (this app
+  configures `:delayed_job`). `resident_block_log_spec.rb` passed only when an
+  earlier spec had leaked `queue_adapter = :test`; it now asks for the test
+  adapter itself.
+- Left alone: `delayed_job` 4.1.11 prints one `ActiveSupport::ProxyObject`
+  deprecation at boot (removed in Rails 8.0). Bumping the job runner is not
+  needed for 7.2.
+
+Suite: identical to 7.1 at seeds 4242 and 777. Checked against the
+development copy of production data on 7.2.4: all 265 user profiles, the
+properties and 200 schedules load; an SSN encrypted on 6.1 decrypts; the
+webpack packs compile.
 
 ## Gems checked
 
