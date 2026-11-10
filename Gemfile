@@ -67,9 +67,9 @@ gem 'image_processing', "~> 1.12"
 gem 'mini_magick', "~> 4.11"
 gem 'delayed_job_web'
 gem 'immigrant', "~> 0.3"
-#gem "wysiwyg-rails", github: 'codeprimate/wysiwyg-rails'
-gem "wysiwyg-rails"
-gem 'froala-editor-sdk', "~> 1.4"
+# Froala editor 3.2.7: assets are vendored under vendor/assets and the S3
+# upload signature is Froala::S3Upload. The wysiwyg-rails and froala-editor-sdk
+# gems that used to provide them cap railties below 7.0.
 gem 'flipflop', github: 'Bellingham-DEV/flipflop'
 gem 'descriptive_statistics', "~> 2.5", require: 'descriptive_statistics/safe'
 gem 'working_hours', "~> 1.4"
@@ -107,10 +107,9 @@ group :test do
   gem 'guard-rspec', "~> 4.7"
   gem 'guard-rake', "~> 1.0"
   gem 'rails-controller-testing', "~> 1.0"
-  gem 'rspec-rails', "~> 4.1"
+  gem 'rspec-rails', "~> 6.1"
   gem 'simplecov', "~> 0.21"
   gem 'rspec_junit_formatter', "~> 0.4"
-  gem 'action-cable-testing', "~> 0.6"
 end
 
 group :development do

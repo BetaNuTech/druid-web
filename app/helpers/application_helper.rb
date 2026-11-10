@@ -162,7 +162,7 @@ module ApplicationHelper
   end
 
   def editor_aws_data
-    return FroalaEditorSDK::S3.data_hash(editor_upload_s3_options)
+    return Froala::S3Upload.data_hash(editor_upload_s3_options)
   end
 
   def editor_upload_s3_options
