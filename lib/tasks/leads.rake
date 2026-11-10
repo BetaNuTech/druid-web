@@ -563,7 +563,7 @@ namespace :leads do
 
       start_date = 1.month.ago.beginning_of_day
       null_leads = Lead.where(created_at: start_date.., classification: 'parse_failure')
-      puts "* Re-Processing #{null_leads.count} 'Null' Leads since #{start_date.to_s(:long)}"
+      puts "* Re-Processing #{null_leads.count} 'Null' Leads since #{start_date.to_fs(:long)}"
       processed = 0
       failed = 0
       new_leads = null_leads.map do |null_lead|

@@ -10,7 +10,6 @@ module Leads
         end
 
         def self.parse(data)
-          Date::DATE_FORMATS[:default] = "%m/%d/%Y"
           body = data.fetch("plain",nil) || ''
 
           referral = 'Rentable.com'

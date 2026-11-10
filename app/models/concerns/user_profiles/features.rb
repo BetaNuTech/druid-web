@@ -6,7 +6,7 @@ module UserProfiles
 
       FEATURE_PARAMS = { enabled_features: UserProfile.managed_features }
 
-      serialize :enabled_features
+      serialize :enabled_features, coder: YamlInJsonbCoder
 
       def feature_enabled?(feature)
         self.enabled_features ||= {}

@@ -24,7 +24,6 @@ module Leads
 
         def self.parse_v1(data)
 
-          Date::DATE_FORMATS[:default] = "%m/%d/%Y"
           # TODO
           #  * beds
           #  * baths

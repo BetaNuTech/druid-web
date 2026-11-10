@@ -15,7 +15,7 @@ module UserProfiles
 
       APPSETTING_PARAMS = { appsettings: UserProfile.managed_settings }
 
-      serialize :appsettings
+      serialize :appsettings, coder: YamlInJsonbCoder
 
       def setting_enabled?(setting)
         key = setting.to_s

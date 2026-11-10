@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '7.0.10'
+gem 'rails', '7.1.6'
 gem 'pg', "~> 1.2"
 gem 'mysql2', "~> 0.5"
 gem 'puma', "~> 7.2", ">= 7.2.1"
@@ -32,7 +32,7 @@ gem 'omniauth-google-oauth2', '~> 1.2'
 gem 'omniauth-rails_csrf_protection', '~> 2.0'
 gem 'colorize', "~> 0.8"
 gem 'pundit', "~> 2.1"
-gem 'audited', '~> 5.3'
+gem 'audited', '~> 5.8'
 gem 'aasm', "~> 5.2"
 gem 'pg_search', "~> 2.3"
 gem 'attr_encrypted', "~> 4.2"

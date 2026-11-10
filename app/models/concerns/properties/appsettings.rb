@@ -13,7 +13,7 @@ module Properties
 
       APPSETTING_PARAMS = { appsettings: Property.managed_settings }
 
-      serialize :appsettings
+      serialize :appsettings, coder: YamlInJsonbCoder
 
       ### Helper methods
 
