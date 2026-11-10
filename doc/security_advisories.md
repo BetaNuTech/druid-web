@@ -54,4 +54,6 @@ apply.
 
 GitHub keeps both alerts open for as long as `Gemfile.lock` has
 `activestorage < 7.2.3.2`. They close by upgrading Rails or by dismissing them
-on GitHub with this document as the justification.
+on GitHub with this document as the justification. The upgrade is planned in
+`doc/rails_upgrade_plan.md`; its 7.2 step says what happens to the initializer
+and to the libvips example in the guard spec.
