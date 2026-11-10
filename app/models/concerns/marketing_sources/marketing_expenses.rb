@@ -7,8 +7,8 @@ module MarketingSources
 
       def create_pending_expense
         expense = new_expected_expense
-        expense.errors[:base] << 'MarketingSource is not periodically billable' if !periodically_billable?
-        expense.errors[:base] << 'MarketingSource already has the expected expense this period' if expected_expenses_this_billing_period.any?
+        expense.errors.add(:base, 'MarketingSource is not periodically billable') if !periodically_billable?
+        expense.errors.add(:base, 'MarketingSource already has the expected expense this period') if expected_expenses_this_billing_period.any?
         expense.marketing_source_id = nil if expense.errors.any?
         expense.save
         expense

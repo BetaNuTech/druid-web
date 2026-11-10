@@ -211,7 +211,9 @@ RSpec.describe HomeController, type: :controller do
           expect(response).to be_redirect
           get :dashboard
           expect(assigns[:current_user]).to eq(agent)
-          expect(assigns[:true_current_user]).to eq(administrator)
+          # Read back from the cookie: Rails 7 clears controller instance
+          # variables between the requests of one example.
+          expect(controller.true_current_user).to eq(administrator)
           post :end_impersonation
           expect(response).to be_redirect
           expect(assigns[:current_user]).to be_nil

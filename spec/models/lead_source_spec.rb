@@ -38,7 +38,7 @@ RSpec.describe LeadSource, type: :model do
     l2 = LeadSource.new({})
     l2.validate
     refute(l2.valid?)
-    expect(l2.errors.keys.sort).to eq(required_fields.sort)
+    expect(l2.errors.attribute_names.sort).to eq(required_fields.sort)
   end
 
   it "has leads" do

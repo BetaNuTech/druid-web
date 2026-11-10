@@ -17,7 +17,6 @@ module BlueskyWeb
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
-    config.autoloader = :zeitwerk
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -30,5 +29,10 @@ module BlueskyWeb
     config.active_job.queue_adapter = :delayed_job
     config.action_view.sanitized_allowed_attributes = ['href', 'title', 'style']
     config.active_record.use_yaml_unsafe_load = true
+    config.active_record.legacy_connection_handling = false
+    # load_defaults 5.1 asks for non-URL-safe CSRF tokens, which Rails 7.0
+    # deprecates and 7.1 removes. Dropping the override gives URL-safe tokens;
+    # tokens already in sessions and open forms still verify.
+    config.action_controller.delete(:urlsafe_csrf_tokens)
   end
 end

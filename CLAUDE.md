@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BlueSky is a Rails 6.1 application for lead management and property leasing operations. It's a proprietary system owned by Bluecore Residential (formerly BlueStone Properties) that integrates with external lead sources, property management systems (Yardi Voyager), and communication platforms (Twilio, Mailgun, Cloudmailin).
+BlueSky is a Rails 7.0 application for lead management and property leasing operations. It's a proprietary system owned by Bluecore Residential (formerly BlueStone Properties) that integrates with external lead sources, property management systems (Yardi Voyager), and communication platforms (Twilio, Mailgun, Cloudmailin).
 
 ## Common Development Commands
 
@@ -65,7 +65,7 @@ Located in `lib/` directory with clear separation by domain:
 - Various CloudMailin parsers for different lead sources
 
 ### Frontend Technology
-- Rails 6.1 with Webpacker 5.4
+- Rails 7.0 with Webpacker 5.4
 - React 18.2 components for Lead search functionality
 - Bootstrap 3.4.1 for styling
 - D3.js for charts

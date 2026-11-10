@@ -94,6 +94,16 @@ RSpec.describe MarketingExpense, type: :model do
               expect(new_expense.start_date).to eq(Date.current.beginning_of_month)
               expect(new_expense.end_date).to eq(Date.current.end_of_month)
             end
+
+            it 'does not create a second expense for the same billing period' do
+              first_expense = marketing_source.create_pending_expense
+              assert(first_expense.persisted?)
+
+              expect {
+                duplicate = marketing_source.create_pending_expense
+                refute(duplicate.persisted?)
+              }.to_not change { MarketingExpense.count }
+            end
           end
           describe 'when the MarketingSource activity period is partially within the implied fee type period' do
             it 'creates a marketing expense of the same fee type as the MarketingSource with a period within the MarketingSource activity period' 

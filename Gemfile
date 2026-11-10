@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '6.1.7.10'
+gem 'rails', '7.0.10'
 gem 'pg', "~> 1.2"
 gem 'mysql2', "~> 0.5"
 gem 'puma', "~> 7.2", ">= 7.2.1"
@@ -35,7 +35,7 @@ gem 'pundit', "~> 2.1"
 gem 'audited', '~> 5.3'
 gem 'aasm', "~> 5.2"
 gem 'pg_search', "~> 2.3"
-gem 'attr_encrypted', "~> 3.1"
+gem 'attr_encrypted', "~> 4.2"
 gem 'ice_cube', "~> 0.16"
 gem 'schedulable', "~> 0.0"
 gem 'simple_calendar', "~> 2.4"

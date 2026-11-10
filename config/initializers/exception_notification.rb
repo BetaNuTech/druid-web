@@ -5,7 +5,12 @@ Rails.application.config.filter_parameters +=
 exception_recipients = ENV.fetch('EXCEPTION_RECIPIENTS', '').split(',').map(&:strip)
 exception_host = ENV.fetch('APPLICATION_HOST', 'unknown')
 
-if ErrorNotification.enabled?
+# Same test as ErrorNotification.enabled?. That class lives in app/lib, and
+# Rails 7 does not allow reloadable constants to be autoloaded from an
+# initializer, so the check is repeated here rather than called.
+exception_notifier_enabled = ENV.fetch('EXCEPTION_NOTIFIER_ENABLED', 'true').downcase == 'true'
+
+if exception_notifier_enabled
 	# Post every reported error to #bluesky-errors as the corporate Yoda Bot -- see
 	# YodaBot::ErrorNotifier. A lambda, not the class itself, so the constant is
 	# resolved when an error is reported, not autoloaded during boot.
