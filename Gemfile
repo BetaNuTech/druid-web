@@ -45,6 +45,12 @@ gem 'httparty', "~> 0.24"
 gem 'csv', "~> 3.3"
 gem 'nokogiri'
 gem 'rexml'
+
+# Held on their current major lines: Rack 3 and json 3 are upgrades of their own.
+# The floors are the releases that fix the Nov 2026 advisories
+# (doc/security_advisories.md).
+gem 'rack', '~> 2.2', '>= 2.2.25'
+gem 'json', '~> 2.19', '>= 2.19.9'
 # Former Ruby default gems, now bundled gems (Ruby 3.4+).
 # Rails 6.1 requires mutex_m/benchmark/base64/bigdecimal at boot;
 # app code uses OpenStruct (message templates, working hours, forms).
@@ -86,7 +92,7 @@ gem 'tiny_tds', '~> 3.4', require: false
 gem 'newrelic_rpm'
 gem 'net-smtp', require: false
 gem 'net-pop', require: false
-gem 'net-imap', require: false
+gem 'net-imap', '~> 0.5.15', require: false
 gem 'faker'
 
 group :development, :test do
