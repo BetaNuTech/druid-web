@@ -62,3 +62,41 @@ initializer stays as a second layer: it still pins `:mini_magick` (which
 becomes a no-op. The guard spec's libvips example changed with 7.2, because
 Active Storage 7.2 loads `ruby-vips` itself when the gem is installed; it now
 checks that variants are processed by ImageMagick and never by libvips.
+
+## November 2026, second pass: patch-level bumps
+
+Everything fixable without a major version change. Full-suite failure lists
+were identical before and after (same seed), Jest passed, and the production
+webpack build produced the same set of files.
+
+**Gems** (`bundle update --conservative`): nokogiri 1.19.7, rack 2.2.25,
+net-imap 0.5.15, crass 1.0.8, concurrent-ruby 1.3.8, loofah 2.25.3,
+rails-html-sanitizer 1.7.2, faraday 2.15.1, mail 2.9.1, omniauth 2.3.1,
+json 2.21.2, rexml 3.4.4, websocket-driver 0.8.2, addressable 2.9.2,
+dalli 3.2.15, aws-sdk-s3 1.241.0 (with aws-sdk-core 3.268.0).
+
+`rack`, `json` and `net-imap` are pinned to their current major lines in the
+`Gemfile`. Left unpinned, the same update moved Rack to 3.x (and Sinatra to 4,
+json to 3), which is an upgrade of its own.
+
+The AWS SDK jumped 120 releases and no environment but production talks to
+S3, so `spec/lib/aws_s3_spec.rb` now exercises the Active Storage S3 service
+and the call-recording presigner against the SDK's stubbed client.
+
+**npm**: `npm audit fix` (in-range only), plus raised floors in `package.json`
+for the packages shipped to the browser: axios 1.20, lodash 4.18,
+react-router 6.30.4, moment 2.31.
+
+### Still open after this pass, and why
+
+- **Rails 7.2.4 itself** (actionpack, activestorage, activesupport,
+  actionmailbox, actionview): the November 2026 Rails advisories are patched
+  only in 8.0.5.2 and 8.1.4.1. Two concern Active Storage with ImageMagick,
+  which this app uses: GHSA-v924-7rp8-4mxh (decoder chosen by uploaded
+  filename) and GHSA-f3w6-w445-fwh9 (file write and read in image analysis).
+- **Webpacker 5 / webpack 4 / webpack-dev-server 3**: about sixty npm
+  advisories (node-forge, postcss 7, svgo 1, serialize-javascript, braces,
+  elliptic, ...) only close by moving off Webpacker 5.
+- **Major-version gems**: devise 5, secure_headers 7, css_parser 3, and
+  sinatra 4 / rack-proxy 1 (both need Rack 3 or the Webpacker move).
+- **Direct npm majors**: bootstrap 3 (no fix on 3.x), d3 7, query-string 10.
